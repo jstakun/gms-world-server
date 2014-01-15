@@ -34,18 +34,15 @@
             <li><a href="/archive.do">Archives</a></li>
             <li><a href="/about.jsp">About</a></li>
         </ul>
-
+        <h3 id="rgc">Recent Geocodes</h3>
+        <ul>
 <%
 	List<GeocodeCache> geocodeCacheList = (List<GeocodeCache>)CacheUtil.getObject("newestGeocodes");
 	if (geocodeCacheList == null) {
 		geocodeCacheList = GeocodeCachePersistenceUtils.selectNewestGeocodes();
 		CacheUtil.putToShortCache("newestGeocodes", geocodeCacheList);
-	}
-%>
-
-        <h3 id="rgc">Recent Geocodes</h3>
-        <ul>
-<%
+    }
+    
     for (GeocodeCache geocodeCache : geocodeCacheList)
     {
 %>
