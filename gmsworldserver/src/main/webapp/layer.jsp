@@ -20,16 +20,10 @@
         <title>Layer Landmarks</title>
         <%@ include file="/WEB-INF/jspf/head.jspf" %>
     </head>
-
     <body>
-
         <jsp:include page="/WEB-INF/jspf/header.jsp"/>
-
         <%
-
             String layer = null, formatted = null;
-
-
             if (request.getAttribute("layer") != null) {
                layer = (String)request.getAttribute("layer");
                formatted = LayerPersistenceUtils.getLayerFormattedName(layer);
