@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE urlrewrite PUBLIC "-//tuckey.org//DTD UrlRewrite 3.2//EN"
+        "http://tuckey.org/res/dtds/urlrewrite3.2.dtd">
+
+<!--
+
+    Configuration file for UrlRewriteFilter
+    http://tuckey.org/urlrewrite/
+
+-->
+<urlrewrite>
+
+    <!-- blogeo rules -->
+
+    <rule>
+            <from>^/blogeo/([a-zA-Z0-9@_-]+)$</from>
+            <to>/blogeo.do?user=$1</to>
+    </rule>
+
+    <rule>
+            <from>^/blogeo/([a-zA-Z0-9@_-]+);jsessionid=(.*)$</from>
+            <to>/blogeo.do?user=$1</to>
+    </rule>
+
+    <outbound-rule>
+        <from>^/blogeo.do\?user=([a-zA-Z0-9_-]+)$</from>
+        <to>/blogeo/$1</to>
+    </outbound-rule>
+
+    <outbound-rule>
+        <from>^/blogeo.do\?user=([a-zA-Z0-9_-]+)@([a-zA-Z]+)$</from>
+        <to>/blogeo/$1</to>
+    </outbound-rule>
+
+    <!-- showLandmark rules -->
+
+    <rule>
+            <from>^/showLandmark/([a-zA-Z0-9_-]+)$</from>
+            <to>/showLandmark.do?key=$1</to>
+    </rule>
+
+    <rule>
+            <from>^/showLandmark/([a-zA-Z0-9_-]+);jsessionid=(.*)$</from>
+            <to>/showLandmark.do?key=$1</to>
+    </rule>
+
+    <rule>
+            <from>^/showLandmark/([a-zA-Z0-9_-]+)/(fullScreen)$</from>
+            <to>/showLandmark.do?key=$1&amp;fullScreenLandmarkMap=1</to>
+    </rule>
+
+    <rule>
+            <from>^/showImage/([a-zA-Z0-9_-]+)$</from>
+            <to>/showImage.do?key=$1</to>
+    </rule>
+    
+    <rule>
+            <from>^/freebaseView/([a-zA-Z0-9_-]+)$</from>
+            <to>/freebaseView.do?mid=$1</to>
+    </rule>
+
+    <outbound-rule>
+        <from>^/showLandmark.do\?key=([a-zA-Z0-9_-]+)$</from>
+        <to>/showLandmark/$1</to>
+    </outbound-rule>
+
+    <!-- showUser rules -->
+
+    <rule>
+            <from>^/showUser/([a-zA-Z0-9@_-]+)/(fullScreen)$</from>
+            <to>/showUser.do?user=$1&amp;fullScreenCollectionMap=1</to>
+    </rule>
+
+    <rule>
+            <from>^/showUser/(.*)$</from>
+            <to type="forward" encode="true">/showUser.do?user=$1</to>
+    </rule>
+
+    <!--rule>
+            <from>^/showUser/([a-zA-Z0-9@_-]+)$</from>
+            <to>/showUser.do?user=$1</to>
+    </rule>
+
+    <rule>
+            <from>^/showUser/([a-zA-Z0-9@_-]+);jsessionid=(.*)$</from>
+            <to>/showUser.do?user=$1</to>
+    </rule-->
+
+    <outbound-rule>
+        <from>^/showUser.do\?user=([a-zA-Z0-9@_-]+)$</from>
+        <to>/showUser/$1</to>
+    </outbound-rule>
+
+
+    <!-- showLayer rules -->
+
+    <rule>
+            <from>^/showLayer/([a-zA-Z0-9_-]+)$</from>
+            <to>/showLayer.do?layer=$1</to>
+    </rule>
+
+    <rule>
+            <from>^/showLayer/([a-zA-Z0-9_-]+);jsessionid=(.*)$</from>
+            <to>/showLayer.do?layer=$1</to>
+    </rule>
+
+    <rule>
+            <from>^/showLayer/([a-zA-Z0-9_-]+)/(fullScreen)$</from>
+            <to>/showLayer.do?layer=$1&amp;fullScreenCollectionMap=1</to>
+    </rule>
+
+
+    <outbound-rule>
+        <from>^/showLayer.do\?layer=([a-zA-Z0-9_-]+)$</from>
+        <to>/showLayer/$1</to>
+    </outbound-rule>
+
+    <!-- heatMap rules -->
+
+    <rule>
+            <from>^/heatMap</from>
+            <to>/getHeatMap.do</to>
+    </rule>
+
+    <!-- download -->
+
+    <rule>
+            <from>/download/j2me/LandmarkManager.jar</from>
+            <to>/download/j2me/108/LandmarkManager.jar</to>
+    </rule>
+
+    <rule>
+            <from>/download/blackberry/LandmarkManagerUIMIDlet.cod</from>
+            <to>/download/blackberry/106/LandmarkManagerUIMIDlet.cod</to>
+    </rule>
+
+    <rule>
+            <from>/download/android/GMSClient3.apk</from>
+            <to>/download/android/207/GMSClient3.apk</to>
+    </rule>
+
+    <!-- -->
+
+</urlrewrite>
+

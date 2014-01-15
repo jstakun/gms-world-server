@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<datastore-indexes autoGenerate="true">
+   <datastore-index kind="OAuthToken" ancestor="false">
+        <property name="login" direction="asc"/>
+        <property name="password" direction="asc"/>
+        <property name="service" direction="asc"/>
+        <property name="creationDate" direction="desc"/>
+    </datastore-index>
+    <datastore-index kind="Checkin" ancestor="false">
+        <property name="landmarkKey" direction="asc"/>
+        <property name="creationDate" direction="desc"/>
+    </datastore-index>
+    <datastore-index kind="GeocodeCache" ancestor="false">
+        <property name="location" direction="asc"/>
+        <property name="status" direction="asc"/>
+    </datastore-index>
+    <datastore-index kind="GeocodeCache" ancestor="false">
+        <property name="status" direction="asc"/>
+        <property name="creationDate" direction="desc"/>
+    </datastore-index>
+    <datastore-index kind="OAuthToken" ancestor="false">
+        <property name="login" direction="asc"/>
+        <property name="creationDate" direction="desc"/>
+    </datastore-index>
+    <datastore-index kind="Landmark" ancestor="false">
+        <property name="layer" direction="asc"/>
+        <property name="creationDate" direction="desc"/>
+    </datastore-index>
+    <datastore-index kind="Landmark" ancestor="false">
+        <property name="geoCells" direction="asc"/>
+        <property name="creationDate" direction="desc"/>
+    </datastore-index>
+    <datastore-index kind="Hotel" ancestor="false">
+        <property name="GeoCells" direction="asc"/>
+        <property name="rating" direction="desc"/>
+    </datastore-index>
+    <datastore-index kind="Landmark" ancestor="false">
+        <property name="username" direction="asc"/>
+        <property name="creationDate" direction="desc"/>
+    </datastore-index>
+    <datastore-index kind="Landmark" ancestor="false">
+        <property name="geoCells" direction="asc"/>
+        <property name="layer" direction="asc"/>
+        <property name="validityDate" direction="asc"/>
+    </datastore-index>
+    <datastore-index kind="Comment" ancestor="false">
+        <property name="landmarkKey" direction="asc"/>
+        <property name="creationDate" direction="desc"/>
+    </datastore-index>
+    <datastore-index kind="Landmark" ancestor="false">
+        <property name="geoCells" direction="asc"/>
+        <property name="validityDate" direction="asc"/>
+    </datastore-index>
+
+</datastore-indexes>

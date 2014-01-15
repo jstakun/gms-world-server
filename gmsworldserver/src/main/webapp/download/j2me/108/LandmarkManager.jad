@@ -1,0 +1,11 @@
+MIDlet-1: Landmark Manager,/images/globe.png,com.jstakun.lm.ui.LandmarkManagerUIMIDlet
+MIDlet-Description: Landmark Manager is application for saving landmarks created in mobile phone to persistent store and download landmarks from internet to smartphones
+MIDlet-Info-URL: http://www.gms-world.net
+MIDlet-Jar-Size: 335240
+MIDlet-Jar-URL: LandmarkManager.jar
+MIDlet-Name: Landmark Manager
+MIDlet-Permissions: javax.microedition.io.Connector.file.read, javax.microedition.io.Connector.file.write, javax.microedition.io.Connector.http, javax.wireless.messaging.sms.send, javax.microedition.location.Location, javax.microedition.location.LandmarkStore.category, javax.microedition.location.LandmarkStore.management, javax.microedition.location.LandmarkStore.read, javax.microedition.io.Connector.sms, javax.microedition.location.LandmarkStore.write, javax.microedition.location.Orientation
+MIDlet-Vendor: GMS
+MIDlet-Version: 1.7
+MicroEdition-Configuration: CLDC-1.1
+MicroEdition-Profile: MIDP-2.0

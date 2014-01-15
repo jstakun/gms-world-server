@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<queue-entries>
+    <queue>
+        <name>default</name>
+        <rate>5/s</rate>
+    </queue>
+    <queue>
+        <name>hotelLoaderQueue</name>
+        <rate>10/s</rate>
+    </queue>
+    <queue>
+        <name>searchQueue</name>
+        <rate>15/s</rate>
+        <bucket-size>30</bucket-size>
+    </queue>
+    <queue>
+    	<name>notifications</name>
+    	<rate>1/s</rate>
+    	<retry-parameters>
+      		<min-backoff-seconds>10</min-backoff-seconds>
+      		<max-backoff-seconds>200</max-backoff-seconds>
+      		<max-doublings>2</max-doublings>
+      		<task-retry-limit>2</task-retry-limit>      		
+    	</retry-parameters>
+  	</queue>
+</queue-entries>

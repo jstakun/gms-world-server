@@ -1,0 +1,129 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.jstakun.lm.server.servlet;
+
+import com.jstakun.lm.server.utils.StringUtil;
+import com.jstakun.lm.server.utils.persistence.ServiceLogPersistenceUtils;
+import java.io.IOException;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.lang.StringUtils;
+
+/**
+ *
+ * @author jstakun
+ */
+public class LogFilter implements Filter {
+
+    private static final boolean debug = true;
+    // The filter configuration object we are associated with.  If
+    // this value is null, this filter instance is not currently
+    // configured. 
+    private FilterConfig filterConfig = null;
+    private static final String APP_HEADER = "X-GMS-AppId";
+    
+    public LogFilter() {
+    }
+
+    /**
+     *
+     * @param request The servlet request we are processing
+     * @param response The servlet response we are creating
+     * @param chain The filter chain we are processing
+     *
+     * @exception IOException if an input/output error occurs
+     * @exception ServletException if a servlet error occurs
+     */
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response,
+            FilterChain chain)
+            throws IOException, ServletException {
+
+        if (request instanceof HttpServletRequest) {
+            HttpServletRequest httpRequest = (HttpServletRequest) request;
+            String username = StringUtil.getUsername(request.getAttribute("username"), httpRequest.getHeader("username"));
+            String appId = httpRequest.getHeader(APP_HEADER);
+            int appIdVal = -1;
+            if (StringUtils.isNumeric(appId)) {
+                try {
+                   appIdVal = Integer.parseInt(appId);
+                } catch (Exception e) {
+                   appIdVal = -1;
+                }
+            }
+
+            if (StringUtils.isNotEmpty(username)){
+                ServiceLogPersistenceUtils.persistServiceLog(username, httpRequest.getRequestURI(), true, appIdVal);
+            } else {
+                ServiceLogPersistenceUtils.persistServiceLog(null, httpRequest.getRequestURI(), false, appIdVal);
+            }
+        } else {
+            String url = request.getScheme() + "://" + request.getLocalName();
+            ServiceLogPersistenceUtils.persistServiceLog(null, url, false, -1);
+        }
+
+        chain.doFilter(request, response);
+    }
+
+    /**
+     * Return the filter configuration object for this filter.
+     */
+    public FilterConfig getFilterConfig() {
+        return (this.filterConfig);
+    }
+
+    /**
+     * Set the filter configuration object for this filter.
+     *
+     * @param filterConfig The filter configuration object
+     */
+    public void setFilterConfig(FilterConfig filterConfig) {
+        this.filterConfig = filterConfig;
+    }
+
+    /**
+     * Destroy method for this filter 
+     */
+    @Override
+    public void destroy() {
+    }
+
+    /**
+     * Init method for this filter 
+     */
+    @Override
+    public void init(FilterConfig filterConfig) {
+        this.filterConfig = filterConfig;
+        if (filterConfig != null) {
+            if (debug) {
+                log("LogFilter:Initializing filter");
+            }
+        }
+    }
+
+    /**
+     * Return a String representation of this object.
+     */
+    @Override
+    public String toString() {
+        if (filterConfig == null) {
+            return "LogFilter()";
+        } else {
+            StringBuilder sb = new StringBuilder("LogFilter(");
+            sb.append(filterConfig);
+            sb.append(")");
+            return (sb.toString());
+        }
+    }
+
+    public void log(String msg) {
+        filterConfig.getServletContext().log(msg);
+    }
+}

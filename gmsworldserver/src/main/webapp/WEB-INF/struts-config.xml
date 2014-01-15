@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="windows-1250" ?>
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN" "http://struts.apache.org/dtds/struts-config_1_2.dtd">
+<struts-config>
+    <form-beans>
+        <form-bean name="landmarkForm"
+                   type="com.jstakun.lm.server.struts.LandmarkForm">
+            <form-property name="name" type="java.lang.String"/>
+            <form-property name="description" type="java.lang.String"/>
+            <form-property name="latitude" type="double" initial="0"/>
+            <form-property name="longitude" type="double"  initial="0"/>
+            <form-property name="createdBy" type="java.lang.String" initial="anonymous"/>
+            <form-property name="creationDate" type="java.sql.Timestamp" initial="1910-01-10 00:00:00"/>
+            <form-property name="key" type="java.lang.String"/>
+            <form-property name="validityDate" type="java.sql.Timestamp" initial="2200-01-01 00:00:00"/>
+            <form-property name="layer" type="java.lang.String" initial="Public"/>
+            <form-property name="layers" type="java.util.List"/>
+        </form-bean>
+        <form-bean name="layerForm"
+                   type="com.jstakun.lm.server.struts.LayerForm">
+            <form-property name="name" type="java.lang.String"/>
+            <form-property name="desc" type="java.lang.String"/>
+            <form-property name="formatted" type="java.lang.String"/>
+        </form-bean>
+        <form-bean name="userForm"
+                   type="com.jstakun.lm.server.struts.UserForm">
+            <form-property name="login" type="java.lang.String"/>
+            <form-property name="password" type="java.lang.String"/>
+            <form-property name="repassword" type="java.lang.String"/>
+            <form-property name="email" type="java.lang.String"/>
+            <form-property name="firstname" type="java.lang.String"/>
+            <form-property name="lastname" type="java.lang.String"/>
+        </form-bean>
+        <form-bean name="contactForm"
+                   type="com.jstakun.lm.server.struts.ContactForm">
+            <form-property name="subject" type="java.lang.String"/>
+            <form-property name="email" type="java.lang.String"/>
+            <form-property name="name" type="java.lang.String"/>
+            <form-property name="message" type="java.lang.String"/>
+        </form-bean>
+    </form-beans>
+    <action-mappings>
+        <action path="/admin/listLandmarks"
+                type="com.jstakun.lm.server.struts.ListLandmarksAction">
+            <forward name="success" path="/admin/listLandmarks.jsp"/>
+        </action>
+        <action path="/admin/deleteLandmark"
+                type="com.jstakun.lm.server.struts.DeleteLandmarkAction">
+            <forward name="success" path="/admin/listLandmarks.do"/>
+        </action>
+        <action path="/admin/deleteAllLandmarks"
+                type="com.jstakun.lm.server.struts.DeleteAllLandmarksAction">
+            <forward name="success" path="/admin/index.jsp"/>
+        </action>
+        <action path="/download/download"
+                type="com.jstakun.lm.server.struts.DownloadAction"/>
+        <action  path="/admin/updateLandmark"
+                 type="com.jstakun.lm.server.struts.UpdateLandmarkAction"
+                 name="landmarkForm"
+                 input="/admin/updateLandmark.jsp"
+                 scope="request" >
+            <forward name="success" path="/admin/listLandmarks.do"/>
+        </action>
+        <action path="/showLandmark" type="com.jstakun.lm.server.struts.ShowLandmarkAction">
+            <forward name="success" path="/landmark.jsp"/>
+            <forward name="mobile" path="/m/landmark.jsp"/>
+            <forward name="fullScreen" path="/fullScreenLandmarkMap.jsp"/>
+        </action>
+        <action path="/showUser" type="com.jstakun.lm.server.struts.ShowUserAction">
+            <forward name="success" path="/user.jsp"/>
+            <forward name="mobile" path="/m/user.jsp"/>
+            <forward name="fullScreen" path="/fullScreenCollectionMap.jsp"/>
+            <forward name="blogeo" path="/blogeo/blog.jsp"/>
+        </action>
+        <action input="/admin/createLandmark.jsp"
+                name="landmarkForm"
+                path="/admin/createLandmark"
+                scope="request"
+                type="com.jstakun.lm.server.struts.CreateLandmarkAction">
+            <forward name="success" path="/admin/index.jsp"/>
+        </action>
+        <action input="/admin/createLayer.jsp"
+                name="layerForm"
+                path="/admin/createLayer"
+                scope="request"
+                type="com.jstakun.lm.server.struts.CreateLayerAction">
+            <forward name="success" path="/admin/index.jsp"/>
+        </action>
+        <action path="/register"
+                name="userForm"
+                scope="request"
+                input="/register.jsp"
+            type="com.jstakun.lm.server.struts.RegisterAction">
+            <forward name="success" path="/confirm.jsp?step=1"/>
+            <forward name="failure" path="/failure.jsp?step=1"/>
+        </action>
+         <action path="/m/register"
+                name="userForm"
+                scope="request"
+                input="/m/register.jsp"
+            type="com.jstakun.lm.server.struts.RegisterAction">
+            <forward name="success" path="/m/confirm.jsp?step=1"/>
+            <forward name="failure" path="/m/failure.jsp?step=1"/>
+        </action>
+        <action path="/showGeocode"
+                scope="request"
+                type="com.jstakun.lm.server.struts.ShowGeocodeAction">
+            <forward name="success" path="/geocode.jsp"/>
+            <forward name="mobile" path="/m/geocode.jsp"/>
+            <forward name="fullScreen" path="/fullScreenGeocodeMap.jsp"/>
+        </action>
+        <action path="/archive" type="com.jstakun.lm.server.struts.ShowArchiveAction">
+            <forward name="success" path="/archive.jsp"/>
+        </action>
+        <action input="/contact.jsp" name="contactForm" path="/contact" scope="request" type="com.jstakun.lm.server.struts.ContactAction">
+            <forward name="success" path="/contact.jsp"/>
+        </action>
+        <action path="/blogeo" type="com.jstakun.lm.server.struts.BlogeoAction">
+             <forward name="success" path="/blogeo/blog.jsp"/>
+        </action>
+        <action path="/showLocation" type="com.jstakun.lm.server.struts.ShowLocationAction">
+             <forward name="mobile" path="/m/showLoc.jsp"/>
+         </action>
+        <action path="/verify" type="com.jstakun.lm.server.struts.RegistrationConfirmationAction">
+            <forward name="success_reg" path="/confirm.jsp?step=2"/>
+            <forward name="failure_reg" path="/failure.jsp?step=2"/>
+            <forward name="success_unreg" path="/confirm.jsp?step=3"/>
+            <forward name="failure_unreg" path="/failure.jsp?step=3"/>
+        </action>
+        <action path="/admin/listHotelFiles" type="com.jstakun.lm.server.struts.ListHotelsAction">
+            <forward name="success" path="/admin/listHotels.jsp"/>
+         </action>
+        <action path="/getHeatMap" type="com.jstakun.lm.server.struts.GetHeatMapAction" scope="request">
+            <forward name="success" path="/fullScreenHeatMap.jsp"/>
+        </action>
+        <action path="/showLayer" type="com.jstakun.lm.server.struts.ShowLayerAction">
+            <forward name="success" path="/layer.jsp"/>
+            <forward name="mobile" path="/m/layer.jsp"/>
+            <forward name="fullScreen" path="/fullScreenCollectionMap.jsp"/>
+        </action>
+        <action path="/showImage" type="com.jstakun.lm.server.struts.ShowImageAction">
+            <forward name="success" path="/image.jsp"/>
+            <forward name="mobile" path="/m/image.jsp"/>
+         </action>
+         <action path="/freebaseView" type="com.jstakun.lm.server.struts.FreebaseViewAction">
+            <forward name="mobile" path="/m/freebase.jsp"/>
+         </action>
+         <action path="/welcome" type="com.jstakun.lm.server.struts.WelcomeAction">
+            <forward name="success" path="/main.jsp"/>
+            <forward name="mobile" path="/m/main.jsp"/>
+        </action>
+    </action-mappings>
+    <message-resources parameter="com.jstakun.lm.server.struts.ApplicationResource"/>
+</struts-config>

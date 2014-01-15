@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:ror="http://rorweb.com/0.1/" >
+<channel>
+  <title>ROR Sitemap for http://www.gms-world.net/</title>
+  <link>http://www.gms-world.net/</link>
+
+<item>
+     <link>http://www.gms-world.net/</link>
+     <title>GMS World Homepage</title>
+     <description>GMS World - discover interesting places nearby!</description>
+     <ror:updatePeriod></ror:updatePeriod>
+     <ror:sortOrder>0</ror:sortOrder>
+     <ror:resourceOf>sitemap</ror:resourceOf>
+</item>
+<item>
+     <link>http://www.gms-world.net/index.jsp</link>
+     <title>GMS World Homepage</title>
+     <description>GMS World - discover interesting places nearby!</description>
+     <ror:updatePeriod></ror:updatePeriod>
+     <ror:sortOrder>1</ror:sortOrder>
+     <ror:resourceOf>sitemap</ror:resourceOf>
+</item>
+<item>
+     <link>http://www.gms-world.net/download.jsp</link>
+     <title>Download Landmark Manager</title>
+     <description>GMS World - discover interesting places nearby!</description>
+     <ror:updatePeriod></ror:updatePeriod>
+     <ror:sortOrder>1</ror:sortOrder>
+     <ror:resourceOf>sitemap</ror:resourceOf>
+</item>
+<item>
+     <link>http://www.gms-world.net/register.jsp</link>
+     <title>Landmark Manager User Registration</title>
+     <description>GMS World - discover interesting places nearby!</description>
+     <ror:updatePeriod></ror:updatePeriod>
+     <ror:sortOrder>1</ror:sortOrder>
+     <ror:resourceOf>sitemap</ror:resourceOf>
+</item>
+<item>
+     <link>http://www.gms-world.net/demo/run.jsp</link>
+     <title>Landmark Manager Live Demo Page</title>
+     <description>Site Description Here</description>
+     <ror:updatePeriod></ror:updatePeriod>
+     <ror:sortOrder>1</ror:sortOrder>
+     <ror:resourceOf>sitemap</ror:resourceOf>
+</item>
+<item>
+     <link>http://www.gms-world.net/about.jsp</link>
+     <title>GMS World - About Us</title>
+     <description>GMS World - discover interesting places nearby!</description>
+     <ror:updatePeriod></ror:updatePeriod>
+     <ror:sortOrder>1</ror:sortOrder>
+     <ror:resourceOf>sitemap</ror:resourceOf>
+</item>
+<item>
+     <link>http://www.gms-world.net/contact.jsp</link>
+     <title>Contact Page</title>
+     <description>GMS World - mobile solutions based on geolocation</description>
+     <ror:updatePeriod></ror:updatePeriod>
+     <ror:sortOrder>1</ror:sortOrder>
+     <ror:resourceOf>sitemap</ror:resourceOf>
+</item>
+</channel>
+</rss>
+  

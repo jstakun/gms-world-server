@@ -1,0 +1,143 @@
+package com.jstakun.lm.server.config;
+
+import org.bouncycastle.util.encoders.Hex;
+
+public final class Commons {
+    
+	public static final String PANORAMIO_LAYER = "Panoramio";
+    public static final String WIKIPEDIA_LAYER = "Wikipedia";
+    public static final String LM_SERVER_LAYER = "Public";
+    public static final String EVENTFUL_LAYER = "Eventful";
+    public static final String FLICKR_LAYER = "Flickr";
+    public static final String YOUTUBE_LAYER = "YouTube";
+    public static final String FACEBOOK_LAYER = "Facebook";
+    public static final String PICASA_LAYER = "Picasa";
+    public static final String FOURSQUARE_LAYER = "Foursquare";
+    public static final String FOURSQUARE_MERCHANT_LAYER = "Foursquare Merchant";
+    public static final String YELP_LAYER = "Yelp";
+    public static final String QYPE_LAYER = "Qype";
+    public static final String GROUPON_LAYER = "Groupon";
+    public static final String HOTELS_LAYER = "Hotels";
+    public static final String GOOGLE_PLACES_LAYER = "Google Places";
+    public static final String HOTWIRE_LAYER = "Hotwire";
+    public static final String COUPONS_LAYER = "Coupons";
+    public static final String LASTFM_LAYER = "LastFM";
+    public static final String GEOCODES_LAYER = "Geocodes";
+    public static final String TWITTER_LAYER = "Twitter";
+    public static final String LOCAL_LAYER = "Phone Landmarks";
+    //public static final String UPCOMING_LAYER = "Upcoming";
+	
+	//com.jstakun.lm.server.utils
+	
+	public static final char[] bc_password = {};
+    public static byte[] bc_salt = Hex.decode("");
+    public static String bc_algorithm = "";
+    
+    public static final String yh_apiKey = "";//yahoo geocode
+    
+    public static final String BITLY_USERNAME = "";
+    public static final String BITLY_APIKEY = "";
+    
+    public static final String ADMOB_PUBLISHER_ID = "";
+    public static final String ADMOB_ANALYTICS_ID = "";
+    
+    //com.jstakun.lm.server.servlet
+    
+    public static final String APP_USER = "";
+    public static final String MYPOS_USER = "";
+    public static final String privKeyFile = "";
+    
+    //com.jstakun.lm.server.personalization
+    
+    public static final String RAPLEAF_API_KEY = "";
+    
+    //jstakun.appspot.com
+  	//public static final String RECAPTCHA_PRIVATE_KEY = "";
+  	//public static final String RECAPTCHA_PUBLIC_KEY = "";
+  	
+  	//gms-world.net
+  	public static final String RECAPTCHA_PRIVATE_KEY = "";
+  	public static final String RECAPTCHA_PUBLIC_KEY = "";
+    
+    //com.jstakun.lm.server.oauth
+    
+  	public static final String OAUTH_USERNAME = "";
+	
+  	public static final String fb_page_token = "";
+	public static final String fb_app_token = "";
+	public static final String fb_secret = "";
+	public static final String fb_client_id = "";
+	public static final String FB_GMS_WORLD_FEED = "";
+	
+	public static final String TW_CONSUMER_KEY = "";
+	public static final String TW_CONSUMER_SECRET = "";
+	
+	public static final String LN_API_KEY = "";
+	public static final String LN_API_SECRET = "";
+	
+	//app token 1
+	//public static final String GL_BLOGGER_KEY = "";
+	//public static final String GL_BLOGGER_SECRET = "";
+	
+	//app token 2
+	public static final String GL_PLUS_KEY = "";
+	public static final String GL_PLUS_SECRET = "";
+	
+	//plus token oauth 2.0
+	public static final String gl_plus_token = "";
+	public static final String gl_plus_refresh = "";
+	
+	//blogger token aouth 1.0a
+	//public static final String gl_blogger_token = "";
+	//public static final String gl_blogger_secret = "";
+
+    //com.jstakun.lm.server.layers
+    
+	public static final String CLOUDMADE_APIKEY = "";
+	public static final String CLOUDMADE_TOKEN_KEY = "";
+	
+	public static final String COUPONS_KEY = "";
+	
+	public static final String EVENTFUL_APP_KEY = "";
+	
+	public static final String EXPEDIA_KEY = "";
+	
+	public static final String FLICKR_APIKEY = "";
+	public static final String FLICKR_sharedSecret = "";
+	
+	public static final String FS_CLIENT_ID = "";
+	public static final String FS_CLIENT_SECRET = "";
+	public static final String FS_OAUTH_TOKEN = "";
+	
+	public static final String GEONAMES_USERNAME = "";
+	
+	public static final String GOOGLE_PLACES_KEY = "";
+	
+	public static final String GROUPON_CLIENT_ID = "";
+	
+	public static final String HOTWIRE_KEY = "";
+	
+	public static final String LASTFM_API_KEY = "";
+	
+	public static final String mcopenapi_prodConsumerKey = "";
+	public static final String mcopenapi_ksPwd = "";
+	public static final String mcopenapi_keyAlias = "";
+	
+	public static final String MEETUP_API_KEY = "";
+	
+	public static final String qype_consumer_key = "";
+	
+	public static final String UPCOMING_API_KEY = "";
+	
+	public static final String WEBCAM_API_KEY = "";
+	
+	public static final String YELP_Consumer_Key = "";
+	public static final String YELP_Consumer_Secret = "";
+	public static final String YELP_Token = "";
+	public static final String YELP_Token_Secret = "";
+	public static final String YELP_ywsid = "";
+	
+	public static final String YOUTUBE_API_KEY = "";
+	
+    private Commons() {};    
+}

@@ -1,0 +1,25 @@
+<header>
+      <div class="logo"><a href="/index.jsp"><img src="/images/logo.png" alt="GMS World Main Page link"/></a></div>
+      <div class="options">
+      	<ul>
+      		<li>Search</li>
+      		<li>Menu</li>
+      	</ul>
+      </div>
+      <div class="clear"></div>
+	    <div class="search-box">
+	    	<form action="/m/search.jsp">
+	    		<input type="text" placeholder="Search GMS World" name="search_text"/>
+	    		<input type="submit" value="Go" />
+	    	</form>
+	    	<div class="clear"></div>
+	    </div>
+	    <nav class="vertical menu">
+	    	<ul>
+	            <li><a href="/m/index.jsp">Home</a></li>
+	            <li><a href="http://blog.gms-world.net/">Blog</a></li>
+	            <li><a href="/m/register.jsp">Register</a></li>
+	            <li><a href="/m/about.jsp">About</a></li>
+        	</ul>
+	    </nav>
+    </header>

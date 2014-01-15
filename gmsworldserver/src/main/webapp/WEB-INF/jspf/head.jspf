@@ -1,0 +1,2 @@
+ <%@ include file="/WEB-INF/jspf/head_small.jspf" %>
+<link rel="stylesheet" type="text/css" media="screen" href="/css/screen.css" />
