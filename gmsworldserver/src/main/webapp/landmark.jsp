@@ -16,10 +16,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <!-- content-outer -->
 <html xmlns="http://www.cw3.org/1999/xhtml" xml:lang="en" lang="en">
-    <%
-                Landmark landmark = (Landmark) request.getAttribute("landmark");            
-                String key = (String) request.getAttribute("key");
-    %>
     <head>
         <%@ include file="/WEB-INF/jspf/head.jspf" %>
         <title>GMS World - Landmark Details</title>
@@ -34,7 +30,11 @@
                 <div id="main">
 
                     <div class="post">
-                        <% if (landmark == null && key == null) {
+                        <%
+                        Landmark landmark = (Landmark) request.getAttribute("landmark");            
+                        String key = (String) request.getAttribute("key");
+                        
+                        if (landmark == null && key == null) {
                         %>
                         <h3>Landmark not found.</h3>
                         <div class="post">
