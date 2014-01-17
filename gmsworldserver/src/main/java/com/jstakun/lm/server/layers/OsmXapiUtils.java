@@ -165,9 +165,10 @@ public class OsmXapiUtils extends LayerHelper {
 		List<ExtendedLandmark> output = (List<ExtendedLandmark>)CacheUtil.getObject(key);
 
         if (output == null) {
+        	output = new ArrayList<ExtendedLandmark>();
             OSMFile file = getAmenities(amenity.toLowerCase(), bbox);
             if (file != null) {
-            	output = buildLandmarksList(file, limit, StringUtils.capitalize(amenity), locale);
+            	buildLandmarksList(output, file, limit, StringUtils.capitalize(amenity), locale);
             	if (!output.isEmpty()) {
             		CacheUtil.put(key, output);
             		logger.log(Level.INFO, "Adding OSM landmark list to cache with key {0}", key);
@@ -182,8 +183,7 @@ public class OsmXapiUtils extends LayerHelper {
         return output;
 	}
 
-	private static List<ExtendedLandmark> buildLandmarksList(OSMFile file, int limit, String defaultName, Locale locale) throws JSONException {
-		List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
+	private static void buildLandmarksList(List<ExtendedLandmark> landmarks, OSMFile file, int limit, String defaultName, Locale locale) throws JSONException {
 		String amenity = Commons.OSM_ATM_LAYER;
         if (defaultName.toLowerCase().equals("parking")){
             amenity = Commons.OSM_PARKING_LAYER;
@@ -232,7 +232,5 @@ public class OsmXapiUtils extends LayerHelper {
                 break;
             }
         }
-
-        return landmarks;
     }
 }

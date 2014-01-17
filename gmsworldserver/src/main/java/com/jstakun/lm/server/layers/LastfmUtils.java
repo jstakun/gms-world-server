@@ -175,17 +175,25 @@ public class LastfmUtils extends LayerHelper {
                     if (event != null) {
                         for (int i = 0; i < event.length(); i++) {
                             JSONObject e = event.getJSONObject(i);
-                            ExtendedLandmark landmark = createLastfmLandmark(e, stringLimit, locale);
-                            if (landmark != null) {
-                                landmarks.add(landmark);
+                            try {
+                            	ExtendedLandmark landmark = createLastfmLandmark(e, stringLimit, locale);	
+                                if (landmark != null) {
+                                   landmarks.add(landmark);
+                                }
+                            } catch (JSONException ex) {
+                                logger.log(Level.SEVERE, null, ex);
                             }
                         }
                     } else {
                         JSONObject e = events.optJSONObject("event");
                         if (e != null) {
-                        	ExtendedLandmark landmark = createLastfmLandmark(e, stringLimit, locale);
-                            if (landmark != null) {
-                                landmarks.add(landmark);
+                        	try {
+                            	ExtendedLandmark landmark = createLastfmLandmark(e, stringLimit, locale);	
+                                if (landmark != null) {
+                                   landmarks.add(landmark);
+                                }
+                            } catch (JSONException ex) {
+                                logger.log(Level.SEVERE, null, ex);
                             }
                         }
                     }
@@ -206,7 +214,7 @@ public class LastfmUtils extends LayerHelper {
         if (venue != null) {
         	JSONObject location = venue.getJSONObject("location");
         	JSONObject geo = location.getJSONObject("geo:point");
-
+        	
         	String name = e.getString("title");
         	double lat = geo.getDouble("geo:lat");
         	double lng = geo.getDouble("geo:long");
