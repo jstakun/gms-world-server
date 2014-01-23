@@ -15,7 +15,6 @@
         <class>com.jstakun.lm.server.persistence.Comment</class>
         <class>com.jstakun.lm.server.persistence.Config</class>
         <class>com.jstakun.lm.server.persistence.GeocodeCache</class>
-        <class>com.jstakun.lm.server.persistence.Hotel</class>
         <class>com.jstakun.lm.server.persistence.Landmark</class>
         <class>com.jstakun.lm.server.persistence.Layer</class>
         <class>com.jstakun.lm.server.persistence.OAuthToken</class>

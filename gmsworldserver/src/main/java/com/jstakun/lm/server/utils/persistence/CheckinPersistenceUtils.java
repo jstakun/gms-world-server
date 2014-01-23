@@ -44,7 +44,7 @@ public class CheckinPersistenceUtils {
             query.declareParameters("String key");
             results = (List<Checkin>) query.execute(key);
             //pm.retrieveAll(results);
-            //results = (List<Checkin>) pm.detachCopyAll(results);
+            results = (List<Checkin>) pm.detachCopyAll(results);
         } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.getMessage(), ex);
         } finally {

@@ -7,12 +7,16 @@ package com.jstakun.lm.server.struts;
 
 import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.NumberUtils;
+import com.jstakun.lm.server.utils.memcache.CacheAction;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
-import java.util.ArrayList;
+
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import eu.bitwalker.useragentutils.OperatingSystem;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -39,24 +43,36 @@ public class ShowLayerAction extends org.apache.struts.action.Action {
             HttpServletRequest request, HttpServletResponse response)
             throws Exception {
 
-        int first = NumberUtils.getInt(request.getParameter("first"), 0);
+        final int first = NumberUtils.getInt(request.getParameter("first"), 0);
         int next = -1;
         int prev = -1;
 
-        String layer = null;
-        if (request.getParameter("layer") != null) {
-            layer = request.getParameter("layer");
-        }
-
-        List<Landmark> layerLandmarks = new ArrayList<Landmark>();
+        final String layer = request.getParameter("layer");
+        List<Landmark> layerLandmarks = null;
 
         if (layer != null) {
-            int count = LandmarkPersistenceUtils.selectLandmarksByUserAndLayerCount(null, layer);
+            //int count = LandmarkPersistenceUtils.selectLandmarksByUserAndLayerCount(null, layer);
+        	CacheAction countCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
+				@Override
+				public Object executeAction() {
+					return LandmarkPersistenceUtils.selectLandmarksByUserAndLayerCount(null, layer);
+				}
+			});
+        	Integer count = (Integer)countCacheAction.getObjectFromCache(layer + "_count_key");
 
             request.setAttribute("layer", layer);
 
             if (count > 0) {
-                layerLandmarks = LandmarkPersistenceUtils.selectLandmarksByUserAndLayer(null, layer, first, first + INTERVAL);
+            	final int nextCandidate = first + INTERVAL;
+                //layerLandmarks = LandmarkPersistenceUtils.selectLandmarksByUserAndLayer(null, layer, first, nextCandidate);
+            	CacheAction userLandmarksCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
+    				@Override
+    				public Object executeAction() {
+    					return LandmarkPersistenceUtils.selectLandmarksByUserAndLayer(null, layer, first, nextCandidate);
+    				}
+    			});
+            	layerLandmarks = (List<Landmark>)userLandmarksCacheAction.getObjectFromCache(layer + "_" + first + "_" + nextCandidate);
+                
                 request.setAttribute("layerLandmarks", layerLandmarks);
                 request.setAttribute("collectionAttributeName", "layerLandmarks");
 
@@ -75,7 +91,7 @@ public class ShowLayerAction extends org.apache.struts.action.Action {
         if (StringUtils.isNotEmpty(request.getParameter("fullScreenCollectionMap"))) {
             Double centerLat = 0.0;
             Double centerLon = 0.0;
-            if (!layerLandmarks.isEmpty()) {
+            if (layerLandmarks != null && !layerLandmarks.isEmpty()) {
                 for (Landmark landmark : layerLandmarks) {
                     centerLat += landmark.getLatitude();
                     centerLon += landmark.getLongitude();

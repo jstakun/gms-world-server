@@ -440,7 +440,7 @@ public class LayersProviderServlet extends HttpServlet {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 } else {
                     if (outFormat.equals(Format.BIN)) {
-                    	List<ExtendedLandmark> landmarks = LayerHelperFactory.getHotelsCombinedUtils().processBinaryRequest(latitudeMin, longitudeMin, null, radius, version, limit, stringLimit, language, null, l);
+                    	List<ExtendedLandmark> landmarks = LayerHelperFactory.getHotelsCombinedUtils().processBinaryRequest(latitudeMin, longitudeMin, null, radius * 1000, version, limit, stringLimit, language, null, l);
                     	LayerHelperFactory.getHotelsCombinedUtils().serialize(landmarks, response.getOutputStream(), version);
                 	} else {
                 		String flex2 = null;
@@ -449,7 +449,7 @@ public class LayersProviderServlet extends HttpServlet {
                             flex2 = Double.toString(latitudeMax) + "_" + Double.toString(longitudeMax);
                         }
 
-                		outString = LayerHelperFactory.getHotelsCombinedUtils().processRequest(latitudeMin, longitudeMin, null, radius, version, limit, stringLimit, language, flex2).toString();
+                		outString = LayerHelperFactory.getHotelsCombinedUtils().processRequest(latitudeMin, longitudeMin, null, radius * 1000, version, limit, stringLimit, language, flex2).toString();
                 	}
                 }
             } else if (StringUtils.contains(uri, "twitterProvider")) {

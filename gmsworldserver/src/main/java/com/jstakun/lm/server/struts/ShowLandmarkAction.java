@@ -9,11 +9,13 @@ import com.jstakun.lm.server.persistence.Checkin;
 import com.jstakun.lm.server.persistence.Comment;
 import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.persistence.OAuthToken;
+import com.jstakun.lm.server.utils.memcache.CacheAction;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.persistence.CheckinPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.CommentPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.OAuthTokenPersistenceUtils;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
@@ -22,9 +24,10 @@ import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import eu.bitwalker.useragentutils.OperatingSystem;
-import org.apache.commons.lang.StringUtils;
 
+import eu.bitwalker.useragentutils.OperatingSystem;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -44,21 +47,30 @@ public class ShowLandmarkAction extends Action {
             HttpServletResponse response) throws IOException,
             ServletException {
 
-        String key = (String) request.getParameter("key");
+        final String key = (String) request.getParameter("key");
         if (StringUtils.isNotEmpty(key)) {
             try {
                 //if (CommonPersistenceUtils.isKeyValid(key)) {
             	    request.setAttribute("key", key);
             	    logger.log(Level.INFO, "Searching for key: " + key);
             	    Landmark landmark = null;
-            	    if (CacheUtil.containsKey(key)) {
+            	    
+            	    /*if (CacheUtil.containsKey(key)) {
             	    	landmark = (Landmark) CacheUtil.getObject(key);
             	    	logger.log(Level.INFO, "Found landmark in cache");
             	    } else { 
             	        landmark = LandmarkPersistenceUtils.selectLandmark(key);
             	        CacheUtil.put(key, landmark);
-            	    }
-                    if (landmark != null) {
+            	    }*/
+            	    CacheAction landmarkCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
+        				@Override
+        				public Object executeAction() {
+        					return LandmarkPersistenceUtils.selectLandmark(key);
+        				}
+        			});
+            	    landmark = (Landmark) landmarkCacheAction.getObjectFromCache(key);
+                    
+            	    if (landmark != null) {
                         request.setAttribute("landmark", landmark);
                         //String address = GeocodeUtils.processGoogleReverseGeocode(landmark.getLatitude() + "," + landmark.getLongitude());
                         String address = CloudmadeUtils.getReverseGeocode(landmark.getLatitude(),landmark.getLongitude());
@@ -66,19 +78,33 @@ public class ShowLandmarkAction extends Action {
                             request.setAttribute("address", address);
                         }
 
-                        List<Comment> comments = CommentPersistenceUtils.selectCommentsByLandmark(key);
+                        //List<Comment> comments = CommentPersistenceUtils.selectCommentsByLandmark(key);
+                        CacheAction commentsCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
+            				@Override
+            				public Object executeAction() {
+            					return CommentPersistenceUtils.selectCommentsByLandmark(key);
+            				}
+            			});
+                        List<Comment> comments = (List<Comment>)commentsCacheAction.getObjectFromCache("comments_" + key);
                         if (comments != null && !comments.isEmpty()) {
                             request.setAttribute("comments", comments);
                         }
 
                         if (!StringUtils.equals(landmark.getLayer(),"Social")) {
-                            List<Checkin> checkins = CheckinPersistenceUtils.selectAllLandmarkCheckins(key);
-
-                            if (!checkins.isEmpty()) {
+                            //List<Checkin> checkins = CheckinPersistenceUtils.selectAllLandmarkCheckins(key);
+                        	CacheAction checkinCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
+                				@Override
+                				public Object executeAction() {
+                					return CheckinPersistenceUtils.selectAllLandmarkCheckins(key);
+                				}
+                			});
+                        	List<Checkin> checkins = (List<Checkin>)checkinCacheAction.getObjectFromCache("checkins_" + key);
+                        	
+                        	if (checkins != null && !checkins.isEmpty()) {
                                 Checkin lastCheckin = checkins.get(0);
                                 String username = lastCheckin.getUsername();
                                 List<OAuthToken> tokens = OAuthTokenPersistenceUtils.selectOAuthTokenByUser(lastCheckin.getUsername());
-                                if (!tokens.isEmpty()) {
+                                if (tokens != null && !tokens.isEmpty()) {
                                     OAuthToken userToken = tokens.get(0);
                                     username = userToken.getUserId() + "@" + userToken.getService();
                                 }

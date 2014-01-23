@@ -8,6 +8,7 @@ package com.jstakun.lm.server.persistence;
 import com.google.appengine.api.datastore.Key;
 
 import java.util.Date;
+import java.io.Serializable;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.IdentityType;
@@ -20,7 +21,9 @@ import javax.jdo.annotations.PrimaryKey;
  * @author jstakun
  */
 @PersistenceCapable(identityType=IdentityType.APPLICATION, detachable="true")
-public class Checkin {
+public class Checkin implements Serializable {
+  private static final long serialVersionUID = 1L;
+
   @PrimaryKey
   @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
   private Key key;

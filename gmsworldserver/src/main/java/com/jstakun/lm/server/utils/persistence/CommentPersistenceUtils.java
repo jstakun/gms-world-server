@@ -7,6 +7,7 @@ package com.jstakun.lm.server.utils.persistence;
 
 import com.jstakun.lm.server.persistence.Comment;
 import com.jstakun.lm.server.persistence.PMF;
+import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,9 +18,10 @@ import javax.jdo.Query;
  *
  * @author jstakun
  */
-public class CommentPersistenceUtils {
+public class CommentPersistenceUtils implements Serializable {
 
-    private static final Logger logger = Logger.getLogger(CommentPersistenceUtils.class.getName());
+    private static final long serialVersionUID = 1L;
+	private static final Logger logger = Logger.getLogger(CommentPersistenceUtils.class.getName());
 
     public static void persistComment(String username, String landmarkKey, String message) {
         PersistenceManager pm = PMF.get().getPersistenceManager();
@@ -43,7 +45,7 @@ public class CommentPersistenceUtils {
             query.setFilter("landmarkKey == lk");
             query.declareParameters("String lk");
             results = (List<Comment>) query.execute(landmarkKey);
-            //results = (List<Comment>) pm.detachCopyAll(results);
+            results = (List<Comment>) pm.detachCopyAll(results);
          } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.getMessage(), ex);
         } finally {

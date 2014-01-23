@@ -396,7 +396,7 @@ public class LandmarkPersistenceUtils {
             }
 
             //pm.retrieveAll(results);
-            //results = (List<Landmark>) pm.detachCopyAll(results);
+            results = (List<Landmark>) pm.detachCopyAll(results);
         } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.getMessage(), ex);
         } finally {
@@ -498,28 +498,7 @@ public class LandmarkPersistenceUtils {
         return bucket;
     }
 
-    /*public static int selectByLandmarksMonthCount(String month) {
-    int result = 0;
-    PersistenceManager pm = PMF.get().getPersistenceManager();
-
-    try {
-    Query query = pm.newQuery(Landmark.class);
-    Date monthFirstDay = DateUtils.getFirstDayOfMonth(month);
-    Date nextMonthFirstDay = DateUtils.getFirstDayOfNextMonth(month);
-    query.declareImports("import java.util.Date");
-    query.setFilter("creationDate >= monthFirstDay && creationDate < nextMonthFirstDay");
-    query.declareParameters("Date monthFirstDay, Date nextMonthFirstDay");
-    query.setResult("count(this)");
-    result = ((Integer) query.execute(monthFirstDay, nextMonthFirstDay)).intValue();
-    } catch (Exception ex) {
-    logger.log(Level.SEVERE, ex.getMessage(), ex);
-    } finally {
-    pm.close();
-    }
-
-    return result;
-    }*/
-    public static int selectByLandmarksMonthCount(String month) {
+   public static int selectByLandmarksMonthCount(String month) {
         int result = 0;
 
         try {

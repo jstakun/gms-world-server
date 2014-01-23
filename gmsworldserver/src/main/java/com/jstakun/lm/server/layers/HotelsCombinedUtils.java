@@ -11,15 +11,17 @@ import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.persistence.Hotel;
+import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.JSONUtils;
 import com.jstakun.lm.server.utils.MathUtils;
 import com.jstakun.lm.server.utils.NumberUtils;
 import com.jstakun.lm.server.utils.StringUtil;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
-import com.jstakun.lm.server.utils.persistence.HotelPersistenceUtils;
 import com.openlapi.AddressInfo;
 import com.openlapi.QualifiedCoordinates;
 
+import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -29,7 +31,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -38,6 +42,8 @@ import org.json.JSONObject;
  * @author jstakun
  */
 public class HotelsCombinedUtils extends LayerHelper {
+	
+	private static final SimpleDateFormat datetimeFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Override
     public JSONObject processRequest(double latitudeMin, double longitudeMin, String query, int radius, int version, int limit, int stringLimit, String language, String flexString2) throws Exception {
@@ -52,6 +58,7 @@ public class HotelsCombinedUtils extends LayerHelper {
             longitudeMax = Double.parseDouble(coords[1]);
             lat = (latitudeMin + latitudeMax) / 2;
             lng = (longitudeMin + longitudeMax) / 2;
+            radius = (int)(NumberUtils.distanceInKilometer(latitudeMin, latitudeMax, longitudeMin, longitudeMax) * 1000 / 2);
         }
 
         int l = NumberUtils.normalizeNumber(limit, 1, 100);
@@ -63,12 +70,17 @@ public class HotelsCombinedUtils extends LayerHelper {
         JSONObject json = null;
 
         if (output == null) {
-            List<Hotel> hotels = new ArrayList<Hotel>();
-            if (version > 2) {
-                hotels = HotelPersistenceUtils.selectHotelsByPointAndRadius(latitudeMin, longitudeMin, radius * 1000, l);
-            } else {
-                hotels = HotelPersistenceUtils.selectHotelsByCoordsAndLayer(latitudeMin, longitudeMin, latitudeMax, longitudeMax, l);
-            }
+            //List<Hotel> hotels = new ArrayList<Hotel>();
+            //if (version > 2) {
+            //    hotels = HotelPersistenceUtils.selectHotelsByPointAndRadius(latitudeMin, longitudeMin, radius * 1000, l);
+            //} else {
+            //    hotels = HotelPersistenceUtils.selectHotelsByCoordsAndLayer(latitudeMin, longitudeMin, latitudeMax, longitudeMax, l);
+            //}
+            
+            String hotelsUrl = "http://hotels-gmsworld.rhcloud.com/actions/hotelsProvider?lat=" + lat + "&lng=" + lng + "&radius=" + radius + "&limit=" + limit;			
+			logger.log(Level.INFO, "Calling: " + hotelsUrl);
+            String hotelsJson = HttpUtils.processFileRequest(new URL(hotelsUrl));		
+			List<Hotel> hotels = jsonToHotelList(hotelsJson);      	
 
             json = createCustomJSonHotelsCombinedList(hotels, language, version);
 
@@ -200,7 +212,50 @@ public class HotelsCombinedUtils extends LayerHelper {
         return landmark;
     }
     
-	@Override
+    private static List<Hotel> jsonToHotelList(String json) {
+    	List<Hotel> hotels = new ArrayList<Hotel>();
+    	if (StringUtils.isNotEmpty(json)){
+    		JSONObject root = new JSONObject(json);
+    		JSONArray results = root.optJSONArray("results");
+    		if (results != null) {
+    			for (int i=0;i<results.length();i++) {
+    				JSONObject hotelData = results.getJSONObject(i);
+    				try {
+    					Hotel hotel = new Hotel();
+        				Map<String, String> hotelMap = new HashMap<String, String>();
+        				for(Iterator<String> iter = hotelData.keys();iter.hasNext();) {
+    						String key = iter.next();
+    	    				Object value = hotelData.get(key);
+    	    				hotelMap.put(key, value.toString());
+    	    			}
+        				
+        				String lastUpdateDate = hotelMap.remove("lastUpdateDate");
+        				BeanUtils.populate(hotel, hotelMap);
+        				try {
+        	                Date d = datetimeFormatter.parse(lastUpdateDate);
+        	                hotel.setLastUpdateDate(d);
+        	            } catch (Exception ex) {
+        	                logger.log(Level.WARNING, ex.getMessage(), ex);
+        	                hotel.setLastUpdateDate(new Date());
+        	            }
+        				BeanUtils.populate(hotel, hotelMap);
+						hotels.add(hotel);
+					} catch (Exception e) {
+						logger.log(Level.SEVERE, e.getMessage(), e);
+					}
+    			}
+    		} else {
+    			logger.log(Level.SEVERE, "Received following response from server: " + json);
+    		}
+    	} else {
+    		logger.log(Level.SEVERE, "Received null response from server");
+    	}
+    	
+    	
+    	return hotels;
+    }
+    
+	/*@Override
 	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String language, String flexString2, Locale locale) throws Exception {
 		int l = NumberUtils.normalizeNumber(limit, 1, 100);
         String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, l, stringLimit, language, null);
@@ -221,7 +276,35 @@ public class HotelsCombinedUtils extends LayerHelper {
         }
 
         return landmarks;
+	}*/
+	
+	@Override
+	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String language, String flexString2, Locale locale) throws Exception {
+	    //http://hotels-gmsworld.rhcloud.com/actions/hotelsProvider?lat=52.25&lng=20.95&radius=15&limit=100
+		//int l = NumberUtils.normalizeNumber(limit, 1, 100);
+        String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, limit, stringLimit, language, null);
+        List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)CacheUtil.getObject(key);
+
+        if (landmarks == null) {   	
+        	landmarks = new ArrayList<ExtendedLandmark>();
+        	String hotelsUrl = "http://hotels-gmsworld.rhcloud.com/actions/hotelsProvider?lat=" + lat + "&lng=" + lng + "&radius=" + radius + "&limit=" + limit;			
+        	logger.log(Level.INFO, "Calling: " + hotelsUrl);
+        	String hotelsJson = HttpUtils.processFileRequest(new URL(hotelsUrl));		
+			List<Hotel> hotels = jsonToHotelList(hotelsJson);
+        	landmarks.addAll(Lists.transform(hotels, new HotelToExtendedLandmarkFunction(language, locale)));
+
+            if (!landmarks.isEmpty()) {
+                CacheUtil.put(key, landmarks);
+                logger.log(Level.INFO, "Adding H landmark list to cache with key {0}", key);
+            }
+
+        } else {
+            logger.log(Level.INFO, "Reading H landmark list from cache with key {0}", key);
+        }
+
+        return landmarks;
 	}
+		
 	
 	private class HotelToExtendedLandmarkFunction implements Function<Hotel, ExtendedLandmark> {
 

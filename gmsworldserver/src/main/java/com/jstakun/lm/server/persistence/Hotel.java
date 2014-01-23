@@ -7,100 +7,38 @@ package com.jstakun.lm.server.persistence;
 import java.util.Date;
 import java.util.List;
 
-import javax.jdo.annotations.Extension;
-import javax.jdo.annotations.IdGeneratorStrategy;
-import javax.jdo.annotations.IdentityType;
-import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
-import javax.jdo.annotations.PrimaryKey;
-
-import com.beoui.geocell.annotations.Geocells;
-import com.beoui.geocell.annotations.Latitude;
-import com.beoui.geocell.annotations.Longitude;
 import com.google.appengine.api.datastore.Key;
 
 /**
  *
  * @author jstakun
  */
-@PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 public class Hotel {
-	@PrimaryKey
-    @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-    private Key key;
-    @Persistent
+	private Key key;
     private int hotelId;
-    @Persistent
-    @Extension(vendorName="datanucleus", key="gae.unindexed", value="true")
     private String hotelFileName;
-    @Persistent
-    @Extension(vendorName="datanucleus", key="gae.unindexed", value="true")
     private String hotelName;
-    @Persistent
     private double rating;
-    @Persistent
-    @Extension(vendorName="datanucleus", key="gae.unindexed", value="true")
     private int cityId;
-    @Persistent
-    @Extension(vendorName="datanucleus", key="gae.unindexed", value="true")
     private String cityFileName;
-    @Persistent
-    @Extension(vendorName="datanucleus", key="gae.unindexed", value="true")
     private String cityName;
-    @Persistent
-    @Extension(vendorName="datanucleus", key="gae.unindexed", value="true")
     private int stateId;
-    @Persistent
-    @Extension(vendorName="datanucleus", key="gae.unindexed", value="true")
     private String stateFileName;
-    @Persistent
-    @Extension(vendorName="datanucleus", key="gae.unindexed", value="true")
     private String stateName;
-    @Persistent
-    @Extension(vendorName="datanucleus", key="gae.unindexed", value="true")
     private String countryCode;
-    @Persistent
-    @Extension(vendorName="datanucleus", key="gae.unindexed", value="true")
     private String countryFileName;
-    @Persistent
-    @Extension(vendorName="datanucleus", key="gae.unindexed", value="true")
     private String countryName;
-    @Persistent
-    @Extension(vendorName="datanucleus", key="gae.unindexed", value="true")
     private int imageId;
-    @Persistent
-    @Extension(vendorName="datanucleus", key="gae.unindexed", value="true")
     private String Address;
-    @Persistent
-    @Extension(vendorName="datanucleus", key="gae.unindexed", value="true")
     private double minRate;
-    @Persistent
-    @Extension(vendorName="datanucleus", key="gae.unindexed", value="true")
     private String currencyCode;
-    @Persistent
-    @Latitude
-    @Extension(vendorName="datanucleus", key="gae.unindexed", value="true")
     private double Latitude;
-    @Persistent
-    @Longitude
-    @Extension(vendorName="datanucleus", key="gae.unindexed", value="true")
     private double Longitude;
-    @Persistent
-    @Extension(vendorName="datanucleus", key="gae.unindexed", value="true")
     private int NumberOfReviews;
-    @Persistent
-    @Extension(vendorName="datanucleus", key="gae.unindexed", value="true")
     private double ConsumerRating;
-    @Persistent
-    @Extension(vendorName="datanucleus", key="gae.unindexed", value="true")
     private String PropertyType;
-    @Persistent
-    @Extension(vendorName="datanucleus", key="gae.unindexed", value="true")
     private int ChainID;
-    @Persistent
-    @Geocells
     private List<String> GeoCells;
-    @Persistent
     private Date lastUpdateDate;
 
     /**

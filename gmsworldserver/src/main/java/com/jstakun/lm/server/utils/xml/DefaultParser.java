@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.lang.StringUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -26,13 +25,13 @@ import org.xml.sax.helpers.DefaultHandler;
 public class DefaultParser extends DefaultHandler {
 
     private String root;
-    private Hashtable elements;
+    private Hashtable<String, String> elements;
     private String currentElement;
     private int level = 0, eventLevel = -1;
-    private ArrayList jsonArray = new ArrayList();
-    private Map jsonObject;
+    private List<Object> jsonArray = new ArrayList<Object>();
+    private Map<String, String> jsonObject;
 
-    public DefaultParser(String root, Hashtable elements) {
+    public DefaultParser(String root, Hashtable<String, String> elements) {
         this.root = root;
         this.elements = elements;
     }
@@ -42,7 +41,7 @@ public class DefaultParser extends DefaultHandler {
             throws SAXException {
         level++;
         if (root.equals(localName)) {
-            jsonObject = new HashMap();
+            jsonObject = new HashMap<String, String>();
             eventLevel = level;
             //System.out.println("New " + localName);
         } else if (inElementArray(localName)) {
@@ -89,9 +88,9 @@ public class DefaultParser extends DefaultHandler {
     }
 
     private boolean inElementArray(String name) {
-        Enumeration keys = elements.keys();
+        Enumeration<String> keys = elements.keys();
         while (keys.hasMoreElements()) {
-            String l = (String) keys.nextElement();
+            String l = keys.nextElement();
             if (l.equals(name)) {
                 return true;
             }
@@ -100,7 +99,7 @@ public class DefaultParser extends DefaultHandler {
     }
 
     private boolean containsAll() {
-        Enumeration values = elements.elements();
+        Enumeration<String> values = elements.elements();
         while (values.hasMoreElements()) {
             String l = (String) values.nextElement();
             if (! (l.equals("desc") || jsonObject.containsKey(l)) ) {
@@ -110,7 +109,7 @@ public class DefaultParser extends DefaultHandler {
         return true;
     }
 
-    public List getJSonArray() {
+    public List<Object> getJSonArray() {
         return jsonArray;
     }
 }

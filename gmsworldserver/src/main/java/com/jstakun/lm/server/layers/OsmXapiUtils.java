@@ -142,7 +142,7 @@ public class OsmXapiUtils extends LayerHelper {
             		logger.log(Level.INFO, "Adding OSM landmark list to cache with key {0}", key);
             	}
             } else {
-            	logger.log(Level.SEVERE, "OSMFile is null!");
+            	logger.log(Level.WARNING, "OSMFile is null!");
             }
         } else {
             logger.log(Level.INFO, "Reading OSM landmark list from cache with key {0}", key);

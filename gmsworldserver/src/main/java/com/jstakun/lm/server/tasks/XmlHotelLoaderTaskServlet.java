@@ -131,6 +131,6 @@ public class XmlHotelLoaderTaskServlet extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Xml Hotel Loader Task Servlet";
     }// </editor-fold>
 }
