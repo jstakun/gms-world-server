@@ -16,7 +16,6 @@ import java.util.logging.Logger;
 import net.sf.jsr107cache.Cache;
 import net.sf.jsr107cache.CacheException;
 import net.sf.jsr107cache.CacheFactory;
-import net.sf.jsr107cache.CacheListener;
 import net.sf.jsr107cache.CacheManager;
 import org.json.JSONObject;
 

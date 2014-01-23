@@ -325,7 +325,6 @@ public class CouponsUtils extends LayerHelper {
 		String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, limit, stringLimit, categoryid, language);
 		List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)CacheUtil.getObject(key);
         if (landmarks == null) {
-
             String url = "http://api.8coupons.com/v1/getdeals?key=" + Commons.COUPONS_KEY + "&lat=" + lat + "&lon=" + lng + "&mileradius=" + radius + "&limit=" + limit + "&orderby=date"; //popular, radius, date
             if (StringUtils.isNotEmpty(query)) {
                 url += "&search=" + URLEncoder.encode(query, "UTF-8");

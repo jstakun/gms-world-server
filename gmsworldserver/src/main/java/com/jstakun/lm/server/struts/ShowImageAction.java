@@ -7,16 +7,6 @@ package com.jstakun.lm.server.struts;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.appengine.api.images.ImagesService;
-import com.google.appengine.api.images.ImagesServiceFactory;
-import com.google.appengine.api.images.ServingUrlOptions;
-import com.jstakun.lm.server.layers.CloudmadeUtils;
-import com.jstakun.lm.server.persistence.Screenshot;
-import com.jstakun.lm.server.utils.memcache.CacheUtil;
-import com.jstakun.lm.server.utils.persistence.ScreenshotPersistenceUtils;
-
-import eu.bitwalker.useragentutils.OperatingSystem;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -24,6 +14,16 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+
+import com.google.appengine.api.images.ImagesService;
+import com.google.appengine.api.images.ImagesServiceFactory;
+import com.google.appengine.api.images.ServingUrlOptions;
+import com.jstakun.lm.server.layers.CloudmadeUtils;
+import com.jstakun.lm.server.persistence.Screenshot;
+import com.jstakun.lm.server.utils.memcache.CacheAction;
+import com.jstakun.lm.server.utils.persistence.ScreenshotPersistenceUtils;
+
+import eu.bitwalker.useragentutils.OperatingSystem;
 
 /**
  *
@@ -48,17 +48,26 @@ public class ShowImageAction extends org.apache.struts.action.Action {
             HttpServletRequest request, HttpServletResponse response)
             throws Exception {
 
-        String key = (String) request.getParameter("key");
+        final String key = (String) request.getParameter("key");
 
         if (StringUtils.isNotEmpty(key)) {
 
-            Screenshot s = null;
+            /*Screenshot s = null;
             if (CacheUtil.containsKey(key)) {
             	s = (Screenshot) CacheUtil.getObject(key);
             } else {
             	s = ScreenshotPersistenceUtils.selectScreenshot(key);
             	CacheUtil.put(key, s);
-            }
+            }*/
+        	
+        	CacheAction screenshotCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
+				@Override
+				public Object executeAction() {
+					return ScreenshotPersistenceUtils.selectScreenshot(key);
+				}
+			});
+        	Screenshot s = (Screenshot) screenshotCacheAction.getObjectFromCache(key);
+            
             if (s != null) {
                 String address = CloudmadeUtils.getReverseGeocode(s.getLatitude(),s.getLongitude());
                 if (StringUtils.isNotEmpty(address)) {

@@ -81,10 +81,9 @@ public class HotelsCombinedUtils extends LayerHelper {
 			logger.log(Level.INFO, "Calling: " + hotelsUrl);
             String hotelsJson = HttpUtils.processFileRequest(new URL(hotelsUrl));		
 			List<Hotel> hotels = jsonToHotelList(hotelsJson);      	
-
-            json = createCustomJSonHotelsCombinedList(hotels, language, version);
-
+			logger.log(Level.INFO, "Found " + hotels.size() + " hotels...");		
             if (!hotels.isEmpty()) {
+            	json = createCustomJSonHotelsCombinedList(hotels, language, version);
                 CacheUtil.put(key, json.toString());
                 logger.log(Level.INFO, "Adding H landmark list to cache with key {0}", key);
             }
@@ -291,6 +290,7 @@ public class HotelsCombinedUtils extends LayerHelper {
         	logger.log(Level.INFO, "Calling: " + hotelsUrl);
         	String hotelsJson = HttpUtils.processFileRequest(new URL(hotelsUrl));		
 			List<Hotel> hotels = jsonToHotelList(hotelsJson);
+			logger.log(Level.INFO, "Found " + hotels.size() + " hotels...");
         	landmarks.addAll(Lists.transform(hotels, new HotelToExtendedLandmarkFunction(language, locale)));
 
             if (!landmarks.isEmpty()) {

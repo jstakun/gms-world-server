@@ -10,7 +10,6 @@ import com.jstakun.lm.server.persistence.Comment;
 import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.persistence.OAuthToken;
 import com.jstakun.lm.server.utils.memcache.CacheAction;
-import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.persistence.CheckinPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.CommentPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
