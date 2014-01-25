@@ -10,7 +10,7 @@
 
     <properties>
         <appengine.app.version>1</appengine.app.version>
-        <appengine.target.version>1.8.8</appengine.target.version>
+        <appengine.target.version>1.8.9</appengine.target.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>1.7</jdk.version>
     </properties>
@@ -161,7 +161,7 @@
         <dependency>
         	<groupId>org.ocpsoft.prettytime</groupId>
         	<artifactId>prettytime</artifactId>
-        	<version>3.2.1.Final</version>
+        	<version>3.2.4.Final</version>
         </dependency>
         <dependency>
         	<groupId>com.rosaloves</groupId>
@@ -176,7 +176,7 @@
         <dependency>
         	<groupId>com.google.appengine</groupId>
         	<artifactId>appengine-jsr107cache</artifactId>
-        	<version>1.8.8</version>
+        	<version>1.8.9</version>
         </dependency>
         <dependency>
         	<groupId>com.aetrion</groupId>
@@ -238,8 +238,8 @@
         <dependency>
         	<groupId>junit</groupId>
         	<artifactId>junit</artifactId>
-        	<version>4.8.1</version>
         	<scope>test</scope>
+        	<version>4.11</version>
         </dependency>
     </dependencies>
 

@@ -24,7 +24,7 @@
         <jsp:include page="/WEB-INF/jspf/header.jsp"/>
 
         <%
-            String user = (String)request.getAttribute("user");;
+            String user = (String)request.getAttribute("user");
             if (user == null) {
                user = "none";
             }   
@@ -95,7 +95,7 @@
    {
         List<Landmark> landmarkList = (List<Landmark>) request.getAttribute("userLandmarks");
 
-        if (landmarkList.isEmpty())
+        if (landmarkList == null || landmarkList.isEmpty())
         {
 %>
 <tr>

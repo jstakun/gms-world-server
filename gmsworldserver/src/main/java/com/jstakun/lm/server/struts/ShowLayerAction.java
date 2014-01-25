@@ -11,10 +11,13 @@ import com.jstakun.lm.server.utils.memcache.CacheAction;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import eu.bitwalker.useragentutils.Browser;
 import eu.bitwalker.useragentutils.OperatingSystem;
 
 import org.apache.commons.lang.StringUtils;
@@ -29,6 +32,7 @@ import org.apache.struts.action.ActionMapping;
 public class ShowLayerAction extends org.apache.struts.action.Action {
 
     private static final int INTERVAL = 10;
+    private static final Logger logger = Logger.getLogger(ShowLayerAction.class.getName());
     /**
      * This is the action called from the Struts framework.
      * @param mapping The ActionMapping used to select this instance.
@@ -40,7 +44,7 @@ public class ShowLayerAction extends org.apache.struts.action.Action {
      */
     @Override
     public ActionForward execute(ActionMapping mapping, ActionForm form,
-            HttpServletRequest request, HttpServletResponse response)
+            final HttpServletRequest request, HttpServletResponse response)
             throws Exception {
 
         final int first = NumberUtils.getInt(request.getParameter("first"), 0);
@@ -55,7 +59,13 @@ public class ShowLayerAction extends org.apache.struts.action.Action {
         	CacheAction countCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
 				@Override
 				public Object executeAction() {
-					return LandmarkPersistenceUtils.selectLandmarksByUserAndLayerCount(null, layer);
+					Browser browser = Browser.parseUserAgentString(request.getHeader("User-Agent"));
+		            if (browser.getGroup() == Browser.BOT || browser.getGroup() == Browser.BOT_MOBILE || browser.getGroup() == Browser.UNKNOWN) {
+		            	logger.log(Level.WARNING, "User agent: " + browser.getName() + ", " + request.getHeader("User-Agent"));
+		            	return 0;
+		            } else {
+		            	return LandmarkPersistenceUtils.selectLandmarksByUserAndLayerCount(null, layer);
+		            }
 				}
 			});
         	Integer count = (Integer)countCacheAction.getObjectFromCache(layer + "_count_key");

@@ -7,7 +7,6 @@ package com.jstakun.lm.server.struts;
 import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.NumberUtils;
 import com.jstakun.lm.server.utils.memcache.CacheAction;
-import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 
 import java.util.List;
@@ -17,6 +16,7 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import eu.bitwalker.useragentutils.Browser;
 import eu.bitwalker.useragentutils.OperatingSystem;
 
 import org.apache.commons.lang.StringUtils;
@@ -43,7 +43,7 @@ public class ShowUserAction extends org.apache.struts.action.Action {
      */
     @Override
     public ActionForward execute(ActionMapping mapping, ActionForm form,
-            HttpServletRequest request, HttpServletResponse response)
+            final HttpServletRequest request, HttpServletResponse response)
             throws Exception {
 
     	final int first = NumberUtils.getInt(request.getParameter("first"), 0);
@@ -64,7 +64,13 @@ public class ShowUserAction extends org.apache.struts.action.Action {
         	CacheAction countCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
 				@Override
 				public Object executeAction() {
-					return LandmarkPersistenceUtils.selectLandmarksByUserAndLayerCount(user, null);
+					Browser browser = Browser.parseUserAgentString(request.getHeader("User-Agent"));
+		            if (browser.getGroup() == Browser.BOT || browser.getGroup() == Browser.BOT_MOBILE || browser.getGroup() == Browser.UNKNOWN) {
+		            	logger.log(Level.WARNING, "User agent: " + browser.getName() + ", " + request.getHeader("User-Agent"));
+		            	return 0;
+		            } else {
+		            	return LandmarkPersistenceUtils.selectLandmarksByUserAndLayerCount(user, null);
+		            }
 				}
 			});
         	Integer count = (Integer)countCacheAction.getObjectFromCache(user + "_count_key");

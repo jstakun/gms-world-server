@@ -30,10 +30,6 @@
         <property name="geoCells" direction="asc"/>
         <property name="creationDate" direction="desc"/>
     </datastore-index>
-    <datastore-index kind="Hotel" ancestor="false">
-        <property name="GeoCells" direction="asc"/>
-        <property name="rating" direction="desc"/>
-    </datastore-index>
     <datastore-index kind="Landmark" ancestor="false">
         <property name="username" direction="asc"/>
         <property name="creationDate" direction="desc"/>

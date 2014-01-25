@@ -24,6 +24,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import eu.bitwalker.useragentutils.Browser;
 import eu.bitwalker.useragentutils.OperatingSystem;
 
 import org.apache.commons.lang.StringUtils;
@@ -42,7 +43,7 @@ public class ShowLandmarkAction extends Action {
 
     @Override
     public ActionForward execute(ActionMapping mapping, ActionForm form,
-            HttpServletRequest request,
+            final HttpServletRequest request,
             HttpServletResponse response) throws IOException,
             ServletException {
 
@@ -54,17 +55,16 @@ public class ShowLandmarkAction extends Action {
             	    logger.log(Level.INFO, "Searching for key: " + key);
             	    Landmark landmark = null;
             	    
-            	    /*if (CacheUtil.containsKey(key)) {
-            	    	landmark = (Landmark) CacheUtil.getObject(key);
-            	    	logger.log(Level.INFO, "Found landmark in cache");
-            	    } else { 
-            	        landmark = LandmarkPersistenceUtils.selectLandmark(key);
-            	        CacheUtil.put(key, landmark);
-            	    }*/
             	    CacheAction landmarkCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
         				@Override
         				public Object executeAction() {
-        					return LandmarkPersistenceUtils.selectLandmark(key);
+        					Browser browser = Browser.parseUserAgentString(request.getHeader("User-Agent"));
+        		            if (browser.getGroup() == Browser.BOT || browser.getGroup() == Browser.BOT_MOBILE || browser.getGroup() == Browser.UNKNOWN) {
+        		            	logger.log(Level.WARNING, "User agent: " + browser.getName() + ", " + request.getHeader("User-Agent"));
+        		            	return null;
+        		            } else {
+        		            	return LandmarkPersistenceUtils.selectLandmark(key);
+        		            }
         				}
         			});
             	    landmark = (Landmark) landmarkCacheAction.getObjectFromCache(key);
@@ -126,11 +126,11 @@ public class ShowLandmarkAction extends Action {
         if (StringUtils.isNotEmpty(request.getParameter("fullScreenLandmarkMap"))) {
             return mapping.findForward("fullScreen");
         } else {
-            OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
+        	OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
             if (os.isMobileDevice()) {
                 return mapping.findForward("mobile");
             } else {
-                return mapping.findForward("success");
+            	return mapping.findForward("success");
             }
         }
     }
