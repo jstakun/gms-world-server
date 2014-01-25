@@ -6,8 +6,6 @@ package com.jstakun.lm.server.tasks;
 
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.utils.DateUtils;
-import com.jstakun.lm.server.utils.NumberUtils;
-import com.jstakun.lm.server.utils.persistence.HotelPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.ScreenshotPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.ServiceLogPersistenceUtils;
@@ -52,12 +50,7 @@ public class TaskServlet extends HttpServlet {
 
             if (StringUtils.isNotEmpty(action)) {
                 if (action.equalsIgnoreCase("purge")) {
-                    if (entity.equalsIgnoreCase("hotel")) {
-                        //int count = HotelPersistenceUtils.deleteAllHotels();
-                        Date nDaysAgo = DateUtils.getDayInPast(Integer.parseInt(ConfigurationManager.getParam(ConfigurationManager.HOTEL_OLDER_THAN_DAYS, "180")), true);
-                        long count = HotelPersistenceUtils.deleteHotelsOlderThanDate(nDaysAgo);
-                        logger.log(Level.INFO, "Deleted {0} hotels.", count);
-                    } else if (entity.equalsIgnoreCase("log")) {
+                    if (entity.equalsIgnoreCase("log")) {
                         //long count = ServiceLogPersistenceUtils.deleteAllLogs();
                         Date nDaysAgo = DateUtils.getDayInPast(Integer.parseInt(ConfigurationManager.getParam(ConfigurationManager.LOG_OLDER_THAN_DAYS, "60")), false);
                         long count = ServiceLogPersistenceUtils.deleteLogsOlderThanDate(nDaysAgo);
@@ -66,15 +59,11 @@ public class TaskServlet extends HttpServlet {
                         Date nDaysAgo = DateUtils.getDayInPast(Integer.parseInt(ConfigurationManager.getParam(ConfigurationManager.SCREENSHOT_OLDER_THAN_DAYS, "60")), true);
                         long count = ScreenshotPersistenceUtils.deleteLogsOlderThanDate(nDaysAgo);
                         logger.log(Level.INFO, "Deleted {0} screenshots.", count);
-                    }else {
+                    } else {
                         logger.log(Level.INFO, "Wrong parameter entity: {0}", entity);
                     }
                 } else if (action.equalsIgnoreCase("geocells")) {
-                    if (entity.equalsIgnoreCase("hotel")) {
-                        int deadline = NumberUtils.getInt(time, 5);
-                        int count = HotelPersistenceUtils.updateAllHotelsWithGeoCells(deadline);
-                        logger.log(Level.INFO, "Updated {0} hotels with geocells.", count);
-                    } else if (entity.equalsIgnoreCase("landmark")) {
+                    if (entity.equalsIgnoreCase("landmark")) {
                         int count = LandmarkPersistenceUtils.updateAllLandmarksWithGeoCells();
                         logger.log(Level.INFO, "Updated {0} landmarks with geocells.", count);
                     } else {

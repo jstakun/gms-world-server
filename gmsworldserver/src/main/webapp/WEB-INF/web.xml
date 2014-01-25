@@ -187,10 +187,6 @@
   <servlet-class>com.jstakun.lm.server.tasks.HotelLoaderServlet</servlet-class>
  </servlet>
  <servlet>
-  <servlet-name>XmlHotelLoaderTaskServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.tasks.XmlHotelLoaderTaskServlet</servlet-class>
- </servlet>
- <servlet>
   <servlet-name>TaskServlet</servlet-name>
   <servlet-class>com.jstakun.lm.server.tasks.TaskServlet</servlet-class>
  </servlet>
@@ -535,10 +531,6 @@
   <url-pattern>/admin/hotelLoader</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
-  <servlet-name>XmlHotelLoaderTaskServlet</servlet-name>
-  <url-pattern>/tasks/hotelLoaderTask</url-pattern>
- </servlet-mapping>
- <servlet-mapping>
   <servlet-name>TaskServlet</servlet-name>
   <url-pattern>/tasks/execute</url-pattern>
  </servlet-mapping>
@@ -815,8 +807,8 @@
    <web-resource-name>MapReduce</web-resource-name>
    <description>Map Reduce</description>
    <url-pattern>/mapreduce/*</url-pattern>
-  </web-resource-collection-->
-   <!--web-resource-collection>
+  </web-resource-collection
+web-resource-collection>
     <web-resource-name>appstats</web-resource-name>
     <url-pattern>/appstats/*</url-pattern>
   </web-resource-collection-->

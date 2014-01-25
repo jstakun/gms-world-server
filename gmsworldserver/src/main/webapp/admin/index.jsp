@@ -35,19 +35,7 @@
      <h4>
       <a href="/admin/taskExecute?action=purge&entity=screenshot" onclick="return confirm_action()">Purge screenshot data</a>
     </h4>
-    <h4>
-      <a href="/admin/listHotelFiles.do">Load Hotels</a>
-    </h4>
     <!--h4>
-      <a href="/admin/hotelLoader?file=x" onclick="return confirm_action()">Update Hotels</a>
-    </h4-->
-    <h4>
-      <a href="/admin/taskExecute?action=purge&entity=hotel" onclick="return confirm_action()">Purge hotels</a>
-    </h4>
-    <!--h4>
-      <a href="/admin/taskExecute?action=geocells&entity=hotel" onclick="return confirm_action()">GeoCells Hotels in 5 mins</a>
-    </h4>
-    <h4>
       <a href="/admin/taskExecute?action=geocells&entity=landmark" onclick="return confirm_action()">GeoCells Landmarks in 5 mins</a>
     </h4>
     <!--h4>
@@ -101,11 +89,5 @@
     <!--h4>
       <a href="/mapreduce/status" onclick="return confirm_action()">MapReduce</a>
     </h4-->
-    <h4>
-      <a href="https://apps.admob.com/" onclick="return confirm_action()">AdMob</a>
-    </h4>
-    <h4>
-      <a href="https://www.google.com/adsense" onclick="return confirm_action()">AdSence</a>
-    </h4>
   </body>
 </html>
