@@ -8,6 +8,8 @@ import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,6 +24,7 @@ import org.apache.commons.lang.StringUtils;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.gdata.util.common.util.Base64;
+import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.CryptoTools;
@@ -73,6 +76,44 @@ public class PersistLandmarkServlet extends HttpServlet {
 
                 String username = StringUtil.getUsername(request.getAttribute("username"),request.getParameter("username"));
                 
+                String layer = StringUtil.getStringParam(request.getParameter("layer"), "Public");
+
+                Date validityDate = null;
+
+                String validityStr = request.getParameter("validityDate");
+                if (StringUtils.isNotEmpty(validityStr)) {
+                    long validity = Long.parseLong(validityStr);
+                    Date current = new Date();
+                    validityDate = new Date(current.getTime() + validity);
+                } 
+
+                if (layer.equals(Commons.MY_POS_CODE)) {
+                    description = GeocodeUtils.processGoogleReverseGeocode(latitude + "," + longitude);
+                    //description = GeocodeUtils.processYahooReverseGeocode(latitude + "," + longitude);
+                }
+
+                String email = request.getParameter("email");
+                
+                try {
+                	String landmarksUrl = "http://landmarks-gmsworld.rhcloud.com/actions/addLandmark?" +
+                	        "latitude=" + latitude + "&longitude=" + longitude + "&name=" + URLEncoder.encode(name, "UTF-8") + 
+                			"&altitude=" + altitude + "&username=" + username + "&layer=" + layer;			 
+                	if (validityStr != null) {
+                		landmarksUrl +=	"&validityDate=" + validityStr;
+                	}	
+                	if (description != null) {
+                		landmarksUrl += "&description=" + URLEncoder.encode(description, "UTF-8"); 
+                	}
+                	if (email != null) {
+                		landmarksUrl += "&email=" + email;
+                	}
+                	logger.log(Level.INFO, "Calling: " + landmarksUrl);
+                	String landmarksJson = HttpUtils.processFileRequest(new URL(landmarksUrl));
+                	logger.log(Level.INFO, "Received response: " + landmarksJson);
+                } catch (Exception e) {
+                	logger.log(Level.SEVERE, e.getMessage(), e);
+                }
+                
                 if (username.length() % 4 == 0) {
                 	try {
                 		username = new String(Base64.decode(username));
@@ -81,23 +122,6 @@ public class PersistLandmarkServlet extends HttpServlet {
                 	}
                 }	
                 
-                String layer = StringUtil.getStringParam(request.getParameter("layer"), "Public");
-
-                Date untilDate = null;
-
-                String validityStr = request.getParameter("validityDate");
-                if (StringUtils.isNotEmpty(validityStr)) {
-                    long validity = Long.parseLong(validityStr);
-                    Date current = new Date();
-                    untilDate = new Date(current.getTime() + validity);
-                } 
-
-                if (layer.equals("MyPos")) {
-                    description = GeocodeUtils.processGoogleReverseGeocode(latitude + "," + longitude);
-                    //description = GeocodeUtils.processYahooReverseGeocode(latitude + "," + longitude);
-                }
-
-                String email = request.getParameter("email");
                 if (StringUtils.isNotEmpty(email)) {
                     try {
                         email = new String(CryptoTools.decrypt(Base64.decode(email.getBytes())));
@@ -106,9 +130,9 @@ public class PersistLandmarkServlet extends HttpServlet {
                     }
                 }
 
-                landmark = LandmarkPersistenceUtils.persistLandmark(name, description, latitude, longitude, altitude, username, untilDate, layer, email);
-                if (landmark != null) {
-                	
+                landmark = LandmarkPersistenceUtils.persistLandmark(name, description, latitude, longitude, altitude, username, validityDate, layer, email);
+
+                if (landmark != null) {	
                     //After adding landmark remove from cache layer list for the location
                     //in order to make it visible immediately.
                     int radius = NumberUtils.getRadius(request.getParameter("radius"), 3, 6371);
