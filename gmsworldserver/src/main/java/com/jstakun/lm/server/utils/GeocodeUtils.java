@@ -9,9 +9,11 @@ import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.layers.CloudmadeUtils;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import com.jstakun.lm.server.persistence.GeocodeCache;
 import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
@@ -29,6 +31,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 
@@ -71,10 +74,33 @@ public class GeocodeUtils {
                         jsonResponse.put("type", "g");
 
                         try {
+                        	String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/addGeocode";
+                        	String params = "latitude=" + lat + "&longitude=" + lng + "&address=" + URLEncoder.encode(addressIn, "UTF-8");			 
+                        	//logger.log(Level.INFO, "Calling: " + gUrl);
+                        	String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, params);
+                        	logger.log(Level.INFO, "Received response: " + gJson);
+                        } catch (Exception e) {
+                        	logger.log(Level.SEVERE, e.getMessage(), e);
+                        }
+                        
+                        try {
                            GeocodeCachePersistenceUtils.persistGeocode(addressIn, 0, null, lat, lng);
 
                            if (ConfigurationManager.getParam(ConfigurationManager.SAVE_GEOCODE_AS_LANDMARK, ConfigurationManager.OFF).equals(ConfigurationManager.ON)) {
-                               LandmarkPersistenceUtils.persistLandmark(address, "", lat, lng, 0.0, "geocode", null, "Geocodes", email);
+                               LandmarkPersistenceUtils.persistLandmark(address, "", lat, lng, 0.0, "geocode", null, Commons.GEOCODES_LAYER, email);
+                               try {
+                               		String landmarksUrl = "http://landmarks-gmsworld.rhcloud.com/actions/addLandmark";
+                               		String params = "latitude=" + lat + "&longitude=" + lng + "&name=" + URLEncoder.encode(address, "UTF-8") + 
+                               			"&username=geocode&layer=" + Commons.GEOCODES_LAYER;			 
+                               		if (email != null) {
+                               			params += "&email=" + email;
+                               		}
+                               		//logger.log(Level.INFO, "Calling: " + landmarksUrl);
+                               		String landmarksJson = HttpUtils.processFileRequest(new URL(landmarksUrl), "POST", null, params);
+                               		logger.log(Level.INFO, "Received response: " + landmarksJson);
+                               } catch (Exception e) {
+                               		logger.log(Level.SEVERE, e.getMessage(), e);
+                               }
                            }
                         } catch (Exception ex) {
                                logger.log(Level.SEVERE, ex.getMessage(), ex);
@@ -242,14 +268,6 @@ public class GeocodeUtils {
                     try {
                         if (resp.getString("status").equals("Error")) {
                             logger.log(Level.INFO, "Search geocode response {0}", resp.toString());
-                            /*String addrs = addr;
-                            if (token.length > 1 && token[1].length() > 0) {
-                            addrs = "(" + token[0] + "),";
-                            for (int i = 1; i < token.length; i++) {
-                            addrs += token[i] + " ";
-                            }
-                            }
-                            resp = processYahooGeocode(addrs.trim(), addr, locale, email);*/
                             resp = CloudmadeUtils.processGeocode(addr, email);
                         }
                     } catch (Exception e) {

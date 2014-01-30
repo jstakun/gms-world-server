@@ -86,6 +86,8 @@ public class HotelsCombinedUtils extends LayerHelper {
             	json = createCustomJSonHotelsCombinedList(hotels, language, version);
                 CacheUtil.put(key, json.toString());
                 logger.log(Level.INFO, "Adding H landmark list to cache with key {0}", key);
+            } else {
+            	json = new JSONObject().put("ResultSet", hotels);
             }
 
         } else {

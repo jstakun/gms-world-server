@@ -28,8 +28,7 @@ public class GeocodeCachePersistenceUtils {
 
     public static void persistGeocode(String location, int status, String message, double latitude, double longitude) {
         String loc = StringUtils.replace(location, "\n", " ");
-        loc = StringUtils.replace(location, "\n", " ");
-
+        
         GeocodeCache gc = new GeocodeCache(loc, status, message, latitude, longitude);
 
         PersistenceManager pm = PMF.get().getPersistenceManager();

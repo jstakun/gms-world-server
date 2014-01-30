@@ -24,6 +24,7 @@ import org.apache.commons.lang.StringUtils;
 public class HttpUtils {
 
     private static final Logger logger = Logger.getLogger(HttpUtils.class.getName());
+    private static final int timeoutMs = 30000;
 
     public static String processFileRequestWithLocale(URL fileUrl, String locale) throws IOException {
         return processFileRequest(fileUrl, false, null, null, "GET", locale, null, null);
@@ -48,6 +49,8 @@ public class HttpUtils {
         try {
             HttpURLConnection conn = (HttpURLConnection) fileUrl.openConnection();
             conn.setRequestMethod(method);
+            conn.setConnectTimeout(timeoutMs);
+            conn.setReadTimeout(timeoutMs);
 
             if (authn && userpassword != null) {
                 //username : password
@@ -68,10 +71,9 @@ public class HttpUtils {
             }
 
             if (urlParams != null) {
-                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 conn.setRequestProperty("Content-Length", Integer.toString(urlParams.getBytes().length));
-                conn.setRequestProperty("Content-Language", "en-US");
-                conn.setUseCaches(false);
+                //conn.setRequestProperty("Content-Language", "en-US");
+                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
                 conn.setDoInput(true);
                 conn.setDoOutput(true);
                 //Send request

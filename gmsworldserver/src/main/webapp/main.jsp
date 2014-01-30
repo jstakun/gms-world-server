@@ -63,14 +63,10 @@
                     <h3>Latest Landmarks</h3>
 
                     <%
-                        List<Landmark> landmarkList = (List<Landmark>)CacheUtil.getObject("newestLandmarks");
-                        if (landmarkList == null) {
-                            landmarkList = LandmarkPersistenceUtils.selectNewestLandmarks();
-                            CacheUtil.putToShortCache("newestLandmarks", landmarkList);
-                        }
-                        request.setAttribute("newestLandmarkList", landmarkList);
-                        PrettyTime prettyTime = new PrettyTime(request.getLocale());
-                        for (Landmark landmark : landmarkList) {
+                        List<Landmark> landmarkList = (List<Landmark>) request.getAttribute("newestLandmarkList");
+                        if (landmarkList != null) { 
+                        	PrettyTime prettyTime = new PrettyTime(request.getLocale());
+                        	for (Landmark landmark : landmarkList) {
                     %>
                     <div class="post">
                         <p>
@@ -81,6 +77,7 @@
                         </p>
                     </div>
                     <%
+                        	}
                         }
                     %>
                     <%@ include file="/WEB-INF/jspf/ad_medium_baner.jspf" %>

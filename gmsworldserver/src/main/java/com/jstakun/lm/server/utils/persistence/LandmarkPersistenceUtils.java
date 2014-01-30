@@ -598,13 +598,6 @@ public class LandmarkPersistenceUtils {
         return result;
     }
 
-    /*public static String getLandmarkHash(String k) {
-    Landmark landmark = selectLandmark(k);
-    if (landmark != null) {
-    return landmark.getHash();
-    }
-    return null;
-    }*/
     public static Map<String, Collection<String>> filterLandmarks(String property, String[] pattern, String resultProperty, boolean unique, long createdBeforeMillis, Map<String, Integer> beforeCreated, Date afterDay) {
 
         Map<String, List<String>> filteredLandmarks = new HashMap<String, List<String>>();

@@ -95,20 +95,20 @@ public class PersistLandmarkServlet extends HttpServlet {
                 String email = request.getParameter("email");
                 
                 try {
-                	String landmarksUrl = "http://landmarks-gmsworld.rhcloud.com/actions/addLandmark?" +
-                	        "latitude=" + latitude + "&longitude=" + longitude + "&name=" + URLEncoder.encode(name, "UTF-8") + 
+                	String landmarksUrl = "http://landmarks-gmsworld.rhcloud.com/actions/addLandmark";
+                	String params = "latitude=" + latitude + "&longitude=" + longitude + "&name=" + URLEncoder.encode(name, "UTF-8") + 
                 			"&altitude=" + altitude + "&username=" + username + "&layer=" + layer;			 
                 	if (validityStr != null) {
-                		landmarksUrl +=	"&validityDate=" + validityStr;
+                		params +=	"&validityDate=" + validityStr;
                 	}	
                 	if (description != null) {
-                		landmarksUrl += "&description=" + URLEncoder.encode(description, "UTF-8"); 
+                		params += "&description=" + URLEncoder.encode(description, "UTF-8"); 
                 	}
                 	if (email != null) {
-                		landmarksUrl += "&email=" + email;
+                		params += "&email=" + email;
                 	}
-                	logger.log(Level.INFO, "Calling: " + landmarksUrl);
-                	String landmarksJson = HttpUtils.processFileRequest(new URL(landmarksUrl));
+                	//logger.log(Level.INFO, "Calling: " + landmarksUrl);
+                	String landmarksJson = HttpUtils.processFileRequest(new URL(landmarksUrl), "POST", null, params);
                 	logger.log(Level.INFO, "Received response: " + landmarksJson);
                 } catch (Exception e) {
                 	logger.log(Level.SEVERE, e.getMessage(), e);

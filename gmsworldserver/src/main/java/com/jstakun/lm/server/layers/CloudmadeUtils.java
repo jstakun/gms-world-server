@@ -10,6 +10,7 @@ import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.persistence.GeocodeCachePersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -17,6 +18,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.json.JSONArray;
@@ -245,13 +247,38 @@ public class CloudmadeUtils {
                 if (StringUtils.startsWith(resp, "{")) {
                     jsonResponse = processGeocodeV2(resp);                  
                     if (jsonResponse.has("lat") && jsonResponse.has("lng")) {
+                    	double lat = jsonResponse.getDouble("lat");
+                		double lng = jsonResponse.getDouble("lng");
+                    	
+                		try {
+                        	String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/addGeocode";
+                        	String params = "latitude=" + lat + "&longitude=" + lng + "&address=" + URLEncoder.encode(location, "UTF-8");			 
+                        	//logger.log(Level.INFO, "Calling: " + gUrl);
+                        	String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, params);
+                        	logger.log(Level.INFO, "Received response: " + gJson);
+                        } catch (Exception e) {
+                        	logger.log(Level.SEVERE, e.getMessage(), e);
+                        }
+                    	
                     	try {
-                    		double lat = jsonResponse.getDouble("lat");
-                    		double lng = jsonResponse.getDouble("lng");
-                        	GeocodeCachePersistenceUtils.persistGeocode(location, 0, "", lat, lng);
+                    		GeocodeCachePersistenceUtils.persistGeocode(location, 0, "", lat, lng);
 
                             if (ConfigurationManager.getParam(ConfigurationManager.SAVE_GEOCODE_AS_LANDMARK, ConfigurationManager.OFF).equals(ConfigurationManager.ON)) {
-                                LandmarkPersistenceUtils.persistLandmark(WordUtils.capitalize(location, delim), "", lat, lng, 0.0, "geocode", null, "Geocodes", email);
+                                String name = WordUtils.capitalize(location, delim);
+                            	LandmarkPersistenceUtils.persistLandmark(name, "", lat, lng, 0.0, "geocode", null, Commons.GEOCODES_LAYER, email);
+                            	try {
+                               		String landmarksUrl = "http://landmarks-gmsworld.rhcloud.com/actions/addLandmark";
+                               		String params = "latitude=" + lat + "&longitude=" + lng + "&name=" + URLEncoder.encode(name, "UTF-8") + 
+                               			"&username=geocode&layer=" + Commons.GEOCODES_LAYER;			 
+                               		if (email != null) {
+                               			params += "&email=" + email;
+                               		}
+                               		//logger.log(Level.INFO, "Calling: " + landmarksUrl);
+                               		String landmarksJson = HttpUtils.processFileRequest(new URL(landmarksUrl), "POST", null, params);
+                               		logger.log(Level.INFO, "Received response: " + landmarksJson);
+                               } catch (Exception e) {
+                               		logger.log(Level.SEVERE, e.getMessage(), e);
+                               }
                             }
                         } catch (Exception ex) {
                             logger.log(Level.SEVERE, ex.getMessage(), ex);
