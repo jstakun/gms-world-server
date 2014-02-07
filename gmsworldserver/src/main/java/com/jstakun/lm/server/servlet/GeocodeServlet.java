@@ -44,15 +44,15 @@ public class GeocodeServlet extends HttpServlet {
         response.setContentType("text/json;charset=UTF-8");
         PrintWriter out = response.getWriter();
         try {
-            if (request.getParameter("address") != null) {
-                String address = request.getParameter("address");
-
+        	String address = request.getParameter("address");
+        	
+            if (StringUtils.isNotEmpty(address)) {
                 String email = request.getParameter("email");
                 if (StringUtils.isNotEmpty(email)) {
                     try {
                         email = new String(CryptoTools.decrypt(Base64.decode(email.getBytes())));
                     } catch (Exception e) {
-                        logger.log(Level.SEVERE, e.getMessage(), e);
+                        //logger.log(Level.SEVERE, e.getMessage(), e);
                     }
                 }
  

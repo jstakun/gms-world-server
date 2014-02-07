@@ -25,45 +25,31 @@ import com.google.appengine.api.datastore.KeyFactory;
  *
  * @author jstakun
  */
-@PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 public class Landmark implements Serializable {
     private static final long serialVersionUID = 1L;
-    @PrimaryKey
-    @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-    private Key key;
-    @Persistent
-    @Latitude
-    @Extension(vendorName = "datanucleus", key = "gae.unindexed", value = "true")
+    
+    private int id;
+    
     private double latitude;
-    @Persistent
-    @Longitude
-    @Extension(vendorName = "datanucleus", key = "gae.unindexed", value = "true")
+    
     private double longitude;
-    @Persistent
-    @Extension(vendorName = "datanucleus", key = "gae.unindexed", value = "true")
+    
     private Double altitude;
-    @Persistent
+    
     private String name;
-    @Persistent
-    @Extension(vendorName = "datanucleus", key = "gae.unindexed", value = "true")
+    
     private String description;
-    @Persistent
-    private String keyString;
-    @Persistent
+    
     private String username;
-    @Persistent
+    
     private Date creationDate;
-    @Persistent
+   
     private Date validityDate;
-    @Persistent
+    
     private String layer;
-    @Persistent
-    @Geocells
-    private List<String> geoCells;
-    @Persistent
+    
     private String hash;
-    @Persistent
-    @Extension(vendorName = "datanucleus", key = "gae.unindexed", value = "true")
+   
     private String email;
 
     public Landmark(double latitude, double longitude, double altitude, String name, String description, String username, Date validityDate, String layer, List<String> geoCells, String email) {
@@ -76,24 +62,11 @@ public class Landmark implements Serializable {
         this.username = username;
         this.validityDate = validityDate;       
         this.layer = layer;
-        this.geoCells = geoCells;
         this.email = email;
     }
     
     public Landmark() {
     	this.creationDate = new Date(System.currentTimeMillis());
-    }
-
-    public String getKeyString() {
-        if (keyString == null) {
-            return KeyFactory.keyToString(key);
-        } else {
-            return keyString;
-        }
-    }
-
-    public void setKeyString(String keyString) {
-        this.keyString = keyString;
     }
 
     public String getName() {
@@ -108,7 +81,7 @@ public class Landmark implements Serializable {
         return description;
     }
 
-    public void setDecription(String desc) {
+    public void setDescription(String desc) {
         this.description = desc;
     }
 
@@ -168,17 +141,6 @@ public class Landmark implements Serializable {
         this.layer = l;
     }
 
-    public List<String> getGeoCells() {
-        return geoCells;
-    }
-
-    /**
-     * @param Facilities the Facilities to set
-     */
-    public void setGeoCells(List<String> geoCells) {
-        this.geoCells = geoCells;
-    }
-
     /**
      * @return the hash
      */
@@ -191,5 +153,13 @@ public class Landmark implements Serializable {
      */
     public void setHash(String hash) {
         this.hash = hash;
+    }
+    
+    public int getId() {
+    	return id;
+    }
+    
+    public void setId(int id){
+    	this.id = id;
     }
 }

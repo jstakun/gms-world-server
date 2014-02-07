@@ -154,7 +154,7 @@ public class ServicesAuthorizationFilter implements Filter {
                     {
                     	//logger.log(Level.INFO, "Checking if user {0} has registered with token", usr);
                     	String svc = request.getParameter("service");
-                        if (OAuthTokenPersistenceUtils.selectOAuthTokenByUserCount(usr, pwdStr) > 0)
+                        if (OAuthTokenPersistenceUtils.countOAuthTokenByUser(usr, pwdStr) > 0)
                         {
                             httpRequest.setAttribute("username", usr);
                             auth = true;

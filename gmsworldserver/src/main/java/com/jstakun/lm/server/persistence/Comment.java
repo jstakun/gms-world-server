@@ -5,6 +5,7 @@
 
 package com.jstakun.lm.server.persistence;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
@@ -15,27 +16,12 @@ import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.api.datastore.Key;
 
-/**
- *
- * @author jstakun
- */
-@PersistenceCapable(identityType=IdentityType.APPLICATION, detachable="true")
-public class Comment {
+public class Comment implements Serializable {
 
-  @PrimaryKey
-  @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-  private Key key;
-
-  @Persistent
+  private static final long serialVersionUID = 1L;
   private Date creationDate;
-
-  @Persistent
   private String landmarkKey;
-
-  @Persistent
   private String message;
-
-  @Persistent
   private String username;
 
   public Comment(String username, String landmarkKey, String message) {
@@ -61,5 +47,17 @@ public class Comment {
 
   public String getMessage() {
       return message;
+  }
+  
+  public void setCreationDate(Date creationDate) {
+	  this.creationDate = creationDate;
+  }
+  
+  public void setUsername(String username) {
+	  this.username = username;
+  }
+  
+  public void setMessage(String message) {
+	  this.message = message;
   }
 }

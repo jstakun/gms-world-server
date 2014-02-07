@@ -173,7 +173,7 @@ public class TwitterUtils extends LayerHelper {
         	    String message = null;
         	    
         	    if (key != null) {
-        	    	landmark = LandmarkPersistenceUtils.selectLandmark(key);
+        	    	landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
                 }
             
                 ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");

@@ -64,7 +64,7 @@ public class FBSendMessageServlet extends HttpServlet {
 				int type = -1;
 				String key = request.getParameter("key");
 				if (key != null) {
-					Landmark landmark = LandmarkPersistenceUtils.selectLandmark(key);
+					Landmark landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
 					if (landmark != null) {
 						if (landmark.getLayer().equals("Social")) {
 							type = Commons.BLOGEO;

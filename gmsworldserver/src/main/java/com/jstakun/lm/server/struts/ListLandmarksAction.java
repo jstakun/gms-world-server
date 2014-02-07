@@ -2,7 +2,9 @@ package com.jstakun.lm.server.struts;
 
 import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
+
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -27,7 +29,9 @@ public class ListLandmarksAction extends Action {
                                  HttpServletResponse response) throws IOException,
                                                                       ServletException {
 
-        List<Landmark> landmarkList = LandmarkPersistenceUtils.selectAllLandmarks();
+        List<Landmark> landmarkList = LandmarkPersistenceUtils.selectNewestLandmarks();     
+        
+        new ArrayList<Landmark>();
         request.setAttribute("landmarkList", landmarkList);
 
         return mapping.findForward( "success");

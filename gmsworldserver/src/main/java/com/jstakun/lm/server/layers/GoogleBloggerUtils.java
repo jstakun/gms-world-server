@@ -35,7 +35,7 @@ public class GoogleBloggerUtils {
     private static final Logger logger = Logger.getLogger(GoogleBloggerUtils.class.getName());
     
     public static void sendMessage(String key, String landmarkUrl, String token, String secret, boolean isServer) {
-        Landmark landmark = LandmarkPersistenceUtils.selectLandmark(key);
+        Landmark landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
         if (landmark != null && token != null && secret != null) {
             String message = null;
             String url = landmarkUrl;

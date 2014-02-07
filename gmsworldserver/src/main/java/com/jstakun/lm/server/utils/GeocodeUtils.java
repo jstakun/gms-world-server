@@ -74,21 +74,11 @@ public class GeocodeUtils {
                         jsonResponse.put("type", "g");
 
                         try {
-                        	String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/addGeocode";
-                        	String params = "latitude=" + lat + "&longitude=" + lng + "&address=" + URLEncoder.encode(addressIn, "UTF-8");			 
-                        	//logger.log(Level.INFO, "Calling: " + gUrl);
-                        	String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, params);
-                        	logger.log(Level.INFO, "Received response: " + gJson);
-                        } catch (Exception e) {
-                        	logger.log(Level.SEVERE, e.getMessage(), e);
-                        }
-                        
-                        try {
                            GeocodeCachePersistenceUtils.persistGeocode(addressIn, 0, null, lat, lng);
 
                            if (ConfigurationManager.getParam(ConfigurationManager.SAVE_GEOCODE_AS_LANDMARK, ConfigurationManager.OFF).equals(ConfigurationManager.ON)) {
                                LandmarkPersistenceUtils.persistLandmark(address, "", lat, lng, 0.0, "geocode", null, Commons.GEOCODES_LAYER, email);
-                               try {
+                               /*try {
                                		String landmarksUrl = "http://landmarks-gmsworld.rhcloud.com/actions/addLandmark";
                                		String params = "latitude=" + lat + "&longitude=" + lng + "&name=" + URLEncoder.encode(address, "UTF-8") + 
                                			"&username=geocode&layer=" + Commons.GEOCODES_LAYER;			 
@@ -100,7 +90,7 @@ public class GeocodeUtils {
                                		logger.log(Level.INFO, "Received response: " + landmarksJson);
                                } catch (Exception e) {
                                		logger.log(Level.SEVERE, e.getMessage(), e);
-                               }
+                               }*/
                            }
                         } catch (Exception ex) {
                                logger.log(Level.SEVERE, ex.getMessage(), ex);
@@ -242,7 +232,7 @@ public class GeocodeUtils {
             if (StringUtils.isNotEmpty(addr)) {
                 addr += ",";
             }
-            addr += address.trim().toLowerCase();
+            addr += address.trim(); //.toLowerCase();
         }
 
         if (StringUtils.isNotEmpty(addr)) {
@@ -259,7 +249,10 @@ public class GeocodeUtils {
                 Landmark landmark = null;
                 String[] token = addr.split(",");
                 if (token.length > 1 && token[1].length() > 0) {
-                    landmark = LandmarkPersistenceUtils.selectLandmarkMatchingQuery(token[1]);
+                	List<Landmark> landmarks = LandmarkPersistenceUtils.selectLandmarkMatchingQuery(token[1]);
+                	if (!landmarks.isEmpty()) {
+                		landmark = landmarks.get(0);
+                	}
                 }
                 if (landmark != null) {
                     jsonResp = processLandmark(landmark);

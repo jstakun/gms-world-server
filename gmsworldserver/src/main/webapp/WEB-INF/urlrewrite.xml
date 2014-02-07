@@ -58,6 +58,11 @@
             <from>^/freebaseView/([a-zA-Z0-9_-]+)$</from>
             <to>/freebaseView.do?mid=$1</to>
     </rule>
+    
+    <rule>
+            <from>^/showGeocode/([a-zA-Z0-9_-]+)$</from>
+            <to>/showGeocode.do?key=$1</to>
+    </rule>
 
     <outbound-rule>
         <from>^/showLandmark.do\?key=([a-zA-Z0-9_-]+)$</from>

@@ -35,7 +35,7 @@ public class OAuthTokenPersistenceUtils {
         }
     }
 
-    public static long selectOAuthTokenByUserCount(String username, String pwd) {
+    public static long countOAuthTokenByUser(String username, String pwd) {
         PersistenceManager pm = PMF.get().getPersistenceManager();
         long result = 0;
         try {

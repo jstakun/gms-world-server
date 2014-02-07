@@ -56,7 +56,7 @@ public class ShowArchiveAction extends org.apache.struts.action.Action {
             m = DateUtils.getLongMonthYearString(now);
         }
 
-        int count = LandmarkPersistenceUtils.selectByLandmarksMonthCount(month);
+        int count = LandmarkPersistenceUtils.countLandmarksByMonth(month);
 
         if (count - first - INTERVAL > 0) {
             next = first + INTERVAL;
@@ -69,7 +69,7 @@ public class ShowArchiveAction extends org.apache.struts.action.Action {
         request.setAttribute("prev", new Integer(prev));
  
         request.setAttribute("month", m);
-        List<Landmark> landmarkList = LandmarkPersistenceUtils.selectByLandmarksMonth(first, first+INTERVAL, month);
+        List<Landmark> landmarkList = LandmarkPersistenceUtils.selectLandmarksByMonth(first, first+INTERVAL, month);
         request.setAttribute("landmarkList", landmarkList);
 
         return mapping.findForward("success");

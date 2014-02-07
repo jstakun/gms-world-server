@@ -250,23 +250,13 @@ public class CloudmadeUtils {
                     	double lat = jsonResponse.getDouble("lat");
                 		double lng = jsonResponse.getDouble("lng");
                     	
-                		try {
-                        	String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/addGeocode";
-                        	String params = "latitude=" + lat + "&longitude=" + lng + "&address=" + URLEncoder.encode(location, "UTF-8");			 
-                        	//logger.log(Level.INFO, "Calling: " + gUrl);
-                        	String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, params);
-                        	logger.log(Level.INFO, "Received response: " + gJson);
-                        } catch (Exception e) {
-                        	logger.log(Level.SEVERE, e.getMessage(), e);
-                        }
-                    	
                     	try {
                     		GeocodeCachePersistenceUtils.persistGeocode(location, 0, "", lat, lng);
 
                             if (ConfigurationManager.getParam(ConfigurationManager.SAVE_GEOCODE_AS_LANDMARK, ConfigurationManager.OFF).equals(ConfigurationManager.ON)) {
                                 String name = WordUtils.capitalize(location, delim);
                             	LandmarkPersistenceUtils.persistLandmark(name, "", lat, lng, 0.0, "geocode", null, Commons.GEOCODES_LAYER, email);
-                            	try {
+                            	/*try {
                                		String landmarksUrl = "http://landmarks-gmsworld.rhcloud.com/actions/addLandmark";
                                		String params = "latitude=" + lat + "&longitude=" + lng + "&name=" + URLEncoder.encode(name, "UTF-8") + 
                                			"&username=geocode&layer=" + Commons.GEOCODES_LAYER;			 
@@ -278,7 +268,7 @@ public class CloudmadeUtils {
                                		logger.log(Level.INFO, "Received response: " + landmarksJson);
                                } catch (Exception e) {
                                		logger.log(Level.SEVERE, e.getMessage(), e);
-                               }
+                               }*/
                             }
                         } catch (Exception ex) {
                             logger.log(Level.SEVERE, ex.getMessage(), ex);

@@ -70,8 +70,8 @@ public class LandmarkFilterTaskServlet extends HttpServlet {
                     beforeCreated.put(patternArr[i], 0);
                 }
 
-                Map<String,Collection<String>> filter = LandmarkPersistenceUtils.filterLandmarks(filterProperty, patternArr, resultProperty, true, System.currentTimeMillis() - WEEK, beforeCreated, nDaysAgo);
-                MailUtils.sendList("Report: " + resultProperty + " meeting patterns " + filterProperty + "=" + pattern, filter, beforeCreated);
+                //Map<String,Collection<String>> filter = LandmarkPersistenceUtils.filterLandmarks(filterProperty, patternArr, resultProperty, true, System.currentTimeMillis() - WEEK, beforeCreated, nDaysAgo);
+                //MailUtils.sendList("Report: " + resultProperty + " meeting patterns " + filterProperty + "=" + pattern, filter, beforeCreated);
             }
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage(), e);

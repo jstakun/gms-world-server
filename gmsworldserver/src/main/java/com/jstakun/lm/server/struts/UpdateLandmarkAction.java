@@ -43,7 +43,7 @@ public class UpdateLandmarkAction extends Action {
       update.put("validityDate",new Date(((Timestamp)landmarkForm.get("validityDate")).getTime()));
       update.put("layer",landmarkForm.get("layer"));
       
-      LandmarkPersistenceUtils.updateLandmark((String)landmarkForm.get("key"), update);
+      //TODO LandmarkPersistenceUtils.updateLandmark((String)landmarkForm.get("key"), update);
   
       return mapping.findForward( "success");
     }

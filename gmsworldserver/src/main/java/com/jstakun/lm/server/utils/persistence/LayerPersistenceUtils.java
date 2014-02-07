@@ -45,35 +45,6 @@ public class LayerPersistenceUtils {
         return results;
     }
 
-    /*public static List<Layer> listAllLayers(int version) {
-        final String key = LayerPersistenceUtils.class.getName() + "_listAllLayers_" + version;
-    	List<Layer> result = (List<Layer>)CacheUtil.getObject(key);
-
-    	if (result == null) {
-    	
-    		PersistenceManager pm = PMF.get().getPersistenceManager();
-        
-    		try {
-    			Query query = pm.newQuery(Layer.class);
-    			query.declareParameters("Integer v");
-    			query.setFilter("version > 0 && version <= v");
-    			result = (List<Layer>) query.execute(version); //name != 'MyPos' and
-    			pm.retrieveAll(result);
-    			result = (List<Layer>) pm.detachCopyAll(result);
-    			CacheUtil.put(key, result);
-    			logger.log(Level.INFO, "Adding layers list to cache "  + key);
-    		} catch (Exception ex) {
-    			logger.log(Level.SEVERE, ex.getMessage(), ex);
-    		} finally {
-    			pm.close();
-    		}
-        
-    	} else {
-    		logger.log(Level.INFO, "Reading layers list from cache "  + key);
-    	}
-        return result;
-    }*/
-    
     public static List<Layer> listAllLayers(final int version) {
     	final String key = LayerPersistenceUtils.class.getName() + "_listAllLayers_" + version;
     	CacheAction layersCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			

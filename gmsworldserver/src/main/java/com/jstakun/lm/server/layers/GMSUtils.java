@@ -5,6 +5,7 @@
 package com.jstakun.lm.server.layers;
 
 import java.io.UnsupportedEncodingException;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -16,6 +17,7 @@ import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.JSONUtils;
 import com.jstakun.lm.server.utils.MathUtils;
+import com.jstakun.lm.server.utils.NumberUtils;
 import com.jstakun.lm.server.utils.UrlUtils;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
@@ -80,7 +82,14 @@ public class GMSUtils extends LayerHelper {
 
         String output = CacheUtil.getString(key);
         if (output == null) {
-            List<Landmark> landmarkList = LandmarkPersistenceUtils.selectLandmarksByCoordsAndLayer(latitudeMin, longitudeMin, latitudeMax, longitudeMax, layer, limit);
+        	
+        	double latitude = (latitudeMin + latitudeMax) / 2;
+            double longitude = (longitudeMin + longitudeMax) / 2;
+            int radius = (int)(NumberUtils.distanceInKilometer(latitudeMin, latitudeMax, longitudeMin, longitudeMax) * 1000 / 2);
+            
+            List<Landmark> landmarkList = LandmarkPersistenceUtils.selectLandmarksByCoordsAndLayer(latitude, longitude, layer, limit, radius);
+        	
+            //List<Landmark> landmarkList = LandmarkPersistenceUtils.selectLandmarksByCoordsAndLayer(latitudeMin, longitudeMin, latitudeMax, longitudeMax, layer, limit);
 
             if (format.equals("kml")) {
                 output = XMLUtils.createKmlLandmarkList(landmarkList, landingPage);
@@ -110,7 +119,7 @@ public class GMSUtils extends LayerHelper {
             jsonObject.put("lat", MathUtils.normalizeE6(landmark.getLatitude()));
             jsonObject.put("lng", MathUtils.normalizeE6(landmark.getLongitude()));
 
-            String url = landingPage + landmark.getKeyString();
+            String url = landingPage + landmark.getId();
 
             if (version >= 2) {
                 if (version >= 4) { 

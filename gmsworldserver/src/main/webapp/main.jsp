@@ -70,8 +70,8 @@
                     %>
                     <div class="post">
                         <p>
-                            <a href="<%= response.encodeURL("/showLandmark/" + landmark.getKeyString())%>"><img src="http://maps.google.com/maps/api/staticmap?center=<%= landmark.getLatitude()%>,<%= landmark.getLongitude()%>&zoom=9&size=128x128&sensor=false&markers=icon:http://gms-world.appspot.com/images/flagblue.png|<%= landmark.getLatitude()%>,<%= landmark.getLongitude()%>" alt="Landmark on Google Map" height="128" width="128" class="float-left"/></a>
-                            <h4><a href="<%= response.encodeURL("/showLandmark/" + landmark.getKeyString())%>"><%= landmark.getName() %></a></h4>
+                            <a href="<%= response.encodeURL("/showLandmark/" + landmark.getId()) %>"><img src="http://maps.google.com/maps/api/staticmap?center=<%= landmark.getLatitude()%>,<%= landmark.getLongitude()%>&zoom=9&size=128x128&sensor=false&markers=icon:http://gms-world.appspot.com/images/flagblue.png|<%= landmark.getLatitude()%>,<%= landmark.getLongitude()%>" alt="Landmark on Google Map" height="128" width="128" class="float-left"/></a>
+                            <h4><a href="<%= response.encodeURL("/showLandmark/" + landmark.getId())%>"><%= landmark.getName() %></a></h4>
                             Posted <%= prettyTime.format(landmark.getCreationDate()) %> on <%= DateUtils.getFormattedDateTime(request.getLocale(), landmark.getCreationDate())%>
                             by <a href="<%= landmark.getLayer().equals("Social") ? response.encodeURL("/blogeo/" + landmark.getUsername()) : response.encodeURL("/showUser/" + landmark.getUsername())%>"><%= UrlUtils.createUsernameMask(landmark.getUsername())%></a> | Filed in layer <a href="/showLayer/<%= landmark.getLayer() %>"><%= LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer())%></a>
                         </p>

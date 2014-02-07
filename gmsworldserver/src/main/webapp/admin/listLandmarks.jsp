@@ -74,7 +74,7 @@
             {
 %>
       <tr>
-          <td width="10%"><%= landmark.getKeyString() %></td>
+          <td width="10%"><%= landmark.getId() %></td>
         <td width="10%"><%= landmark.getName() %></td>
         <td width="10%"><%= landmark.getDescription() %></td>
         <td width="10%"><%= StringUtil.formatCoordE6(landmark.getLatitude()) %></td>
@@ -84,9 +84,9 @@
         <td width="10%"><%= DateUtils.getFormattedDateTime(request.getLocale(), landmark.getValidityDate()) %></td>
         <td width="10%"><%= landmark.getLayer() %></td>
         <td width="10%">
-            <a href="updateLandmark.jsp?key=<%= landmark.getKeyString() %>">Update</a>,&nbsp;
-            <a href="deleteLandmark.do?key=<%= landmark.getKeyString() %>">Delete</a>,&nbsp;
-            <a href="<%= response.encodeURL("/showLandmark/" + landmark.getKeyString()) %>">Show</a>
+            <a href="updateLandmark.jsp?key=<%= landmark.getId() %>">Update</a>,&nbsp;
+            <a href="deleteLandmark.do?key=<%= landmark.getId() %>">Delete</a>,&nbsp;
+            <a href="<%= response.encodeURL("/showLandmark/" + landmark.getId()) %>">Show</a>
         </td>
       </tr>
 <%

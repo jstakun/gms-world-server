@@ -45,8 +45,6 @@ public class ShowLocationAction extends org.apache.struts.action.Action {
                 double lon = Double.parseDouble(request.getParameter("lon"));
                 request.setAttribute("lat", StringUtil.formatCoordE6(lat));
                 request.setAttribute("lon", StringUtil.formatCoordE6(lon));
-                //String address = GeocodeUtils.processGoogleReverseGeocode(lat + "," + lon);
-                //String address = GeocodeUtils.processYahooReverseGeocode(lat + "," + lon);
                 String address = CloudmadeUtils.getReverseGeocode(lat,lon);
                 if (StringUtils.isNotEmpty(address)) {
                     request.setAttribute("address", address);

@@ -63,7 +63,7 @@ public class ShowLandmarkAction extends Action {
         		            	logger.log(Level.WARNING, "User agent: " + browser.getName() + ", " + request.getHeader("User-Agent"));
         		            	return null;
         		            } else {
-        		            	return LandmarkPersistenceUtils.selectLandmark(key);
+        		            	return LandmarkPersistenceUtils.selectLandmarkById(key);
         		            }
         				}
         			});
@@ -94,7 +94,7 @@ public class ShowLandmarkAction extends Action {
                         	CacheAction checkinCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
                 				@Override
                 				public Object executeAction() {
-                					return CheckinPersistenceUtils.selectAllLandmarkCheckins(key);
+                					return CheckinPersistenceUtils.selectCheckinsByLandmark(key);
                 				}
                 			});
                         	List<Checkin> checkins = (List<Checkin>)checkinCacheAction.getObjectFromCache("checkins_" + key);

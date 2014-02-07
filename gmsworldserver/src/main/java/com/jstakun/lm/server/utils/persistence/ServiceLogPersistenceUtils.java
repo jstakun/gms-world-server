@@ -41,7 +41,7 @@ public class ServiceLogPersistenceUtils {
         }
     }
 
-    public static long selectServiceLogByDayCount(Date day) {
+    public static long countServiceLogByDay(Date day) {
         //day in format dd-MM-yyyy
         long result = 0;
         PersistenceManager pm = PMF.get().getPersistenceManager();

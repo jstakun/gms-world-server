@@ -4,19 +4,21 @@
  */
 package com.jstakun.lm.server.utils.persistence;
 
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
-import com.jstakun.lm.server.config.ConfigurationManager;
-import com.jstakun.lm.server.persistence.GeocodeCache;
-import com.jstakun.lm.server.persistence.PMF;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.jdo.PersistenceManager;
-import javax.jdo.Query;
+
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import com.jstakun.lm.server.config.ConfigurationManager;
+import com.jstakun.lm.server.persistence.GeocodeCache;
+import com.jstakun.lm.server.utils.DateUtils;
+import com.jstakun.lm.server.utils.HttpUtils;
 
 /**
  *
@@ -25,9 +27,9 @@ import org.apache.commons.lang.StringUtils;
 public class GeocodeCachePersistenceUtils {
 
     private static final Logger logger = Logger.getLogger(GeocodeCachePersistenceUtils.class.getName());
-
+    
     public static void persistGeocode(String location, int status, String message, double latitude, double longitude) {
-        String loc = StringUtils.replace(location, "\n", " ");
+        /*String loc = StringUtils.replace(location, "\n", " ");
         
         GeocodeCache gc = new GeocodeCache(loc, status, message, latitude, longitude);
 
@@ -40,13 +42,22 @@ public class GeocodeCachePersistenceUtils {
             logger.log(Level.SEVERE, ex.getMessage(), ex);
         } finally {
             pm.close();
+        }*/
+    	try {
+        	String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/addItem";
+        	String params = "type=geocode&latitude=" + latitude + "&longitude=" + longitude + 
+        			"&address=" + URLEncoder.encode(location, "UTF-8");			 
+        	//logger.log(Level.INFO, "Calling: " + gUrl);
+        	String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, params);
+        	logger.log(Level.INFO, "Received response: " + gJson);
+        } catch (Exception e) {
+        	logger.log(Level.SEVERE, e.getMessage(), e);
         }
     }
 
     public static GeocodeCache checkIfGeocodeExists(String address) {
-        PersistenceManager pm = PMF.get().getPersistenceManager();
-        GeocodeCache gc = null;
-
+    	GeocodeCache gc = null;
+        /*PersistenceManager pm = PMF.get().getPersistenceManager();
         try {
             Query cacheQuery = pm.newQuery(GeocodeCache.class);
             cacheQuery.setFilter("location == address && status == 0");
@@ -61,15 +72,31 @@ public class GeocodeCachePersistenceUtils {
             logger.log(Level.SEVERE, ex.getMessage(), ex);
         } finally {
             pm.close();
+        }*/
+    	try {
+        	String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/itemProvider";
+        	String params = "type=geocode&address=" + URLEncoder.encode(address, "UTF-8");			 
+        	//logger.log(Level.INFO, "Calling: " + gUrl);
+        	String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, params);
+        	//logger.log(Level.INFO, "Received response: " + gJson);
+        	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
+        		JSONObject root = new JSONObject(gJson);
+        		if (root.has("latitude") && root.has("longitude")) {
+        			gc = new GeocodeCache(root.getString("location"), root.getInt("id"), "", root.getDouble("latitude"), root.getDouble("longitude"));
+        		}
+        	} else {
+        		logger.log(Level.SEVERE, "Received following server response: " + gJson);
+        	}
+        } catch (Exception e) {
+        	logger.log(Level.SEVERE, e.getMessage(), e);
         }
-
-        return gc;
+    	return gc;
     }
 
     public static List<GeocodeCache> selectNewestGeocodes() {
-        PersistenceManager pm = PMF.get().getPersistenceManager();
-        List<GeocodeCache> gcl = new ArrayList<GeocodeCache>();
-
+    	List<GeocodeCache> gcl = new ArrayList<GeocodeCache>();
+        /*PersistenceManager pm = PMF.get().getPersistenceManager();
+        
         try {
             String lastStr = ConfigurationManager.getParam(ConfigurationManager.NUM_OF_GEOCODES, "5");
             int last = Integer.parseInt(lastStr);
@@ -86,14 +113,41 @@ public class GeocodeCachePersistenceUtils {
             logger.log(Level.SEVERE, ex.getMessage(), ex);
         } finally {
             pm.close();
+        }*/
+    	
+    	try {
+    		String limit = ConfigurationManager.getParam(ConfigurationManager.NUM_OF_GEOCODES, "10");
+        	String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/itemProvider";
+        	String params = "type=geocode&limit=" + limit;			 
+        	//logger.log(Level.INFO, "Calling: " + gUrl);
+        	String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, params);
+        	//logger.log(Level.INFO, "Received response: " + gJson);
+        	if (StringUtils.startsWith(StringUtils.trim(gJson), "[")) {
+        		JSONArray root = new JSONArray(gJson);
+        		for (int i=0;i<root.length();i++) {
+        			JSONObject geocode = root.getJSONObject(i);
+        			if (geocode.has("latitude") && geocode.has("longitude")) {
+        				GeocodeCache gc = new GeocodeCache(geocode.getString("location"), geocode.getInt("id"), "", geocode.getDouble("latitude"), geocode.getDouble("longitude"));
+        				String creationDate = geocode.getString("creationDate");
+        				if (StringUtils.isNotEmpty(creationDate)) {
+        					gc.setCreationDate(DateUtils.getRHDate(creationDate));
+        				}
+        				gcl.add(gc);
+        			}
+        		}
+        	} else {
+        		logger.log(Level.SEVERE, "Received following server response: " + gJson);
+        	}
+        } catch (Exception e) {
+        	logger.log(Level.SEVERE, e.getMessage(), e);
         }
 
         return gcl;
     }
 
     public static GeocodeCache selectGeocodeCache(String k) {
-        GeocodeCache geocodeCache = null;
-        PersistenceManager pm = PMF.get().getPersistenceManager();
+        GeocodeCache gc = null;
+        /*PersistenceManager pm = PMF.get().getPersistenceManager();
 
         try {
             Key key = KeyFactory.stringToKey(k);
@@ -102,8 +156,25 @@ public class GeocodeCachePersistenceUtils {
             logger.log(Level.SEVERE, ex.getMessage(), ex);
         } finally {
             pm.close();
+        }*/
+        try {
+        	String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/itemProvider";
+        	String params = "type=geocode&id=" + k;			 
+        	//logger.log(Level.INFO, "Calling: " + gUrl);
+        	String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, params);
+        	//logger.log(Level.INFO, "Received response: " + gJson);
+        	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
+        		JSONObject root = new JSONObject(gJson);
+        		if (root.has("latitude") && root.has("longitude")) {
+        			gc = new GeocodeCache(root.getString("location"), root.getInt("id"), "", root.getDouble("latitude"), root.getDouble("longitude"));
+        			gc.setCreationDate(DateUtils.getRHDate(root.getString("creationDate")));
+        		}
+        	} else {
+        		logger.log(Level.SEVERE, "Received following server response: " + gJson);
+        	}
+        } catch (Exception e) {
+        	logger.log(Level.SEVERE, e.getMessage(), e);
         }
-
-        return geocodeCache;
+    	return gc;
     }
 }

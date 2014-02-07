@@ -1029,7 +1029,7 @@ public class FacebookUtils extends LayerHelper {
             String name = null;
             String link = null;
             if (key != null) {
-            	Landmark landmark = LandmarkPersistenceUtils.selectLandmark(key);
+            	Landmark landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
             	link = UrlUtils.getShortUrl(UrlUtils.getLandmarkUrl(landmark));    
             	name = landmark.getName();
             }
@@ -1089,7 +1089,7 @@ public class FacebookUtils extends LayerHelper {
         if (imageId > 3 || imageId < 0) {
             imageId = 2;
         }
-        Landmark landmark = LandmarkPersistenceUtils.selectLandmark(key);
+        Landmark landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
         if (landmark != null) {
             FacebookClient facebookClient = new DefaultFacebookClient(Commons.fb_page_token);
             ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");

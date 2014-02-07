@@ -139,7 +139,7 @@ public class UrlUtils {
         	return BITLY_URL + hash;
         } else {
         	//logger.log(Level.INFO, "Landmark " + landmark.getName() + " created before migration");
-        	return ConfigurationManager.SERVER_URL + "showLandmark/" + landmark.getKeyString();
+        	return ConfigurationManager.SERVER_URL + "showLandmark/" + landmark.getId();
         }
     }
 

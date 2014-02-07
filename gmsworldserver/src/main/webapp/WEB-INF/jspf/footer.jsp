@@ -68,18 +68,20 @@
             <div class="recent-comments">
                 <ul>
 <%
-   List<Landmark> landmarkList1 = null;
-   if (request.getAttribute("newestLandmarkList") != null) {
-     landmarkList1 = (List<Landmark>) request.getAttribute("newestLandmarkList");
-   } else {
-     landmarkList1 = LandmarkPersistenceUtils.selectNewestLandmarks();
+   List<Landmark> landmarkList1 = (List<Landmark>)request.getAttribute("newestLandmarkList");
+
+   if (landmarkList1 == null) {
+	   landmarkList1 = LandmarkPersistenceUtils.selectNewestLandmarks();
    }
    
-   for (Landmark landmark : landmarkList1)
-   {
+   if (landmarkList1 != null) {
+   
+   		for (Landmark landmark : landmarkList1) {
  %>
- <li><a href="<%= response.encodeURL("/showLandmark/" + landmark.getKeyString()) %>" title="<%= landmark.getName() %>"><%= landmark.getName() %></a><br/> &#45; <cite><a href="<%= response.encodeURL("/showUser/" + landmark.getUsername()) %>"><%= UrlUtils.createUsernameMask(landmark.getUsername()) %></a></cite></li>
+ <li><a href="<%= response.encodeURL("/showLandmark/" + landmark.getId()) %>" title="<%= landmark.getName() %>"><%= landmark.getName() %></a><br/> &#45; <cite><a href="<%= response.encodeURL("/showUser/" + landmark.getUsername()) %>"><%= UrlUtils.createUsernameMask(landmark.getUsername()) %></a></cite></li>
  <%
+   		}
+   
    }
  %>
                 </ul>

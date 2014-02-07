@@ -5,48 +5,18 @@
 
 package com.jstakun.lm.server.persistence;
 
-import com.google.appengine.api.datastore.Key;
-
-import java.util.Date;
 import java.io.Serializable;
-
-import javax.jdo.annotations.IdGeneratorStrategy;
-import javax.jdo.annotations.IdentityType;
-import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
-import javax.jdo.annotations.PrimaryKey;
+import java.util.Date;
 
 /**
  *
  * @author jstakun
  */
-@PersistenceCapable(identityType=IdentityType.APPLICATION, detachable="true")
 public class Checkin implements Serializable {
   private static final long serialVersionUID = 1L;
-
-  @PrimaryKey
-  @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-  private Key key;
-
-  @Persistent
   private Date creationDate;
-
-  @Persistent
   private String landmarkKey;
-
-  @Persistent
-  private String pin;
-
-  @Persistent
   private String username;
-
-  @Persistent
-  private Date pinDate;
-
-  @Persistent
-  private String status;
-
-  @Persistent
   private Integer type; //0 qr, 1 web
 
   public Checkin(String username, String landmarkKey, Integer type)
@@ -59,7 +29,6 @@ public class Checkin implements Serializable {
   
   public Checkin() {
 	  this.creationDate = new Date(System.currentTimeMillis());
-      this.status = "closed";
   }
 
   public Date getCreationDate()
@@ -70,5 +39,13 @@ public class Checkin implements Serializable {
   public String getUsername()
   {
       return username;
+  }
+  
+  public void setCreationDate(Date creationDate) {
+	  this.creationDate = creationDate;
+  }
+  
+  public void setUsername(String username) {
+	  this.username = username;
   }
 }

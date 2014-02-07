@@ -47,12 +47,6 @@
                 type="com.jstakun.lm.server.struts.DeleteLandmarkAction">
             <forward name="success" path="/admin/listLandmarks.do"/>
         </action>
-        <action path="/admin/deleteAllLandmarks"
-                type="com.jstakun.lm.server.struts.DeleteAllLandmarksAction">
-            <forward name="success" path="/admin/index.jsp"/>
-        </action>
-        <action path="/download/download"
-                type="com.jstakun.lm.server.struts.DownloadAction"/>
         <action  path="/admin/updateLandmark"
                  type="com.jstakun.lm.server.struts.UpdateLandmarkAction"
                  name="landmarkForm"
@@ -126,9 +120,6 @@
             <forward name="success_unreg" path="/confirm.jsp?step=3"/>
             <forward name="failure_unreg" path="/failure.jsp?step=3"/>
         </action>
-        <action path="/admin/listHotelFiles" type="com.jstakun.lm.server.struts.ListHotelsAction">
-            <forward name="success" path="/admin/listHotels.jsp"/>
-         </action>
         <action path="/getHeatMap" type="com.jstakun.lm.server.struts.GetHeatMapAction" scope="request">
             <forward name="success" path="/fullScreenHeatMap.jsp"/>
         </action>

@@ -103,7 +103,7 @@ public class GooglePlusUtils {
             
         	Landmark landmark = null; 
         	if (key != null) {
-        		landmark = LandmarkPersistenceUtils.selectLandmark(key);
+        		landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
         	}
         	
         	final String[] images = {"blogeo_j.png", "blogeo_a.png", "poi_j.png", "poi_a.png"};

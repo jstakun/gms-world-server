@@ -46,7 +46,7 @@
     for (GeocodeCache geocodeCache : geocodeCacheList)
     {
 %>
-            <li><a href="/showGeocode.do?key=<%= KeyFactory.keyToString(geocodeCache.getKey()) %>"><%= geocodeCache.getLocation().toUpperCase() %></a><br/><span>Posted on <%= DateUtils.getFormattedDateTime(request.getLocale(), geocodeCache.getCreationDate()) %></span></li>
+            <li><a href="/showGeocode/<%= geocodeCache.getId() %>"><%= geocodeCache.getLocation() %></a><br/><span>Posted on <%= DateUtils.getFormattedDateTime(request.getLocale(), geocodeCache.getCreationDate()) %></span></li>
 <%
     }
 %>

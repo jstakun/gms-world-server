@@ -78,7 +78,7 @@ public class ServiceLogAnalyticsServlet extends HttpServlet {
                 ArrayList<String> report = new ArrayList<String>();
                 long numOfCalls = 0;
                 while (fromDay.compareTo(today) <= 0) {
-                    numOfCalls = ServiceLogPersistenceUtils.selectServiceLogByDayCount(fromDay);
+                    numOfCalls = ServiceLogPersistenceUtils.countServiceLogByDay(fromDay);
                     report.add(DateUtils.getDay(fromDay) + ": " + numOfCalls);
                     fromDay = DateUtils.getNextDay(fromDay);
                 }

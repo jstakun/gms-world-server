@@ -27,8 +27,8 @@ public class DeleteLandmarkAction extends Action {
 
         if (request.getParameter("key") != null)
         {
-            String key = (String)request.getParameter("key");
-            LandmarkPersistenceUtils.deleteLandmark(key);
+            String key = (String)request.getParameter("key"); 
+            //TODO implement LandmarkPersistenceUtils.deleteLandmark(key);
         }
 
         return mapping.findForward( "success");

@@ -74,7 +74,7 @@ public class GlSendPostServlet extends HttpServlet {
 				String url = null;
 				String key = request.getParameter("key");
 				if (StringUtils.isNotEmpty(key)) {
-					Landmark landmark = LandmarkPersistenceUtils.selectLandmark(key);
+					Landmark landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
 					if (landmark != null) {
 						url = UrlUtils.getShortUrl(UrlUtils.getLandmarkUrl(landmark));
 						if (landmark.getLayer().equals("Social")) {

@@ -69,7 +69,7 @@
 
                         <div class="right">
 
-                            <h3><a href="<%= response.encodeURL("/showLandmark/" + landmark.getKeyString()) %>"><%= landmark.getName() %></a></h3>
+                            <h3><a href="<%= response.encodeURL("/showLandmark/" + landmark.getId()) %>"><%= landmark.getName() %></a></h3>
 
                             <p>Description: <%= landmark.getDescription() %></p>
 
@@ -87,8 +87,8 @@
                                 <h4>Post Info</h4>
                                 <ul>
                                     <li class="user"><a href="/showUser/<%= landmark.getUsername() %>"><%= landmark.getUsername() %></a></li>
-                                    <li class="time"><a href="<%= response.encodeURL("/showLandmark/" + landmark.getKeyString()) %>"><%= time %></a></li>
-                                    <li class="permalink"><a href="<%= response.encodeURL("/showLandmark/" + landmark.getKeyString()) %>">Permalink</a></li>
+                                    <li class="time"><a href="<%= response.encodeURL("/showLandmark/" + landmark.getId()) %>"><%= time %></a></li>
+                                    <li class="permalink"><a href="<%= response.encodeURL("/showLandmark/" + landmark.getId()) %>">Permalink</a></li>
 <%
     if (StringUtil.isSocialUser(user))
     {

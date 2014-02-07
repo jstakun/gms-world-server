@@ -4,24 +4,7 @@
  */
 package com.jstakun.lm.server.layers;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
-import com.jstakun.gms.android.deals.Deal;
-import com.jstakun.gms.android.landmarks.ExtendedLandmark;
-import com.jstakun.gms.android.landmarks.LandmarkFactory;
-import com.jstakun.lm.server.config.Commons;
-import com.jstakun.lm.server.persistence.Hotel;
-import com.jstakun.lm.server.utils.HttpUtils;
-import com.jstakun.lm.server.utils.JSONUtils;
-import com.jstakun.lm.server.utils.MathUtils;
-import com.jstakun.lm.server.utils.NumberUtils;
-import com.jstakun.lm.server.utils.StringUtil;
-import com.jstakun.lm.server.utils.memcache.CacheUtil;
-import com.openlapi.AddressInfo;
-import com.openlapi.QualifiedCoordinates;
-
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -37,15 +20,30 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+import com.jstakun.gms.android.deals.Deal;
+import com.jstakun.gms.android.landmarks.ExtendedLandmark;
+import com.jstakun.gms.android.landmarks.LandmarkFactory;
+import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.persistence.Hotel;
+import com.jstakun.lm.server.utils.DateUtils;
+import com.jstakun.lm.server.utils.HttpUtils;
+import com.jstakun.lm.server.utils.JSONUtils;
+import com.jstakun.lm.server.utils.MathUtils;
+import com.jstakun.lm.server.utils.NumberUtils;
+import com.jstakun.lm.server.utils.StringUtil;
+import com.jstakun.lm.server.utils.memcache.CacheUtil;
+import com.openlapi.AddressInfo;
+import com.openlapi.QualifiedCoordinates;
+
 /**
  *
  * @author jstakun
  */
 public class HotelsCombinedUtils extends LayerHelper {
 	
-	private static final SimpleDateFormat datetimeFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-    @Override
+	@Override
     public JSONObject processRequest(double latitudeMin, double longitudeMin, String query, int radius, int version, int limit, int stringLimit, String language, String flexString2) throws Exception {
         double lat, lng;
         double latitudeMax = 0.0, longitudeMax = 0.0;
@@ -215,7 +213,7 @@ public class HotelsCombinedUtils extends LayerHelper {
     
     private static List<Hotel> jsonToHotelList(String json) {
     	List<Hotel> hotels = new ArrayList<Hotel>();
-    	if (StringUtils.isNotEmpty(json)){
+    	if (StringUtils.startsWith(StringUtils.trim(json), "{")) {
     		JSONObject root = new JSONObject(json);
     		JSONArray results = root.optJSONArray("results");
     		if (results != null) {
@@ -232,15 +230,8 @@ public class HotelsCombinedUtils extends LayerHelper {
         				
         				String lastUpdateDate = hotelMap.remove("lastUpdateDate");
         				BeanUtils.populate(hotel, hotelMap);
-        				try {
-        	                Date d = datetimeFormatter.parse(lastUpdateDate);
-        	                hotel.setLastUpdateDate(d);
-        	            } catch (Exception ex) {
-        	                logger.log(Level.WARNING, ex.getMessage(), ex);
-        	                hotel.setLastUpdateDate(new Date());
-        	            }
-        				BeanUtils.populate(hotel, hotelMap);
-						hotels.add(hotel);
+        				hotel.setLastUpdateDate(DateUtils.getRHDate(lastUpdateDate));
+        	            hotels.add(hotel);
 					} catch (Exception e) {
 						logger.log(Level.SEVERE, e.getMessage(), e);
 					}
@@ -249,10 +240,9 @@ public class HotelsCombinedUtils extends LayerHelper {
     			logger.log(Level.SEVERE, "Received following response from server: " + json);
     		}
     	} else {
-    		logger.log(Level.SEVERE, "Received null response from server");
+    		logger.log(Level.SEVERE, "Received following response from server: " + json);
     	}
-    	
-    	
+    	 	
     	return hotels;
     }
     
@@ -281,9 +271,7 @@ public class HotelsCombinedUtils extends LayerHelper {
 	
 	@Override
 	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String language, String flexString2, Locale locale) throws Exception {
-	    //http://hotels-gmsworld.rhcloud.com/actions/hotelsProvider?lat=52.25&lng=20.95&radius=15&limit=100
-		//int l = NumberUtils.normalizeNumber(limit, 1, 100);
-        String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, limit, stringLimit, language, null);
+	    String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, limit, stringLimit, language, null);
         List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)CacheUtil.getObject(key);
 
         if (landmarks == null) {   	

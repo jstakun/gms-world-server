@@ -4,46 +4,28 @@
  */
 package com.jstakun.lm.server.utils.persistence;
 
-import com.jstakun.lm.server.utils.UrlUtils;
-import com.jstakun.lm.server.utils.StringUtil;
-import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
-import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.appengine.api.datastore.Query.Filter;
-import com.jstakun.lm.server.utils.memcache.CacheUtil;
-import java.util.Iterator;
-import com.beoui.geocell.model.GeocellQuery;
-import java.util.Collection;
-import com.google.common.collect.Collections2;
-import com.google.common.base.Function;
-import java.util.HashMap;
-import java.util.Map;
-import org.apache.commons.lang.StringUtils;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.beoui.geocell.GeocellManager;
-import com.beoui.geocell.model.BoundingBox;
-import com.beoui.geocell.model.Point;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.FetchOptions;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.Query.FilterOperator;
-import com.jstakun.lm.server.config.Commons;
-import com.jstakun.lm.server.config.ConfigurationManager;
-import com.jstakun.lm.server.persistence.Landmark;
-import com.jstakun.lm.server.persistence.PMF;
-import com.jstakun.lm.server.utils.DateUtils;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.jdo.PersistenceManager;
-import javax.jdo.Query;
+
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import com.jstakun.lm.server.config.ConfigurationManager;
+import com.jstakun.lm.server.persistence.Landmark;
+import com.jstakun.lm.server.utils.DateUtils;
+import com.jstakun.lm.server.utils.HttpUtils;
+import com.jstakun.lm.server.utils.memcache.CacheUtil;
 
 /**
  *
@@ -52,8 +34,9 @@ import javax.jdo.Query;
 public class LandmarkPersistenceUtils {
 
     private static final Logger logger = Logger.getLogger(LandmarkPersistenceUtils.class.getName());
-    private static Date defaultValidityDate = null;
     
+    
+    /*private static Date defaultValidityDate = null;
     static {
        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:dd");
        String vs = "2200/01/01 00:00:00";
@@ -62,15 +45,14 @@ public class LandmarkPersistenceUtils {
        } catch (ParseException pe) {
     	   
        }
-    }
+    }*/
     
-    public static Landmark persistLandmark(String name, String description, double latitude, double longitude, double altitude, String username, Date validityDate, String layer, String email) {
+    public static Map<String, String> persistLandmark(String name, String description, double latitude, double longitude, double altitude, String username, Date validityDate, String layer, String email) {
 
-        String key = null;
-        Landmark landmark = null;
-        Date vDate = validityDate;
+    	//String key = null;
+        //Date vDate = validityDate;
 
-        PersistenceManager pm = PMF.get().getPersistenceManager();
+        /*PersistenceManager pm = PMF.get().getPersistenceManager();
 
         try {
             if (vDate == null) {
@@ -97,15 +79,46 @@ public class LandmarkPersistenceUtils {
             logger.log(Level.SEVERE, ex.getMessage(), ex);
         } finally {
             pm.close();
+        }*/
+        
+    	Map<String, String> response = new HashMap<String, String>();
+    	
+        try {
+        	String landmarksUrl = "http://landmarks-gmsworld.rhcloud.com/actions/addItem";
+        	String params = "type=landmark&latitude=" + latitude + "&longitude=" + longitude + "&name=" + URLEncoder.encode(name, "UTF-8") + 
+        			"&altitude=" + altitude + "&username=" + username + "&layer=" + layer;			 
+        	if (validityDate != null) {
+        		params +=	"&validityDate=" + validityDate.getTime();
+        	}	
+        	if (description != null) {
+        		params += "&description=" + URLEncoder.encode(description, "UTF-8"); 
+        	}
+        	if (email != null) {
+        		params += "&email=" + email;
+        	}
+        	//logger.log(Level.INFO, "Calling: " + landmarksUrl);
+        	String landmarksJson = HttpUtils.processFileRequest(new URL(landmarksUrl), "POST", null, params);
+        	if (StringUtils.startsWith(StringUtils.trim(landmarksJson), "{")) {
+        		JSONObject resp = new JSONObject(landmarksJson);
+        		for (Iterator<String> iter = resp.keys(); iter.hasNext();) {
+        			String key = iter.next();
+        			String value = resp.get(key).toString();
+        			response.put(key, value);
+        		}
+        	} else {
+        		logger.log(Level.SEVERE, "Received following response from server: " + landmarksJson);
+        	}
+        } catch (Exception e) {
+        	logger.log(Level.SEVERE, e.getMessage(), e);
         }
 
-        return landmark;
+        return response;
     }
 
-    public static List<Landmark> selectAllLandmarks() {
+    /*public static List<Landmark> selectAllLandmarks() {
+    	List<Landmark> results = new ArrayList<Landmark>();
         PersistenceManager pm = PMF.get().getPersistenceManager();
-        List<Landmark> results = new ArrayList<Landmark>();
-
+        
         try {
             Query query = pm.newQuery(Landmark.class);
             query.setOrdering("creationDate desc");
@@ -120,9 +133,9 @@ public class LandmarkPersistenceUtils {
         }
 
         return results;
-    }
+    }*/
 
-    public static long deleteAllLandmarks() {
+    /*public static long deleteAllLandmarks() {
         PersistenceManager pm = PMF.get().getPersistenceManager();
         Query query = pm.newQuery(Landmark.class);
         long result = -1;
@@ -136,9 +149,9 @@ public class LandmarkPersistenceUtils {
         }
 
         return result;
-    }
+    }*/
 
-    public static void deleteLandmark(String k) {
+    /*public static void deleteLandmark(String k) {
         PersistenceManager pm = PMF.get().getPersistenceManager();
         Landmark landmark = selectLandmark(k);
 
@@ -153,12 +166,11 @@ public class LandmarkPersistenceUtils {
         } finally {
             pm.close();
         }
+    }*/
 
-    }
-
-    public static Landmark selectLandmarkByHash(String hashparam) {
+    public static Landmark selectLandmarkByHash(String hash) {
         Landmark landmark = null;
-        PersistenceManager pm = PMF.get().getPersistenceManager();
+        /*PersistenceManager pm = PMF.get().getPersistenceManager();
 
         try {
             Query query = pm.newQuery(Landmark.class, "hash == :hashparam");
@@ -169,14 +181,29 @@ public class LandmarkPersistenceUtils {
             logger.log(Level.SEVERE, ex.getMessage(), ex);
         } finally {
             pm.close();
+        }*/
+        try {
+        	String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
+        	String params = "hash=" + hash;			 
+        	//logger.log(Level.INFO, "Calling: " + gUrl);
+        	String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, params);
+        	//logger.log(Level.INFO, "Received response: " + gJson);
+        	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
+        		JSONObject l = new JSONObject(gJson);
+    		    landmark = jsonToLandmark(l);
+        	} else {
+        		logger.log(Level.SEVERE, "Received following server response: " + gJson);
+        	}
+        } catch (Exception e) {
+        	logger.log(Level.SEVERE, e.getMessage(), e);
         }
 
         return landmark;
     }
 
-    public static Landmark selectLandmark(String k) {
+    public static Landmark selectLandmarkById(String id) {
         Landmark landmark = null;
-        PersistenceManager pm = PMF.get().getPersistenceManager();
+        /*PersistenceManager pm = PMF.get().getPersistenceManager();
 
         try {
         	if (StringUtil.isAllLowerCaseAndDigit(k)) {
@@ -188,7 +215,7 @@ public class LandmarkPersistenceUtils {
                 Key key = KeyFactory.stringToKey(k);
                 landmark = pm.getObjectById(Landmark.class, key);
                 if (landmark != null) {
-                    landmark.setKeyString(k.toLowerCase());
+                    //landmark.setKeyString(k.toLowerCase());
                     pm.makePersistent(landmark);
                 }
             }
@@ -199,12 +226,27 @@ public class LandmarkPersistenceUtils {
             logger.log(Level.SEVERE, ex.getMessage(), ex);
         } finally {
             pm.close();
+        }*/
+        try {
+        	String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
+        	String params = "id=" + id;			 
+        	//logger.log(Level.INFO, "Calling: " + gUrl);
+        	String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, params);
+        	//logger.log(Level.INFO, "Received response: " + gJson);
+        	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
+        		JSONObject l = new JSONObject(gJson);
+    		    landmark = jsonToLandmark(l);
+        	} else {
+        		logger.log(Level.SEVERE, "Received following server response: " + gJson);
+        	}
+        } catch (Exception e) {
+        	logger.log(Level.SEVERE, e.getMessage(), e);
         }
 
         return landmark;
     }
 
-    public static void updateLandmark(String k, Map<String, Object> update) {
+    /*public static void updateLandmark(String k, Map<String, Object> update) {
         PersistenceManager pm = PMF.get().getPersistenceManager();
         Landmark landmark = selectLandmark(k);
 
@@ -230,12 +272,12 @@ public class LandmarkPersistenceUtils {
         } finally {
             pm.close();
         }
-    }
+    }*/
 
     public static List<Landmark> selectLandmarksByCoordsAndLayer(double latitude, double longitude, String layer, int limit, int radius) {
-
-        List<Landmark> results = new ArrayList<Landmark>();
-        PersistenceManager pm = PMF.get().getPersistenceManager();
+    	List<Landmark> results = new ArrayList<Landmark>();
+        
+        /*PersistenceManager pm = PMF.get().getPersistenceManager();
         Point center = new Point(latitude, longitude);
 
         try {
@@ -252,12 +294,35 @@ public class LandmarkPersistenceUtils {
             logger.log(Level.SEVERE, ex.getMessage(), ex);
         } finally {
             pm.close();
+        }*/
+        try {
+    		String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
+        	String params = "limit=" + limit + "&lat=" + latitude + "&lng=" + longitude + "&radius=" + radius + "&layer=" + layer;			 
+        	//logger.log(Level.INFO, "Calling: " + gUrl);
+        	String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, params);
+        	//logger.log(Level.INFO, "Received response: " + gJson);
+        	if (StringUtils.startsWith(StringUtils.trim(gJson), "[")) {
+        		JSONArray root = new JSONArray(gJson);
+        		for (int i=0;i<root.length();i++) {
+        			JSONObject landmark = root.getJSONObject(i);
+        			try {
+        			   Landmark l = jsonToLandmark(landmark);
+       				   results.add(l);
+        			} catch (Exception e) {
+        	        	logger.log(Level.SEVERE, e.getMessage(), e);
+        	        }      
+        		}
+        	} else {
+        		logger.log(Level.SEVERE, "Received following server response: " + gJson);
+        	}
+        } catch (Exception e) {
+        	logger.log(Level.SEVERE, e.getMessage(), e);
         }
 
         return results;
     }
 
-    public static List<Landmark> selectLandmarksByCoordsAndLayer(double latitudeMin, double longitudeMin, double latitudeMax, double longitudeMax, String layer, int limit) {
+    /*public static List<Landmark> selectLandmarksByCoordsAndLayer(double latitudeMin, double longitudeMin, double latitudeMax, double longitudeMax, String layer, int limit) {
 
         List<Landmark> results = new ArrayList<Landmark>();
         PersistenceManager pm = PMF.get().getPersistenceManager();
@@ -284,11 +349,10 @@ public class LandmarkPersistenceUtils {
         }
 
         return results;
-    }
+    }*/
 
-    public static boolean isEmptyLandmarksByPointAndLayer(String layer, double latitude, double longitude, int radius) {
-
-        boolean result = true;
+    public static int countLandmarksByCoordsAndLayer(String layer, double latitude, double longitude, int radius) {
+    	/*boolean result = true;
         PersistenceManager pm = PMF.get().getPersistenceManager();
         Point center = new Point(latitude, longitude);
         List<Object> params = new ArrayList<Object>();
@@ -299,20 +363,58 @@ public class LandmarkPersistenceUtils {
         try {
         	logger.log(Level.INFO, "Searching landmarks in layer " + layer + " ...");
         	result = GeocellManager.proximityIsEmptySearch(center,radius, Landmark.class, baseQuery, pm);
-        	//List<Landmark> landmarks = GeocellManager.proximitySearch(center, 1, radius, Landmark.class, baseQuery, pm);
-            //if (result != landmarks.isEmpty()) {
-            //	logger.log(Level.SEVERE, "Different results for layer " + layer + "!");
-            //}
         } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.getMessage(), ex);
         } finally {
             pm.close();
         }
 
-        return result;
+        return result;*/
+    	int result = 0;
+    	
+    	try {
+   			String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
+   			String params = "count=1&lat=" + latitude + "&lng=" + longitude + "&radius=" + radius + "&layer=" + layer;			 
+   			//logger.log(Level.INFO, "Calling: " + gUrl);
+   			String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, params);
+   			//logger.log(Level.INFO, "Received response: " + gJson);
+   			if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
+   				JSONObject count = new JSONObject(gJson);
+   				result = count.getInt("count");     
+   			} else {
+   				logger.log(Level.SEVERE, "Received following server response: " + gJson);
+   			}
+        } catch (Exception e) {
+       		logger.log(Level.SEVERE, e.getMessage(), e);
+        }
+
+    	return result;
     }
 
-    public static boolean isEmptyLandmarksByCoordsAndLayer(List<String> cells, String layer) {
+    public static Map<String, Integer> countLandmarksByCoords(double latitude, double longitude, int radius) {
+    	Map<String, Integer> bucket = new HashMap<String, Integer>();
+    	try {
+   			String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
+   			String params = "count=1&lat=" + latitude + "&lng=" + longitude + "&radius=" + radius;			 
+   			logger.log(Level.INFO, "Calling: " + gUrl + "?" + params);
+   			String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, params);
+   			//logger.log(Level.INFO, "Received response: " + gJson);
+   			if (StringUtils.startsWith(StringUtils.trim(gJson), "[")) {
+   				JSONArray count = new JSONArray(gJson);
+   				for (int i=0;i<count.length();i++) {
+   					JSONArray item = count.getJSONArray(i);
+   					bucket.put(item.getString(1), item.getInt(0));
+   				}
+   			} else {
+   				logger.log(Level.SEVERE, "Received following server response: " + gJson);
+   			}
+        } catch (Exception e) {
+       		logger.log(Level.SEVERE, e.getMessage(), e);
+        }
+    	return bucket;
+    }	
+    
+    /*public static boolean isEmptyLandmarksByCoordsAndLayer(List<String> cells, String layer) {
 
         boolean result = true;
         PersistenceManager pm = PMF.get().getPersistenceManager();
@@ -334,11 +436,12 @@ public class LandmarkPersistenceUtils {
         }
 
         return result;
-    }
+    }*/
 
-    public static Landmark selectLandmarkMatchingQuery(String queryString) {
-        PersistenceManager pm = PMF.get().getPersistenceManager();
-        Landmark landmark = null;
+    public static List<Landmark> selectLandmarkMatchingQuery(String query) {
+    	List<Landmark> landmarks = new ArrayList<Landmark>();
+    	/*PersistenceManager pm = PMF.get().getPersistenceManager();
+        
 
         try {
             Query query = pm.newQuery(Landmark.class);
@@ -360,15 +463,39 @@ public class LandmarkPersistenceUtils {
             logger.log(Level.SEVERE, ex.getMessage(), ex);
         } finally {
             pm.close();
+        }*/
+    	
+    	try {
+        	String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
+        	String params = "query=" + query;			 
+        	//logger.log(Level.INFO, "Calling: " + gUrl);
+        	String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, params);
+        	//logger.log(Level.INFO, "Received response: " + gJson);
+        	if (StringUtils.startsWith(StringUtils.trim(gJson), "[")) {
+        		JSONArray root = new JSONArray(gJson);
+        		for (int i=0;i<root.length();i++) {
+        			JSONObject landmark = root.getJSONObject(i);     			
+        			try {
+        			   Landmark l = jsonToLandmark(landmark);      				   
+       				   landmarks.add(l);
+        			} catch (Exception e) {
+        	        	logger.log(Level.SEVERE, e.getMessage(), e);
+        	        }      
+        		}
+        	} else {
+        		logger.log(Level.SEVERE, "Received following server response: " + gJson);
+        	}
+        } catch (Exception e) {
+        	logger.log(Level.SEVERE, e.getMessage(), e);
         }
 
-        return landmark;
+        return landmarks;
     }
 
-    public static List<Landmark> selectLandmarksByUserAndLayer(String user, String layer, long first, long last) {
-
+    public static List<Landmark> selectLandmarksByUserAndLayer(String user, String layer, int first, int last) {
         List<Landmark> results = new ArrayList<Landmark>();
-        PersistenceManager pm = PMF.get().getPersistenceManager();
+        
+        /*PersistenceManager pm = PMF.get().getPersistenceManager();
 
         try {
 
@@ -401,17 +528,48 @@ public class LandmarkPersistenceUtils {
             logger.log(Level.SEVERE, ex.getMessage(), ex);
         } finally {
             pm.close();
+        }*/
+        
+        try {
+        	int limit = last - first;
+    		String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
+        	String params = "limit=" + limit + "&first=" + first; 
+        	if (user != null) {
+   				params += "&username=" + user;			 
+   			} 
+   			if (layer != null) {
+   			    params += "&layer=" + layer;
+   			}
+        	logger.log(Level.INFO, "Calling: " + gUrl +"?" + params);
+        	String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, params);
+        	//logger.log(Level.INFO, "Received response: " + gJson);
+        	if (StringUtils.startsWith(StringUtils.trim(gJson), "[")) {
+        		JSONArray root = new JSONArray(gJson);
+        		for (int i=0;i<root.length();i++) {
+        			JSONObject landmark = root.getJSONObject(i);     			
+        			try {
+        			   Landmark l = jsonToLandmark(landmark);      				   
+       				   results.add(l);
+        			} catch (Exception e) {
+        	        	logger.log(Level.SEVERE, e.getMessage(), e);
+        	        }      
+        		}
+        	} else {
+        		logger.log(Level.SEVERE, "Received following server response: " + gJson);
+        	}
+        } catch (Exception e) {
+        	logger.log(Level.SEVERE, e.getMessage(), e);
         }
 
         return results;
     }
 
     public static List<Landmark> selectNewestLandmarks() {
-        PersistenceManager pm = PMF.get().getPersistenceManager();
-        List<Landmark> results = new ArrayList<Landmark>();
-
+    	List<Landmark> results = new ArrayList<Landmark>();
+        /*PersistenceManager pm = PMF.get().getPersistenceManager();
+        
         try {
-            String lastStr = ConfigurationManager.getParam(ConfigurationManager.NUM_OF_LANDMARKS, "5");
+            String lastStr = ConfigurationManager.getParam(ConfigurationManager.NUM_OF_LANDMARKS, "10");
             int last = Integer.parseInt(lastStr);
             if (last > 0) {
                 Query query = pm.newQuery(Landmark.class);
@@ -425,14 +583,61 @@ public class LandmarkPersistenceUtils {
             logger.log(Level.SEVERE, ex.getMessage(), ex);
         } finally {
             pm.close();
+        }*/
+    	
+    	try {
+    		String limit = ConfigurationManager.getParam(ConfigurationManager.NUM_OF_LANDMARKS, "10");
+        	String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
+        	String params = "limit=" + limit;			 
+        	//logger.log(Level.INFO, "Calling: " + gUrl);
+        	String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, params);
+        	//logger.log(Level.INFO, "Received response: " + gJson);
+        	if (StringUtils.startsWith(StringUtils.trim(gJson), "[")) {
+        		JSONArray root = new JSONArray(gJson);
+        		for (int i=0;i<root.length();i++) {
+        			JSONObject landmark = root.getJSONObject(i);
+        			
+        			try {
+        			   Landmark l = jsonToLandmark(landmark);
+       				   
+       				   results.add(l);
+        			} catch (Exception e) {
+        	        	logger.log(Level.SEVERE, e.getMessage(), e);
+        	        }      
+        		}
+        	} else {
+        		logger.log(Level.SEVERE, "Received following server response: " + gJson);
+        	}
+        } catch (Exception e) {
+        	logger.log(Level.SEVERE, e.getMessage(), e);
         }
+    
         return results;
     }
 
-    public static List<Landmark> selectByLandmarksMonth(long first, long last, String month) {
+	private static Landmark jsonToLandmark(JSONObject landmark) throws IllegalAccessException, InvocationTargetException {
+		Landmark l = new Landmark();
+		   
+		Map<String, String> landmarkMap = new HashMap<String, String>();
+		for(Iterator<String> iter = landmark.keys();iter.hasNext();) {
+				String key = iter.next();
+				Object value = landmark.get(key);
+				landmarkMap.put(key, value.toString());
+		}
+		   
+		String validityDate = landmarkMap.remove("validityDate");
+		String creationDate = landmarkMap.remove("creationDate");
+		BeanUtils.populate(l, landmarkMap);
+		   
+		l.setCreationDate(DateUtils.getRHDate(creationDate));
+		l.setValidityDate(DateUtils.getRHDate(validityDate));
+		   
+		return l;
+	}
 
-        List<Landmark> results = new ArrayList<Landmark>();
-        PersistenceManager pm = PMF.get().getPersistenceManager();
+    public static List<Landmark> selectLandmarksByMonth(int first, int last, String month) {
+    	List<Landmark> results = new ArrayList<Landmark>();
+        /*PersistenceManager pm = PMF.get().getPersistenceManager();
 
         try {
             Query query = pm.newQuery(Landmark.class);
@@ -450,15 +655,42 @@ public class LandmarkPersistenceUtils {
             logger.log(Level.SEVERE, ex.getMessage(), ex);
         } finally {
             pm.close();
+        }*/
+    	
+    	try {
+    		int limit = last - first;
+        	String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
+        	String params = "limit=" + limit + "&month=" + month + "&first=" + first;			 
+        	logger.log(Level.INFO, "Calling: " + gUrl + "?" + params);
+        	String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, params);
+        	//logger.log(Level.INFO, "Received response: " + gJson);
+        	if (StringUtils.startsWith(StringUtils.trim(gJson), "[")) {
+        		JSONArray root = new JSONArray(gJson);
+        		for (int i=0;i<root.length();i++) {
+        			JSONObject landmark = root.getJSONObject(i);
+        			
+        			try {
+        			   Landmark l = jsonToLandmark(landmark);
+       				   
+       				   results.add(l);
+        			} catch (Exception e) {
+        	        	logger.log(Level.SEVERE, e.getMessage(), e);
+        	        }      
+        		}
+        	} else {
+        		logger.log(Level.SEVERE, "Received following server response: " + gJson);
+        	}
+        } catch (Exception e) {
+        	logger.log(Level.SEVERE, e.getMessage(), e);
         }
 
         return results;
     }
 
     public static Map<String, Integer> getHeatMap(int nDays) {
-        Map<String, Integer> bucket = new HashMap<String, Integer>();
+    	Map<String, Integer> bucket = new HashMap<String, Integer>();
 
-        PersistenceManager pm = PMF.get().getPersistenceManager();
+        /*PersistenceManager pm = PMF.get().getPersistenceManager();
 
         try {
             Date nDaysAgo = DateUtils.getDayInPast(nDays, true);
@@ -484,7 +716,29 @@ public class LandmarkPersistenceUtils {
             logger.log(Level.SEVERE, ex.getMessage(), ex);
         } finally {
             pm.close();
+        }*/
+    	
+    	
+    	try {
+   			String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
+   			String params = "heatMap=1&days=" + nDays;			 
+   			//logger.log(Level.INFO, "Calling: " + gUrl);
+   			String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, params);
+   			//logger.log(Level.INFO, "Received response: " + gJson);
+   			if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
+   				JSONObject root = new JSONObject(gJson);
+   				for (Iterator<String> keys = root.keys();keys.hasNext();) {
+   					String key = keys.next();
+   					int value = root.getInt(key);
+   					bucket.put(key, value);
+   				}
+   			} else {
+   				logger.log(Level.SEVERE, "Received following server response: " + gJson);
+   			}
+        } catch (Exception e) {
+       		logger.log(Level.SEVERE, e.getMessage(), e);
         }
+    	
 
         if (!bucket.isEmpty()) {
             try {
@@ -498,10 +752,10 @@ public class LandmarkPersistenceUtils {
         return bucket;
     }
 
-   public static int selectByLandmarksMonthCount(String month) {
-        int result = 0;
+   public static int countLandmarksByMonth(String month) {
+	    int result = 0;
 
-        try {
+       /*try {
             DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
             com.google.appengine.api.datastore.Query query = new com.google.appengine.api.datastore.Query("Landmark");
             Date monthFirstDay = DateUtils.getFirstDayOfMonth(month);
@@ -512,23 +766,37 @@ public class LandmarkPersistenceUtils {
             Filter dateMaxFilter = new FilterPredicate("creationDate", FilterOperator.LESS_THAN, nextMonthFirstDay);
             Filter dateRangeFilter = CompositeFilterOperator.and(dateMinFilter, dateMaxFilter);
             query.setFilter(dateRangeFilter);
-            //query.addFilter("creationDate", FilterOperator.GREATER_THAN_OR_EQUAL, monthFirstDay);
-            //query.addFilter("creationDate", FilterOperator.LESS_THAN, nextMonthFirstDay);
-
+ 
             PreparedQuery pq = ds.prepare(query);
             FetchOptions option = FetchOptions.Builder.withLimit(Integer.MAX_VALUE);
             result = pq.countEntities(option);
         } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.getMessage(), ex);
+        }*/
+	   
+	    try {
+   			String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
+   			String params = "count=1&month=" + month;			 
+   			logger.log(Level.INFO, "Calling: " + gUrl);
+   			String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, params);
+   			logger.log(Level.INFO, "Received response: " + gJson);
+   			if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
+   				JSONObject count = new JSONObject(gJson);
+   				result = count.getInt("count");     
+   			} else {
+   				logger.log(Level.SEVERE, "Received following server response: " + gJson);
+   			}
+        } catch (Exception e) {
+       		logger.log(Level.SEVERE, e.getMessage(), e);
         }
 
         return result;
     }
 
-    public static int selectLandmarksByUserAndLayerCount(String user, String layer) {
+    public static int countLandmarksByUserAndLayer(String user, String layer) {
         int result = 0;
 
-        try {
+        /*try {
             DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
             com.google.appengine.api.datastore.Query query = new com.google.appengine.api.datastore.Query("Landmark");
             query.setKeysOnly();
@@ -554,12 +822,35 @@ public class LandmarkPersistenceUtils {
             result = pq.countEntities(option);
         } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.getMessage(), ex);
+        }*/
+        
+        try {
+   			String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
+   			String params = "count=1";
+   			if (user != null) {
+   				params += "&username=" + user;			 
+   			} 
+   			if (layer != null) {
+   			    params += "&layer=" + layer;
+   			}
+   			logger.log(Level.INFO, "Calling: " + gUrl + "?" + params);
+   			String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, params);
+   			logger.log(Level.INFO, "Received response: " + gJson);
+   			if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
+   				JSONObject count = new JSONObject(gJson);
+   				result = count.getInt("count");     
+   			} else {
+   				logger.log(Level.SEVERE, "Received following server response: " + gJson);
+   			}
+        } catch (Exception e) {
+       		logger.log(Level.SEVERE, e.getMessage(), e);
         }
+
 
         return result;
     }
 
-    public static int updateAllLandmarksWithGeoCells() {
+    /*public static int updateAllLandmarksWithGeoCells() {
         int result = 0;
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
         com.google.appengine.api.datastore.Query query = new com.google.appengine.api.datastore.Query("Landmark");
@@ -596,9 +887,9 @@ public class LandmarkPersistenceUtils {
         }
 
         return result;
-    }
+    }*/
 
-    public static Map<String, Collection<String>> filterLandmarks(String property, String[] pattern, String resultProperty, boolean unique, long createdBeforeMillis, Map<String, Integer> beforeCreated, Date afterDay) {
+    /*public static Map<String, Collection<String>> filterLandmarks(String property, String[] pattern, String resultProperty, boolean unique, long createdBeforeMillis, Map<String, Integer> beforeCreated, Date afterDay) {
 
         Map<String, List<String>> filteredLandmarks = new HashMap<String, List<String>>();
         for (int i = 0; i < pattern.length; i++) {
@@ -653,9 +944,9 @@ public class LandmarkPersistenceUtils {
         }
 
         return transformedLandmarks;
-    }
+    }*/
 
-    private static class UsernameTransformer implements Function<String, String> {
+    /*private static class UsernameTransformer implements Function<String, String> {
 
         private final String[] patterns;
 
@@ -676,5 +967,5 @@ public class LandmarkPersistenceUtils {
                 return f;
             }
         }
-    }
+    }*/
 }

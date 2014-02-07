@@ -8,9 +8,8 @@ import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.Date;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,7 +25,6 @@ import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.gdata.util.common.util.Base64;
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
-import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.CryptoTools;
 import com.jstakun.lm.server.utils.GeocodeUtils;
 import com.jstakun.lm.server.utils.HttpUtils;
@@ -59,8 +57,7 @@ public class PersistLandmarkServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        Landmark landmark = null;
-        String key = null;
+        String id = null, hash = null;
         PrintWriter out = response.getWriter();
 
         try {
@@ -94,7 +91,7 @@ public class PersistLandmarkServlet extends HttpServlet {
 
                 String email = request.getParameter("email");
                 
-                try {
+                /*try {
                 	String landmarksUrl = "http://landmarks-gmsworld.rhcloud.com/actions/addLandmark";
                 	String params = "latitude=" + latitude + "&longitude=" + longitude + "&name=" + URLEncoder.encode(name, "UTF-8") + 
                 			"&altitude=" + altitude + "&username=" + username + "&layer=" + layer;			 
@@ -112,9 +109,9 @@ public class PersistLandmarkServlet extends HttpServlet {
                 	logger.log(Level.INFO, "Received response: " + landmarksJson);
                 } catch (Exception e) {
                 	logger.log(Level.SEVERE, e.getMessage(), e);
-                }
+                }*/
                 
-                if (username.length() % 4 == 0) {
+                if (username != null && username.length() % 4 == 0) {
                 	try {
                 		username = new String(Base64.decode(username));
                 	} catch (Exception e) {
@@ -130,9 +127,12 @@ public class PersistLandmarkServlet extends HttpServlet {
                     }
                 }
 
-                landmark = LandmarkPersistenceUtils.persistLandmark(name, description, latitude, longitude, altitude, username, validityDate, layer, email);
+                Map<String, String> peristResponse = LandmarkPersistenceUtils.persistLandmark(name, description, latitude, longitude, altitude, username, validityDate, layer, email);
 
-                if (landmark != null) {	
+                id = peristResponse.get("id");
+                hash = peristResponse.get("hash");
+                
+                if (StringUtils.isNumeric(id)) {	
                     //After adding landmark remove from cache layer list for the location
                     //in order to make it visible immediately.
                     int radius = NumberUtils.getRadius(request.getParameter("radius"), 3, 6371);
@@ -140,9 +140,12 @@ public class PersistLandmarkServlet extends HttpServlet {
                     logger.log(Level.INFO, "Removed from cache layer list {0}: {1}", new Object[]{layerKey, CacheUtil.remove(layerKey)});           
                 	
                     //social notifications
-                    String landmarkUrl = UrlUtils.getShortUrl(UrlUtils.getLandmarkUrl(landmark));
-                    key = landmark.getKeyString();
                     
+                    String landmarkUrl = ConfigurationManager.SERVER_URL + "showLandmark/" + id;
+                    if (hash != null) {
+                    	landmarkUrl = UrlUtils.BITLY_URL + hash;
+                    } 
+                                        
                     String titleSuffix = "";
                     String userAgent = request.getHeader("User-Agent");
                     String[] tokens = StringUtils.split(userAgent, ",");
@@ -177,24 +180,24 @@ public class PersistLandmarkServlet extends HttpServlet {
                     
                     Queue queue = QueueFactory.getQueue("notifications");
                     queue.add(withUrl("/tasks/notificationTask").
-                    		param("key", key).
+                    		param("key", id).
                     		param("landmarkUrl", landmarkUrl).
                     		param("email", StringUtils.isNotEmpty(email) ? email : "").
                     		param("title", title).
                     		param("userUrl", userUrl).
                     		param("username", username).
-                    		param("body", body));              
+                    		param("body", body));          
                 }
             }
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         } finally {
-            if (key != null) {
-                response.setHeader("key", key);
+            if (id != null) {
+                response.setHeader("key", id);
             }
-            if (landmark != null && landmark.getHash() != null) {
-                response.setHeader("hash", landmark.getHash());
+            if (hash != null) {
+                response.setHeader("hash", hash);
             }
             response.setStatus(HttpServletResponse.SC_OK);
             out.print("Landmark created.");

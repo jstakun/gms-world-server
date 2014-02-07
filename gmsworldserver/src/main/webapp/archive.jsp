@@ -55,7 +55,7 @@
                                         for (Landmark landmark : landmarkList) {
                         %>
                         <li>
-                            <div class="post-title"><a href="<%= response.encodeURL("/showLandmark/" + landmark.getKeyString())%>"><%= landmark.getName()%></a></div>
+                            <div class="post-title"><a href="<%= response.encodeURL("/showLandmark/" + landmark.getId())%>"><%= landmark.getName()%></a></div>
                             <div class="post-details">Posted <%= prettyTime.format(landmark.getCreationDate()) %> on <%= DateUtils.getFormattedDateTime(request.getLocale(), landmark.getCreationDate()) %> by <a href="<%= landmark.getLayer().equals("Social") ? response.encodeURL("/blogeo/" + landmark.getUsername()) : response.encodeURL("/showUser/" + landmark.getUsername())%>"><%= UrlUtils.createUsernameMask(landmark.getUsername()) %></a> | Filed in layer <a href="/showLayer/<%= landmark.getLayer() %>"><%= LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer()) %></a></div>
                         </li>
                         <%

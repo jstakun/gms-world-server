@@ -6,7 +6,6 @@ package com.jstakun.lm.server.tasks;
 
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.utils.DateUtils;
-import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.ScreenshotPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.ServiceLogPersistenceUtils;
 import java.io.IOException;
@@ -46,7 +45,7 @@ public class TaskServlet extends HttpServlet {
         try {
             String entity = request.getParameter("entity");
             String action = request.getParameter("action");
-            String time = request.getParameter("time");
+            //String time = request.getParameter("time");
 
             if (StringUtils.isNotEmpty(action)) {
                 if (action.equalsIgnoreCase("purge")) {
@@ -57,18 +56,18 @@ public class TaskServlet extends HttpServlet {
                         logger.log(Level.INFO, "Deleted {0} logs.", count);
                     } else if (entity.equalsIgnoreCase("screenshot")) {
                         Date nDaysAgo = DateUtils.getDayInPast(Integer.parseInt(ConfigurationManager.getParam(ConfigurationManager.SCREENSHOT_OLDER_THAN_DAYS, "60")), true);
-                        long count = ScreenshotPersistenceUtils.deleteLogsOlderThanDate(nDaysAgo);
+                        long count = ScreenshotPersistenceUtils.deleteScreenshotsOlderThanDate(nDaysAgo);
                         logger.log(Level.INFO, "Deleted {0} screenshots.", count);
                     } else {
                         logger.log(Level.INFO, "Wrong parameter entity: {0}", entity);
                     }
-                } else if (action.equalsIgnoreCase("geocells")) {
-                    if (entity.equalsIgnoreCase("landmark")) {
-                        int count = LandmarkPersistenceUtils.updateAllLandmarksWithGeoCells();
-                        logger.log(Level.INFO, "Updated {0} landmarks with geocells.", count);
-                    } else {
-                        logger.log(Level.INFO, "Wrong parameter entity: {0}", entity);
-                    }
+                //} else if (action.equalsIgnoreCase("geocells")) {
+                //    if (entity.equalsIgnoreCase("landmark")) {
+                //        int count = LandmarkPersistenceUtils.updateAllLandmarksWithGeoCells();
+                //        logger.log(Level.INFO, "Updated {0} landmarks with geocells.", count);
+                //    } else {
+                //       logger.log(Level.INFO, "Wrong parameter entity: {0}", entity);
+                //    }
                 } else {
                     logger.log(Level.INFO, "Wrong parameter action: {0}", action);
                 }

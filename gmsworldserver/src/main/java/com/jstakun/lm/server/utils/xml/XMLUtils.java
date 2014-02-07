@@ -36,7 +36,7 @@ public class XMLUtils {
             xml.append("  <description>" + landmark.getDescription() + "</description>\r\n");
             xml.append("  <latitude>" + landmark.getLatitude() + "</latitude>\r\n");
             xml.append("  <longitude>" + landmark.getLongitude() + "</longitude>\r\n");
-            xml.append("  <key>" + landmark.getKeyString() + "</key>\r\n");
+            xml.append("  <key>" + landmark.getId() + "</key>\r\n");
             xml.append(" </landmark>\r\n");
         }
 
@@ -63,7 +63,7 @@ public class XMLUtils {
             xml.append("   <Placemark>\r\n");
             xml.append("    <name>" + landmark.getName() + "</name>\r\n");
             //xml.append("   <description>" + landmark.getDescription() + "</description>\r\n");
-            xml.append("    <description>" + landingPage + landmark.getKeyString() + "</description>\r\n");
+            xml.append("    <description>" + landingPage + landmark.getId() + "</description>\r\n");
             //<IconStyle>
             //<Icon>
             //<href>http://maps.google.com/mapfiles/kml/pal3/icon61.png</href>

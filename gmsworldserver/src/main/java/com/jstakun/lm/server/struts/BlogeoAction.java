@@ -55,7 +55,7 @@ public class BlogeoAction extends org.apache.struts.action.Action {
             List<Landmark> userLandmarks = LandmarkPersistenceUtils.selectLandmarksByUserAndLayer(user, "Social", first, first+INTERVAL);
             request.setAttribute("userLandmarks", userLandmarks);
 
-            int count = LandmarkPersistenceUtils.selectLandmarksByUserAndLayerCount(user, "Social");
+            int count = LandmarkPersistenceUtils.countLandmarksByUserAndLayer(user, "Social");
 
             if (count - first - INTERVAL > 0) {
                 next = first + INTERVAL;

@@ -65,14 +65,14 @@ public class AddCommentServlet extends HttpServlet {
                 	if (index > 0 && index < key.length()) {
                 	   String extractedKey = key.substring(index+1);	
                  	   logger.log(Level.INFO, "Key is: " + extractedKey);
-                 	   landmark = LandmarkPersistenceUtils.selectLandmark(extractedKey);
+                 	   landmark = LandmarkPersistenceUtils.selectLandmarkById(extractedKey);
                 	}                	 
                 } else {
-                    landmark = LandmarkPersistenceUtils.selectLandmark(key);
+                    landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
                 }
                 
                 if (landmark != null) {
-                    CommentPersistenceUtils.persistComment(username, landmark.getKeyString(), message);
+                    CommentPersistenceUtils.persistComment(username, landmark.getId() + "", message);
                     out.println("Comment saved");
                 } else {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);

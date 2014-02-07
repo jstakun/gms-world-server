@@ -62,7 +62,7 @@
                     
         <article class="underline">
         
-            <h4><a href="/showLandmark/<%= landmark.getKeyString() %>"><%= landmark.getName()%></a></h4>
+            <h4><a href="/showLandmark/<%= landmark.getId() %>"><%= landmark.getName()%></a></h4>
             
             <p>
                 Latitude: <%= StringUtil.formatCoordE6(landmark.getLatitude()) %>, Longitude: <%= StringUtil.formatCoordE6(landmark.getLongitude()) %> |

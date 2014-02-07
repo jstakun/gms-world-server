@@ -30,7 +30,7 @@ public class LandmarkForm extends DynaActionForm {
       if (request.getParameter("key") != null)
       {
             String k = (String)request.getParameter("key");
-            Landmark landmark = LandmarkPersistenceUtils.selectLandmark(k);
+            Landmark landmark = LandmarkPersistenceUtils.selectLandmarkById(k);
 
             set("name",landmark.getName());
             set("description",landmark.getDescription());

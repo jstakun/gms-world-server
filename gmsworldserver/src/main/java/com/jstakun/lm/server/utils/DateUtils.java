@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  *
@@ -21,7 +22,12 @@ public class DateUtils {
     private static DateFormat monthYearLong = new SimpleDateFormat("MMMMMM yyyy", Locale.getDefault());
     private static DateFormat monthYearShort = new SimpleDateFormat("MM-yyyy", Locale.getDefault());
     private static DateFormat monthShort = new SimpleDateFormat("MMM", Locale.getDefault());
-
+    
+    private static final SimpleDateFormat rhDatetimeFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    static {
+    	rhDatetimeFormatter.setTimeZone(TimeZone.getTimeZone("GMT-5:00"));
+    }
+    
     public static String getMonthString(Date date) {
         return monthShort.format(date);
     }
@@ -170,5 +176,13 @@ public class DateUtils {
         } else {
             return "unknown";	
         }       
+    }
+    
+    public static Date getRHDate(String creationDate) {
+    	try {
+    		return rhDatetimeFormatter.parse(creationDate);
+		} catch (Exception ex) {
+			return new Date();
+		}
     }
 }

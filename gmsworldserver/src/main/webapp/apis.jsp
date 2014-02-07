@@ -107,6 +107,7 @@
                     <p>
                         <b>Server</b>
                         <ul>
+                            <li><a href="http://www.openshift.com/">OpenShift by Red Hat</a></li>
                             <li><a href="http://code.google.com/appengine/">Google App Engine</a></li>
                             <li><a href="http://www.google.com/recaptcha">reCaptcha</a></li>
                             <li><a href="http://www.addthis.com/">AddThis</a></li>

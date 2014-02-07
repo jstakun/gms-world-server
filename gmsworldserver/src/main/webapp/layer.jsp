@@ -96,7 +96,7 @@
             {
 %>
       <tr>
-        <td width="32%"><a href="<%= response.encodeURL("/showLandmark/" + landmark.getKeyString()) %>"><%= landmark.getName() %></a></td>
+        <td width="32%"><a href="<%= response.encodeURL("/showLandmark/" + landmark.getId()) %>"><%= landmark.getName() %></a></td>
         <td width="17%"><%= StringUtil.formatCoordE6(landmark.getLatitude()) %></td>
         <td width="17%"><%= StringUtil.formatCoordE6(landmark.getLongitude()) %></td>
         <td width="17%"><%= DateUtils.getFormattedDateTime(request.getLocale(), landmark.getCreationDate()) %></td>

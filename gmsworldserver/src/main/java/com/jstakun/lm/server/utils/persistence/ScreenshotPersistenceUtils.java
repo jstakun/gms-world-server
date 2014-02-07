@@ -54,7 +54,7 @@ public class ScreenshotPersistenceUtils {
         return key;
     }
 
-    public static long deleteLogsOlderThanDate(Date day) {
+    public static long deleteScreenshotsOlderThanDate(Date day) {
         int result = 0;
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
         BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();

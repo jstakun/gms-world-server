@@ -64,7 +64,7 @@ public class ShowLayerAction extends org.apache.struts.action.Action {
 		            	logger.log(Level.WARNING, "User agent: " + browser.getName() + ", " + request.getHeader("User-Agent"));
 		            	return 0;
 		            } else {
-		            	return LandmarkPersistenceUtils.selectLandmarksByUserAndLayerCount(null, layer);
+		            	return LandmarkPersistenceUtils.countLandmarksByUserAndLayer(null, layer);
 		            }
 				}
 			});

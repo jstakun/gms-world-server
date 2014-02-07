@@ -62,16 +62,16 @@ public class LocationCheckInServlet extends HttpServlet {
                 	if (index > 0 && index < key.length()) {
                 	   String extractedKey = key.substring(index+1);	
                 	   logger.log(Level.INFO, "Key is: " + extractedKey);
-                	   landmark = LandmarkPersistenceUtils.selectLandmark(extractedKey);
+                	   landmark = LandmarkPersistenceUtils.selectLandmarkById(extractedKey);
                 	} else {
                 	    logger.log(Level.INFO, "No key found!");
                 	}
                 } else {
                 	logger.log(Level.INFO, "Key is: " + key);
-                    landmark = LandmarkPersistenceUtils.selectLandmark(key);
+                    landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
                 }
                 if (landmark != null && landmark.getName() != null) {
-                    CheckinPersistenceUtils.persistCheckin(username, landmark.getKeyString(), 1);
+                    CheckinPersistenceUtils.persistCheckin(username, landmark.getId() + "", 1);
                     response.setHeader("name", URLEncoder.encode(landmark.getName(), "UTF-8"));
                     resp.put("status", "ok");
                 } else {

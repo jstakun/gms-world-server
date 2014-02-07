@@ -7,15 +7,12 @@ package com.jstakun.lm.server.persistence;
 import java.util.Date;
 import java.util.List;
 
-import com.google.appengine.api.datastore.Key;
-
 /**
  *
  * @author jstakun
  */
 public class Hotel {
-	private Key key;
-    private int hotelId;
+	private int hotelId;
     private String hotelFileName;
     private String hotelName;
     private double rating;
@@ -361,10 +358,6 @@ public class Hotel {
      */
     public void setChainID(int ChainID) {
         this.ChainID = ChainID;
-    }
-
-    public Key getKey() {
-        return key;
     }
 
     /**

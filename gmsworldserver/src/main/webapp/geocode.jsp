@@ -42,7 +42,7 @@
                         <%
                            } else {
                         %>
-                        <h3>Geocode location for: <%= gc.getLocation().toUpperCase() %></h3>
+                        <h3>Geocode location for: <%= gc.getLocation() %></h3>
 
                         <p class="image-section">
                           <a href="/showGeocode.do?key=<%= key %>&fullScreenGeocodeMap=1">

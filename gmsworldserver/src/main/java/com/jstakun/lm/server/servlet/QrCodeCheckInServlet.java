@@ -46,7 +46,7 @@ public class QrCodeCheckInServlet extends HttpServlet {
             String key = request.getParameter("key");
             if (CommonPersistenceUtils.isKeyValid(key)) {
                 String username = StringUtil.getUsername(request.getAttribute("username"),request.getParameter("username"));
-                Landmark landmark = LandmarkPersistenceUtils.selectLandmark(key);
+                Landmark landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
                 if (landmark != null)
                 {
                     CheckinPersistenceUtils.persistCheckin(username, key, 0);
