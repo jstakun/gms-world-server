@@ -97,7 +97,7 @@ public class XMLUtils {
             xml.append("  <iconURI>http://gms-world.appspot.com/images/" + layer.getName() + ".png</iconURI>\r\n");
             xml.append("  <manageable>" + layer.isManageable() + "</manageable>\r\n");
             xml.append("  <enabled>" + layer.isEnabled() + "</enabled>\r\n");
-            xml.append("  <checkinable>" + layer.inCheckinable() + "</checkinable>\r\n");
+            xml.append("  <checkinable>" + layer.isCheckinable() + "</checkinable>\r\n");
             xml.append(" </layer>\r\n");
 
         }

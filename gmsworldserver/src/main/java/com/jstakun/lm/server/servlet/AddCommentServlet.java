@@ -65,11 +65,15 @@ public class AddCommentServlet extends HttpServlet {
                 	if (index > 0 && index < key.length()) {
                 	   String extractedKey = key.substring(index+1);	
                  	   logger.log(Level.INFO, "Key is: " + extractedKey);
-                 	   landmark = LandmarkPersistenceUtils.selectLandmarkById(extractedKey);
+                 	   if (CommonPersistenceUtils.isKeyValid(extractedKey)) {
+                 		   landmark = LandmarkPersistenceUtils.selectLandmarkById(extractedKey);
+                 	   } else {
+                 		   logger.log(Level.INFO, "Wrong key format " + extractedKey);
+                 	   }
                 	}                	 
                 } else {
                     landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
-                }
+                } 
                 
                 if (landmark != null) {
                     CommentPersistenceUtils.persistComment(username, landmark.getId() + "", message);

@@ -12,6 +12,7 @@ import com.jstakun.lm.server.persistence.OAuthToken;
 import com.jstakun.lm.server.utils.memcache.CacheAction;
 import com.jstakun.lm.server.utils.persistence.CheckinPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.CommentPersistenceUtils;
+import com.jstakun.lm.server.utils.persistence.CommonPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.OAuthTokenPersistenceUtils;
 
@@ -62,8 +63,11 @@ public class ShowLandmarkAction extends Action {
         		            if (browser.getGroup() == Browser.BOT || browser.getGroup() == Browser.BOT_MOBILE || browser.getGroup() == Browser.UNKNOWN) {
         		            	logger.log(Level.WARNING, "User agent: " + browser.getName() + ", " + request.getHeader("User-Agent"));
         		            	return null;
-        		            } else {
+        		            } else if (CommonPersistenceUtils.isKeyValid(key)) {
         		            	return LandmarkPersistenceUtils.selectLandmarkById(key);
+        		            } else {
+        		            	logger.log(Level.SEVERE, "Wrong key format " + key);
+        		            	return null;
         		            }
         				}
         			});

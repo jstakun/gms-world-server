@@ -1,9 +1,9 @@
 <cronentries>
-  <!--cron>
+  <cron>
     <url>/_ah/sessioncleanup?clear</url>
     <description>Clean up sessions</description>
     <schedule>every 60 minutes</schedule>
-  </cron-->
+  </cron>
   <cron>
     <url>/heatMap?inBackground=true</url>
     <description>Heat map</description>

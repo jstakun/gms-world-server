@@ -68,7 +68,7 @@ public class ShowLayerAction extends org.apache.struts.action.Action {
 		            }
 				}
 			});
-        	Integer count = (Integer)countCacheAction.getObjectFromCache(layer + "_count_key");
+        	Integer count = countCacheAction.getIntFromCache(layer + "_count_key");
 
             request.setAttribute("layer", layer);
 

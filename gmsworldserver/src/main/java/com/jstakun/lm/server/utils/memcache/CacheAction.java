@@ -30,4 +30,18 @@ public class CacheAction {
 		}
 		return o;
 	}
+	
+	public Integer getIntFromCache(String key) {
+		Integer i = (Integer)CacheUtil.getObject(key);
+		if (i != null) {
+			logger.log(Level.INFO, "Found object {0} in cache", key);
+		} else {
+			i = (Integer)executor.executeAction();
+			logger.log(Level.INFO, "Execution action for {0}", key);
+			if (i > 0) {
+				CacheUtil.put(key, i);
+			}
+		}
+		return i;
+	}
 }

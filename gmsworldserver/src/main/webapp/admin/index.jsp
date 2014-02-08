@@ -17,9 +17,6 @@
     <h4>
       <a href="listLandmarks.do" onclick="return confirm_action()">List Landmarks</a>
     </h4>
-    <!--h4>
-      <a href="deleteAllLandmarks.do">Delete All Landmarks</a>
-    </h4-->
     <h4>
       <a href="createLandmark.jsp">Create Landmark</a>
     </h4>
@@ -34,9 +31,6 @@
     </h4>
      <h4>
       <a href="/admin/taskExecute?action=purge&entity=screenshot" onclick="return confirm_action()">Purge screenshot data</a>
-    </h4>
-    <!--h4>
-      <a href="/admin/taskExecute?action=geocells&entity=landmark" onclick="return confirm_action()">GeoCells Landmarks in 5 mins</a>
     </h4>
     <!--h4>
       <a href="/admin/taskExecute?action=emailing" onclick="return confirm_action()">Emailing</a>
@@ -86,8 +80,5 @@
     <h4>
       <a href="/admin/taskExecute?action=filter&filterProperty=email&pattern=@&resultProperty=email" onclick="return confirm_action()">Users emails</a>
     </h4>
-    <!--h4>
-      <a href="/mapreduce/status" onclick="return confirm_action()">MapReduce</a>
-    </h4-->
   </body>
 </html>

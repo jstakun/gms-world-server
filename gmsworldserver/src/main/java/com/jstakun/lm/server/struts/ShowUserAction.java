@@ -73,7 +73,7 @@ public class ShowUserAction extends org.apache.struts.action.Action {
 		            }
 				}
 			});
-        	Integer count = (Integer)countCacheAction.getObjectFromCache(user + "_count_key");
+        	Integer count = countCacheAction.getIntFromCache(user + "_count_key");
         	
         	request.setAttribute("user", user);
 

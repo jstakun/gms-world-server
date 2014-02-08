@@ -71,7 +71,6 @@ public class GetHeatMapAction extends org.apache.struts.action.Action {
 		});
         Map<String, Integer> heatMapData = (Map<String, Integer>)heatMapCacheAction.getObjectFromCache(DateUtils.getDay(new Date()) + "_" + nDays + "_heatMap");
         
-
         request.setAttribute("heatMapData", heatMapData);
 
         if (inBackground) {

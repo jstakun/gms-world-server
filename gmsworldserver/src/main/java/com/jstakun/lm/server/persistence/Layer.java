@@ -6,35 +6,15 @@ package com.jstakun.lm.server.persistence;
 
 import java.io.Serializable;
 
-import javax.jdo.annotations.IdentityType;
-import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
-import javax.jdo.annotations.PrimaryKey;
-
-/**
- *
- * @author jstakun
- */
-@PersistenceCapable(identityType = IdentityType.APPLICATION, detachable="true")
 public class Layer implements Serializable {
 
-    /**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
-	@PrimaryKey
     private String name;
-    @Persistent
     private String desc;
-    @Persistent
     private boolean enabled;
-    @Persistent
     private boolean manageable;
-    @Persistent
     private boolean checkinable;
-    @Persistent
     private String formatted;
-    @Persistent
     private int version;
 
     public Layer(String name, String desc, boolean enabled, boolean manageable, boolean checkinable, String formatted) {
@@ -67,16 +47,45 @@ public class Layer implements Serializable {
         return manageable;
     }
 
-    public boolean inCheckinable()
+    public boolean isCheckinable()
     {
         return checkinable;
+    }
+    
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public void setManageable(boolean manageable) {
+        this.manageable = manageable;
+    }
+
+    public void setCheckinable(boolean checkinable)
+    {
+        this.checkinable = checkinable;
     }
 
     public String getFormatted() {
         return formatted;
     }
+    
+    public void setFormatted(String formatted) {
+        this.formatted = formatted;
+    }
 
     public String getDesc() {
         return desc;
+    }
+    
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+    
+    public void setVersion(int version) {
+    	this.version = version;
+    }
+    
+    public int geVersion() {
+    	return version;
     }
 }

@@ -67,7 +67,7 @@ public class JSONUtils {
             jsonObject.put("iconURI", ConfigurationManager.SERVER_URL + "images/" + layer.getName() + ".png");
             jsonObject.put("manageable", layer.isManageable());
             jsonObject.put("enabled", layer.isEnabled());
-            jsonObject.put("checkinable", layer.inCheckinable());
+            jsonObject.put("checkinable", layer.isCheckinable());
             boolean isEmpty = (count.containsKey(name) ? (count.get(name) == 0) : true);
             jsonObject.put("isEmpty", isEmpty);
             jsonArray.add(jsonObject);
@@ -96,7 +96,7 @@ public class JSONUtils {
             jsonObject.put("iconURI", ConfigurationManager.SERVER_URL + "images/" + name + ".png");
             jsonObject.put("manageable", layer.isManageable());
             jsonObject.put("enabled", layer.isEnabled());
-            jsonObject.put("checkinable", layer.inCheckinable());
+            jsonObject.put("checkinable", layer.isCheckinable());
             boolean isEmpty = (count.containsKey(name) ? (count.get(name) == 0) : true);
             jsonObject.put("isEmpty", isEmpty);
             jsonArray.add(jsonObject);
