@@ -5,12 +5,11 @@
 package com.jstakun.lm.server.oauth;
 
 import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.jstakun.lm.server.config.Commons;
 
 /**
  *
@@ -33,14 +32,14 @@ public class FBLoginServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String userPass = request.getParameter(Commons.OAUTH_USERNAME);
+        /*String userPass = request.getParameter(Commons.OAUTH_USERNAME);
         if (userPass != null) {
             String[] unPw = CommonUtils.userPass(userPass);
             if (unPw != null) {
                 request.getSession().setAttribute("token", unPw[0]);
                 request.getSession().setAttribute("password", unPw[1]);             
             } 
-        } 
+        }*/ 
         
         response.sendRedirect(FBCommons.getLoginRedirectURL());
 

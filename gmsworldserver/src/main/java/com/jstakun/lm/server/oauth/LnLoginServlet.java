@@ -39,14 +39,14 @@ public class LnLoginServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         try {
-        	String userPass = request.getParameter(Commons.OAUTH_USERNAME);  
+        	/*String userPass = request.getParameter(Commons.OAUTH_USERNAME);  
             if (userPass != null) {
                 String[] unPw = CommonUtils.userPass(userPass);
                 if (unPw != null) {
                     request.getSession().setAttribute("token", unPw[0]);
                     request.getSession().setAttribute("password", unPw[1]);
                 }
-            }  
+            } */
             //request.getSession().setAttribute("lntoken", requestToken.getToken());
             //request.getSession().setAttribute("lnsecret", requestToken.getSecret());
         

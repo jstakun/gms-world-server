@@ -36,9 +36,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author jstakun
  */
 public class FBPlacesServlet extends HttpServlet {
-    //https://graph.facebook.com/search?q=coffee&type=place&center=37.76,122.427&distance=1000
-
-    /**
+     /**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
@@ -50,13 +48,13 @@ public class FBPlacesServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+	protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/json;charset=UTF-8");
         PrintWriter out = response.getWriter();
         try {
             //THIS is for NOKIA application
-            
+        	Logger.getLogger(FBPlacesServlet.class.getName()).log(Level.SEVERE, "Oops !!! Somebody called " + FBPlacesServlet.class.getName());
+
             if (HttpUtils.isEmptyAny(request, "latitude", "longitude", "distance")) {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             } else {
@@ -65,15 +63,15 @@ public class FBPlacesServlet extends HttpServlet {
                 String distance = request.getParameter("distance");
                 int limit = NumberUtils.getInt(request.getParameter("limit"), 30);
 
-                String username = (String) request.getSession().getAttribute("token");
-                String password = (String) request.getSession().getAttribute("password");
-                OAuthToken token = OAuthTokenPersistenceUtils.selectOAuthTokenByService(username, password, Commons.FACEBOOK);
+                //String username = (String) request.getSession().getAttribute("token");
+                //String password = (String) request.getSession().getAttribute("password");
+                //OAuthToken token = OAuthTokenPersistenceUtils.selectOAuthTokenByService(username, password, Commons.FACEBOOK);
 
-                String t = null;
-                if (token != null) {
-                	t = token.getToken();
-                }
-                FacebookClient facebookClient = new DefaultFacebookClient(t);
+                //String t = null;
+                //if (token != null) {
+                //	t = token.getToken();
+                //}
+                FacebookClient facebookClient = new DefaultFacebookClient(Commons.fb_app_token);
 
                 String query = request.getParameter("q");
                 JsonObject placesSearch = null;
@@ -203,6 +201,6 @@ public class FBPlacesServlet extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "FB Places servlet";
     }// </editor-fold>
 }

@@ -7,11 +7,15 @@ package com.jstakun.lm.server.servlet;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.jstakun.lm.server.persistence.User;
 import com.jstakun.lm.server.utils.persistence.UserPersistenceUtils;
+
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -31,6 +35,7 @@ public class DownloadServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private int BUFSIZE = 1024;
     private static final String PATH = "./WEB-INF/download/";
+    private static final Logger logger = Logger.getLogger(DownloadServlet.class.getName());
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
@@ -41,7 +46,8 @@ public class DownloadServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-          doDownload(request, response);
+          //doDownload(request, response);
+    	logger.log(Level.SEVERE, "Oops !!! Somebody called " + DownloadServlet.class.getName());
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -77,10 +83,10 @@ public class DownloadServlet extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Download Servlet";
     }// </editor-fold>
 
-    private void doDownload(HttpServletRequest req, HttpServletResponse resp)
+    /*private void doDownload(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
 
         ServletOutputStream op = null;
@@ -157,5 +163,5 @@ public class DownloadServlet extends HttpServlet {
                 op.close();
             }
         }
-    }
+    }*/
 }

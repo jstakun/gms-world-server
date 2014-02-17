@@ -67,7 +67,7 @@ public class FsAuthServlet extends HttpServlet {
 				Map<String, String> userData = FoursquareUtils.getUserData(accessToken);
 				
 				if (!userData.isEmpty()) {
-					OAuthTokenPersistenceUtils.persistOAuthToken(Commons.FOURSQUARE, accessToken, "anonymous", "anonymous", userData.get(ConfigurationManager.FS_USERNAME));
+					//OAuthTokenPersistenceUtils.persistOAuthToken(Commons.FOURSQUARE, accessToken, "anonymous", "anonymous", userData.get(ConfigurationManager.FS_USERNAME));
 					userData.put("token", accessToken);
 
 					Queue queue = QueueFactory.getQueue("notifications");

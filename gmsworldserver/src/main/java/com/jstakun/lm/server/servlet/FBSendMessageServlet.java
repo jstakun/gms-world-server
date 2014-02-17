@@ -47,7 +47,14 @@ public class FBSendMessageServlet extends HttpServlet {
 	 * @throws IOException
 	 *             if an I/O error occurs
 	 */
-	protected void processRequest(HttpServletRequest request,
+	protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+	    	
+		logger.log(Level.SEVERE, "Oops !!! Somebody called " + FBSendMessageServlet.class.getName());
+
+	}
+	
+	/*protected void processRequest(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html;charset=UTF-8");
 		PrintWriter out = response.getWriter();
@@ -99,8 +106,7 @@ public class FBSendMessageServlet extends HttpServlet {
 		} finally {
 			out.close();
 		}
-
-	}
+	}*/
 
 	// <editor-fold defaultstate="collapsed"
 	// desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -147,6 +153,6 @@ public class FBSendMessageServlet extends HttpServlet {
 	 */
 	@Override
 	public String getServletInfo() {
-		return "Short description";
+		return "FB Send Message";
 	}// </editor-fold>
 }

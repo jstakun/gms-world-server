@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="windows-1250" ?>
 <!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN" "http://struts.apache.org/dtds/struts-config_1_2.dtd">
 <struts-config>
+    <controller locale="false"/>
     <form-beans>
         <form-bean name="landmarkForm"
                    type="com.jstakun.lm.server.struts.LandmarkForm">
@@ -47,11 +48,11 @@
                 type="com.jstakun.lm.server.struts.DeleteLandmarkAction">
             <forward name="success" path="/admin/listLandmarks.do"/>
         </action>
-        <action  path="/admin/updateLandmark"
-                 type="com.jstakun.lm.server.struts.UpdateLandmarkAction"
-                 name="landmarkForm"
-                 input="/admin/updateLandmark.jsp"
-                 scope="request" >
+        <action path="/admin/updateLandmark"
+                type="com.jstakun.lm.server.struts.UpdateLandmarkAction"
+                name="landmarkForm"
+                input="/admin/updateLandmark.jsp"
+                scope="request" >
             <forward name="success" path="/admin/listLandmarks.do"/>
         </action>
         <action path="/showLandmark" type="com.jstakun.lm.server.struts.ShowLandmarkAction">
@@ -105,7 +106,11 @@
         <action path="/archive" type="com.jstakun.lm.server.struts.ShowArchiveAction">
             <forward name="success" path="/archive.jsp"/>
         </action>
-        <action input="/contact.jsp" name="contactForm" path="/contact" scope="request" type="com.jstakun.lm.server.struts.ContactAction">
+        <action input="/contact.jsp" 
+                name="contactForm" 
+                path="/contact" 
+                scope="request" 
+                type="com.jstakun.lm.server.struts.ContactAction">
             <forward name="success" path="/contact.jsp"/>
         </action>
         <action path="/blogeo" type="com.jstakun.lm.server.struts.BlogeoAction">
@@ -120,7 +125,7 @@
             <forward name="success_unreg" path="/confirm.jsp?step=3"/>
             <forward name="failure_unreg" path="/failure.jsp?step=3"/>
         </action>
-        <action path="/getHeatMap" type="com.jstakun.lm.server.struts.GetHeatMapAction" scope="request">
+        <action path="/getHeatMap" type="com.jstakun.lm.server.struts.GetHeatMapAction">
             <forward name="success" path="/fullScreenHeatMap.jsp"/>
         </action>
         <action path="/showLayer" type="com.jstakun.lm.server.struts.ShowLayerAction">

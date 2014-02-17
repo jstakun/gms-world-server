@@ -106,11 +106,11 @@ public class ShowLandmarkAction extends Action {
                         	if (checkins != null && !checkins.isEmpty()) {
                                 Checkin lastCheckin = checkins.get(0);
                                 String username = lastCheckin.getUsername();
-                                List<OAuthToken> tokens = OAuthTokenPersistenceUtils.selectOAuthTokenByUser(lastCheckin.getUsername());
-                                if (tokens != null && !tokens.isEmpty()) {
-                                    OAuthToken userToken = tokens.get(0);
-                                    username = userToken.getUserId() + "@" + userToken.getService();
-                                }
+                                //List<OAuthToken> tokens = OAuthTokenPersistenceUtils.selectOAuthTokenByUser(lastCheckin.getUsername());
+                                //if (tokens != null && !tokens.isEmpty()) {
+                                //    OAuthToken userToken = tokens.get(0);
+                                //    username = userToken.getUserId() + "@" + userToken.getService();
+                                //}
                                 request.setAttribute("lastCheckinUsername", username);
                                 request.setAttribute("lastCheckinDate", lastCheckin.getCreationDate());
                                 if (checkins.size() == 100) {

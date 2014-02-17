@@ -4,21 +4,12 @@
  */
 package com.jstakun.lm.server.servlet;
 
-import com.google.gdata.util.common.util.Base64;
-import com.jstakun.lm.server.config.Commons;
-import com.jstakun.lm.server.persistence.OAuthToken;
-import com.jstakun.lm.server.persistence.User;
-import com.jstakun.lm.server.utils.BCTools;
-import com.jstakun.lm.server.utils.CryptoTools;
-import com.jstakun.lm.server.utils.StringUtil;
-import com.jstakun.lm.server.utils.persistence.OAuthTokenPersistenceUtils;
-import com.jstakun.lm.server.utils.Sha1;
-import com.jstakun.lm.server.utils.persistence.UserPersistenceUtils;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -29,6 +20,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+
+import com.google.gdata.util.common.util.Base64;
+import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.persistence.User;
+import com.jstakun.lm.server.utils.BCTools;
+import com.jstakun.lm.server.utils.CryptoTools;
+import com.jstakun.lm.server.utils.Sha1;
+import com.jstakun.lm.server.utils.StringUtil;
+import com.jstakun.lm.server.utils.persistence.UserPersistenceUtils;
 
 /**
  *
@@ -133,27 +133,27 @@ public class ServicesAuthorizationFilter implements Filter {
                             //logger.log(Level.INFO, "User {0} failed to authn!", usr);
                         //}
 
-                        String token = httpRequest.getHeader("OAuthtoken");
-                        String secret = httpRequest.getHeader("OAuthsecret");
-                        try {
-                            if (secret != null) {
-                                secret = new String(Base64.decode(secret.getBytes()));
-                            }
-                        } catch (Exception ex) {
-                            logger.log(Level.SEVERE, null, ex);
-                        }
+                        //String token = httpRequest.getHeader("OAuthtoken");
+                        //String secret = httpRequest.getHeader("OAuthsecret");
+                        //try {
+                        //    if (secret != null) {
+                        //        secret = new String(Base64.decode(secret.getBytes()));
+                        //    }
+                        //} catch (Exception ex) {
+                        //    logger.log(Level.SEVERE, null, ex);
+                        //}
 
-                        if (auth && token != null && secret != null)
-                        {
+                        //if (auth && token != null && secret != null)
+                        //{
                             //logger.log(Level.INFO, "User {0} provided oauth token", usr);
-                            httpRequest.getSession().setAttribute("token", token);
-                            httpRequest.getSession().setAttribute("password",  secret);
-                        }
+                            //httpRequest.getSession().setAttribute("token", token);
+                            //httpRequest.getSession().setAttribute("password",  secret);
+                        //}
                     }
                     else 
                     {
-                    	//logger.log(Level.INFO, "Checking if user {0} has registered with token", usr);
-                    	String svc = request.getParameter("service");
+                    	logger.log(Level.SEVERE, "Need to check if user {0} has registered with token !!!", usr);
+                    	/*String svc = request.getParameter("service");
                         if (OAuthTokenPersistenceUtils.countOAuthTokenByUser(usr, pwdStr) > 0)
                         {
                             httpRequest.setAttribute("username", usr);
@@ -168,7 +168,7 @@ public class ServicesAuthorizationFilter implements Filter {
                         }
 
                         httpRequest.getSession().setAttribute("token", usr);
-                        httpRequest.getSession().setAttribute("password", pwdStr);
+                        httpRequest.getSession().setAttribute("password", pwdStr);*/
                     }
                 }
             }

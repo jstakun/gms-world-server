@@ -49,15 +49,15 @@ public class GlAuthServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         try {
-            String username = (String) request.getSession().getAttribute("token");
-            String password = (String) request.getSession().getAttribute("password");
+            //String username = (String) request.getSession().getAttribute("token");
+            //String password = (String) request.getSession().getAttribute("password");
 
-            if (username == null) {
-                username = "anonymous";
-            }
-            if (password == null) {
-                password = "anonymous";
-            }
+            //if (username == null) {
+            //    username = "anonymous";
+            //}
+            //if (password == null) {
+            //    password = "anonymous";
+            //}
             
             //String token = (String) request.getSession().getAttribute("gltoken");
             //String secret = (String) request.getSession().getAttribute("glsecret");
@@ -92,7 +92,7 @@ public class GlAuthServlet extends HttpServlet {
                 	userData.put(ConfigurationManager.GL_EXPIRES_IN, Long.toString(expires_in));
                 }
                
-                OAuthTokenPersistenceUtils.persistOAuthToken(Commons.GOOGLE_PLUS, token, username, password, userData.get(ConfigurationManager.GL_USERNAME));          
+                //OAuthTokenPersistenceUtils.persistOAuthToken(Commons.GOOGLE_PLUS, token, username, password, userData.get(ConfigurationManager.GL_USERNAME));          
 
                 //move to task
                 //GooglePlusUtils.sendMessage(accessToken, refreshToken, null, ConfigurationManager.SERVER_URL, Commons.LOGIN);

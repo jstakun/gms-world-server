@@ -6,7 +6,6 @@ package com.jstakun.lm.server.utils.persistence;
 
 import com.jstakun.lm.server.persistence.OAuthToken;
 import com.jstakun.lm.server.persistence.PMF;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,9 +18,9 @@ import javax.jdo.Query;
  */
 public class OAuthTokenPersistenceUtils {
 
-    private static final Logger logger = Logger.getLogger(OAuthTokenPersistenceUtils.class.getName());
+    //private static final Logger logger = Logger.getLogger(OAuthTokenPersistenceUtils.class.getName());
 
-    public static void persistOAuthToken(String service, String token, String username, String password, String userId) {
+    /*public static void persistOAuthToken(String service, String token, String username, String password, String userId) {
         OAuthToken oauth_token = new OAuthToken(service, token, username, password, userId);
 
         PersistenceManager pm = PMF.get().getPersistenceManager();
@@ -33,9 +32,9 @@ public class OAuthTokenPersistenceUtils {
         } finally {
             pm.close();
         }
-    }
+    }*/
 
-    public static long countOAuthTokenByUser(String username, String pwd) {
+    /*public static long countOAuthTokenByUser(String username, String pwd) {
         PersistenceManager pm = PMF.get().getPersistenceManager();
         long result = 0;
         try {
@@ -51,9 +50,9 @@ public class OAuthTokenPersistenceUtils {
         }
 
         return result;
-    }
+    }*/
 
-     public static List<OAuthToken> selectOAuthTokenByUser(String username) {
+    /*public static List<OAuthToken> selectOAuthTokenByUser(String username) {
         //Logger.getLogger(OAuthTokenPersistenceUtils.class.getName()).log(Level.INFO, "selectOAuthTokenByUser " + username + " " + pwd);
         PersistenceManager pm = PMF.get().getPersistenceManager();
         List<OAuthToken> result = new ArrayList<OAuthToken>();
@@ -71,9 +70,9 @@ public class OAuthTokenPersistenceUtils {
         }
 
         return result;
-    }
+    }*/
 
-    public static OAuthToken selectOAuthTokenByService(String username, String pwd, String svc) {
+    /*public static OAuthToken selectOAuthTokenByService(String username, String pwd, String svc) {
         //Logger.getLogger(OAuthTokenPersistenceUtils.class.getName()).log(Level.INFO, "selectOAuthTokenByService " + username + " " + pwd + " " + svc);
         PersistenceManager pm = PMF.get().getPersistenceManager();
         OAuthToken token = null;
@@ -93,5 +92,5 @@ public class OAuthTokenPersistenceUtils {
         }
 
         return token;
-    }
+    }*/
 }

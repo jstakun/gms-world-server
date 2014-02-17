@@ -19,6 +19,7 @@ import twitter4j.TwitterFactory;
 import twitter4j.auth.RequestToken;
 
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.utils.memcache.CacheUtil;
 
 /**
  * 
@@ -48,7 +49,7 @@ public class TwLoginServlet extends HttpServlet {
 	protected void processRequest(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
-		String userPass = request.getParameter(Commons.OAUTH_USERNAME);
+		/*String userPass = request.getParameter(Commons.OAUTH_USERNAME);
 		if (userPass != null) {
 
 			String[] unPw = CommonUtils.userPass(userPass);
@@ -56,15 +57,18 @@ public class TwLoginServlet extends HttpServlet {
 				request.getSession().setAttribute("token", unPw[0]);
 				request.getSession().setAttribute("password", unPw[1]);
 			}
-		}
+		}*/
 
 		Twitter twitter = new TwitterFactory().getInstance();
 		twitter.setOAuthConsumer(Commons.TW_CONSUMER_KEY, Commons.TW_CONSUMER_SECRET);
 		
 		try {
 			RequestToken requestToken = twitter.getOAuthRequestToken(TwCommons.CALLBACK_URL);
-			request.getSession().setAttribute("requestToken", requestToken);
+			//request.getSession().setAttribute("requestToken", requestToken);
+			
+			CacheUtil.put("twRequestToken_" + requestToken.getToken(), requestToken);
 			response.sendRedirect(requestToken.getAuthenticationURL());
+			
 		} catch (TwitterException e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 		}

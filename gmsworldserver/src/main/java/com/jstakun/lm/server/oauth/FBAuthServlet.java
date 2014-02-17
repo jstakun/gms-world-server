@@ -6,12 +6,6 @@ package com.jstakun.lm.server.oauth;
 
 import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
 
-import com.google.appengine.api.taskqueue.Queue;
-import com.google.appengine.api.taskqueue.QueueFactory;
-import com.jstakun.lm.server.config.Commons;
-import com.jstakun.lm.server.config.ConfigurationManager;
-import com.jstakun.lm.server.layers.FacebookUtils;
-import com.jstakun.lm.server.utils.persistence.OAuthTokenPersistenceUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,9 +17,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
+
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.QueueFactory;
+import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.ConfigurationManager;
+import com.jstakun.lm.server.layers.FacebookUtils;
 
 /**
  *
@@ -53,17 +52,7 @@ public class FBAuthServlet extends HttpServlet {
             String code = request.getParameter("code");
             if (code != null && code.length() > 0) {
                 
-            	String username = "anonymous";
-                String password = "anonymous";
-                HttpSession session = request.getSession();
-                if (session.getAttribute("token") != null) {
-                    username = (String) session.getAttribute("token");
-                }
-                if (session.getAttribute("password") != null) {
-                    password = (String) session.getAttribute("password");
-                }
-                
-                String authURL = FBCommons.getAuthURL(code);
+            	String authURL = FBCommons.getAuthURL(code);
                 
                 URL url = new URL(authURL);
 
@@ -86,7 +75,7 @@ public class FBAuthServlet extends HttpServlet {
                 }
                 if (accessToken != null) {
                     Map<String, String> userData = FacebookUtils.getMyData(accessToken);
-                    OAuthTokenPersistenceUtils.persistOAuthToken(Commons.FACEBOOK, accessToken, username, password, userData.get(ConfigurationManager.FB_USERNAME));
+                    //OAuthTokenPersistenceUtils.persistOAuthToken(Commons.FACEBOOK, accessToken, username, password, userData.get(ConfigurationManager.FB_USERNAME));
                     userData.put("token", accessToken);
                     if (expires > 0) {
                     	userData.put(ConfigurationManager.FB_EXPIRES_IN, Integer.toString(expires));

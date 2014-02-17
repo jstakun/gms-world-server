@@ -179,6 +179,7 @@ public class UserPersistenceUtils {
 
     return result;
     }*/
+    
     public static boolean userExists(String username) {
         int result = 0;
         try {

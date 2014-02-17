@@ -43,7 +43,7 @@ public class GlLoginServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         try {
 
-            if (request.getParameter(Commons.OAUTH_USERNAME) != null) {
+            /*if (request.getParameter(Commons.OAUTH_USERNAME) != null) {
                 String userPass = request.getParameter(Commons.OAUTH_USERNAME);
 
                 String[] unPw = CommonUtils.userPass(userPass);
@@ -51,7 +51,7 @@ public class GlLoginServlet extends HttpServlet {
                     request.getSession().setAttribute("token", unPw[0]);
                     request.getSession().setAttribute("password", unPw[1]);
                 }
-            }
+            }*/
 
             response.sendRedirect(GlCommons.getAuthorizationUrl());
 

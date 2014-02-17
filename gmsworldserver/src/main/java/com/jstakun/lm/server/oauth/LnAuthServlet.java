@@ -55,15 +55,15 @@ public class LnAuthServlet extends HttpServlet {
                 /*String token = (String) request.getSession().getAttribute("lntoken");
                 String secret = (String) request.getSession().getAttribute("lnsecret");*/
                 
-                String username = (String)request.getSession().getAttribute("token");
-                String password = (String)request.getSession().getAttribute("password");
+                //String username = (String)request.getSession().getAttribute("token");
+                //String password = (String)request.getSession().getAttribute("password");
                 
-                if (username == null) {
-                    username = "anonymous";
-                }
-                if (password == null) {
-                    password = "anonymous";
-                }
+                //if (username == null) {
+                //    username = "anonymous";
+                //}
+                //if (password == null) {
+                //    password = "anonymous";
+                //}
 
                 String code = request.getParameter("code");
                 String state = request.getParameter("state");
@@ -86,7 +86,7 @@ public class LnAuthServlet extends HttpServlet {
                 {
                 	Map<String, String> userData = LinkedInUtils.getUserDate(accessToken);
                 	
-                	OAuthTokenPersistenceUtils.persistOAuthToken(Commons.LINKEDIN, accessToken, username, password, userData.get(ConfigurationManager.LN_USERNAME));
+                	//OAuthTokenPersistenceUtils.persistOAuthToken(Commons.LINKEDIN, accessToken, username, password, userData.get(ConfigurationManager.LN_USERNAME));
 
                     userData.put("token", accessToken);
                     
