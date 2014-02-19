@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -228,9 +229,9 @@ public class HotelsCombinedUtils extends LayerHelper {
     	    				hotelMap.put(key, value.toString());
     	    			}
         				
-        				String lastUpdateDate = hotelMap.remove("lastUpdateDate");
+        				ConvertUtils.register(DateUtils.getRHCloudDateConverter(), Date.class);
         				BeanUtils.populate(hotel, hotelMap);
-        				hotel.setLastUpdateDate(DateUtils.getRHDate(lastUpdateDate));
+        				
         	            hotels.add(hotel);
 					} catch (Exception e) {
 						logger.log(Level.SEVERE, e.getMessage(), e);

@@ -6,6 +6,7 @@ package com.jstakun.lm.server.utils.persistence;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -87,9 +89,10 @@ public class CheckinPersistenceUtils {
     					Object value = checkinJSon.get(name);
     					cMap.put(name, value.toString());
     				}   		    	
-    				String creationDate = cMap.remove("creationDate");
-    				BeanUtils.populate(c, cMap);  
-    				c.setCreationDate(DateUtils.getRHDate(creationDate));
+    				
+    				ConvertUtils.register(DateUtils.getRHCloudDateConverter(), Date.class);
+    				BeanUtils.populate(c, cMap);
+    				
     		    	results.add(c);
     		    }
         	} else {

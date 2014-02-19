@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="windows-1250" ?>
 <!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN" "http://struts.apache.org/dtds/struts-config_1_2.dtd">
 <struts-config>
-    <controller locale="false"/>
     <form-beans>
         <form-bean name="landmarkForm"
                    type="com.jstakun.lm.server.struts.LandmarkForm">
@@ -145,5 +144,6 @@
             <forward name="mobile" path="/m/main.jsp"/>
         </action>
     </action-mappings>
+    <controller locale="false"/>
     <message-resources parameter="com.jstakun.lm.server.struts.ApplicationResource"/>
 </struts-config>

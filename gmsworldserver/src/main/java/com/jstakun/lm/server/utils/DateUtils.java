@@ -12,6 +12,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import org.apache.commons.beanutils.converters.DateConverter;
+
 /**
  *
  * @author jstakun
@@ -23,10 +25,10 @@ public class DateUtils {
     private static DateFormat monthYearShort = new SimpleDateFormat("MM-yyyy", Locale.getDefault());
     private static DateFormat monthShort = new SimpleDateFormat("MMM", Locale.getDefault());
     
-    private static final SimpleDateFormat rhDatetimeFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-    static {
-    	rhDatetimeFormatter.setTimeZone(TimeZone.getTimeZone("GMT-5:00"));
-    }
+    private static final String rhcloudDatetimeFormat = "yyyy-MM-dd'T'HH:mm:ss";
+    private static final String rhcloudTimeZone = "GMT-5:00";
+    private static DateConverter dtConverter = null;
+    
     
     public static String getMonthString(Date date) {
         return monthShort.format(date);
@@ -178,11 +180,12 @@ public class DateUtils {
         }       
     }
     
-    public static Date getRHDate(String creationDate) {
-    	try {
-    		return rhDatetimeFormatter.parse(creationDate);
-		} catch (Exception ex) {
-			return new Date();
-		}
+    public static DateConverter getRHCloudDateConverter() {
+    	if (dtConverter == null) {
+    		dtConverter = new DateConverter();
+    		dtConverter.setPattern(rhcloudDatetimeFormat);
+    		dtConverter.setTimeZone(TimeZone.getTimeZone(rhcloudTimeZone));
+    	}
+		return dtConverter; 
     }
 }

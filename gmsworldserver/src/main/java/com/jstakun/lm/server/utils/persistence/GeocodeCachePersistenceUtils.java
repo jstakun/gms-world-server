@@ -4,13 +4,20 @@
  */
 package com.jstakun.lm.server.utils.persistence;
 
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -82,7 +89,7 @@ public class GeocodeCachePersistenceUtils {
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
         		JSONObject root = new JSONObject(gJson);
         		if (root.has("latitude") && root.has("longitude")) {
-        			gc = new GeocodeCache(root.getString("location"), root.getInt("id"), "", root.getDouble("latitude"), root.getDouble("longitude"));
+        			gc = jsonToGeocode(root);
         		}
         	} else {
         		logger.log(Level.SEVERE, "Received following server response: " + gJson);
@@ -127,12 +134,12 @@ public class GeocodeCachePersistenceUtils {
         		for (int i=0;i<root.length();i++) {
         			JSONObject geocode = root.getJSONObject(i);
         			if (geocode.has("latitude") && geocode.has("longitude")) {
-        				GeocodeCache gc = new GeocodeCache(geocode.getString("location"), geocode.getInt("id"), "", geocode.getDouble("latitude"), geocode.getDouble("longitude"));
-        				String creationDate = geocode.getString("creationDate");
-        				if (StringUtils.isNotEmpty(creationDate)) {
-        					gc.setCreationDate(DateUtils.getRHDate(creationDate));
-        				}
-        				gcl.add(gc);
+        				try {
+        					GeocodeCache gc = jsonToGeocode(geocode);      				   
+            				gcl.add(gc);
+             			} catch (Exception e) {
+             	        	logger.log(Level.SEVERE, e.getMessage(), e);
+             	        }  
         			}
         		}
         	} else {
@@ -166,8 +173,7 @@ public class GeocodeCachePersistenceUtils {
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
         		JSONObject root = new JSONObject(gJson);
         		if (root.has("latitude") && root.has("longitude")) {
-        			gc = new GeocodeCache(root.getString("location"), root.getInt("id"), "", root.getDouble("latitude"), root.getDouble("longitude"));
-        			gc.setCreationDate(DateUtils.getRHDate(root.getString("creationDate")));
+        			gc = jsonToGeocode(root);
         		}
         	} else {
         		logger.log(Level.SEVERE, "Received following server response: " + gJson);
@@ -177,4 +183,20 @@ public class GeocodeCachePersistenceUtils {
         }
     	return gc;
     }
+    
+    private static GeocodeCache jsonToGeocode(JSONObject geocode) throws IllegalAccessException, InvocationTargetException {
+		GeocodeCache gc = new GeocodeCache();
+		   
+		Map<String, String> geocodeMap = new HashMap<String, String>();
+		for(Iterator<String> iter = geocode.keys();iter.hasNext();) {
+				String key = iter.next();
+				Object value = geocode.get(key);
+				geocodeMap.put(key, value.toString());
+		}
+		   
+		ConvertUtils.register(DateUtils.getRHCloudDateConverter(), Date.class);
+		BeanUtils.populate(gc, geocodeMap);
+		   
+		return gc;
+	}
 }

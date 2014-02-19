@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -625,12 +626,8 @@ public class LandmarkPersistenceUtils {
 				landmarkMap.put(key, value.toString());
 		}
 		   
-		String validityDate = landmarkMap.remove("validityDate");
-		String creationDate = landmarkMap.remove("creationDate");
+		ConvertUtils.register(DateUtils.getRHCloudDateConverter(), Date.class);
 		BeanUtils.populate(l, landmarkMap);
-		   
-		l.setCreationDate(DateUtils.getRHDate(creationDate));
-		l.setValidityDate(DateUtils.getRHDate(validityDate));
 		   
 		return l;
 	}

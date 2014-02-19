@@ -24,22 +24,19 @@ public class GeocodeCache implements Serializable {
 
   private int id;
 
-  private String message;
-
   private String location;
   
-  public GeocodeCache(String location, int id, String message, double latitude, double longitude)
+  public GeocodeCache(String location, int id, double latitude, double longitude)
   {
 	  this();
-      this.location = location;
-      this.id= id;
-      this.message = message;
-      this.latitude = latitude;
-      this.longitude = longitude;    
+      this.setLocation(location);
+      this.setId(id);
+      this.setLatitude(latitude);
+      this.setLongitude(longitude);    
   }
 
   public GeocodeCache() {
-	  this.creationDate = new Date(System.currentTimeMillis());
+	  this.setCreationDate(new Date(System.currentTimeMillis()));
   }
   
   public double getLatitude()
@@ -68,6 +65,22 @@ public class GeocodeCache implements Serializable {
   
   public int getId() {
 	  return id;
+  }
+
+  public void setLocation(String location) {
+	this.location = location;
+  }
+
+  public void setId(int id) {
+	this.id = id;
+  }
+
+  public void setLongitude(double longitude) {
+	this.longitude = longitude;
+  }
+
+  public void setLatitude(double latitude) {
+	this.latitude = latitude;
   }
 
 }

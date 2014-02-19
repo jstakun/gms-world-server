@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -90,10 +92,11 @@ public class CommentPersistenceUtils implements Serializable {
     					Object value = commentJSon.get(name);
     					cMap.put(name, value.toString());
     				}   		    	
-    				String creationDate = cMap.remove("creationDate");
-    				BeanUtils.populate(c, cMap);  
-    				c.setCreationDate(DateUtils.getRHDate(creationDate));
-    		    	results.add(c);	
+    				
+    				ConvertUtils.register(DateUtils.getRHCloudDateConverter(), Date.class);
+    				BeanUtils.populate(c, cMap);
+    				
+    				results.add(c);	
     		    }
         	} else {
         		logger.log(Level.SEVERE, "Received following server response: " + gJson);
