@@ -7,11 +7,9 @@ package com.jstakun.lm.server.servlet;
 import org.json.JSONObject;
 
 import com.jstakun.lm.server.config.Commons;
-import com.jstakun.lm.server.persistence.OAuthToken;
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.MathUtils;
 import com.jstakun.lm.server.utils.NumberUtils;
-import com.jstakun.lm.server.utils.persistence.OAuthTokenPersistenceUtils;
 import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;
 import com.restfb.Parameter;

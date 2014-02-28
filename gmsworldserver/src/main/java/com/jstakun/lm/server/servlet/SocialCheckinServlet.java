@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 
 import com.jstakun.lm.server.config.Commons;
-import com.jstakun.lm.server.layers.FacebookUtils;
+import com.jstakun.lm.server.social.FacebookUtils;
 import com.jstakun.lm.server.layers.FoursquareUtils;
 import com.jstakun.lm.server.layers.GooglePlacesUtils;
 import com.jstakun.lm.server.utils.HttpUtils;

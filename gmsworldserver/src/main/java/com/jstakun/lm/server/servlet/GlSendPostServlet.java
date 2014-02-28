@@ -18,12 +18,10 @@ import org.apache.commons.lang.StringUtils;
 
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
-import com.jstakun.lm.server.layers.GooglePlusUtils;
+import com.jstakun.lm.server.social.GooglePlusUtils;
 import com.jstakun.lm.server.persistence.Landmark;
-import com.jstakun.lm.server.persistence.OAuthToken;
 import com.jstakun.lm.server.utils.UrlUtils;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
-import com.jstakun.lm.server.utils.persistence.OAuthTokenPersistenceUtils;
 
 /**
  * 
@@ -50,33 +48,13 @@ public class GlSendPostServlet extends HttpServlet {
 	 *             if an I/O error occurs
 	 */
 	
-	protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-	    	
-		logger.log(Level.SEVERE, "Oops !!! Somebody called " + GlSendPostServlet.class.getName());
-
-	}
-	
-	
-	/*protected void processRequest(HttpServletRequest request,
+	protected void processRequest(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html;charset=UTF-8");
 		PrintWriter out = response.getWriter();
 		try {
 			String token = request.getParameter("token");
 			String refresh = request.getParameter("refresh_token");
-			if (token == null && refresh == null) {
-				String username = (String) request.getSession().getAttribute("token");
-				String password = (String) request.getSession().getAttribute("password");
-				OAuthToken oauth_token = OAuthTokenPersistenceUtils.selectOAuthTokenByService(username, password, Commons.GOOGLE_BLOGGER);
-				if (oauth_token != null) {
-					String[] st = oauth_token.getToken().split("\\s+");
-					if (st.length == 2) {
-						token = st[0];
-						refresh = st[1];
-					}
-				}
-			}
 			
 			if (StringUtils.isNotEmpty(token) || StringUtils.isNotEmpty(refresh)) {
 				int type = -1;
@@ -114,7 +92,7 @@ public class GlSendPostServlet extends HttpServlet {
 		} finally {
 			out.close();
 		}
-	}*/
+	}
 
 	// <editor-fold defaultstate="collapsed"
 	// desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

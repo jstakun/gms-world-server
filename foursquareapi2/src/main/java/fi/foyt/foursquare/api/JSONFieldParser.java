@@ -134,7 +134,7 @@ public class JSONFieldParser {
             }
           }
         } else {
-          try {
+          try {  
             setEntityFieldValue(entity, objectFieldName, parseValue(fieldClass, jsonObject, objectFieldName, skipNonExistingFields));
           } catch (JSONException e) {
             throw new FoursquareApiException(e);

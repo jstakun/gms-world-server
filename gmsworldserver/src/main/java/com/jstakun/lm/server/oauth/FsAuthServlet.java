@@ -23,7 +23,6 @@ import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.layers.FoursquareUtils;
 import com.jstakun.lm.server.utils.HttpUtils;
-import com.jstakun.lm.server.utils.persistence.OAuthTokenPersistenceUtils;
 
 /**
  * Servlet implementation class FsAuthServlet

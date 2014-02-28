@@ -4,18 +4,6 @@
  */
 package com.jstakun.lm.server.struts;
 
-import com.jstakun.lm.server.layers.CloudmadeUtils;
-import com.jstakun.lm.server.persistence.Checkin;
-import com.jstakun.lm.server.persistence.Comment;
-import com.jstakun.lm.server.persistence.Landmark;
-import com.jstakun.lm.server.persistence.OAuthToken;
-import com.jstakun.lm.server.utils.memcache.CacheAction;
-import com.jstakun.lm.server.utils.persistence.CheckinPersistenceUtils;
-import com.jstakun.lm.server.utils.persistence.CommentPersistenceUtils;
-import com.jstakun.lm.server.utils.persistence.CommonPersistenceUtils;
-import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
-import com.jstakun.lm.server.utils.persistence.OAuthTokenPersistenceUtils;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
@@ -25,14 +13,24 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import eu.bitwalker.useragentutils.Browser;
-import eu.bitwalker.useragentutils.OperatingSystem;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+
+import com.jstakun.lm.server.layers.CloudmadeUtils;
+import com.jstakun.lm.server.persistence.Checkin;
+import com.jstakun.lm.server.persistence.Comment;
+import com.jstakun.lm.server.persistence.Landmark;
+import com.jstakun.lm.server.utils.memcache.CacheAction;
+import com.jstakun.lm.server.utils.persistence.CheckinPersistenceUtils;
+import com.jstakun.lm.server.utils.persistence.CommentPersistenceUtils;
+import com.jstakun.lm.server.utils.persistence.CommonPersistenceUtils;
+import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
+
+import eu.bitwalker.useragentutils.Browser;
+import eu.bitwalker.useragentutils.OperatingSystem;
 
 /**
  *

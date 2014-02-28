@@ -13,7 +13,7 @@ import com.jstakun.gms.android.deals.Deal;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.lm.server.config.Commons;
-import com.jstakun.lm.server.oauth.CommonUtils;
+import com.jstakun.lm.server.utils.AuthUtils;
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.JSONUtils;
 import com.jstakun.lm.server.utils.NumberUtils;
@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
+
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -122,7 +123,7 @@ public class YelpUtils extends LayerHelper {
         String signature = hmacSigner.getSignature(baseString, parameters);
         parameters.addCustomBaseParameter("oauth_signature", signature);
 
-        String responseBody = HttpUtils.processFileRequestWithAuthn(new URL(urlString), CommonUtils.buildAuthHeaderString(parameters));
+        String responseBody = HttpUtils.processFileRequestWithAuthn(new URL(urlString), AuthUtils.buildAuthHeaderString(parameters));
 
         //System.out.println(responseBody);
 

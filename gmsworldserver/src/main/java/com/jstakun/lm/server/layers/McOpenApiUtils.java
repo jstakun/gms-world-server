@@ -11,7 +11,7 @@ import com.google.gdata.util.common.util.Base64;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.lm.server.config.Commons;
-import com.jstakun.lm.server.oauth.CommonUtils;
+import com.jstakun.lm.server.utils.AuthUtils;
 import com.jstakun.lm.server.utils.CryptoTools;
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.JSONUtils;
@@ -39,9 +39,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -133,7 +135,7 @@ public class McOpenApiUtils extends LayerHelper {
             params.addCustomBaseParameter("oauth_signature", signature);
 
             try {
-                responseBody = HttpUtils.processFileRequestWithAuthn(new URL(httpsURL), CommonUtils.buildAuthHeaderString(params));
+                responseBody = HttpUtils.processFileRequestWithAuthn(new URL(httpsURL), AuthUtils.buildAuthHeaderString(params));
             } catch (Throwable e) {
                 logger.log(Level.SEVERE, e.getMessage());
             }

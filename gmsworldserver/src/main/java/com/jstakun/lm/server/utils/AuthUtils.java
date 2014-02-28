@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.jstakun.lm.server.oauth;
+package com.jstakun.lm.server.utils;
 
 import com.google.gdata.client.authn.oauth.OAuthParameters;
 import com.google.gdata.client.authn.oauth.OAuthUtil;
@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  *
  * @author jstakun
  */
-public class CommonUtils {
+public class AuthUtils {
 
     public static String[] userPass(String authorization) {
 
@@ -26,7 +26,7 @@ public class CommonUtils {
             try {
                 userPass = new String(Base64.decode(authorization));
             } catch (Base64DecoderException ex) {
-                Logger.getLogger(CommonUtils.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+                Logger.getLogger(AuthUtils.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
             }
 
             // The decoded string is in the form

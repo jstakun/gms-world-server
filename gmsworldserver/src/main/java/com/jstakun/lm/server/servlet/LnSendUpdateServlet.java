@@ -6,12 +6,10 @@ package com.jstakun.lm.server.servlet;
 
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
-import com.jstakun.lm.server.layers.LinkedInUtils;
 import com.jstakun.lm.server.persistence.Landmark;
-import com.jstakun.lm.server.persistence.OAuthToken;
+import com.jstakun.lm.server.social.LinkedInUtils;
 import com.jstakun.lm.server.utils.UrlUtils;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
-import com.jstakun.lm.server.utils.persistence.OAuthTokenPersistenceUtils;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -49,34 +47,15 @@ public class LnSendUpdateServlet extends HttpServlet {
 	 * @throws IOException
 	 *             if an I/O error occurs
 	 */
-	protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-	    	
-		logger.log(Level.SEVERE, "Oops !!! Somebody called " + LnSendUpdateServlet.class.getName());
-
-	}
-	
-	/*protected void processRequest(HttpServletRequest request,
+	protected void processRequest(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html;charset=UTF-8");
 		PrintWriter out = response.getWriter();
 		try {
 			String token = request.getParameter("token");
 			String secret = request.getParameter("secret");
-			if (token == null || secret == null) {
-				String username = (String) request.getSession().getAttribute("token");
-				String password = (String) request.getSession().getAttribute("password");
-				OAuthToken oauth_token = OAuthTokenPersistenceUtils.selectOAuthTokenByService(username, password, Commons.LINKEDIN);
-				if (oauth_token != null) {
-					String[] st = oauth_token.getToken().split("\\s+");
-					if (st.length == 2) {
-						token = st[0];
-						secret = st[1];
-					}
-				}
-			}
-
-			if (token != null && secret != null) {
+			
+			if (StringUtils.isNotEmpty(token) && StringUtils.isNotEmpty(secret)) {
 				int type = -1;
 				String title = null, url = null;
 				String key = request.getParameter("key");
@@ -116,7 +95,7 @@ public class LnSendUpdateServlet extends HttpServlet {
 		} finally {
 			out.close();
 		}
-	}*/
+	}
 
 	// <editor-fold defaultstate="collapsed"
 	// desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

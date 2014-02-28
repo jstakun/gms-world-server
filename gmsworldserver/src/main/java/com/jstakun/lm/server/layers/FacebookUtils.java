@@ -4,42 +4,8 @@
  */
 package com.jstakun.lm.server.layers;
 
-import java.text.SimpleDateFormat;
-import java.util.Random;
-
-import com.jstakun.gms.android.landmarks.ExtendedLandmark;
-import com.jstakun.gms.android.landmarks.LandmarkFactory;
-import com.jstakun.lm.server.utils.UrlUtils;
-import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
-import com.jstakun.lm.server.persistence.Landmark;
-import com.openlapi.AddressInfo;
-import com.openlapi.QualifiedCoordinates;
-import com.restfb.types.FacebookType;
-import com.restfb.types.User;
-import com.jstakun.lm.server.config.Commons;
-import com.jstakun.lm.server.config.ConfigurationManager;
-import com.jstakun.lm.server.utils.ThreadUtil;
-import java.util.concurrent.ConcurrentHashMap;
-import com.google.appengine.api.ThreadManager;
-import java.util.concurrent.ThreadFactory;
-import com.jstakun.lm.server.utils.NumberUtils;
-import com.jstakun.lm.server.utils.JSONUtils;
-
 import java.io.UnsupportedEncodingException;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.ocpsoft.prettytime.PrettyTime;
-
-import com.jstakun.lm.server.utils.MathUtils;
-import com.jstakun.lm.server.utils.memcache.CacheUtil;
-import com.restfb.DefaultFacebookClient;
-import com.restfb.FacebookClient;
-import com.restfb.Parameter;
-import com.restfb.exception.FacebookException;
-import com.restfb.json.JsonArray;
-import com.restfb.json.JsonException;
-import com.restfb.json.JsonObject;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -48,9 +14,37 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 import java.util.ResourceBundle;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
+
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.ocpsoft.prettytime.PrettyTime;
+
+import com.google.appengine.api.ThreadManager;
+import com.jstakun.gms.android.landmarks.ExtendedLandmark;
+import com.jstakun.gms.android.landmarks.LandmarkFactory;
+import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.ConfigurationManager;
+import com.jstakun.lm.server.utils.JSONUtils;
+import com.jstakun.lm.server.utils.MathUtils;
+import com.jstakun.lm.server.utils.NumberUtils;
+import com.jstakun.lm.server.utils.ThreadUtil;
+import com.jstakun.lm.server.utils.UrlUtils;
+import com.jstakun.lm.server.utils.memcache.CacheUtil;
+import com.openlapi.AddressInfo;
+import com.openlapi.QualifiedCoordinates;
+import com.restfb.DefaultFacebookClient;
+import com.restfb.FacebookClient;
+import com.restfb.Parameter;
+import com.restfb.json.JsonArray;
+import com.restfb.json.JsonException;
+import com.restfb.json.JsonObject;
+import com.restfb.types.User;
 
 /**
  *
@@ -988,7 +982,7 @@ public class FacebookUtils extends LayerHelper {
         }
     }
 
-    private static String sendMessage(FacebookClient facebookClient, String connection, Parameter[] params, boolean verifyPermission) {
+    /*private static String sendMessage(FacebookClient facebookClient, String connection, Parameter[] params, boolean verifyPermission) {
         try {          
         	boolean hasPermission = false;
         	if (verifyPermission) {
@@ -1158,7 +1152,7 @@ public class FacebookUtils extends LayerHelper {
     	} else {
     		return 500;
     	}
-    }
+    }*/
 
 	@Override
 	public List<ExtendedLandmark> processBinaryRequest(double latitude, double longitude, String query, int distance, int version, int limit, int stringLength, String fbtoken, String flexString2, Locale locale) throws Exception {

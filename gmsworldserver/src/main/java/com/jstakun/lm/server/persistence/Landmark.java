@@ -8,19 +8,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-import javax.jdo.annotations.Extension;
-import javax.jdo.annotations.IdGeneratorStrategy;
-import javax.jdo.annotations.IdentityType;
-import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
-import javax.jdo.annotations.PrimaryKey;
-
-import com.beoui.geocell.annotations.Geocells;
-import com.beoui.geocell.annotations.Latitude;
-import com.beoui.geocell.annotations.Longitude;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
-
 /**
  *
  * @author jstakun

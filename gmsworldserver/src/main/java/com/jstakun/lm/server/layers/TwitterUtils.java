@@ -4,40 +4,37 @@
  */
 package com.jstakun.lm.server.layers;
 
-import com.jstakun.gms.android.landmarks.ExtendedLandmark;
-import com.jstakun.gms.android.landmarks.LandmarkFactory;
-import com.jstakun.lm.server.config.Commons;
-import com.jstakun.lm.server.config.ConfigurationManager;
-import com.jstakun.lm.server.persistence.Landmark;
-import com.jstakun.lm.server.utils.JSONUtils;
-import com.jstakun.lm.server.utils.NumberUtils;
-import com.jstakun.lm.server.utils.UrlUtils;
-import com.jstakun.lm.server.utils.memcache.CacheUtil;
-import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
-import com.openlapi.AddressInfo;
-import com.openlapi.QualifiedCoordinates;
-import com.twitter.Autolink;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.logging.Level;
-import org.apache.commons.lang.StringUtils;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import twitter4j.GeoLocation;
 import twitter4j.Query;
 import twitter4j.QueryResult;
 import twitter4j.Status;
-import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.User;
 import twitter4j.auth.AccessToken;
+
+import com.jstakun.gms.android.landmarks.ExtendedLandmark;
+import com.jstakun.gms.android.landmarks.LandmarkFactory;
+import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.ConfigurationManager;
+import com.jstakun.lm.server.utils.JSONUtils;
+import com.jstakun.lm.server.utils.NumberUtils;
+import com.jstakun.lm.server.utils.memcache.CacheUtil;
+import com.openlapi.AddressInfo;
+import com.openlapi.QualifiedCoordinates;
+import com.twitter.Autolink;
 
 /**
  *
@@ -167,7 +164,7 @@ public class TwitterUtils extends LayerHelper {
         return landmarks;
     }
 
-    public static void sendMessage(String key, String url, String token, String secret, int type) {
+    /*public static void sendMessage(String key, String url, String token, String secret, int type) {
         try {
         	    Landmark landmark = null; 
         	    String message = null;
@@ -232,7 +229,7 @@ public class TwitterUtils extends LayerHelper {
         } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.getMessage(), ex);
         }
-    }
+    }*/
 
     private static Twitter getTwitter(String token, String secret) {
         Twitter twitter = new TwitterFactory().getInstance();

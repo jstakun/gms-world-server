@@ -15,11 +15,11 @@ import org.apache.commons.lang.StringUtils;
 
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
-import com.jstakun.lm.server.layers.FacebookUtils;
-import com.jstakun.lm.server.layers.GoogleBloggerUtils;
-import com.jstakun.lm.server.layers.GooglePlusUtils;
-import com.jstakun.lm.server.layers.LinkedInUtils;
-import com.jstakun.lm.server.layers.TwitterUtils;
+import com.jstakun.lm.server.social.FacebookUtils;
+import com.jstakun.lm.server.social.GoogleBloggerUtils;
+import com.jstakun.lm.server.social.GooglePlusUtils;
+import com.jstakun.lm.server.social.LinkedInUtils;
+import com.jstakun.lm.server.social.TwitterUtils;
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.MailUtils;
 import com.jstakun.lm.server.utils.NumberUtils;

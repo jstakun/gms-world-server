@@ -33,13 +33,8 @@ public final class Commons {
     public static byte[] bc_salt = Hex.decode("");
     public static String bc_algorithm = "";
     
-    public static final String yh_apiKey = "";//yahoo geocode
-    
     public static final String BITLY_USERNAME = "";
     public static final String BITLY_APIKEY = "";
-    
-    public static final String ADMOB_PUBLISHER_ID = "";
-    public static final String ADMOB_ANALYTICS_ID = "";
     
     //com.jstakun.lm.server.servlet
     
@@ -61,8 +56,8 @@ public final class Commons {
     
     //com.jstakun.lm.server.oauth
     
-  	public static final String OAUTH_USERNAME = "";
-	
+    //
+    
   	public static final String fb_page_token = "";
 	public static final String fb_app_token = "";
 	public static final String fb_secret = "";
@@ -75,10 +70,6 @@ public final class Commons {
 	public static final String LN_API_KEY = "";
 	public static final String LN_API_SECRET = "";
 	
-	//app token 1
-	//public static final String GL_BLOGGER_KEY = "";
-	//public static final String GL_BLOGGER_SECRET = "";
-	
 	//app token 2
 	public static final String GL_PLUS_KEY = "";
 	public static final String GL_PLUS_SECRET = "";
@@ -87,10 +78,6 @@ public final class Commons {
 	public static final String gl_plus_token = "";
 	public static final String gl_plus_refresh = "";
 	
-	//blogger token aouth 1.0a
-	//public static final String gl_blogger_token = "";
-	//public static final String gl_blogger_secret = "";
-
     //com.jstakun.lm.server.layers
     
 	public static final String CLOUDMADE_APIKEY = "";

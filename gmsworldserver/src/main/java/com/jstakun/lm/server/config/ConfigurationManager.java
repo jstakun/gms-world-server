@@ -17,10 +17,8 @@ import java.util.Map;
  * @author jstakun
  */
 public final class ConfigurationManager {
-    private static Map<String, String> configuration = new HashMap<String, String>();
-    private static final String CONFIG = "config";
-
-    public static final String SERVER_URL = "http://www.gms-world.net/";
+    
+	public static final String SERVER_URL = "http://www.gms-world.net/";
     public static final String SSL_SERVER_URL = "https://gms-world.appspot.com/";
     public static final String ON = "1";
     public static final String OFF = "0";
@@ -63,6 +61,9 @@ public final class ConfigurationManager {
     
     public static final String USER_EMAIL = "userEmail";
 
+    private static Map<String, String> configuration = new HashMap<String, String>();
+    private static final String CONFIG = "config";
+    
     private static void populateConfig()
     {
          List<Config> params = ConfigPersistenceUtils.selectAllConfigParams();
@@ -91,6 +92,5 @@ public final class ConfigurationManager {
         } else {
             return defaultValue;
         }
-    }
-    
+    }    
 }

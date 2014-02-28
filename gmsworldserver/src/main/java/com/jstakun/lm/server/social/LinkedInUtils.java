@@ -1,4 +1,4 @@
-package com.jstakun.lm.server.layers;
+package com.jstakun.lm.server.social;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;

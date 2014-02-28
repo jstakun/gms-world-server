@@ -14,12 +14,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.jstakun.lm.server.config.Commons;
-import com.jstakun.lm.server.layers.FacebookUtils;
+import com.jstakun.lm.server.social.FacebookUtils;
 import com.jstakun.lm.server.persistence.Landmark;
-import com.jstakun.lm.server.persistence.OAuthToken;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
-import com.jstakun.lm.server.utils.persistence.OAuthTokenPersistenceUtils;
 import com.restfb.exception.FacebookOAuthException;
 
 /**
@@ -47,27 +47,14 @@ public class FBSendMessageServlet extends HttpServlet {
 	 * @throws IOException
 	 *             if an I/O error occurs
 	 */
-	protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-	    	
-		logger.log(Level.SEVERE, "Oops !!! Somebody called " + FBSendMessageServlet.class.getName());
-
-	}
-	
-	/*protected void processRequest(HttpServletRequest request,
+	protected void processRequest(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html;charset=UTF-8");
 		PrintWriter out = response.getWriter();
 		try {
 			String token = request.getParameter("token");
-			if (token == null) {
-				String username = (String) request.getSession().getAttribute("token");
-				String password = (String) request.getSession().getAttribute("password");
-				OAuthToken stoken = OAuthTokenPersistenceUtils.selectOAuthTokenByService(username, password, Commons.FACEBOOK);
-				token = stoken.getToken();
-			} 
-			
-			if (token != null) {
+	
+			if (StringUtils.isNotEmpty(token)) {
 				int type = -1;
 				String key = request.getParameter("key");
 				if (key != null) {
@@ -106,7 +93,7 @@ public class FBSendMessageServlet extends HttpServlet {
 		} finally {
 			out.close();
 		}
-	}*/
+	}
 
 	// <editor-fold defaultstate="collapsed"
 	// desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

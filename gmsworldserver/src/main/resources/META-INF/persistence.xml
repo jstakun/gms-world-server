@@ -11,17 +11,11 @@
             <property name="datanucleus.NontransactionalWrite" value="true"/>
             <property name="datanucleus.ConnectionURL" value="appengine"/>
         </properties>
-        <class>com.jstakun.lm.server.persistence.Checkin</class>
-        <class>com.jstakun.lm.server.persistence.Comment</class>
         <class>com.jstakun.lm.server.persistence.Config</class>
-        <class>com.jstakun.lm.server.persistence.GeocodeCache</class>
-        <class>com.jstakun.lm.server.persistence.Landmark</class>
-        <class>com.jstakun.lm.server.persistence.Layer</class>
-        <class>com.jstakun.lm.server.persistence.OAuthToken</class>
         <class>com.jstakun.lm.server.persistence.Screenshot</class>
         <class>com.jstakun.lm.server.persistence.Search</class>
         <class>com.jstakun.lm.server.persistence.ServiceLog</class>
         <class>com.jstakun.lm.server.persistence.User</class> 
-        <exclude-unlisted-classes>false</exclude-unlisted-classes>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
     </persistence-unit>
 </persistence>

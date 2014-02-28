@@ -12,12 +12,19 @@ import com.jstakun.lm.server.utils.UrlUtils;
 import com.jstakun.lm.server.utils.ThreadUtil;
 
 import java.util.concurrent.ConcurrentHashMap;
+
 import com.google.appengine.api.ThreadManager;
+
 import java.util.concurrent.ThreadFactory;
+
 import fi.foyt.foursquare.api.entities.HereNow;
+
 import org.apache.commons.lang.StringEscapeUtils;
+
 import fi.foyt.foursquare.api.FoursquareApiException;
+
 import java.io.UnsupportedEncodingException;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,6 +48,7 @@ import fi.foyt.foursquare.api.entities.CompleteTip;
 import fi.foyt.foursquare.api.entities.CompleteUser;
 import fi.foyt.foursquare.api.entities.CompleteVenue;
 import fi.foyt.foursquare.api.entities.Contact;
+import fi.foyt.foursquare.api.entities.Icon;
 import fi.foyt.foursquare.api.entities.Location;
 import fi.foyt.foursquare.api.entities.Photo;
 import fi.foyt.foursquare.api.entities.Recommendation;
@@ -48,6 +56,7 @@ import fi.foyt.foursquare.api.entities.RecommendationGroup;
 import fi.foyt.foursquare.api.entities.Recommended;
 import fi.foyt.foursquare.api.entities.VenuesSearchResult;
 import fi.foyt.foursquare.api.io.DefaultIOHandler;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -63,6 +72,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
+
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -71,7 +81,6 @@ import org.apache.commons.lang.StringUtils;
  */
 public class FoursquareUtils extends LayerHelper {
 
-    private static final String VDATE = "20111114";
     private static final CheckinComparator checkinComparator = new CheckinComparator();
     private static final String FOURSQUARE_PREFIX = "http://foursquare.com/venue/";
     
@@ -288,7 +297,7 @@ public class FoursquareUtils extends LayerHelper {
         if (cachedResponse == null) {
             StringBuilder sb = new StringBuilder("https://api.foursquare.com/v2/specials/search?ll=").append(lat).
                     append(",").append(lng).append("&llAcc=").append(radius).append("&oauth_token=").
-                    append(token).append("&limit=").append(limit).append("&v=").append(VDATE);
+                    append(token).append("&limit=").append(limit).append("&v=").append(FoursquareApi.DEFAULT_VERSION);
             URL url = new URL(sb.toString());
             String resp = HttpUtils.processFileRequestWithLocale(url, locale);
             //System.out.println(resp);
@@ -312,7 +321,7 @@ public class FoursquareUtils extends LayerHelper {
         if (landmarks == null) {
             StringBuilder sb = new StringBuilder("https://api.foursquare.com/v2/specials/search?ll=").append(lat).
                     append(",").append(lng).append("&llAcc=").append(radius).append("&oauth_token=").
-                    append(token).append("&limit=").append(limit).append("&v=").append(VDATE);
+                    append(token).append("&limit=").append(limit).append("&v=").append(FoursquareApi.DEFAULT_VERSION);
             URL url = new URL(sb.toString());
             String resp = HttpUtils.processFileRequestWithLocale(url, locale);
             landmarks = createCustomLandmarksFoursquareMerchantList(resp, locale, categoryid, stringLimit, l);
@@ -672,7 +681,8 @@ public class FoursquareUtils extends LayerHelper {
                     category += ", ";
                 }
                 if (StringUtils.isEmpty(icon)) {
-                    icon = categories[k].getIcon();
+                    Icon iconObj = categories[k].getIcon();
+                	icon = iconObj.getPrefix() + "bg_32" + iconObj.getSuffix(); //32, 44, 64, and 88 are available
                 }
                 category += categories[k].getName();
             }
@@ -742,7 +752,8 @@ public class FoursquareUtils extends LayerHelper {
                     category += ", ";
                 }
                 if (StringUtils.isEmpty(thumbnail)) {
-                    thumbnail = categories[k].getIcon();
+                    Icon iconObj = categories[k].getIcon();
+                	thumbnail = iconObj.getPrefix() + "bg_32" + iconObj.getSuffix(); //32, 44, 64, and 88 are available
                 }
                 category += categories[k].getName();
             }
@@ -826,7 +837,7 @@ public class FoursquareUtils extends LayerHelper {
     private static Map<String, Map<String, String>> getVenueDetails(List<String> venueIds, String locale) throws UnsupportedEncodingException, MalformedURLException, IOException, JSONException {
         StringBuilder urlPrefix = new StringBuilder("https://api.foursquare.com/v2/multi").append("?client_id=").append(Commons.FS_CLIENT_ID).
                 append("&client_secret=").append(Commons.FS_CLIENT_SECRET).
-                append("&v=").append(VDATE);
+                append("&v=").append(FoursquareApi.DEFAULT_VERSION);
 
         String multiRequest = "";
 
@@ -1172,62 +1183,67 @@ public class FoursquareUtils extends LayerHelper {
                                     int count = photos.getInt("count");
 
                                     if (count > 0) {
-                                            JSONArray groups = photos.getJSONArray("groups");
-                                            boolean hasPhoto = false;
-                                            for (int k = 0; k < groups.length(); k++) {
-                                                JSONObject group = groups.getJSONObject(k);
-                                                int groupCount = group.getInt("count");
-                                                //String type = group.getString("type");
-                                                //System.out.println("Photos: type " + type + ", count " + groupCount);
-                                                if (groupCount > 0) {
-                                                    JSONArray items = group.getJSONArray("items");
-                                                    if (items.length() > 0) {
-                                                        JSONObject newest = items.getJSONObject(0);
+                                    	JSONArray groups = photos.getJSONArray("groups");
+                                        boolean hasPhoto = false;
+                                        for (int k = 0; k < groups.length(); k++) {
+                                        	JSONObject group = groups.getJSONObject(k);
+                                            int groupCount = group.getInt("count");
+                                            //String type = group.getString("type");
+                                            //System.out.println("Photos: type " + type + ", count " + groupCount);
+                                            if (groupCount > 0) {
+                                            	JSONArray items = group.getJSONArray("items");
+                                                if (items.length() > 0) {
+                                                	JSONObject newest = items.getJSONObject(0);
 
-                                                        //photoUser
-                                                        JSONObject user = newest.getJSONObject("user");
-                                                        String photoUser = "";
-                                                        if (user.has("firstName")) {
-                                                            photoUser = user.getString("firstName");
-                                                        }
-                                                        if (user.has("lastName")) {
-                                                            photoUser += " " + user.getString("lastName");
-                                                        }
-                                                        if (StringUtils.isNotEmpty("photoUser")) {
-                                                            venueAttrs.put("photoUser", photoUser);
-                                                        }
-
-                                                        //photo url
-                                                        String photo = newest.getString("url");
-                                                        if (!bitlyFailed) {
-                                                            String shortUrl = UrlUtils.getShortUrl(photo);
-                                                            if (StringUtils.equals(shortUrl, photo)) {
-                                                                bitlyFailed = true;
-                                                            } else {
-                                                                photo = shortUrl;
-                                                            }
-                                                        }
-                                                        venueAttrs.put("caption", photo);
-                                                        
-                                                        hasPhoto = true;
-
-                                                        //icon
-                                                        JSONObject sizes = newest.optJSONObject("sizes");
-                                                        if (sizes != null) {
-                                                            JSONArray imgItems = sizes.getJSONArray("items");
-                                                            for (int i=0;i<imgItems.length();i++) {
-                                                               JSONObject item = imgItems.getJSONObject(i);
-                                                               if (item.getInt("width") == 100 && item.getInt("height") == 100) {
-                                                                   venueAttrs.put("icon", item.getString("url"));
-                                                               }
-                                                            }
-                                                        }
+                                                	//photoUser
+                                                	JSONObject user = newest.getJSONObject("user");
+                                                    String photoUser = "";
+                                                    if (user.has("firstName")) {
+                                                        photoUser = user.getString("firstName");
                                                     }
-                                                }
-                                                if (hasPhoto) {
-                                                    break;
+                                                    if (user.has("lastName")) {
+                                                        photoUser += " " + user.getString("lastName");
+                                                    }
+                                                    if (StringUtils.isNotEmpty("photoUser")) {
+                                                        venueAttrs.put("photoUser", photoUser);
+                                                    }
+
+                                                    //photo url
+                                                    //String photo = newest.getString("url");
+                                                    	
+                                                    String photo = newest.getString("prefix") + "100x100" + newest.getString("suffix");
+                                                    	
+                                                    if (!bitlyFailed) {
+                                                    	String shortUrl = UrlUtils.getShortUrl(photo);
+                                                        if (StringUtils.equals(shortUrl, photo)) {
+                                                        	bitlyFailed = true;
+                                                        } else {
+                                                        	photo = shortUrl;
+                                                        }
+                                                     }
+                                                        
+                                                     venueAttrs.put("caption", photo);
+                                                     hasPhoto = true;
+                                                     	
+                                                     venueAttrs.put("icon", photo);
+
+                                                     //icon
+                                                     /*JSONObject sizes = newest.optJSONObject("sizes");
+                                                     if (sizes != null) {
+                                                         JSONArray imgItems = sizes.getJSONArray("items");
+                                                         for (int i=0;i<imgItems.length();i++) {
+                                                        	JSONObject item = imgItems.getJSONObject(i);
+                                                            if (item.getInt("width") == 100 && item.getInt("height") == 100) {
+                                                                venueAttrs.put("icon", item.getString("url"));
+                                                            }
+                                                         }
+                                                     }*/
                                                 }
                                             }
+                                            if (hasPhoto) {
+                                                break;
+                                            }
+                                        }
                                     }
                                     
                                     //
