@@ -22,6 +22,7 @@ import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.persistence.GeocodeCache;
 import com.jstakun.lm.server.utils.DateUtils;
@@ -51,11 +52,11 @@ public class GeocodeCachePersistenceUtils {
             pm.close();
         }*/
     	try {
-        	String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/addItem";
+        	String gUrl = "https://landmarks-gmsworld.rhcloud.com/actions/addItem";
         	String params = "type=geocode&latitude=" + latitude + "&longitude=" + longitude + 
         			"&address=" + URLEncoder.encode(location, "UTF-8");			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
-        	String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, params);
+        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
         	logger.log(Level.INFO, "Received response: " + gJson);
         } catch (Exception e) {
         	logger.log(Level.SEVERE, e.getMessage(), e);
@@ -81,10 +82,10 @@ public class GeocodeCachePersistenceUtils {
             pm.close();
         }*/
     	try {
-        	String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/itemProvider";
+        	String gUrl = "https://landmarks-gmsworld.rhcloud.com/actions/itemProvider";
         	String params = "type=geocode&address=" + URLEncoder.encode(address, "UTF-8");			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
-        	String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, params);
+        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
         	//logger.log(Level.INFO, "Received response: " + gJson);
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
         		JSONObject root = new JSONObject(gJson);
@@ -124,10 +125,10 @@ public class GeocodeCachePersistenceUtils {
     	
     	try {
     		String limit = ConfigurationManager.getParam(ConfigurationManager.NUM_OF_GEOCODES, "10");
-        	String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/itemProvider";
+        	String gUrl = "https://landmarks-gmsworld.rhcloud.com/actions/itemProvider";
         	String params = "type=geocode&limit=" + limit;			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
-        	String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, params);
+        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
         	//logger.log(Level.INFO, "Received response: " + gJson);
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "[")) {
         		JSONArray root = new JSONArray(gJson);
@@ -165,10 +166,10 @@ public class GeocodeCachePersistenceUtils {
             pm.close();
         }*/
         try {
-        	String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/itemProvider";
+        	String gUrl = "https://landmarks-gmsworld.rhcloud.com/actions/itemProvider";
         	String params = "type=geocode&id=" + k;			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
-        	String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, params);
+        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
         	//logger.log(Level.INFO, "Received response: " + gJson);
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
         		JSONObject root = new JSONObject(gJson);

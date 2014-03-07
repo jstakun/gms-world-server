@@ -23,6 +23,7 @@ import org.apache.struts.util.LabelValueBean;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.persistence.Layer;
 import com.jstakun.lm.server.persistence.PMF;
@@ -91,12 +92,12 @@ public class LayerPersistenceUtils {
             pm.close();
         }*/
     	try {
-        	String landmarksUrl = "http://landmarks-gmsworld.rhcloud.com/actions/addItem";
+        	String landmarksUrl = "https://landmarks-gmsworld.rhcloud.com/actions/addItem";
         	String params = "name=" + name + "&desc=" + URLEncoder.encode(desc, "UTF-8") + 
         			        "&formatted=" + URLEncoder.encode(formatted, "UTF-8") + "&type=layer" +
         			        "&e=" + enabled + "&m=" + manageable + "&c=" + checkinable;
         	//logger.log(Level.INFO, "Calling: " + landmarksUrl);
-        	String landmarksJson = HttpUtils.processFileRequest(new URL(landmarksUrl), "POST", null, params);
+        	String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl), "POST", null, params, Commons.RH_GMS_USER);
         	logger.log(Level.INFO, "Received response: " + landmarksJson);
         } catch (Exception e) {
         	logger.log(Level.SEVERE, e.getMessage(), e);
@@ -144,10 +145,10 @@ public class LayerPersistenceUtils {
 			public Object executeAction() {
 				List<Layer> layers = new ArrayList<Layer>();
 				try {
-					String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/itemProvider";
+					String gUrl = "https://landmarks-gmsworld.rhcloud.com/actions/itemProvider";
 					String params = "type=layer";			 
 					//logger.log(Level.INFO, "Calling: " + gUrl);
-					String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, params);
+					String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
 					//logger.log(Level.INFO, "Received response: " + gJson);
 					if (StringUtils.startsWith(StringUtils.trim(gJson), "[")) {
 						JSONArray root = new JSONArray(gJson);

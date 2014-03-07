@@ -76,9 +76,9 @@ public class HotelsCombinedUtils extends LayerHelper {
             //    hotels = HotelPersistenceUtils.selectHotelsByCoordsAndLayer(latitudeMin, longitudeMin, latitudeMax, longitudeMax, l);
             //}
             
-            String hotelsUrl = "http://hotels-gmsworld.rhcloud.com/actions/hotelsProvider?lat=" + lat + "&lng=" + lng + "&radius=" + radius + "&limit=" + limit;			
+            String hotelsUrl = "https://hotels-gmsworld.rhcloud.com/actions/hotelsProvider?lat=" + lat + "&lng=" + lng + "&radius=" + radius + "&limit=" + limit;			
 			logger.log(Level.INFO, "Calling: " + hotelsUrl);
-            String hotelsJson = HttpUtils.processFileRequest(new URL(hotelsUrl));		
+            String hotelsJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.RH_GMS_USER);		
 			List<Hotel> hotels = jsonToHotelList(hotelsJson);      	
 			logger.log(Level.INFO, "Found " + hotels.size() + " hotels...");		
             if (!hotels.isEmpty()) {
@@ -246,29 +246,6 @@ public class HotelsCombinedUtils extends LayerHelper {
     	 	
     	return hotels;
     }
-    
-	/*@Override
-	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String language, String flexString2, Locale locale) throws Exception {
-		int l = NumberUtils.normalizeNumber(limit, 1, 100);
-        String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, l, stringLimit, language, null);
-        List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)CacheUtil.getObject(key);
-
-        if (landmarks == null) {
-            List<Hotel> hotels = HotelPersistenceUtils.selectHotelsByPointAndRadius(lat, lng, radius * 1000, l);       
-            landmarks = new ArrayList<ExtendedLandmark>();
-            landmarks.addAll(Lists.transform(hotels, new HotelToExtendedLandmarkFunction(language, locale)));
-
-            if (!landmarks.isEmpty()) {
-                CacheUtil.put(key, landmarks);
-                logger.log(Level.INFO, "Adding H landmark list to cache with key {0}", key);
-            }
-
-        } else {
-            logger.log(Level.INFO, "Reading H landmark list from cache with key {0}", key);
-        }
-
-        return landmarks;
-	}*/
 	
 	@Override
 	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String language, String flexString2, Locale locale) throws Exception {
@@ -277,9 +254,10 @@ public class HotelsCombinedUtils extends LayerHelper {
 
         if (landmarks == null) {   	
         	landmarks = new ArrayList<ExtendedLandmark>();
-        	String hotelsUrl = "http://hotels-gmsworld.rhcloud.com/actions/hotelsProvider?lat=" + lat + "&lng=" + lng + "&radius=" + radius + "&limit=" + limit;			
+        	String hotelsUrl = "https://hotels-gmsworld.rhcloud.com/actions/hotelsProvider?lat=" + lat + "&lng=" + lng + "&radius=" + radius + "&limit=" + limit;			
         	logger.log(Level.INFO, "Calling: " + hotelsUrl);
-        	String hotelsJson = HttpUtils.processFileRequest(new URL(hotelsUrl));		
+        	//String hotelsJson = HttpUtils.processFileRequest(new URL(hotelsUrl));	
+        	String hotelsJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.RH_GMS_USER);
 			List<Hotel> hotels = jsonToHotelList(hotelsJson);
 			logger.log(Level.INFO, "Found " + hotels.size() + " hotels...");
         	landmarks.addAll(Lists.transform(hotels, new HotelToExtendedLandmarkFunction(language, locale)));

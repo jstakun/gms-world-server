@@ -4,7 +4,6 @@
  */
 package com.jstakun.lm.server.utils.persistence;
 
-import com.google.appengine.api.datastore.KeyFactory;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.utils.UrlUtils;
 

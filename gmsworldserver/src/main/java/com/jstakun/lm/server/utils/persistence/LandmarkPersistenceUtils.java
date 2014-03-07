@@ -22,6 +22,7 @@ import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.DateUtils;
@@ -85,7 +86,7 @@ public class LandmarkPersistenceUtils {
     	Map<String, String> response = new HashMap<String, String>();
     	
         try {
-        	String landmarksUrl = "http://landmarks-gmsworld.rhcloud.com/actions/addItem";
+        	String landmarksUrl = "https://landmarks-gmsworld.rhcloud.com/actions/addItem";
         	String params = "type=landmark&latitude=" + latitude + "&longitude=" + longitude + "&name=" + URLEncoder.encode(name, "UTF-8") + 
         			"&altitude=" + altitude + "&username=" + username + "&layer=" + layer;			 
         	if (validityDate != null) {
@@ -98,7 +99,7 @@ public class LandmarkPersistenceUtils {
         		params += "&email=" + email;
         	}
         	//logger.log(Level.INFO, "Calling: " + landmarksUrl);
-        	String landmarksJson = HttpUtils.processFileRequest(new URL(landmarksUrl), "POST", null, params);
+        	String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl), "POST", null, params, Commons.RH_GMS_USER);
         	if (StringUtils.startsWith(StringUtils.trim(landmarksJson), "{")) {
         		JSONObject resp = new JSONObject(landmarksJson);
         		for (Iterator<String> iter = resp.keys(); iter.hasNext();) {
@@ -184,10 +185,10 @@ public class LandmarkPersistenceUtils {
             pm.close();
         }*/
         try {
-        	String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
+        	String gUrl = "https://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
         	String params = "hash=" + hash;			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
-        	String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, params);
+        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
         	//logger.log(Level.INFO, "Received response: " + gJson);
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
         		JSONObject l = new JSONObject(gJson);
@@ -229,10 +230,10 @@ public class LandmarkPersistenceUtils {
             pm.close();
         }*/
         try {
-        	String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
+        	String gUrl = "https://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
         	String params = "id=" + id;			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
-        	String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, params);
+        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
         	//logger.log(Level.INFO, "Received response: " + gJson);
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
         		JSONObject l = new JSONObject(gJson);
@@ -297,10 +298,10 @@ public class LandmarkPersistenceUtils {
             pm.close();
         }*/
         try {
-    		String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
+    		String gUrl = "https://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
         	String params = "limit=" + limit + "&lat=" + latitude + "&lng=" + longitude + "&radius=" + radius + "&layer=" + layer;			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
-        	String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, params);
+        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
         	//logger.log(Level.INFO, "Received response: " + gJson);
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "[")) {
         		JSONArray root = new JSONArray(gJson);
@@ -374,10 +375,10 @@ public class LandmarkPersistenceUtils {
     	int result = 0;
     	
     	try {
-   			String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
+   			String gUrl = "https://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
    			String params = "count=1&lat=" + latitude + "&lng=" + longitude + "&radius=" + radius + "&layer=" + layer;			 
    			//logger.log(Level.INFO, "Calling: " + gUrl);
-   			String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, params);
+   			String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
    			//logger.log(Level.INFO, "Received response: " + gJson);
    			if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
    				JSONObject count = new JSONObject(gJson);
@@ -395,10 +396,10 @@ public class LandmarkPersistenceUtils {
     public static Map<String, Integer> countLandmarksByCoords(double latitude, double longitude, int radius) {
     	Map<String, Integer> bucket = new HashMap<String, Integer>();
     	try {
-   			String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
+   			String gUrl = "https://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
    			String params = "count=1&lat=" + latitude + "&lng=" + longitude + "&radius=" + radius;			 
    			logger.log(Level.INFO, "Calling: " + gUrl + "?" + params);
-   			String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, params);
+   			String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
    			//logger.log(Level.INFO, "Received response: " + gJson);
    			if (StringUtils.startsWith(StringUtils.trim(gJson), "[")) {
    				JSONArray count = new JSONArray(gJson);
@@ -467,10 +468,10 @@ public class LandmarkPersistenceUtils {
         }*/
     	
     	try {
-        	String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
+        	String gUrl = "https://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
         	String params = "query=" + query;			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
-        	String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, params);
+        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
         	//logger.log(Level.INFO, "Received response: " + gJson);
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "[")) {
         		JSONArray root = new JSONArray(gJson);
@@ -533,7 +534,7 @@ public class LandmarkPersistenceUtils {
         
         try {
         	int limit = last - first;
-    		String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
+    		String gUrl = "https://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
         	String params = "limit=" + limit + "&first=" + first; 
         	if (user != null) {
    				params += "&username=" + user;			 
@@ -542,7 +543,7 @@ public class LandmarkPersistenceUtils {
    			    params += "&layer=" + layer;
    			}
         	logger.log(Level.INFO, "Calling: " + gUrl +"?" + params);
-        	String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, params);
+        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
         	//logger.log(Level.INFO, "Received response: " + gJson);
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "[")) {
         		JSONArray root = new JSONArray(gJson);
@@ -588,10 +589,10 @@ public class LandmarkPersistenceUtils {
     	
     	try {
     		String limit = ConfigurationManager.getParam(ConfigurationManager.NUM_OF_LANDMARKS, "10");
-        	String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
+        	String gUrl = "https://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
         	String params = "limit=" + limit;			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
-        	String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, params);
+        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
         	//logger.log(Level.INFO, "Received response: " + gJson);
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "[")) {
         		JSONArray root = new JSONArray(gJson);
@@ -656,10 +657,10 @@ public class LandmarkPersistenceUtils {
     	
     	try {
     		int limit = last - first;
-        	String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
+        	String gUrl = "https://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
         	String params = "limit=" + limit + "&month=" + month + "&first=" + first;			 
         	logger.log(Level.INFO, "Calling: " + gUrl + "?" + params);
-        	String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, params);
+        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
         	//logger.log(Level.INFO, "Received response: " + gJson);
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "[")) {
         		JSONArray root = new JSONArray(gJson);
@@ -717,10 +718,10 @@ public class LandmarkPersistenceUtils {
     	
     	
     	try {
-   			String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
+   			String gUrl = "https://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
    			String params = "heatMap=1&days=" + nDays;			 
    			//logger.log(Level.INFO, "Calling: " + gUrl);
-   			String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, params);
+   			String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
    			//logger.log(Level.INFO, "Received response: " + gJson);
    			if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
    				JSONObject root = new JSONObject(gJson);
@@ -772,10 +773,10 @@ public class LandmarkPersistenceUtils {
         }*/
 	   
 	    try {
-   			String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
+   			String gUrl = "https://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
    			String params = "count=1&month=" + month;			 
    			logger.log(Level.INFO, "Calling: " + gUrl);
-   			String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, params);
+   			String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
    			logger.log(Level.INFO, "Received response: " + gJson);
    			if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
    				JSONObject count = new JSONObject(gJson);
@@ -822,7 +823,7 @@ public class LandmarkPersistenceUtils {
         }*/
         
         try {
-   			String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
+   			String gUrl = "https://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
    			String params = "count=1";
    			if (user != null) {
    				params += "&username=" + user;			 
@@ -831,7 +832,7 @@ public class LandmarkPersistenceUtils {
    			    params += "&layer=" + layer;
    			}
    			logger.log(Level.INFO, "Calling: " + gUrl + "?" + params);
-   			String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, params);
+   			String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
    			logger.log(Level.INFO, "Received response: " + gJson);
    			if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
    				JSONObject count = new JSONObject(gJson);

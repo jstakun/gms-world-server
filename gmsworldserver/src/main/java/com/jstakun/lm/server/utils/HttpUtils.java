@@ -33,6 +33,10 @@ public class HttpUtils {
     public static String processFileRequestWithAuthn(URL fileUrl, String authn) throws IOException {
         return processFileRequest(fileUrl, true, null, authn, "GET", null, null, null);
     }
+    
+    public static String processFileRequestWithBasicAuthn(URL fileUrl, String authn) throws IOException {
+        return processFileRequest(fileUrl, true, authn, null, "GET", null, null, null);
+    }
 
     public static String processFileRequest(URL fileUrl) throws IOException {
         return processFileRequest(fileUrl, false, null, null, "GET", null, null, null);
@@ -40,6 +44,10 @@ public class HttpUtils {
 
     public static String processFileRequest(URL fileUrl, String method, String accept, String urlParams) throws IOException {
         return processFileRequest(fileUrl, false, null, null, method, null, accept, urlParams);
+    }
+    
+    public static String processFileRequestWithBasicAuthn(URL fileUrl, String method, String accept, String urlParams, String authn) throws IOException {
+        return processFileRequest(fileUrl, true, authn, null, method, null, accept, urlParams);
     }
 
     private static String processFileRequest(URL fileUrl, boolean authn, String userpassword, String authnOther, String method, String locale, String accept, String urlParams) throws IOException {

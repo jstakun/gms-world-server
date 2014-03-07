@@ -20,6 +20,7 @@ import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.persistence.Checkin;
 import com.jstakun.lm.server.utils.DateUtils;
 import com.jstakun.lm.server.utils.HttpUtils;
@@ -44,10 +45,10 @@ public class CheckinPersistenceUtils {
         }*/
     	
     	try {
-        	String landmarksUrl = "http://landmarks-gmsworld.rhcloud.com/actions/addItem";
+        	String landmarksUrl = "https://landmarks-gmsworld.rhcloud.com/actions/addItem";
         	String params = "username=" + username + "&landmarkId=" + landmarkKey + "&itemType=" + type + "&type=checkin";
         	//logger.log(Level.INFO, "Calling: " + landmarksUrl);
-        	String landmarksJson = HttpUtils.processFileRequest(new URL(landmarksUrl), "POST", null, params);
+        	String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl), "POST", null, params, Commons.RH_GMS_USER);
         	logger.log(Level.INFO, "Received response: " + landmarksJson);
         } catch (Exception e) {
         	logger.log(Level.SEVERE, e.getMessage(), e);
@@ -73,10 +74,10 @@ public class CheckinPersistenceUtils {
         }*/
     	
     	try {
-        	String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/itemProvider";
+        	String gUrl = "https://landmarks-gmsworld.rhcloud.com/actions/itemProvider";
         	String params = "type=checkin&landmarkId=" + key;			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
-        	String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, params);
+        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
         	//logger.log(Level.INFO, "Received response: " + gJson);
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "[")) {
         		JSONArray arr = new JSONArray(gJson);
