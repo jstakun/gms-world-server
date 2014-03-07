@@ -8,6 +8,8 @@ package com.jstakun.lm.server.config;
 import com.jstakun.lm.server.persistence.Config;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.persistence.ConfigPersistenceUtils;
+
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +36,7 @@ public final class ConfigurationManager {
     public static final String TW_TOKEN = "twToken"; //TW GMS World token
     public static final String TW_SECRET = "twSecret";//TW GMS World secret
     public static final String EXCLUDED = "excluded";//list of excluded from engagement email
+    public static final String CLOSED_URLS = "closed";//temporary closed urls
     
     public static final String FB_USERNAME = "fbUsername";
     public static final String FB_GENDER = "fbGender";
@@ -62,15 +65,15 @@ public final class ConfigurationManager {
     public static final String USER_EMAIL = "userEmail";
 
     private static Map<String, String> configuration = new HashMap<String, String>();
-    private static final String CONFIG = "config";
+    public static final String CONFIG = "config";
     
-    private static void populateConfig()
+    public static void populateConfig()
     {
          List<Config> params = ConfigPersistenceUtils.selectAllConfigParams();
-         for (Config param : params)
-         {
+         for (Config param : params) {
              configuration.put(param.getKey(), param.getValue());
          }
+         CacheUtil.put(CONFIG, configuration);
     }
 
     private static void refreshConfig()
@@ -80,7 +83,6 @@ public final class ConfigurationManager {
             configuration = (HashMap<String, String>) o;
         } else {
             populateConfig();
-            CacheUtil.put(CONFIG, configuration);
         }
     }
 
@@ -93,4 +95,8 @@ public final class ConfigurationManager {
             return defaultValue;
         }
     }    
+    
+    public static Map<String, String> getConfiguration() {
+    	return Collections.unmodifiableMap(configuration);
+    }
 }

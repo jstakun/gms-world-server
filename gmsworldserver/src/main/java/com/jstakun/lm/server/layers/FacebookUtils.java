@@ -52,7 +52,6 @@ import com.restfb.types.User;
  */
 public class FacebookUtils extends LayerHelper {
 
-	private static final Random random = new Random();
 	private static final SimpleDateFormat outf = new SimpleDateFormat("yyyyMMdd", java.util.Locale.US);
 	private static final String FBPLACES_PREFIX = "http://touch.facebook.com/profile.php?id=";
 	

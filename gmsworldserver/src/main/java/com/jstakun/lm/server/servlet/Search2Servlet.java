@@ -166,7 +166,7 @@ public class Search2Servlet extends HttpServlet {
 
                 ThreadUtil.waitForLayers(layers);
 
-                String username = StringUtil.getUsername(request.getAttribute("username"), request.getParameter("username"));
+                /*String username = StringUtil.getUsername(request.getAttribute("username"), request.getParameter("username"));
                 boolean auth = false;
                 if (StringUtils.isNotEmpty(username)) {
                     auth = true;
@@ -187,11 +187,10 @@ public class Search2Servlet extends HttpServlet {
                 	queryString = StringUtils.join(params, "&");
                 }
                 
-                String requestUri = request.getRequestURI() + "?" + queryString;
-                
+                String requestUri = request.getRequestURI() + "?" + queryString;              
                 SearchPersistenceUtils.persistSearch(username, requestUri, auth, latitude, longitude, radius, query, language, counter);
-
-                MailUtils.sendSearchQueryNotification(query, isDeal, counter, requestUri);
+                MailUtils.sendSearchQueryNotification(query, isDeal, counter, requestUri);*/
+                
                 logger.log(Level.INFO, "Found {0} landmarks", counter);
             }
         } catch (Exception e) {

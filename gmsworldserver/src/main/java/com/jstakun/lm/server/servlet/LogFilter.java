@@ -4,9 +4,8 @@
  */
 package com.jstakun.lm.server.servlet;
 
-import com.jstakun.lm.server.utils.StringUtil;
-import com.jstakun.lm.server.utils.persistence.ServiceLogPersistenceUtils;
 import java.io.IOException;
+
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -14,7 +13,13 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang.StringUtils;
+
+import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.utils.StringUtil;
+import com.jstakun.lm.server.utils.persistence.ServiceLogPersistenceUtils;
 
 /**
  *
@@ -27,7 +32,7 @@ public class LogFilter implements Filter {
     // this value is null, this filter instance is not currently
     // configured. 
     private FilterConfig filterConfig = null;
-    private static final String APP_HEADER = "X-GMS-AppId";
+    
     
     public LogFilter() {
     }
@@ -42,14 +47,15 @@ public class LogFilter implements Filter {
      * @exception ServletException if a servlet error occurs
      */
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response,
-            FilterChain chain)
-            throws IOException, ServletException {
-
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    	boolean block = false;
+    	final String ip = request.getRemoteAddr();
+    	
         if (request instanceof HttpServletRequest) {
-            HttpServletRequest httpRequest = (HttpServletRequest) request;
-            String username = StringUtil.getUsername(request.getAttribute("username"), httpRequest.getHeader("username"));
-            String appId = httpRequest.getHeader(APP_HEADER);
+        	HttpServletRequest httpRequest = (HttpServletRequest) request;
+            
+        	String username = StringUtil.getUsername(request.getAttribute("username"), httpRequest.getHeader("username"));
+            String appId = httpRequest.getHeader(Commons.APP_HEADER);
             int appIdVal = -1;
             if (StringUtils.isNumeric(appId)) {
                 try {
@@ -58,7 +64,7 @@ public class LogFilter implements Filter {
                    appIdVal = -1;
                 }
             }
-
+ 
             if (StringUtils.isNotEmpty(username)){
                 ServiceLogPersistenceUtils.persistServiceLog(username, httpRequest.getRequestURI(), true, appIdVal);
             } else {
@@ -69,8 +75,18 @@ public class LogFilter implements Filter {
             ServiceLogPersistenceUtils.persistServiceLog(null, url, false, -1);
         }
 
-        chain.doFilter(request, response);
+        if (block) {
+        	if (response instanceof HttpServletResponse) {
+                ((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN, ip + " has too many requests");
+            } else {
+            	response.getWriter().println("Request rate too high");
+            }
+        	return;
+        } else {
+        	chain.doFilter(request, response); 
+        }
     }
+    
 
     /**
      * Return the filter configuration object for this filter.

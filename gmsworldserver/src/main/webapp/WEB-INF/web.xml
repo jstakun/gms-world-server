@@ -14,16 +14,24 @@
   <filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
   <init-param>
    <param-name>statusEnabled</param-name>
-   <param-value>false</param-value>
+   <param-value>true</param-value>
   </init-param>
   <init-param>
    <param-name>logLevel</param-name>
    <param-value>ERROR</param-value>
   </init-param>
  </filter>
- <filter>
+ <!-- filter>
   <filter-name>LogFilter</filter-name>
   <filter-class>com.jstakun.lm.server.servlet.LogFilter</filter-class>
+ </filter-->
+ <filter>
+  <filter-name>IPFilter</filter-name>
+  <filter-class>com.jstakun.lm.server.servlet.IPFilter</filter-class>
+ </filter>
+ <filter>
+  <filter-name>BlockerFilter</filter-name>
+  <filter-class>com.jstakun.lm.server.servlet.BlockerFilter</filter-class>
  </filter>
  <!-- filter>
   <filter-name>appstats</filter-name>
@@ -33,6 +41,82 @@
     <param-value>true</param-value>
   </init-param>
 </filter-->
+ <filter-mapping>
+  <filter-name>IPFilter</filter-name>
+    <url-pattern>/facebookProvider</url-pattern>
+    <url-pattern>/foursquareProvider</url-pattern>
+    <url-pattern>/yelpProvider</url-pattern>
+    <url-pattern>/qypeProvider</url-pattern>
+    <url-pattern>/googlePlacesProvider</url-pattern>
+    <url-pattern>/couponsProvider</url-pattern>
+    <url-pattern>/grouponProvider</url-pattern>
+    <url-pattern>/atmProvider</url-pattern>
+    <url-pattern>/flickrProvider</url-pattern>
+    <url-pattern>/downloadLandmark</url-pattern>
+    <url-pattern>/picasaProvider</url-pattern>
+    <url-pattern>/meetupProvider</url-pattern>
+    <url-pattern>/upcomingProvider</url-pattern>
+    <url-pattern>/youTubeProvider</url-pattern>
+    <url-pattern>/eventfulProvider</url-pattern>
+    <url-pattern>/osmProvider</url-pattern>
+    <url-pattern>/placeopediaProvider</url-pattern>
+    <url-pattern>/geonamesProvider</url-pattern>
+    <url-pattern>/lastfmProvider</url-pattern>
+    <url-pattern>/webcamProvider</url-pattern>
+    <url-pattern>/hotwireProvider</url-pattern>
+    <url-pattern>/panoramio2Provider</url-pattern>
+    <url-pattern>/foursquareMerchant</url-pattern>
+    <url-pattern>/expediaProvider</url-pattern>
+    <url-pattern>/hotelsProvider</url-pattern>
+    <url-pattern>/twitterProvider</url-pattern>
+    <url-pattern>/instagramProvider</url-pattern>
+    <url-pattern>/instagramProvider</url-pattern>
+    <url-pattern>/freebaseProvider</url-pattern>
+    <url-pattern>/search</url-pattern>
+    <url-pattern>/listLayers</url-pattern>
+    <url-pattern>/geocode</url-pattern>
+    <url-pattern>/crashReport</url-pattern>
+    <url-pattern>/imageUpload</url-pattern>
+    <url-pattern>/panoramioProvider</url-pattern>
+ </filter-mapping>
+ <filter-mapping>
+  <filter-name>BlockerFilter</filter-name>
+    <url-pattern>/facebookProvider</url-pattern>
+    <url-pattern>/foursquareProvider</url-pattern>
+    <url-pattern>/yelpProvider</url-pattern>
+    <url-pattern>/qypeProvider</url-pattern>
+    <url-pattern>/googlePlacesProvider</url-pattern>
+    <url-pattern>/couponsProvider</url-pattern>
+    <url-pattern>/grouponProvider</url-pattern>
+    <url-pattern>/atmProvider</url-pattern>
+    <url-pattern>/flickrProvider</url-pattern>
+    <url-pattern>/downloadLandmark</url-pattern>
+    <url-pattern>/picasaProvider</url-pattern>
+    <url-pattern>/meetupProvider</url-pattern>
+    <url-pattern>/upcomingProvider</url-pattern>
+    <url-pattern>/youTubeProvider</url-pattern>
+    <url-pattern>/eventfulProvider</url-pattern>
+    <url-pattern>/osmProvider</url-pattern>
+    <url-pattern>/placeopediaProvider</url-pattern>
+    <url-pattern>/geonamesProvider</url-pattern>
+    <url-pattern>/lastfmProvider</url-pattern>
+    <url-pattern>/webcamProvider</url-pattern>
+    <url-pattern>/hotwireProvider</url-pattern>
+    <url-pattern>/panoramio2Provider</url-pattern>
+    <url-pattern>/foursquareMerchant</url-pattern>
+    <url-pattern>/expediaProvider</url-pattern>
+    <url-pattern>/hotelsProvider</url-pattern>
+    <url-pattern>/twitterProvider</url-pattern>
+    <url-pattern>/instagramProvider</url-pattern>
+    <url-pattern>/instagramProvider</url-pattern>
+    <url-pattern>/freebaseProvider</url-pattern>
+    <url-pattern>/search</url-pattern>
+    <url-pattern>/listLayers</url-pattern>
+    <url-pattern>/geocode</url-pattern>
+    <url-pattern>/crashReport</url-pattern>
+    <url-pattern>/imageUpload</url-pattern>
+    <url-pattern>/panoramioProvider</url-pattern>
+ </filter-mapping>
  <filter-mapping>
   <filter-name>ServicesAuthorizationFilter</filter-name>
   <url-pattern>/services/*</url-pattern>
@@ -45,10 +129,10 @@
   <filter-name>UrlRewriteFilter</filter-name>
   <url-pattern>/*</url-pattern>
  </filter-mapping>
- <filter-mapping>
+ <!-- filter-mapping>
   <filter-name>LogFilter</filter-name>
   <url-pattern>/*</url-pattern>
- </filter-mapping>
+ </filter-mapping-->
  <!-- filter-mapping>
   <filter-name>appstats</filter-name>
   <url-pattern>/*</url-pattern>
@@ -190,10 +274,6 @@
   <servlet-name>CrashReportServlet</servlet-name>
   <servlet-class>com.jstakun.lm.server.servlet.CrashReportServlet</servlet-class>
  </servlet>
- <!--servlet>
-        <servlet-name>SearchServlet</servlet-name>
-        <servlet-class>com.jstakun.lm.server.servlet.SearchServlet</servlet-class>
-    </servlet-->
  <servlet>
   <servlet-name>EmailingTaskServlet</servlet-name>
   <servlet-class>com.jstakun.lm.server.tasks.EmailingTaskServlet</servlet-class>
@@ -571,149 +651,6 @@
   <servlet-name>LandmarkRedirectServlet</servlet-name>
   <url-pattern>/landmarkRedirect</url-pattern>
  </servlet-mapping>
- <!--servlet-mapping>
-        <servlet-name>TwitterProviderServlet</servlet-name>
-        <url-pattern>/twitterProvider</url-pattern>
-        <url-pattern>/services/twitterProvider</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>FoursquareMerchantServlet</servlet-name>
-        <url-pattern>/services/foursquareMerchant</url-pattern>
-        <url-pattern>/foursquareMerchant</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>WebcamProviderServlet</servlet-name>
-        <url-pattern>/webcamProvider</url-pattern>
-        <url-pattern>/services/webcamProvider</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>PlaceopediaProviderServlet</servlet-name>
-        <url-pattern>/services/placeopediaProvider</url-pattern>
-        <url-pattern>/placeopediaProvider</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>GeonamesProviderServlet</servlet-name>
-        <url-pattern>/services/geonamesProvider</url-pattern>
-        <url-pattern>/geonamesProvider</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>CsvHotelLoaderTaskServlet</servlet-name>
-        <url-pattern>/tasks/hotelLoaderTask</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>Panoramio2ProviderServlet</servlet-name>
-        <url-pattern>/panoramio2Provider</url-pattern>
-        <url-pattern>/services/panoramio2Provider</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>HotelsProviderServlet</servlet-name>
-        <url-pattern>/hotelsProvider</url-pattern>
-        <url-pattern>/services/hotelsProvider</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>HotwireProviderServlet</servlet-name>
-        <url-pattern>/hotwireProvider</url-pattern>
-        <url-pattern>/services/hotwireProvider</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>LastfmProviderServlet</servlet-name>
-        <url-pattern>/lastfmProvider</url-pattern>
-        <url-pattern>/services/lastfmProvider</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ExpediaProviderServlet</servlet-name>
-        <url-pattern>/expediaProvider</url-pattern>
-        <url-pattern>/services/expediaProvider</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>GooglePlacesProviderServlet</servlet-name>
-        <url-pattern>/googlePlacesProvider</url-pattern>
-        <url-pattern>/services/googlePlacesProvider</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>CouponsProviderServlet</servlet-name>
-        <url-pattern>/couponsProvider</url-pattern>
-        <url-pattern>/services/couponsProvider</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>EvenfulProviderServlet</servlet-name>
-        <url-pattern>/services/eventfulProvider</url-pattern>
-        <url-pattern>/eventfulProvider</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>DownloadLandmarkServlet</servlet-name>
-        <url-pattern>/services/downloadLandmark</url-pattern>
-        <url-pattern>/downloadLandmark</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>FlickrProviderServlet</servlet-name>
-        <url-pattern>/services/flickrProvider</url-pattern>
-        <url-pattern>/flickrProvider</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>CryptoTestServlet</servlet-name>
-        <url-pattern>/cryptoTest</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>YouTubeProviderServlet</servlet-name>
-        <url-pattern>/services/youTubeProvider</url-pattern>
-        <url-pattern>/youTubeProvider</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>GrouponProviderServlet</servlet-name>
-        <url-pattern>/grouponProvider</url-pattern>
-        <url-pattern>/services/grouponProvider</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>PicasaProviderServlet</servlet-name>
-        <url-pattern>/picasaProvider</url-pattern>
-        <url-pattern>/services/picasaProvider</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>FoursquareProviderServlet</servlet-name>
-        <url-pattern>/foursquareProvider</url-pattern>
-        <url-pattern>/services/foursquareProvider</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>GowallaProviderServlet</servlet-name>
-        <url-pattern>/services/gowallaProvider</url-pattern>
-        <url-pattern>/gowallaProvider</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>UpcomingProviderServlet</servlet-name>
-        <url-pattern>/upcomingProvider</url-pattern>
-        <url-pattern>/services/upcomingProvider</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>FBProviderServlet</servlet-name>
-        <url-pattern>/facebookProvider</url-pattern>
-        <url-pattern>/services/facebookProvider</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>AtmProviderServlet</servlet-name>
-        <url-pattern>/atmProvider</url-pattern>
-        <url-pattern>/services/atmProvider</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>OsmProviderServlet</servlet-name>
-        <url-pattern>/osmProvider</url-pattern>
-        <url-pattern>/services/osmProvider</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>YelpProviderServlet</servlet-name>
-        <url-pattern>/yelpProvider</url-pattern>
-        <url-pattern>/services/yelpProvider</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>QypeProviderServlet</servlet-name>
-        <url-pattern>/qypeProvider</url-pattern>
-        <url-pattern>/services/qypeProvider</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>MeetupProviderServlet</servlet-name>
-        <url-pattern>/meetupProvider</url-pattern>
-        <url-pattern>/services/meetupProvider</url-pattern>
-    </servlet-mapping-->
  <servlet-mapping>
   <servlet-name>LayersProviderServlet</servlet-name>
   <url-pattern>/facebookProvider,/services/facebookProvider,/foursquareProvider,/services/foursquareProvider,/yelpProvider,/services/yelpProvider,/qypeProvider,/services/qypeProvider,/googlePlacesProvider,/services/googlePlacesProvider,/couponsProvider,/services/couponsProvider,/grouponProvider,/services/grouponProvider,/atmProvider,/services/atmProvider,/services/flickrProvider,/flickrProvider,/services/downloadLandmark,/downloadLandmark,/picasaProvider,/services/picasaProvider,/meetupProvider,/services/meetupProvider,/upcomingProvider,/services/upcomingProvider,/services/youTubeProvider,/youTubeProvider,/services/eventfulProvider,/eventfulProvider,/osmProvider,/services/osmProvider,/services/gowallaProvider,/gowallaProvider,/services/placeopediaProvider,/placeopediaProvider,/services/geonamesProvider,/geonamesProvider,/lastfmProvider,/services/lastfmProvider,/webcamProvider,/services/webcamProvider,/hotwireProvider,/services/hotwireProvider,/panoramio2Provider,/services/panoramio2Provider,/services/foursquareMerchant,/foursquareMerchant,/expediaProvider,/services/expediaProvider,/hotelsProvider,/services/hotelsProvider,/twitterProvider,/services/twitterProvider,/instagramProvider,/services/instagramProvider,/freebaseProvider,/services/freebaseProvider</url-pattern>

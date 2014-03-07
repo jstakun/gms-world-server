@@ -91,6 +91,11 @@ public class CacheUtil {
 		syncCache.put(key + "_" + layer, value, ONE_HOUR_EXPIRATION);
 	}
 	
+	public static void increment(String key) {
+		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+		syncCache.increment(key, 1);
+	}
+	
 	/*private static class MyCacheListener implements CacheListener {
 
 		@Override

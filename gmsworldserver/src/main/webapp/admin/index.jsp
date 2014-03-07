@@ -23,6 +23,9 @@
     <h4>
       <a href="createLayer.jsp">Create Layer</a>
     </h4>
+     <h4>
+      <a href="populate.jsp">Refresh configuration</a>
+    </h4>
     <h4>
       Available tasks:
     </h4>
