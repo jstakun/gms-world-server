@@ -41,6 +41,7 @@ public final class Commons {
     public static final String APP_USER = "";
     public static final String MYPOS_USER = "";
     public static final String privKeyFile = "";
+    public static final String RH_GMS_USER = "";
     
     //com.jstakun.lm.server.personalization
     

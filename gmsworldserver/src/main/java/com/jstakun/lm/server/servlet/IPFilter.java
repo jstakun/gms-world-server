@@ -13,6 +13,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.jstakun.lm.server.config.ConfigurationManager;
+import com.jstakun.lm.server.utils.NumberUtils;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 
 /**
@@ -20,8 +22,6 @@ import com.jstakun.lm.server.utils.memcache.CacheUtil;
  */
 public class IPFilter implements Filter {
 
-	private static final int TOTAL_LIMIT = 100;
-	private static final int URI_LIMIT = 3;
 	private static final Logger logger = Logger.getLogger(IPFilter.class.getName());
     /**
      * Default constructor. 
@@ -57,7 +57,7 @@ public class IPFilter implements Filter {
 		
 		logger.log(Level.INFO, "Added address to cache " + ip_key + ": " + total_count);
 		
-		if (total_count > TOTAL_LIMIT) {
+		if (total_count > NumberUtils.getInt(ConfigurationManager.getParam(ConfigurationManager.IP_TOTAL_LIMIT, "90"), 90)) {
 				logger.log(Level.SEVERE, "IP: " + ip + " is blocked after " + total_count + " requests");
 				if (response instanceof HttpServletResponse) {
 					((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN, ip + " has too many requests");
@@ -81,7 +81,7 @@ public class IPFilter implements Filter {
 			
 				logger.log(Level.INFO, "Added uri to cache " + uri_key + ": " + uri_count);
             
-				if (uri_count > URI_LIMIT) {
+				if (uri_count > NumberUtils.getInt(ConfigurationManager.getParam(ConfigurationManager.IP_URI_LIMIT, "3"), 3)) {
 					logger.log(Level.SEVERE, "IP: " + ip + " is blocked after " + uri_count + " uri requests");
 					((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN, ip + " has too many uri requests");
 				} else {

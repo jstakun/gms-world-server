@@ -37,6 +37,8 @@ public final class ConfigurationManager {
     public static final String TW_SECRET = "twSecret";//TW GMS World secret
     public static final String EXCLUDED = "excluded";//list of excluded from engagement email
     public static final String CLOSED_URLS = "closed";//temporary closed urls
+    public static final String IP_TOTAL_LIMIT = "totalLimit"; //total call limit from ip
+    public static final String IP_URI_LIMIT = "uriLimit"; //total call limit from ip to uri
     
     public static final String FB_USERNAME = "fbUsername";
     public static final String FB_GENDER = "fbGender";
