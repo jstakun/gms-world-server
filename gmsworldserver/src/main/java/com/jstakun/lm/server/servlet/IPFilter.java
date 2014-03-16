@@ -60,12 +60,14 @@ public class IPFilter implements Filter {
 		if (total_count > NumberUtils.getInt(ConfigurationManager.getParam(ConfigurationManager.IP_TOTAL_LIMIT, "90"), 90)) {
 				logger.log(Level.SEVERE, "IP: " + ip + " is blocked after " + total_count + " requests");
 				if (response instanceof HttpServletResponse) {
+					logger.log(Level.INFO, "User-Agent: " + ((HttpServletRequest) request).getHeader("User-Agent"));
 					((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN, ip + " has too many requests");
 				} else {
 					response.getWriter().println("Request rate too high");
 				}
 		} else if (request instanceof HttpServletRequest) {
-				final String uri = ((HttpServletRequest) request).getRequestURI();
+			    final HttpServletRequest httpRequest = (HttpServletRequest) request;
+				final String uri = httpRequest.getRequestURI();
 				final String uri_key = getClass().getName() + "_" + ip + "_" + uri;
             			
 				Integer uri_count = (Integer)CacheUtil.getObject(uri_key);
@@ -82,6 +84,7 @@ public class IPFilter implements Filter {
 				logger.log(Level.INFO, "Added uri to cache " + uri_key + ": " + uri_count);
             
 				if (uri_count > NumberUtils.getInt(ConfigurationManager.getParam(ConfigurationManager.IP_URI_LIMIT, "3"), 3)) {
+					logger.log(Level.INFO, "User-Agent: " + httpRequest.getHeader("User-Agent"));
 					logger.log(Level.SEVERE, "IP: " + ip + " is blocked after " + uri_count + " uri requests");
 					((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN, ip + " has too many uri requests");
 				} else {

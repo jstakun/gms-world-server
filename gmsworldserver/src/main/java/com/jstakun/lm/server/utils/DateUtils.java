@@ -26,7 +26,7 @@ public class DateUtils {
     private static DateFormat monthShort = new SimpleDateFormat("MMM", Locale.getDefault());
     
     private static final String rhcloudDatetimeFormat = "yyyy-MM-dd'T'HH:mm:ss";
-    private static final String rhcloudTimeZone = "GMT-5:00";
+    private static final String rhcloudTimeZone = "GMT-4:00";
     private static DateConverter dtConverter = null;
     
     
