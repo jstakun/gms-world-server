@@ -62,10 +62,15 @@ public class BlockerFilter implements Filter {
                 }
             }
 
-            Browser browser = Browser.parseUserAgentString(httpRequest.getHeader("User-Agent"));
+            String userAgent = httpRequest.getHeader("User-Agent");
             
-            if (appIdVal == -1 && StringUtils.containsIgnoreCase(browser.getName(), "download")) {
-            	logger.log(Level.SEVERE, "Remote Addr: " + ip + ", username: " + username + ", blocked AppId = -1, User agent: " + browser.getName() + ", " + httpRequest.getHeader("User-Agent"));
+            Browser browser = Browser.parseUserAgentString(userAgent);
+            
+            if (StringUtils.isEmpty(userAgent)) {
+            	logger.log(Level.SEVERE, "Empty user agent, remote addr: " + ip + ", username: " + username);
+            	block = true;
+            } else if (appIdVal == -1 && StringUtils.containsIgnoreCase(browser.getName(), "download")) {
+            	logger.log(Level.SEVERE, "Remote Addr: " + ip + ", username: " + username + ", blocked AppId = -1, User agent: " + browser.getName() + ", " + userAgent);
                 block = true;
             //} else if (StringUtils.equals(httpRequest.getRequestURI(), "/facebookProvider") || StringUtils.equals(httpRequest.getRequestURI(), "/search")) {
             //	logger.log(Level.SEVERE, "Remote Addr: " + ip + ", User agent: " + browser.getName() + ", " + httpRequest.getHeader("User-Agent"));
@@ -75,7 +80,7 @@ public class BlockerFilter implements Filter {
             //} else if (browser.getGroup() == Browser.BOT || browser.getGroup() == Browser.BOT_MOBILE || browser.getGroup() == Browser.UNKNOWN) {
             //    logger.log(Level.WARNING, "User agent: " + browser.getName() + ", " + httpRequest.getHeader("User-Agent") + ", appId: " + appIdVal);         	
             } else {
-            	logger.log(Level.WARNING, "User agent: " + browser.getName() + ", " + httpRequest.getHeader("User-Agent") + ", appId: " + appIdVal);    
+            	logger.log(Level.WARNING, "User agent: " + browser.getName() + ", " + userAgent + ", appId: " + appIdVal);    
             	String closed = ConfigurationManager.getParam(ConfigurationManager.CLOSED_URLS, "");
             	//logger.log(Level.INFO, "Temporary closed uris: " + closed);          
                 String[] closedUrlsList = StringUtils.split(closed, ",");
@@ -83,7 +88,7 @@ public class BlockerFilter implements Filter {
                 	String uri = httpRequest.getRequestURI();
                 	for (int i=0;i<closedUrlsList.length;i++) {
                 		if (StringUtils.equals(uri, closedUrlsList[i])) {
-                			logger.log(Level.SEVERE, "Remote Addr: " + ip + ", username: " + username + ", User agent: " + browser.getName() + ", " + httpRequest.getHeader("User-Agent"));
+                			logger.log(Level.SEVERE, "Remote Addr: " + ip + ", username: " + username + ", User agent: " + browser.getName() + ", " + userAgent);
                         	block = true;
                         	break;
                 		}

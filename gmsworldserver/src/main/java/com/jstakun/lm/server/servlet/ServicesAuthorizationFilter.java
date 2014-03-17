@@ -5,6 +5,7 @@
 package com.jstakun.lm.server.servlet;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
@@ -20,12 +21,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.google.gdata.util.common.util.Base64;
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.persistence.User;
 import com.jstakun.lm.server.utils.BCTools;
 import com.jstakun.lm.server.utils.CryptoTools;
+import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.Sha1;
 import com.jstakun.lm.server.utils.StringUtil;
 import com.jstakun.lm.server.utils.persistence.UserPersistenceUtils;
@@ -171,6 +175,24 @@ public class ServicesAuthorizationFilter implements Filter {
                         httpRequest.getSession().setAttribute("password", pwdStr);*/
                     }
                 }
+            }
+            
+            //1101, 101
+            if (!auth) {
+            	authHeader = httpRequest.getHeader(Commons.TOKEN_HEADER);
+            	String scope = httpRequest.getHeader(Commons.SCOPE_HEADER);
+            	if (authHeader != null && scope != null) {
+            		try {
+            			String tokenUrl = "https://landmarks-gmsworld.rhcloud.com/actions/isValidToken?scope=" + scope + "&key=" + authHeader;
+            			String tokenJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(tokenUrl), Commons.RH_GMS_USER);		
+        				if (StringUtils.startsWith(tokenJson, "{")) {
+        					JSONObject root = new JSONObject(tokenJson);
+        					auth = root.getBoolean("output");
+        				}	
+            		} catch (JSONException e) {
+                		logger.log(Level.SEVERE, e.getMessage(), e);
+                	}
+            	}
             }
 
             if (auth) {

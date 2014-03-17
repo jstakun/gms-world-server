@@ -12,6 +12,8 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -25,6 +27,7 @@ import com.google.appengine.api.taskqueue.QueueFactory;
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.layers.FacebookUtils;
+import com.jstakun.lm.server.utils.TokenUtil;
 
 /**
  *
@@ -32,6 +35,7 @@ import com.jstakun.lm.server.layers.FacebookUtils;
  */
 public class FBAuthServlet extends HttpServlet {
 
+	private static final Logger logger = Logger.getLogger(FBAuthServlet.class.getName());
     /**
 	 * 
 	 */
@@ -44,10 +48,10 @@ public class FBAuthServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
+        
         try {
             String code = request.getParameter("code");
             if (code != null && code.length() > 0) {
@@ -75,18 +79,13 @@ public class FBAuthServlet extends HttpServlet {
                 }
                 if (accessToken != null) {
                     Map<String, String> userData = FacebookUtils.getMyData(accessToken);
-                    //OAuthTokenPersistenceUtils.persistOAuthToken(Commons.FACEBOOK, accessToken, username, password, userData.get(ConfigurationManager.FB_USERNAME));
                     userData.put("token", accessToken);
                     if (expires > 0) {
                     	userData.put(ConfigurationManager.FB_EXPIRES_IN, Integer.toString(expires));
                     }                 
                     
-                    //move to task
-                    //FacebookUtils.sendMessageToUserFeed(accessToken, null, Commons.LOGIN);
-                    //MailUtils.sendUserCreationNotification("User " + ConfigurationManager.SERVER_URL + "socialProfile?uid=" + userData.get(ConfigurationManager.FB_USERNAME) + "@" + Commons.FACEBOOK + " logged in");
-                    //if (userData.containsKey(ConfigurationManager.USER_EMAIL)) {
-                    //	MailUtils.sendLoginNotification(userData.get(ConfigurationManager.USER_EMAIL), userData.get(ConfigurationManager.FB_NAME), "Facebook", getServletContext());
-                    //}
+                    String key = TokenUtil.generateToken("lm", userData.get(ConfigurationManager.FB_USERNAME) + "@" + Commons.FACEBOOK);
+                    userData.put("gmsToken", key); 
                     
                     Queue queue = QueueFactory.getQueue("notifications");
                     queue.add(withUrl("/tasks/notificationTask").
@@ -98,11 +97,13 @@ public class FBAuthServlet extends HttpServlet {
                     
                     out.print(OAuthCommons.getOAuthSuccessHTML(new JSONObject(userData).toString()));  
                 } else {
+                	logger.log(Level.SEVERE, "No access token!");
                     response.sendRedirect("/m/oauth_logon_error.jsp");
                 }
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+            response.sendRedirect("/m/oauth_logon_error.jsp");
         } finally {
             out.close();
         }

@@ -83,6 +83,7 @@
     <url-pattern>/twlogin</url-pattern>
     <url-pattern>/lnlogin</url-pattern>
     <url-pattern>/gllogin</url-pattern>
+    <url-pattern>/token</url-pattern>
  </filter-mapping>
  <filter-mapping>
   <filter-name>BlockerFilter</filter-name>
@@ -126,10 +127,12 @@
     <url-pattern>/twlogin</url-pattern>
     <url-pattern>/lnlogin</url-pattern>
     <url-pattern>/gllogin</url-pattern>
+    <url-pattern>/token</url-pattern>
  </filter-mapping>
  <filter-mapping>
   <filter-name>ServicesAuthorizationFilter</filter-name>
   <url-pattern>/services/*</url-pattern>
+  <url-pattern>/s/*</url-pattern>
  </filter-mapping>
  <filter-mapping>
   <filter-name>AdminFilter</filter-name>
@@ -172,7 +175,7 @@
   <servlet-name>ListLayersServlet</servlet-name>
   <servlet-class>com.jstakun.lm.server.servlet.ListLayersServlet</servlet-class>
  </servlet>
- <servlet>
+ <!-- servlet>
   <servlet-name>DownloadServlet</servlet-name>
   <servlet-class>com.jstakun.lm.server.servlet.DownloadServlet</servlet-class>
  </servlet>
@@ -187,7 +190,7 @@
  <servlet>
   <servlet-name>ViewResourceServlet</servlet-name>
   <servlet-class>com.jstakun.lm.server.servlet.ViewTahMapServlet</servlet-class>
- </servlet>
+ </servlet-->
  <servlet>
   <servlet-name>FBAuthServlet</servlet-name>
   <servlet-class>com.jstakun.lm.server.oauth.FBAuthServlet</servlet-class>
@@ -488,6 +491,10 @@
   <servlet-name>LandmarkRedirectServlet</servlet-name>
   <servlet-class>com.jstakun.lm.server.servlet.LandmarkRedirectServlet</servlet-class>
  </servlet>
+ <servlet>
+  <servlet-name>TokenServlet</servlet-name>
+  <servlet-class>com.jstakun.lm.server.servlet.TokenServlet</servlet-class>
+ </servlet>
  <!--servlet>
   <servlet-name>appstats</servlet-name>
   <servlet-class>com.google.appengine.tools.appstats.AppstatsServlet</servlet-class>
@@ -506,13 +513,13 @@
  </servlet-mapping-->
  <servlet-mapping>
   <servlet-name>ListLayersServlet</servlet-name>
-  <url-pattern>/services/listLayers,/listLayers</url-pattern>
+  <url-pattern>/services/listLayers,/listLayers,/s/listLayers</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>LandmarkPersistenceServlet</servlet-name>
-  <url-pattern>/services/persistLandmark</url-pattern>
+  <url-pattern>/services/persistLandmark,/s/persistLandmark</url-pattern>
  </servlet-mapping>
- <servlet-mapping>
+ <!-- servlet-mapping>
   <servlet-name>DownloadServlet</servlet-name>
   <url-pattern>/services/download</url-pattern>
  </servlet-mapping>
@@ -527,7 +534,7 @@
  <servlet-mapping>
   <servlet-name>ViewResourceServlet</servlet-name>
   <url-pattern>/services/viewTahMap</url-pattern>
- </servlet-mapping>
+ </servlet-mapping-->
  <servlet-mapping>
   <servlet-name>FBAuthServlet</servlet-name>
   <url-pattern>/fbauth</url-pattern>
@@ -546,11 +553,11 @@
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>FBSendMessageServlet</servlet-name>
-  <url-pattern>/services/fbSendMessage</url-pattern>
+  <url-pattern>/services/fbSendMessage,/s/fbSendMessage</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>TwSendUpdateServlet</servlet-name>
-  <url-pattern>/services/twSendUpdate</url-pattern>
+  <url-pattern>/services/twSendUpdate,/s/twSendUpdate</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>OAuthServlet</servlet-name>
@@ -562,7 +569,7 @@
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>LnSendUpdateServlet</servlet-name>
-  <url-pattern>/services/lnSendUpdate</url-pattern>
+  <url-pattern>/services/lnSendUpdate,/s/lnSendUpdate</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>GlLoginServlet</servlet-name>
@@ -574,23 +581,23 @@
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>GlSendPostServlet</servlet-name>
-  <url-pattern>/services/glSendPost</url-pattern>
+  <url-pattern>/services/glSendPost,/s/glSendPost</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>QrCodeCheckInServlet</servlet-name>
-  <url-pattern>/services/qrCodeCheckIn</url-pattern>
+  <url-pattern>/services/qrCodeCheckIn,/s/qrCodeCheckIn</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>LocationCheckInServlet</servlet-name>
-  <url-pattern>/services/locationCheckIn</url-pattern>
+  <url-pattern>/services/locationCheckIn,/s/locationCheckIn</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>GeocodeServlet</servlet-name>
-  <url-pattern>/geocode,/services/geocode</url-pattern>
+  <url-pattern>/geocode,/services/geocode,/s/geocode</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>FbPlacesServlet</servlet-name>
-  <url-pattern>/services/fbPlaces</url-pattern>
+  <url-pattern>/services/fbPlaces,/s/fbPlaces</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>ServiceLogAnalyticsServlet</servlet-name>
@@ -602,7 +609,7 @@
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>AddCommentServlet</servlet-name>
-  <url-pattern>/services/addComment</url-pattern>
+  <url-pattern>/services/addComment,/s/addComment</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>HotelLoaderServlet</servlet-name>
@@ -614,7 +621,7 @@
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>CrashReportServlet</servlet-name>
-  <url-pattern>/crashReport,/services/crashReport</url-pattern>
+  <url-pattern>/crashReport,/services/crashReport,/s/addComment</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>EmailingTaskServlet</servlet-name>
@@ -635,19 +642,19 @@
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>FBCheckinsServlet</servlet-name>
-  <url-pattern>/services/fbCheckins</url-pattern>
+  <url-pattern>/services/fbCheckins,/s/fbCheckins</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>FoursquareCheckinsServlet</servlet-name>
-  <url-pattern>/services/fsCheckins</url-pattern>
+  <url-pattern>/services/fsCheckins,/s/fsCheckins</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>FBPhotosServlet</servlet-name>
-  <url-pattern>/services/fbPhotos</url-pattern>
+  <url-pattern>/services/fbPhotos,/s/fbPhotos</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>FoursquareRecommendedServlet</servlet-name>
-  <url-pattern>/services/fsRecommended</url-pattern>
+  <url-pattern>/services/fsRecommended,/s/fbRecommended</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>SearchTaskServlet</servlet-name>
@@ -655,7 +662,7 @@
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>NotificationsServlet</servlet-name>
-  <url-pattern>/notifications,/services/notifications</url-pattern>
+  <url-pattern>/notifications,/services/notifications,/s/notifications</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>LandmarkRedirectServlet</servlet-name>
@@ -663,23 +670,51 @@
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>LayersProviderServlet</servlet-name>
-  <url-pattern>/facebookProvider,/services/facebookProvider,/foursquareProvider,/services/foursquareProvider,/yelpProvider,/services/yelpProvider,/qypeProvider,/services/qypeProvider,/googlePlacesProvider,/services/googlePlacesProvider,/couponsProvider,/services/couponsProvider,/grouponProvider,/services/grouponProvider,/atmProvider,/services/atmProvider,/services/flickrProvider,/flickrProvider,/services/downloadLandmark,/downloadLandmark,/picasaProvider,/services/picasaProvider,/meetupProvider,/services/meetupProvider,/upcomingProvider,/services/upcomingProvider,/services/youTubeProvider,/youTubeProvider,/services/eventfulProvider,/eventfulProvider,/osmProvider,/services/osmProvider,/services/gowallaProvider,/gowallaProvider,/services/placeopediaProvider,/placeopediaProvider,/services/geonamesProvider,/geonamesProvider,/lastfmProvider,/services/lastfmProvider,/webcamProvider,/services/webcamProvider,/hotwireProvider,/services/hotwireProvider,/panoramio2Provider,/services/panoramio2Provider,/services/foursquareMerchant,/foursquareMerchant,/expediaProvider,/services/expediaProvider,/hotelsProvider,/services/hotelsProvider,/twitterProvider,/services/twitterProvider,/instagramProvider,/services/instagramProvider,/freebaseProvider,/services/freebaseProvider</url-pattern>
+  <url-pattern>/facebookProvider,/services/facebookProvider,/s/facebookProvider</url-pattern>
+  <url-pattern>/foursquareProvider,/s/foursquareProvider,/services/foursquareProvider</url-pattern>
+  <url-pattern>/yelpProvider,/services/yelpProvider,/s/yelpProvider</url-pattern>
+  <url-pattern>/qypeProvider,/services/qypeProvider</url-pattern>
+  <url-pattern>/googlePlacesProvider,/services/googlePlacesProvider,/s/googlePlacesProvider</url-pattern>
+  <url-pattern>/couponsProvider,/services/couponsProvider,/s/couponsProvider</url-pattern>
+  <url-pattern>/grouponProvider,/services/grouponProvider,/s/grouponProvider</url-pattern>
+  <url-pattern>/atmProvider,/services/atmProvider,/s/atmProvider</url-pattern>
+  <url-pattern>/services/flickrProvider,/s/flickrProvider,/flickrProvider</url-pattern>
+  <url-pattern>/services/downloadLandmark,/s/downloadLandmark,/downloadLandmark</url-pattern>
+  <url-pattern>/picasaProvider,/services/picasaProvider,/s/picasaProvider</url-pattern>
+  <url-pattern>/meetupProvider,/services/meetupProvider,/s/meetupProvider</url-pattern>
+  <url-pattern>/upcomingProvider,/services/upcomingProvider,/s/upcomingProvider</url-pattern>
+  <url-pattern>/services/youTubeProvider,/youTubeProvider,/s/youTubeProvider</url-pattern>
+  <url-pattern>/services/eventfulProvider,/eventfulProvider,/s/eventfulProvider</url-pattern>
+  <url-pattern>/osmProvider,/services/osmProvider,/s/osmProvider</url-pattern>
+  <url-pattern>/services/gowallaProvider,/gowallaProvider</url-pattern>
+  <url-pattern>/services/placeopediaProvider,/placeopediaProvider,/s/placeopediaProvider</url-pattern>
+  <url-pattern>/services/geonamesProvider,/geonamesProvider,/s/geonamesProvider</url-pattern>
+  <url-pattern>/lastfmProvider,/services/lastfmProvider,/s/lastfmProvider</url-pattern>
+  <url-pattern>/webcamProvider,/services/webcamProvider,/s/webcamProvider</url-pattern>
+  <url-pattern>/hotwireProvider,/services/hotwireProvider</url-pattern>
+  <url-pattern>/panoramio2Provider,/services/panoramio2Provider,/s/panoramio2Provider</url-pattern>
+  <url-pattern>/services/foursquareMerchant,/foursquareMerchant,/s/foursquareMerchant</url-pattern>
+  <url-pattern>/expediaProvider,/services/expediaProvider,/s/expediaProvider</url-pattern>
+  <url-pattern>/hotelsProvider,/services/hotelsProvider,/s/hotelsProvider</url-pattern>
+  <url-pattern>/twitterProvider,/services/twitterProvider,/s/twitterProvider</url-pattern>
+  <url-pattern>/instagramProvider,/services/instagramProvider,/s/instagramProvider</url-pattern>
+  <url-pattern>/freebaseProvider,/services/freebaseProvider,/s/freebaseProvider</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>Search2Servlet</servlet-name>
-  <url-pattern>/search,/services/search</url-pattern>
+  <url-pattern>/search,/services/search,/s/search</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>ImageUploadServlet</servlet-name>
-  <url-pattern>/imageUpload,/services/imageUpload</url-pattern>
+  <url-pattern>/imageUpload,/services/imageUpload,/s/imageUpload</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>AuthnServlet</servlet-name>
-  <url-pattern>/services/authn,/services/authenticate</url-pattern>
+  <url-pattern>/services/authn,/services/authenticate,/s/authenticate</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>RouteProviderServlet</servlet-name>
-  <url-pattern>/services/routeProvider</url-pattern>
+  <url-pattern>/services/routeProvider,/s/routeProvider</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>TaskExecuteServlet</servlet-name>
@@ -687,7 +722,7 @@
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>SocialProfileServlet</servlet-name>
-  <url-pattern>/socialProfile,/services/socialProfile</url-pattern>
+  <url-pattern>/socialProfile,/services/socialProfile,/s/socialProfile</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>FSLoginServlet</servlet-name>
@@ -699,19 +734,23 @@
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>SocialCheckinServlet</servlet-name>
-  <url-pattern>/services/socialCheckin</url-pattern>
+  <url-pattern>/services/socialCheckin,/s/socialCheckin</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>SocialCommentServlet</servlet-name>
-  <url-pattern>/services/socialComment</url-pattern>
+  <url-pattern>/services/socialComment,/s/socialComment</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>FsAddVenueServlet</servlet-name>
-  <url-pattern>/services/fsAddVenue</url-pattern>
+  <url-pattern>/services/fsAddVenue,/s/fsAddVenue</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>NotificationTaskServlet</servlet-name>
   <url-pattern>/tasks/notificationTask</url-pattern>
+ </servlet-mapping>
+ <servlet-mapping>
+  <servlet-name>TokenServlet</servlet-name>
+  <url-pattern>/token</url-pattern>
  </servlet-mapping>
  <!--servlet-mapping>
   <servlet-name>appstats</servlet-name>
@@ -777,12 +816,6 @@ web-resource-collection>
    <url-pattern>/services/foursquareMerchant</url-pattern>
   </web-resource-collection>
   <web-resource-collection>
-   <web-resource-name>Search</web-resource-name>
-   <description>Search Servlet</description>
-   <url-pattern>/services/search</url-pattern>
-   <url-pattern>/search</url-pattern>
-  </web-resource-collection>
-  <web-resource-collection>
    <web-resource-name>FBFriendsCheckins</web-resource-name>
    <description>Facebook Friends Servlet</description>
    <url-pattern>/services/fbCheckins</url-pattern>
@@ -822,6 +855,16 @@ web-resource-collection>
    <url-pattern>/services/fsAddVenue</url-pattern>
   </web-resource-collection>
   <web-resource-collection>
+   <web-resource-name>Auth</web-resource-name>
+   <url-pattern>/services/authenticate</url-pattern>
+  </web-resource-collection>
+  <web-resource-collection>
+   <web-resource-name>Search</web-resource-name>
+   <description>Search Servlet</description>
+   <url-pattern>/search</url-pattern>
+   <url-pattern>/services/search</url-pattern>
+  </web-resource-collection>
+  <web-resource-collection>
    <web-resource-name>SocialAuth</web-resource-name>
    <url-pattern>/fsauth</url-pattern>
    <url-pattern>/lnauth</url-pattern>
@@ -829,8 +872,12 @@ web-resource-collection>
    <url-pattern>/fbauth</url-pattern>
   </web-resource-collection>
   <web-resource-collection>
-   <web-resource-name>Auth</web-resource-name>
-   <url-pattern>/services/authenticate</url-pattern>
+   <web-resource-name>Token</web-resource-name>
+   <url-pattern>/token</url-pattern>
+  </web-resource-collection>
+  <web-resource-collection>
+   <web-resource-name>SSL addresses</web-resource-name>
+   <url-pattern>/s/*</url-pattern>
   </web-resource-collection>
   <user-data-constraint>
    <transport-guarantee>CONFIDENTIAL</transport-guarantee>

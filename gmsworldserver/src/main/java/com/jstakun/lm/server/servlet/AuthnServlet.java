@@ -15,11 +15,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.utils.MailUtils;
+import com.jstakun.lm.server.utils.TokenUtil;
 
 /**
  *
@@ -44,10 +44,13 @@ public class AuthnServlet extends HttpServlet {
     throws ServletException, IOException {
         response.setContentType("text/json");
         PrintWriter out = response.getWriter();
+        JSONObject resp = new JSONObject();
         try {
             String password = (String)request.getAttribute("password");
             if (password != null) {
-           		JSONObject resp = new JSONObject().put("password", password);
+           		resp.put("password", password);
+           		String key = TokenUtil.generateToken("lm", (String)request.getAttribute("username"));
+        		resp.put("gmsToken", key);   
            		String email = (String) request.getAttribute("email");
            		if (email != null) {
            			resp.put(ConfigurationManager.USER_EMAIL, email);
@@ -59,12 +62,13 @@ public class AuthnServlet extends HttpServlet {
            		} 
            		out.print(resp.toString());  	
             } else {
-            	JSONObject resp = new JSONObject().put("message", "No password encrypted");
-            	out.print(resp.toString());  	
+            	resp.put("message", "No password encrypted");
             }
-        } catch (JSONException e) {
+        } catch (Exception e) {
         	logger.log(Level.SEVERE, e.getMessage(), e);
+        	resp.put("message", e.getMessage());
         } finally { 
+        	out.print(resp.toString());  
             out.close();
         }
     } 
@@ -102,7 +106,7 @@ public class AuthnServlet extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Authentication servlet";
     }// </editor-fold>
 
 }

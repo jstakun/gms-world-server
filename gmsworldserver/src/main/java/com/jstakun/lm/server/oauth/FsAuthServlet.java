@@ -23,6 +23,7 @@ import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.layers.FoursquareUtils;
 import com.jstakun.lm.server.utils.HttpUtils;
+import com.jstakun.lm.server.utils.TokenUtil;
 
 /**
  * Servlet implementation class FsAuthServlet
@@ -66,8 +67,10 @@ public class FsAuthServlet extends HttpServlet {
 				Map<String, String> userData = FoursquareUtils.getUserData(accessToken);
 				
 				if (!userData.isEmpty()) {
-					//OAuthTokenPersistenceUtils.persistOAuthToken(Commons.FOURSQUARE, accessToken, "anonymous", "anonymous", userData.get(ConfigurationManager.FS_USERNAME));
 					userData.put("token", accessToken);
+					
+					String key = TokenUtil.generateToken("lm", userData.get(ConfigurationManager.FS_USERNAME) + "@" + Commons.FOURSQUARE);
+                    userData.put("gmsToken", key); 
 
 					Queue queue = QueueFactory.getQueue("notifications");
 					queue.add(withUrl("/tasks/notificationTask").
@@ -87,7 +90,7 @@ public class FsAuthServlet extends HttpServlet {
 				response.sendRedirect("/m/oauth_logon_error.jsp");
 			}
 		} catch (Exception ex) {
-			Logger.getLogger(FsAuthServlet.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+			logger.log(Level.SEVERE, ex.getMessage(), ex);
 			response.sendRedirect("/m/oauth_logon_error.jsp");
 		} finally {
 			out.close();

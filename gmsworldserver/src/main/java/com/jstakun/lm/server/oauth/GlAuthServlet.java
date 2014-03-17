@@ -12,16 +12,20 @@ import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.social.GooglePlusUtils;
 import com.jstakun.lm.server.utils.HttpUtils;
+import com.jstakun.lm.server.utils.TokenUtil;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
@@ -91,15 +95,8 @@ public class GlAuthServlet extends HttpServlet {
                 	userData.put(ConfigurationManager.GL_EXPIRES_IN, Long.toString(expires_in));
                 }
                
-                //OAuthTokenPersistenceUtils.persistOAuthToken(Commons.GOOGLE_PLUS, token, username, password, userData.get(ConfigurationManager.GL_USERNAME));          
-
-                //move to task
-                //GooglePlusUtils.sendMessage(accessToken, refreshToken, null, ConfigurationManager.SERVER_URL, Commons.LOGIN);
-                //MailUtils.sendUserCreationNotification("User " + ConfigurationManager.SERVER_URL + "socialProfile?uid=" + userData.get(ConfigurationManager.GL_USERNAME) + "@" + Commons.GOOGLE + " logged in");
-                //if (userData.containsKey(ConfigurationManager.USER_EMAIL)) {
-                //	MailUtils.sendLoginNotification(userData.get(ConfigurationManager.USER_EMAIL), userData.get(ConfigurationManager.GL_NAME), "Google", getServletContext());
-                //}
-                //
+                String key = TokenUtil.generateToken("lm", userData.get(ConfigurationManager.GL_USERNAME) + "@" + Commons.GOOGLE_PLUS);
+                userData.put("gmsToken", key); 
                 
                 Queue queue = QueueFactory.getQueue("notifications");
                 queue.add(withUrl("/tasks/notificationTask").

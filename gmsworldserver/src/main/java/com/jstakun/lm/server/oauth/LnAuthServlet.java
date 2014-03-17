@@ -27,6 +27,7 @@ import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.social.LinkedInUtils;
 import com.jstakun.lm.server.utils.HttpUtils;
+import com.jstakun.lm.server.utils.TokenUtil;
 
 /**
  *
@@ -51,81 +52,59 @@ public class LnAuthServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
             PrintWriter out = response.getWriter();
             try {
-                /*String token = (String) request.getSession().getAttribute("lntoken");
-                String secret = (String) request.getSession().getAttribute("lnsecret");*/
-                
-                //String username = (String)request.getSession().getAttribute("token");
-                //String password = (String)request.getSession().getAttribute("password");
-                
-                //if (username == null) {
-                //    username = "anonymous";
-                //}
-                //if (password == null) {
-                //    password = "anonymous";
-                //}
-
                 String code = request.getParameter("code");
                 String state = request.getParameter("state");
                 
                 if (code != null && StringUtils.equals(state, Commons.LN_STATE)) {
             	
-        		URL tokenUrl = new URL(LnCommons.getAccessTokenUrl(code));
+                	URL tokenUrl = new URL(LnCommons.getAccessTokenUrl(code));
         	
-        		String result = HttpUtils.processFileRequest(tokenUrl, "POST", null, null);
-        		String accessToken = null;
-        		long expires_in = -1;
+                	String result = HttpUtils.processFileRequest(tokenUrl, "POST", null, null);
+                	String accessToken = null;
+                	long expires_in = -1;
             
-        		if (StringUtils.startsWith(result, "{")) {
-        			JSONObject resp = new JSONObject(result);
-        			accessToken = resp.optString("access_token");
-        			expires_in = resp.optInt("expires_in", -1);
-        		}
+                	if (StringUtils.startsWith(result, "{")) {
+                		JSONObject resp = new JSONObject(result);
+                		accessToken = resp.optString("access_token");
+                		expires_in = resp.optInt("expires_in", -1);
+                	}
                 
-                if (StringUtils.isNotEmpty(accessToken))
-                {
-                	Map<String, String> userData = LinkedInUtils.getUserDate(accessToken);
+                	if (StringUtils.isNotEmpty(accessToken))
+                	{
+                		Map<String, String> userData = LinkedInUtils.getUserDate(accessToken);
                 	
-                	//OAuthTokenPersistenceUtils.persistOAuthToken(Commons.LINKEDIN, accessToken, username, password, userData.get(ConfigurationManager.LN_USERNAME));
-
-                    userData.put("token", accessToken);
+                		String key = TokenUtil.generateToken("lm", userData.get(ConfigurationManager.LN_USERNAME) + "@" + Commons.LINKEDIN);
+                		userData.put("gmsToken", key); 
+                	
+                		userData.put("token", accessToken);
                     
-                    if (expires_in > -1) {
-                    	userData.put(ConfigurationManager.LN_EXPIRES_IN, Long.toString(expires_in));
-                    }
+                		if (expires_in > -1) {
+                			userData.put(ConfigurationManager.LN_EXPIRES_IN, Long.toString(expires_in));
+                		}
 
-                    //move to task
-                    //LinkedInUtils.sendPost(ConfigurationManager.SERVER_URL, "GMS World", Commons.LOGIN, accessToken, null);
-                    //MailUtils.sendUserCreationNotification("User " + ConfigurationManager.SERVER_URL + "socialProfile?uid=" + userData.get(ConfigurationManager.LN_USERNAME) + "@" + Commons.LINKEDIN + " logged in");
-                    //if (userData.containsKey(ConfigurationManager.USER_EMAIL)) {
-                    //	MailUtils.sendLoginNotification(userData.get(ConfigurationManager.USER_EMAIL), userData.get(ConfigurationManager.LN_NAME), "LinkedIn", getServletContext());
-                    //}
-                    //
-                    
-                    Queue queue = QueueFactory.getQueue("notifications");
-                    queue.add(withUrl("/tasks/notificationTask").
+                		Queue queue = QueueFactory.getQueue("notifications");
+                		queue.add(withUrl("/tasks/notificationTask").
                     		param("service", Commons.LINKEDIN).
                     		param("accessToken", accessToken).
                     		param("email", userData.containsKey(ConfigurationManager.USER_EMAIL) ? userData.get(ConfigurationManager.USER_EMAIL) : "").
                     		param("username", userData.get(ConfigurationManager.LN_USERNAME)).
                     		param("name", userData.get(ConfigurationManager.LN_NAME)));         
                     
-                    out.print(OAuthCommons.getOAuthSuccessHTML(new JSONObject(userData).toString()));        
-                }
-                else {
-                    //out.print("Access token not found!");
-                    response.sendRedirect("/m/oauth_logon_error.jsp");
-                }
+                		out.print(OAuthCommons.getOAuthSuccessHTML(new JSONObject(userData).toString()));        
+                	} else {
+                		logger.log(Level.SEVERE, "Access token not found!");
+                		response.sendRedirect("/m/oauth_logon_error.jsp");
+                	}
                 } else {
                 	response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 }
-
             } catch (Exception ex) {
                 logger.log(Level.SEVERE, ex.getMessage(), ex);
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                response.sendRedirect("/m/oauth_logon_error.jsp");
             } finally {
                 out.close();
             }
-    }
+    	}
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /** 
