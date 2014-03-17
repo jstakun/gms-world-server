@@ -1,27 +1,3 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <blacklistentries>
-  <blacklist>
-    <subnet>36.231.49.88</subnet>
-    <description>02-03 March 2014 attacker</description>
-  </blacklist>
-  <blacklist>
-    <subnet>54.224.119.39</subnet>
-    <description>02-03 March 2014 attacker</description>
-  </blacklist>
-  <blacklist>
-    <subnet>23.22.156.99</subnet>
-    <description>02-03 March 2014 attacker</description>
-  </blacklist>
-  <blacklist>
-    <subnet>54.234.135.218</subnet>
-    <description>05 March 2014 attacker</description>
-  </blacklist>
-  <blacklist>
-    <subnet>50.19.8.226</subnet>
-    <description>05 March 2014 attacker</description>
-  </blacklist>
-  <blacklist>
-    <subnet>67.202.36.158</subnet>
-    <description>05 March 2014 attacker</description>
-  </blacklist>
 </blacklistentries>
