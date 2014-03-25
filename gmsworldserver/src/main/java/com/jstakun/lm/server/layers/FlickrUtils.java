@@ -158,12 +158,15 @@ public class FlickrUtils extends LayerHelper {
                     Map<String, String> desc = new HashMap<String, String>();
                     JSONUtils.putOptValue(desc, "description", p.getDescription(), stringLimit, false);
                     if (version >= 3) {
-                        if (p.getDateTaken() != null) {
-                            JSONUtils.putOptDate(desc, "taken_date", formatter.format(p.getDateTaken()), formatter);
+                        //if (p.getDateTaken() != null) {
+                        //    JSONUtils.putOptDate(desc, "taken_date", formatter.format(p.getDateTaken()), formatter);
+                        //}
+                        if (p.getDatePosted() != null) {
+                            JSONUtils.putOptDate(desc, "upload_date", formatter.format(p.getDatePosted()), formatter);
                         }
-                        if (p.getDateAdded() != null) {
-                            JSONUtils.putOptDate(desc, "upload_date", formatter.format(p.getDateAdded()), formatter);
-                        }
+                        //if (p.getDateAdded() != null) {
+                        //    JSONUtils.putOptDate(desc, "upload_date", formatter.format(p.getDateAdded()), formatter);
+                        //}
                     }
 
                     if (version >= 4) {
@@ -232,12 +235,16 @@ public class FlickrUtils extends LayerHelper {
                 url = url.replace("http://", "http://m.");
                 Map<String, String> tokens = new HashMap<String, String>();
                 JSONUtils.putOptValue(tokens, "description", p.getDescription(), stringLimit, false);
-                if (p.getDateTaken() != null) {
-                    JSONUtils.putOptDate(tokens, "taken_date", formatter.format(p.getDateTaken()), formatter);
+                
+                //if (p.getDateTaken() != null) {
+                //    JSONUtils.putOptDate(tokens, "taken_date", formatter.format(p.getDateTaken()), formatter);
+                //}
+                if (p.getDatePosted() != null) {
+                    JSONUtils.putOptDate(tokens, "upload_date", formatter.format(p.getDatePosted()), formatter);
                 }
-                if (p.getDateAdded() != null) {
-                    JSONUtils.putOptDate(tokens, "upload_date", formatter.format(p.getDateAdded()), formatter);
-                }
+                //if (p.getDateAdded() != null) {
+                //    JSONUtils.putOptDate(tokens, "upload_date", formatter.format(p.getDateAdded()), formatter);
+                //}
                  
                 QualifiedCoordinates qc = new QualifiedCoordinates(lat, lng, 0f, 0f, 0f);
                 ExtendedLandmark landmark = LandmarkFactory.getLandmark(name, null, qc, Commons.FLICKR_LAYER, new AddressInfo(), -1, null);
