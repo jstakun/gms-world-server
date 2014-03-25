@@ -82,7 +82,7 @@ public class CrashReportServlet extends HttpServlet {
                 int lmVersion = NumberUtils.getInt(ConfigurationManager.getParam(ConfigurationManager.LM_VERSION, "0"), 0);
                 int daVersion = NumberUtils.getInt(ConfigurationManager.getParam(ConfigurationManager.DA_VERSION, "0"), 0);
                 
-                if (versionCode >= lmVersion || (versionCode >= daVersion && versionCode < 900)) {
+                if (versionCode >= lmVersion || (versionCode >= daVersion && versionCode < 500)) {
                 	MailUtils.sendCrashReport(title, sb.toString());
                 } else {
                 	logger.log(Level.INFO, sb.toString());

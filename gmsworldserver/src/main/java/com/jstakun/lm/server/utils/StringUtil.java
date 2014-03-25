@@ -82,7 +82,7 @@ public class StringUtil {
     public static String getUsername(Object attr, String header) {
     	String username = (String) attr;
 
-        if ((StringUtils.equals(username, Commons.APP_USER) || StringUtils.equals(username, Commons.MYPOS_USER)) && StringUtils.isNotEmpty(header)) {
+        if ((StringUtils.equals(username, Commons.APP_USER) || StringUtils.equals(username, Commons.MYPOS_USER) || attr == null) && StringUtils.isNotEmpty(header)) {
             username = header;
         }
         

@@ -12,12 +12,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-//import org.scribe.builder.ServiceBuilder;
-//import org.scribe.builder.api.Google2Api;
-//import org.scribe.model.Token;
-//import org.scribe.oauth.OAuthService;
-
-import com.jstakun.lm.server.config.Commons;
 
 /**
  *
