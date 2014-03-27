@@ -162,7 +162,7 @@ public class FlickrUtils extends LayerHelper {
                         //    JSONUtils.putOptDate(desc, "taken_date", formatter.format(p.getDateTaken()), formatter);
                         //}
                         if (p.getDatePosted() != null) {
-                            JSONUtils.putOptDate(desc, "upload_date", formatter.format(p.getDatePosted()), formatter);
+                            JSONUtils.putOptDate(desc, "taken_date", formatter.format(p.getDatePosted()), formatter);
                         }
                         //if (p.getDateAdded() != null) {
                         //    JSONUtils.putOptDate(desc, "upload_date", formatter.format(p.getDateAdded()), formatter);
@@ -240,7 +240,7 @@ public class FlickrUtils extends LayerHelper {
                 //    JSONUtils.putOptDate(tokens, "taken_date", formatter.format(p.getDateTaken()), formatter);
                 //}
                 if (p.getDatePosted() != null) {
-                    JSONUtils.putOptDate(tokens, "upload_date", formatter.format(p.getDatePosted()), formatter);
+                    JSONUtils.putOptDate(tokens, "taken_date", formatter.format(p.getDatePosted()), formatter);
                 }
                 //if (p.getDateAdded() != null) {
                 //    JSONUtils.putOptDate(tokens, "upload_date", formatter.format(p.getDateAdded()), formatter);
