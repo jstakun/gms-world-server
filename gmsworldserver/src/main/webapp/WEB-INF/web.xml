@@ -3,11 +3,11 @@
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
  <filter>
   <filter-name>AdminFilter</filter-name>
-  <filter-class>com.jstakun.lm.server.servlet.AdminFilter</filter-class>
+  <filter-class>com.jstakun.lm.server.filter.AdminFilter</filter-class>
  </filter>
  <filter>
   <filter-name>ServicesAuthorizationFilter</filter-name>
-  <filter-class>com.jstakun.lm.server.servlet.ServicesAuthorizationFilter</filter-class>
+  <filter-class>com.jstakun.lm.server.filter.ServicesAuthorizationFilter</filter-class>
  </filter>
  <filter>
   <filter-name>UrlRewriteFilter</filter-name>
@@ -23,19 +23,19 @@
  </filter>
  <!-- filter>
   <filter-name>LogFilter</filter-name>
-  <filter-class>com.jstakun.lm.server.servlet.LogFilter</filter-class>
+  <filter-class>com.jstakun.lm.server.filter.LogFilter</filter-class>
  </filter-->
  <filter>
   <filter-name>IPFilter</filter-name>
-  <filter-class>com.jstakun.lm.server.servlet.IPFilter</filter-class>
+  <filter-class>com.jstakun.lm.server.filter.IPFilter</filter-class>
  </filter>
  <filter>
   <filter-name>BlockerFilter</filter-name>
-  <filter-class>com.jstakun.lm.server.servlet.BlockerFilter</filter-class>
+  <filter-class>com.jstakun.lm.server.filter.BlockerFilter</filter-class>
  </filter>
  <filter>
   <filter-name>TokenFilter</filter-name>
-  <filter-class>com.jstakun.lm.server.servlet.TokenFilter</filter-class>
+  <filter-class>com.jstakun.lm.server.filter.TokenFilter</filter-class>
  </filter>
  <!-- filter>
   <filter-name>appstats</filter-name>

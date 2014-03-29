@@ -46,7 +46,8 @@ public final class SocialCheckinServlet extends HttpServlet {
     			String name = request.getParameter("name");
     			int responseCode = FoursquareUtils.checkin(accessToken, venueId, name);
     			if (responseCode != HttpServletResponse.SC_OK) {
-    				response.sendError(responseCode);
+    				//response.sendError(responseCode);
+    				logger.log(Level.SEVERE, "Received following http response code: {0}", responseCode);
     			}
     		} else {
     			//response.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -75,7 +76,7 @@ public final class SocialCheckinServlet extends HttpServlet {
     			response.sendError(HttpServletResponse.SC_BAD_REQUEST);
     		} 
     	} else {
-    		Logger.getLogger(SocialCheckinServlet.class.getName()).log(Level.SEVERE, "Wrong service: " + service);
+    		Logger.getLogger(SocialCheckinServlet.class.getName()).log(Level.SEVERE, "Wrong service called: " + service);
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
     }

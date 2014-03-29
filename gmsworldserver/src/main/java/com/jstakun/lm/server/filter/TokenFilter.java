@@ -1,4 +1,4 @@
-package com.jstakun.lm.server.servlet;
+package com.jstakun.lm.server.filter;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -57,7 +57,7 @@ public class TokenFilter implements Filter {
 				logger.log(Level.INFO, "Added token to cache " + authHeader + ": " + token_count);
 				
 				if (token_count > 100) {
-					logger.log(Level.WARNING, "Suspicious token " + authHeader);
+					logger.log(Level.WARNING, "User with token {0} sent {1} requests.", new Object[]{authHeader, token_count});
 				}
 			}
 		}

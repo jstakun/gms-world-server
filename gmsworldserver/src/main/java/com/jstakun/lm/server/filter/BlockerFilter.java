@@ -1,6 +1,7 @@
-package com.jstakun.lm.server.servlet;
+package com.jstakun.lm.server.filter;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -96,7 +97,14 @@ public class BlockerFilter implements Filter {
 
         if (block) {
         	if (response instanceof HttpServletResponse) {
-                ((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN, ip + " has too many requests");
+        		((HttpServletResponse) response).setStatus(HttpServletResponse.SC_FORBIDDEN);
+				response.setContentType("text/html");
+			    PrintWriter out = response.getWriter();
+			    out.println("<html><head><title>Request rate too high</title></head><body>");
+			    out.println("<h3>Request rate too high.</h3>");
+			    out.println("</body></html>");
+			    out.close();
+        		//((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN, ip + " has too many requests");
             } else {
             	response.getWriter().println("Request rate too high");
             }
