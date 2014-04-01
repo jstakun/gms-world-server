@@ -4,8 +4,6 @@
  */
 package com.jstakun.lm.server.oauth;
 
-import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
@@ -21,11 +19,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
-import com.google.appengine.api.taskqueue.Queue;
-import com.google.appengine.api.taskqueue.QueueFactory;
+import com.google.common.collect.ImmutableMap;
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.social.LinkedInUtils;
+import com.jstakun.lm.server.social.NotificationUtils;
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.TokenUtil;
 
@@ -82,13 +80,13 @@ public class LnAuthServlet extends HttpServlet {
                 			userData.put(ConfigurationManager.LN_EXPIRES_IN, Long.toString(expires_in));
                 		}
 
-                		Queue queue = QueueFactory.getQueue("notifications");
-                		queue.add(withUrl("/tasks/notificationTask").
-                    		param("service", Commons.LINKEDIN).
-                    		param("accessToken", accessToken).
-                    		param("email", userData.containsKey(ConfigurationManager.USER_EMAIL) ? userData.get(ConfigurationManager.USER_EMAIL) : "").
-                    		param("username", userData.get(ConfigurationManager.LN_USERNAME)).
-                    		param("name", userData.get(ConfigurationManager.LN_NAME)));         
+                		Map<String, String> params = new ImmutableMap.Builder<String, String>().
+                           	put("service", Commons.LINKEDIN).
+                    		put("accessToken", accessToken).
+                    		put("email", userData.containsKey(ConfigurationManager.USER_EMAIL) ? userData.get(ConfigurationManager.USER_EMAIL) : "").
+                    		put("username", userData.get(ConfigurationManager.LN_USERNAME)).
+                    		put("name", userData.get(ConfigurationManager.LN_NAME)).build();  
+                		NotificationUtils.createNotificationTask(params);
                     
                 		out.print(OAuthCommons.getOAuthSuccessHTML(new JSONObject(userData).toString()));        
                 	} else {

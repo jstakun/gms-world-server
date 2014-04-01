@@ -56,7 +56,7 @@ public class RegistrationConfirmationAction extends Action {
 
             result = UserPersistenceUtils.confirmUserRegistration(key, confirm);
             if (result) {
-               User user = UserPersistenceUtils.selectUser(key);
+               User user = UserPersistenceUtils.selectUserByKey(key);
                if (user != null) {
                     MailUtils.sendRegistrationNotification(user.getEmail(), user.getLogin(), getServlet().getServletContext());
                }

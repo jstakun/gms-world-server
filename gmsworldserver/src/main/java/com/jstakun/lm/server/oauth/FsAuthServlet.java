@@ -1,7 +1,5 @@
 package com.jstakun.lm.server.oauth;
 
-import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
@@ -17,11 +15,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
-import com.google.appengine.api.taskqueue.Queue;
-import com.google.appengine.api.taskqueue.QueueFactory;
+import com.google.common.collect.ImmutableMap;
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.layers.FoursquareUtils;
+import com.jstakun.lm.server.social.NotificationUtils;
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.TokenUtil;
 
@@ -72,13 +70,13 @@ public class FsAuthServlet extends HttpServlet {
 					String key = TokenUtil.generateToken("lm", userData.get(ConfigurationManager.FS_USERNAME) + "@" + Commons.FOURSQUARE);
                     userData.put("gmsToken", key); 
 
-					Queue queue = QueueFactory.getQueue("notifications");
-					queue.add(withUrl("/tasks/notificationTask").
-                		param("service", Commons.FOURSQUARE).
-                		param("accessToken", accessToken).
-                		param("email", userData.containsKey(ConfigurationManager.USER_EMAIL) ? userData.get(ConfigurationManager.USER_EMAIL) : "").
-                		param("username", userData.get(ConfigurationManager.FS_USERNAME)).
-                		param("name", userData.containsKey(ConfigurationManager.FS_NAME) ? userData.get(ConfigurationManager.FS_NAME) : "noname"));             
+                    Map<String, String> params = new ImmutableMap.Builder<String, String>().
+                       	put("service", Commons.FOURSQUARE).
+                		put("accessToken", accessToken).
+                		put("email", userData.containsKey(ConfigurationManager.USER_EMAIL) ? userData.get(ConfigurationManager.USER_EMAIL) : "").
+                		put("username", userData.get(ConfigurationManager.FS_USERNAME)).
+                		put("name", userData.containsKey(ConfigurationManager.FS_NAME) ? userData.get(ConfigurationManager.FS_NAME) : "noname").build();
+                	NotificationUtils.createNotificationTask(params);	
 				
 					out.print(OAuthCommons.getOAuthSuccessHTML(new JSONObject(userData).toString()));
 				} else {

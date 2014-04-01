@@ -63,7 +63,7 @@ public class UserPersistenceUtils {
         return KeyFactory.keyToString(user.getKey());
     }
 
-    public static User selectUser(String k) {
+    public static User selectUserByKey(String k) {
         PersistenceManager pm = PMF.get().getPersistenceManager();
         User user = null;
 
@@ -79,9 +79,27 @@ public class UserPersistenceUtils {
         return user;
     }
 
+    public static User selectUserByLogin(String username) {
+        User user = null;
+        PersistenceManager pm = PMF.get().getPersistenceManager();
+
+        try {
+            Query query = pm.newQuery(User.class, "login == username");
+            query.setUnique(true);
+            query.declareParameters("String username");
+            user = (User) query.execute(username);
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, ex.getMessage(), ex);
+        } finally {
+            pm.close();
+        }
+
+        return user;
+    }
+
     public static boolean confirmUserRegistration(String k, Boolean confirmation) {
         PersistenceManager pm = PMF.get().getPersistenceManager();
-        User user = selectUser(k);
+        User user = selectUserByKey(k);
         boolean result = false;
 
         try {
@@ -103,9 +121,42 @@ public class UserPersistenceUtils {
         return result;
     }
 
+    public static void setLastLogonDate(User user) {
+        PersistenceManager pm = PMF.get().getPersistenceManager();
+        try {
+            if (user != null) {
+                user.setLastLogonDate(new Date());
+                pm.makePersistent(user);
+            } 
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, ex.getMessage(), ex);
+        } finally {
+            pm.close();
+        }
+    }
+
+    public static boolean userExists(String username) {
+        int result = 0;
+        try {
+            DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+            com.google.appengine.api.datastore.Query query = new com.google.appengine.api.datastore.Query("User");
+            query.setKeysOnly();
+            Filter loginFilter =  new FilterPredicate("login", FilterOperator.EQUAL, username);
+            query.setFilter(loginFilter);
+            //query.addFilter("login", FilterOperator.EQUAL, username);
+            PreparedQuery pq = ds.prepare(query);
+            FetchOptions option = FetchOptions.Builder.withLimit(1);
+            result = pq.countEntities(option);
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, ex.getMessage(), ex);
+        }
+        return (result > 0);
+    }
+
+    //No need to migrate
     public static void setPersonalInfo(String k) {
         PersistenceManager pm = PMF.get().getPersistenceManager();
-        User user = selectUser(k);
+        User user = selectUserByKey(k);
 
         try {
             if (user != null) {
@@ -130,74 +181,7 @@ public class UserPersistenceUtils {
         }
     }
 
-    public static User selectUserByLogin(String username) {
-        User user = null;
-        PersistenceManager pm = PMF.get().getPersistenceManager();
-
-        try {
-            Query query = pm.newQuery(User.class, "login == username");
-            query.setUnique(true);
-            query.declareParameters("String username");
-            user = (User) query.execute(username);
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
-        } finally {
-            pm.close();
-        }
-
-        return user;
-    }
-
-    public static void setLastLogonDate(User user) {
-        PersistenceManager pm = PMF.get().getPersistenceManager();
-        try {
-            if (user != null) {
-                user.setLastLogonDate(new Date());
-                pm.makePersistent(user);
-            } 
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
-        } finally {
-            pm.close();
-        }
-    }
-
-    /*public static int selectUserByLoginCount(String username) {
-    int result = 0;
-    PersistenceManager pm = PMF.get().getPersistenceManager();
-
-    try {
-    Query query = pm.newQuery(User.class, "login == username");
-    query.setResult("count(this)");
-    query.declareParameters("String username");
-    result = ((Integer) query.execute(username)).intValue();
-    } catch (Exception ex) {
-    logger.log(Level.SEVERE, ex.getMessage(), ex);
-    } finally {
-    pm.close();
-    }
-
-    return result;
-    }*/
-    
-    public static boolean userExists(String username) {
-        int result = 0;
-        try {
-            DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-            com.google.appengine.api.datastore.Query query = new com.google.appengine.api.datastore.Query("User");
-            query.setKeysOnly();
-            Filter loginFilter =  new FilterPredicate("login", FilterOperator.EQUAL, username);
-            query.setFilter(loginFilter);
-            //query.addFilter("login", FilterOperator.EQUAL, username);
-            PreparedQuery pq = ds.prepare(query);
-            FetchOptions option = FetchOptions.Builder.withLimit(1);
-            result = pq.countEntities(option);
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
-        }
-        return (result > 0);
-    }
-
+    //No need to migrate
     public static List<User> selectUsers(int first, int last) {
         List<User> results = new ArrayList<User>();
         PersistenceManager pm = PMF.get().getPersistenceManager();

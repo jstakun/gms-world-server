@@ -4,8 +4,6 @@ package com.jstakun.lm.server.servlet;
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Date;
@@ -20,11 +18,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.google.appengine.api.taskqueue.Queue;
-import com.google.appengine.api.taskqueue.QueueFactory;
+import com.google.common.collect.ImmutableMap;
 import com.google.gdata.util.common.util.Base64;
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
+import com.jstakun.lm.server.social.NotificationUtils;
 import com.jstakun.lm.server.utils.CryptoTools;
 import com.jstakun.lm.server.utils.GeocodeUtils;
 import com.jstakun.lm.server.utils.HttpUtils;
@@ -53,7 +51,6 @@ public class PersistLandmarkServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    //http://localhost:8080/services/persistLandmark?name=Test&description=none&longitude=0.0&latitude=0.0&username=jstakun&layer=Social&validityDate=10000000
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
@@ -178,15 +175,15 @@ public class PersistLandmarkServlet extends HttpServlet {
                     	userUrl += "showUser/" + username;
                     }
                     
-                    Queue queue = QueueFactory.getQueue("notifications");
-                    queue.add(withUrl("/tasks/notificationTask").
-                    		param("key", id).
-                    		param("landmarkUrl", landmarkUrl).
-                    		param("email", StringUtils.isNotEmpty(email) ? email : "").
-                    		param("title", title).
-                    		param("userUrl", userUrl).
-                    		param("username", username).
-                    		param("body", body));          
+                    Map<String, String> params = new ImmutableMap.Builder<String, String>().
+                            put("key", id).
+                    		put("landmarkUrl", landmarkUrl).
+                    		put("email", StringUtils.isNotEmpty(email) ? email : "").
+                    		put("title", title).
+                    		put("userUrl", userUrl).
+                    		put("username", username).
+                    		put("body", body).build();  
+                    NotificationUtils.createNotificationTask(params);
                 }
             }
         } catch (Exception e) {

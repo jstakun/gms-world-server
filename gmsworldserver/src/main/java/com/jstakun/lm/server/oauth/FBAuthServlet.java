@@ -4,8 +4,6 @@
  */
 package com.jstakun.lm.server.oauth;
 
-import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,11 +20,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 
-import com.google.appengine.api.taskqueue.Queue;
-import com.google.appengine.api.taskqueue.QueueFactory;
+import com.google.common.collect.ImmutableMap;
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.layers.FacebookUtils;
+import com.jstakun.lm.server.social.NotificationUtils;
 import com.jstakun.lm.server.utils.TokenUtil;
 
 /**
@@ -36,10 +34,7 @@ import com.jstakun.lm.server.utils.TokenUtil;
 public class FBAuthServlet extends HttpServlet {
 
 	private static final Logger logger = Logger.getLogger(FBAuthServlet.class.getName());
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
 	/** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -87,14 +82,13 @@ public class FBAuthServlet extends HttpServlet {
                     String key = TokenUtil.generateToken("lm", userData.get(ConfigurationManager.FB_USERNAME) + "@" + Commons.FACEBOOK);
                     userData.put("gmsToken", key); 
                     
-                    Queue queue = QueueFactory.getQueue("notifications");
-                    queue.add(withUrl("/tasks/notificationTask").
-                    		param("service", Commons.FACEBOOK).
-                    		param("accessToken", accessToken).
-                    		param("email", userData.containsKey(ConfigurationManager.USER_EMAIL) ? userData.get(ConfigurationManager.USER_EMAIL) : "").
-                    		param("username", userData.get(ConfigurationManager.FB_USERNAME)).
-                    		param("name", userData.get(ConfigurationManager.FB_NAME)));                  
-                    
+                    Map<String, String> params = new ImmutableMap.Builder<String, String>().
+                            put("service", Commons.FACEBOOK).
+                    		put("accessToken", accessToken).
+                    		put("email", userData.containsKey(ConfigurationManager.USER_EMAIL) ? userData.get(ConfigurationManager.USER_EMAIL) : "").
+                    		put("username", userData.get(ConfigurationManager.FB_USERNAME)).
+                    		put("name", userData.get(ConfigurationManager.FB_NAME)).build();                  
+                    NotificationUtils.createNotificationTask(params);
                     out.print(OAuthCommons.getOAuthSuccessHTML(new JSONObject(userData).toString()));  
                 } else {
                 	logger.log(Level.SEVERE, "No access token!");

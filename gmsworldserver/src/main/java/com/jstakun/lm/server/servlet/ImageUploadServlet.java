@@ -5,11 +5,8 @@
 package com.jstakun.lm.server.servlet;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
-import java.nio.ByteBuffer;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,15 +22,9 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang.StringUtils;
 
 import com.google.appengine.api.blobstore.BlobKey;
-import com.google.appengine.api.files.AppEngineFile;
-import com.google.appengine.api.files.FileService;
-import com.google.appengine.api.files.FileServiceFactory;
-import com.google.appengine.api.files.FileWriteChannel;
-import com.google.appengine.api.images.ImagesService;
-import com.google.appengine.api.images.ImagesServiceFactory;
-import com.google.appengine.api.images.ServingUrlOptions;
 import com.google.common.collect.ImmutableMap;
 import com.jstakun.lm.server.social.NotificationUtils;
+import com.jstakun.lm.server.utils.FileUtils;
 import com.jstakun.lm.server.utils.NumberUtils;
 import com.jstakun.lm.server.utils.StringUtil;
 import com.jstakun.lm.server.utils.persistence.ScreenshotPersistenceUtils;
@@ -44,10 +35,7 @@ import com.jstakun.lm.server.utils.persistence.ScreenshotPersistenceUtils;
  */
 public class ImageUploadServlet extends HttpServlet {
 
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(ImageUploadServlet.class.getName());
     private static final int ONE_MB = 1024 * 1024;
 
@@ -58,8 +46,7 @@ public class ImageUploadServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/plain;charset=UTF-8");
         PrintWriter out = response.getWriter();
         try {
@@ -86,23 +73,11 @@ public class ImageUploadServlet extends HttpServlet {
 
                     if (StringUtils.startsWith(itemName, "screenshot")) {
 
-                        InputStream is = item.openStream();
-
                         long creationDate = System.currentTimeMillis();
-                        FileService fileService = FileServiceFactory.getFileService();
-                        AppEngineFile file = fileService.createNewBlobFile("image/jpeg", itemName);
-                        FileWriteChannel writeChannel = fileService.openWriteChannel(file, true);
+                        
+                        BlobKey blobKey = FileUtils.saveFile(itemName, item.openStream());                       
 
-                        int nRead;
-                        byte[] data = new byte[8192];
-                        while ((nRead = is.read(data, 0, data.length)) != -1) {
-                            writeChannel.write(ByteBuffer.wrap(data, 0, nRead));
-                        }
-
-                        writeChannel.closeFinally();
-                        BlobKey blobKey = fileService.getBlobKey(file);                       
-
-                        String username = StringUtil.getUsername(request.getAttribute("username"),request.getParameter("username"));
+                        String username = StringUtil.getUsername(request.getAttribute("username"),request.getHeader("username"));
                         
                         boolean auth = false;
                         if (StringUtils.isNotEmpty(username)) {
@@ -119,23 +94,8 @@ public class ImageUploadServlet extends HttpServlet {
                         }
         
                         if (key != null) {
-                            //This URL is served by a high-performance dynamic image serving infrastructure that is available globally. The URL returned by this method is always public, but not guessable; private URLs are not currently supported. If you wish to stop serving the URL, delete the underlying blob key. This takes up to 24 hours to take effect. The URL format also allows dynamic resizing and crop with certain restrictions. To get dynamic resizing and cropping simply append options to the end of the url obtained via this call. Here is an example: getServingUrl -> "http://lh3.ggpht.com/SomeCharactersGoesHere"
-                            //To get a 32 pixel sized version (aspect-ratio preserved) simply append "=s32" to the url: "http://lh3.ggpht.com/SomeCharactersGoesHere=s32"
-                            //To get a 32 pixel cropped version simply append "=s32-c": "http://lh3.ggpht.com/SomeCharactersGoesHere=s32-c"
-                            //Valid sizes are any integer in the range [0, 1600] (maximum is available as SERVING_SIZES_LIMIT).
+                            String imageUrl = FileUtils.getImageUrl(blobKey);
 
-                            ImagesService imagesService = ImagesServiceFactory.getImagesService();
-                            ServingUrlOptions sou = ServingUrlOptions.Builder.withBlobKey(blobKey);
-                            String imageUrl = imagesService.getServingUrl(sou);
-
-                            /*Queue queue = QueueFactory.getQueue("notifications");
-                            queue.add(withUrl("/tasks/notificationTask").
-                            		param("key", key).
-                            		param("imageUrl", imageUrl).
-                            		param("lat", Double.toString(lat)).
-                            		param("lng", Double.toString(lng)).
-                            		param("username", StringUtils.isNotEmpty(username) ? username : ""));*/
-                            
                             Map<String, String> params = new ImmutableMap.Builder<String, String>().
                             put("key", key).
                             put("imageUrl", imageUrl).

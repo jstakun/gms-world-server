@@ -4,8 +4,6 @@
  */
 package com.jstakun.lm.server.oauth;
 
-import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -26,10 +24,10 @@ import twitter4j.User;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 
-import com.google.appengine.api.taskqueue.Queue;
-import com.google.appengine.api.taskqueue.QueueFactory;
+import com.google.common.collect.ImmutableMap;
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
+import com.jstakun.lm.server.social.NotificationUtils;
 import com.jstakun.lm.server.utils.TokenUtil;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 
@@ -82,13 +80,13 @@ public class TwAuthServlet extends HttpServlet {
 				String key = TokenUtil.generateToken("lm", me.getScreenName() + "@" + Commons.TWITTER);
         		userData.put("gmsToken", key); 
 				
-				Queue queue = QueueFactory.getQueue("notifications");
-				queue.add(withUrl("/tasks/notificationTask")
-					.param("service", Commons.TWITTER)
-					.param("accessToken", accessToken.getToken())
-					.param("tokenSecret", accessToken.getTokenSecret())
-					.param("username", userData.get(ConfigurationManager.TWEET_USERNAME))
-					.param("name", userData.get(ConfigurationManager.TWEET_NAME)));
+        		Map<String, String> params = new ImmutableMap.Builder<String, String>().
+                   	put("service", Commons.TWITTER).
+					put("accessToken", accessToken.getToken()).
+					put("tokenSecret", accessToken.getTokenSecret()).
+					put("username", userData.get(ConfigurationManager.TWEET_USERNAME)).
+					put("name", userData.get(ConfigurationManager.TWEET_NAME)).build();
+        		NotificationUtils.createNotificationTask(params);
 			    
 				out.print(OAuthCommons.getOAuthSuccessHTML(new JSONObject(userData).toString()));
 			} else {

@@ -4,16 +4,6 @@
  */
 package com.jstakun.lm.server.oauth;
 
-import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
-
-import com.google.appengine.api.taskqueue.Queue;
-import com.google.appengine.api.taskqueue.QueueFactory;
-import com.jstakun.lm.server.config.Commons;
-import com.jstakun.lm.server.config.ConfigurationManager;
-import com.jstakun.lm.server.social.GooglePlusUtils;
-import com.jstakun.lm.server.utils.HttpUtils;
-import com.jstakun.lm.server.utils.TokenUtil;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
@@ -28,6 +18,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
+
+import com.google.common.collect.ImmutableMap;
+import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.ConfigurationManager;
+import com.jstakun.lm.server.social.GooglePlusUtils;
+import com.jstakun.lm.server.social.NotificationUtils;
+import com.jstakun.lm.server.utils.HttpUtils;
+import com.jstakun.lm.server.utils.TokenUtil;
 
 /**
  *
@@ -52,19 +50,6 @@ public class GlAuthServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         try {
-            //String username = (String) request.getSession().getAttribute("token");
-            //String password = (String) request.getSession().getAttribute("password");
-
-            //if (username == null) {
-            //    username = "anonymous";
-            //}
-            //if (password == null) {
-            //    password = "anonymous";
-            //}
-            
-            //String token = (String) request.getSession().getAttribute("gltoken");
-            //String secret = (String) request.getSession().getAttribute("glsecret");
-            
             String code = request.getParameter("code");
 
             URL url = new URL("https://accounts.google.com/o/oauth2/token");
@@ -98,14 +83,14 @@ public class GlAuthServlet extends HttpServlet {
                 String key = TokenUtil.generateToken("lm", userData.get(ConfigurationManager.GL_USERNAME) + "@" + Commons.GOOGLE_PLUS);
                 userData.put("gmsToken", key); 
                 
-                Queue queue = QueueFactory.getQueue("notifications");
-                queue.add(withUrl("/tasks/notificationTask").
-                		param("service", Commons.GOOGLE_PLUS).
-                		param("accessToken", accessToken).
-                		param("refreshToken", refreshToken).
-                		param("email", userData.containsKey(ConfigurationManager.USER_EMAIL) ? userData.get(ConfigurationManager.USER_EMAIL) : "").
-                		param("username", userData.get(ConfigurationManager.GL_USERNAME)).
-                		param("name", userData.get(ConfigurationManager.GL_NAME)));         
+                Map<String, String> params = new ImmutableMap.Builder<String, String>().
+                   		put("service", Commons.GOOGLE_PLUS).
+                		put("accessToken", accessToken).
+                		put("refreshToken", refreshToken).
+                		put("email", userData.containsKey(ConfigurationManager.USER_EMAIL) ? userData.get(ConfigurationManager.USER_EMAIL) : "").
+                		put("username", userData.get(ConfigurationManager.GL_USERNAME)).
+                		put("name", userData.get(ConfigurationManager.GL_NAME)).build();
+                NotificationUtils.createNotificationTask(params);
 
                 out.print(OAuthCommons.getOAuthSuccessHTML(new JSONObject(userData).toString()));
             } else {
