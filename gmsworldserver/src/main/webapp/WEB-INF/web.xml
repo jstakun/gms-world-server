@@ -280,10 +280,6 @@
   <servlet-class>com.jstakun.lm.server.servlet.RouteProviderServlet</servlet-class>
  </servlet>
  <servlet>
-  <servlet-name>HotelLoaderServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.tasks.HotelLoaderServlet</servlet-class>
- </servlet>
- <servlet>
   <servlet-name>TaskServlet</servlet-name>
   <servlet-class>com.jstakun.lm.server.tasks.TaskServlet</servlet-class>
  </servlet>
@@ -618,10 +614,6 @@
  <servlet-mapping>
   <servlet-name>AddCommentServlet</servlet-name>
   <url-pattern>/services/addComment,/s/addComment</url-pattern>
- </servlet-mapping>
- <servlet-mapping>
-  <servlet-name>HotelLoaderServlet</servlet-name>
-  <url-pattern>/admin/hotelLoader</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>TaskServlet</servlet-name>

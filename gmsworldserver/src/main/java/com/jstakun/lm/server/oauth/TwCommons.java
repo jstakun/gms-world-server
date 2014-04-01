@@ -12,7 +12,7 @@ import com.jstakun.lm.server.config.ConfigurationManager;
  * @author jstakun
  */
 public final class TwCommons {
-    public static final String CALLBACK_URL = ConfigurationManager.SERVER_URL + "twauth";
+    protected static final String CALLBACK_URL = ConfigurationManager.SERVER_URL + "twauth";
     
     private TwCommons() {}
 }

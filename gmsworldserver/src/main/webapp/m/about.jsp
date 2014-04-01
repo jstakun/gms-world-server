@@ -60,21 +60,19 @@
                     </p>
                     <p>
                         Using our technology we are delivering following solutions:
-                    <ul>
-                        <li><b>Mobile marketing</b></li>
-                        <li><b>QR codes based location</b></li>
-                        <li><b>Augmented reality apps</b></li>
-                        <li><b>Geo Games</b></li>
-                    </ul>
+                    	<ul>
+                        	<li><b>Mobile marketing</b></li>
+                        	<li><b>QR codes based location</b></li>
+                        	<li><b>Augmented reality apps</b></li>
+                        	<li><b>Geo Games</b></li>
+                    	</ul>
                     </p>
                     
     	</article>
     	
-    	<jsp:include page="/WEB-INF/jspf/ad_small_baner.jspf"/>
+    	<%@ include file="/WEB-INF/jspf/ad_small_baner.jspf" %>
     </div>
-    <footer>
-    	<p>&copy; GMS World 2010-14. Design by <a href="http://mobifreaks.com" target="_blank">Mobifreaks</a></p>
-    </footer>
+    <%@ include file="/WEB-INF/jspf/footer_mobile.jspf" %>
   </div>
  
   <script src="/js/jquery.min.js"></script>

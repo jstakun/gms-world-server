@@ -4,13 +4,13 @@
  */
 package com.jstakun.lm.server.servlet;
 
-import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.nio.ByteBuffer;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,8 +32,8 @@ import com.google.appengine.api.files.FileWriteChannel;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.images.ServingUrlOptions;
-import com.google.appengine.api.taskqueue.Queue;
-import com.google.appengine.api.taskqueue.QueueFactory;
+import com.google.common.collect.ImmutableMap;
+import com.jstakun.lm.server.social.NotificationUtils;
 import com.jstakun.lm.server.utils.NumberUtils;
 import com.jstakun.lm.server.utils.StringUtil;
 import com.jstakun.lm.server.utils.persistence.ScreenshotPersistenceUtils;
@@ -100,7 +100,7 @@ public class ImageUploadServlet extends HttpServlet {
                         }
 
                         writeChannel.closeFinally();
-                        BlobKey blobKey = fileService.getBlobKey(file);
+                        BlobKey blobKey = fileService.getBlobKey(file);                       
 
                         String username = StringUtil.getUsername(request.getAttribute("username"),request.getParameter("username"));
                         
@@ -128,20 +128,22 @@ public class ImageUploadServlet extends HttpServlet {
                             ServingUrlOptions sou = ServingUrlOptions.Builder.withBlobKey(blobKey);
                             String imageUrl = imagesService.getServingUrl(sou);
 
-                            Queue queue = QueueFactory.getQueue("notifications");
+                            /*Queue queue = QueueFactory.getQueue("notifications");
                             queue.add(withUrl("/tasks/notificationTask").
                             		param("key", key).
                             		param("imageUrl", imageUrl).
                             		param("lat", Double.toString(lat)).
                             		param("lng", Double.toString(lng)).
-                            		param("username", StringUtils.isNotEmpty(username) ? username : ""));       
+                            		param("username", StringUtils.isNotEmpty(username) ? username : ""));*/
                             
-                            //String showImageUrl = UrlUtils.getShortUrl(ConfigurationManager.SERVER_URL + "showImage/" + key);                     
-                            //FacebookUtils.sendImageMessage(imageUrl, showImageUrl, username);
-                            //TwitterUtils.sendImageMessage(showImageUrl, username, lat, lng);
-                            //GoogleBloggerUtils.sendImageMessage(showImageUrl, username, imageUrl);
-                            //GooglePlusUtils.sendImageMessage(showImageUrl, username, imageUrl);
-
+                            Map<String, String> params = new ImmutableMap.Builder<String, String>().
+                            put("key", key).
+                            put("imageUrl", imageUrl).
+                            put("lat", Double.toString(lat)).
+                            put("lng", Double.toString(lng)).
+                            put("username", StringUtils.isNotEmpty(username) ? username : "").build();
+                    		NotificationUtils.createNotificationTask(params);
+                    		
                         } else {
                             logger.log(Level.SEVERE, "Key is null!");
                         }
@@ -157,7 +159,7 @@ public class ImageUploadServlet extends HttpServlet {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "ImageUploadServlet.processRequest() exception: ", e);
+            logger.log(Level.SEVERE, "ImageUploadServlet.processRequest() exception", e);
             out.print("Failed to save file: " + e.getMessage() + ".");
         } finally {
             out.close();

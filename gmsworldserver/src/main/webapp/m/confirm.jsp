@@ -48,11 +48,9 @@
  %>       
     	</article>
     	
-    	<jsp:include page="/WEB-INF/jspf/ad_small_baner.jspf"/>
+    	<%@ include file="/WEB-INF/jspf/ad_small_baner.jspf" %>
     </div>
-    <footer>
-    	<p>&copy; GMS World 2010-14. Design by <a href="http://mobifreaks.com" target="_blank">Mobifreaks</a></p>
-    </footer>
+    <%@ include file="/WEB-INF/jspf/footer_mobile.jspf" %>
   </div>
  
   <script src="/js/jquery.min.js"></script>

@@ -21,9 +21,9 @@
                 <!-- main -->
                 <div id="main">
 
-                <h3>Server Error</h3>
+                	<h3>Server Error</h3>
 
-                    <p>Sorry. Please try again or contact our <a href="mailto:support@gms-world.net?subject=Server error">support</a>.</p>
+                	<p>Sorry. Please try again or contact our <a href="mailto:support@gms-world.net?subject=Server error">support</a>.</p>
 
                     <!-- /main -->
                 </div>
