@@ -17,7 +17,15 @@
             <a href="/about.jsp">Learn more...</a>
         </p>
         <p>
-            <img src="http://code.google.com/appengine/images/appengine-noborder-120x30.gif" alt="Powered by Google App Engine" />
+            <a href="http://appengine.google.com">
+            	<img src="http://code.google.com/appengine/images/appengine-noborder-120x30.gif" alt="Powered by Google App Engine" />
+            </a>
+        </p>
+        
+        <p>
+            <a href="http://www.openshift.com">
+            	<img src="/images/openshift.png" alt="Powered by OpenShift" />
+            </a>
         </p>
        
     </div>
