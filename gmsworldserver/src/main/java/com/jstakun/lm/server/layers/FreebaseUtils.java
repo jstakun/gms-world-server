@@ -77,6 +77,9 @@ public class FreebaseUtils extends LayerHelper {
 		}
 		search.setOutput("(name description geocode url object property)");
 		search.setLimit(limit);
+		
+		//TODO "message" : "Invalid language code(s): 'ur'. Languages served are: en,es,fr,de,it,pt,zh,ja,ko,ru,sv,fi,da,nl,el,ro,tr,hu,th,pl,cs,id,bg,uk,ca,eu,no,sl,sk,hr,sr,ar,hi,vi,fa,ga,iw,lv,lt,fil"
+		
 		search.setLang(Arrays.asList(locale.getLanguage()));
 		
 		InputStream is = search.executeAsInputStream();

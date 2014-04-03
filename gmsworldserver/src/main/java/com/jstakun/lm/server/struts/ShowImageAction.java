@@ -15,11 +15,9 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import com.google.appengine.api.images.ImagesService;
-import com.google.appengine.api.images.ImagesServiceFactory;
-import com.google.appengine.api.images.ServingUrlOptions;
 import com.jstakun.lm.server.layers.CloudmadeUtils;
 import com.jstakun.lm.server.persistence.Screenshot;
+import com.jstakun.lm.server.utils.FileUtils;
 import com.jstakun.lm.server.utils.memcache.CacheAction;
 import com.jstakun.lm.server.utils.persistence.ScreenshotPersistenceUtils;
 
@@ -51,16 +49,7 @@ public class ShowImageAction extends org.apache.struts.action.Action {
         final String key = (String) request.getParameter("key");
 
         if (StringUtils.isNotEmpty(key)) {
-
-            /*Screenshot s = null;
-            if (CacheUtil.containsKey(key)) {
-            	s = (Screenshot) CacheUtil.getObject(key);
-            } else {
-            	s = ScreenshotPersistenceUtils.selectScreenshot(key);
-            	CacheUtil.put(key, s);
-            }*/
-        	
-        	CacheAction screenshotCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
+            CacheAction screenshotCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
 				@Override
 				public Object executeAction() {
 					return ScreenshotPersistenceUtils.selectScreenshot(key);
@@ -74,9 +63,12 @@ public class ShowImageAction extends org.apache.struts.action.Action {
                     request.setAttribute("address", address);
                 }
                 try {
-                	ImagesService imagesService = ImagesServiceFactory.getImagesService();
-                    ServingUrlOptions sou = ServingUrlOptions.Builder.withBlobKey(s.getBlobKey());
-                    String imageUrl = imagesService.getServingUrl(sou);
+                	String imageUrl = null;
+                	if (s.getBlobKey() != null) {
+                		imageUrl = FileUtils.getImageUrl(s.getBlobKey());
+                	} else {
+                		imageUrl = FileUtils.getImageUrlV2(s.getFilename());
+                	}
                 	request.setAttribute("screenshot", s);
                 	request.setAttribute("imageUrl", imageUrl);
                 } catch (Exception e) {

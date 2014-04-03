@@ -6,7 +6,6 @@ package com.jstakun.lm.server.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Date;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,7 +20,6 @@ import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang.StringUtils;
 
-import com.google.appengine.api.blobstore.BlobKey;
 import com.google.common.collect.ImmutableMap;
 import com.jstakun.lm.server.social.NotificationUtils;
 import com.jstakun.lm.server.utils.FileUtils;
@@ -73,28 +71,14 @@ public class ImageUploadServlet extends HttpServlet {
 
                     if (StringUtils.startsWith(itemName, "screenshot")) {
 
-                        long creationDate = System.currentTimeMillis();
+                        FileUtils.saveFileV2(itemName, item.openStream(), lat, lng);
                         
-                        BlobKey blobKey = FileUtils.saveFile(itemName, item.openStream());                       
-
                         String username = StringUtil.getUsername(request.getAttribute("username"),request.getHeader("username"));
                         
-                        boolean auth = false;
-                        if (StringUtils.isNotEmpty(username)) {
-                            auth = true;
-                        }
-
-                        String key = null;
-
-                        if (blobKey != null) {
-                            output = "Saved file: " + blobKey.getKeyString() + ".";
-                            key = ScreenshotPersistenceUtils.persistScreenshot(username, auth, lat, lng, blobKey, new Date(creationDate));
-                        } else {
-                            output = "Failed to save file due to blobstore error.";
-                        }
-        
+                        String key = ScreenshotPersistenceUtils.persistScreenshot(username, lat, lng, itemName);
+                        
                         if (key != null) {
-                            String imageUrl = FileUtils.getImageUrl(blobKey);
+                            String imageUrl = FileUtils.getImageUrlV2(itemName);
 
                             Map<String, String> params = new ImmutableMap.Builder<String, String>().
                             put("key", key).
@@ -106,6 +90,7 @@ public class ImageUploadServlet extends HttpServlet {
                     		
                         } else {
                             logger.log(Level.SEVERE, "Key is null!");
+                            logger.log(Level.INFO, "Deleted file " + FileUtils.deleteFileV2(itemName));
                         }
                     } else {
                         output = "File is not a screenshot.";
@@ -126,7 +111,6 @@ public class ImageUploadServlet extends HttpServlet {
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /** 
      * Handles the HTTP <code>GET</code> method.
      * @param request servlet request
@@ -159,6 +143,6 @@ public class ImageUploadServlet extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Image Upload Servlet";
-    }// </editor-fold>
+        return "Screenshot Upload Servlet";
+    }
 }

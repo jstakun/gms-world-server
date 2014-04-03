@@ -48,17 +48,19 @@ public class Screenshot implements Serializable {
     private BlobKey blobKey;
     @Persistent
     private String keyString;
+    
+    private String filename;
 
     public Screenshot(String username, boolean auth, double latitude, double longitude, BlobKey blobKey, Date creationDate) {
         if (creationDate == null) {
-            this.creationDate = new Date(System.currentTimeMillis());
+            this.setCreationDate(new Date(System.currentTimeMillis()));
         } else {
-            this.creationDate = creationDate;
+            this.setCreationDate(creationDate);
         }
         this.username = username;
         this.auth = auth;
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.setLatitude(latitude);
+        this.setLongitude(longitude);
         this.blobKey = blobKey;
     }
     
@@ -126,4 +128,24 @@ public class Screenshot implements Serializable {
     public void setKeyString(String keyString) {
         this.keyString = keyString;
     }
+
+	public String getFilename() {
+		return filename;
+	}
+
+	public void setFilename(String id) {
+		this.filename = id;
+	}
+
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
+	}
+
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
+	}
+
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
+	}
 }

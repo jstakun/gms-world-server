@@ -5,6 +5,23 @@
 
 package com.jstakun.lm.server.utils.persistence;
 
+import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.jdo.PersistenceManager;
+import javax.jdo.Query;
+
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.lang.StringUtils;
+import org.json.JSONObject;
+
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
@@ -20,13 +37,9 @@ import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.persistence.PMF;
 import com.jstakun.lm.server.persistence.Screenshot;
+import com.jstakun.lm.server.utils.DateUtils;
+import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.StringUtil;
-
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.jdo.PersistenceManager;
-import javax.jdo.Query;
 
 /**
  *
@@ -36,19 +49,22 @@ public class ScreenshotPersistenceUtils {
 
     private static final Logger logger = Logger.getLogger(ScreenshotPersistenceUtils.class.getName());
 
-    public static String persistScreenshot(String username, boolean auth, double latitude, double longitude, BlobKey blobKey, Date creationDate)
+    public static String persistScreenshot(String username, double latitude, double longitude, String filename)
     {
-        PersistenceManager pm = PMF.get().getPersistenceManager();
-        String key = null;
-
+    	String key = null;
+    	
         try {
-            Screenshot s = new Screenshot(username, auth, latitude, longitude, blobKey, creationDate);
-            pm.makePersistent(s);
-            key = KeyFactory.keyToString(s.getKey());
-            s.setKeyString(key.toLowerCase());
-            pm.makePersistent(s);
-        } finally {
-            pm.close();
+        	String landmarksUrl = "https://landmarks-gmsworld.rhcloud.com/actions/addItem";
+        	String params = "username=" + username + "&filename=" + filename + "&latitude=" + latitude + "&longitude=" + longitude + "&type=screenshot";
+        	//logger.log(Level.INFO, "Calling: " + landmarksUrl);
+        	String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl), "POST", null, params, Commons.RH_GMS_USER);
+        	logger.log(Level.INFO, "Received response: " + landmarksJson);
+        	if (StringUtils.startsWith(StringUtils.trim(landmarksJson), "{")) {
+        		JSONObject resp = new JSONObject(landmarksJson);
+        		key = resp.getString("id");
+        	}	
+        } catch (Exception e) {
+        	logger.log(Level.SEVERE, e.getMessage(), e);
         }
 
         return key;
@@ -87,6 +103,14 @@ public class ScreenshotPersistenceUtils {
     }
 
     public static Screenshot selectScreenshot(String k) {
+    	if (StringUtils.isNumeric(k)){
+    		return getRemoteScreenshot(k);
+    	} else {
+    		return getLocalScreenshot(k);
+    	}
+    }
+    
+    private static Screenshot getLocalScreenshot(String k) {
         Screenshot s = null;
 
         PersistenceManager pm = PMF.get().getPersistenceManager();
@@ -113,4 +137,43 @@ public class ScreenshotPersistenceUtils {
 
         return s;
     }
+    
+    private static Screenshot getRemoteScreenshot(String k)
+    {
+    	Screenshot s = null;
+    	try {
+        	String gUrl = "https://landmarks-gmsworld.rhcloud.com/actions/itemProvider";
+        	String params = "type=screenshot&id=" + k;			 
+        	//logger.log(Level.INFO, "Calling: " + gUrl);
+        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
+        	//logger.log(Level.INFO, "Received response: " + gJson);
+        	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
+        		JSONObject root = new JSONObject(gJson);
+        		if (root.has("latitude") && root.has("longitude")) {
+        			s = jsonToScreenshot(root);
+        		}
+        	} else {
+        		logger.log(Level.SEVERE, "Received following server response: " + gJson);
+        	}
+        } catch (Exception e) {
+        	logger.log(Level.SEVERE, e.getMessage(), e);
+        }
+    	return s;
+    }
+    
+    private static Screenshot jsonToScreenshot(JSONObject geocode) throws IllegalAccessException, InvocationTargetException {
+		Screenshot s = new Screenshot();
+		   
+		Map<String, String> geocodeMap = new HashMap<String, String>();
+		for(Iterator<String> iter = geocode.keys();iter.hasNext();) {
+				String key = iter.next();
+				Object value = geocode.get(key);
+				geocodeMap.put(key, value.toString());
+		}
+		   
+		ConvertUtils.register(DateUtils.getRHCloudDateConverter(), Date.class);
+		BeanUtils.populate(s, geocodeMap);
+		   
+		return s;
+	}
 }
