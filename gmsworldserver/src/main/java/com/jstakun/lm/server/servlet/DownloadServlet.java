@@ -4,21 +4,11 @@
  */
 package com.jstakun.lm.server.servlet;
 
-import com.google.appengine.api.datastore.KeyFactory;
-import com.jstakun.lm.server.persistence.User;
-import com.jstakun.lm.server.utils.persistence.UserPersistenceUtils;
-
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,14 +17,15 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author jstakun
  */
+@Deprecated
 public class DownloadServlet extends HttpServlet {
 
     /**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private int BUFSIZE = 1024;
-    private static final String PATH = "./WEB-INF/download/";
+	//private int BUFSIZE = 1024;
+    //private static final String PATH = "./WEB-INF/download/";
     private static final Logger logger = Logger.getLogger(DownloadServlet.class.getName());
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.

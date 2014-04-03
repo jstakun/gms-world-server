@@ -23,8 +23,8 @@ import com.google.appengine.tools.cloudstorage.GcsServiceFactory;
 
 public class FileUtils {
 
-	public static BlobKey saveFile(String fileName, InputStream is) throws IOException {
-		/*FileService fileService = FileServiceFactory.getFileService();
+	/*public static BlobKey saveFile(String fileName, InputStream is) throws IOException {
+		FileService fileService = FileServiceFactory.getFileService();
         AppEngineFile file = fileService.createNewBlobFile("image/jpeg", fileName);
         FileWriteChannel writeChannel = fileService.openWriteChannel(file, true);
         
@@ -36,10 +36,8 @@ public class FileUtils {
 
         writeChannel.closeFinally();
         
-        return fileService.getBlobKey(file);*/
-		throw new IOException("This method shouldn't be used!");
-	}
-	
+        return fileService.getBlobKey(file);
+	}*/	
 	
 	public static void saveFileV2(String fileName, InputStream is, double lat, double lng) throws IOException {
 		String bucketName = AppIdentityServiceFactory.getAppIdentityService().getDefaultGcsBucketName();
@@ -86,9 +84,9 @@ public class FileUtils {
         return imageUrl;
 	}
 	
+	//"http://storage.googleapis.com/" + bucketName + "/" + fileName;
 	public static String getImageUrlV2(String fileName) {
 		String bucketName = AppIdentityServiceFactory.getAppIdentityService().getDefaultGcsBucketName();
-		//return "http://storage.googleapis.com/" + bucketName + "/" + fileName;
 		BlobKey bk = getCloudStorageBlobKey(bucketName, fileName);
 		return getImageUrl(bk);
 	}

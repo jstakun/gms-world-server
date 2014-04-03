@@ -55,7 +55,7 @@ public class TaskServlet extends HttpServlet {
                         long count = ServiceLogPersistenceUtils.deleteLogsOlderThanDate(nDaysAgo);
                         logger.log(Level.INFO, "Deleted {0} logs.", count);
                     } else if (entity.equalsIgnoreCase("screenshot")) {
-                        Date nDaysAgo = DateUtils.getDayInPast(Integer.parseInt(ConfigurationManager.getParam(ConfigurationManager.SCREENSHOT_OLDER_THAN_DAYS, "60")), true);
+                        Date nDaysAgo = DateUtils.getDayInPast(Integer.parseInt(ConfigurationManager.getParam(ConfigurationManager.SCREENSHOT_OLDER_THAN_DAYS, "90")), true);
                         long count = ScreenshotPersistenceUtils.deleteScreenshotsOlderThanDate(nDaysAgo);
                         logger.log(Level.INFO, "Deleted {0} screenshots.", count);
                     } else {

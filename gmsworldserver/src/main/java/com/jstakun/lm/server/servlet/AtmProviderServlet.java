@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author jstakun
  */
+@Deprecated
 public class AtmProviderServlet extends HttpServlet {
 
     /**

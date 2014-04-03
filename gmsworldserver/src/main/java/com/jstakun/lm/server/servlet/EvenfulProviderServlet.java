@@ -8,10 +8,12 @@ import com.jstakun.lm.server.layers.EventfulUtils;
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.NumberUtils;
 import com.jstakun.lm.server.utils.StringUtil;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author jstakun
  */
+@Deprecated
 public class EvenfulProviderServlet extends HttpServlet {
 
     /**

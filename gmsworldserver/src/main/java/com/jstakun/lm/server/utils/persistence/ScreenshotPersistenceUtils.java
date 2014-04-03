@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
@@ -55,7 +56,10 @@ public class ScreenshotPersistenceUtils {
     	
         try {
         	String landmarksUrl = "https://landmarks-gmsworld.rhcloud.com/actions/addItem";
-        	String params = "username=" + username + "&filename=" + filename + "&latitude=" + latitude + "&longitude=" + longitude + "&type=screenshot";
+        	String params = "filename=" + filename + "&latitude=" + latitude + "&longitude=" + longitude + "&type=screenshot";
+        	if (username != null) {
+        		params += "&username=" + username;
+        	}
         	//logger.log(Level.INFO, "Calling: " + landmarksUrl);
         	String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl), "POST", null, params, Commons.RH_GMS_USER);
         	logger.log(Level.INFO, "Received response: " + landmarksJson);
@@ -129,6 +133,8 @@ public class ScreenshotPersistenceUtils {
                     pm.makePersistent(s);
                 }
         	}
+        } catch (JDOObjectNotFoundException ex) {
+        	logger.log(Level.SEVERE, ex.getMessage());
         } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.getMessage(), ex);
         } finally {

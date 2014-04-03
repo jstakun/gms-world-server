@@ -2,7 +2,6 @@ package com.jstakun.lm.server.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -11,12 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.jstakun.lm.server.config.Commons;
-import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.TokenUtil;
 
 /**

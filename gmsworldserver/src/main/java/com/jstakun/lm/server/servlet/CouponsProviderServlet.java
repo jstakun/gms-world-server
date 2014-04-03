@@ -23,6 +23,7 @@ import org.apache.commons.lang.StringUtils;
  *
  * @author jstakun
  */
+@Deprecated
 public class CouponsProviderServlet extends HttpServlet {
 
     /**

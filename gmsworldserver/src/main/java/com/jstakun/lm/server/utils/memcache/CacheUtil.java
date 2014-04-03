@@ -8,7 +8,11 @@ import com.google.appengine.api.memcache.Expiration;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.appengine.api.memcache.jsr107cache.GCacheFactory;
+
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,6 +21,7 @@ import net.sf.jsr107cache.Cache;
 import net.sf.jsr107cache.CacheException;
 import net.sf.jsr107cache.CacheFactory;
 import net.sf.jsr107cache.CacheManager;
+
 import org.json.JSONObject;
 
 /**
@@ -59,17 +64,38 @@ public class CacheUtil {
 	}
 
 	public static String getString(String key) {
-		Object o = getCache().get(key);
-		if (o != null && o instanceof String) {
-			return (String) o;
-		}
-		return null;
+		return getObject(String.class, key);
 	}
 
 	public static Object getObject(String key) {
 		//logger.log(Level.INFO, "getObject " + key);
 		return getCache().get(key);
 	}
+	
+	protected static <T> T getObject(Class<T> type, String key) {
+		Object o = getCache().get(key);
+		if (o != null && type.isAssignableFrom(o.getClass())) {
+			return type.cast(o);
+	    } else {
+	    	return null;
+	    }
+	}
+	
+	/*public static <T> List<T> getList(Class<T> type, String key) {
+		Object o = getObject(key);
+		if (o != null && o instanceof List) {
+			Type genericType = o.getClass();
+			ParameterizedType pType = (ParameterizedType)genericType;
+			Class<?> paramType = (Class<?>) pType.getActualTypeArguments()[0];
+			if (paramType.isAssignableFrom(type)) {
+				return (List<T>) o;
+			} else {
+				return null;
+			}
+		} else {
+			return null;
+		}
+	}*/
 	
 	public static boolean containsKey(String key) {
 		return getCache().containsKey(key);

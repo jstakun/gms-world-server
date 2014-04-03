@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author jstakun
  */
+@Deprecated
 public class DownloadLandmarksServlet extends HttpServlet {
 
     /**

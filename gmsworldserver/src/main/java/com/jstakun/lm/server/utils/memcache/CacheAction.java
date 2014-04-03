@@ -32,7 +32,7 @@ public class CacheAction {
 	}
 	
 	public Integer getIntFromCache(String key) {
-		Integer i = (Integer)CacheUtil.getObject(key);
+		Integer i = CacheUtil.getObject(Integer.class, key);
 		if (i != null) {
 			logger.log(Level.INFO, "Found object {0} in cache", key);
 		} else {

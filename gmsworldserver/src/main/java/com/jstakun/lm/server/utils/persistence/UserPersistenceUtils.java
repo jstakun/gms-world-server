@@ -14,17 +14,27 @@ import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Text;
+
 import javax.jdo.Query;
+
+import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.persistence.PMF;
 import com.jstakun.lm.server.persistence.User;
 import com.jstakun.lm.server.personalization.RapleafUtil;
+import com.jstakun.lm.server.utils.HttpUtils;
+
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.jdo.PersistenceManager;
+
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONObject;
 
 /**
  *
@@ -38,7 +48,7 @@ public class UserPersistenceUtils {
         User user = new User(login, password, email, firstname, lastname);
         PersistenceManager pm = PMF.get().getPersistenceManager();
 
-        try {
+        /*try {
             String personalInfo = RapleafUtil.readUserInfo(email, firstname, lastname);
             if (StringUtils.isNotEmpty(personalInfo)) {
                 if (personalInfo.length() < 500) {
@@ -50,6 +60,33 @@ public class UserPersistenceUtils {
             }
         } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.getMessage(), ex);
+        }*/
+        
+        try {
+        	String landmarksUrl = "https://landmarks-gmsworld.rhcloud.com/actions/addItem";
+        	String params = "login=" + login + "&password=" + password + "&type=user";
+        	
+        	if (firstname != null) {
+        	   params += "&firstname=" + firstname;
+        	}
+        	if (lastname != null) {
+        		params += "&lastname=" + lastname;
+        	}
+            if (email != null) {
+        	   params += "&email=" + URLEncoder.encode(email, "UTF-8");
+            }
+            
+        	//logger.log(Level.INFO, "Calling: " + landmarksUrl);
+        	String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl), "POST", null, params, Commons.RH_GMS_USER);
+        	logger.log(Level.INFO, "Received response: " + landmarksJson);
+        	if (StringUtils.startsWith(StringUtils.trim(landmarksJson), "{")) {
+        		JSONObject resp = new JSONObject(landmarksJson);
+        		if (resp.optString("login") == null) {
+        			logger.log(Level.SEVERE, "Failed to save user: " + landmarksJson);
+        		}
+        	}	
+        } catch (Exception e) {
+        	logger.log(Level.SEVERE, e.getMessage(), e);
         }
 
         try {
@@ -108,9 +145,9 @@ public class UserPersistenceUtils {
                 user.setConfirmDate(new Date());
                 pm.makePersistent(user);
                 result = true;
+                confirmRemoteRegistration(user.getLogin());
             } else {
-                logger.log(Level.INFO, "User with key: {0} is null!. User wanted to confirm his account: {1}",
-                        new Object[]{k, confirmation});
+                logger.log(Level.INFO, "User with key: {0} is null!. User wanted to confirm his account: {1}", new Object[]{k, confirmation});
             }
         } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.getMessage(), ex);
@@ -119,6 +156,27 @@ public class UserPersistenceUtils {
         }
 
         return result;
+    }
+    
+    private static boolean confirmRemoteRegistration(String login) {
+    	boolean confirmed = false;
+    	try {
+        	String gUrl = "https://landmarks-gmsworld.rhcloud.com/actions/itemProvider";
+        	String params = "type=user&confirm=1&login=" + login;			 
+        	//logger.log(Level.INFO, "Calling: " + gUrl);
+        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
+        	//logger.log(Level.INFO, "Received response: " + gJson);
+        	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
+        		JSONObject root = new JSONObject(gJson);
+        		confirmed = root.optBoolean("confirmed", false);
+        		logger.log(Level.INFO, "User {0} registration is confirmed {1}", new Object[]{login, confirmed});
+        	} else {
+        		logger.log(Level.SEVERE, "Received following server response: " + gJson);
+        	}
+        } catch (Exception e) {
+        	logger.log(Level.SEVERE, e.getMessage(), e);
+        }
+    	return confirmed;
     }
 
     public static void setLastLogonDate(User user) {

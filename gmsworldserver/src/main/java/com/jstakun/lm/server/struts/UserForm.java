@@ -43,9 +43,11 @@ public class UserForm extends DynaValidatorForm {
         String login = StringUtils.trimToEmpty((String) get("login"));
         if (StringUtils.isEmpty(login)) {
             errors.add("userForm", new ActionMessage("errors.login"));
+        } else if (!regexLoginValidate(login)) {
+            errors.add("userForm", new ActionMessage("errors.login.regex"));
         } else if (UserPersistenceUtils.userExists(login)) {
             errors.add("userForm", new ActionMessage("errors.uniqueLogin"));
-        }
+        } 
 
         String password = StringUtils.trimToEmpty((String) get("password"));
         if (StringUtils.isEmpty(password)) {
@@ -88,5 +90,11 @@ public class UserForm extends DynaValidatorForm {
         String regex = "^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9_-]{6,24}$";
 
         return (password.matches(regex));
+    }
+    
+    private static boolean regexLoginValidate(String login) {
+        String regex = "^[a-zA-Z0-9_-]{4,24}$";
+
+        return (login.matches(regex));
     }
 }
