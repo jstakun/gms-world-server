@@ -47,15 +47,96 @@
 </filter-->
  <filter-mapping>
   <filter-name>IPFilter</filter-name>
-  <url-pattern>/facebookProvider</url-pattern>
+    <url-pattern>/facebookProvider</url-pattern>
+    <url-pattern>/foursquareProvider</url-pattern>
+    <url-pattern>/yelpProvider</url-pattern>
+    <url-pattern>/qypeProvider</url-pattern>
+    <url-pattern>/googlePlacesProvider</url-pattern>
+    <url-pattern>/couponsProvider</url-pattern>
+    <url-pattern>/grouponProvider</url-pattern>
+    <url-pattern>/atmProvider</url-pattern>
+    <url-pattern>/flickrProvider</url-pattern>
+    <url-pattern>/downloadLandmark</url-pattern>
+    <url-pattern>/picasaProvider</url-pattern>
+    <url-pattern>/meetupProvider</url-pattern>
+    <url-pattern>/upcomingProvider</url-pattern>
+    <url-pattern>/youTubeProvider</url-pattern>
+    <url-pattern>/eventfulProvider</url-pattern>
+    <url-pattern>/osmProvider</url-pattern>
+    <url-pattern>/placeopediaProvider</url-pattern>
+    <url-pattern>/geonamesProvider</url-pattern>
+    <url-pattern>/lastfmProvider</url-pattern>
+    <url-pattern>/webcamProvider</url-pattern>
+    <url-pattern>/hotwireProvider</url-pattern>
+    <url-pattern>/panoramio2Provider</url-pattern>
+    <url-pattern>/foursquareMerchant</url-pattern>
+    <url-pattern>/expediaProvider</url-pattern>
+    <url-pattern>/hotelsProvider</url-pattern>
+    <url-pattern>/twitterProvider</url-pattern>
+    <url-pattern>/instagramProvider</url-pattern>
+    <url-pattern>/instagramProvider</url-pattern>
+    <url-pattern>/freebaseProvider</url-pattern>
+    <url-pattern>/search</url-pattern>
+    <url-pattern>/listLayers</url-pattern>
+    <url-pattern>/geocode</url-pattern>
+    <url-pattern>/crashReport</url-pattern>
+    <url-pattern>/imageUpload</url-pattern>
+    <url-pattern>/panoramioProvider</url-pattern>
+    <url-pattern>/fblogin</url-pattern>
+    <url-pattern>/fslogin</url-pattern>
+    <url-pattern>/twlogin</url-pattern>
+    <url-pattern>/lnlogin</url-pattern>
+    <url-pattern>/gllogin</url-pattern>
+    <url-pattern>/token</url-pattern>
  </filter-mapping>
  <filter-mapping>
   <filter-name>BlockerFilter</filter-name>
-  <url-pattern>/facebookProvider</url-pattern>
+    <url-pattern>/facebookProvider</url-pattern>
+    <url-pattern>/foursquareProvider</url-pattern>
+    <url-pattern>/yelpProvider</url-pattern>
+    <url-pattern>/qypeProvider</url-pattern>
+    <url-pattern>/googlePlacesProvider</url-pattern>
+    <url-pattern>/couponsProvider</url-pattern>
+    <url-pattern>/grouponProvider</url-pattern>
+    <url-pattern>/atmProvider</url-pattern>
+    <url-pattern>/flickrProvider</url-pattern>
+    <url-pattern>/downloadLandmark</url-pattern>
+    <url-pattern>/picasaProvider</url-pattern>
+    <url-pattern>/meetupProvider</url-pattern>
+    <url-pattern>/upcomingProvider</url-pattern>
+    <url-pattern>/youTubeProvider</url-pattern>
+    <url-pattern>/eventfulProvider</url-pattern>
+    <url-pattern>/osmProvider</url-pattern>
+    <url-pattern>/placeopediaProvider</url-pattern>
+    <url-pattern>/geonamesProvider</url-pattern>
+    <url-pattern>/lastfmProvider</url-pattern>
+    <url-pattern>/webcamProvider</url-pattern>
+    <url-pattern>/hotwireProvider</url-pattern>
+    <url-pattern>/panoramio2Provider</url-pattern>
+    <url-pattern>/foursquareMerchant</url-pattern>
+    <url-pattern>/expediaProvider</url-pattern>
+    <url-pattern>/hotelsProvider</url-pattern>
+    <url-pattern>/twitterProvider</url-pattern>
+    <url-pattern>/instagramProvider</url-pattern>
+    <url-pattern>/instagramProvider</url-pattern>
+    <url-pattern>/freebaseProvider</url-pattern>
+    <url-pattern>/search</url-pattern>
+    <url-pattern>/listLayers</url-pattern>
+    <url-pattern>/geocode</url-pattern>
+    <url-pattern>/crashReport</url-pattern>
+    <url-pattern>/imageUpload</url-pattern>
+    <url-pattern>/panoramioProvider</url-pattern>
+    <url-pattern>/fblogin</url-pattern>
+    <url-pattern>/fslogin</url-pattern>
+    <url-pattern>/twlogin</url-pattern>
+    <url-pattern>/lnlogin</url-pattern>
+    <url-pattern>/gllogin</url-pattern>
+    <url-pattern>/token</url-pattern>
  </filter-mapping>
  <filter-mapping>
   <filter-name>ServicesAuthorizationFilter</filter-name>
   <url-pattern>/services/*</url-pattern>
+  <url-pattern>/s/*</url-pattern>
  </filter-mapping>
  <filter-mapping>
   <filter-name>AdminFilter</filter-name>
@@ -72,8 +153,8 @@
  <!-- filter-mapping>
   <filter-name>LogFilter</filter-name>
   <url-pattern>/*</url-pattern>
- </filter-mapping
- filter-mapping>
+ </filter-mapping-->
+ <!-- filter-mapping>
   <filter-name>appstats</filter-name>
   <url-pattern>/*</url-pattern>
  </filter-mapping-->
@@ -419,8 +500,8 @@
   <servlet-class>com.jstakun.lm.server.servlet.TokenServlet</servlet-class>
  </servlet>
  <servlet>
-  <servlet-name>ErrorHandlerServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.servlet.ErrorHandlerServlet</servlet-class>
+   <servlet-name>ErrorHandlerServlet</servlet-name>
+   <servlet-class>com.jstakun.lm.server.servlet.ErrorHandlerServlet</servlet-class>
  </servlet>
  <!--servlet>
   <servlet-name>appstats</servlet-name>
@@ -594,6 +675,34 @@
  <servlet-mapping>
   <servlet-name>LayersProviderServlet</servlet-name>
   <url-pattern>/facebookProvider,/services/facebookProvider,/s/facebookProvider</url-pattern>
+  <url-pattern>/foursquareProvider,/s/foursquareProvider,/services/foursquareProvider</url-pattern>
+  <url-pattern>/yelpProvider,/services/yelpProvider,/s/yelpProvider</url-pattern>
+  <url-pattern>/qypeProvider,/services/qypeProvider</url-pattern>
+  <url-pattern>/googlePlacesProvider,/services/googlePlacesProvider,/s/googlePlacesProvider</url-pattern>
+  <url-pattern>/couponsProvider,/services/couponsProvider,/s/couponsProvider</url-pattern>
+  <url-pattern>/grouponProvider,/services/grouponProvider,/s/grouponProvider</url-pattern>
+  <url-pattern>/atmProvider,/services/atmProvider,/s/atmProvider</url-pattern>
+  <url-pattern>/services/flickrProvider,/s/flickrProvider,/flickrProvider</url-pattern>
+  <url-pattern>/services/downloadLandmark,/s/downloadLandmark,/downloadLandmark</url-pattern>
+  <url-pattern>/picasaProvider,/services/picasaProvider,/s/picasaProvider</url-pattern>
+  <url-pattern>/meetupProvider,/services/meetupProvider,/s/meetupProvider</url-pattern>
+  <url-pattern>/upcomingProvider,/services/upcomingProvider,/s/upcomingProvider</url-pattern>
+  <url-pattern>/services/youTubeProvider,/youTubeProvider,/s/youTubeProvider</url-pattern>
+  <url-pattern>/services/eventfulProvider,/eventfulProvider,/s/eventfulProvider</url-pattern>
+  <url-pattern>/osmProvider,/services/osmProvider,/s/osmProvider</url-pattern>
+  <url-pattern>/services/gowallaProvider,/gowallaProvider</url-pattern>
+  <url-pattern>/services/placeopediaProvider,/placeopediaProvider,/s/placeopediaProvider</url-pattern>
+  <url-pattern>/services/geonamesProvider,/geonamesProvider,/s/geonamesProvider</url-pattern>
+  <url-pattern>/lastfmProvider,/services/lastfmProvider,/s/lastfmProvider</url-pattern>
+  <url-pattern>/webcamProvider,/services/webcamProvider,/s/webcamProvider</url-pattern>
+  <url-pattern>/hotwireProvider,/services/hotwireProvider</url-pattern>
+  <url-pattern>/panoramio2Provider,/services/panoramio2Provider,/s/panoramio2Provider</url-pattern>
+  <url-pattern>/services/foursquareMerchant,/foursquareMerchant,/s/foursquareMerchant</url-pattern>
+  <url-pattern>/expediaProvider,/services/expediaProvider,/s/expediaProvider</url-pattern>
+  <url-pattern>/hotelsProvider,/services/hotelsProvider,/s/hotelsProvider</url-pattern>
+  <url-pattern>/twitterProvider,/services/twitterProvider,/s/twitterProvider</url-pattern>
+  <url-pattern>/instagramProvider,/services/instagramProvider,/s/instagramProvider</url-pattern>
+  <url-pattern>/freebaseProvider,/services/freebaseProvider,/s/freebaseProvider</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>Search2Servlet</servlet-name>
