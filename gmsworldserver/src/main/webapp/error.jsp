@@ -4,7 +4,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
     <head>
-        <title>Error Page</title>
+        <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+        <title><c:out value="${requestScope.header}" default="Error Page"/></title>
          <%@ include file="/WEB-INF/jspf/head.jspf" %>
     </head>
 
@@ -21,9 +22,9 @@
                 <!-- main -->
                 <div id="main">
 
-                	<h3>Server Error</h3>
+                	<h3><c:out value="${requestScope.header}" default="Internal Server Error"/></h3>
 
-                	<p>Sorry. Please try again or contact our <a href="mailto:support@gms-world.net?subject=Server error">support</a>.</p>
+                	<p><c:out value="${requestScope.message}" default="Oops! Something went wrong. Please try again or contact our support." escapeXml="false"/></p>
 
                     <!-- /main -->
                 </div>

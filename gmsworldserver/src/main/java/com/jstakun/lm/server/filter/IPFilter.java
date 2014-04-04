@@ -62,13 +62,13 @@ public class IPFilter implements Filter {
 				logger.log(Level.SEVERE, "IP: " + ip + " is blocked after " + total_count + " requests");
 				if (response instanceof HttpServletResponse) {
 					logger.log(Level.INFO, "User-Agent: " + ((HttpServletRequest) request).getHeader("User-Agent"));
-					((HttpServletResponse) response).setStatus(HttpServletResponse.SC_FORBIDDEN);
+					/*((HttpServletResponse) response).setStatus(HttpServletResponse.SC_FORBIDDEN);
 					PrintWriter out = response.getWriter();
 				    out.println("<html><head><title>Request rate too high</title></head><body>");
 				    out.println("<h3>Request rate too high.</h3>");
 				    out.println("</body></html>");
-				    out.close();
-					//((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN, ip + " has too many requests");
+				    out.close();*/
+					((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN, "Request rate too high");
 				} else {
 					response.getWriter().println("Request rate too high");
 				}
@@ -93,14 +93,14 @@ public class IPFilter implements Filter {
 				if (uri_count > NumberUtils.getInt(ConfigurationManager.getParam(ConfigurationManager.IP_URI_LIMIT, "3"), 3)) {
 					logger.log(Level.INFO, "User-Agent: " + httpRequest.getHeader("User-Agent"));
 					logger.log(Level.SEVERE, "IP: " + ip + " is blocked after " + uri_count + " uri requests");
-					((HttpServletResponse) response).setStatus(HttpServletResponse.SC_FORBIDDEN);
+					/*((HttpServletResponse) response).setStatus(HttpServletResponse.SC_FORBIDDEN);
 					response.setContentType("text/html");
 				    PrintWriter out = response.getWriter();
 				    out.println("<html><head><title>Request rate too high</title></head><body>");
 				    out.println("<h3>Request rate too high.</h3>");
 				    out.println("</body></html>");
-				    out.close();
-					//((HttpServletResponse)response).sendError(HttpServletResponse.SC_FORBIDDEN, ip + " has too many uri requests");				     
+				    out.close();*/
+					((HttpServletResponse)response).sendError(HttpServletResponse.SC_FORBIDDEN, "Request rate too high");				     
 				} else {
 					chain.doFilter(request, response);
 				}
