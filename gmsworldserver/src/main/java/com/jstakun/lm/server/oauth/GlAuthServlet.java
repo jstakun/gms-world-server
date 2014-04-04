@@ -5,7 +5,6 @@
 package com.jstakun.lm.server.oauth;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.URL;
 import java.util.Map;
 import java.util.logging.Level;
@@ -45,10 +44,7 @@ public class GlAuthServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             String code = request.getParameter("code");
 
@@ -65,7 +61,7 @@ public class GlAuthServlet extends HttpServlet {
                 expires_in = resp.optInt("expires_in", -1);
             }
 
-            if (accessToken != null) {
+            if (accessToken != null && refreshToken != null) {
 
                 Map<String, String> userData = GooglePlusUtils.getUserData(accessToken, refreshToken);
                 
@@ -92,7 +88,8 @@ public class GlAuthServlet extends HttpServlet {
                 		put("name", userData.get(ConfigurationManager.GL_NAME)).build();
                 NotificationUtils.createNotificationTask(params);
 
-                out.print(OAuthCommons.getOAuthSuccessHTML(new JSONObject(userData).toString()));
+                request.setAttribute("title", new JSONObject(userData).toString());
+        		request.getRequestDispatcher("/m/oauth_logon_confirmation.jsp").forward(request, response);
             } else {
                 //out.print("Access token not found!");
                 response.sendRedirect("/m/oauth_logon_error.jsp");
@@ -100,12 +97,9 @@ public class GlAuthServlet extends HttpServlet {
         } catch (Exception ex) {
             Logger.getLogger(GlAuthServlet.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
             response.sendRedirect("/m/oauth_logon_error.jsp");
-        } finally {
-            out.close();
-        }
+        } 
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /** 
      * Handles the HTTP <code>GET</code> method.
      * @param request servlet request
@@ -139,5 +133,5 @@ public class GlAuthServlet extends HttpServlet {
     @Override
     public String getServletInfo() {
         return "Short description";
-    }// </editor-fold>
+    }
 }

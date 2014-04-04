@@ -5,7 +5,6 @@
 package com.jstakun.lm.server.oauth;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.URL;
 import java.util.Map;
 import java.util.logging.Level;
@@ -45,11 +44,8 @@ public class LnAuthServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-            PrintWriter out = response.getWriter();
-            try {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        	try {
                 String code = request.getParameter("code");
                 String state = request.getParameter("state");
                 
@@ -88,7 +84,8 @@ public class LnAuthServlet extends HttpServlet {
                     		put("name", userData.get(ConfigurationManager.LN_NAME)).build();  
                 		NotificationUtils.createNotificationTask(params);
                     
-                		out.print(OAuthCommons.getOAuthSuccessHTML(new JSONObject(userData).toString()));        
+                		request.setAttribute("title", new JSONObject(userData).toString());
+                		request.getRequestDispatcher("/m/oauth_logon_confirmation.jsp").forward(request, response);
                 	} else {
                 		logger.log(Level.SEVERE, "Access token not found!");
                 		response.sendRedirect("/m/oauth_logon_error.jsp");
@@ -99,12 +96,9 @@ public class LnAuthServlet extends HttpServlet {
             } catch (Exception ex) {
                 logger.log(Level.SEVERE, ex.getMessage(), ex);
                 response.sendRedirect("/m/oauth_logon_error.jsp");
-            } finally {
-                out.close();
-            }
+            } 
     	}
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /** 
      * Handles the HTTP <code>GET</code> method.
      * @param request servlet request
@@ -138,5 +132,5 @@ public class LnAuthServlet extends HttpServlet {
     @Override
     public String getServletInfo() {
         return "Short description";
-    }// </editor-fold>
+    }
 }

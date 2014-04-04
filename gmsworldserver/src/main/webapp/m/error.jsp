@@ -1,10 +1,10 @@
-<html lang="en">
+<%@page contentType="text/html" pageEncoding="utf-8"%>
+<!DOCTYPE html>
+<html>
+
 <head>
   <meta charset="utf-8" />  
-  <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-  <title>
-  	<c:out value="${requestScope.title}" default="GMS World - OAuth Logon Confirmation"/>
-  </title>
+  <title>Error Page</title>
   <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0" /> 
   <link rel="stylesheet" media="all" href="/style.css" type="text/css">
   <%@ include file="/WEB-INF/jspf/head_small.jspf" %>
@@ -17,11 +17,11 @@
     <div class="content">
     	<article>
     	
-    	<h3>Logon successful</h3>
+    	<h3>Server Error</h3>
 
-        Web browser will be closed automatically and you'll be redirected back to <b>Landmark Manager</b>.<br/>
-        If web browser won't close automatically please do it manually and come back to <b>Landmark Manager</b>.<br/><br/>
-                           
+        <p>Sorry. Please try again or contact our <a href="mailto:support@gms-world.net?subject=Server error">support</a>.</p>
+
+        
     	</article>
     	
     	<%@ include file="/WEB-INF/jspf/ad_small_baner.jspf" %>

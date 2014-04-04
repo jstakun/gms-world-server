@@ -5,7 +5,6 @@
 package com.jstakun.lm.server.oauth;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -57,8 +56,6 @@ public class TwAuthServlet extends HttpServlet {
 	 *             if an I/O error occurs
 	 */
 	protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.setContentType("text/html;charset=UTF-8");
-		PrintWriter out = response.getWriter();
 		try {
 			Twitter twitter = new TwitterFactory().getInstance();
 			twitter.setOAuthConsumer(Commons.TW_CONSUMER_KEY, Commons.TW_CONSUMER_SECRET);
@@ -88,7 +85,8 @@ public class TwAuthServlet extends HttpServlet {
 					put("name", userData.get(ConfigurationManager.TWEET_NAME)).build();
         		NotificationUtils.createNotificationTask(params);
 			    
-				out.print(OAuthCommons.getOAuthSuccessHTML(new JSONObject(userData).toString()));
+        		request.setAttribute("title", new JSONObject(userData).toString());
+        		request.getRequestDispatcher("/m/oauth_logon_confirmation.jsp").forward(request, response);
 			} else {
 				logger.log(Level.SEVERE, "RequestToken is null !");
 				response.sendRedirect("/m/oauth_logon_error.jsp");
@@ -96,9 +94,7 @@ public class TwAuthServlet extends HttpServlet {
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 			response.sendRedirect("/m/oauth_logon_error.jsp");
-		} finally {
-			out.close();
-		}
+		} 
 	}
 
 	// <editor-fold defaultstate="collapsed"

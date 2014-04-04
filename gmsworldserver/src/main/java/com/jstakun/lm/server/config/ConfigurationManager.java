@@ -100,4 +100,8 @@ public final class ConfigurationManager {
     public static Map<String, String> getConfiguration() {
     	return Collections.unmodifiableMap(configuration);
     }
+
+	public static final String SUPPORT_MAIL = "support@gms-world.net";
+	public static final String ADMIN_MAIL = "jstakun.appspot@gmail.com";
+	public static final String ADMIN_NICK = "GMS World Administrator";
 }

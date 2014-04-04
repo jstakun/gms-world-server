@@ -31,9 +31,6 @@ import com.jstakun.lm.server.config.ConfigurationManager;
  */
 public class MailUtils {
 
-    private static final String SUPPORT_MAIL = "support@gms-world.net"; 
-    private static final String ADMIN_MAIL = "jstakun.appspot@gmail.com";
-    private static final String ADMIN_NICK = "GMS World Administrator";
     private static final Logger logger = Logger.getLogger(MailUtils.class.getName());
 
     private static void sendMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType) {
@@ -52,11 +49,11 @@ public class MailUtils {
     }
 
     public static void sendEmailingMessage(String toA, String nick, String message) {
-        sendMail(SUPPORT_MAIL, ADMIN_NICK, toA, nick, "Message from Landmark Manager", message, "text/html");
+        sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "Message from Landmark Manager", message, "text/html");
     }
 
     public static void sendLandmarkCreationNotification(String title, String body) {
-        sendMail(SUPPORT_MAIL, ADMIN_NICK, ADMIN_MAIL, ADMIN_NICK, title, body, "text/plain");
+        sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.ADMIN_MAIL, ConfigurationManager.ADMIN_NICK, title, body, "text/plain");
     }
 
     public static void sendList(String title, Map<String, Collection<String>> stringMap, Map<String, Integer> recentlyCreated) {
@@ -74,7 +71,7 @@ public class MailUtils {
             message += "<br/>Number of users last week: " + recentlyCreated.get(entry.getKey()) + ".<br/><br/>";
         }
         //System.out.println(message);
-        sendMail(SUPPORT_MAIL, ADMIN_NICK, ADMIN_MAIL, ADMIN_NICK, title, message, "text/html");
+        sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.ADMIN_MAIL, ConfigurationManager.ADMIN_NICK, title, message, "text/html");
     }
 
     public static void sendVerificationRequest(String toA, String nick, String key, ServletContext context) {
@@ -83,7 +80,7 @@ public class MailUtils {
             String link = ConfigurationManager.SERVER_URL + "verify.do?k=" + key + "&s=1";
             is = context.getResourceAsStream("/WEB-INF/emails/verification.html");
             String message = String.format(IOUtils.toString(is), nick, link);
-            sendMail(SUPPORT_MAIL, ADMIN_NICK, toA, nick, "Welcome to GMS World", message, "text/html");
+            sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "Welcome to GMS World", message, "text/html");
         } catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
         } finally {
@@ -102,7 +99,7 @@ public class MailUtils {
         try {
             is = context.getResourceAsStream("/WEB-INF/emails/notification.html");
             String message = String.format(IOUtils.toString(is), nick);
-            sendMail(SUPPORT_MAIL, ADMIN_NICK, toA, nick, "GMS World Registration", message, "text/html");
+            sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "GMS World Registration", message, "text/html");
         } catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
         } finally {
@@ -121,7 +118,7 @@ public class MailUtils {
         try {
             is = context.getResourceAsStream("/WEB-INF/emails/login.html");
             String message = String.format(IOUtils.toString(is), nick, layer);
-            sendMail(SUPPORT_MAIL, ADMIN_NICK, toA, nick, "GMS World Login", message, "text/html");
+            sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "GMS World Login", message, "text/html");
         } catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
         } finally {
@@ -140,7 +137,7 @@ public class MailUtils {
         try {
             is = context.getResourceAsStream("/WEB-INF/emails/landmark.html");
             String message = String.format(IOUtils.toString(is), userUrl, nick, landmarkUrl, key);
-            sendMail(SUPPORT_MAIL, ADMIN_NICK, toA, nick, "Message from GMS World", message, "text/html");
+            sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "Message from GMS World", message, "text/html");
             //remove after tests
             //sendMail(SUPPORT_MAIL, ADMIN_NICK, ADMIN_MAIL, ADMIN_NICK, "Copy of message to " + toA, message, "text/html");
         } catch (IOException ex) {
@@ -157,15 +154,15 @@ public class MailUtils {
     }
     
     public static void sendUserCreationNotification(String body) {
-        sendMail(SUPPORT_MAIL, ADMIN_NICK, ADMIN_MAIL, ADMIN_NICK, "New user", body, "text/plain");
+        sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.ADMIN_MAIL, ConfigurationManager.ADMIN_NICK, "New user", body, "text/plain");
     }
 
     public static void sendCrashReport(String title, String body) {
-        sendMail(SUPPORT_MAIL, ADMIN_NICK, SUPPORT_MAIL, ADMIN_NICK, title, body, "text/plain");
+        sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, title, body, "text/plain");
     }
 
     public static void sendContactMessage(String fromA, String nick, String subject, String body) {
-        sendMail(SUPPORT_MAIL, ADMIN_NICK, ADMIN_MAIL, ADMIN_NICK, subject, "Message from: " + nick + " " + fromA + "\n" + body, "text/plain");
+        sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.ADMIN_MAIL, ConfigurationManager.ADMIN_NICK, subject, "Message from: " + nick + " " + fromA + "\n" + body, "text/plain");
     }
 
     public static boolean isValidEmailAddress(String aEmailAddress) {
@@ -181,7 +178,7 @@ public class MailUtils {
         }
         String message = "New search query has been executed: " + query + "\nDeals: "
                 + isDeal + "\nResponse contains " + counter + " landmarks.\nCheck it out: " + url;
-        sendMail(SUPPORT_MAIL, ADMIN_NICK, ADMIN_MAIL, ADMIN_NICK, "New search with " + counter + " results", message, "text/plain");
+        sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.ADMIN_MAIL, ConfigurationManager.ADMIN_NICK, "New search with " + counter + " results", message, "text/plain");
     }
     
     public static void sendEngagementMessage(String toA, ServletContext context) {
@@ -193,11 +190,11 @@ public class MailUtils {
             String excluded = ConfigurationManager.getParam(ConfigurationManager.EXCLUDED, "");
             String[] excludedList = StringUtils.split(excluded, "|");
             if (StringUtils.indexOfAny(toA, excludedList) >= 0) {
-            	sendMail(SUPPORT_MAIL, ADMIN_NICK, ADMIN_MAIL, ADMIN_NICK, "Copy of excluded engagement message to " + toA, message, "text/html");
+            	sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.ADMIN_MAIL, ConfigurationManager.ADMIN_NICK, "Copy of excluded engagement message to " + toA, message, "text/html");
             } else {
-               sendMail(SUPPORT_MAIL, ADMIN_NICK, toA, "Landmark Manager User", "Message from Landmark Manager", message, "text/html");
+               sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, "Landmark Manager User", "Message from Landmark Manager", message, "text/html");
                //TODO remove after tests
-               sendMail(SUPPORT_MAIL, ADMIN_NICK, ADMIN_MAIL, ADMIN_NICK, "Copy of engagement message to " + toA, message, "text/html");
+               sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.ADMIN_MAIL, ConfigurationManager.ADMIN_NICK, "Copy of engagement message to " + toA, message, "text/html");
             }
         } catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);

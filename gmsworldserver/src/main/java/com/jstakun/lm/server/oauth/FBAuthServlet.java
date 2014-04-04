@@ -7,7 +7,6 @@ package com.jstakun.lm.server.oauth;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
 import java.net.URL;
 import java.util.Map;
 import java.util.logging.Level;
@@ -43,9 +42,7 @@ public class FBAuthServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
         
         try {
             String code = request.getParameter("code");
@@ -89,7 +86,8 @@ public class FBAuthServlet extends HttpServlet {
                     		put("username", userData.get(ConfigurationManager.FB_USERNAME)).
                     		put("name", userData.get(ConfigurationManager.FB_NAME)).build();                  
                     NotificationUtils.createNotificationTask(params);
-                    out.print(OAuthCommons.getOAuthSuccessHTML(new JSONObject(userData).toString()));  
+                    request.setAttribute("title", new JSONObject(userData).toString());
+            		request.getRequestDispatcher("/m/oauth_logon_confirmation.jsp").forward(request, response);
                 } else {
                 	logger.log(Level.SEVERE, "No access token!");
                     response.sendRedirect("/m/oauth_logon_error.jsp");
@@ -98,9 +96,7 @@ public class FBAuthServlet extends HttpServlet {
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
             response.sendRedirect("/m/oauth_logon_error.jsp");
-        } finally {
-            out.close();
-        }
+        } 
     }
 
     private String readURL(URL url) throws IOException {
