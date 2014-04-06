@@ -22,8 +22,6 @@
     	<article>
     	
 <% 
-
-  String imageUrl = (String)request.getAttribute("imageUrl");
   Screenshot screenshot = (Screenshot)request.getAttribute("screenshot");
   String address = (String) request.getAttribute("address");
   
@@ -32,7 +30,7 @@
                 <h3>GMS World screenshot</h3>
 
                  <a href="/showLocation.do?lat=<%= screenshot.getLatitude() %>&lon=<%= screenshot.getLongitude() %>">
-                    <img src="<%= imageUrl %>" alt="GMS World screenshot"/>
+                    <img src="<%= screenshot.getUrl() %>" alt="GMS World screenshot"/>
                  </a>
                  
                  <p>

@@ -118,24 +118,27 @@ public class HttpUtils {
         return file;
     }
 
-    public static void processImageFileRequest(OutputStream out, HttpServletResponse response, URL fileUrl) throws IOException {
+    public static void processImageFileRequest(HttpServletResponse response, String imageUrl) throws IOException {
 
         InputStream is = null;
-
+        OutputStream out = null;
+        
         try {
-
+            URL fileUrl = new URL(imageUrl);
             HttpURLConnection conn = (HttpURLConnection) fileUrl.openConnection();
+            out = response.getOutputStream();
             conn.setRequestMethod("GET");
             conn.connect();
-            //int length = conn.getContentLength();
             int responseCode = conn.getResponseCode();
 
             if (responseCode == HttpServletResponse.SC_OK) {
                 is = conn.getInputStream();
 
+                logger.log(Level.INFO, "Received image, size: "+ conn.getContentLength() + " bytes, type: " + conn.getContentType());
+                               
                 response.setHeader("Content-Encoding", "gzip");
                 response.setHeader("Vary", "Accept-Encoding");
-                response.setContentType("image/png");
+                response.setContentType(conn.getContentType());
                 //response.setContentLength(length);
 
                 byte[] buf = new byte[1024];
@@ -153,6 +156,9 @@ public class HttpUtils {
         } finally {
             if (is != null) {
                 is.close();
+            }
+            if (out != null) {
+            	out.close();
             }
         }
     }

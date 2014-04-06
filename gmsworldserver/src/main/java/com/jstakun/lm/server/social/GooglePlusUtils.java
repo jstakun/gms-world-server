@@ -169,7 +169,7 @@ public class GooglePlusUtils {
         String userMask = UrlUtils.createUsernameMask(username);
         String message = userMask + " has just posted new screenshot to GMS World. Check it out: " + showImageUrl;
         Plus plus = getPlus(null, null);
-        sendMoment(plus, message, "Message from GMS World", imageUrl + "=s128", -1, -1);
+        sendMoment(plus, message, "Message from GMS World", imageUrl, -1, -1);
         sendUrlMoment(plus, showImageUrl);
     }
 

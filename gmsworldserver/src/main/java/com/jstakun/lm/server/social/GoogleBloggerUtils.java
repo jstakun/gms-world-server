@@ -74,7 +74,7 @@ public class GoogleBloggerUtils {
         }
         String prefix = "<a href=\"" + showImageUrl + "\" "
                 + "imageanchor=\"1\" style=\"clear: left; cssfloat: left; float: left; margin-bottom: 1em; margin-right: 1em;\">"
-                + "<img border=\"0\" src=\"" + imageUrl + "=s128\" ya=\"true\" /></a>";
+                + "<img border=\"0\" src=\"" + imageUrl + "\" ya=\"true\" /></a>";
         String message = prefix + userMask + " has just posted new screenshot to GMS World. <a href=\"" + showImageUrl + "\">Check it out</a>.";
 
         //createPost(getBloggerService(), "GMS World screenshot", message, false);

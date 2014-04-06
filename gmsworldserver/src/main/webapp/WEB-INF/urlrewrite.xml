@@ -55,6 +55,11 @@
     </rule>
     
     <rule>
+            <from>^/image/([a-zA-Z0-9_-]+)$</from>
+            <to>/image?key=$1</to>
+    </rule>
+    
+    <rule>
             <from>^/freebaseView/([a-zA-Z0-9_-]+)$</from>
             <to>/freebaseView.do?mid=$1</to>
     </rule>

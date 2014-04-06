@@ -16,10 +16,12 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
@@ -34,7 +36,7 @@ public class NotificationsServlet extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(NotificationsServlet.class.getName());
-    private static final long ONE_WEEK = 1000 * 60 * 60 * 24 * 7;
+    private static final long ONE_DAY = 1000 * 60 * 60 * 24;
 	
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -76,7 +78,8 @@ public class NotificationsServlet extends HttpServlet {
                 	logger.log(Level.INFO, "Received usage notification from " + (email != null ? email : "guest") + 
                 			" last startup time: " + DateFormat.getDateTimeInstance().format(cal.getTime()) + 
                 			", use count: " + useCount);
-                	if (System.currentTimeMillis() - lastStartupTime > ONE_WEEK && email != null) {
+                	int interval = NumberUtils.getInt(ConfigurationManager.getParam(ConfigurationManager.NOTIFICATIONS_INTERVAL, "14"), 14);
+                	if (System.currentTimeMillis() - lastStartupTime > (interval * ONE_DAY) && email != null) {
                 		//send email notification if lastStartupTime > week ago 
                     	//send not more that once a week
                 		logger.log(Level.WARNING, email + " should be engaged to run Landmark Manager!");

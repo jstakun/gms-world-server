@@ -30,6 +30,7 @@ public final class ConfigurationManager {
     public static final String SAVE_GEOCODE_AS_LANDMARK = "saveGeocodeAsLandmark"; //save geocode as landmark
     public static final String LOG_OLDER_THAN_DAYS = "logOlderThanDays"; //purge log
     public static final String SCREENSHOT_OLDER_THAN_DAYS = "screenshotOlderThanDays"; //purge screenshot
+    public static final String NOTIFICATIONS_INTERVAL = "notificationsInterval"; //notifications interval
     public static final String LM_VERSION = "lmVersion"; //LM app version
     public static final String DA_VERSION = "daVersion"; //DA app version
     public static final String TW_TOKEN = "twToken"; //TW GMS World token

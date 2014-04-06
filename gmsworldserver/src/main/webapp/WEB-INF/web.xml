@@ -503,6 +503,10 @@
    <servlet-name>ErrorHandlerServlet</servlet-name>
    <servlet-class>com.jstakun.lm.server.servlet.ErrorHandlerServlet</servlet-class>
  </servlet>
+ <servlet>
+   <servlet-name>ImageServlet</servlet-name>
+   <servlet-class>com.jstakun.lm.server.servlet.ImageServlet</servlet-class>
+ </servlet>
  <!--servlet>
   <servlet-name>appstats</servlet-name>
   <servlet-class>com.google.appengine.tools.appstats.AppstatsServlet</servlet-class>
@@ -759,6 +763,10 @@
  <servlet-mapping>
   <servlet-name>ErrorHandlerServlet</servlet-name>
   <url-pattern>/errorHandler</url-pattern>
+ </servlet-mapping>
+ <servlet-mapping>
+  <servlet-name>ImageServlet</servlet-name>
+  <url-pattern>/image</url-pattern>
  </servlet-mapping>
  <!--servlet-mapping>
   <servlet-name>appstats</servlet-name>

@@ -21,10 +21,12 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang.StringUtils;
 
 import com.google.common.collect.ImmutableMap;
+import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.social.NotificationUtils;
 import com.jstakun.lm.server.utils.FileUtils;
 import com.jstakun.lm.server.utils.NumberUtils;
 import com.jstakun.lm.server.utils.StringUtil;
+import com.jstakun.lm.server.utils.UrlUtils;
 import com.jstakun.lm.server.utils.persistence.ScreenshotPersistenceUtils;
 
 /**
@@ -78,7 +80,8 @@ public class ImageUploadServlet extends HttpServlet {
                         String key = ScreenshotPersistenceUtils.persistScreenshot(username, lat, lng, itemName);
                         
                         if (key != null) {
-                            String imageUrl = FileUtils.getImageUrlV2(itemName);
+                            //String imageUrl = FileUtils.getImageUrlV2(itemName);
+                        	String imageUrl = ConfigurationManager.SERVER_URL + "image/" + key;
 
                             Map<String, String> params = new ImmutableMap.Builder<String, String>().
                             put("key", key).

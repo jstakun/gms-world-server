@@ -50,6 +50,8 @@ public class Screenshot implements Serializable {
     private String keyString;
     
     private String filename;
+    
+    private String url;
 
     public Screenshot(String username, boolean auth, double latitude, double longitude, BlobKey blobKey, Date creationDate) {
         if (creationDate == null) {
@@ -147,5 +149,13 @@ public class Screenshot implements Serializable {
 
 	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
 	}
 }

@@ -308,6 +308,8 @@ public class YoutubeUtils extends LayerHelper {
         		landmarks = createCustomLandmarkVideoList(videoFeed.getEntries(), version, stringLimit, locale);
                 CacheUtil.put(key, landmarks);
                 logger.log(Level.INFO, "Adding YT landmark list to cache with key {0}", key);
+            } else {
+            	landmarks = new ArrayList<ExtendedLandmark>();
             }
         } else {
         	logger.log(Level.INFO, "Reading YT landmark list from cache with key {0}", key);

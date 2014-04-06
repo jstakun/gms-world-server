@@ -7,7 +7,6 @@
 <!-- content-outer -->
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
     <%
-       String imageUrl = (String)request.getAttribute("imageUrl");
        Screenshot screenshot = (Screenshot)request.getAttribute("screenshot");
        String address = (String) request.getAttribute("address");
     %>
@@ -35,7 +34,7 @@
                 <br/>
                     <!-- /main -->
                  <p class="image-section">
-                     <a href="/showLocation.do?lat=<%= screenshot.getLatitude() %>&lon=<%= screenshot.getLongitude() %>"><img src="<%= imageUrl %>" alt="GMS World screenshot"/></a>
+                     <a href="/showLocation.do?lat=<%= screenshot.getLatitude() %>&lon=<%= screenshot.getLongitude() %>"><img src="<%= screenshot.getUrl() %>" alt="GMS World screenshot"/></a>
                  </p>
                  <p class="post-details">
                      <%= address != null ? "Geocode address: " + address + "<br/>" : ""%>

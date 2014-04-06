@@ -3,6 +3,10 @@ package com.jstakun.lm.server.utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
 import com.google.appengine.api.blobstore.BlobKey;
@@ -20,9 +24,13 @@ import com.google.appengine.tools.cloudstorage.GcsFilename;
 import com.google.appengine.tools.cloudstorage.GcsOutputChannel;
 import com.google.appengine.tools.cloudstorage.GcsService;
 import com.google.appengine.tools.cloudstorage.GcsServiceFactory;
+import com.jstakun.lm.server.persistence.Screenshot;
+import com.jstakun.lm.server.utils.memcache.CacheAction;
+import com.jstakun.lm.server.utils.persistence.ScreenshotPersistenceUtils;
 
 public class FileUtils {
 
+	private static final Logger logger = Logger.getLogger(FileUtils.class.getName());
 	/*public static BlobKey saveFile(String fileName, InputStream is) throws IOException {
 		FileService fileService = FileServiceFactory.getFileService();
         AppEngineFile file = fileService.createNewBlobFile("image/jpeg", fileName);
@@ -67,7 +75,7 @@ public class FileUtils {
         return gcsService.delete(filename);
 	}
 	
-	public static String getImageUrl(BlobKey blobKey) {
+	private static String getImageUrl(BlobKey blobKey, boolean thumbnail) {
 		//This URL is served by a high-performance dynamic image serving infrastructure that is available globally. 
 		//The URL returned by this method is always public, but not guessable; private URLs are not currently supported. 
 		//If you wish to stop serving the URL, delete the underlying blob key. This takes up to 24 hours to take effect. 
@@ -81,14 +89,17 @@ public class FileUtils {
         ImagesService imagesService = ImagesServiceFactory.getImagesService();
         ServingUrlOptions sou = ServingUrlOptions.Builder.withBlobKey(blobKey);
         String imageUrl = imagesService.getServingUrl(sou);
+        if (thumbnail) {
+        	imageUrl += "=s128";
+        }
         return imageUrl;
 	}
 	
 	//"http://storage.googleapis.com/" + bucketName + "/" + fileName;
-	public static String getImageUrlV2(String fileName) {
+	private static String getImageUrlV2(String fileName, boolean thumbnail) {
 		String bucketName = AppIdentityServiceFactory.getAppIdentityService().getDefaultGcsBucketName();
 		BlobKey bk = getCloudStorageBlobKey(bucketName, fileName);
-		return getImageUrl(bk);
+		return getImageUrl(bk, thumbnail);
 	}
 	
 	private static BlobKey getCloudStorageBlobKey(String bucket_name, String object_name)
@@ -98,4 +109,29 @@ public class FileUtils {
 	    BlobKey bk = bs.createGsBlobKey(cloudStorageURL);
 	    return bk;
 	} 
+	
+	public static Screenshot getScreenshot(final String key, boolean thumbnail) {
+		Screenshot s = null;
+    	if (StringUtils.isNotEmpty(key)) {
+            CacheAction screenshotCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
+				@Override
+				public Object executeAction() {
+					return ScreenshotPersistenceUtils.selectScreenshot(key);
+				}
+			});
+        	s = (Screenshot) screenshotCacheAction.getObjectFromCache(key);
+        	if (s != null) {
+        		try {
+                	if (s.getBlobKey() != null) {
+                		s.setUrl(FileUtils.getImageUrl(s.getBlobKey(), thumbnail));
+                	} else {
+                		s.setUrl(FileUtils.getImageUrlV2(s.getFilename(), thumbnail));
+                	}              	
+                } catch (Exception e) {
+                	logger.log(Level.SEVERE, "FileUtils.getImageUrl() exception", e);
+                }
+        	}	
+		} 	
+    	return s;
+	}
 }

@@ -157,7 +157,7 @@ public class FacebookUtils {
                 Parameter.with("name", "GMS World"),
                 Parameter.with("description", rb.getString("Social.fb.desc.screenshot")),
                 Parameter.with("link", showImageUrl),
-                Parameter.with("picture", imageUrl + "=s128")
+                Parameter.with("picture", imageUrl)
             };
 
             sendMessage(facebookClient, Commons.FB_GMS_WORLD_FEED, params, false);
