@@ -4,24 +4,24 @@
  */
 package com.jstakun.lm.server.tasks;
 
-import com.jstakun.lm.server.utils.DateUtils;
-import com.jstakun.lm.server.utils.HttpUtils;
-import com.jstakun.lm.server.utils.MailUtils;
-import com.jstakun.lm.server.utils.NumberUtils;
-import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang.StringUtils;
+
+import com.jstakun.lm.server.utils.DateUtils;
+import com.jstakun.lm.server.utils.HttpUtils;
+import com.jstakun.lm.server.utils.NumberUtils;
 
 /**
  *
@@ -36,7 +36,7 @@ public class LandmarkFilterTaskServlet extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(LandmarkFilterTaskServlet.class.getName());
-    private static final long WEEK = 1000 * 60 * 60 * 24 * 7;
+    //private static final long WEEK = 1000 * 60 * 60 * 24 * 7;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.

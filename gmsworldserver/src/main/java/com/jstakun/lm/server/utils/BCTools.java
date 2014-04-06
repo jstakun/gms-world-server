@@ -8,11 +8,6 @@ package com.jstakun.lm.server.utils;
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-import com.google.gdata.util.common.util.Base64;
-import com.jstakun.lm.server.config.Commons;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.bouncycastle.crypto.BufferedBlockCipher;
 import org.bouncycastle.crypto.DataLengthException;
 import org.bouncycastle.crypto.InvalidCipherTextException;
@@ -23,6 +18,8 @@ import org.bouncycastle.crypto.generators.PKCS12ParametersGenerator;
 import org.bouncycastle.crypto.modes.CBCBlockCipher;
 import org.bouncycastle.crypto.paddings.PaddedBufferedBlockCipher;
 import org.bouncycastle.crypto.params.ParametersWithIV;
+
+import com.jstakun.lm.server.config.Commons;
 
 public class BCTools {
 

@@ -7,8 +7,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.JSONObject;
-
 import eu.bitwalker.useragentutils.OperatingSystem;
 
 /**
@@ -30,7 +28,7 @@ public class ErrorHandlerServlet extends HttpServlet {
 	 */
 	protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		Throwable throwable = (Throwable) request.getAttribute("javax.servlet.error.exception");
+		//Throwable throwable = (Throwable) request.getAttribute("javax.servlet.error.exception");
 		Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
 		
 		String header = null, message = null;

@@ -4,40 +4,39 @@
  */
 package com.jstakun.lm.server.servlet;
 
-import com.jstakun.gms.android.landmarks.ExtendedLandmark;
-import com.jstakun.lm.server.config.Commons;
-import com.jstakun.lm.server.layers.YelpUtils;
-import com.jstakun.lm.server.layers.LayerHelperFactory;
-import java.util.concurrent.ThreadFactory;
-import com.google.appengine.api.ThreadManager;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.logging.Level;
-import org.json.JSONObject;
-import java.util.logging.Logger;
-import com.jstakun.lm.server.utils.GeocodeUtils;
-import com.jstakun.lm.server.utils.HttpUtils;
-import com.jstakun.lm.server.utils.JSONUtils;
-import com.jstakun.lm.server.utils.MailUtils;
-import com.jstakun.lm.server.utils.NumberUtils;
-import com.jstakun.lm.server.utils.StringUtil;
-import com.jstakun.lm.server.utils.ThreadUtil;
-import com.jstakun.lm.server.utils.persistence.SearchPersistenceUtils;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONObject;
+
+import com.google.appengine.api.ThreadManager;
+import com.jstakun.gms.android.landmarks.ExtendedLandmark;
+import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.layers.LayerHelperFactory;
+import com.jstakun.lm.server.layers.YelpUtils;
+import com.jstakun.lm.server.utils.GeocodeUtils;
+import com.jstakun.lm.server.utils.HttpUtils;
+import com.jstakun.lm.server.utils.JSONUtils;
+import com.jstakun.lm.server.utils.NumberUtils;
+import com.jstakun.lm.server.utils.StringUtil;
+import com.jstakun.lm.server.utils.ThreadUtil;
 
 /**
  *
