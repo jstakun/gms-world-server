@@ -44,6 +44,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -71,8 +72,11 @@ public class McOpenApiUtils extends LayerHelper {
                 if (returnedObj instanceof AtmCollection) {
                     //System.out.println("We've got atm collection");
                     atmCollection = (AtmCollection) returnedObj;
+                } else {
+                    logger.log(Level.SEVERE, "Received following server response:\n {0}", xmlResponse);
+                    
                 }
-            }
+            } 
             JSONObject resp = createCustomJSonAtmList(atmCollection, stringLimit);
             if (atmCollection != null && atmCollection.getTotalCount() > 0) {
                 CacheUtil.put(key, resp.toString());
@@ -135,6 +139,7 @@ public class McOpenApiUtils extends LayerHelper {
             params.addCustomBaseParameter("oauth_signature", signature);
 
             try {
+            	//logger.log(Level.INFO, "Calling: " + httpsURL);
                 responseBody = HttpUtils.processFileRequestWithAuthn(new URL(httpsURL), AuthUtils.buildAuthHeaderString(params));
             } catch (Throwable e) {
                 logger.log(Level.SEVERE, e.getMessage());
@@ -178,7 +183,9 @@ public class McOpenApiUtils extends LayerHelper {
                 JSONUtils.putOptValue(desc, "zip", address.getPostalCode(), stringLimit, false);
 
                 desc.put("owner", StringUtil.capitalize(atm.getOwner()));
-                desc.put("availability", StringUtil.capitalize(atm.getAvailability()));
+                if (!StringUtils.equalsIgnoreCase(atm.getAvailability(), "unknown")) {
+                	desc.put("availability", StringUtil.capitalize(atm.getAvailability()));
+                }
 
                 if (!desc.isEmpty()) {
                     jsonObject.put("desc", desc);
@@ -208,6 +215,9 @@ public class McOpenApiUtils extends LayerHelper {
                 if (returnedObj instanceof AtmCollection) {
                     //System.out.println("We've got atm collection");
                     atmCollection = (AtmCollection) returnedObj;
+                } else {
+                    logger.log(Level.SEVERE, "Received following server response:\n {0}", xmlResponse);
+                    
                 }
             }
             output = createLandmarksAtmList(atmCollection, stringLimit, locale);
@@ -241,15 +251,15 @@ public class McOpenApiUtils extends LayerHelper {
                 
                 Address address = atm.getLocation().getAddress();
                 String val = address.getCity();
-                if (val != null) {
+                if (StringUtils.isNotEmpty(val)) {
                 	addressInfo.setField(AddressInfo.CITY, StringUtil.capitalize(val));	
                 }
                 val = address.getCountry().getName();
-                if (val != null) {
+                if (StringUtils.isNotEmpty(val)) {
                 	addressInfo.setField(AddressInfo.COUNTRY, StringUtil.capitalize(val));	
                 }
                 val = address.getCountrySubdivision().getName();
-                if (val != null) {
+                if (StringUtils.isNotEmpty(val)) {
                 	addressInfo.setField(AddressInfo.STATE, StringUtil.capitalize(val));	
                 }
                 
@@ -259,18 +269,21 @@ public class McOpenApiUtils extends LayerHelper {
                 } else if (addr.isEmpty() && !address.getLine2().isEmpty()) {
                     addr = address.getLine2();
                 }
-                if (addr != null) {
+                if (StringUtils.isNotEmpty(addr)) {
                 	addressInfo.setField(AddressInfo.STREET, StringUtil.capitalize(addr));	
                 }
                 val = address.getPostalCode();
-                if (val != null) {
+                if (StringUtils.isNotEmpty(val)) {
                 	addressInfo.setField(AddressInfo.POSTAL_CODE, val);	
                 }             
                 
                 Map<String, String> tokens = new HashMap<String, String>();
                 tokens.put("owner", StringUtil.capitalize(atm.getOwner()));
-                tokens.put("availability", StringUtil.capitalize(atm.getAvailability()));
-
+                
+                if (!StringUtils.equalsIgnoreCase(atm.getAvailability(), "unknown")) {
+                	tokens.put("availability", StringUtil.capitalize(atm.getAvailability()));
+                }
+                
                 QualifiedCoordinates qc = new QualifiedCoordinates(lat, lng, 0f, 0f, 0f);
                 ExtendedLandmark landmark = LandmarkFactory.getLandmark(name, null, qc, Commons.MC_ATM_LAYER, addressInfo, -1, null);
                 

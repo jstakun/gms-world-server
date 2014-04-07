@@ -103,6 +103,7 @@ public class HttpUtils {
                     //}
                 } else {
                     is = conn.getErrorStream();
+                    logger.log(Level.SEVERE, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString()});
                     
                 }
                 file = IOUtils.toString(is, "UTF-8");
