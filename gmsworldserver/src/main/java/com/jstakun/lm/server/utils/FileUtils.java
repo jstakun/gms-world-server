@@ -12,10 +12,6 @@ import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
-//import com.google.appengine.api.files.AppEngineFile;
-//import com.google.appengine.api.files.FileService;
-//import com.google.appengine.api.files.FileServiceFactory;
-//import com.google.appengine.api.files.FileWriteChannel;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.images.ServingUrlOptions;
@@ -24,6 +20,7 @@ import com.google.appengine.tools.cloudstorage.GcsFilename;
 import com.google.appengine.tools.cloudstorage.GcsOutputChannel;
 import com.google.appengine.tools.cloudstorage.GcsService;
 import com.google.appengine.tools.cloudstorage.GcsServiceFactory;
+
 import com.jstakun.lm.server.persistence.Screenshot;
 import com.jstakun.lm.server.utils.memcache.CacheAction;
 import com.jstakun.lm.server.utils.persistence.ScreenshotPersistenceUtils;

@@ -54,7 +54,6 @@
                             <li><a href="http://upcoming.yahoo.com/services/api/">Upcoming</a></li>
                             <li><a href="http://api.eventful.com/">Eventful</a></li>
                             <li><a href="http://www.yelp.com/developers/documentation">Yelp</a></li>
-                            <li><a href="http://www.qype.com/developers/api">Qype</a></li>
                             <li><a href="https://developer.foursquare.com/overview/merchants.html">Foursquare Merchant</a></li>
                             <li><a href="http://www.8coupons.com/api">8 Coupons</a></li>
                             <li><a href="http://www.groupon.com/pages/api">Groupon</a></li>

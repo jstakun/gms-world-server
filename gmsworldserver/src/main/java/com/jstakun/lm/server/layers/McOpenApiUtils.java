@@ -41,6 +41,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
@@ -62,23 +63,27 @@ public class McOpenApiUtils extends LayerHelper {
         String output = CacheUtil.getString(key);
 
         if (output == null) {
-            String xmlResponse = getATMbyLocation(lat, lng, radius, limit);
-            //System.out.println(xmlResponse);
-            AtmCollection atmCollection = null;
+            /*List<Atm> atms = null;
+        	String xmlResponse = getATMbyLocation(lat, lng, radius, limit, 0);
             if (xmlResponse != null) {
                 JAXBContext responseContext = JAXBContext.newInstance(new Class[]{AtmCollection.class, Errors.class});
                 Unmarshaller unmarshaller = responseContext.createUnmarshaller();
                 Object returnedObj = unmarshaller.unmarshal(new StreamSource(new StringReader(xmlResponse)));
                 if (returnedObj instanceof AtmCollection) {
                     //System.out.println("We've got atm collection");
-                    atmCollection = (AtmCollection) returnedObj;
+                	AtmCollection atmCollection = (AtmCollection) returnedObj;
+                	atms = atmCollection.getAtms();
                 } else {
                     logger.log(Level.SEVERE, "Received following server response:\n {0}", xmlResponse);
                     
                 }
-            } 
-            JSONObject resp = createCustomJSonAtmList(atmCollection, stringLimit);
-            if (atmCollection != null && atmCollection.getTotalCount() > 0) {
+            }*/
+            
+            List<Atm> atms = new ArrayList<Atm>();
+            loadAtmCollection(lat, lng, radius, limit, atms, 0);
+            
+            JSONObject resp = createCustomJSonAtmList(atms, stringLimit);
+            if (atms != null && atms.size() > 0) {
                 CacheUtil.put(key, resp.toString());
                 logger.log(Level.INFO, "Adding MC landmark list to cache with key {0}", key);
             }
@@ -89,10 +94,10 @@ public class McOpenApiUtils extends LayerHelper {
         }
     }
 
-    private static String getATMbyLocation(double latitude, double longitude, int radius, int limit) {
+    private static String getATMbyLocation(double latitude, double longitude, int radius, int limit, int pageOffset) {
         try {
             String endPoint = "https://api.mastercard.com/atms/v1/atm?Format=XML"
-                    + "&PageOffset=0"
+                    + "&PageOffset=" + pageOffset
                     + "&PageLength=" + URLEncoder.encode(Integer.toString(limit), "UTF-8")
                     + "&Latitude=" + URLEncoder.encode(Double.toString(latitude), "UTF-8")
                     + "&Longitude=" + URLEncoder.encode(Double.toString(longitude), "UTF-8")
@@ -149,14 +154,9 @@ public class McOpenApiUtils extends LayerHelper {
         return responseBody;
     }
 
-    private static JSONObject createCustomJSonAtmList(AtmCollection atmCollection, int stringLimit) throws JSONException {
-        ArrayList<Map<String, Object>> jsonArray = new ArrayList<Map<String, Object>>();
-        ArrayList<Atm> atms = null;
-        if (atmCollection != null) {
-            atms = atmCollection.getAtms();
-            logger.log(Level.INFO, "Found {0} atms", atmCollection.getTotalCount());
-        }
-
+    private static JSONObject createCustomJSonAtmList(List<Atm> atms, int stringLimit) throws JSONException {
+        List<Map<String, Object>> jsonArray = new ArrayList<Map<String, Object>>();
+        
         if (atms != null && !atms.isEmpty()) {
             for (Iterator<Atm> atmIter = atms.iterator(); atmIter.hasNext();) {
                 Atm atm = atmIter.next();
@@ -205,22 +205,25 @@ public class McOpenApiUtils extends LayerHelper {
 		List<ExtendedLandmark> output = (List<ExtendedLandmark>)CacheUtil.getObject(key);
 
         if (output == null) {
-            String xmlResponse = getATMbyLocation(lat, lng, radius, limit);
+            /*List<Atm> atms = null;
+            String xmlResponse = getATMbyLocation(lat, lng, radius, limit, 0);
             //System.out.println(xmlResponse);
-            AtmCollection atmCollection = null;
             if (xmlResponse != null) {
                 JAXBContext responseContext = JAXBContext.newInstance(new Class[]{AtmCollection.class, Errors.class});
                 Unmarshaller unmarshaller = responseContext.createUnmarshaller();
                 Object returnedObj = unmarshaller.unmarshal(new StreamSource(new StringReader(xmlResponse)));
                 if (returnedObj instanceof AtmCollection) {
                     //System.out.println("We've got atm collection");
-                    atmCollection = (AtmCollection) returnedObj;
+                	AtmCollection atmCollection = (AtmCollection) returnedObj;
+                	atms = atmCollection.getAtms();
                 } else {
                     logger.log(Level.SEVERE, "Received following server response:\n {0}", xmlResponse);
                     
                 }
-            }
-            output = createLandmarksAtmList(atmCollection, stringLimit, locale);
+            }*/
+        	List<Atm> atms = new ArrayList<Atm>();
+            loadAtmCollection(lat, lng, radius, limit, atms, 0);
+            output = createLandmarksAtmList(atms, stringLimit, locale);
             if (!output.isEmpty()) {
                 CacheUtil.put(key, output);
                 logger.log(Level.INFO, "Adding MC landmark list to cache with key {0}", key);
@@ -232,14 +235,8 @@ public class McOpenApiUtils extends LayerHelper {
         return output;
 	}
 	
-	private static List<ExtendedLandmark> createLandmarksAtmList(AtmCollection atmCollection, int stringLimit, Locale locale) throws JSONException {
+	private static List<ExtendedLandmark> createLandmarksAtmList(List<Atm> atms, int stringLimit, Locale locale) throws JSONException {
 		List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
-        ArrayList<Atm> atms = null;
-        if (atmCollection != null) {
-            atms = atmCollection.getAtms();
-            logger.log(Level.INFO, "Found {0} atms", atmCollection.getTotalCount());
-        }
-
         if (atms != null && !atms.isEmpty()) {
             for (Iterator<Atm> atmIter = atms.iterator(); atmIter.hasNext();) {
                 Atm atm = atmIter.next();
@@ -307,5 +304,37 @@ public class McOpenApiUtils extends LayerHelper {
 		} else if (StringUtils.equalsIgnoreCase(availability, "UNKNOWN")) {
 			//tokens.put("availability", "Unknown");
 		} 
+	}
+	
+	private static void loadAtmCollection(double lat, double lng, int radius, int totalLimit, List<Atm> atms, int pageOffset) throws JAXBException {
+		int totalAtmCount = 0;
+		
+		int limit = totalLimit - atms.size();
+		if (25 < limit) {
+			limit = 25; 
+		}
+		
+		String xmlResponse = getATMbyLocation(lat, lng, radius, limit, pageOffset);
+		
+		if (xmlResponse != null) {
+            JAXBContext responseContext = JAXBContext.newInstance(new Class[]{AtmCollection.class, Errors.class});
+            Unmarshaller unmarshaller = responseContext.createUnmarshaller();
+            Object returnedObj = unmarshaller.unmarshal(new StreamSource(new StringReader(xmlResponse)));
+            if (returnedObj instanceof AtmCollection) {
+                AtmCollection atmCollection = (AtmCollection) returnedObj;
+                totalAtmCount = atmCollection.getTotalCount();
+                logger.log(Level.INFO, "Found {0} atms", totalAtmCount);
+                atms.addAll(atmCollection.getAtms());
+            } else {
+                logger.log(Level.SEVERE, "Received following server response:\n{0}", xmlResponse);               
+            }
+        }
+        
+		int size = atms.size();
+		logger.log(Level.INFO, "Current atm list size {0}", size);
+		
+        if (size < totalLimit && size < totalAtmCount && pageOffset < 125) { //5 interations max
+        	loadAtmCollection(lat, lng, radius, totalLimit, atms, size);
+        }
 	}
 }
