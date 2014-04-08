@@ -154,6 +154,7 @@ public class McOpenApiUtils extends LayerHelper {
         ArrayList<Atm> atms = null;
         if (atmCollection != null) {
             atms = atmCollection.getAtms();
+            logger.log(Level.INFO, "Found {0} atms", atmCollection.getTotalCount());
         }
 
         if (atms != null && !atms.isEmpty()) {
@@ -166,7 +167,7 @@ public class McOpenApiUtils extends LayerHelper {
                 jsonObject.put("lng", location.getPoint().getLongitude());
                 jsonObject.put("url", "");
 
-                Map<String, Object> desc = new HashMap<String, Object>();
+                Map<String, String> desc = new HashMap<String, String>();
 
                 Address address = atm.getLocation().getAddress();
 
@@ -183,9 +184,8 @@ public class McOpenApiUtils extends LayerHelper {
                 JSONUtils.putOptValue(desc, "zip", address.getPostalCode(), stringLimit, false);
 
                 desc.put("owner", StringUtil.capitalize(atm.getOwner()));
-                if (!StringUtils.equalsIgnoreCase(atm.getAvailability(), "unknown")) {
-                	desc.put("availability", StringUtil.capitalize(atm.getAvailability()));
-                }
+                
+                setAtmAvailability(desc, atm.getAvailability());
 
                 if (!desc.isEmpty()) {
                     jsonObject.put("desc", desc);
@@ -237,6 +237,7 @@ public class McOpenApiUtils extends LayerHelper {
         ArrayList<Atm> atms = null;
         if (atmCollection != null) {
             atms = atmCollection.getAtms();
+            logger.log(Level.INFO, "Found {0} atms", atmCollection.getTotalCount());
         }
 
         if (atms != null && !atms.isEmpty()) {
@@ -280,9 +281,7 @@ public class McOpenApiUtils extends LayerHelper {
                 Map<String, String> tokens = new HashMap<String, String>();
                 tokens.put("owner", StringUtil.capitalize(atm.getOwner()));
                 
-                if (!StringUtils.equalsIgnoreCase(atm.getAvailability(), "unknown")) {
-                	tokens.put("availability", StringUtil.capitalize(atm.getAvailability()));
-                }
+                setAtmAvailability(tokens, atm.getAvailability());
                 
                 QualifiedCoordinates qc = new QualifiedCoordinates(lat, lng, 0f, 0f, 0f);
                 ExtendedLandmark landmark = LandmarkFactory.getLandmark(name, null, qc, Commons.MC_ATM_LAYER, addressInfo, -1, null);
@@ -296,4 +295,17 @@ public class McOpenApiUtils extends LayerHelper {
 
         return landmarks;
     }
+	
+	private static void setAtmAvailability(Map<String, String> tokens, String availability) {
+		//UNKNOWN, ALWAYS_AVAILABLE, BUSINESS_HOURS, IRREGULAR_HOURS
+        if (StringUtils.equalsIgnoreCase(availability, "ALWAYS_AVAILABLE")) {
+			tokens.put("availability", "Always (24/7)");
+		} else if (StringUtils.equalsIgnoreCase(availability, "BUSINESS_HOURS")) {
+			tokens.put("availability", "Business Hours");
+		} else if (StringUtils.equalsIgnoreCase(availability, "IRREGULAR_HOURS")) {
+			tokens.put("availability", "Irregural Hours");
+		} else if (StringUtils.equalsIgnoreCase(availability, "UNKNOWN")) {
+			//tokens.put("availability", "Unknown");
+		} 
+	}
 }

@@ -36,6 +36,7 @@ import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.persistence.PMF;
 import com.jstakun.lm.server.persistence.Screenshot;
 import com.jstakun.lm.server.utils.DateUtils;
@@ -55,7 +56,7 @@ public class ScreenshotPersistenceUtils {
     	String key = null;
     	
         try {
-        	String landmarksUrl = "https://landmarks-gmsworld.rhcloud.com/actions/addItem";
+        	String landmarksUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "addItem";
         	String params = "filename=" + filename + "&latitude=" + latitude + "&longitude=" + longitude + "&type=screenshot";
         	if (username != null) {
         		params += "&username=" + username;
@@ -148,7 +149,7 @@ public class ScreenshotPersistenceUtils {
     {
     	Screenshot s = null;
     	try {
-        	String gUrl = "https://landmarks-gmsworld.rhcloud.com/actions/itemProvider";
+        	String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "itemProvider";
         	String params = "type=screenshot&id=" + k;			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
         	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);

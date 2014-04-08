@@ -6,11 +6,11 @@ import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.ConfigurationManager;
 
 public class TokenUtil {
 
-	private static final String TOKEN_URL = "https://landmarks-gmsworld.rhcloud.com/actions/generateToken?scope=";      
-    
+	private static final String TOKEN_URL = ConfigurationManager.RHCLOUD_SERVER_URL + "generateToken?scope=";         
 	
 	public static String generateToken(String scope, String user) throws Exception {
 		if (scope != null) {

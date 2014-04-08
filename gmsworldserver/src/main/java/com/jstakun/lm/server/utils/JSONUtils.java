@@ -105,7 +105,7 @@ public class JSONUtils {
         return getJsonArrayObject(jsonArray);
     }
 
-    public static void putOptDate(Map array, String name, String date, SimpleDateFormat formatter) {
+    public static void putOptDate(Map<String, String> array, String name, String date, SimpleDateFormat formatter) {
         if (StringUtils.isNotEmpty(date)) {
             try {
                 Date d = formatter.parse(date);
@@ -117,7 +117,7 @@ public class JSONUtils {
         }
     }
 
-    public static void putOptDate(Map array, String name, JSONObject json, String property, SimpleDateFormat formatter) throws JSONException {
+    public static void putOptDate(Map<String, String> array, String name, JSONObject json, String property, SimpleDateFormat formatter) throws JSONException {
         try {
             if (json.has(property) && !json.isNull(property)) {
                 String value = json.getString(property);
@@ -150,7 +150,7 @@ public class JSONUtils {
         }
     }
 
-    public static void putOptValue(Map array, String name, JSONObject json, String property, boolean unescapehtml, int stringLimit, boolean tidyHtml) {
+    public static void putOptValue(Map<String, ?> array, String name, JSONObject json, String property, boolean unescapehtml, int stringLimit, boolean tidyHtml) {
         try {
             if (json.has(property) && !json.isNull(property)) {
                 String value = json.optString(property);

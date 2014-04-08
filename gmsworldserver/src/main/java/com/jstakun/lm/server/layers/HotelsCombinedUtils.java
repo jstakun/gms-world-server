@@ -44,6 +44,8 @@ import com.openlapi.QualifiedCoordinates;
  */
 public class HotelsCombinedUtils extends LayerHelper {
 	
+	private static final String HOTELS_PROVIDER_URL = "https://hotels-gmsworld.rhcloud.com/actions/hotelsProvider";
+	
 	@Override
     public JSONObject processRequest(double latitudeMin, double longitudeMin, String query, int radius, int version, int limit, int stringLimit, String language, String flexString2) throws Exception {
         double lat, lng;
@@ -76,7 +78,7 @@ public class HotelsCombinedUtils extends LayerHelper {
             //    hotels = HotelPersistenceUtils.selectHotelsByCoordsAndLayer(latitudeMin, longitudeMin, latitudeMax, longitudeMax, l);
             //}
             
-            String hotelsUrl = "https://hotels-gmsworld.rhcloud.com/actions/hotelsProvider?lat=" + lat + "&lng=" + lng + "&radius=" + radius + "&limit=" + limit;			
+            String hotelsUrl = HOTELS_PROVIDER_URL + "?lat=" + lat + "&lng=" + lng + "&radius=" + radius + "&limit=" + limit;			
 			logger.log(Level.INFO, "Calling: " + hotelsUrl);
             String hotelsJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.RH_GMS_USER);		
 			List<Hotel> hotels = jsonToHotelList(hotelsJson);      	
@@ -254,7 +256,7 @@ public class HotelsCombinedUtils extends LayerHelper {
 
         if (landmarks == null) {   	
         	landmarks = new ArrayList<ExtendedLandmark>();
-        	String hotelsUrl = "https://hotels-gmsworld.rhcloud.com/actions/hotelsProvider?lat=" + lat + "&lng=" + lng + "&radius=" + radius + "&limit=" + limit;			
+        	String hotelsUrl = HOTELS_PROVIDER_URL + "?lat=" + lat + "&lng=" + lng + "&radius=" + radius + "&limit=" + limit;			
         	logger.log(Level.INFO, "Calling: " + hotelsUrl);
         	//String hotelsJson = HttpUtils.processFileRequest(new URL(hotelsUrl));	
         	String hotelsJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.RH_GMS_USER);

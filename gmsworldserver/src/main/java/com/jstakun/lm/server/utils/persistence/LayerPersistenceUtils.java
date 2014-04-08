@@ -21,6 +21,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.persistence.Layer;
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.memcache.CacheAction;
@@ -86,7 +87,7 @@ public class LayerPersistenceUtils {
             pm.close();
         }*/
     	try {
-        	String landmarksUrl = "https://landmarks-gmsworld.rhcloud.com/actions/addItem";
+        	String landmarksUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "addItem";
         	String params = "name=" + name + "&desc=" + URLEncoder.encode(desc, "UTF-8") + 
         			        "&formatted=" + URLEncoder.encode(formatted, "UTF-8") + "&type=layer" +
         			        "&e=" + enabled + "&m=" + manageable + "&c=" + checkinable;
@@ -139,7 +140,7 @@ public class LayerPersistenceUtils {
 			public Object executeAction() {
 				List<Layer> layers = new ArrayList<Layer>();
 				try {
-					String gUrl = "https://landmarks-gmsworld.rhcloud.com/actions/itemProvider";
+					String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "itemProvider";
 					String params = "type=layer";			 
 					//logger.log(Level.INFO, "Calling: " + gUrl);
 					String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);

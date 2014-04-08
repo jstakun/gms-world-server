@@ -22,7 +22,7 @@
         <ul> 
         
         <li><b>ACRA</b><br/>
-        Application Crash Reporting for Android Copyright 2010 Emmanuel Astier & Kevin Gaudin.<br/><br/>
+        Application Crash Reporting for Android Copyright 2010 Emmanuel Astier &amp; Kevin Gaudin.<br/><br/>
         </li>
         
         <li>

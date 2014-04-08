@@ -22,6 +22,7 @@ public final class ConfigurationManager {
     
 	public static final String SERVER_URL = "http://www.gms-world.net/";
     public static final String SSL_SERVER_URL = "https://gms-world.appspot.com/";
+    public static final String RHCLOUD_SERVER_URL = "https://landmarks-gmsworld.rhcloud.com/actions/";
     public static final String ON = "1";
     public static final String OFF = "0";
 

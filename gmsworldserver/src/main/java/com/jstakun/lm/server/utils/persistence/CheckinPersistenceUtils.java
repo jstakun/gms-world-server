@@ -21,6 +21,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.persistence.Checkin;
 import com.jstakun.lm.server.utils.DateUtils;
 import com.jstakun.lm.server.utils.HttpUtils;
@@ -45,7 +46,7 @@ public class CheckinPersistenceUtils {
         }*/
     	
     	try {
-        	String landmarksUrl = "https://landmarks-gmsworld.rhcloud.com/actions/addItem";
+        	String landmarksUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "addItem";
         	String params = "username=" + username + "&landmarkId=" + landmarkKey + "&itemType=" + type + "&type=checkin";
         	//logger.log(Level.INFO, "Calling: " + landmarksUrl);
         	String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl), "POST", null, params, Commons.RH_GMS_USER);
@@ -74,7 +75,7 @@ public class CheckinPersistenceUtils {
         }*/
     	
     	try {
-        	String gUrl = "https://landmarks-gmsworld.rhcloud.com/actions/itemProvider";
+        	String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "itemProvider";
         	String params = "type=checkin&landmarkId=" + key;			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
         	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);

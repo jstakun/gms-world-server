@@ -26,6 +26,7 @@ import org.json.JSONObject;
 
 import com.google.gdata.util.common.util.Base64;
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.persistence.User;
 import com.jstakun.lm.server.utils.BCTools;
 import com.jstakun.lm.server.utils.CryptoTools;
@@ -177,13 +178,13 @@ public class ServicesAuthorizationFilter implements Filter {
                 }
             }
             
-            //1101, 101
+            //>= 1101, 101
             if (!auth) {
             	authHeader = httpRequest.getHeader(Commons.TOKEN_HEADER);
             	String scope = httpRequest.getHeader(Commons.SCOPE_HEADER);
             	if (authHeader != null && scope != null) {
             		try {
-            			String tokenUrl = "https://landmarks-gmsworld.rhcloud.com/actions/isValidToken?scope=" + scope + "&key=" + authHeader;
+            			String tokenUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "isValidToken?scope=" + scope + "&key=" + authHeader;
             			String tokenJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(tokenUrl), Commons.RH_GMS_USER);		
         				if (StringUtils.startsWith(tokenJson, "{")) {
         					JSONObject root = new JSONObject(tokenJson);

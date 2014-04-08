@@ -86,7 +86,7 @@ public class LandmarkPersistenceUtils {
     	Map<String, String> response = new HashMap<String, String>();
     	
         try {
-        	String landmarksUrl = "https://landmarks-gmsworld.rhcloud.com/actions/addItem";
+        	String landmarksUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "addItem";
         	String params = "type=landmark&latitude=" + latitude + "&longitude=" + longitude + "&name=" + URLEncoder.encode(name, "UTF-8") + 
         			"&altitude=" + altitude + "&username=" + username + "&layer=" + layer;			 
         	if (validityDate != null) {
@@ -185,7 +185,7 @@ public class LandmarkPersistenceUtils {
             pm.close();
         }*/
         try {
-        	String gUrl = "https://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
+        	String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "landmarksProvider";
         	String params = "hash=" + hash;			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
         	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
@@ -230,7 +230,7 @@ public class LandmarkPersistenceUtils {
             pm.close();
         }*/
         try {
-        	String gUrl = "https://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
+        	String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "landmarksProvider";
         	String params = "id=" + id;			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
         	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
@@ -298,7 +298,7 @@ public class LandmarkPersistenceUtils {
             pm.close();
         }*/
         try {
-    		String gUrl = "https://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
+    		String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "landmarksProvider";
         	String params = "limit=" + limit + "&lat=" + latitude + "&lng=" + longitude + "&radius=" + radius + "&layer=" + layer;			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
         	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
@@ -375,7 +375,7 @@ public class LandmarkPersistenceUtils {
     	int result = 0;
     	
     	try {
-   			String gUrl = "https://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
+   			String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "landmarksProvider";
    			String params = "count=1&lat=" + latitude + "&lng=" + longitude + "&radius=" + radius + "&layer=" + layer;			 
    			//logger.log(Level.INFO, "Calling: " + gUrl);
    			String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
@@ -396,7 +396,7 @@ public class LandmarkPersistenceUtils {
     public static Map<String, Integer> countLandmarksByCoords(double latitude, double longitude, int radius) {
     	Map<String, Integer> bucket = new HashMap<String, Integer>();
     	try {
-   			String gUrl = "https://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
+   			String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "landmarksProvider";
    			String params = "count=1&lat=" + latitude + "&lng=" + longitude + "&radius=" + radius;			 
    			logger.log(Level.INFO, "Calling: " + gUrl + "?" + params);
    			String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
@@ -468,7 +468,7 @@ public class LandmarkPersistenceUtils {
         }*/
     	
     	try {
-        	String gUrl = "https://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
+        	String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "landmarksProvider";
         	String params = "query=" + query;			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
         	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
@@ -534,7 +534,7 @@ public class LandmarkPersistenceUtils {
         
         try {
         	int limit = last - first;
-    		String gUrl = "https://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
+    		String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "landmarksProvider";
         	String params = "limit=" + limit + "&first=" + first; 
         	if (user != null) {
    				params += "&username=" + user;			 
@@ -589,7 +589,7 @@ public class LandmarkPersistenceUtils {
     	
     	try {
     		String limit = ConfigurationManager.getParam(ConfigurationManager.NUM_OF_LANDMARKS, "10");
-        	String gUrl = "https://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
+        	String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "landmarksProvider";
         	String params = "limit=" + limit;			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
         	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
@@ -657,7 +657,7 @@ public class LandmarkPersistenceUtils {
     	
     	try {
     		int limit = last - first;
-        	String gUrl = "https://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
+        	String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "landmarksProvider";
         	String params = "limit=" + limit + "&month=" + month + "&first=" + first;			 
         	logger.log(Level.INFO, "Calling: " + gUrl + "?" + params);
         	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
@@ -718,7 +718,7 @@ public class LandmarkPersistenceUtils {
     	
     	
     	try {
-   			String gUrl = "https://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
+   			String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "landmarksProvider";
    			String params = "heatMap=1&days=" + nDays;			 
    			//logger.log(Level.INFO, "Calling: " + gUrl);
    			String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
@@ -773,7 +773,7 @@ public class LandmarkPersistenceUtils {
         }*/
 	   
 	    try {
-   			String gUrl = "https://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
+   			String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "landmarksProvider";
    			String params = "count=1&month=" + month;			 
    			logger.log(Level.INFO, "Calling: " + gUrl);
    			String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
@@ -823,7 +823,7 @@ public class LandmarkPersistenceUtils {
         }*/
         
         try {
-   			String gUrl = "https://landmarks-gmsworld.rhcloud.com/actions/landmarksProvider";
+   			String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "landmarksProvider";
    			String params = "count=1";
    			if (user != null) {
    				params += "&username=" + user;			 

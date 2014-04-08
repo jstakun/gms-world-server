@@ -18,6 +18,7 @@ import com.google.appengine.api.datastore.Text;
 import javax.jdo.Query;
 
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.persistence.PMF;
 import com.jstakun.lm.server.persistence.User;
 import com.jstakun.lm.server.personalization.RapleafUtil;
@@ -63,7 +64,7 @@ public class UserPersistenceUtils {
         }*/
         
         try {
-        	String landmarksUrl = "https://landmarks-gmsworld.rhcloud.com/actions/addItem";
+        	String landmarksUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "addItem";
         	String params = "login=" + login + "&password=" + password + "&type=user";
         	
         	if (firstname != null) {
@@ -161,7 +162,7 @@ public class UserPersistenceUtils {
     private static boolean confirmRemoteRegistration(String login) {
     	boolean confirmed = false;
     	try {
-        	String gUrl = "https://landmarks-gmsworld.rhcloud.com/actions/itemProvider";
+        	String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "itemProvider";
         	String params = "type=user&confirm=1&login=" + login;			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
         	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
