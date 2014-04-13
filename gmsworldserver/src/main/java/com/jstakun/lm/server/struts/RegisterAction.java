@@ -46,8 +46,8 @@ public class RegisterAction extends Action {
         String status = "success";
         try
         {
-            String key = UserPersistenceUtils.persistUser(login, password, email, firstname, lastname);
-            MailUtils.sendVerificationRequest(email, login, key, getServlet().getServletContext());
+            UserPersistenceUtils.persistUser(login, password, email, firstname, lastname, true);
+            MailUtils.sendVerificationRequest(email, login, login, getServlet().getServletContext());
             MailUtils.sendUserCreationNotification("User " + ConfigurationManager.SERVER_URL + "showUser/" + login + " created");
         }
         catch (Exception e)

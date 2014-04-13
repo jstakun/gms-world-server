@@ -553,7 +553,7 @@
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>FBLoginServlet</servlet-name>
-  <url-pattern>/fblogin</url-pattern>
+  <url-pattern>/fblogin,/s/fblogin</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>TwAuthServlet</servlet-name>
@@ -561,7 +561,31 @@
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>TwLoginServlet</servlet-name>
-  <url-pattern>/twlogin</url-pattern>
+  <url-pattern>/twlogin,/s/twlogin</url-pattern>
+ </servlet-mapping>
+ <servlet-mapping>
+  <servlet-name>OAuthServlet</servlet-name>
+  <url-pattern>/lnlogin,/s/lnlogin</url-pattern>
+ </servlet-mapping>
+ <servlet-mapping>
+  <servlet-name>OAuthCallbackServlet</servlet-name>
+  <url-pattern>/lnauth</url-pattern>
+ </servlet-mapping>
+  <servlet-mapping>
+  <servlet-name>GlLoginServlet</servlet-name>
+  <url-pattern>/gllogin,/s/gllogin</url-pattern>
+ </servlet-mapping>
+ <servlet-mapping>
+  <servlet-name>GlAuthServlet</servlet-name>
+  <url-pattern>/glauth</url-pattern>
+ </servlet-mapping>
+ <servlet-mapping>
+  <servlet-name>FSLoginServlet</servlet-name>
+  <url-pattern>/fslogin,/s/fslogin</url-pattern>
+ </servlet-mapping>
+ <servlet-mapping>
+  <servlet-name>FSAuthServlet</servlet-name>
+  <url-pattern>/fsauth</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>FBSendMessageServlet</servlet-name>
@@ -572,24 +596,8 @@
   <url-pattern>/services/twSendUpdate,/s/twSendUpdate</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
-  <servlet-name>OAuthServlet</servlet-name>
-  <url-pattern>/lnlogin</url-pattern>
- </servlet-mapping>
- <servlet-mapping>
-  <servlet-name>OAuthCallbackServlet</servlet-name>
-  <url-pattern>/lnauth</url-pattern>
- </servlet-mapping>
- <servlet-mapping>
   <servlet-name>LnSendUpdateServlet</servlet-name>
   <url-pattern>/services/lnSendUpdate,/s/lnSendUpdate</url-pattern>
- </servlet-mapping>
- <servlet-mapping>
-  <servlet-name>GlLoginServlet</servlet-name>
-  <url-pattern>/gllogin</url-pattern>
- </servlet-mapping>
- <servlet-mapping>
-  <servlet-name>GlAuthServlet</servlet-name>
-  <url-pattern>/glauth</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>GlSendPostServlet</servlet-name>
@@ -732,15 +740,7 @@
   <servlet-name>SocialProfileServlet</servlet-name>
   <url-pattern>/socialProfile,/services/socialProfile,/s/socialProfile</url-pattern>
  </servlet-mapping>
- <servlet-mapping>
-  <servlet-name>FSLoginServlet</servlet-name>
-  <url-pattern>/fslogin</url-pattern>
- </servlet-mapping>
- <servlet-mapping>
-  <servlet-name>FSAuthServlet</servlet-name>
-  <url-pattern>/fsauth</url-pattern>
- </servlet-mapping>
- <servlet-mapping>
+  <servlet-mapping>
   <servlet-name>SocialCheckinServlet</servlet-name>
   <url-pattern>/services/socialCheckin,/s/socialCheckin</url-pattern>
  </servlet-mapping>

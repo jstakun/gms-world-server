@@ -63,7 +63,7 @@ public class TaskExecuteServlet extends HttpServlet {
                 } else if (action.equalsIgnoreCase("emailing")) {
                     queue.add(withUrl("/tasks/emailingTask"));
                 } else if (action.equalsIgnoreCase("personalize")) {
-                    queue.add(withUrl("/tasks/personalizeTask"));
+                	queue.add(withUrl("/tasks/personalizeTask").param("first", request.getParameter("first")).param("last", request.getParameter("last")));
                 } else if (action.equalsIgnoreCase("filter")) {
                     String filterProperty = request.getParameter("filterProperty");
                     String pattern = request.getParameter("pattern");

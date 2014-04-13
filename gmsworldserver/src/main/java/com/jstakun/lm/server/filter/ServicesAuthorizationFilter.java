@@ -27,12 +27,7 @@ import org.json.JSONObject;
 import com.google.gdata.util.common.util.Base64;
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
-import com.jstakun.lm.server.persistence.User;
-import com.jstakun.lm.server.utils.BCTools;
-import com.jstakun.lm.server.utils.CryptoTools;
 import com.jstakun.lm.server.utils.HttpUtils;
-import com.jstakun.lm.server.utils.Sha1;
-import com.jstakun.lm.server.utils.StringUtil;
 import com.jstakun.lm.server.utils.persistence.UserPersistenceUtils;
 
 /**
@@ -59,22 +54,18 @@ public class ServicesAuthorizationFilter implements Filter {
      * @exception ServletException if a servlet error occurs
      */
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response,
-            FilterChain chain)
-            throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
         if (request instanceof HttpServletRequest) {
             HttpServletRequest httpRequest = (HttpServletRequest) request;
             HttpServletResponse httpResponse = (HttpServletResponse) response;
-
             String authHeader = httpRequest.getHeader("Authorization");
-
-            byte[] username = null;
-            byte[] password = null;
-
             boolean auth = false;
 
             if (authHeader != null) {
+            	byte[] username = null;
+                byte[] password = null;
+
                 byte[][] unPw = userPass(authHeader);
                 if (unPw != null) {
                     username = unPw[0];
@@ -83,98 +74,8 @@ public class ServicesAuthorizationFilter implements Filter {
 
                 if (username != null) {
                     String usr = new String(username);
-                    String pwdStr = null; 
-                    if (password != null) {
-                    	pwdStr = new String(password);
-                    }
-                    request.setAttribute("username", usr);
-                    //logger.log(Level.INFO, "User {0} requested for authn", usr);
-
-                    if (StringUtils.equals(usr, Commons.DEFAULT_USERNAME)) {      
-                    	try {                  		
-                    		pwdStr = Base64.encode(password);
-                    		if (StringUtils.equals(pwdStr, Commons.DEFAULT_PASSWORD)) {
-                    			//logger.log(Level.INFO, "User default authn succeded!");
-                    			auth = true;
-                    		} else {
-                    			logger.log(Level.SEVERE, "User default authn failed!");
-                    		}
-                		} catch (Exception e) {
-                            logger.log(Level.SEVERE, e.getMessage(), e);
-                        }
-                		//logger.log(Level.SEVERE, "User {0} authn success with {1}", new String[] {usr, pwdStr});
-                	} 
-                    
-                    User user = UserPersistenceUtils.selectUserByLogin(usr);
-                    if (user != null && password != null) {      	
-                    	if (user.getPassword().equals(pwdStr)) {
-                    		//logger.log(Level.INFO, "User {0} authn success with plain password", usr);
-                    		try {
-                    				request.setAttribute("password", Base64.encode(BCTools.encrypt(password)));	
-                    				request.setAttribute("name", StringUtil.getFormattedUsername(user.getFirstname(), user.getLastname(), user.getLogin()));
-                    				request.setAttribute("email", user.getEmail());
-                    		} catch (Exception e) {
-                    				logger.log(Level.SEVERE, e.getMessage(), e);
-                    		}
-                    		auth = true;
-                    	} else if (password.length % 8 == 0) {
-                        	try {
-                                   byte[] pwd = CryptoTools.decrypt(password);
-                                   if (new String(pwd).equals(user.getPassword())) {
-                                      //logger.log(Level.INFO, "User {0} authn success with encrypted password", usr);
-                                      auth = true;
-                                   }
-                             } catch (Exception e) {
-                                   logger.log(Level.SEVERE, e.getMessage(), e);
-                             }
-                        } else if (Sha1.encode(user.getPassword()).equals(pwdStr)) {
-                    		 //logger.log(Level.INFO, "User {0} authn success with SHA", usr);
-                    	     auth = true;
-                    	} 
-                    	
-                        if (auth) {
-                           UserPersistenceUtils.setLastLogonDate(user);
-                        } //else {
-                            //logger.log(Level.INFO, "User {0} failed to authn!", usr);
-                        //}
-
-                        //String token = httpRequest.getHeader("OAuthtoken");
-                        //String secret = httpRequest.getHeader("OAuthsecret");
-                        //try {
-                        //    if (secret != null) {
-                        //        secret = new String(Base64.decode(secret.getBytes()));
-                        //    }
-                        //} catch (Exception ex) {
-                        //    logger.log(Level.SEVERE, null, ex);
-                        //}
-
-                        //if (auth && token != null && secret != null)
-                        //{
-                            //logger.log(Level.INFO, "User {0} provided oauth token", usr);
-                            //httpRequest.getSession().setAttribute("token", token);
-                            //httpRequest.getSession().setAttribute("password",  secret);
-                        //}
-                    }
-                    else 
-                    {
-                    	logger.log(Level.SEVERE, "Need to check if user {0} has registered with token !!!", usr);
-                    	/*String svc = request.getParameter("service");
-                        if (OAuthTokenPersistenceUtils.countOAuthTokenByUser(usr, pwdStr) > 0)
-                        {
-                            httpRequest.setAttribute("username", usr);
-                            auth = true;
-                        } else if (svc != null) {
-                            OAuthToken token = OAuthTokenPersistenceUtils.selectOAuthTokenByService(usr, pwdStr, svc);
-                            if (token != null)
-                            {
-                                httpRequest.setAttribute("username", token.getUserId() + "@" + svc);
-                                auth = true;
-                            }
-                        }
-
-                        httpRequest.getSession().setAttribute("token", usr);
-                        httpRequest.getSession().setAttribute("password", pwdStr);*/
-                    }
+                    request.setAttribute("username", usr);                   
+                    auth = UserPersistenceUtils.login(usr, password);
                 }
             }
             
@@ -199,11 +100,7 @@ public class ServicesAuthorizationFilter implements Filter {
             if (auth) {
                 chain.doFilter(request, response);
             } else {
-            	String user = null;
-            	if (username != null) {
-            		user = new String(username);
-            	}
-            	logger.log(Level.SEVERE, "User {0} authn failed!", user);
+            	logger.log(Level.SEVERE, "Authz failed!");
                 httpResponse.setHeader("WWW-Authenticate", BASIC_REALM);
                 httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             }

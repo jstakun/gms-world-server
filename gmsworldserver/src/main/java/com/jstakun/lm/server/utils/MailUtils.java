@@ -6,6 +6,7 @@ package com.jstakun.lm.server.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Properties;
@@ -77,7 +78,7 @@ public class MailUtils {
     public static void sendVerificationRequest(String toA, String nick, String key, ServletContext context) {
         InputStream is = null;
         try {
-            String link = ConfigurationManager.SERVER_URL + "verify.do?k=" + key + "&s=1";
+            String link = ConfigurationManager.SERVER_URL + "verify.do?k=" + URLEncoder.encode(key, "UTF-8") + "&s=1";
             is = context.getResourceAsStream("/WEB-INF/emails/verification.html");
             String message = String.format(IOUtils.toString(is), nick, link);
             sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "Welcome to GMS World", message, "text/html");

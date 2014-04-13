@@ -6,16 +6,20 @@ package com.jstakun.lm.server.tasks;
 
 import com.google.appengine.api.datastore.KeyFactory;
 import com.jstakun.lm.server.persistence.User;
+import com.jstakun.lm.server.utils.NumberUtils;
 import com.jstakun.lm.server.utils.persistence.UserPersistenceUtils;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -37,24 +41,32 @@ public class PersonalizeTaskServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)  throws ServletException, IOException {
+        int first = NumberUtils.getInt(request.getParameter("first"), 0);
+        int last = NumberUtils.getInt(request.getParameter("last"), 100);
+        
         try {
-            List<User> users = UserPersistenceUtils.selectUsers(0, 100);
+            List<User> users = UserPersistenceUtils.selectUsers(first, last);
+            logger.log(Level.INFO, "Found " + users.size() + " users");
             for (User user : users) {
-                if (StringUtils.isEmpty(user.getPersonalInfo())) {
+                /*if (StringUtils.isEmpty(user.getPersonalInfo())) {
                     String key = KeyFactory.keyToString(user.getKey());
                     UserPersistenceUtils.setPersonalInfo(key);
                     logger.log(Level.INFO, "Requesting personal info for user {0}", user.getEmail());
+                }*/
+            	try {
+            		 UserPersistenceUtils.persistUser(user.getLogin(), user.getPassword(), user.getEmail(), user.getFirstname(), user.getLastname(), false);
+            		 if (user.getConfirmed()) {
+            			 UserPersistenceUtils.confirmRemoteRegistration(user.getLogin());
+            		 }
+            		 logger.log(Level.INFO, "Migrated user " + user.getLogin());
+            	} catch (Exception e) {
+                    logger.log(Level.SEVERE, e.getMessage(), e);
                 }
             }
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
-        } finally {
-            out.close();
-        }
+        } 
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

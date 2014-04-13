@@ -48,7 +48,7 @@ public class ErrorHandlerServlet extends HttpServlet {
 		request.setAttribute("message", message);
 				
 		OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
-        if (os.isMobileDevice()) {
+		if (os.isMobileDevice()) {
         	request.getRequestDispatcher("/m/error.jsp").forward(request, response); 
         } else {
         	request.getRequestDispatcher("/error.jsp").forward(request, response);

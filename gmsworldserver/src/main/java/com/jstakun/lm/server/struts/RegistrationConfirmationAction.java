@@ -4,6 +4,8 @@
  */
 package com.jstakun.lm.server.struts;
 
+import java.net.URLDecoder;
+
 import com.jstakun.lm.server.persistence.User;
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.MailUtils;
@@ -47,16 +49,16 @@ public class RegistrationConfirmationAction extends Action {
         boolean result = false;
 
         if (!HttpUtils.isEmptyAny(request, "k", "s")) {
-            String key = request.getParameter("k");
+            String login = URLDecoder.decode(request.getParameter("k"),"UTF-8");
             String s = request.getParameter("s");
 
             if (s.equals("1")) {
                 confirm = Boolean.TRUE;
             }
 
-            result = UserPersistenceUtils.confirmUserRegistration(key, confirm);
+            result = UserPersistenceUtils.confirmUserRegistration(login, confirm);
             if (result) {
-               User user = UserPersistenceUtils.selectUserByKey(key);
+               User user = UserPersistenceUtils.selectUserByLogin(login);
                if (user != null) {
                     MailUtils.sendRegistrationNotification(user.getEmail(), user.getLogin(), getServlet().getServletContext());
                }

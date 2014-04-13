@@ -176,7 +176,7 @@ public class FacebookUtils extends LayerHelper {
                 if (placeidstr != null) {
                     Map<String, String> desc = (Map<String, String>) placeDetails.get("desc");
 
-                    Map<String, String> pageDesc = pageDescs.remove(placeidstr);
+                    Map<String, String> pageDesc = pageDescs.get(placeidstr);
 
                     if (pageDesc != null) {
 
@@ -288,10 +288,8 @@ public class FacebookUtils extends LayerHelper {
                         
                         JSONUtils.putOptValue(tokens, "description", place.description, stringLength, false);
                        
-                        if (!tokens.isEmpty()){
-                        	pageDescs.put(photo.place_id, tokens);
-                        }
-             		    	   
+                        pageDescs.put(photo.place_id, tokens);
+                        	   
              		    landmarks.add(landmark);
                     }
                 }
@@ -305,24 +303,23 @@ public class FacebookUtils extends LayerHelper {
 
             for (ExtendedLandmark landmark : landmarks) {
             	String placeidstr = landmark.getDescription();             
-                //
-            	String desc = null;
-                if (placeidstr != null) {
-                    Map<String, String> pageDesc = pageDescs.remove(placeidstr);
-                    if (pageDesc != null) {
-                    	pageDesc.remove("icon");
-                    	AddressInfo addressInfo = landmark.getAddressInfo();
-                    	String address = pageDesc.remove("address"); 
-                    	if (address != null ){
-                    		addressInfo.setField(AddressInfo.STREET, address);
-                    	}
-                    	String phone = pageDesc.remove("phone");
-                    	if (phone != null ) {
-                    		addressInfo.setField(AddressInfo.PHONE_NUMBER, phone);
-                    	}
-                    	desc = JSONUtils.buildLandmarkDesc(landmark, pageDesc, locale);	
-                    } 
-                }
+                Map<String, String> pageDesc = new HashMap<String, String>(pageDescs.get(placeidstr));
+                    
+            	if (pageDesc != null) {
+                    pageDesc.remove("icon");
+                    AddressInfo addressInfo = landmark.getAddressInfo();
+                    String address = pageDesc.remove("address"); 
+                    if (address != null ){
+                    	addressInfo.setField(AddressInfo.STREET, address);
+                    }
+                    String phone = pageDesc.remove("phone");
+                    if (phone != null ) {
+                    	addressInfo.setField(AddressInfo.PHONE_NUMBER, phone);
+                    }
+                } 
+                
+            	String desc = JSONUtils.buildLandmarkDesc(landmark, pageDesc, locale);
+            	
                 if (desc != null) {
                 	landmark.setDescription(desc);
                 }

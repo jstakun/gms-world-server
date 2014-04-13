@@ -18,6 +18,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONObject;
+
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.lm.server.layers.FacebookUtils;
 import com.jstakun.lm.server.layers.LayerHelperFactory;
@@ -53,14 +55,12 @@ public class FBPhotosServlet extends HttpServlet {
     	String format = StringUtil.getStringParam(request.getParameter("format"), "json");
     	int version = NumberUtils.getVersion(request.getParameter("version"), 1);
         PrintWriter out = null;
-    	//ObjectOutputStream outObj = null;
     	if (format.equals("bin")) {
     		if (version >= 12) {
         		response.setContentType("deflate");
         	} else {
         		response.setContentType("application/x-java-serialized-object"); 
         	} 
-    		//outObj = new ObjectOutputStream(response.getOutputStream());	
     	} else {
     		response.setContentType("text/json;charset=UTF-8");
             out = response.getWriter();
@@ -88,11 +88,10 @@ public class FBPhotosServlet extends HttpServlet {
                 
                 if (format.equals("bin")) {
                 	List<ExtendedLandmark> landmarks = FacebookUtils.getFriendsPhotosToLandmark(latitude, longitude, version, limit, stringLimit, token, request.getLocale());
-                	//outObj.writeObject(landmarks);
-            		//outObj.flush();
                 	LayerHelperFactory.getFacebookUtils().serialize(landmarks, response.getOutputStream(), version);
                 } else {
                 	String json = FacebookUtils.getFriendsPhotosToJSon(latitude, longitude, version, limit, stringLimit, token);              
+                	//List<ExtendedLandmark> landmarks = FacebookUtils.getFriendsPhotosToLandmark(latitude, longitude, version, limit, stringLimit, token, request.getLocale());
                 	//String json = new JSONObject().put("ResultSet", landmarks).toString();
                 	out.print(json);
                 }	

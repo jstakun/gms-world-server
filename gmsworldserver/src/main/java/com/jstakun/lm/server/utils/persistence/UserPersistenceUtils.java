@@ -4,38 +4,38 @@
  */
 package com.jstakun.lm.server.utils.persistence;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.FetchOptions;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query.Filter;
-import com.google.appengine.api.datastore.Query.FilterOperator;
-import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.appengine.api.datastore.Text;
-
-import javax.jdo.Query;
-
-import com.jstakun.lm.server.config.Commons;
-import com.jstakun.lm.server.config.ConfigurationManager;
-import com.jstakun.lm.server.persistence.PMF;
-import com.jstakun.lm.server.persistence.User;
-import com.jstakun.lm.server.personalization.RapleafUtil;
-import com.jstakun.lm.server.utils.HttpUtils;
-
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
+import javax.jdo.Query;
 
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
+
+import com.google.gdata.util.common.util.Base64;
+import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.ConfigurationManager;
+import com.jstakun.lm.server.persistence.GeocodeCache;
+import com.jstakun.lm.server.persistence.PMF;
+import com.jstakun.lm.server.persistence.User;
+import com.jstakun.lm.server.utils.BCTools;
+import com.jstakun.lm.server.utils.CryptoTools;
+import com.jstakun.lm.server.utils.DateUtils;
+import com.jstakun.lm.server.utils.HttpUtils;
+import com.jstakun.lm.server.utils.Sha1;
+import com.jstakun.lm.server.utils.StringUtil;
 
 /**
  *
@@ -45,7 +45,7 @@ public class UserPersistenceUtils {
 
     private static final Logger logger = Logger.getLogger(UserPersistenceUtils.class.getName());
 
-    public static String persistUser(String login, String password, String email, String firstname, String lastname) {
+    public static void persistUser(String login, String password, String email, String firstname, String lastname, boolean local) {
         User user = new User(login, password, email, firstname, lastname);
         PersistenceManager pm = PMF.get().getPersistenceManager();
 
@@ -65,13 +65,13 @@ public class UserPersistenceUtils {
         
         try {
         	String landmarksUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "addItem";
-        	String params = "login=" + login + "&password=" + password + "&type=user";
+        	String params = "login=" + URLEncoder.encode(login, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8") + "&type=user";
         	
         	if (firstname != null) {
-        	   params += "&firstname=" + firstname;
+        	   params += "&firstname=" + URLEncoder.encode(firstname, "UTF-8");
         	}
         	if (lastname != null) {
-        		params += "&lastname=" + lastname;
+        		params += "&lastname=" + URLEncoder.encode(lastname, "UTF-8");
         	}
             if (email != null) {
         	   params += "&email=" + URLEncoder.encode(email, "UTF-8");
@@ -90,33 +90,18 @@ public class UserPersistenceUtils {
         	logger.log(Level.SEVERE, e.getMessage(), e);
         }
 
-        try {
-            user = pm.makePersistent(user);
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
-        } finally {
-            pm.close();
-        }
-
-        return KeyFactory.keyToString(user.getKey());
+        if (local) {
+        	try {
+        		user = pm.makePersistent(user);
+        	} catch (Exception ex) {
+        		logger.log(Level.SEVERE, ex.getMessage(), ex);
+        	} finally {
+        		pm.close();
+        	}
+        }	
     }
 
-    public static User selectUserByKey(String k) {
-        PersistenceManager pm = PMF.get().getPersistenceManager();
-        User user = null;
-
-        try {
-            Key key = KeyFactory.stringToKey(k);
-            user = pm.getObjectById(User.class, key);
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
-        } finally {
-            pm.close();
-        }
-
-        return user;
-    }
-
+    //TODO migrate
     public static User selectUserByLogin(String username) {
         User user = null;
         PersistenceManager pm = PMF.get().getPersistenceManager();
@@ -125,19 +110,41 @@ public class UserPersistenceUtils {
             Query query = pm.newQuery(User.class, "login == username");
             query.setUnique(true);
             query.declareParameters("String username");
-            user = (User) query.execute(username);
+            user = (User) query.execute(username);          
+            if (user != null) {
+            	user.setLastLogonDate(new Date());
+                pm.makePersistent(user);
+            }
         } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.getMessage(), ex);
         } finally {
             pm.close();
         }
+        
+        /*try {
+        	String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "itemProvider";
+        	String params = "type=user&login=" + username;			 
+        	//logger.log(Level.INFO, "Calling: " + gUrl);
+        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
+        	//logger.log(Level.INFO, "Received response: " + gJson);
+        	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
+        		JSONObject root = new JSONObject(gJson);
+        		if (root.has("login") && root.has("password")) {
+        			user = jsonToUser(root);
+        		}
+        	} else {
+        		logger.log(Level.SEVERE, "Received following server response: " + gJson);
+        	}
+        } catch (Exception e) {
+        	logger.log(Level.SEVERE, e.getMessage(), e);
+        }*/
 
         return user;
     }
 
-    public static boolean confirmUserRegistration(String k, Boolean confirmation) {
+    public static boolean confirmUserRegistration(String login, Boolean confirmation) {
         PersistenceManager pm = PMF.get().getPersistenceManager();
-        User user = selectUserByKey(k);
+        User user = selectUserByLogin(login);
         boolean result = false;
 
         try {
@@ -148,7 +155,7 @@ public class UserPersistenceUtils {
                 result = true;
                 confirmRemoteRegistration(user.getLogin());
             } else {
-                logger.log(Level.INFO, "User with key: {0} is null!. User wanted to confirm his account: {1}", new Object[]{k, confirmation});
+                logger.log(Level.INFO, "User with key: {0} is null!. User wanted to confirm his account: {1}", new Object[]{login, confirmation});
             }
         } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.getMessage(), ex);
@@ -159,11 +166,11 @@ public class UserPersistenceUtils {
         return result;
     }
     
-    private static boolean confirmRemoteRegistration(String login) {
+    public static boolean confirmRemoteRegistration(String login) {
     	boolean confirmed = false;
     	try {
         	String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "itemProvider";
-        	String params = "type=user&confirm=1&login=" + login;			 
+        	String params = "type=user&confirm=1&login=" + URLEncoder.encode(login, "UTF-8");			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
         	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
         	//logger.log(Level.INFO, "Received response: " + gJson);
@@ -179,65 +186,14 @@ public class UserPersistenceUtils {
         }
     	return confirmed;
     }
-
-    public static void setLastLogonDate(User user) {
-        PersistenceManager pm = PMF.get().getPersistenceManager();
-        try {
-            if (user != null) {
-                user.setLastLogonDate(new Date());
-                pm.makePersistent(user);
-            } 
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
-        } finally {
-            pm.close();
-        }
-    }
-
+    
     public static boolean userExists(String username) {
-        int result = 0;
         try {
-            DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-            com.google.appengine.api.datastore.Query query = new com.google.appengine.api.datastore.Query("User");
-            query.setKeysOnly();
-            Filter loginFilter =  new FilterPredicate("login", FilterOperator.EQUAL, username);
-            query.setFilter(loginFilter);
-            //query.addFilter("login", FilterOperator.EQUAL, username);
-            PreparedQuery pq = ds.prepare(query);
-            FetchOptions option = FetchOptions.Builder.withLimit(1);
-            result = pq.countEntities(option);
+            return (selectUserByLogin(username) != null);
         } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.getMessage(), ex);
         }
-        return (result > 0);
-    }
-
-    //No need to migrate
-    public static void setPersonalInfo(String k) {
-        PersistenceManager pm = PMF.get().getPersistenceManager();
-        User user = selectUserByKey(k);
-
-        try {
-            if (user != null) {
-                String personalInfo = RapleafUtil.readUserInfo(user.getEmail(), user.getFirstname(), user.getLastname());
-                if (StringUtils.isNotEmpty(personalInfo)) {
-                    if (personalInfo.length() < 500) {
-                        user.setPersonalInfo(personalInfo);
-                    } else {
-                        user.setPersonalInfo("{}");
-                        user.setPersonalInfoLong(new Text(personalInfo));
-                    }
-                    pm.makePersistent(user);
-                }
-            } else {
-                logger.log(Level.INFO, "User with key: {0} is null!.",
-                        new Object[]{k});
-            }
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
-        } finally {
-            pm.close();
-        }
+        return false;
     }
 
     //No need to migrate
@@ -248,7 +204,7 @@ public class UserPersistenceUtils {
         try {
             Query query = pm.newQuery(User.class);
             query.setRange(first, last);
-            query.setOrdering("regDate asc");
+            query.setOrdering("regDate desc");
 
             results = (List<User>) query.execute();
             //results = (List<User>) pm.detachCopyAll(results);
@@ -259,5 +215,65 @@ public class UserPersistenceUtils {
         }
 
         return results;
+    }
+    
+    private static User jsonToUser(JSONObject user) throws IllegalAccessException, InvocationTargetException {
+		User u = new User();
+		   
+		Map<String, String> geocodeMap = new HashMap<String, String>();
+		for(Iterator<String> iter = user.keys();iter.hasNext();) {
+				String key = iter.next();
+				Object value = user.get(key);
+				geocodeMap.put(key, value.toString());
+		}
+		   
+		BeanUtils.populate(u, geocodeMap);
+		   
+		return u;
+	}
+    
+    public static boolean login(String username, byte[] password) {
+    	boolean auth = false;
+    	
+    	if (StringUtils.equals(username, Commons.DEFAULT_USERNAME)) {      
+        	try {                  		
+        		String pwdStr = Base64.encode(password);
+        		if (StringUtils.equals(pwdStr, Commons.DEFAULT_PASSWORD)) {
+        			logger.log(Level.INFO, "User default authn succeded!");
+        			auth = true;
+        		} else {
+        			logger.log(Level.SEVERE, "User default authn failed!");
+        		}
+    		} catch (Exception e) {
+                logger.log(Level.SEVERE, e.getMessage(), e);
+            }
+    	} 
+    	
+    	if (!auth) {
+    		User user = selectUserByLogin(username);
+        	if (user != null && password != null) {
+        		String passwordString = new String(password);
+        		if (user.getPassword().equals(passwordString)) {
+        			auth = true;
+        		} else if (password.length % 8 == 0) {
+            		try {
+            			byte[] pwd = CryptoTools.decrypt(password);
+            			if (new String(pwd).equals(user.getPassword())) {
+            				logger.log(Level.INFO, "User {0} authn success with encrypted password", username);
+            				auth = true;
+            			}
+                 	} catch (Exception e) {
+                       logger.log(Level.SEVERE, "User {0} authn failed with enc {1}", new Object[]{username, passwordString});
+                 	}
+            	} else if (Sha1.encode(user.getPassword()).equals(passwordString)) {
+        		 	logger.log(Level.INFO, "User {0} authn success with SHA", username);
+            		auth = true;
+        		} else {
+        			logger.log(Level.SEVERE, "User {0} authn failed with {1}", new Object[]{username, passwordString});
+        		}
+        	}
+    	}
+    	
+    	return auth;
     }
 }
