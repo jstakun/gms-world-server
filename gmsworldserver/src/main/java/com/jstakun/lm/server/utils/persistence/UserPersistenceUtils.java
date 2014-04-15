@@ -20,22 +20,17 @@ import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
 import com.google.gdata.util.common.util.Base64;
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
-import com.jstakun.lm.server.persistence.GeocodeCache;
 import com.jstakun.lm.server.persistence.PMF;
 import com.jstakun.lm.server.persistence.User;
-import com.jstakun.lm.server.utils.BCTools;
 import com.jstakun.lm.server.utils.CryptoTools;
-import com.jstakun.lm.server.utils.DateUtils;
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.Sha1;
-import com.jstakun.lm.server.utils.StringUtil;
 
 /**
  *

@@ -9,10 +9,12 @@ import com.jstakun.lm.server.utils.GeocodeUtils;
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.NumberUtils;
 import com.jstakun.lm.server.utils.StringUtil;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -22,14 +24,14 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author jstakun
  */
+@Deprecated
 public class YouTubeProviderServlet extends HttpServlet {
 
     /**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	//http://localhost:8888/youTubeProvider?latitude=52.24393&longitude=20.96267&radius=1&format=json&version=3&limit=100
-    private static final Logger logger = Logger.getLogger(YouTubeProviderServlet.class.getName());
+	private static final Logger logger = Logger.getLogger(YouTubeProviderServlet.class.getName());
 
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.

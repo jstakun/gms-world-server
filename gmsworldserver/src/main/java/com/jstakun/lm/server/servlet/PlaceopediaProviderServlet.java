@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author jstakun
  */
+
 public class PlaceopediaProviderServlet extends HttpServlet {
 
     /**

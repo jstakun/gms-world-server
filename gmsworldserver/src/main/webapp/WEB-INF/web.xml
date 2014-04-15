@@ -183,37 +183,9 @@
   <servlet-name>ListLayersServlet</servlet-name>
   <servlet-class>com.jstakun.lm.server.servlet.ListLayersServlet</servlet-class>
  </servlet>
- <!-- servlet>
-  <servlet-name>DownloadServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.servlet.DownloadServlet</servlet-class>
- </servlet>
  <servlet>
-  <servlet-name>GoogleMapsProviderServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.servlet.GoogleMapsProviderServlet</servlet-class>
- </servlet>
- <servlet>
-  <servlet-name>TahMapsProviderServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.servlet.TahMapsProviderServlet</servlet-class>
- </servlet>
- <servlet>
-  <servlet-name>ViewResourceServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.servlet.ViewTahMapServlet</servlet-class>
- </servlet-->
- <servlet>
-  <servlet-name>FBAuthServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.oauth.FBAuthServlet</servlet-class>
- </servlet>
- <servlet>
-  <servlet-name>FBLoginServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.oauth.FBLoginServlet</servlet-class>
- </servlet>
- <servlet>
-  <servlet-name>TwAuthServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.oauth.TwAuthServlet</servlet-class>
- </servlet>
- <servlet>
-  <servlet-name>TwLoginServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.oauth.TwLoginServlet</servlet-class>
+  <servlet-name>OAuthServlet</servlet-name>
+  <servlet-class>com.jstakun.lm.server.oauth.OAuthServlet</servlet-class>
  </servlet>
  <servlet>
   <servlet-name>FBSendMessageServlet</servlet-name>
@@ -224,24 +196,8 @@
   <servlet-class>com.jstakun.lm.server.servlet.TwSendUpdateServlet</servlet-class>
  </servlet>
  <servlet>
-  <servlet-name>OAuthServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.oauth.LnLoginServlet</servlet-class>
- </servlet>
- <servlet>
-  <servlet-name>OAuthCallbackServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.oauth.LnAuthServlet</servlet-class>
- </servlet>
- <servlet>
   <servlet-name>LnSendUpdateServlet</servlet-name>
   <servlet-class>com.jstakun.lm.server.servlet.LnSendUpdateServlet</servlet-class>
- </servlet>
- <servlet>
-  <servlet-name>GlLoginServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.oauth.GlLoginServlet</servlet-class>
- </servlet>
- <servlet>
-  <servlet-name>GlAuthServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.oauth.GlAuthServlet</servlet-class>
  </servlet>
  <servlet>
   <servlet-name>GlSendPostServlet</servlet-name>
@@ -336,120 +292,6 @@
   <servlet-name>NotificationsServlet</servlet-name>
   <servlet-class>com.jstakun.lm.server.servlet.NotificationsServlet</servlet-class>
  </servlet>
- <!--servlet>
-        <servlet-name>TwitterProviderServlet</servlet-name>
-        <servlet-class>com.jstakun.lm.server.servlet.TwitterProviderServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>GeonamesProviderServlet</servlet-name>
-        <servlet-class>com.jstakun.lm.server.servlet.GeonamesProviderServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>PlaceopediaProviderServlet</servlet-name>
-        <servlet-class>com.jstakun.lm.server.servlet.PlaceopediaProviderServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>Panoramio2ProviderServlet</servlet-name>
-        <servlet-class>com.jstakun.lm.server.servlet.Panoramio2ProviderServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>HotelsProviderServlet</servlet-name>
-        <servlet-class>com.jstakun.lm.server.servlet.HotelsProviderServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>FoursquareMerchantServlet</servlet-name>
-        <servlet-class>com.jstakun.lm.server.servlet.FoursquareMerchantServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>HotwireProviderServlet</servlet-name>
-        <servlet-class>com.jstakun.lm.server.servlet.HotwireProviderServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>LastfmProviderServlet</servlet-name>
-        <servlet-class>com.jstakun.lm.server.servlet.LastfmProviderServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>ExpediaProviderServlet</servlet-name>
-        <servlet-class>com.jstakun.lm.server.servlet.ExpediaProviderServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>WebcamProviderServlet</servlet-name>
-        <servlet-class>com.jstakun.lm.server.servlet.WebcamProviderServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>GooglePlacesProviderServlet</servlet-name>
-        <servlet-class>com.jstakun.lm.server.servlet.GooglePlacesProviderServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>CouponsProviderServlet</servlet-name>
-        <servlet-class>com.jstakun.lm.server.servlet.CouponsProviderServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>YelpProviderServlet</servlet-name>
-        <servlet-class>com.jstakun.lm.server.servlet.YelpProviderServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>QypeProviderServlet</servlet-name>
-        <servlet-class>com.jstakun.lm.server.servlet.QypeProviderServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>MeetupProviderServlet</servlet-name>
-        <servlet-class>com.jstakun.lm.server.servlet.MeetupProviderServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>AtmProviderServlet</servlet-name>
-        <servlet-class>com.jstakun.lm.server.servlet.AtmProviderServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>OsmProviderServlet</servlet-name>
-        <servlet-class>com.jstakun.lm.server.servlet.OsmProviderServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>UpcomingProviderServlet</servlet-name>
-        <servlet-class>com.jstakun.lm.server.servlet.UpcomingProviderServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>DownloadLandmarkServlet</servlet-name>
-        <servlet-class>com.jstakun.lm.server.servlet.DownloadLandmarksServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>EvenfulProviderServlet</servlet-name>
-        <servlet-class>com.jstakun.lm.server.servlet.EvenfulProviderServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>FlickrProviderServlet</servlet-name>
-        <servlet-class>com.jstakun.lm.server.servlet.FlickrProviderServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>CryptoTestServlet</servlet-name>
-        <servlet-class>com.jstakun.lm.server.servlet.CryptoTestServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>YouTubeProviderServlet</servlet-name>
-        <servlet-class>com.jstakun.lm.server.servlet.YouTubeProviderServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>GrouponProviderServlet</servlet-name>
-        <servlet-class>com.jstakun.lm.server.servlet.GrouponProviderServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>PicasaProviderServlet</servlet-name>
-        <servlet-class>com.jstakun.lm.server.servlet.PicasaProviderServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>FoursquareProviderServlet</servlet-name>
-        <servlet-class>com.jstakun.lm.server.servlet.FoursquareProviderServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet>
-        <servlet-name>GowallaProviderServlet</servlet-name>
-        <servlet-class>com.jstakun.lm.server.servlet.GowallaProviderServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>FBProviderServlet</servlet-name>
-        <servlet-class>com.jstakun.lm.server.servlet.FBProviderServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet-->
  <servlet>
   <servlet-name>LayersProviderServlet</servlet-name>
   <servlet-class>com.jstakun.lm.server.servlet.LayersProviderServlet</servlet-class>
@@ -468,12 +310,8 @@
   <servlet-class>com.jstakun.lm.server.servlet.SocialProfileServlet</servlet-class>
  </servlet>
  <servlet>
-  <servlet-name>FSLoginServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.oauth.FsLoginServlet</servlet-class>
- </servlet>
- <servlet>
-  <servlet-name>FSAuthServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.oauth.FsAuthServlet</servlet-class>
+  <servlet-name>OAuthLoginServlet</servlet-name>
+  <servlet-class>com.jstakun.lm.server.oauth.OAuthLoginServlet</servlet-class>
  </servlet>
  <servlet>
   <servlet-name>SocialCheckinServlet</servlet-name>
@@ -531,61 +369,21 @@
   <servlet-name>LandmarkPersistenceServlet</servlet-name>
   <url-pattern>/services/persistLandmark,/s/persistLandmark</url-pattern>
  </servlet-mapping>
- <!-- servlet-mapping>
-  <servlet-name>DownloadServlet</servlet-name>
-  <url-pattern>/services/download</url-pattern>
- </servlet-mapping>
- <servlet-mapping>
-  <servlet-name>GoogleMapsProviderServlet</servlet-name>
-  <url-pattern>/services/getGoogleMap</url-pattern>
- </servlet-mapping>
- <servlet-mapping>
-  <servlet-name>TahMapsProviderServlet</servlet-name>
-  <url-pattern>/services/getTahMap</url-pattern>
- </servlet-mapping>
- <servlet-mapping>
-  <servlet-name>ViewResourceServlet</servlet-name>
-  <url-pattern>/services/viewTahMap</url-pattern>
- </servlet-mapping-->
- <servlet-mapping>
-  <servlet-name>FBAuthServlet</servlet-name>
-  <url-pattern>/fbauth</url-pattern>
- </servlet-mapping>
- <servlet-mapping>
-  <servlet-name>FBLoginServlet</servlet-name>
-  <url-pattern>/fblogin,/s/fblogin</url-pattern>
- </servlet-mapping>
- <servlet-mapping>
-  <servlet-name>TwAuthServlet</servlet-name>
-  <url-pattern>/twauth</url-pattern>
- </servlet-mapping>
- <servlet-mapping>
-  <servlet-name>TwLoginServlet</servlet-name>
-  <url-pattern>/twlogin,/s/twlogin</url-pattern>
- </servlet-mapping>
  <servlet-mapping>
   <servlet-name>OAuthServlet</servlet-name>
-  <url-pattern>/lnlogin,/s/lnlogin</url-pattern>
- </servlet-mapping>
- <servlet-mapping>
-  <servlet-name>OAuthCallbackServlet</servlet-name>
+  <url-pattern>/fbauth</url-pattern>
+  <url-pattern>/twauth</url-pattern>
   <url-pattern>/lnauth</url-pattern>
- </servlet-mapping>
-  <servlet-mapping>
-  <servlet-name>GlLoginServlet</servlet-name>
-  <url-pattern>/gllogin,/s/gllogin</url-pattern>
- </servlet-mapping>
- <servlet-mapping>
-  <servlet-name>GlAuthServlet</servlet-name>
   <url-pattern>/glauth</url-pattern>
- </servlet-mapping>
- <servlet-mapping>
-  <servlet-name>FSLoginServlet</servlet-name>
-  <url-pattern>/fslogin,/s/fslogin</url-pattern>
- </servlet-mapping>
- <servlet-mapping>
-  <servlet-name>FSAuthServlet</servlet-name>
   <url-pattern>/fsauth</url-pattern>
+ </servlet-mapping>
+ <servlet-mapping>
+ <servlet-name>OAuthLoginServlet</servlet-name>
+   <url-pattern>/fblogin,/s/fblogin</url-pattern>
+   <url-pattern>/twlogin,/s/twlogin</url-pattern>
+   <url-pattern>/lnlogin,/s/lnlogin</url-pattern>
+   <url-pattern>/gllogin,/s/gllogin</url-pattern>
+   <url-pattern>/fslogin,/s/fslogin</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>FBSendMessageServlet</servlet-name>
@@ -647,11 +445,6 @@
   <servlet-name>PersonalizeTaskServlet</servlet-name>
   <url-pattern>/tasks/personalizeTask</url-pattern>
  </servlet-mapping>
- <!--servlet-mapping>
-        <servlet-name>SearchServlet</servlet-name>
-        <url-pattern>/services/search</url-pattern>
-        <url-pattern>/search</url-pattern>
-    </servlet-mapping-->
  <servlet-mapping>
   <servlet-name>LandmarkFilterTaskServlet</servlet-name>
   <url-pattern>/tasks/landmarkFilterTask</url-pattern>
@@ -791,7 +584,7 @@
   <location>/errorHandler</location>
  </error-page>
  <error-page>
-  <exception-type>java.lang.Throwable</exception-type>
+  <exception-type>java.lang.Exception</exception-type>
   <location>/errorHandler</location>
  </error-page>
  <security-constraint>

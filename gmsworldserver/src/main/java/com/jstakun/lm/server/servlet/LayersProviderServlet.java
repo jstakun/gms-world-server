@@ -81,8 +81,7 @@ public class LayersProviderServlet extends HttpServlet {
         	} else {
         		response.setContentType("application/x-java-serialized-object"); 
         	}
-            //outObj = new ObjectOutputStream(response.getOutputStream());
-        	outFormat = Format.BIN;
+            outFormat = Format.BIN;
         } else {
             response.setContentType("text/json;charset=UTF-8");
             outPrinter = response.getWriter();
@@ -485,6 +484,8 @@ public class LayersProviderServlet extends HttpServlet {
                 		outString = new JSONObject().put("ResultSet", landmarks).toString();
                 	}
                 }
+            } else {
+            	logger.log(Level.SEVERE, "Unexpected uri: {0}", uri);
             }
         } catch (FacebookOAuthException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);

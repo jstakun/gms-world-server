@@ -4,13 +4,7 @@
  */
 package com.jstakun.lm.server.tasks;
 
-import com.google.appengine.api.datastore.KeyFactory;
-import com.jstakun.lm.server.persistence.User;
-import com.jstakun.lm.server.utils.NumberUtils;
-import com.jstakun.lm.server.utils.persistence.UserPersistenceUtils;
-
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,7 +14,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
+import com.jstakun.lm.server.persistence.User;
+import com.jstakun.lm.server.utils.NumberUtils;
+import com.jstakun.lm.server.utils.persistence.UserPersistenceUtils;
 
 /**
  *

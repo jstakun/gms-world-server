@@ -5,6 +5,7 @@
 package com.jstakun.lm.server.filter;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.StringTokenizer;
@@ -37,7 +38,7 @@ import com.jstakun.lm.server.utils.persistence.UserPersistenceUtils;
 public class ServicesAuthorizationFilter implements Filter {
 
     private static final boolean debug = true;
-    private static final String BASIC_REALM = "Basic realm=\"Login Users\"";
+    //private static final String BASIC_REALM = "Basic realm=\"Login Users\"";
     private static final Logger logger = Logger.getLogger(ServicesAuthorizationFilter.class.getName());
     private FilterConfig filterConfig = null;
 
@@ -101,8 +102,14 @@ public class ServicesAuthorizationFilter implements Filter {
                 chain.doFilter(request, response);
             } else {
             	logger.log(Level.SEVERE, "Authz failed!");
-                httpResponse.setHeader("WWW-Authenticate", BASIC_REALM);
+                //httpResponse.setHeader("WWW-Authenticate", BASIC_REALM);
                 httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("text/html");
+			    PrintWriter out = response.getWriter();
+			    out.println("<html><head><title>401 Unauthorized</title></head><body>");
+			    out.println("<h3>Request Unauthorized.</h3>");
+			    out.println("</body></html>");
+			    out.close();
             }
         }
     }
