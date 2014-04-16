@@ -1,5 +1,6 @@
 package com.jstakun.lm.server.social;
 
+import java.util.Map;
 import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -8,9 +9,9 @@ import java.util.logging.Logger;
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.persistence.Landmark;
+import com.jstakun.lm.server.utils.NumberUtils;
 import com.jstakun.lm.server.utils.UrlUtils;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
-
 import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;
 import com.restfb.Parameter;
@@ -58,6 +59,11 @@ public class FacebookUtils {
         }
     }
 
+	//public static void sendMessage(String token, String key) {
+	//	Map<String, String> params = NotificationUtils.getNotificationParams(key);	
+	//	sendMessageToUserFeed(token, key, NumberUtils.getInt(params.get("type"), -1));
+	//}
+	
     public static void sendMessageToUserFeed(String token, String key, int type) {
         if (token != null) {
             FacebookClient facebookClient = new DefaultFacebookClient(token);

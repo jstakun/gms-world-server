@@ -82,7 +82,9 @@ public final class GlCommons {
             		put("username", userData.get(ConfigurationManager.GL_USERNAME)).
             		put("name", userData.get(ConfigurationManager.GL_NAME)).build();
             NotificationUtils.createNotificationTask(params);
-        }
+        } else {
+    		throw new Exception("AccessToken or RefreshToken is empty");
+    	}
         
         return userData;
     }

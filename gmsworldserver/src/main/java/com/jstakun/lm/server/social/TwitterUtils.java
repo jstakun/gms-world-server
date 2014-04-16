@@ -1,5 +1,6 @@
 package com.jstakun.lm.server.social;
 
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,6 +17,7 @@ import twitter4j.auth.AccessToken;
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.persistence.Landmark;
+import com.jstakun.lm.server.utils.NumberUtils;
 import com.jstakun.lm.server.utils.UrlUtils;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 
@@ -35,6 +37,12 @@ public class TwitterUtils {
         twitter.setOAuthAccessToken(accessToken);
         return twitter;
     }
+	
+	
+	//public static void sendMessage(String token, String secret, String key) {
+	//	Map<String, String> params = NotificationUtils.getNotificationParams(key);	
+	//	sendMessage(key, params.get("url"), token, secret, NumberUtils.getInt(params.get("type"), -1));
+	//}
 	
 	public static void sendMessage(String key, String url, String token, String secret, int type) {
         try {

@@ -4,26 +4,22 @@
  */
 package com.jstakun.lm.server.tasks;
 
-import com.jstakun.lm.server.persistence.User;
-import com.jstakun.lm.server.utils.MailUtils;
-import com.jstakun.lm.server.utils.persistence.UserPersistenceUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.servlet.ServletContext;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.io.IOUtils;
 
 /**
  *
  * @author jstakun
  */
+@Deprecated
 public class EmailingTaskServlet extends HttpServlet {
 
     /**
@@ -47,7 +43,7 @@ public class EmailingTaskServlet extends HttpServlet {
 
         try {
             //! number of emails to be contacted
-            List<User> users = UserPersistenceUtils.selectUsers(0, 100);
+            /*List<User> users = UserPersistenceUtils.selectUsers(0, 100);
             ServletContext context = getServletContext();
             is = context.getResourceAsStream("/WEB-INF/emails/emailing.html");
             if (is != null) {
@@ -60,7 +56,7 @@ public class EmailingTaskServlet extends HttpServlet {
                 }
             } else {
                 logger.log(Level.INFO, "No emailing file available!");
-            }
+            }*/
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
         } finally {

@@ -82,12 +82,12 @@
     <url-pattern>/crashReport</url-pattern>
     <url-pattern>/imageUpload</url-pattern>
     <url-pattern>/panoramioProvider</url-pattern>
-    <url-pattern>/fblogin</url-pattern>
     <url-pattern>/fslogin</url-pattern>
     <url-pattern>/twlogin</url-pattern>
     <url-pattern>/lnlogin</url-pattern>
     <url-pattern>/gllogin</url-pattern>
-    <url-pattern>/token</url-pattern>
+    <!-- url-pattern>/fblogin</url-pattern>
+    <url-pattern>/token</url-pattern-->
  </filter-mapping>
  <filter-mapping>
   <filter-name>BlockerFilter</filter-name>
@@ -126,11 +126,11 @@
     <url-pattern>/crashReport</url-pattern>
     <url-pattern>/imageUpload</url-pattern>
     <url-pattern>/panoramioProvider</url-pattern>
-    <url-pattern>/fblogin</url-pattern>
     <url-pattern>/fslogin</url-pattern>
     <url-pattern>/twlogin</url-pattern>
     <url-pattern>/lnlogin</url-pattern>
     <url-pattern>/gllogin</url-pattern>
+    <url-pattern>/fblogin</url-pattern>
     <url-pattern>/token</url-pattern>
  </filter-mapping>
  <filter-mapping>
@@ -180,28 +180,16 @@
   <load-on-startup>2</load-on-startup>
  </servlet>
  <servlet>
+  <servlet-name>SocialMessageServlet</servlet-name>
+  <servlet-class>com.jstakun.lm.server.servlet.SocialMessageServlet</servlet-class>
+ </servlet>
+ <servlet>
   <servlet-name>ListLayersServlet</servlet-name>
   <servlet-class>com.jstakun.lm.server.servlet.ListLayersServlet</servlet-class>
  </servlet>
  <servlet>
   <servlet-name>OAuthServlet</servlet-name>
   <servlet-class>com.jstakun.lm.server.oauth.OAuthServlet</servlet-class>
- </servlet>
- <servlet>
-  <servlet-name>FBSendMessageServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.servlet.FBSendMessageServlet</servlet-class>
- </servlet>
- <servlet>
-  <servlet-name>TwSendUpdateServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.servlet.TwSendUpdateServlet</servlet-class>
- </servlet>
- <servlet>
-  <servlet-name>LnSendUpdateServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.servlet.LnSendUpdateServlet</servlet-class>
- </servlet>
- <servlet>
-  <servlet-name>GlSendPostServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.servlet.GlSendPostServlet</servlet-class>
  </servlet>
  <servlet>
   <servlet-name>QrCodeCheckInServlet</servlet-name>
@@ -255,10 +243,10 @@
   <servlet-name>PersonalizeTaskServlet</servlet-name>
   <servlet-class>com.jstakun.lm.server.tasks.PersonalizeTaskServlet</servlet-class>
  </servlet>
- <servlet>
+ <!-- servlet>
   <servlet-name>_ah_sessioncleanup</servlet-name>
   <servlet-class>com.google.apphosting.utils.servlet.SessionCleanupServlet</servlet-class>
- </servlet>
+ </servlet-->
  <servlet>
   <servlet-name>LandmarkFilterTaskServlet</servlet-name>
   <servlet-class>com.jstakun.lm.server.tasks.LandmarkFilterTaskServlet</servlet-class>
@@ -349,10 +337,10 @@
   <servlet-name>appstats</servlet-name>
   <servlet-class>com.google.appengine.tools.appstats.AppstatsServlet</servlet-class>
 </servlet-->
- <servlet-mapping>
+<!-- servlet-mapping>
   <servlet-name>_ah_sessioncleanup</servlet-name>
   <url-pattern>/_ah/sessioncleanup</url-pattern>
- </servlet-mapping>
+ </servlet-mapping-->
  <servlet-mapping>
   <servlet-name>action</servlet-name>
   <url-pattern>*.do</url-pattern>
@@ -386,19 +374,10 @@
    <url-pattern>/fslogin,/s/fslogin</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
-  <servlet-name>FBSendMessageServlet</servlet-name>
+  <servlet-name>SocialMessageServlet</servlet-name>
   <url-pattern>/services/fbSendMessage,/s/fbSendMessage</url-pattern>
- </servlet-mapping>
- <servlet-mapping>
-  <servlet-name>TwSendUpdateServlet</servlet-name>
   <url-pattern>/services/twSendUpdate,/s/twSendUpdate</url-pattern>
- </servlet-mapping>
- <servlet-mapping>
-  <servlet-name>LnSendUpdateServlet</servlet-name>
   <url-pattern>/services/lnSendUpdate,/s/lnSendUpdate</url-pattern>
- </servlet-mapping>
- <servlet-mapping>
-  <servlet-name>GlSendPostServlet</servlet-name>
   <url-pattern>/services/glSendPost,/s/glSendPost</url-pattern>
  </servlet-mapping>
  <servlet-mapping>

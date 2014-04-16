@@ -22,8 +22,10 @@ import com.google.api.services.plus.model.Person;
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.persistence.Landmark;
+import com.jstakun.lm.server.utils.NumberUtils;
 import com.jstakun.lm.server.utils.UrlUtils;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -98,6 +100,11 @@ public class GooglePlusUtils {
         return email;
     }
 
+    //public static void sendMessage(String token, String refresh, String key) {
+	//	Map<String, String> params = NotificationUtils.getNotificationParams(key);	
+	//	sendMessage(token, refresh, key, params.get("url"), NumberUtils.getInt(params.get("type"), -1));
+	//}
+    
     public static void sendMessage(String accessToken, String refreshToken, String key, String url, int type) {
         if (accessToken != null || refreshToken != null) {
             

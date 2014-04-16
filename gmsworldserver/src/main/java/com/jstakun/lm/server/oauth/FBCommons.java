@@ -82,8 +82,12 @@ public final class FBCommons {
                 		put("name", userData.get(ConfigurationManager.FB_NAME)).build();                  
                 NotificationUtils.createNotificationTask(params);
                 
-            } 
-        }
+            } else {
+        		throw new Exception("AccessToken is empty");
+        	}
+        } else {
+    		throw new Exception("Code is empty");
+    	}
     	
     	return userData;
     }

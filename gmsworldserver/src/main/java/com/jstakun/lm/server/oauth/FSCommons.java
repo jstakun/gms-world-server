@@ -61,7 +61,9 @@ public final class FSCommons {
 					NotificationUtils.createNotificationTask(params);	
 				
              	} 
-			}
+			} else {
+        		throw new Exception("AccessToken is empty");
+        	}
 			
 			return userData;
 	 }

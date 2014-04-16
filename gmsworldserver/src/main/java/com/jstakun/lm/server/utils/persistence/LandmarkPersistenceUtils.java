@@ -204,45 +204,26 @@ public class LandmarkPersistenceUtils {
     }
 
     public static Landmark selectLandmarkById(String id) {
-        Landmark landmark = null;
-        /*PersistenceManager pm = PMF.get().getPersistenceManager();
-
-        try {
-        	if (StringUtil.isAllLowerCaseAndDigit(k)) {
-        		Query query = pm.newQuery(Landmark.class, "keyString == :k");
-        		query.setUnique(true);
-        		//query.declareParameters("String k");
-        		landmark = (Landmark) query.execute(k);
-        	} else {
-                Key key = KeyFactory.stringToKey(k);
-                landmark = pm.getObjectById(Landmark.class, key);
-                if (landmark != null) {
-                    //landmark.setKeyString(k.toLowerCase());
-                    pm.makePersistent(landmark);
-                }
-            }
-        	if (landmark != null) {
-        		landmark = pm.detachCopy(landmark);
+        String key = "landmark_" + id;
+    	Landmark landmark = (Landmark)CacheUtil.getObject(key);
+        
+        if (landmark == null) {
+        	try {
+        		String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "landmarksProvider";
+        		String params = "id=" + id;			 
+        		//logger.log(Level.INFO, "Calling: " + gUrl);
+        		String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
+        		//logger.log(Level.INFO, "Received response: " + gJson);
+        		if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
+        			JSONObject l = new JSONObject(gJson);
+        			landmark = jsonToLandmark(l);
+        			CacheUtil.put(key, landmark);
+        		} else {
+        			logger.log(Level.SEVERE, "Received following server response: " + gJson);
+        		}
+        	} catch (Exception e) {
+        		logger.log(Level.SEVERE, e.getMessage(), e);
         	}
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
-        } finally {
-            pm.close();
-        }*/
-        try {
-        	String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "landmarksProvider";
-        	String params = "id=" + id;			 
-        	//logger.log(Level.INFO, "Calling: " + gUrl);
-        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
-        	//logger.log(Level.INFO, "Received response: " + gJson);
-        	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
-        		JSONObject l = new JSONObject(gJson);
-    		    landmark = jsonToLandmark(l);
-        	} else {
-        		logger.log(Level.SEVERE, "Received following server response: " + gJson);
-        	}
-        } catch (Exception e) {
-        	logger.log(Level.SEVERE, e.getMessage(), e);
         }
 
         return landmark;

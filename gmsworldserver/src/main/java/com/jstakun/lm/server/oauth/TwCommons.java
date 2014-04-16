@@ -37,7 +37,7 @@ public final class TwCommons {
 		CacheUtil.put("twRequestToken_" + requestToken.getToken(), requestToken);
 			return requestToken.getAuthenticationURL();
 		} else {
-			throw new TwitterException("RequestToken is null");
+			throw new TwitterException("RequestToken is empty");
 		}
     }
     
@@ -68,7 +68,9 @@ public final class TwCommons {
 				put("username", userData.get(ConfigurationManager.TWEET_USERNAME)).
 				put("name", userData.get(ConfigurationManager.TWEET_NAME)).build();
     		NotificationUtils.createNotificationTask(params);    
-    	} 
+    	} else {
+    		throw new Exception("AccessToken is empty");
+    	}
 		
 		return userData;
     }

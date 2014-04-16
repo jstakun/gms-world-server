@@ -5,7 +5,6 @@
 package com.jstakun.lm.server.tasks;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,14 +13,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.jstakun.lm.server.persistence.User;
 import com.jstakun.lm.server.utils.NumberUtils;
-import com.jstakun.lm.server.utils.persistence.UserPersistenceUtils;
 
 /**
  *
  * @author jstakun
  */
+@Deprecated
 public class PersonalizeTaskServlet extends HttpServlet {
 
     /**
@@ -42,15 +40,10 @@ public class PersonalizeTaskServlet extends HttpServlet {
         int last = NumberUtils.getInt(request.getParameter("last"), 100);
         
         try {
-            List<User> users = UserPersistenceUtils.selectUsers(first, last);
+            /*List<User> users = UserPersistenceUtils.selectUsers(first, last);
             logger.log(Level.INFO, "Found " + users.size() + " users");
             for (User user : users) {
-                /*if (StringUtils.isEmpty(user.getPersonalInfo())) {
-                    String key = KeyFactory.keyToString(user.getKey());
-                    UserPersistenceUtils.setPersonalInfo(key);
-                    logger.log(Level.INFO, "Requesting personal info for user {0}", user.getEmail());
-                }*/
-            	try {
+                try {
             		 UserPersistenceUtils.persistUser(user.getLogin(), user.getPassword(), user.getEmail(), user.getFirstname(), user.getLastname(), false);
             		 if (user.getConfirmed()) {
             			 UserPersistenceUtils.confirmRemoteRegistration(user.getLogin());
@@ -59,7 +52,7 @@ public class PersonalizeTaskServlet extends HttpServlet {
             	} catch (Exception e) {
                     logger.log(Level.SEVERE, e.getMessage(), e);
                 }
-            }
+            }*/
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
         } 

@@ -76,7 +76,7 @@ public final class SocialCheckinServlet extends HttpServlet {
     			response.sendError(HttpServletResponse.SC_BAD_REQUEST);
     		} 
     	} else {
-    		Logger.getLogger(SocialCheckinServlet.class.getName()).log(Level.SEVERE, "Wrong service called: " + service);
+    		logger.log(Level.SEVERE, "Wrong service called: " + service);
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
     }

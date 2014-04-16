@@ -7,11 +7,9 @@ package com.jstakun.lm.server.utils.persistence;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,20 +42,6 @@ public class UserPersistenceUtils {
         User user = new User(login, password, email, firstname, lastname);
         PersistenceManager pm = PMF.get().getPersistenceManager();
 
-        /*try {
-            String personalInfo = RapleafUtil.readUserInfo(email, firstname, lastname);
-            if (StringUtils.isNotEmpty(personalInfo)) {
-                if (personalInfo.length() < 500) {
-                    user.setPersonalInfo(personalInfo);
-                } else {
-                    user.setPersonalInfo("{}");
-                    user.setPersonalInfoLong(new Text(personalInfo));
-                }
-            }
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
-        }*/
-        
         try {
         	String landmarksUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "addItem";
         	String params = "login=" + URLEncoder.encode(login, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8") + "&type=user";
@@ -85,6 +69,7 @@ public class UserPersistenceUtils {
         	logger.log(Level.SEVERE, e.getMessage(), e);
         }
 
+        //TODO comment
         if (local) {
         	try {
         		user = pm.makePersistent(user);
@@ -94,11 +79,12 @@ public class UserPersistenceUtils {
         		pm.close();
         	}
         }	
+        //
     }
 
-    //TODO migrate
     public static User selectUserByLogin(String username) {
-        User user = null;
+    	//TODO comment
+    	User user = null;
         PersistenceManager pm = PMF.get().getPersistenceManager();
 
         try {
@@ -115,7 +101,9 @@ public class UserPersistenceUtils {
         } finally {
             pm.close();
         }
+        //
         
+        //TODO uncomment
         /*try {
         	String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "itemProvider";
         	String params = "type=user&login=" + username;			 
@@ -137,6 +125,7 @@ public class UserPersistenceUtils {
         return user;
     }
 
+    //TODO replace with remoteRegistration
     public static boolean confirmUserRegistration(String login, Boolean confirmation) {
         PersistenceManager pm = PMF.get().getPersistenceManager();
         User user = selectUserByLogin(login);
@@ -183,16 +172,10 @@ public class UserPersistenceUtils {
     }
     
     public static boolean userExists(String username) {
-        try {
-            return (selectUserByLogin(username) != null);
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
-        }
-        return false;
+        return (selectUserByLogin(username) != null);
     }
 
-    //No need to migrate
-    public static List<User> selectUsers(int first, int last) {
+    /*public static List<User> selectUsers(int first, int last) {
         List<User> results = new ArrayList<User>();
         PersistenceManager pm = PMF.get().getPersistenceManager();
 
@@ -210,16 +193,16 @@ public class UserPersistenceUtils {
         }
 
         return results;
-    }
+    }*/
     
     private static User jsonToUser(JSONObject user) throws IllegalAccessException, InvocationTargetException {
 		User u = new User();
 		   
 		Map<String, String> geocodeMap = new HashMap<String, String>();
 		for(Iterator<String> iter = user.keys();iter.hasNext();) {
-				String key = iter.next();
-				Object value = user.get(key);
-				geocodeMap.put(key, value.toString());
+			String key = iter.next();
+			Object value = user.get(key);
+			geocodeMap.put(key, value.toString());
 		}
 		   
 		BeanUtils.populate(u, geocodeMap);
@@ -244,6 +227,7 @@ public class UserPersistenceUtils {
             }
     	} 
     	
+    	//TODO comment
     	if (!auth) {
     		User user = selectUserByLogin(username);
         	if (user != null && password != null) {
@@ -268,7 +252,44 @@ public class UserPersistenceUtils {
         		}
         	}
     	}
+    	//
     	
+    	//TODO uncomment
+    	/*if (!auth) {
+    		String passwordString = new String(password);
+        	if (password.length % 8 == 0) {
+            	try {
+            		byte[] pwd = CryptoTools.decrypt(password);
+            		passwordString = new String(pwd);
+                 } catch (Exception e) {
+                     logger.log(Level.SEVERE, "User {0} decrypt failed with {1}", new Object[]{username, passwordString});
+                 }
+            }        		
+        	if (loginRemote(username, passwordString)) {
+        		auth = true;
+        	} else {
+        		logger.log(Level.SEVERE, "User {0} authn failed with {1}", new Object[]{username, passwordString});
+        	}
+    	}*/
+    	
+    	return auth;
+    }
+    
+    private static boolean loginRemote(String login, String password) {
+    	boolean auth = false;
+    	try {
+    		String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "itemProvider";
+    		String params = "type=user&login=" + URLEncoder.encode(login, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8");			 
+    		String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
+    		if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
+    			JSONObject root = new JSONObject(gJson);
+    			auth = root.optBoolean("auth", false);
+    		} else {
+    			logger.log(Level.SEVERE, "Received following server response: " + gJson);
+    		}
+    	} catch (Exception e) {
+    		logger.log(Level.SEVERE, e.getMessage(), e);
+    	}
     	return auth;
     }
 }

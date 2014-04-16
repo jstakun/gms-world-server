@@ -77,8 +77,12 @@ public final class LnCommons {
             		put("username", userData.get(ConfigurationManager.LN_USERNAME)).
             		put("name", userData.get(ConfigurationManager.LN_NAME)).build();  
         		NotificationUtils.createNotificationTask(params);          
+        	} else {
+        		throw new Exception("AccessToken is empty");
         	}
-    	}	
+    	} else {
+    		throw new Exception("Wrong code");
+    	}
     	
     	return userData;
     }

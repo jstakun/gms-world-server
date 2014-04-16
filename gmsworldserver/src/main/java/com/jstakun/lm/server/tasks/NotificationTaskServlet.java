@@ -116,6 +116,26 @@ public class NotificationTaskServlet extends HttpServlet {
                 TwitterUtils.sendImageMessage(showImageUrl, username, lat, lng);
                 GoogleBloggerUtils.sendImageMessage(showImageUrl, username, imageUrl);
                 GooglePlusUtils.sendImageMessage(showImageUrl, username, imageUrl);
+            } else if (!HttpUtils.isEmptyAny(request, "url", "type", "title", "service")) {
+            	String service = request.getParameter("service");
+            	String url = request.getParameter("url");
+            	int type = NumberUtils.getInt(request.getParameter("type"),-1);
+            	String title = request.getParameter("title");
+            	String key = request.getParameter("key");
+            	String token = request.getParameter("token");
+            	
+            	if (StringUtils.equals(service, Commons.FACEBOOK)) {
+                	FacebookUtils.sendMessageToUserFeed(token, key, type);
+            	} else if (StringUtils.equals(service, Commons.GOOGLE_PLUS)) {
+            		String refreshToken = request.getParameter("refresh_token");
+            	    GooglePlusUtils.sendMessage(token, refreshToken, key, url, type);
+            	} else if (StringUtils.equals(service, Commons.LINKEDIN)) {
+            		String secret = request.getParameter("secret");
+            		LinkedInUtils.sendPost(url, title, type, token, secret);
+            	} else if (StringUtils.equals(service, Commons.TWITTER)) {
+            		String secret = request.getParameter("secret");
+            		TwitterUtils.sendMessage(key, url, token, secret, type);
+            	}
             } else {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             }
