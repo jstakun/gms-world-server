@@ -18,17 +18,11 @@ import org.json.JSONObject;
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.utils.HttpUtils;
-import com.jstakun.lm.server.utils.NumberUtils;
 
 public class LinkedInUtils {
 	
 	private static final Logger logger = Logger.getLogger(LinkedInUtils.class.getName());
 	
-	//public static void sendMessage(String token, String secret, String key) {
-	//	Map<String, String> params = NotificationUtils.getNotificationParams(key);	
-	//	sendPost(params.get("url"), params.get("title"), NumberUtils.getInt(params.get("type"), -1), token, secret);
-	//}
-
 	public static void sendPost(String url, String title, int type, String token, String secret) {
 		ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
 		InputStream is = null;
