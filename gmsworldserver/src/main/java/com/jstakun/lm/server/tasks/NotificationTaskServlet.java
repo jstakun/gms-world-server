@@ -45,6 +45,9 @@ public class NotificationTaskServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
     	try {
     		if (!HttpUtils.isEmptyAny(request, "key", "landmarkUrl", "title", "body", "username", "userUrl")) {
+    			
+    			logger.log(Level.INFO, "Sending landmark creation notification...");
+    			
     			String key = request.getParameter("key");
             	String landmarkUrl = request.getParameter("landmarkUrl");
             	String email = request.getParameter("email");
@@ -71,6 +74,8 @@ public class NotificationTaskServlet extends HttpServlet {
             	String email = request.getParameter("email");
             	ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
                 
+            	logger.log(Level.INFO, "Sending user creation notification to {0}...", service);
+            	
             	if (StringUtils.equals(service, Commons.FACEBOOK)) {
             		FacebookUtils.sendMessageToUserFeed(accessToken, null, Commons.LOGIN);
                     MailUtils.sendUserCreationNotification(String.format(rb.getString("Social.user.login"), ConfigurationManager.SERVER_URL, username, Commons.FACEBOOK));
@@ -104,6 +109,9 @@ public class NotificationTaskServlet extends HttpServlet {
                     }
             	}
             } else if (!HttpUtils.isEmptyAny(request, "key", "imageUrl", "lat", "lng")) {
+            	
+            	logger.log(Level.INFO, "Sending image creation notification...");
+            	
     			String key = request.getParameter("key");
             	String imageUrl = request.getParameter("imageUrl");
             	String username = request.getParameter("username");
@@ -123,6 +131,8 @@ public class NotificationTaskServlet extends HttpServlet {
             	String title = request.getParameter("title");
             	String key = request.getParameter("key");
             	String token = request.getParameter("token");
+            	
+            	logger.log(Level.INFO, "Sending notification to {0} user social profile...", service);
             	
             	if (StringUtils.equals(service, Commons.FACEBOOK)) {
                 	FacebookUtils.sendMessageToUserFeed(token, key, type);

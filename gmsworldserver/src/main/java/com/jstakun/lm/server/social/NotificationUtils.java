@@ -28,7 +28,7 @@ public class NotificationUtils {
 		for (Map.Entry<String, String> entry : params.entrySet()) {
 			options.param(entry.getKey(), entry.getValue());	
 		}
-		logger.log(Level.INFO, "Creating new notification task: " + options.toString());
+		logger.log(Level.INFO, "Creating new notification task {0}...", options.toString());
 		queue.add(options);   		
 	}
 
