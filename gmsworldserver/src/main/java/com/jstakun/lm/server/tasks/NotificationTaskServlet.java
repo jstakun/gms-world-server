@@ -77,7 +77,7 @@ public class NotificationTaskServlet extends HttpServlet {
             	logger.log(Level.INFO, "Sending user creation notification to {0}...", service);
             	
             	if (StringUtils.equals(service, Commons.FACEBOOK)) {
-            		FacebookUtils.sendMessageToUserFeed(accessToken, null, Commons.LOGIN);
+            		FacebookUtils.sendMessageToUserFeed(accessToken, ConfigurationManager.SERVER_URL, "Message from GMS World", Commons.LOGIN);
                     MailUtils.sendUserCreationNotification(String.format(rb.getString("Social.user.login"), ConfigurationManager.SERVER_URL, username, Commons.FACEBOOK));
                     if (StringUtils.isNotEmpty(email)) {
                     	MailUtils.sendLoginNotification(email, name, "Facebook", getServletContext());
@@ -135,7 +135,7 @@ public class NotificationTaskServlet extends HttpServlet {
             	logger.log(Level.INFO, "Sending notification to {0} user social profile...", service);
             	
             	if (StringUtils.equals(service, Commons.FACEBOOK)) {
-                	FacebookUtils.sendMessageToUserFeed(token, key, type);
+                	FacebookUtils.sendMessageToUserFeed(token, url, title, type);
             	} else if (StringUtils.equals(service, Commons.GOOGLE_PLUS)) {
             		String refreshToken = request.getParameter("refresh_token");
             	    GooglePlusUtils.sendMessage(token, refreshToken, key, url, type);

@@ -33,6 +33,7 @@ import org.apache.commons.lang.StringUtils;
 public class GoogleBloggerUtils {
 
     private static final Logger logger = Logger.getLogger(GoogleBloggerUtils.class.getName());
+    private static final String CACHE_KEY = "BloggerUsageLimitsMarker";
     
     public static void sendMessage(String key, String landmarkUrl, String token, String secret, boolean isServer) {
         Landmark landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
@@ -63,7 +64,7 @@ public class GoogleBloggerUtils {
                 createPost(getBlogger(), landmark.getName(), message);
             }
         } else {
-            logger.log(Level.SEVERE, "Landmark or token is null! Key: {0}, token: {1}, secret: {2}", new Object[]{key, token, secret});
+            logger.log(Level.SEVERE, "Landmark or token is empty! Key: {0}, token: {1}, secret: {2}", new Object[]{key, token, secret});
         }
     }
 
@@ -89,16 +90,15 @@ public class GoogleBloggerUtils {
             Blog blog = null;
             if (!blogs.isEmpty()) {
                 blog = blogs.get(0);
-                logger.log(Level.INFO, "Primary blogId: {0}", blog.getId());
             }
 
             if (blog != null) {
-                if (!CacheUtil.containsKey("BloggerUsageLimits")) {
+                if (!CacheUtil.containsKey(CACHE_KEY)) {
                 	Post post = new Post();
                 	post.setTitle(title);
                 	post.setContent(content);
                 	Post postResp = blogger.posts().insert(blog.getId(), post).execute();
-                	logger.log(Level.INFO, "Successfully created post: {0}", postResp.getId());
+                	logger.log(Level.INFO, "Successfully created post: {0} at blog {1}", new Object[]{postResp.getId(), blog.getId()});
                 } else {
                 	logger.log(Level.WARNING, "Blogger Rate Limit Exceeded");
                 }
@@ -106,8 +106,11 @@ public class GoogleBloggerUtils {
                 logger.log(Level.INFO, "No blogs found for the user!");
             }
         } catch (GoogleJsonResponseException ex) {
-        	CacheUtil.put("BloggerUsageLimits", "rateLimitExceeded");
-        	logger.log(Level.SEVERE, "GoogleBloggerUtils.createPost() exception with status " + ex.getStatusCode(), ex);
+        	int status = ex.getStatusCode();
+        	if (status == 403) {
+        		CacheUtil.put(CACHE_KEY, "1");
+        	}
+        	logger.log(Level.SEVERE, "GoogleBloggerUtils.createPost() exception with error " + status, ex);
         } catch (Exception ex) {
             logger.log(Level.SEVERE, "GoogleBloggerUtils.createPost() exception", ex);
         }
@@ -122,55 +125,4 @@ public class GoogleBloggerUtils {
 
         return blogger;
     }
-
-    /*private static void createPost(BloggerService myService, String title, String content, Boolean isDraft) {
-        try {
-            // Create the entry to insert
-            Entry myEntry = new Entry();
-            myEntry.setTitle(new PlainTextConstruct(title));
-            myEntry.setContent(new PlainTextConstruct(content));
-            //Person author = new Person(authorName, null, userName);
-            //myEntry.getAuthors().add(author);
-            myEntry.setDraft(isDraft);
-
-            // Ask the service to insert the new entry
-            String url = GlCommons.BLOGGER_SCOPE + getBlogId(myService) + GlCommons.POSTS_FEED_URI_SUFFIX;
-            URL postUrl = new URL(url);
-            Entry post = myService.insert(postUrl, myEntry);
-            logger.log(Level.INFO, "Successfully created draft post: {0}", post.getTitle().getPlainText());
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, "GoogleBloggerUtils.createPost() exception", ex);
-        }
-    }*/
-
-    /*private static String getBlogId(BloggerService myService)
-            throws ServiceException, IOException {
-        // Get the metafeed
-        final URL feedUrl = new URL(GlCommons.METAFEED_URL);
-        Feed resultFeed = myService.getFeed(feedUrl, Feed.class);
-
-        // If the user has a blog then return the id (which comes after 'blog-')
-        if (resultFeed.getEntries().size() > 0) {
-            Entry entry = resultFeed.getEntries().get(0);
-            return entry.getId().split("blog-")[1];
-        }
-        throw new IOException("User has no blogs!");
-    }*/
-
-    /*private static BloggerService getBloggerService() {
-        BloggerService myService = new BloggerService("GMS World");
-
-        GoogleOAuthParameters oauthParameters = new GoogleOAuthParameters();
-        oauthParameters.setOAuthConsumerKey(GlCommons.BLOGGER_KEY);
-        oauthParameters.setOAuthConsumerSecret(GlCommons.BLOGGER_SECRET);
-        oauthParameters.setOAuthToken(GlCommons.blogger_token);
-        oauthParameters.setOAuthTokenSecret(GlCommons.blogger_secret);
-        try {
-            myService.setOAuthCredentials(oauthParameters, new OAuthHmacSha1Signer());
-        } catch (OAuthException ex) {
-            logger.log(Level.SEVERE, "GoogleBloggerUtils.getBloggerService() exception: ", ex);
-        }
-        return myService;
-    }*/
-
 }

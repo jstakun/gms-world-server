@@ -47,6 +47,8 @@ import org.json.JSONObject;
  */
 public class YelpUtils extends LayerHelper {
 
+	private static final String CACHE_KEY = "YelpUsageLimitsMarker";
+	
     @Override
     public JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String hasDeals, String language) throws Exception {
         int normalizedRadius = NumberUtils.normalizeNumber(radius, 1000, 40000);
@@ -55,24 +57,30 @@ public class YelpUtils extends LayerHelper {
 
         String cachedResponse = CacheUtil.getString(key);
         if (cachedResponse == null) {
-            Map<Integer, Thread> venueDetailsThreads = new ConcurrentHashMap<Integer, Thread>();
-            ThreadFactory yelpThreadFactory = ThreadManager.currentRequestThreadFactory();
-            List<Object> venueArray = new ArrayList<Object>();
-            boolean isDeal = Boolean.parseBoolean(hasDeals);
-            int offset = 0;
-
-            while (offset < normalizedLimit) {
-                Thread venueDetailsRetriever = yelpThreadFactory.newThread(new VenueDetailsRetriever(venueDetailsThreads, venueArray,
-                        lat, lng, query, normalizedRadius, offset, isDeal, stringLimit, language, "json", null));
-                venueDetailsThreads.put(offset, venueDetailsRetriever);
-                venueDetailsRetriever.start();
-                offset += 20;
-            }
-
-            ThreadUtil.waitForLayers(venueDetailsThreads);
+        	List<Object> venueArray = new ArrayList<Object>();
             
-            if (venueArray.size() > normalizedLimit) {
-                venueArray = venueArray.subList(0, normalizedLimit);
+        	if (!CacheUtil.containsKey(CACHE_KEY)) {
+        		Map<Integer, Thread> venueDetailsThreads = new ConcurrentHashMap<Integer, Thread>();
+        		ThreadFactory yelpThreadFactory = ThreadManager.currentRequestThreadFactory();
+        		boolean isDeal = Boolean.parseBoolean(hasDeals);
+        		int offset = 0;
+
+        		while (offset < normalizedLimit) {
+        			Thread venueDetailsRetriever = yelpThreadFactory.newThread(new VenueDetailsRetriever(venueDetailsThreads, venueArray,
+                        lat, lng, query, normalizedRadius, offset, isDeal, stringLimit, language, "json", null));
+        			venueDetailsThreads.put(offset, venueDetailsRetriever);
+        			venueDetailsRetriever.start();
+        			offset += 20;
+        		}
+
+        		ThreadUtil.waitForLayers(venueDetailsThreads);
+            
+        		if (venueArray.size() > normalizedLimit) {
+        			venueArray = venueArray.subList(0, normalizedLimit);
+        		}
+            
+        	} else {
+            	logger.log(Level.WARNING, "Yelp Rate Limit Exceeded");
             }
 
             JSONObject json = new JSONObject().put("ResultSet", venueArray);
@@ -264,8 +272,8 @@ public class YelpUtils extends LayerHelper {
                         jsonArray.add(jsonObject);
                     }
                 }
-            } else if (jsonRoot != null) {
-                logger.log(Level.INFO, jsonRoot.toString());
+            } else {
+            	handleError(jsonRoot);
             }
         }
         return total;
@@ -304,6 +312,8 @@ public class YelpUtils extends LayerHelper {
                         }
                     }
                 }
+            } else {
+            	handleError(jsonRoot);
             }
         }
 
@@ -311,21 +321,28 @@ public class YelpUtils extends LayerHelper {
     }
 
     public static Map<String, Map<String, String>> processReviewsRequest(double latitude, double longitude, String query, int radius, int limit, boolean hasDeals, String language) throws JSONException, IOException, OAuthException {
-        Map<Integer, Thread> venueDetailsThreads = new ConcurrentHashMap<Integer, Thread>();
-        ThreadFactory yelpThreadFactory = ThreadManager.currentRequestThreadFactory();
-        Map<String, Map<String, String>> reviewsArray = new HashMap<String, Map<String, String>>();
-        int normalizedRadius = NumberUtils.normalizeNumber(radius, 1000, 40000);
-        int offset = 0;
+        
+    	Map<String, Map<String, String>> reviewsArray = new HashMap<String, Map<String, String>>();
+    	
+    	if (!CacheUtil.containsKey(CACHE_KEY)) {
+        	
+    		Map<Integer, Thread> venueDetailsThreads = new ConcurrentHashMap<Integer, Thread>();
+    		ThreadFactory yelpThreadFactory = ThreadManager.currentRequestThreadFactory();
+    		int normalizedRadius = NumberUtils.normalizeNumber(radius, 1000, 40000);
+    		int offset = 0;
 
-        while (offset < limit) {
-            Thread venueDetailsRetriever = yelpThreadFactory.newThread(new ReviewDetailsRetriever(venueDetailsThreads, reviewsArray,
+    		while (offset < limit) {
+    			Thread venueDetailsRetriever = yelpThreadFactory.newThread(new ReviewDetailsRetriever(venueDetailsThreads, reviewsArray,
                     latitude, longitude, query, normalizedRadius, offset, hasDeals, language));
-            venueDetailsThreads.put(offset, venueDetailsRetriever);
-            venueDetailsRetriever.start();
-            offset += 20;
-        }
+    			venueDetailsThreads.put(offset, venueDetailsRetriever);
+    			venueDetailsRetriever.start();
+    			offset += 20;
+    		}
 
-        ThreadUtil.waitForLayers(venueDetailsThreads);
+    		ThreadUtil.waitForLayers(venueDetailsThreads);
+    	} else {
+        	logger.log(Level.WARNING, "Yelp Rate Limit Exceeded");
+        }
 
         return reviewsArray;
     }
@@ -418,25 +435,30 @@ public class YelpUtils extends LayerHelper {
 
         List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)CacheUtil.getObject(key);
         if (landmarks == null) {
-            Map<Integer, Thread> venueDetailsThreads = new ConcurrentHashMap<Integer, Thread>();
-            ThreadFactory yelpThreadFactory = ThreadManager.currentRequestThreadFactory();
-            landmarks = Collections.synchronizedList(new ArrayList<ExtendedLandmark>());
-            boolean isDeal = Boolean.parseBoolean(hasDeals);
-            int offset = 0;
-
-            while (offset < normalizedLimit) {
-                Thread venueDetailsRetriever = yelpThreadFactory.newThread(new VenueDetailsRetriever(venueDetailsThreads, landmarks,
-                        lat, lng, query, normalizedRadius, offset, isDeal, stringLimit, language, "bin", locale));
-                venueDetailsThreads.put(offset, venueDetailsRetriever);
-                venueDetailsRetriever.start();
-                offset += 20;
-            }
-
-            ThreadUtil.waitForLayers(venueDetailsThreads);
+        	landmarks = Collections.synchronizedList(new ArrayList<ExtendedLandmark>());
             
-            if (landmarks.size() > normalizedLimit) {
-                landmarks = new ArrayList<ExtendedLandmark>(landmarks.subList(0, normalizedLimit));
-            }
+        	if (!CacheUtil.containsKey(CACHE_KEY)) {
+        		Map<Integer, Thread> venueDetailsThreads = new ConcurrentHashMap<Integer, Thread>();
+        		ThreadFactory yelpThreadFactory = ThreadManager.currentRequestThreadFactory();
+        		boolean isDeal = Boolean.parseBoolean(hasDeals);
+        		int offset = 0;
+
+        		while (offset < normalizedLimit) {
+        			Thread venueDetailsRetriever = yelpThreadFactory.newThread(new VenueDetailsRetriever(venueDetailsThreads, landmarks,
+                        lat, lng, query, normalizedRadius, offset, isDeal, stringLimit, language, "bin", locale));
+        			venueDetailsThreads.put(offset, venueDetailsRetriever);
+        			venueDetailsRetriever.start();
+        			offset += 20;
+        		}
+
+        		ThreadUtil.waitForLayers(venueDetailsThreads);
+            
+        		if (landmarks.size() > normalizedLimit) {
+        			landmarks = new ArrayList<ExtendedLandmark>(landmarks.subList(0, normalizedLimit));
+        		}
+        	} else {
+        		logger.log(Level.WARNING, "Yelp Rate Limit Exceeded");
+        	}
 
             if (!landmarks.isEmpty()) {
                 CacheUtil.put(key, landmarks);
@@ -578,10 +600,18 @@ public class YelpUtils extends LayerHelper {
                         landmarks.add(landmark);
                     }
                 }
-            } else if (jsonRoot != null) {
-                logger.log(Level.INFO, jsonRoot.toString());
+            } else {
+            	handleError(jsonRoot);
             }
         }
         return total;
     }
+	
+	private static void handleError(JSONObject root) {
+		JSONObject error = root.optJSONObject("error");
+		if (error != null && StringUtils.equals(error.optString("id"), "EXCEEDED_REQS")) {
+			CacheUtil.put(CACHE_KEY, "1");
+		}
+		logger.log(Level.SEVERE, "Received Yelp error response {0}", root);
+	}
 }

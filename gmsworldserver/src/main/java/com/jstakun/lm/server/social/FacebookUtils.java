@@ -42,6 +42,13 @@ public class FacebookUtils {
         			logger.log(Level.SEVERE, "FacebookUtils.sendMessage() exception", e);
         		}
         	}
+        	
+        	//TODO remove
+        	logger.log(Level.INFO, "Sending message with params:");
+        	for (Parameter param : params) {
+        		logger.log(Level.INFO, param.name + "=" + param.value);
+        	}
+        	//
             
         	if (!verifyPermission || hasPermission) {
         		FacebookType publishMessageResponse = (FacebookType) facebookClient.publish(connection, FacebookType.class, params);
@@ -57,17 +64,10 @@ public class FacebookUtils {
         }
     }
 
-	public static void sendMessageToUserFeed(String token, String key, int type) {
+	public static void sendMessageToUserFeed(String token, String url, String title, int type) {
         if (token != null) {
             FacebookClient facebookClient = new DefaultFacebookClient(token);
             Parameter params[] = null;
-            String name = null;
-            String link = null;
-            if (key != null) {
-            	Landmark landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
-            	link = UrlUtils.getShortUrl(UrlUtils.getLandmarkUrl(landmark));    
-            	name = landmark.getName();
-            }
             //message, picture, link, name, caption, description, source, place, tags
             
             ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
@@ -75,17 +75,17 @@ public class FacebookUtils {
             if (type == Commons.BLOGEO) {
                 params = new Parameter[]{
                             Parameter.with("message", rb.getString("Social.fb.message.blogeo")),
-                            Parameter.with("name", name),
+                            Parameter.with("name", title),
                             Parameter.with("description", rb.getString("Social.fb.desc.blogeo")),
-                            Parameter.with("link", link),
+                            Parameter.with("link", url),
                             Parameter.with("picture", ConfigurationManager.SERVER_URL + "images/blogeo_j.png")
                         };
             } else if (type == Commons.LANDMARK) {
                 params = new Parameter[]{
                             Parameter.with("message", rb.getString("Social.fb.message.landmark")),
-                            Parameter.with("name", name),
+                            Parameter.with("name", title),
                             Parameter.with("description", rb.getString("Social.fb.desc.landmark")),
-                            Parameter.with("link", link),
+                            Parameter.with("link", url),
                             Parameter.with("picture", ConfigurationManager.SERVER_URL + "images/poi_j.png")
                         };
             } else if (type == Commons.LOGIN) {
@@ -93,21 +93,21 @@ public class FacebookUtils {
             			 Parameter.with("message", rb.getString("Social.login")),
             			 Parameter.with("picture", ConfigurationManager.SERVER_URL + "images/3globe_80.png"),
             			 Parameter.with("description", rb.getString("Social.login.desc")),
-            			 Parameter.with("link", ConfigurationManager.SERVER_URL),
-             			Parameter.with("name", "Message from GMS World"),
+            			 Parameter.with("link", url),
+             			Parameter.with("name", title),
                      }; 
             } else if (type == Commons.MY_POS) {
             	params = new Parameter[]{
             			Parameter.with("message", rb.getString("Social.fb.message.mypos")),
             			Parameter.with("picture", ConfigurationManager.SERVER_URL + "images/location.png"),
             			Parameter.with("description", rb.getString("Social.fb.desc.mypos")),
-            			Parameter.with("link", link),
-            			Parameter.with("name", name),
+            			Parameter.with("link", url),
+            			Parameter.with("name", title),
             	};		
             }
             sendMessage(facebookClient, "me/feed", params, true);
         } else {
-            logger.log(Level.SEVERE, "Landmark or token is null! Key: {0}, token: {1}", new Object[]{key, token});
+            logger.log(Level.SEVERE, "Token is empty!");
         }
     }
 

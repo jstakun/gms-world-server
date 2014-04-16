@@ -89,9 +89,10 @@ public class ImageUploadServlet extends HttpServlet {
                             put("lng", Double.toString(lng)).
                             put("username", StringUtils.isNotEmpty(username) ? username : "").build();
                     		NotificationUtils.createNotificationTask(params);
-                    		
+                    		output = "File saved with key " + key;
                         } else {
-                            logger.log(Level.SEVERE, "Key is null!");
+                        	output = "Key is empty!";
+                            logger.log(Level.SEVERE, "Key is empty!");
                             logger.log(Level.INFO, "Deleted file " + FileUtils.deleteFileV2(itemName));
                         }
                     } else {

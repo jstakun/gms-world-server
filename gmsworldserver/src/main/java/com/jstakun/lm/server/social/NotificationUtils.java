@@ -4,8 +4,6 @@ import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -20,7 +18,7 @@ import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 
 public class NotificationUtils {
 	
-	private static final Logger logger = Logger.getLogger(NotificationUtils.class.getName());
+	//private static final Logger logger = Logger.getLogger(NotificationUtils.class.getName());
 	
 	public static void createNotificationTask(Map<String, String> params) {
 		Queue queue = QueueFactory.getQueue("notifications");
@@ -28,7 +26,7 @@ public class NotificationUtils {
 		for (Map.Entry<String, String> entry : params.entrySet()) {
 			options.param(entry.getKey(), entry.getValue());	
 		}
-		logger.log(Level.INFO, "Creating new notification task {0}...", options.toString());
+		//logger.log(Level.INFO, "Creating new notification task {0}...", options.toString());
 		queue.add(options);   		
 	}
 
@@ -54,7 +52,7 @@ public class NotificationUtils {
 		} else {
 			params.put("type", Integer.toString(Commons.LOGIN));
 			params.put("url", ConfigurationManager.SERVER_URL);
-			params.put("title", "GMS World");
+			params.put("title", "Message from GMS World");
 		}
 		
 		return params;
