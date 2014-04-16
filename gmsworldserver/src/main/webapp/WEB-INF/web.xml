@@ -86,8 +86,8 @@
     <url-pattern>/twlogin</url-pattern>
     <url-pattern>/lnlogin</url-pattern>
     <url-pattern>/gllogin</url-pattern>
-    <!-- url-pattern>/fblogin</url-pattern>
-    <url-pattern>/token</url-pattern-->
+    <url-pattern>/fblogin</url-pattern>
+    <url-pattern>/token</url-pattern>
  </filter-mapping>
  <filter-mapping>
   <filter-name>BlockerFilter</filter-name>
