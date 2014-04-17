@@ -1,6 +1,7 @@
 package com.jstakun.lm.server.tasks;
 
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -105,7 +106,7 @@ public class NotificationTaskServlet extends HttpServlet {
                 	MailUtils.sendLoginNotification(email, name, layer, getServletContext());
                 }
             	
-            } else if (!HttpUtils.isEmptyAny(request, "key", "imageUrl", "showImageUrl", "lat", "lng", "service")) {
+            } else if (!HttpUtils.isEmptyAny(request, "imageUrl", "showImageUrl", "lat", "lng", "service")) {
             	
             	String imageUrl = request.getParameter("imageUrl");
             	String username = request.getParameter("username");
@@ -151,7 +152,12 @@ public class NotificationTaskServlet extends HttpServlet {
             	}
             	
             } else {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            	String params = "";
+            	for (Enumeration<String> iter=request.getParameterNames();iter.hasMoreElements(); ) {
+            		params += iter.nextElement() + " ";
+            	}
+            	logger.log(Level.SEVERE, "Wrong parameters: " + params);
+            	response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             }
     	} catch (Exception e) {
     		logger.log(Level.SEVERE, e.getMessage(), e);

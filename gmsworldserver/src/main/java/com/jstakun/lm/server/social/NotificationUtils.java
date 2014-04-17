@@ -60,43 +60,47 @@ public class NotificationUtils {
 	
 	public static void createLadmarkCreationNotificationTask(Map<String, String> params) {
 		
-		params.put("service", Commons.FACEBOOK);
+		Map<String, String> newParams = new HashMap<String, String>(params);
+		
 		//FacebookUtils
-		createNotificationTask(params);
+		newParams.put("service", Commons.FACEBOOK);
+		createNotificationTask(newParams);
 		
 		//TwitterUtils
-		params.put("service", Commons.TWITTER);
-        createNotificationTask(params);
+		newParams.put("service", Commons.TWITTER);
+        createNotificationTask(newParams);
 		
         //GoogleBloggerUtils
-		params.put("service", Commons.GOOGLE_BLOGGER);
-        createNotificationTask(params);
+        newParams.put("service", Commons.GOOGLE_BLOGGER);
+        createNotificationTask(newParams);
 		
         //GooglePlusUtils
-		params.put("service", Commons.GOOGLE_PLUS);
-        createNotificationTask(params);
+        newParams.put("service", Commons.GOOGLE_PLUS);
+        createNotificationTask(newParams);
         
         //email
-        params.put("service", Commons.MAIL);
-        createNotificationTask(params);
+        newParams.put("service", Commons.MAIL);
+        createNotificationTask(newParams);
 	}
 	
 	public static void createImageCreationNotificationTask(Map<String, String> params) {
 		
-		params.put("service", Commons.FACEBOOK);
+		Map<String, String> newParams = new HashMap<String, String>(params);
+		
 		//FacebookUtils
-		createNotificationTask(params);
+		newParams.put("service", Commons.FACEBOOK);
+		createNotificationTask(newParams);
 		
 		//TwitterUtils
-		params.put("service", Commons.TWITTER);
-        createNotificationTask(params);
+		newParams.put("service", Commons.TWITTER);
+        createNotificationTask(newParams);
 		
         //GoogleBloggerUtils
-		params.put("service", Commons.GOOGLE_BLOGGER);
-        createNotificationTask(params);
+        newParams.put("service", Commons.GOOGLE_BLOGGER);
+        createNotificationTask(newParams);
 		
         //GooglePlusUtils
-		params.put("service", Commons.GOOGLE_PLUS);
-        createNotificationTask(params);
+        newParams.put("service", Commons.GOOGLE_PLUS);
+        createNotificationTask(newParams);
 	}
 }
