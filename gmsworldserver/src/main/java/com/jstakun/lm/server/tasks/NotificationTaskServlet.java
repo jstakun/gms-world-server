@@ -77,42 +77,33 @@ public class NotificationTaskServlet extends HttpServlet {
             	String username = request.getParameter("username");
             	String name = request.getParameter("name");
             	String email = request.getParameter("email");
-            	ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
-                
+            	String layer = null;
+            	
             	logger.log(Level.INFO, "Sending user creation notification to {0}...", service);
             	
             	if (StringUtils.equals(service, Commons.FACEBOOK)) {
             		FacebookUtils.sendMessageToUserFeed(accessToken, ConfigurationManager.SERVER_URL, "Message from GMS World", Commons.LOGIN);
-                    MailUtils.sendUserCreationNotification(String.format(rb.getString("Social.user.login"), ConfigurationManager.SERVER_URL, username, Commons.FACEBOOK));
-                    if (StringUtils.isNotEmpty(email)) {
-                    	MailUtils.sendLoginNotification(email, name, "Facebook", getServletContext());
-                    }
+                    layer = Commons.FACEBOOK_LAYER;
             	} else if (StringUtils.equals(service, Commons.FOURSQUARE)) {
-            		MailUtils.sendUserCreationNotification(String.format(rb.getString("Social.user.login"), ConfigurationManager.SERVER_URL, username, Commons.FOURSQUARE));
-                    if (StringUtils.isNotEmpty(email)) {
-                    	MailUtils.sendLoginNotification(email, name, "Foursquare", getServletContext());
-                    }
+            		layer = Commons.FOURSQUARE_LAYER;
             	} else if (StringUtils.equals(service, Commons.GOOGLE_PLUS)) {
             		String refreshToken = request.getParameter("refreshToken");
                 	GooglePlusUtils.sendMessage(accessToken, refreshToken, null, ConfigurationManager.SERVER_URL, Commons.LOGIN);
-                    MailUtils.sendUserCreationNotification(String.format(rb.getString("Social.user.login"), ConfigurationManager.SERVER_URL, username, Commons.GOOGLE_PLUS));
-                    if (StringUtils.isNotEmpty(email)) {
-                    	MailUtils.sendLoginNotification(email, name, "Google", getServletContext());
-                    }
+                	layer = "Google";
             	} else if (StringUtils.equals(service, Commons.LINKEDIN)) {
             		LinkedInUtils.sendPost(ConfigurationManager.SERVER_URL, "GMS World", Commons.LOGIN, accessToken, null);
-                    MailUtils.sendUserCreationNotification(String.format(rb.getString("Social.user.login"), ConfigurationManager.SERVER_URL, username, Commons.LINKEDIN));
-                    if (StringUtils.isNotEmpty(email)) {
-                    	MailUtils.sendLoginNotification(email, name, "LinkedIn", getServletContext());
-                    }
+            		layer = "LinkedIn";
             	} else if (StringUtils.equals(service, Commons.TWITTER)) {
             		String tokenSecret = request.getParameter("tokenSecret");
                 	TwitterUtils.sendMessage(null, ConfigurationManager.SERVER_URL, accessToken, tokenSecret, Commons.LOGIN);
-                    MailUtils.sendUserCreationNotification(String.format(rb.getString("Social.user.login"), ConfigurationManager.SERVER_URL, username, Commons.TWITTER));
-                    if (StringUtils.isNotEmpty(email)) {
-                    	MailUtils.sendLoginNotification(email, name, "Twitter", getServletContext());
-                    }
+                	layer = Commons.TWITTER_LAYER;
             	}
+            	
+            	ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
+                MailUtils.sendUserCreationNotification(String.format(rb.getString("Social.user.login"), ConfigurationManager.SERVER_URL, username, service));
+                if (StringUtils.isNotEmpty(email) && layer != null) {
+                	MailUtils.sendLoginNotification(email, name, layer, getServletContext());
+                }
             	
             } else if (!HttpUtils.isEmptyAny(request, "key", "imageUrl", "showImageUrl", "lat", "lng", "service")) {
             	
