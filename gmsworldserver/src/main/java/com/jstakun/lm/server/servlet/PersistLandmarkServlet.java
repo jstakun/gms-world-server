@@ -183,7 +183,8 @@ public class PersistLandmarkServlet extends HttpServlet {
                     		put("userUrl", userUrl).
                     		put("username", username).
                     		put("body", body).build();  
-                    NotificationUtils.createNotificationTask(params);
+                    
+                    NotificationUtils.createLadmarkCreationNotificationTask(params);
                 }
             }
         } catch (Exception e) {

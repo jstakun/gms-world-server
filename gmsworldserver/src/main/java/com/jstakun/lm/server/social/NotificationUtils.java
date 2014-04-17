@@ -57,4 +57,46 @@ public class NotificationUtils {
 		
 		return params;
 	}
+	
+	public static void createLadmarkCreationNotificationTask(Map<String, String> params) {
+		
+		params.put("service", Commons.FACEBOOK);
+		//FacebookUtils
+		createNotificationTask(params);
+		
+		//TwitterUtils
+		params.put("service", Commons.TWITTER);
+        createNotificationTask(params);
+		
+        //GoogleBloggerUtils
+		params.put("service", Commons.GOOGLE_BLOGGER);
+        createNotificationTask(params);
+		
+        //GooglePlusUtils
+		params.put("service", Commons.GOOGLE_PLUS);
+        createNotificationTask(params);
+        
+        //email
+        params.put("service", Commons.MAIL);
+        createNotificationTask(params);
+	}
+	
+	public static void createImageCreationNotificationTask(Map<String, String> params) {
+		
+		params.put("service", Commons.FACEBOOK);
+		//FacebookUtils
+		createNotificationTask(params);
+		
+		//TwitterUtils
+		params.put("service", Commons.TWITTER);
+        createNotificationTask(params);
+		
+        //GoogleBloggerUtils
+		params.put("service", Commons.GOOGLE_BLOGGER);
+        createNotificationTask(params);
+		
+        //GooglePlusUtils
+		params.put("service", Commons.GOOGLE_PLUS);
+        createNotificationTask(params);
+	}
 }

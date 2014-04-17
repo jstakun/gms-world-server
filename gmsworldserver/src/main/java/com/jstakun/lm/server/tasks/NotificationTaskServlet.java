@@ -40,11 +40,10 @@ public class NotificationTaskServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	try {
-    		if (!HttpUtils.isEmptyAny(request, "key", "landmarkUrl", "title", "body", "username", "userUrl")) {
+    		if (!HttpUtils.isEmptyAny(request, "key", "landmarkUrl", "title", "body", "username", "userUrl", "service")) {
     			
-    			logger.log(Level.INFO, "Sending landmark creation notification...");
-    			
-    			String key = request.getParameter("key");
+    			String service = request.getParameter("service");
+            	String key = request.getParameter("key");
             	String landmarkUrl = request.getParameter("landmarkUrl");
             	String email = request.getParameter("email");
             	String title = request.getParameter("title");
@@ -52,17 +51,27 @@ public class NotificationTaskServlet extends HttpServlet {
             	String userUrl = request.getParameter("userUrl");
             	String username = request.getParameter("username");
             	
-    			FacebookUtils.sendMessageToPageFeed(key, landmarkUrl);
-                TwitterUtils.sendMessage(key, landmarkUrl, ConfigurationManager.getParam(ConfigurationManager.TW_TOKEN, null), ConfigurationManager.getParam(ConfigurationManager.TW_SECRET, null), Commons.SERVER);
-                GoogleBloggerUtils.sendMessage(key, landmarkUrl, Commons.gl_plus_token, Commons.gl_plus_refresh, true);
-                GooglePlusUtils.sendMessage(Commons.gl_plus_token, Commons.gl_plus_refresh, key, landmarkUrl, Commons.SERVER);
-                MailUtils.sendLandmarkCreationNotification(title, body);
-                //send landmark creation notification email to user
-                if (StringUtils.isNotEmpty(email)) {
-                	String userMask = UrlUtils.createUsernameMask(username);
-                	MailUtils.sendLandmarkNotification(email, userUrl, userMask, landmarkUrl, key, getServletContext());
-                }			
+            	logger.log(Level.INFO, "Sending landmark creation notification to service {0}...", service);
+            	
+            	if (StringUtils.equals(service, Commons.FACEBOOK)) {
+            		FacebookUtils.sendMessageToPageFeed(key, landmarkUrl);
+            	} else if (StringUtils.equals(service, Commons.TWITTER)) {
+            		TwitterUtils.sendMessage(key, landmarkUrl, ConfigurationManager.getParam(ConfigurationManager.TW_TOKEN, null), ConfigurationManager.getParam(ConfigurationManager.TW_SECRET, null), Commons.SERVER);
+            	} else if (StringUtils.equals(service, Commons.GOOGLE_BLOGGER)) {
+            		GoogleBloggerUtils.sendMessage(key, landmarkUrl, Commons.gl_plus_token, Commons.gl_plus_refresh, true);
+            	} else if (StringUtils.equals(service, Commons.GOOGLE_PLUS)) {
+            		GooglePlusUtils.sendMessage(Commons.gl_plus_token, Commons.gl_plus_refresh, key, landmarkUrl, Commons.SERVER);
+            	} else if (StringUtils.equals(service, Commons.MAIL)) {
+            		MailUtils.sendLandmarkCreationNotification(title, body);
+            		//send landmark creation notification email to user
+            		if (StringUtils.isNotEmpty(email)) {
+            			String userMask = UrlUtils.createUsernameMask(username);
+            			MailUtils.sendLandmarkNotification(email, userUrl, userMask, landmarkUrl, key, getServletContext());
+            		}			
+            	}
+            	
     		} else if (!HttpUtils.isEmptyAny(request, "service", "accessToken", "name", "username")) {
+    			
     			String service = request.getParameter("service");
             	String accessToken = request.getParameter("accessToken");
             	String username = request.getParameter("username");
@@ -104,23 +113,30 @@ public class NotificationTaskServlet extends HttpServlet {
                     	MailUtils.sendLoginNotification(email, name, "Twitter", getServletContext());
                     }
             	}
-            } else if (!HttpUtils.isEmptyAny(request, "key", "imageUrl", "lat", "lng")) {
             	
-            	logger.log(Level.INFO, "Sending image creation notification...");
+            } else if (!HttpUtils.isEmptyAny(request, "key", "imageUrl", "showImageUrl", "lat", "lng", "service")) {
             	
-    			String key = request.getParameter("key");
             	String imageUrl = request.getParameter("imageUrl");
             	String username = request.getParameter("username");
             	double lat = NumberUtils.getDouble(request.getParameter("lat"), 0d);
             	double lng = NumberUtils.getDouble(request.getParameter("lng"), 0d);
-            	
-            	String showImageUrl = UrlUtils.getShortUrl(ConfigurationManager.SERVER_URL + "showImage/" + key);
+            	String service = request.getParameter("service");
+            	String showImageUrl = request.getParameter("showImageUrl");
                 
-                FacebookUtils.sendImageMessage(imageUrl, showImageUrl, username);
-                TwitterUtils.sendImageMessage(showImageUrl, username, lat, lng);
-                GoogleBloggerUtils.sendImageMessage(showImageUrl, username, imageUrl);
-                GooglePlusUtils.sendImageMessage(showImageUrl, username, imageUrl);
+            	logger.log(Level.INFO, "Sending image creation notification to {0}...", service);
+            	
+            	if (StringUtils.equals(service, Commons.FACEBOOK)) {
+                	FacebookUtils.sendImageMessage(imageUrl, showImageUrl, username);
+            	} else if (StringUtils.equals(service, Commons.TWITTER)) {
+                	TwitterUtils.sendImageMessage(showImageUrl, username, lat, lng);
+            	} else if (StringUtils.equals(service, Commons.GOOGLE_BLOGGER)) {
+            		GoogleBloggerUtils.sendImageMessage(showImageUrl, username, imageUrl);
+            	} else if (StringUtils.equals(service, Commons.GOOGLE_PLUS)) {
+                	GooglePlusUtils.sendImageMessage(showImageUrl, username, imageUrl);
+                }
+                
             } else if (!HttpUtils.isEmptyAny(request, "url", "type", "title", "service")) {
+            	
             	String service = request.getParameter("service");
             	String url = request.getParameter("url");
             	int type = NumberUtils.getInt(request.getParameter("type"),-1);
@@ -142,6 +158,7 @@ public class NotificationTaskServlet extends HttpServlet {
             		String secret = request.getParameter("secret");
             		TwitterUtils.sendMessage(key, url, token, secret, type);
             	}
+            	
             } else {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             }

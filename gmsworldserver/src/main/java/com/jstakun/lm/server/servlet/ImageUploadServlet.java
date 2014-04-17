@@ -26,6 +26,7 @@ import com.jstakun.lm.server.social.NotificationUtils;
 import com.jstakun.lm.server.utils.FileUtils;
 import com.jstakun.lm.server.utils.NumberUtils;
 import com.jstakun.lm.server.utils.StringUtil;
+import com.jstakun.lm.server.utils.UrlUtils;
 import com.jstakun.lm.server.utils.persistence.ScreenshotPersistenceUtils;
 
 /**
@@ -81,14 +82,16 @@ public class ImageUploadServlet extends HttpServlet {
                         if (key != null) {
                             //String imageUrl = FileUtils.getImageUrlV2(itemName);
                         	String imageUrl = ConfigurationManager.SERVER_URL + "image/" + key;
-
+                        	String showImageUrl = UrlUtils.getShortUrl(ConfigurationManager.SERVER_URL + "showImage/" + key);
+                    		
                             Map<String, String> params = new ImmutableMap.Builder<String, String>().
-                            put("key", key).
+                            put("showImageUrl", showImageUrl).
                             put("imageUrl", imageUrl).
                             put("lat", Double.toString(lat)).
                             put("lng", Double.toString(lng)).
                             put("username", StringUtils.isNotEmpty(username) ? username : "").build();
-                    		NotificationUtils.createNotificationTask(params);
+                    		NotificationUtils.createImageCreationNotificationTask(params);
+                    		
                     		output = "File saved with key " + key;
                         } else {
                         	output = "Key is empty!";
