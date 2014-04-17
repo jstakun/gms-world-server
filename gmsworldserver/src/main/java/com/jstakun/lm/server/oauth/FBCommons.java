@@ -71,7 +71,7 @@ public final class FBCommons {
                 }
             }
             if (accessToken != null) {
-                userData = FBCommons.getMyData(accessToken);
+                userData = getMyData(accessToken);
                 userData.put("token", accessToken);
                 if (expires > 0) {
                 	userData.put(ConfigurationManager.FB_EXPIRES_IN, Integer.toString(expires));

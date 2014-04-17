@@ -6,6 +6,8 @@ package com.jstakun.lm.server.struts;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,6 +18,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import com.jstakun.lm.server.utils.DateUtils;
+import com.jstakun.lm.server.utils.NumberUtils;
 import com.jstakun.lm.server.utils.memcache.CacheAction;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 
@@ -42,27 +45,10 @@ public class GetHeatMapAction extends org.apache.struts.action.Action {
             HttpServletRequest request, HttpServletResponse response)
             throws Exception {
 
-        int days = 365;
-
-        try {
-            String param = request.getParameter("days");
-            if (param != null) {
-                days = Integer.parseInt(param);
-            }
-        } catch (Exception e) {
-        }
-        final int nDays = days;
+        final int nDays = NumberUtils.getInt(request.getParameter("days"), 365);
 
         boolean inBackground = StringUtils.endsWithIgnoreCase(request.getParameter("inBackground"), "true");
 
-        //String cacheKey = DateUtils.getDay(new Date()) + "_" + nDays + "_heatMap";
-
-        //Map<String, Integer> heatMapData = (Map<String, Integer>) CacheUtil.getObject(cacheKey);
-
-        //if (heatMapData == null) {
-        //    heatMapData = LandmarkPersistenceUtils.getHeatMap(nDays);
-        //}
-        
         CacheAction heatMapCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
 			@Override
 			public Object executeAction() {
@@ -70,6 +56,8 @@ public class GetHeatMapAction extends org.apache.struts.action.Action {
 			}
 		});
         Map<String, Integer> heatMapData = (Map<String, Integer>)heatMapCacheAction.getObjectFromCache(DateUtils.getDay(new Date()) + "_" + nDays + "_heatMap");
+        
+        Logger.getLogger(GetHeatMapAction.class.getName()).log(Level.INFO, "Heat map size {0}", heatMapData.size());
         
         request.setAttribute("heatMapData", heatMapData);
 

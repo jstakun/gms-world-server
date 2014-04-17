@@ -53,7 +53,7 @@ public final class FSCommons {
 			
 			if (accessToken != null) {
 
-				userData = FSCommons.getUserData(accessToken);
+				userData = getUserData(accessToken);
 				
 				if (!userData.isEmpty()) {
 					userData.put("token", accessToken);

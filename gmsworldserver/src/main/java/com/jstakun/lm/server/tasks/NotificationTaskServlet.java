@@ -1,7 +1,6 @@
 package com.jstakun.lm.server.tasks;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,10 +38,7 @@ public class NotificationTaskServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-    	response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	try {
     		if (!HttpUtils.isEmptyAny(request, "key", "landmarkUrl", "title", "body", "username", "userUrl")) {
     			
@@ -152,10 +148,7 @@ public class NotificationTaskServlet extends HttpServlet {
     	} catch (Exception e) {
     		logger.log(Level.SEVERE, e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        } finally {
-            out.close();
-        }
-    	
+        } 
     }
 
 	/**

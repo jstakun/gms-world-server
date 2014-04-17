@@ -98,42 +98,50 @@ public class YelpUtils extends LayerHelper {
     }
 
     private static String processRequest(double latitude, double longitude, String query, int radius, boolean hasDeals, int offset, String language) throws OAuthException, IOException {
-        OAuthHmacSha1Signer hmacSigner = new OAuthHmacSha1Signer();
-        OAuthParameters parameters = new OAuthParameters();
-        parameters.setOAuthConsumerKey(Commons.YELP_Consumer_Key);
-        parameters.setOAuthConsumerSecret(Commons.YELP_Consumer_Secret);
-        parameters.setOAuthToken(Commons.YELP_Token);
-        parameters.setOAuthTokenSecret(Commons.YELP_Token_Secret);
-        parameters.setOAuthTimestamp(Long.toString(System.currentTimeMillis()));
-        int nonce = (int) (Math.random() * 1e8);
-        parameters.setOAuthNonce(Integer.toString(nonce));
-        parameters.setOAuthSignatureMethod("HMAC-SHA1");
+    	String responseBody = null;
+    	
+    	if (!CacheUtil.containsKey(CACHE_KEY)) {
+    	
+    		OAuthHmacSha1Signer hmacSigner = new OAuthHmacSha1Signer();
+    		OAuthParameters parameters = new OAuthParameters();
+    		parameters.setOAuthConsumerKey(Commons.YELP_Consumer_Key);
+    		parameters.setOAuthConsumerSecret(Commons.YELP_Consumer_Secret);
+    		parameters.setOAuthToken(Commons.YELP_Token);
+    		parameters.setOAuthTokenSecret(Commons.YELP_Token_Secret);
+    		parameters.setOAuthTimestamp(Long.toString(System.currentTimeMillis()));
+    		int nonce = (int) (Math.random() * 1e8);
+    		parameters.setOAuthNonce(Integer.toString(nonce));
+    		parameters.setOAuthSignatureMethod("HMAC-SHA1");
 
-        //sort: Sort mode: 0=Best matched (default), 1=Distance, 2=Highest Rated
-        String urlString = "http://api.yelp.com/v2/search?ll=" + StringUtil.formatCoordE6(latitude) + "," + StringUtil.formatCoordE6(longitude) + "&radius_filter=" + radius; // + "&sort=1";
+    		//sort: Sort mode: 0=Best matched (default), 1=Distance, 2=Highest Rated
+    		String urlString = "http://api.yelp.com/v2/search?ll=" + StringUtil.formatCoordE6(latitude) + "," + StringUtil.formatCoordE6(longitude) + "&radius_filter=" + radius; // + "&sort=1";
 
-        if (StringUtils.isNotEmpty(query)) {
-            urlString += "&term=" + URLEncoder.encode(query, "UTF-8");
-        }
-        if (offset >= 0) {
-            urlString += "&offset=" + offset;
-        }
-        if (hasDeals) {
-            urlString += "&deals_filter=true";
-        }
-        if (StringUtils.isNotEmpty(language)) {
-        	urlString += "&lang=" + language + "&cc=" + language;
-        }
+    		if (StringUtils.isNotEmpty(query)) {
+    			urlString += "&term=" + URLEncoder.encode(query, "UTF-8");
+    		}
+        
+    		if (offset >= 0) {
+    			urlString += "&offset=" + offset;
+    		}
+        
+    		if (hasDeals) {
+    			urlString += "&deals_filter=true";
+    		}
+        
+    		if (StringUtils.isNotEmpty(language)) {
+    			urlString += "&lang=" + language + "&cc=" + language;
+    		}
 
-        //System.out.println("Calling: " + urlString);
+    		//System.out.println("Calling: " + urlString);
 
-        String baseString = OAuthUtil.getSignatureBaseString(urlString, "GET", parameters.getBaseParameters());
-        String signature = hmacSigner.getSignature(baseString, parameters);
-        parameters.addCustomBaseParameter("oauth_signature", signature);
+    		String baseString = OAuthUtil.getSignatureBaseString(urlString, "GET", parameters.getBaseParameters());
+    		String signature = hmacSigner.getSignature(baseString, parameters);
+    		parameters.addCustomBaseParameter("oauth_signature", signature);
 
-        String responseBody = HttpUtils.processFileRequestWithAuthn(new URL(urlString), AuthUtils.buildAuthHeaderString(parameters));
+    		responseBody = HttpUtils.processFileRequestWithAuthn(new URL(urlString), AuthUtils.buildAuthHeaderString(parameters));
 
-        //System.out.println(responseBody);
+    		//System.out.println(responseBody);
+    	}
 
         return responseBody;
     }

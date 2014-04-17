@@ -62,7 +62,7 @@ public final class LnCommons {
         
         	if (StringUtils.isNotEmpty(accessToken))
         	{
-        		userData = LnCommons.getUserDate(accessToken);
+        		userData = getUserDate(accessToken);
         	
         		String key = TokenUtil.generateToken("lm", userData.get(ConfigurationManager.LN_USERNAME) + "@" + Commons.LINKEDIN);
         		userData.put("gmsToken", key); 

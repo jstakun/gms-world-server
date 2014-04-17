@@ -70,7 +70,7 @@ public final class GlCommons {
 
         if (accessToken != null && refreshToken != null) {
 
-            userData = GlCommons.getUserData(accessToken, refreshToken);
+            userData = getUserData(accessToken, refreshToken);
             
             String token = accessToken;
             if (refreshToken != null) {
