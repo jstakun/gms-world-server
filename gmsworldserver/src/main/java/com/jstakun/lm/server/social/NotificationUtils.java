@@ -30,7 +30,7 @@ public class NotificationUtils {
 		queue.add(options);   		
 	}
 
-	public static Map<String, String> getNotificationParams(String key) {
+	protected static Map<String, String> getNotificationParams(String key) {
 		Map<String, String> params = new HashMap<String, String>();
 		
 		if (StringUtils.isNotEmpty(key)) {

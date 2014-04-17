@@ -1,4 +1,4 @@
-package com.jstakun.lm.server.servlet;
+package com.jstakun.lm.server.social;
 
 import java.io.IOException;
 import java.util.Map;
@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 
 import com.jstakun.lm.server.config.Commons;
-import com.jstakun.lm.server.social.NotificationUtils;
 
 /**
  * Servlet implementation class SocialMessageServlet

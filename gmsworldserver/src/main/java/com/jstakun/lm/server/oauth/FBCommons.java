@@ -8,6 +8,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -15,9 +18,11 @@ import org.apache.commons.lang.StringUtils;
 import com.google.common.collect.ImmutableMap;
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
-import com.jstakun.lm.server.layers.FacebookUtils;
 import com.jstakun.lm.server.social.NotificationUtils;
 import com.jstakun.lm.server.utils.TokenUtil;
+import com.restfb.DefaultFacebookClient;
+import com.restfb.FacebookClient;
+import com.restfb.types.User;
 
 /**
  *
@@ -25,6 +30,7 @@ import com.jstakun.lm.server.utils.TokenUtil;
  */
 public final class FBCommons {
     
+	private static final SimpleDateFormat outf = new SimpleDateFormat("yyyyMMdd", java.util.Locale.US);
     private static final String redirect_uri = ConfigurationManager.SSL_SERVER_URL + "fbauth";
     private static final String SCOPE = "publish_stream,offline_access,user_birthday,email,friends_status,user_status,friends_photos,user_photos"; //manage_pages
  
@@ -65,7 +71,7 @@ public final class FBCommons {
                 }
             }
             if (accessToken != null) {
-                userData = FacebookUtils.getMyData(accessToken);
+                userData = FBCommons.getMyData(accessToken);
                 userData.put("token", accessToken);
                 if (expires > 0) {
                 	userData.put(ConfigurationManager.FB_EXPIRES_IN, Integer.toString(expires));
@@ -104,4 +110,35 @@ public final class FBCommons {
     }
     
     private FBCommons() {}
+
+	private static Map<String, String> getMyData(String token) {
+		Map<String, String> userData = new HashMap<String, String>();
+		
+		FacebookClient facebookClient = new DefaultFacebookClient(token);
+	    User me = facebookClient.fetchObject("me", User.class);
+	    
+	    userData.put(ConfigurationManager.FB_USERNAME, me.getId());
+	    String name = me.getName();
+	    if (name != null) {
+	        userData.put(ConfigurationManager.FB_NAME, name);
+	    } else {
+	    	userData.put(ConfigurationManager.FB_NAME, me.getId());
+	    }
+	    String gender = me.getGender();
+	    if (gender != null) {
+	       userData.put(ConfigurationManager.FB_GENDER, gender);
+	    }
+	    Date birthday = me.getBirthdayAsDate();
+	    if (birthday != null) {
+	    	String outd = outf.format(birthday);
+			userData.put(ConfigurationManager.FB_BIRTHDAY, outd);
+	    } 
+		
+	    String email = me.getEmail();
+	    if (StringUtils.isNotEmpty(email)) {
+	    	userData.put(ConfigurationManager.USER_EMAIL, email);
+	    }
+	    
+		return userData;
+	}
 }

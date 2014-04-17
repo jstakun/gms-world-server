@@ -7,11 +7,22 @@ package com.jstakun.lm.server.oauth;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
+import com.google.api.client.extensions.appengine.http.UrlFetchTransport;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson.JacksonFactory;
+import com.google.api.services.plus.model.Person;
 import com.google.common.collect.ImmutableMap;
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
@@ -31,6 +42,7 @@ public final class GlCommons {
     //public static final String BLOGGER_SCOPE = "http://www.blogger.com/feeds/";
     //public static final String POSTS_FEED_URI_SUFFIX = "/posts/default";
     //public static final String METAFEED_URL = "http://www.blogger.com/feeds/default/blogs";
+    private static final Logger logger = Logger.getLogger(GlCommons.class.getName());
     
     private static final String AUTHORIZE_URL = "https://accounts.google.com/o/oauth2/auth?"
             + "scope=%s&redirect_uri=%s&response_type=code&client_id=%s&access_type=offline"
@@ -58,7 +70,7 @@ public final class GlCommons {
 
         if (accessToken != null && refreshToken != null) {
 
-            userData = GooglePlusUtils.getUserData(accessToken, refreshToken);
+            userData = GlCommons.getUserData(accessToken, refreshToken);
             
             String token = accessToken;
             if (refreshToken != null) {
@@ -90,4 +102,55 @@ public final class GlCommons {
     }
     
     private GlCommons() {}
+
+	private static Map<String,String> getUserData(String accessToken, String refreshToken) {
+	    Map<String, String> userData = new HashMap<String, String>();
+	
+	    try {
+	        Person person = GooglePlusUtils.getPlus(accessToken, refreshToken).people().get("me").execute();
+	
+	        userData.put(ConfigurationManager.GL_USERNAME,person.getId());
+	        userData.put(ConfigurationManager.GL_NAME, person.getDisplayName());
+	        userData.put(ConfigurationManager.GL_GENDER, person.getGender());
+	        userData.put(ConfigurationManager.GL_BIRTHDAY, person.getBirthday());
+	        String email = getUserEmail(accessToken, refreshToken);
+	        if (email != null) {
+	        	userData.put(ConfigurationManager.USER_EMAIL, email);
+	        }
+	
+	    } catch (Exception ex) {
+	        logger.log(Level.SEVERE, "GooglePlusUtils.getUserId() exception: ", ex);
+	    }
+	
+	    return userData;
+	}
+
+	private static String getUserEmail(String accessToken, String refreshToken) {
+	    String email = null;
+	    try {
+	        HttpTransport httpTransport = new UrlFetchTransport();
+	        JsonFactory jsonFactory = new JacksonFactory();
+	
+	        GoogleCredential requestInitializer = new GoogleCredential.Builder().
+	                setClientSecrets(Commons.GL_PLUS_KEY, Commons.GL_PLUS_SECRET).
+	                setJsonFactory(jsonFactory).
+	                setTransport(httpTransport).build();
+	
+	        requestInitializer.setAccessToken(accessToken).setRefreshToken(refreshToken);
+	
+	        GenericUrl url = new GenericUrl("https://www.googleapis.com/oauth2/v1/userinfo?alt=json");
+	        HttpRequest request = httpTransport.createRequestFactory(requestInitializer).buildGetRequest(url);
+	
+	        String response = request.execute().parseAsString();
+	        //logger.log(Level.INFO, response);
+	        JSONObject json = new JSONObject(response);
+	        if (json.has("email")) {
+	            email = json.getString("email");
+	        }
+	    } catch (Exception e) {
+	        logger.log(Level.SEVERE, "GoogglePlusUtils.getUserEmail exception", e);
+	    }
+	
+	    return email;
+	}
 }

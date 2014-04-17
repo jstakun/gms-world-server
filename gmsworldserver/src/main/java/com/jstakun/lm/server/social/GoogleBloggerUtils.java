@@ -7,7 +7,10 @@ package com.jstakun.lm.server.social;
 import com.google.api.client.extensions.appengine.http.UrlFetchTransport;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
+import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.json.JsonHttpContent;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.api.services.blogger.Blogger;
@@ -20,7 +23,10 @@ import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.UrlUtils;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -125,4 +131,23 @@ public class GoogleBloggerUtils {
 
         return blogger;
     }
+
+	protected static int checkin(String reference) {
+	    int result = -1;
+	    
+	    try {
+	    	HttpTransport httpTransport = new UrlFetchTransport();
+	        GenericUrl url = new GenericUrl("https://maps.googleapis.com/maps/api/place/check-in/json?sensor=false&key=" + Commons.GOOGLE_API_KEY);
+	        Map<String, String> data = new HashMap<String, String>();
+	        data.put("reference", reference);
+	        JsonHttpContent content = new JsonHttpContent(new JacksonFactory(), data);
+	        HttpRequest request = httpTransport.createRequestFactory().buildPostRequest(url, content);
+	        result = request.execute().getStatusCode();
+	    } catch (Throwable e) {
+	        logger.log(Level.SEVERE, "GoogleBloggerUtils.checkin() exception", e);   
+	        result = 500;
+	    }
+	
+	    return result;
+	}
 }

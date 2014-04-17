@@ -7,7 +7,6 @@ package com.jstakun.lm.server.layers;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.lm.server.config.Commons;
-import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.utils.UrlUtils;
 import com.jstakun.lm.server.utils.ThreadUtil;
 
@@ -34,7 +33,6 @@ import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.JSONUtils;
 import com.jstakun.lm.server.utils.MathUtils;
 import com.jstakun.lm.server.utils.NumberUtils;
-import com.jstakun.lm.server.utils.StringUtil;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.openlapi.AddressInfo;
 import com.openlapi.QualifiedCoordinates;
@@ -44,8 +42,6 @@ import fi.foyt.foursquare.api.Result;
 import fi.foyt.foursquare.api.entities.Category;
 import fi.foyt.foursquare.api.entities.Checkin;
 import fi.foyt.foursquare.api.entities.CompactVenue;
-import fi.foyt.foursquare.api.entities.CompleteTip;
-import fi.foyt.foursquare.api.entities.CompleteUser;
 import fi.foyt.foursquare.api.entities.CompleteVenue;
 import fi.foyt.foursquare.api.entities.Contact;
 import fi.foyt.foursquare.api.entities.Icon;
@@ -1024,75 +1020,6 @@ public class FoursquareUtils extends LayerHelper {
         return json;
     }
      
-    public static Map<String, String> getUserData(String accessToken) {
-    	Map<String, String> userData = new HashMap<String, String>();
-    	
-    	try {
-    		FoursquareApi api = new FoursquareApi(Commons.FS_CLIENT_ID, Commons.FS_CLIENT_SECRET, null, accessToken, new DefaultIOHandler());
-    	
-    		Result<CompleteUser> result = api.user("self");
-    	
-    		CompleteUser user = result.getResult();
-    	
-    		if (user != null) {
-    			userData.put(ConfigurationManager.FS_USERNAME, user.getId());
-    		
-    			String name = StringUtil.getFormattedUsername(user.getFirstName(), user.getLastName(), ""); 
-    		
-    			if (StringUtils.isNotEmpty(name)) {
-    				userData.put(ConfigurationManager.FS_NAME, name);
-    			}
-    	
-    			Contact contact = user.getContact();
-    			if (contact != null) {
-    				String email = contact.getEmail();
-    				if (email != null) {
-    					userData.put(ConfigurationManager.USER_EMAIL, email);
-    				}
-    			}
-    		}
-    	} catch (Exception ex) {
-            logger.log(Level.SEVERE, "FoursquareUtils.getUserData exception:", ex);
-        }
-    	
-    	return userData;
-    }
-    
-    public static int checkin(String accessToken, String venueId, String name) {
-    	try {
-    		FoursquareApi api = new FoursquareApi(Commons.FS_CLIENT_ID, Commons.FS_CLIENT_SECRET, null, accessToken, new DefaultIOHandler());
-    		ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
-            
-    		//shout must be maximum 200 character
-    		String shout = StringUtils.abbreviate(String.format(rb.getString("Social.checkin"), name), 200);
-    		Result<Checkin> result = api.checkinsAdd(venueId, null, shout, "public", null, null, null, null);
-    		
-    		int res = result.getMeta().getCode();
-    		if (res != 200) {
-    			logger.log(Level.SEVERE, result.getMeta().getErrorType() + ": " + result.getMeta().getErrorDetail());
-    		}
-    		return res;
-    	} catch (Exception ex) {
-            logger.log(Level.SEVERE, "FoursquareUtils.checkin exception:", ex);
-            return 500;
-        }
-    }
-    
-    public static int sendTip(String accessToken, String venueId, String text) {
-    	try {
-    		FoursquareApi api = new FoursquareApi(Commons.FS_CLIENT_ID, Commons.FS_CLIENT_SECRET, null, accessToken, new DefaultIOHandler());
-    		Result<CompleteTip> result = api.tipsAdd(venueId, text, null);
-    		int res = result.getMeta().getCode();
-    		if (res != 200) {
-    			logger.log(Level.SEVERE, result.getMeta().getErrorType() + ": " + result.getMeta().getErrorDetail());
-    		}
-    		return res;
-    	} catch (Exception ex) {
-            logger.log(Level.SEVERE, "FoursquareUtils.checkin exception:", ex);
-            return 500;
-        }
-    }
-    
     public static int addVenue(String accessToken, String name, String desc, String primaryCategoryId, String ll) {
     	try {
     		FoursquareApi api = new FoursquareApi(Commons.FS_CLIENT_ID, Commons.FS_CLIENT_SECRET, null, accessToken, new DefaultIOHandler());

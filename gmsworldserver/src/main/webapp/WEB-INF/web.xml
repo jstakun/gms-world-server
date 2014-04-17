@@ -181,7 +181,7 @@
  </servlet>
  <servlet>
   <servlet-name>SocialMessageServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.servlet.SocialMessageServlet</servlet-class>
+  <servlet-class>com.jstakun.lm.server.social.SocialMessageServlet</servlet-class>
  </servlet>
  <servlet>
   <servlet-name>ListLayersServlet</servlet-name>
@@ -303,11 +303,11 @@
  </servlet>
  <servlet>
   <servlet-name>SocialCheckinServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.servlet.SocialCheckinServlet</servlet-class>
+  <servlet-class>com.jstakun.lm.server.social.SocialCheckinServlet</servlet-class>
  </servlet>
  <servlet>
   <servlet-name>SocialCommentServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.servlet.SocialCommentServlet</servlet-class>
+  <servlet-class>com.jstakun.lm.server.social.SocialCommentServlet</servlet-class>
  </servlet>
  <servlet>
   <servlet-name>FsAddVenueServlet</servlet-name>

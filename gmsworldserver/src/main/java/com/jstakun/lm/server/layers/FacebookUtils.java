@@ -5,10 +5,8 @@
 package com.jstakun.lm.server.layers;
 
 import java.io.UnsupportedEncodingException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -28,7 +26,6 @@ import com.google.appengine.api.ThreadManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.lm.server.config.Commons;
-import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.utils.JSONUtils;
 import com.jstakun.lm.server.utils.MathUtils;
 import com.jstakun.lm.server.utils.NumberUtils;
@@ -43,7 +40,6 @@ import com.restfb.Parameter;
 import com.restfb.json.JsonArray;
 import com.restfb.json.JsonException;
 import com.restfb.json.JsonObject;
-import com.restfb.types.User;
 
 /**
  *
@@ -51,7 +47,6 @@ import com.restfb.types.User;
  */
 public class FacebookUtils extends LayerHelper {
 
-	private static final SimpleDateFormat outf = new SimpleDateFormat("yyyyMMdd", java.util.Locale.US);
 	private static final String FBPLACES_PREFIX = "http://touch.facebook.com/profile.php?id=";
 	
     public static String getFriendsPhotosToJSon(double lat, double lng, int version, int limit, int stringLength, String token) throws JSONException, UnsupportedEncodingException {
@@ -870,7 +865,7 @@ public class FacebookUtils extends LayerHelper {
         }
     }
 
-    public static List<String> getMyFriends(String token) {
+    /*public static List<String> getMyFriends(String token) {
 
     	List<String> friendIds = new ArrayList<String>();
     	FacebookClient facebookClient = new DefaultFacebookClient(token);
@@ -881,38 +876,7 @@ public class FacebookUtils extends LayerHelper {
     	}
 
     	return friendIds;
-    }
-    
-    public static Map<String, String> getMyData(String token) {
-    	Map<String, String> userData = new HashMap<String, String>();
-    	
-    	FacebookClient facebookClient = new DefaultFacebookClient(token);
-        User me = facebookClient.fetchObject("me", User.class);
-        
-        userData.put(ConfigurationManager.FB_USERNAME, me.getId());
-        String name = me.getName();
-        if (name != null) {
-            userData.put(ConfigurationManager.FB_NAME, name);
-        } else {
-        	userData.put(ConfigurationManager.FB_NAME, me.getId());
-        }
-        String gender = me.getGender();
-        if (gender != null) {
-           userData.put(ConfigurationManager.FB_GENDER, gender);
-        }
-        Date birthday = me.getBirthdayAsDate();
-        if (birthday != null) {
-        	String outd = outf.format(birthday);
-			userData.put(ConfigurationManager.FB_BIRTHDAY, outd);
-        } 
-    	
-        String email = me.getEmail();
-        if (StringUtils.isNotEmpty(email)) {
-        	userData.put(ConfigurationManager.USER_EMAIL, email);
-        }
-        
-    	return userData;
-    }
+    }*/
     
     private static class VenueDetailsRetriever implements Runnable {
 

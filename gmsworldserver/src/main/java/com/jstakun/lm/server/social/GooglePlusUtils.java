@@ -12,15 +12,11 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.json.JSONObject;
-
 import com.google.api.client.auth.oauth2.TokenResponse;
 import com.google.api.client.auth.oauth2.TokenResponseException;
 import com.google.api.client.extensions.appengine.http.UrlFetchTransport;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.auth.oauth2.GoogleRefreshTokenRequest;
-import com.google.api.client.http.GenericUrl;
-import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -28,7 +24,6 @@ import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.api.services.plus.Plus;
 import com.google.api.services.plus.model.ItemScope;
 import com.google.api.services.plus.model.Moment;
-import com.google.api.services.plus.model.Person;
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.persistence.Landmark;
@@ -41,63 +36,8 @@ import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
  */
 public class GooglePlusUtils {
 
-    private static final Logger logger = Logger.getLogger(GooglePlusUtils.class.getName());
+    public static final Logger logger = Logger.getLogger(GooglePlusUtils.class.getName());
     private static final Random random = new Random();
-
-    public static Map<String,String> getUserData(String accessToken, String refreshToken) {
-        Map<String, String> userData = new HashMap<String, String>();
-
-        try {
-            Person person = getPlus(accessToken, refreshToken).people().get("me").execute();
-
-            userData.put(ConfigurationManager.GL_USERNAME,person.getId());
-            userData.put(ConfigurationManager.GL_NAME, person.getDisplayName());
-            userData.put(ConfigurationManager.GL_GENDER, person.getGender());
-            userData.put(ConfigurationManager.GL_BIRTHDAY, person.getBirthday());
-            //System.out.println(person.getId() + " " + person.getNickname() + " "
-            //        + person.getGender() + " " + person.getDisplayName() + " "
-            //        + person.getName() + " " + person.getBirthday());
-            String email = getUserEmail(accessToken, refreshToken);
-            if (email != null) {
-            	userData.put(ConfigurationManager.USER_EMAIL, email);
-            }
-
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, "GooglePlusUtils.getUserId() exception: ", ex);
-        }
-
-        return userData;
-    }
-    
-    private static String getUserEmail(String accessToken, String refreshToken) {
-        String email = null;
-        try {
-            HttpTransport httpTransport = new UrlFetchTransport();
-            JsonFactory jsonFactory = new JacksonFactory();
-
-            GoogleCredential requestInitializer = new GoogleCredential.Builder().
-                    setClientSecrets(Commons.GL_PLUS_KEY, Commons.GL_PLUS_SECRET).
-                    setJsonFactory(jsonFactory).
-                    setTransport(httpTransport).build();
-
-            requestInitializer.setAccessToken(accessToken).setRefreshToken(refreshToken);
-
-            GenericUrl url = new GenericUrl("https://www.googleapis.com/oauth2/v1/userinfo?alt=json");
-            HttpRequest request = httpTransport.createRequestFactory(requestInitializer).buildGetRequest(url);
-
-            String response = request.execute().parseAsString();
-            //System.out.println(response);
-            //logger.log(Level.INFO, response);
-            JSONObject json = new JSONObject(response);
-            if (json.has("email")) {
-                email = json.getString("email");
-            }
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, "GoogglePlusUtils.getUserEmail exception", e);
-        }
-
-        return email;
-    }
 
     public static void sendMessage(String accessToken, String refreshToken, String key, String url, int type) {
         if (accessToken != null || refreshToken != null) {
@@ -174,7 +114,7 @@ public class GooglePlusUtils {
         sendUrlMoment(plus, showImageUrl);
     }
 
-    private static Plus getPlus(String accessToken, String refreshToken) {
+    public static Plus getPlus(String accessToken, String refreshToken) {
         HttpTransport httpTransport = new UrlFetchTransport();
         JsonFactory jsonFactory = new JacksonFactory();
 

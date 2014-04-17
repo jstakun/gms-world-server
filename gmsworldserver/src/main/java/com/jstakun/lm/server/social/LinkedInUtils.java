@@ -4,7 +4,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -12,12 +11,10 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
-import com.jstakun.lm.server.utils.HttpUtils;
 
 public class LinkedInUtils {
 	
@@ -104,38 +101,4 @@ public class LinkedInUtils {
             }
         }
     }
-	
-	public static Map<String, String> getUserDate(String accessToken) {
-		Map<String, String> userData = new HashMap<String, String>();
-		
-		try {
-			URL profileUrl = new URL("https://api.linkedin.com/v1/people/~:(id,first-name,last-name,email-address)?oauth2_access_token=" + accessToken + "&format=json");
-			
-			String response = HttpUtils.processFileRequest(profileUrl, "GET", null, null);
-			
-			//logger.log(Level.INFO, response);
-			
-			JSONObject json = new JSONObject(response);
-		    String id = json.optString("id");
-		    if (id != null) {
-		    	userData.put(ConfigurationManager.LN_USERNAME, id);
-		    }
-		    String fn = json.optString("firstName");
-		    String ln = json.optString("lastName");
-		    if (StringUtils.isNotEmpty(fn) && StringUtils.isNotEmpty(ln)) {
-		    	userData.put(ConfigurationManager.LN_NAME, fn + " " + ln);
-		    }
-		  
-		    String email = json.optString("emailAddress"); 
-		    if (StringUtils.isNotEmpty(email)) {
-		        userData.put(ConfigurationManager.USER_EMAIL, email);
-		    }
-			
-		} catch (Exception e) {
-        	logger.log(Level.SEVERE, "LinkedInUtils.getUserData exception", e);
-        	//return MessageFormat.format(rb.getString("Social.send.post.failure"), "LinkedIn");
-        }
-        
-        return userData;
-	}
 }

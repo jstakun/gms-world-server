@@ -23,12 +23,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.google.api.client.extensions.appengine.http.UrlFetchTransport;
-import com.google.api.client.http.GenericUrl;
-import com.google.api.client.http.HttpRequest;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.http.json.JsonHttpContent;
-import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.appengine.api.ThreadManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
@@ -194,25 +188,6 @@ public class GooglePlacesUtils extends LayerHelper {
         return response;
     }
     
-    public static int checkin(String reference) {
-        int result = -1;
-        
-        try {
-        	HttpTransport httpTransport = new UrlFetchTransport();
-            GenericUrl url = new GenericUrl("https://maps.googleapis.com/maps/api/place/check-in/json?sensor=false&key=" + Commons.GOOGLE_API_KEY);
-            Map<String, String> data = new HashMap<String, String>();
-            data.put("reference", reference);
-            JsonHttpContent content = new JsonHttpContent(new JacksonFactory(), data);
-            HttpRequest request = httpTransport.createRequestFactory().buildPostRequest(url, content);
-            result = request.execute().getStatusCode();
-        } catch (Throwable e) {
-            logger.log(Level.SEVERE, "GooglePlacesUtils.checkin exception", e);   
-            result = 500;
-        }
-
-        return result;
-    }
-
     private static void processRadarRequest(List<String> placeDetails, String queryString, int limit, String language) throws MalformedURLException, IOException, JSONException {
         String url = "https://maps.googleapis.com/maps/api/place/radarsearch/json?" + queryString;
         URL placesUrl = new URL(url);

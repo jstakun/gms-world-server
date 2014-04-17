@@ -165,7 +165,7 @@ public class FacebookUtils {
         }
     }
     
-    public static int checkin(String token, String place, String name) {
+    protected static int checkin(String token, String place, String name) {
     	FacebookClient facebookClient = new DefaultFacebookClient(token);
     	ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
     	Parameter[] params = new Parameter[]{
@@ -180,7 +180,7 @@ public class FacebookUtils {
     	}
     }
     
-    public static int sendComment(String token, String place, String message, String name) {
+    protected static int sendComment(String token, String place, String message, String name) {
     	FacebookClient facebookClient = new DefaultFacebookClient(token);
     	Parameter[] params = new Parameter[]{
     			Parameter.with("message", message),
