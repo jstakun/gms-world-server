@@ -80,7 +80,7 @@ public class NotificationTaskServlet extends HttpServlet {
             	String email = request.getParameter("email");
             	String layer = null;
             	
-            	logger.log(Level.INFO, "Sending user creation notification to {0}...", service);
+            	logger.log(Level.INFO, "Sending user login notification to {0}...", service);
             	
             	if (StringUtils.equals(service, Commons.FACEBOOK)) {
             		FacebookUtils.sendMessageToUserFeed(accessToken, ConfigurationManager.SERVER_URL, "Message from GMS World", Commons.LOGIN);

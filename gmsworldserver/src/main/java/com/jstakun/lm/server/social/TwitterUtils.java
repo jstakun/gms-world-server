@@ -37,9 +37,9 @@ public class TwitterUtils {
     }
 	
 	public static void sendMessage(String key, String url, String token, String secret, int type) {
-        try {
+		String message = null;
+		try {
         	    Landmark landmark = null; 
-        	    String message = null;
         	    
         	    if (key != null) {
         	    	landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
@@ -58,7 +58,7 @@ public class TwitterUtils {
                 } else if (type == Commons.BLOGEO) {
                     message = String.format(rb.getString("Social.tw.status"), "new geo message to Blogeo", landmark.getName(), url);
                 } else if (type == Commons.LANDMARK) {
-                    message = String.format(rb.getString("Social.tw.status"), "new point of interest to GMS World", landmark.getName(), url);
+                    message = String.format(rb.getString("Social.tw.status"), "new place to GMS World", landmark.getName(), url);
                 } else if (type == Commons.MY_POS) {
                     message = String.format(rb.getString("Social.tw.myloc"),  url);
                 } else if (type == Commons.LOGIN) {
@@ -76,12 +76,17 @@ public class TwitterUtils {
                     logger.log(Level.INFO, "Sent twitter update id: {0}", s.getId());
                 } 
         } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
+            if (message != null) {
+            	logger.log(Level.SEVERE, "Failed to send status: {0}", message);
+            }
+        	logger.log(Level.SEVERE, ex.getMessage(), ex);
+            
         }
     }
 
     public static void sendImageMessage(String showImageUrl, String username, double latitude, double longitude) {
-        try {
+    	String message = null;
+    	try {
             String userMask;
 
             if (StringUtils.endsWith(username, "@tw")) {
@@ -90,7 +95,7 @@ public class TwitterUtils {
                 userMask = UrlUtils.createUsernameMask(username);
             }
 
-            String message = userMask + " has just posted new screenshot to GMS World. Check it out: " + showImageUrl;
+            message = userMask + " has just posted new screenshot to GMS World. Check it out: " + showImageUrl;
 
             StatusUpdate update = new StatusUpdate(message);
             update.setDisplayCoordinates(true);
@@ -99,7 +104,10 @@ public class TwitterUtils {
             logger.log(Level.INFO, "Sent twitter update id: {0}", s.getId());
 
         } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
+        	if (message != null) {
+            	logger.log(Level.SEVERE, "Failed to send status: {0}", message);
+            }
+        	logger.log(Level.SEVERE, ex.getMessage(), ex);
         }
     }
 }
