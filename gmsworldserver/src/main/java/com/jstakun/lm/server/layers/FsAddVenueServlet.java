@@ -1,4 +1,4 @@
-package com.jstakun.lm.server.servlet;
+package com.jstakun.lm.server.layers;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.jstakun.lm.server.layers.FoursquareUtils;
 import com.jstakun.lm.server.utils.HttpUtils;
 
 /**

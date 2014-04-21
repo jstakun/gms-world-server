@@ -36,10 +36,10 @@ import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
  */
 public class GooglePlusUtils {
 
-    public static final Logger logger = Logger.getLogger(GooglePlusUtils.class.getName());
+    private static final Logger logger = Logger.getLogger(GooglePlusUtils.class.getName());
     private static final Random random = new Random();
 
-    public static void sendMessage(String accessToken, String refreshToken, String key, String url, int type) {
+    protected static void sendMessage(String accessToken, String refreshToken, String key, String url, int type) {
         if (accessToken != null || refreshToken != null) {
             
         	Landmark landmark = null; 
@@ -106,7 +106,7 @@ public class GooglePlusUtils {
         }
     }
 
-    public static void sendImageMessage(String showImageUrl, String username, String imageUrl) {
+    protected static void sendImageMessage(String showImageUrl, String username, String imageUrl) {
         String userMask = UrlUtils.createUsernameMask(username);
         String message = userMask + " has just posted new screenshot to GMS World. Check it out: " + showImageUrl;
         Plus plus = getPlus(null, null);

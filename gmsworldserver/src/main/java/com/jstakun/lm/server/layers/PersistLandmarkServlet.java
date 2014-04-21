@@ -1,4 +1,4 @@
-package com.jstakun.lm.server.servlet;
+package com.jstakun.lm.server.layers;
 
 /*
  * To change this template, choose Tools | Templates

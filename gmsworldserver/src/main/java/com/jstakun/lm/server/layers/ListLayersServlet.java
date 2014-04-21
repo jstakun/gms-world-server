@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.jstakun.lm.server.servlet;
+package com.jstakun.lm.server.layers;
 
 import com.jstakun.lm.server.persistence.Layer;
 import com.jstakun.lm.server.utils.GeocodeUtils;

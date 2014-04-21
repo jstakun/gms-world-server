@@ -2,14 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+package com.jstakun.lm.server.layers;
 
-package com.jstakun.lm.server.servlet;
-
-import com.jstakun.lm.server.layers.LayerHelperFactory;
-import com.jstakun.lm.server.utils.GeocodeUtils;
 import com.jstakun.lm.server.utils.HttpUtils;
-import com.jstakun.lm.server.utils.NumberUtils;
-import com.jstakun.lm.server.utils.StringUtil;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -25,15 +20,14 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author jstakun
  */
-@Deprecated
-public class MeetupProviderServlet extends HttpServlet {
+public class RouteProviderServlet extends HttpServlet {
 
     /**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private static final Logger logger = Logger.getLogger(MeetupProviderServlet.class.getName());
-    
+	private static final Logger logger = Logger.getLogger(RouteProviderServlet.class.getName());
+
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
@@ -42,32 +36,35 @@ public class MeetupProviderServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         response.setContentType("text/json;charset=UTF-8");
         PrintWriter out = response.getWriter();
         try {
-           if (HttpUtils.isEmptyAny(request, "latitude", "longitude", "radius")) {
+            if (HttpUtils.isEmptyAny(request, "lat_start", "lng_start", "lat_end", "lng_end", "type", "username", "tId")) {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             } else {
-                double latitude = GeocodeUtils.getLatitude(request.getParameter("latitude"));
-                double longitude = GeocodeUtils.getLongitude(request.getParameter("longitude"));
-                int radius = NumberUtils.getRadius(request.getParameter("radius"), 1, 150); //miles
-                int limit = NumberUtils.getInt(request.getParameter("limit"), 30);
-                int stringLimit = StringUtil.getStringLengthLimit(request.getParameter("display"));
-                int version = NumberUtils.getVersion(request.getParameter("version"), 2);
+                String token = request.getParameter("token");
+                String username = request.getParameter("username");
+                String type = request.getParameter("type");
+                String tId = request.getParameter("tId");
+                String loc_start = request.getParameter("lat_start") + "," + request.getParameter("lng_start");
+                String loc_end = request.getParameter("lat_end") + "," + request.getParameter("lng_end");
 
-                String resp = LayerHelperFactory.getMeetupUtils().processRequest(latitude, longitude, null, radius, version, limit, stringLimit, null, null).toString();
+                String output = CloudmadeUtils.getRoute(token, username, type, tId, loc_start, loc_end);
 
-                out.println(resp);
+                if (output == null) {
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                } else {
+                    out.print(output);
+                }
             }
-            
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
         } finally {
             out.close();
         }
-    } 
+    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /** 
@@ -79,9 +76,9 @@ public class MeetupProviderServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         processRequest(request, response);
-    } 
+    }
 
     /** 
      * Handles the HTTP <code>POST</code> method.
@@ -92,7 +89,7 @@ public class MeetupProviderServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         processRequest(request, response);
     }
 
@@ -104,5 +101,4 @@ public class MeetupProviderServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
 }

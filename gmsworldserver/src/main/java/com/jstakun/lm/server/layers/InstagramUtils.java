@@ -27,7 +27,7 @@ import com.openlapi.QualifiedCoordinates;
 
 public class InstagramUtils extends LayerHelper {
 
-	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale) throws MalformedURLException, IOException {
+	protected List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale) throws MalformedURLException, IOException {
 		int normalizedDistance = NumberUtils.normalizeNumber(radius, 1000, 5000);
 		int normalizedLimit = NumberUtils.normalizeNumber(limit, 30, 100);
 		String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, normalizedDistance, version, normalizedLimit, stringLimit, flexString, flexString2);

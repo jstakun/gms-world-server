@@ -50,7 +50,7 @@ public class YelpUtils extends LayerHelper {
 	private static final String CACHE_KEY = "YelpUsageLimitsMarker";
 	
     @Override
-    public JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String hasDeals, String language) throws Exception {
+    protected JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String hasDeals, String language) throws Exception {
         int normalizedRadius = NumberUtils.normalizeNumber(radius, 1000, 40000);
         int normalizedLimit = NumberUtils.normalizeNumber(limit, 20, 100);
         String key = getCacheKey(getClass(), "processRequest", lat, lng, query, normalizedRadius, version, normalizedLimit, stringLimit, hasDeals, language);
@@ -146,7 +146,7 @@ public class YelpUtils extends LayerHelper {
         return responseBody;
     }
 
-    public static boolean hasNeighborhoods(double lat, double lng) throws IOException, JSONException {
+    protected static boolean hasNeighborhoods(double lat, double lng) throws IOException, JSONException {
         String url = "http://api.yelp.com/neighborhood_search?lat=" + StringUtil.formatCoordE6(lat) + "&long=" + StringUtil.formatCoordE6(lng) + "&ywsid=" + Commons.YELP_ywsid;
         String json = HttpUtils.processFileRequest(new URL(url));
         boolean hasNeighborhood = false;
@@ -435,7 +435,7 @@ public class YelpUtils extends LayerHelper {
     }
 
 	@Override
-	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String hasDeals, String language, Locale locale)
+	protected List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String hasDeals, String language, Locale locale)
 			throws Exception {
 		int normalizedRadius = NumberUtils.normalizeNumber(radius, 1000, 40000);
         int normalizedLimit = NumberUtils.normalizeNumber(limit, 20, 100);

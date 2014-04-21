@@ -33,13 +33,13 @@ public abstract class LayerHelper {
 
     protected static final Logger logger = Logger.getLogger(LayerHelper.class.getName());
 
-    public JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2) throws Exception {
+    protected JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2) throws Exception {
     	return null;
     }
 
-    public abstract List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale) throws Exception;
+    protected abstract List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale) throws Exception;
     
-    public void serialize(List<ExtendedLandmark> landmarks, OutputStream out, int version) {
+    protected void serialize(List<ExtendedLandmark> landmarks, OutputStream out, int version) {
     	ObjectOutputStream outObj = null;
     	DeflaterOutputStream compressor = null;
     	try {

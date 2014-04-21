@@ -31,6 +31,7 @@ public class GrouponCategoryMapping {
         {"Education", "4"},
         {"Tickets", "2"},
         {"Services", "4"},
+        {"Gifts & Giving", "6"}
     };
     private static final String[][] GROUPON_CATEGORIES = {
         {"Alcohol Event", "Arts and Entertainment", "113", "2"},
@@ -649,7 +650,7 @@ public class GrouponCategoryMapping {
             return new String[]{"8", ""};
         } else {
             if (StringUtils.isEmpty(categoryStr)) {
-                logger.log(Level.SEVERE, "No matching category: empty");               
+                logger.log(Level.SEVERE, "Category is empty");               
             } else {
                 for (int i = 0; i < PARENT_CATEGORIES.length; i++) {
                     String[] category = PARENT_CATEGORIES[i];
@@ -657,7 +658,7 @@ public class GrouponCategoryMapping {
                         return new String[]{category[1], ""};
                     }
                 }
-                logger.log(Level.SEVERE, "No matching category: {0}", categoryStr);
+                logger.log(Level.SEVERE, "No matching parent category: {0}", categoryStr);
             }
             return new String[]{"8", ""};
         }

@@ -39,7 +39,7 @@ public class GrouponUtils extends LayerHelper {
 
     
     @Override
-    public JSONObject processRequest(double lat, double lng, String query, int radius, int version, int dealLimit, int stringLimit, String categoryid, String flexString2) throws MalformedURLException, IOException, JSONException {
+    protected JSONObject processRequest(double lat, double lng, String query, int radius, int version, int dealLimit, int stringLimit, String categoryid, String flexString2) throws MalformedURLException, IOException, JSONException {
         String key = getCacheKey(getClass(), "processRequest", lat, lng, query, radius, version, dealLimit, stringLimit, categoryid, flexString2);
 
         JSONObject json = null;
@@ -336,7 +336,7 @@ public class GrouponUtils extends LayerHelper {
     }
 
 	@Override
-	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int dealLimit, int stringLimit, String categoryid, String flexString2, Locale locale) throws Exception {
+	protected List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int dealLimit, int stringLimit, String categoryid, String flexString2, Locale locale) throws Exception {
 		String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, dealLimit, stringLimit, categoryid, flexString2);
 		List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)CacheUtil.getObject(key);
         if (landmarks == null) {

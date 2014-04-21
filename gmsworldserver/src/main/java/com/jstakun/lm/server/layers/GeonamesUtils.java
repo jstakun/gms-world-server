@@ -36,7 +36,7 @@ public class GeonamesUtils extends LayerHelper {
     private static final int MAXROWS = 30;
 
     @Override
-    public JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String lang, String flexString2) throws Exception {
+    protected JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String lang, String flexString2) throws Exception {
         int r = NumberUtils.normalizeNumber(radius, 1, 20);
         String key = getCacheKey(getClass(), "processRequest", lat, lng, query, r, version, limit, stringLimit, lang, flexString2);
         String output = CacheUtil.getString(key);
@@ -61,7 +61,7 @@ public class GeonamesUtils extends LayerHelper {
         }
     }
 
-    public static JSONObject createCustomJSonGeonamesList(String jsonGeonames, int version, int limit, int stringLimit) throws JSONException {
+    private static JSONObject createCustomJSonGeonamesList(String jsonGeonames, int version, int limit, int stringLimit) throws JSONException {
         ArrayList<Map<String, Object>> jsonArray = new ArrayList<Map<String, Object>>();
 
         JSONArray geonames = JSONUtils.getJSonArray(jsonGeonames, "geonames");
@@ -106,7 +106,7 @@ public class GeonamesUtils extends LayerHelper {
     }
 
 	@Override
-	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String lang, String flexString2, Locale locale) throws Exception {
+	protected List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String lang, String flexString2, Locale locale) throws Exception {
 		int r = NumberUtils.normalizeNumber(radius, 1, 20);
         String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, r, version, limit, stringLimit, lang, flexString2);
         List<ExtendedLandmark> output = (List<ExtendedLandmark>)CacheUtil.getObject(key);
@@ -132,7 +132,7 @@ public class GeonamesUtils extends LayerHelper {
         return output;
 	}
 	
-	public static List<ExtendedLandmark> createLandmarksGeonamesList(String jsonGeonames, int limit, int stringLimit, Locale locale) throws JSONException {
+	private static List<ExtendedLandmark> createLandmarksGeonamesList(String jsonGeonames, int limit, int stringLimit, Locale locale) throws JSONException {
 		List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
 
         JSONArray geonames = JSONUtils.getJSonArray(jsonGeonames, "geonames");

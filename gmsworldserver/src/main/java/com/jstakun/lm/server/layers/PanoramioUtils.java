@@ -36,7 +36,7 @@ public class PanoramioUtils extends LayerHelper {
 	private static final SimpleDateFormat formatter = new SimpleDateFormat("dd MMMM yyyy", Locale.US);
 
     @Override
-    public JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String bbox, String flexString2) throws Exception {
+    protected JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String bbox, String flexString2) throws Exception {
         String key = getCacheKey(getClass(), "processRequest", lat, lng, query, radius, version, limit, stringLimit, bbox, flexString2);
 
         JSONObject json = null;
@@ -131,7 +131,7 @@ public class PanoramioUtils extends LayerHelper {
     }
 
 	@Override
-	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String bbox, String flexString2, Locale locale) throws Exception {
+	protected List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String bbox, String flexString2, Locale locale) throws Exception {
 		String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, limit, stringLimit, bbox, flexString2);
 		List<ExtendedLandmark> output = (List<ExtendedLandmark>)CacheUtil.getObject(key);
 

@@ -41,7 +41,7 @@ public class GoogleBloggerUtils {
     private static final Logger logger = Logger.getLogger(GoogleBloggerUtils.class.getName());
     private static final String CACHE_KEY = "BloggerUsageLimitsMarker";
     
-    public static void sendMessage(String key, String landmarkUrl, String token, String secret, boolean isServer) {
+    protected static void sendMessage(String key, String landmarkUrl, String token, String secret, boolean isServer) {
         Landmark landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
         if (landmark != null && token != null && secret != null) {
             String message = null;
@@ -74,7 +74,7 @@ public class GoogleBloggerUtils {
         }
     }
 
-    public static void sendImageMessage(String showImageUrl, String username, String imageUrl) {
+    protected static void sendImageMessage(String showImageUrl, String username, String imageUrl) {
         String userMask = UrlUtils.createUsernameMask(username);
         if (StringUtils.isNotEmpty(username)) {
             userMask = "<a href=\"" + ConfigurationManager.SERVER_URL + "showUser/" + username + "\">" + userMask + "</a>";

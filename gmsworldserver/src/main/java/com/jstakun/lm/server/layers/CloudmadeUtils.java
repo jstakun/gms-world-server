@@ -36,7 +36,7 @@ public class CloudmadeUtils {
     private static final Logger logger = Logger.getLogger(CloudmadeUtils.class.getName());
     private static final char[] delim = new char[]{',',' '};
 
-    public static String getRoute(String token, String username, String type, String tId, String loc_start, String loc_end) throws MalformedURLException, IOException, JSONException {
+    protected static String getRoute(String token, String username, String type, String tId, String loc_start, String loc_end) throws MalformedURLException, IOException, JSONException {
         String key = CloudmadeUtils.class.getName() + "_" + loc_start + "_" + loc_end + "_" + type;
         String output = CacheUtil.getString(key);
 

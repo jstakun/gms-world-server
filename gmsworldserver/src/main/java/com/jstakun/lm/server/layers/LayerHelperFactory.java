@@ -10,7 +10,8 @@ package com.jstakun.lm.server.layers;
  * @author jstakun
  */
 public class LayerHelperFactory {
-    private static final CouponsUtils couponsUtils = new CouponsUtils();
+    
+	private static final CouponsUtils couponsUtils = new CouponsUtils();
 
     private static final McOpenApiUtils mcOpenApiUtils = new McOpenApiUtils();
 
@@ -28,11 +29,7 @@ public class LayerHelperFactory {
 
     private static final PicasaUtils picasaUtils = new PicasaUtils();
 
-    private static final QypeUtils qypeUtils = new QypeUtils();
-
     private static final TwitterUtils twitterUtils = new TwitterUtils();
-
-    private static final UpcomingUtils upcomingUtils = new UpcomingUtils();
 
     private static final YelpUtils yelpUtils = new YelpUtils();
 
@@ -66,189 +63,175 @@ public class LayerHelperFactory {
     /**
      * @return the googlePlacesUtils
      */
-    public static GooglePlacesUtils getGooglePlacesUtils() {
+    protected static GooglePlacesUtils getGooglePlacesUtils() {
         return googlePlacesUtils;
     }
 
     /**
      * @return the grouponUtils
      */
-    public static GrouponUtils getGrouponUtils() {
+    protected static GrouponUtils getGrouponUtils() {
         return grouponUtils;
     }
 
     /**
      * @return the meetupUtils
      */
-    public static MeetupUtils getMeetupUtils() {
+    protected static MeetupUtils getMeetupUtils() {
         return meetupUtils;
     }
 
     /**
      * @return the picasaUtils
      */
-    public static PicasaUtils getPicasaUtils() {
+    protected static PicasaUtils getPicasaUtils() {
         return picasaUtils;
-    }
-
-    /**
-     * @return the qypeUtils
-     */
-    public static QypeUtils getQypeUtils() {
-        return qypeUtils;
     }
 
     /**
      * @return the twitterUtils
      */
-    public static TwitterUtils getTwitterUtils() {
+    protected static TwitterUtils getTwitterUtils() {
         return twitterUtils;
-    }
-
-    /**
-     * @return the upcomingUtils
-     */
-    public static UpcomingUtils getUpcomingUtils() {
-        return upcomingUtils;
     }
 
     /**
      * @return the yelpUtils
      */
-    public static YelpUtils getYelpUtils() {
+    protected static YelpUtils getYelpUtils() {
         return yelpUtils;
     }
 
     /**
      * @return the youtubeUtils
      */
-    public static YoutubeUtils getYoutubeUtils() {
+    protected static YoutubeUtils getYoutubeUtils() {
         return youtubeUtils;
     }
 
     /**
      * @return the gmsUtils
      */
-    public static GMSUtils getGmsUtils() {
+    protected static GMSUtils getGmsUtils() {
         return gmsUtils;
     }
 
     /**
      * @return the eventfulUtils
      */
-    public static EventfulUtils getEventfulUtils() {
+    protected static EventfulUtils getEventfulUtils() {
         return eventfulUtils;
     }
 
     /**
      * @return the couponsUtils
      */
-    public static CouponsUtils getCouponsUtils() {
+    protected static CouponsUtils getCouponsUtils() {
         return couponsUtils;
     }
 
     /**
      * @return the mcOpenApiUtils
      */
-    public static McOpenApiUtils getMcOpenApiUtils() {
+    protected static McOpenApiUtils getMcOpenApiUtils() {
         return mcOpenApiUtils;
     }
 
     /**
      * @return the facebookUtils
      */
-    public static FacebookUtils getFacebookUtils() {
+    protected static FacebookUtils getFacebookUtils() {
         return facebookUtils;
     }
 
     /**
      * @return the flickrUtils
      */
-    public static FlickrUtils getFlickrUtils() {
+    protected static FlickrUtils getFlickrUtils() {
         return flickrUtils;
     }
 
     /**
      * @return the foursquareUtils
      */
-    public static FoursquareUtils getFoursquareUtils() {
+    protected static FoursquareUtils getFoursquareUtils() {
         return foursquareUtils;
     }
 
     /**
      * @return the osmXapiUtils
      */
-    public static OsmXapiUtils getOsmXapiUtils() {
+    protected static OsmXapiUtils getOsmXapiUtils() {
         return osmXapiUtils;
     }
 
     /**
      * @return the geonamesUtils
      */
-    public static GeonamesUtils getGeonamesUtils() {
+    protected static GeonamesUtils getGeonamesUtils() {
         return geonamesUtils;
     }
 
     /**
      * @return the lastfmUtils
      */
-    public static LastfmUtils getLastfmUtils() {
+    protected static LastfmUtils getLastfmUtils() {
         return lastfmUtils;
     }
 
     /**
      * @return the webcamUtils
      */
-    public static WebcamUtils getWebcamUtils() {
+    protected static WebcamUtils getWebcamUtils() {
         return webcamUtils;
     }
 
     /**
      * @return the hotwireUtils
      */
-    public static HotwireUtils getHotwireUtils() {
+    protected static HotwireUtils getHotwireUtils() {
         return hotwireUtils;
     }
 
     /**
      * @return the panoramioUtils
      */
-    public static PanoramioUtils getPanoramioUtils() {
+    protected static PanoramioUtils getPanoramioUtils() {
         return panoramioUtils;
     }
 
     /**
      * @return the expediaUtils
      */
-    public static ExpediaUtils getExpediaUtils() {
+    protected static ExpediaUtils getExpediaUtils() {
         return expediaUtils;
     }
 
     /**
      * @return the hotelsCombinedUtils
      */
-    public static HotelsCombinedUtils getHotelsCombinedUtils() {
+    protected static HotelsCombinedUtils getHotelsCombinedUtils() {
         return hotelsCombinedUtils;
     }
     
     /**
      * @return the instagramUtils
      */
-    public static InstagramUtils getInstagramUtils() {
+    protected static InstagramUtils getInstagramUtils() {
         return instagramUtils;
     }
     
     /**
      * @return the feebaseUtils
      */
-    public static FreebaseUtils getFreebaseUtils() {
+    protected static FreebaseUtils getFreebaseUtils() {
         return freebaseUtils;
     }
     
     /**
      * @return the searchUtils
      */
-    public static SearchUtils getSearchUtils() {
+    protected static SearchUtils getSearchUtils() {
         return searchUtils;
     }
 

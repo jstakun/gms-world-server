@@ -43,11 +43,11 @@ public class FacebookUtils {
         		}
         	}
         	
-        	//TODO remove
-        	logger.log(Level.INFO, "Sending message with params:");
-        	for (Parameter param : params) {
-        		logger.log(Level.INFO, param.name + "=" + param.value);
-        	}
+        	//remove
+        	//logger.log(Level.INFO, "Sending message with params:");
+        	//for (Parameter param : params) {
+        	//	logger.log(Level.INFO, param.name + "=" + param.value);
+        	//}
         	//
             
         	if (!verifyPermission || hasPermission) {
@@ -64,7 +64,7 @@ public class FacebookUtils {
         }
     }
 
-	public static void sendMessageToUserFeed(String token, String url, String title, int type) {
+	protected static void sendMessageToUserFeed(String token, String url, String title, int type) {
         if (token != null) {
             FacebookClient facebookClient = new DefaultFacebookClient(token);
             Parameter params[] = null;
@@ -112,7 +112,7 @@ public class FacebookUtils {
     }
 
     //login with manage_pages permission
-    public static void sendMessageToPageFeed(String key, String landmarkUrl) {
+    protected static void sendMessageToPageFeed(String key, String landmarkUrl) {
         final String[] images = {"blogeo_j.png", "blogeo_a.png", "poi_j.png", "poi_a.png"};
         int imageId = 2;
         try {
@@ -145,7 +145,7 @@ public class FacebookUtils {
         }
     }
     
-    public static void sendImageMessage(String imageUrl, String showImageUrl, String username) {
+    protected static void sendImageMessage(String imageUrl, String showImageUrl, String username) {
         if (imageUrl != null) {
             FacebookClient facebookClient = new DefaultFacebookClient(Commons.fb_page_token);
             ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");

@@ -47,7 +47,7 @@ public class HotelsCombinedUtils extends LayerHelper {
 	private static final String HOTELS_PROVIDER_URL = "https://hotels-gmsworld.rhcloud.com/actions/hotelsProvider";
 	
 	@Override
-    public JSONObject processRequest(double latitudeMin, double longitudeMin, String query, int radius, int version, int limit, int stringLimit, String language, String flexString2) throws Exception {
+	protected JSONObject processRequest(double latitudeMin, double longitudeMin, String query, int radius, int version, int limit, int stringLimit, String language, String flexString2) throws Exception {
         double lat, lng;
         double latitudeMax = 0.0, longitudeMax = 0.0;
         if (version > 2) {
@@ -250,7 +250,7 @@ public class HotelsCombinedUtils extends LayerHelper {
     }
 	
 	@Override
-	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String language, String flexString2, Locale locale) throws Exception {
+	protected List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String language, String flexString2, Locale locale) throws Exception {
 	    String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, limit, stringLimit, language, null);
         List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)CacheUtil.getObject(key);
 

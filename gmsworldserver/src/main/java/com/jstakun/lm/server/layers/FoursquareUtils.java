@@ -39,6 +39,7 @@ import com.openlapi.QualifiedCoordinates;
 
 import fi.foyt.foursquare.api.FoursquareApi;
 import fi.foyt.foursquare.api.Result;
+import fi.foyt.foursquare.api.ResultMeta;
 import fi.foyt.foursquare.api.entities.Category;
 import fi.foyt.foursquare.api.entities.Checkin;
 import fi.foyt.foursquare.api.entities.CompactVenue;
@@ -81,7 +82,7 @@ public class FoursquareUtils extends LayerHelper {
     private static final String FOURSQUARE_PREFIX = "http://foursquare.com/venue/";
     
     @Override
-    public JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String intent, String locale) throws JSONException, MalformedURLException, IOException, FoursquareApiException {
+    protected JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String intent, String locale) throws JSONException, MalformedURLException, IOException, FoursquareApiException {
         String key = getCacheKey(getClass(), "processRequest", lat, lng, query, radius, version, limit, stringLimit, intent, locale);
         JSONObject response = null;
         String cachedResponse = CacheUtil.getString(key);
@@ -103,28 +104,30 @@ public class FoursquareUtils extends LayerHelper {
                 logger.log(Level.INFO, "No of Foursquare search venues {0}", venues.length);
                 if (venues.length > 0) {
 
-                List<String> venueIds = new ArrayList<String>();
+                	List<String> venueIds = new ArrayList<String>();
 
-                for (int j = 0; j < venues.length; j++) {
-                    venueIds.add(venues[j].getId());
+                	for (int j = 0; j < venues.length; j++) {
+                		venueIds.add(venues[j].getId());
+                	}
+
+                	Map<String, Map<String, String>> descs = getVenueDetails(venueIds, locale);
+
+                	for (int j = 0; j < venues.length; j++) {
+                		CompactVenue venue = venues[j];
+
+                		Map<String, String> attrs = descs.remove(venue.getId());
+                		if (attrs == null) {
+                			attrs = new HashMap<String, String>();
+                		}
+
+                		Map<String, Object> jsonObject = parseCompactVenueToJSon(venue, attrs, lat, lng);
+                		if (!jsonObject.isEmpty()) {
+                			jsonArray.add(jsonObject);
+                		}
+                	}
                 }
-
-                Map<String, Map<String, String>> descs = getVenueDetails(venueIds, locale);
-
-                for (int j = 0; j < venues.length; j++) {
-                    CompactVenue venue = venues[j];
-
-                    Map<String, String> attrs = descs.remove(venue.getId());
-                    if (attrs == null) {
-                        attrs = new HashMap<String, String>();
-                    }
-
-                    Map<String, Object> jsonObject = parseCompactVenueToJSon(venue, attrs, lat, lng);
-                    if (!jsonObject.isEmpty()) {
-                        jsonArray.add(jsonObject);
-                    }
-                }
-                }
+            } else {
+            	handleError(result.getMeta(), key);
             }
             
             //venues trending
@@ -136,40 +139,42 @@ public class FoursquareUtils extends LayerHelper {
                 logger.log(Level.INFO, "No of Foursquare trending venues {0}", venues.length);
 
                 if (venues.length > 0) {
-                List<String> venueIds = new ArrayList<String>();
+                	List<String> venueIds = new ArrayList<String>();
 
-                for (int j = 0; j < venues.length; j++) {
-                    venueIds.add(venues[j].getId());
+                	for (int j = 0; j < venues.length; j++) {
+                    	venueIds.add(venues[j].getId());
+                	}
+
+                	Map<String, Map<String, String>> descs = getVenueDetails(venueIds, locale);
+
+                	for (int j = 0; j < venues.length; j++) {
+                		CompactVenue venue = venues[j];
+
+                    	Map<String, String> attrs = descs.remove(venue.getId());
+                    	if (attrs == null) {
+                        	attrs = new HashMap<String, String>();
+                    	}
+
+                    	HereNow hereNow = venue.getHereNow();
+                    	if (hereNow != null) {
+                    		long hereNowCount = hereNow.getCount();
+                    		attrs.put("isTrending", Long.toString(hereNowCount));
+                    		//CheckinGroup[] groups = venue.getHereNow().getGroups();
+                    		//for (int i = 0; i < groups.length; i++) {
+                    		//CheckinGroup group = groups[i];
+                    		//String name = group.getName();
+                    		//long count = group.getCount();
+                    		//}
+                    	}
+
+                    	Map<String, Object> jsonObject = parseCompactVenueToJSon(venue, attrs, lat, lng);
+                    	if (!jsonObject.isEmpty()) {
+                        	jsonArray.add(jsonObject);
+                    	}
+                	}
                 }
-
-                Map<String, Map<String, String>> descs = getVenueDetails(venueIds, locale);
-
-                for (int j = 0; j < venues.length; j++) {
-                    CompactVenue venue = venues[j];
-
-                    Map<String, String> attrs = descs.remove(venue.getId());
-                    if (attrs == null) {
-                        attrs = new HashMap<String, String>();
-                    }
-
-                    HereNow hereNow = venue.getHereNow();
-                    if (hereNow != null) {
-                        long hereNowCount = hereNow.getCount();
-                        attrs.put("isTrending", Long.toString(hereNowCount));
-                        //CheckinGroup[] groups = venue.getHereNow().getGroups();
-                        //for (int i = 0; i < groups.length; i++) {
-                        //CheckinGroup group = groups[i];
-                        //String name = group.getName();
-                        //long count = group.getCount();
-                        //}
-                    }
-
-                    Map<String, Object> jsonObject = parseCompactVenueToJSon(venue, attrs, lat, lng);
-                    if (!jsonObject.isEmpty()) {
-                        jsonArray.add(jsonObject);
-                    }
-                }
-                }
+            } else {
+            	handleError(resultT.getMeta(), key);
             }
 
             response = new JSONObject().put("ResultSet", jsonArray);
@@ -188,7 +193,7 @@ public class FoursquareUtils extends LayerHelper {
     }
     
     @Override
-   	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String intent, String locale, Locale l) throws Exception {
+    protected List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String intent, String locale, Locale l) throws Exception {
        	String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, limit, stringLimit, intent, locale);
            List<ExtendedLandmark> response = (List<ExtendedLandmark>) CacheUtil.getObject(key);
            
@@ -205,28 +210,30 @@ public class FoursquareUtils extends LayerHelper {
                    CompactVenue[] venues = searchResult.getVenues();
                    logger.log(Level.INFO, "No of Foursquare search venues {0}", venues.length);
                    if (venues.length > 0) {
-                   	List<String> venueIds = new ArrayList<String>();
+                   		List<String> venueIds = new ArrayList<String>();
 
-                   	for (int j = 0; j < venues.length; j++) {
-                   		venueIds.add(venues[j].getId());
-                   	}
-
-                   	Map<String, Map<String, String>> descs = getVenueDetails(venueIds, locale);
-
-                   	for (int j = 0; j < venues.length; j++) {
-                   		CompactVenue venue = venues[j];
-
-                   		Map<String, String> attrs = descs.remove(venue.getId());
-                   		if (attrs == null) {
-                   			attrs = new HashMap<String, String>();
+                   		for (int j = 0; j < venues.length; j++) {
+                   			venueIds.add(venues[j].getId());
                    		}
+
+                   		Map<String, Map<String, String>> descs = getVenueDetails(venueIds, locale);
+
+                   		for (int j = 0; j < venues.length; j++) {
+                   			CompactVenue venue = venues[j];
+
+                   			Map<String, String> attrs = descs.remove(venue.getId());
+                   			if (attrs == null) {
+                   				attrs = new HashMap<String, String>();
+                   			}
                        
-                   		ExtendedLandmark landmark = parseCompactVenueToLandmark(venue, attrs, lat, lng, l);
-                           if (landmark != null) {
-                           	response.add(landmark);
-                           }
-                   	}
+                   			ExtendedLandmark landmark = parseCompactVenueToLandmark(venue, attrs, lat, lng, l);
+                   			if (landmark != null) {
+                   				response.add(landmark);
+                   			}
+                   		}
                    }	
+               } else {
+            	   handleError(result.getMeta(), key);
                }
                
                //venues trending
@@ -238,40 +245,42 @@ public class FoursquareUtils extends LayerHelper {
                    logger.log(Level.INFO, "No of Foursquare trending venues {0}", venues.length);
 
                    if (venues.length > 0) {
-                   	List<String> venueIds = new ArrayList<String>();
+                   		List<String> venueIds = new ArrayList<String>();
 
-                   	for (int j = 0; j < venues.length; j++) {
-                   		venueIds.add(venues[j].getId());
-                   	}
-
-                   	Map<String, Map<String, String>> descs = getVenueDetails(venueIds, locale);
-
-                   	for (int j = 0; j < venues.length; j++) {
-                   		CompactVenue venue = venues[j];
-
-                   		Map<String, String> attrs = descs.remove(venue.getId());
-                   		if (attrs == null) {
-                   			attrs = new HashMap<String, String>();
+                   		for (int j = 0; j < venues.length; j++) {
+                   			venueIds.add(venues[j].getId());
                    		}
 
-                   		HereNow hereNow = venue.getHereNow();
-                   		if (hereNow != null) {
-                   			long hereNowCount = hereNow.getCount();
-                   			attrs.put("isTrending", Long.toString(hereNowCount));
-                   			//CheckinGroup[] groups = venue.getHereNow().getGroups();
-                   			//for (int i = 0; i < groups.length; i++) {
-                   			//CheckinGroup group = groups[i];
-                   			//String name = group.getName();
-                   			//long count = group.getCount();
-                   			//}
-                   		}
+                   		Map<String, Map<String, String>> descs = getVenueDetails(venueIds, locale);
 
-                   		ExtendedLandmark landmark = parseCompactVenueToLandmark(venue, attrs, lat, lng, l);
-                           if (landmark != null) {
-                           	response.add(landmark);
-                           }
-                   	}
+                   		for (int j = 0; j < venues.length; j++) {
+                   			CompactVenue venue = venues[j];
+
+                   			Map<String, String> attrs = descs.remove(venue.getId());
+                   			if (attrs == null) {
+                   				attrs = new HashMap<String, String>();
+                   			}
+
+                   			HereNow hereNow = venue.getHereNow();
+                   			if (hereNow != null) {
+                   				long hereNowCount = hereNow.getCount();
+                   				attrs.put("isTrending", Long.toString(hereNowCount));
+                   				//CheckinGroup[] groups = venue.getHereNow().getGroups();
+                   				//for (int i = 0; i < groups.length; i++) {
+                   				//CheckinGroup group = groups[i];
+                   				//String name = group.getName();
+                   				//long count = group.getCount();
+                   				//}
+                   			}
+
+                   			ExtendedLandmark landmark = parseCompactVenueToLandmark(venue, attrs, lat, lng, l);
+                   			if (landmark != null) {
+                   				response.add(landmark);
+                   			}
+                   		}
                    }
+               } else {
+            	   handleError(resultT.getMeta(), key);
                }
 
                if (!response.isEmpty()) {
@@ -285,7 +294,7 @@ public class FoursquareUtils extends LayerHelper {
            return response;
    	}
 
-    public static JSONObject processMerchantRequest(double lat, double lng, String categoryid, int radius, int version, int limit, int stringLimit, String token, String locale) throws MalformedURLException, IOException, JSONException {
+    protected static JSONObject processMerchantRequest(double lat, double lng, String categoryid, int radius, int version, int limit, int stringLimit, String token, String locale) throws MalformedURLException, IOException, JSONException {
         String key = getCacheKey(FoursquareUtils.class, "processMerchantRequest", lat, lng, categoryid, radius, version, limit, stringLimit, token, locale);
         JSONObject response = null;
         String cachedResponse = CacheUtil.getString(key);
@@ -310,7 +319,7 @@ public class FoursquareUtils extends LayerHelper {
         return response;
     }
     
-    public static List<ExtendedLandmark> processBinaryMerchantRequest(double lat, double lng, String categoryid, int radius, int version, int limit, int stringLimit, String token, String locale, Locale l) throws MalformedURLException, IOException, JSONException {
+    protected static List<ExtendedLandmark> processBinaryMerchantRequest(double lat, double lng, String categoryid, int radius, int version, int limit, int stringLimit, String token, String locale, Locale l) throws MalformedURLException, IOException, JSONException {
         String key = getCacheKey(FoursquareUtils.class, "processBinaryMerchantRequest", lat, lng, categoryid, radius, version, limit, stringLimit, token, locale);
         List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)CacheUtil.getObject(key);
         
@@ -332,7 +341,7 @@ public class FoursquareUtils extends LayerHelper {
         return landmarks;
     }
 
-    public static String exploreVenuesToJSon(double lat, double lng, String query, int radius, int limit, int version, String token, String locale) throws JSONException, MalformedURLException, IOException, FoursquareApiException {
+    protected static String exploreVenuesToJSon(double lat, double lng, String query, int radius, int limit, int version, String token, String locale) throws JSONException, MalformedURLException, IOException, FoursquareApiException {
         String key = getCacheKey(FoursquareUtils.class, "exploreVenuesToJSon", lat, lng, query, radius, version, limit, 0, token, locale);
         String jsonString = CacheUtil.getString(key);
         if (jsonString == null) {
@@ -389,12 +398,14 @@ public class FoursquareUtils extends LayerHelper {
                     logger.log(Level.INFO, "Adding fs explore list to cache with key {0}", key);
                     CacheUtil.put(key, jsonString);
                 }
+            } else {
+            	handleError(recommended.getMeta(), key);
             }
         }
         return jsonString;
      }
     
-     public static List<ExtendedLandmark> exploreVenuesToLandmark(double lat, double lng, String query, int radius, int limit, int version, String token, String locale, Locale l) throws JSONException, MalformedURLException, IOException, FoursquareApiException {
+    protected static List<ExtendedLandmark> exploreVenuesToLandmark(double lat, double lng, String query, int radius, int limit, int version, String token, String locale, Locale l) throws JSONException, MalformedURLException, IOException, FoursquareApiException {
         String key = getCacheKey(FoursquareUtils.class, "exploreVenuesToLandmark", lat, lng, query, radius, version, limit, 0, token, locale);
         List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)CacheUtil.getObject(key);
         if (landmarks == null) {
@@ -449,68 +460,13 @@ public class FoursquareUtils extends LayerHelper {
                     CacheUtil.put(key, landmarks);
                 }
             } else {
-            	logger.log(Level.SEVERE, "Received FS response " + recommended.getMeta().getErrorType() + 
-            			": " +   recommended.getMeta().getErrorDetail());
+            	handleError(recommended.getMeta(), key);
             }
         }
         return landmarks;
-     }
+    }
 
-    /*public static String getTrendingVenues(double latitude, double longitude, int radius, int version, int limit, String token, String locale) throws FoursquareApiException, JSONException, UnsupportedEncodingException, MalformedURLException, IOException {
-        String key = getCacheKey(FoursquareUtils.class, "getTrendingVenues", latitude, longitude, null, radius, version, limit, 0, token, locale);
-        String jsonString = CacheUtil.getString(key);
-        if (jsonString == null) {
-            FoursquareApi api = new FoursquareApi(Commons.FS_CLIENT_ID, Commons.FS_CLIENT_SECRET, null, token, new DefaultIOHandler());
-            api.setUseCallback(false);
-
-            List<Map<String, Object>> jsonArray = new ArrayList<Map<String, Object>>();
-
-            Result<CompactVenue[]> response = api.venuesTrending(latitude + "," + longitude, limit, radius);
-
-            if (response.getMeta().getCode() == 200) {
-                CompactVenue[] venues = response.getResult();
-                logger.log(Level.INFO, "No of Foursquare trending venues {0}", venues.length);
-
-                if (venues.length > 0) {
-                List<String> venueIds = new ArrayList<String>();
-
-                for (int j = 0; j < venues.length; j++) {
-                    venueIds.add(venues[j].getId());
-                }
-
-                Map<String, Map<String, String>> descs = getVenueDetails(venueIds, locale, version);
-
-                for (int j = 0; j < venues.length; j++) {
-                    CompactVenue venue = venues[j];
-
-                    Map<String, String> attrs = descs.remove(venue.getId());
-                    if (attrs == null) {
-                        attrs = new HashMap<String, String>();
-                    }
-
-                    attrs.put("isTrending", "true");
-
-                    Map<String, Object> jsonObject = parseCompactVenueToJSon(venue, attrs, version, latitude, longitude);
-                    if (!jsonObject.isEmpty()) {
-                        jsonArray.add(jsonObject);
-                    }
-                }
-                }
-                
-                JSONObject json = new JSONObject().put("ResultSet", jsonArray);
-                jsonString = json.toString();
-
-                //write to cache
-                if (!jsonArray.isEmpty()) {
-                    logger.log(Level.INFO, "Adding fs trending list to cache with key {0}", key);
-                    CacheUtil.put(key, jsonString);
-                }
-            }
-        }
-        return jsonString;
-    }*/
-    
-    public static List<ExtendedLandmark> getFriendsCheckinsToLandmarks(double latitude, double longitude, int limit, int version, String token, String locale, Locale l) throws FoursquareApiException, JSONException, UnsupportedEncodingException {
+    protected static List<ExtendedLandmark> getFriendsCheckinsToLandmarks(double latitude, double longitude, int limit, int version, String token, String locale, Locale l) throws FoursquareApiException, JSONException, UnsupportedEncodingException {
         String key = getCacheKey(FoursquareUtils.class, "getFriendsCheckinsToLandmark", 0, 0, null, 0, version, limit, 0, token, locale);
         List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>) CacheUtil.getObject(key);
 
@@ -561,8 +517,7 @@ public class FoursquareUtils extends LayerHelper {
                     }
                 }
             } else {
-            	logger.log(Level.SEVERE, "Received FS response " + response.getMeta().getErrorType() + 
-            			": " +   response.getMeta().getErrorDetail());
+            	handleError(response.getMeta(), key);
             }
 
             //write to cache
@@ -577,7 +532,7 @@ public class FoursquareUtils extends LayerHelper {
         return landmarks;
     }
 
-    public static String getFriendsCheckinsToJSon(double latitude, double longitude, int limit, int version, String token, String locale) throws FoursquareApiException, JSONException, UnsupportedEncodingException {
+    protected static String getFriendsCheckinsToJSon(double latitude, double longitude, int limit, int version, String token, String locale) throws FoursquareApiException, JSONException, UnsupportedEncodingException {
         String key = getCacheKey(FoursquareUtils.class, "getFriendsCheckinsToJSon", 0, 0, null, 0, version, limit, 0, token, locale);
         String jsonString = CacheUtil.getString(key);
 
@@ -626,6 +581,8 @@ public class FoursquareUtils extends LayerHelper {
                         }
                     }
                 }
+            } else {
+            	handleError(response.getMeta(), key);
             }
 
             //sort jsonArray
@@ -1020,13 +977,13 @@ public class FoursquareUtils extends LayerHelper {
         return json;
     }
      
-    public static int addVenue(String accessToken, String name, String desc, String primaryCategoryId, String ll) {
+    protected static int addVenue(String accessToken, String name, String desc, String primaryCategoryId, String ll) {
     	try {
     		FoursquareApi api = new FoursquareApi(Commons.FS_CLIENT_ID, Commons.FS_CLIENT_SECRET, null, accessToken, new DefaultIOHandler());
     		Result<CompleteVenue> result = api.venuesAdd(name, null, null, null, null, null, null, ll, primaryCategoryId, desc);
     		int res = result.getMeta().getCode();
     		if (res != 200) {
-    			logger.log(Level.SEVERE, result.getMeta().getErrorType() + ": " + result.getMeta().getErrorDetail());
+    			handleError(result.getMeta(), name + "_" + desc + "_" + primaryCategoryId + "_" + ll);
     		}
     		return res;
     	} catch (Exception ex) {
@@ -1384,5 +1341,9 @@ public class FoursquareUtils extends LayerHelper {
         }
 
         return landmarks;
+    }
+    
+    private static void handleError(ResultMeta meta, String key) {
+    	logger.log(Level.SEVERE, "Received FS response {0} {1}: {2}", new Object[]{meta.getCode(), meta.getErrorDetail(), key});
     }
 }

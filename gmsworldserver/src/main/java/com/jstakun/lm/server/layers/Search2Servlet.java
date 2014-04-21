@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.jstakun.lm.server.servlet;
+package com.jstakun.lm.server.layers;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -29,8 +29,6 @@ import org.json.JSONObject;
 import com.google.appengine.api.ThreadManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.lm.server.config.Commons;
-import com.jstakun.lm.server.layers.LayerHelperFactory;
-import com.jstakun.lm.server.layers.YelpUtils;
 import com.jstakun.lm.server.utils.GeocodeUtils;
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.JSONUtils;
@@ -140,7 +138,6 @@ public class Search2Servlet extends HttpServlet {
                 		if (YelpUtils.hasNeighborhoods(latitude, longitude)) {
                 			layers.put(Commons.YELP_LAYER, searchThreadFactory.newThread(new SerialSearchTask(Commons.YELP_LAYER))); //
                 		}
-                		//layers.put(Commons.QYPE_LAYER, searchThreadFactory.newThread(new SerialSearchTask(Commons.QYPE_LAYER))); //
                 		if (version > 1082) {
                 			layers.put(Commons.TWITTER_LAYER, searchThreadFactory.newThread(new SerialSearchTask(Commons.TWITTER_LAYER))); //
                 		}
@@ -344,8 +341,6 @@ public class Search2Servlet extends HttpServlet {
                 	landmarks = LayerHelperFactory.getEventfulUtils().processBinaryRequest(latitude, longitude, query, radius, 4, limit, stringLimit, null, null, locale);
                 } else if (layer.equals(Commons.YELP_LAYER)) {
                 	landmarks = LayerHelperFactory.getYelpUtils().processBinaryRequest(latitude, longitude, query, radius * 1000, 2, limit, stringLimit, "false", language, locale);
-                } else if (layer.equals(Commons.QYPE_LAYER)) {
-                	landmarks = LayerHelperFactory.getQypeUtils().processBinaryRequest(latitude, longitude, query, radius, 2, limit, stringLimit, null, null, locale);
                 } else if (layer.equals(Commons.TWITTER_LAYER)) {
                 	landmarks = LayerHelperFactory.getTwitterUtils().processBinaryRequest(latitude, longitude, query, radius, 1, limit, stringLimit, language, null, locale);
                 } else if (layer.equals(Commons.MEETUP_LAYER)) {

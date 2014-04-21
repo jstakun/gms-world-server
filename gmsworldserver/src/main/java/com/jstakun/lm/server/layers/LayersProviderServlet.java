@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.jstakun.lm.server.servlet;
+package com.jstakun.lm.server.layers;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,12 +24,6 @@ import org.json.JSONObject;
 
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.lm.server.config.Commons;
-import com.jstakun.lm.server.layers.EventfulUtils;
-import com.jstakun.lm.server.layers.FlickrUtils;
-import com.jstakun.lm.server.layers.FoursquareUtils;
-import com.jstakun.lm.server.layers.GMSUtils;
-import com.jstakun.lm.server.layers.LayerHelperFactory;
-import com.jstakun.lm.server.layers.YelpUtils;
 import com.jstakun.lm.server.utils.GeocodeUtils;
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.NumberUtils;
@@ -189,12 +183,6 @@ public class LayersProviderServlet extends HttpServlet {
                         outString = LayerHelperFactory.getGooglePlacesUtils().processRequest(latitude, longitude, null, radius * 1000, version, limit, stringLimit, language, null).toString();
                 	}
                 }
-            } else if (StringUtils.contains(uri, "qypeProvider")) {
-                //if (HttpUtils.isEmptyAny(request, "lat", "lng", "radius")) {
-                    //response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-                //} else {
-                    //outString = LayerHelperFactory.getQypeUtils().processRequest(latitude, longitude, null, radius, version, limit, stringLimit, locale, null).toString();
-                //}
             } else if (StringUtils.contains(uri, "couponsProvider")) {
                 if (HttpUtils.isEmptyAny(request, "latitude", "longitude", "radius")) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -484,6 +472,56 @@ public class LayersProviderServlet extends HttpServlet {
                 		outString = new JSONObject().put("ResultSet", landmarks).toString();
                 	}
                 }
+            } else if (StringUtils.contains(uri, "fbCheckins")) {
+            	if (HttpUtils.isEmptyAny(request,"lat","lng","token") && HttpUtils.isEmptyAny(request,"latitude","longitude","token")) {
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                } else {
+                	String token = URLDecoder.decode(request.getParameter("token"), "UTF-8");
+                	if (outFormat.equals(Format.BIN)) {
+                    	List<ExtendedLandmark> landmarks = FacebookUtils.getFriendsCheckinsToLandmarks(latitude, longitude, version, limit, stringLimit, token, l);
+                    	LayerHelperFactory.getFacebookUtils().serialize(landmarks, response.getOutputStream(), version);
+                    } else {
+                    	outString = FacebookUtils.getFriendsCheckinsToJSon(latitude, longitude, version, limit, stringLimit, token).toString();
+                    }
+                }
+            } else if (StringUtils.contains(uri, "fbPhotos")) {
+            	 if (HttpUtils.isEmptyAny(request,"lat","lng","token") && HttpUtils.isEmptyAny(request,"latitude","longitude","token")) {
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                 } else {
+                	String token = URLDecoder.decode(request.getParameter("token"), "UTF-8");
+                	if (outFormat.equals(Format.BIN)) {
+                    	List<ExtendedLandmark> landmarks = FacebookUtils.getFriendsPhotosToLandmark(latitude, longitude, version, limit, stringLimit, token, l);
+                    	LayerHelperFactory.getFacebookUtils().serialize(landmarks, response.getOutputStream(), version);
+                    } else {
+                    	outString = FacebookUtils.getFriendsPhotosToJSon(latitude, longitude, version, limit, stringLimit, token).toString();              
+                    }
+                 }
+            } else if (StringUtils.contains(uri, "fsCheckins")) {
+            	String token = URLDecoder.decode(request.getParameter("token"), "UTF-8");
+                if (HttpUtils.isEmptyAny(request,"lat","lng","radius","token") && HttpUtils.isEmptyAny(request,"latitude","longitude","radius","token")) {
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                } else { 
+                	if (outFormat.equals(Format.BIN)) {
+                    	List<ExtendedLandmark> landmarks = FoursquareUtils.getFriendsCheckinsToLandmarks(latitude, longitude, limit, version, token, language, l);
+                    	LayerHelperFactory.getFoursquareUtils().serialize(landmarks, response.getOutputStream(), version);
+                    } else {
+                    	outString = FoursquareUtils.getFriendsCheckinsToJSon(latitude, longitude, limit, version, token, language).toString();
+                    }  
+                }
+            } else if (StringUtils.contains(uri, "fsRecommended")) {
+            	if (HttpUtils.isEmptyAny(request,"lat","lng","radius","token") && HttpUtils.isEmptyAny(request,"latitude","longitude","radius","token")) {
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                } else {
+                    String token = URLDecoder.decode(request.getParameter("token"), "UTF-8");
+                    if (outFormat.equals(Format.BIN)) {
+                    	List<ExtendedLandmark> landmarks = FoursquareUtils.exploreVenuesToLandmark(latitude, longitude, null, radius * 1000, limit, version, token, language, l);
+                    	LayerHelperFactory.getFoursquareUtils().serialize(landmarks, response.getOutputStream(), version);
+                    } else {
+                    	outString = FoursquareUtils.exploreVenuesToJSon(latitude, longitude, null, radius * 1000, limit, version, token, language).toString();
+                    }
+                }    
+            } else if (StringUtils.contains(uri, "qypeProvider") || StringUtils.contains(uri, "upcomingProvider") || StringUtils.contains(uri, "gowallaProvider")) {
+            	logger.log(Level.INFO, "Closed api request uri: {0}", uri);
             } else {
             	logger.log(Level.SEVERE, "Unexpected uri: {0}", uri);
             }

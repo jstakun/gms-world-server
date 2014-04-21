@@ -2,20 +2,19 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.jstakun.lm.server.servlet;
 
-import com.jstakun.lm.server.layers.LayerHelperFactory;
-import com.jstakun.lm.server.layers.YelpUtils;
-import com.jstakun.lm.server.utils.GeocodeUtils;
-import com.jstakun.lm.server.utils.HttpUtils;
-import com.jstakun.lm.server.utils.NumberUtils;
+package com.jstakun.lm.server.social;
+
+import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.StringUtil;
-
+import com.jstakun.lm.server.utils.persistence.CheckinPersistenceUtils;
+import com.jstakun.lm.server.utils.persistence.CommonPersistenceUtils;
+import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLEncoder;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,15 +24,14 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author jstakun
  */
-@Deprecated
-public class YelpProviderServlet extends HttpServlet {
-
+public class QrCodeCheckInServlet extends HttpServlet {
+   
     /**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	/**
+	/** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
      * @param response servlet response
@@ -41,38 +39,34 @@ public class YelpProviderServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/json;charset=UTF-8");
+    throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         try {
-            if (HttpUtils.isEmptyAny(request, "lat", "lng", "radius")) {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            String key = request.getParameter("key");
+            if (CommonPersistenceUtils.isKeyValid(key)) {
+                String username = StringUtil.getUsername(request.getAttribute("username"),request.getParameter("username"));
+                Landmark landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
+                if (landmark != null)
+                {
+                    CheckinPersistenceUtils.persistCheckin(username, key, 0);
+                    response.setHeader("name", URLEncoder.encode(landmark.getName(),"UTF-8"));
+                    out.println("Checkin done");
+                }
+                else
+                {
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                }
             } else {
-                double latitude = GeocodeUtils.getLatitude(request.getParameter("lat"));
-                double longitude = GeocodeUtils.getLongitude(request.getParameter("lng"));
-                int radius = NumberUtils.getRadius(request.getParameter("radius"), 1000, 40000);
-                int limit = NumberUtils.getInt(request.getParameter("limit"), 30);
-                int stringLimit = StringUtil.getStringLengthLimit(request.getParameter("display"));
-                int deals = NumberUtils.getInt(request.getParameter("deals"), 0);
-                int version = NumberUtils.getVersion(request.getParameter("version"), 1);
-                String language = StringUtil.getLanguage(request.getLocale().getLanguage(), "en", 2);
-                String hasDeals = "false";
-                if (deals == 1) {
-                    hasDeals = "true";
-                }
-
-                if (YelpUtils.hasNeighborhoods(latitude, longitude)) {
-                    out.println(LayerHelperFactory.getYelpUtils().processRequest(latitude, longitude, null, radius, version, limit, stringLimit, hasDeals, language).toString());
-                } else {
-                    out.print("{ResultSet:[]}");
-                }
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             }
         } catch (Exception ex) {
-            Logger.getLogger(YelpProviderServlet.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
+            Logger.getLogger(QrCodeCheckInServlet.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        } finally { 
             out.close();
         }
-    }
+    } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /** 
@@ -84,9 +78,9 @@ public class YelpProviderServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    throws ServletException, IOException {
         processRequest(request, response);
-    }
+    } 
 
     /** 
      * Handles the HTTP <code>POST</code> method.
@@ -97,7 +91,7 @@ public class YelpProviderServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    throws ServletException, IOException {
         processRequest(request, response);
     }
 
@@ -109,4 +103,5 @@ public class YelpProviderServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
 }

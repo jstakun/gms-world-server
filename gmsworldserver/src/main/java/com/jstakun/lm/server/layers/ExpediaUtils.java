@@ -36,7 +36,7 @@ import org.json.JSONObject;
 public class ExpediaUtils extends LayerHelper {
 
 	@Override
-	public JSONObject processRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String lang, String flexString2) throws Exception {
+	protected JSONObject processRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String lang, String flexString2) throws Exception {
 		int r = NumberUtils.normalizeNumber(radius, 2, 80);
 		String key = getCacheKey(getClass(), "processRequest", latitude, longitude, query, r, version, limit, stringLimit, lang, flexString2);
 		String output = CacheUtil.getString(key);
@@ -165,7 +165,7 @@ public class ExpediaUtils extends LayerHelper {
 	}
 
 	@Override
-	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String lang, String flexString2, Locale locale) throws Exception {
+	protected List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String lang, String flexString2, Locale locale) throws Exception {
 		int r = NumberUtils.normalizeNumber(radius, 2, 80);
 		String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, r, version, limit, stringLimit, lang, flexString2);
 		List<ExtendedLandmark> output = (List<ExtendedLandmark>)CacheUtil.getObject(key);

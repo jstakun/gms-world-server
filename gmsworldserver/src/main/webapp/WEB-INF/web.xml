@@ -76,6 +76,7 @@
     <url-pattern>/instagramProvider</url-pattern>
     <url-pattern>/instagramProvider</url-pattern>
     <url-pattern>/freebaseProvider</url-pattern>
+    <url-pattern>/gowallaProvider</url-pattern>
     <url-pattern>/search</url-pattern>
     <url-pattern>/listLayers</url-pattern>
     <url-pattern>/geocode</url-pattern>
@@ -112,6 +113,7 @@
     <url-pattern>/lastfmProvider</url-pattern>
     <url-pattern>/webcamProvider</url-pattern>
     <url-pattern>/hotwireProvider</url-pattern>
+    <url-pattern>/gowallaProvider</url-pattern>
     <url-pattern>/panoramio2Provider</url-pattern>
     <url-pattern>/foursquareMerchant</url-pattern>
     <url-pattern>/expediaProvider</url-pattern>
@@ -160,7 +162,7 @@
  </filter-mapping-->
  <servlet>
   <servlet-name>LandmarkPersistenceServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.servlet.PersistLandmarkServlet</servlet-class>
+  <servlet-class>com.jstakun.lm.server.layers.PersistLandmarkServlet</servlet-class>
  </servlet>
  <servlet>
   <servlet-name>action</servlet-name>
@@ -185,7 +187,7 @@
  </servlet>
  <servlet>
   <servlet-name>ListLayersServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.servlet.ListLayersServlet</servlet-class>
+  <servlet-class>com.jstakun.lm.server.layers.ListLayersServlet</servlet-class>
  </servlet>
  <servlet>
   <servlet-name>OAuthServlet</servlet-name>
@@ -193,11 +195,11 @@
  </servlet>
  <servlet>
   <servlet-name>QrCodeCheckInServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.servlet.QrCodeCheckInServlet</servlet-class>
+  <servlet-class>com.jstakun.lm.server.social.QrCodeCheckInServlet</servlet-class>
  </servlet>
  <servlet>
   <servlet-name>LocationCheckInServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.servlet.LocationCheckInServlet</servlet-class>
+  <servlet-class>com.jstakun.lm.server.social.LocationCheckInServlet</servlet-class>
  </servlet>
  <servlet>
   <servlet-name>GeocodeServlet</servlet-name>
@@ -205,7 +207,7 @@
  </servlet>
  <servlet>
   <servlet-name>FbPlacesServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.servlet.FBPlacesServlet</servlet-class>
+  <servlet-class>com.jstakun.lm.server.layers.FBPlacesServlet</servlet-class>
  </servlet>
  <servlet>
   <servlet-name>ServiceLogAnalyticsServlet</servlet-name>
@@ -213,15 +215,15 @@
  </servlet>
  <servlet>
   <servlet-name>PanoramioProviderServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.servlet.PanoramioProviderServlet</servlet-class>
+  <servlet-class>com.jstakun.lm.server.layers.PanoramioProviderServlet</servlet-class>
  </servlet>
  <servlet>
   <servlet-name>AddCommentServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.servlet.AddCommentServlet</servlet-class>
+  <servlet-class>com.jstakun.lm.server.social.AddCommentServlet</servlet-class>
  </servlet>
  <servlet>
   <servlet-name>RouteProviderServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.servlet.RouteProviderServlet</servlet-class>
+  <servlet-class>com.jstakun.lm.server.layers.RouteProviderServlet</servlet-class>
  </servlet>
  <servlet>
   <servlet-name>TaskServlet</servlet-name>
@@ -251,7 +253,7 @@
   <servlet-name>LandmarkFilterTaskServlet</servlet-name>
   <servlet-class>com.jstakun.lm.server.tasks.LandmarkFilterTaskServlet</servlet-class>
  </servlet>
- <servlet>
+ <!-- servlet>
   <servlet-name>FBCheckinsServlet</servlet-name>
   <servlet-class>com.jstakun.lm.server.servlet.FBCheckinsServlet</servlet-class>
  </servlet>
@@ -266,14 +268,10 @@
  <servlet>
   <servlet-name>FoursquareRecommendedServlet</servlet-name>
   <servlet-class>com.jstakun.lm.server.servlet.FoursquareRecommendedServlet</servlet-class>
- </servlet>
- <servlet>
-  <servlet-name>SearchTaskServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.tasks.SearchTaskServlet</servlet-class>
- </servlet>
+ </servlet-->
  <servlet>
   <servlet-name>Search2Servlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.servlet.Search2Servlet</servlet-class>
+  <servlet-class>com.jstakun.lm.server.layers.Search2Servlet</servlet-class>
   <load-on-startup>1</load-on-startup>
  </servlet>
  <servlet>
@@ -282,7 +280,7 @@
  </servlet>
  <servlet>
   <servlet-name>LayersProviderServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.servlet.LayersProviderServlet</servlet-class>
+  <servlet-class>com.jstakun.lm.server.layers.LayersProviderServlet</servlet-class>
   <load-on-startup>1</load-on-startup>
  </servlet>
  <servlet>
@@ -311,7 +309,7 @@
  </servlet>
  <servlet>
   <servlet-name>FsAddVenueServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.servlet.FsAddVenueServlet</servlet-class>
+  <servlet-class>com.jstakun.lm.server.layers.FsAddVenueServlet</servlet-class>
  </servlet>
  <servlet>
   <servlet-name>NotificationTaskServlet</servlet-name>
@@ -428,7 +426,7 @@
   <servlet-name>LandmarkFilterTaskServlet</servlet-name>
   <url-pattern>/tasks/landmarkFilterTask</url-pattern>
  </servlet-mapping>
- <servlet-mapping>
+ <!-- servlet-mapping>
   <servlet-name>FBCheckinsServlet</servlet-name>
   <url-pattern>/services/fbCheckins,/s/fbCheckins</url-pattern>
  </servlet-mapping>
@@ -443,11 +441,7 @@
  <servlet-mapping>
   <servlet-name>FoursquareRecommendedServlet</servlet-name>
   <url-pattern>/services/fsRecommended,/s/fsRecommended</url-pattern>
- </servlet-mapping>
- <servlet-mapping>
-  <servlet-name>SearchTaskServlet</servlet-name>
-  <url-pattern>/tasks/searchTask</url-pattern>
- </servlet-mapping>
+ </servlet-mapping-->
  <servlet-mapping>
   <servlet-name>NotificationsServlet</servlet-name>
   <url-pattern>/notifications,/services/notifications,/s/notifications</url-pattern>
@@ -470,7 +464,7 @@
   <url-pattern>/services/downloadLandmark,/s/downloadLandmark,/downloadLandmark</url-pattern>
   <url-pattern>/picasaProvider,/services/picasaProvider,/s/picasaProvider</url-pattern>
   <url-pattern>/meetupProvider,/services/meetupProvider,/s/meetupProvider</url-pattern>
-  <url-pattern>/upcomingProvider,/services/upcomingProvider,/s/upcomingProvider</url-pattern>
+  <url-pattern>/upcomingProvider,/services/upcomingProvider</url-pattern>
   <url-pattern>/services/youTubeProvider,/youTubeProvider,/s/youTubeProvider</url-pattern>
   <url-pattern>/services/eventfulProvider,/eventfulProvider,/s/eventfulProvider</url-pattern>
   <url-pattern>/osmProvider,/services/osmProvider,/s/osmProvider</url-pattern>
@@ -487,6 +481,10 @@
   <url-pattern>/twitterProvider,/services/twitterProvider,/s/twitterProvider</url-pattern>
   <url-pattern>/instagramProvider,/services/instagramProvider,/s/instagramProvider</url-pattern>
   <url-pattern>/freebaseProvider,/services/freebaseProvider,/s/freebaseProvider</url-pattern>
+  <url-pattern>/services/fbCheckins,/s/fbCheckins</url-pattern>
+  <url-pattern>/services/fbPhotos,/s/fbPhotos</url-pattern>
+  <url-pattern>/services/fsRecommended,/s/fsRecommended</url-pattern>
+  <url-pattern>/services/fsCheckins,/s/fsCheckins</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>Search2Servlet</servlet-name>

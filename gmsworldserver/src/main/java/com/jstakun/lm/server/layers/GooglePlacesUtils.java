@@ -154,7 +154,7 @@ public class GooglePlacesUtils extends LayerHelper {
 	}*/
 	
     @Override
-    public JSONObject processRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String language, String flexString2) throws MalformedURLException, IOException, JSONException {
+    protected JSONObject processRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String language, String flexString2) throws MalformedURLException, IOException, JSONException {
         int r = NumberUtils.normalizeNumber(radius, 1000, 50000);
         int l = NumberUtils.normalizeNumber(limit, 1, QUOTA_LIMIT);
         String key = getCacheKey(getClass(), "processRequest", latitude, longitude, query, r, version, l, stringLimit, language, flexString2);
@@ -433,7 +433,7 @@ public class GooglePlacesUtils extends LayerHelper {
     }
 
 	@Override
-	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String language, String flexString2, Locale locale) throws Exception {
+	protected List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String language, String flexString2, Locale locale) throws Exception {
 		int r = NumberUtils.normalizeNumber(radius, 1000, 50000);
 		int l = NumberUtils.normalizeNumber(limit, 1, QUOTA_LIMIT);
         String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, r, version, l, stringLimit, language, flexString2);

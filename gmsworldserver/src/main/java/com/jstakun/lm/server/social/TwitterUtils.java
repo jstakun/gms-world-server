@@ -36,7 +36,7 @@ public class TwitterUtils {
         return twitter;
     }
 	
-	public static void sendMessage(String key, String url, String token, String secret, int type) {
+	protected static void sendMessage(String key, String url, String token, String secret, int type) {
 		String message = null;
 		try {
         	    Landmark landmark = null; 
@@ -84,7 +84,7 @@ public class TwitterUtils {
         }
     }
 
-    public static void sendImageMessage(String showImageUrl, String username, double latitude, double longitude) {
+    protected static void sendImageMessage(String showImageUrl, String username, double latitude, double longitude) {
     	String message = null;
     	try {
             String userMask;

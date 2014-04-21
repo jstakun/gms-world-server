@@ -49,7 +49,7 @@ public class FacebookUtils extends LayerHelper {
 
 	private static final String FBPLACES_PREFIX = "http://touch.facebook.com/profile.php?id=";
 	
-    public static String getFriendsPhotosToJSon(double lat, double lng, int version, int limit, int stringLength, String token) throws JSONException, UnsupportedEncodingException {
+    protected static String getFriendsPhotosToJSon(double lat, double lng, int version, int limit, int stringLength, String token) throws JSONException, UnsupportedEncodingException {
 
         String key = getCacheKey(FacebookUtils.class, "getFriendsPhotosToJSon", 0, 0, null, 0, version, limit, stringLength, token, null);
         String jsonString = CacheUtil.getString(key);
@@ -196,7 +196,7 @@ public class FacebookUtils extends LayerHelper {
         return jsonString;
     }
     
-    public static List<ExtendedLandmark> getFriendsPhotosToLandmark(double lat, double lng, int version, int limit, int stringLength, String token, Locale locale) throws JSONException, UnsupportedEncodingException {
+    protected static List<ExtendedLandmark> getFriendsPhotosToLandmark(double lat, double lng, int version, int limit, int stringLength, String token, Locale locale) throws JSONException, UnsupportedEncodingException {
 
         String key = getCacheKey(FacebookUtils.class, "getFriendsPhotosToLandmarks", 0, 0, null, 0, version, limit, stringLength, token, null);
         List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)CacheUtil.getObject(key);
@@ -333,7 +333,7 @@ public class FacebookUtils extends LayerHelper {
         return landmarks;
     }
 
-    public static List<ExtendedLandmark> getFriendsCheckinsToLandmarks(double lat, double lng, int version, int limit, int stringLength, String token, Locale locale) throws JSONException, UnsupportedEncodingException {
+    protected static List<ExtendedLandmark> getFriendsCheckinsToLandmarks(double lat, double lng, int version, int limit, int stringLength, String token, Locale locale) throws JSONException, UnsupportedEncodingException {
 
         String key = getCacheKey(FacebookUtils.class, "getFriendsCheckinsToLandmarks", 0, 0, null, 0, version, limit, stringLength, token, null);
         List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)CacheUtil.getObject(key);
@@ -469,7 +469,7 @@ public class FacebookUtils extends LayerHelper {
         return landmarks;
     }
     
-    public static String getFriendsCheckinsToJSon(double lat, double lng, int version, int limit, int stringLength, String token) throws JSONException, UnsupportedEncodingException {
+    protected static String getFriendsCheckinsToJSon(double lat, double lng, int version, int limit, int stringLength, String token) throws JSONException, UnsupportedEncodingException {
 
         String key = getCacheKey(FacebookUtils.class, "getFriendsCheckinsToJSon", 0, 0, null, 0, version, limit, stringLength, token, null);
         String jsonString = CacheUtil.getString(key);
@@ -588,7 +588,7 @@ public class FacebookUtils extends LayerHelper {
     }
 
     @Override
-    public JSONObject processRequest(double latitude, double longitude, String query, int distance, int version, int limit, int stringLength, String fbtoken, String flexString2) throws JsonException, JSONException, UnsupportedEncodingException {
+    protected JSONObject processRequest(double latitude, double longitude, String query, int distance, int version, int limit, int stringLength, String fbtoken, String flexString2) throws JsonException, JSONException, UnsupportedEncodingException {
 
         int dist = NumberUtils.normalizeNumber(distance, 1000, 50000);
 
@@ -1114,7 +1114,7 @@ public class FacebookUtils extends LayerHelper {
     }*/
 
 	@Override
-	public List<ExtendedLandmark> processBinaryRequest(double latitude, double longitude, String query, int distance, int version, int limit, int stringLength, String fbtoken, String flexString2, Locale locale) throws Exception {
+	protected List<ExtendedLandmark> processBinaryRequest(double latitude, double longitude, String query, int distance, int version, int limit, int stringLength, String fbtoken, String flexString2, Locale locale) throws Exception {
 		int dist = NumberUtils.normalizeNumber(distance, 1000, 50000);
 
         String key = getCacheKey(getClass(), "processRequest", latitude, longitude, query, dist, version, limit, stringLength, fbtoken, flexString2);

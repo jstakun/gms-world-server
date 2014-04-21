@@ -316,7 +316,7 @@ public class FoursquareCategoryMapping {
         "4bf58dd8d48988d197941735",//"name":"College Administrative Buildings"
     };
 
-    public static String[] findMapping(String fsCategory) {
+    protected static String[] findMapping(String fsCategory) {
 
         for (int i = 0; i < ENTERTAINMENT.length; i++) {
             String[] cat = ENTERTAINMENT[i];

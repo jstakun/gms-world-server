@@ -1,4 +1,4 @@
-package com.jstakun.lm.server.struts;
+package com.jstakun.lm.server.layers;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,8 +14,6 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
-import com.jstakun.lm.server.layers.FreebaseUtils;
-import com.jstakun.lm.server.layers.LayerHelperFactory;
 
 public class FreebaseViewAction extends Action {
 	private static final String SUCCESS = "success";

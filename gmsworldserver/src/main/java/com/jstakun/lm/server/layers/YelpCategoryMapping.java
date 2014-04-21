@@ -226,7 +226,7 @@ W 2013-10-02 18:25:55.035 com.jstakun.lm.server.layers.YelpCategoryMapping findM
 	};
 	
 		
-	public static String[] findMapping(String[] category) {
+	protected static String[] findMapping(String[] category) {
 		for (int i=0;i<YELP_CATEGORIES.length;i++) {
 			for (int j=0;j<category.length;j++) {
 				if (YELP_CATEGORIES[i][0].equals(category[j])) {
