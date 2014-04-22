@@ -94,9 +94,19 @@ public class FoursquareUtils extends LayerHelper {
             List<Map<String, Object>> jsonArray = new ArrayList<Map<String, Object>>();
 
             //venues search
+            //Result<VenuesSearchResult> result = api.venuesSearch(lat + "," + lng, (double) radius, null, null, query, limit, intent, null, null, null, null);
             
-            Result<VenuesSearchResult> result = api.venuesSearch(lat + "," + lng, (double) radius, null, null, query, limit, intent, null, null, null, null);
-
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("ll", lat + "," + lng);
+            params.put("radius", Integer.toString(radius));
+            params.put("limit", Integer.toString(limit));
+            params.put("intent", intent);
+            if (StringUtils.isNotEmpty(query)) {
+            	params.put("query", query);
+            }
+            
+            Result<VenuesSearchResult> result = api.venuesSearch(params); 
+            
             if (result.getMeta().getCode() == 200) {
                 VenuesSearchResult searchResult = result.getResult();
                 CompactVenue[] venues = searchResult.getVenues();
@@ -203,8 +213,20 @@ public class FoursquareUtils extends LayerHelper {
                response = new ArrayList<ExtendedLandmark>();
                //venues search
                
-               Result<VenuesSearchResult> result = api.venuesSearch(lat + "," + lng, (double) radius, null, null, query, limit, intent, null, null, null, null);
+               //Result<VenuesSearchResult> result = api.venuesSearch(lat + "," + lng, (double) radius, null, null, query, limit, intent, null, null, null, null);
 
+               Map<String, String> params = new HashMap<String, String>();
+               params.put("ll", lat + "," + lng);
+               params.put("radius", Integer.toString(radius));
+               params.put("limit", Integer.toString(limit));
+               params.put("intent", intent);
+               if (StringUtils.isNotEmpty(query)) {
+               	params.put("query", query);
+               }
+               
+               Result<VenuesSearchResult> result = api.venuesSearch(params); 
+               
+               
                if (result.getMeta().getCode() == 200) {
                    VenuesSearchResult searchResult = result.getResult();
                    CompactVenue[] venues = searchResult.getVenues();

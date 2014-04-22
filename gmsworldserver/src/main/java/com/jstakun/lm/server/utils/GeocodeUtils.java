@@ -249,7 +249,7 @@ public class GeocodeUtils {
                 Landmark landmark = null;
                 String[] token = addr.split(",");
                 if (token.length > 1 && token[1].length() > 0) {
-                	List<Landmark> landmarks = LandmarkPersistenceUtils.selectLandmarkMatchingQuery(token[1]);
+                	List<Landmark> landmarks = LandmarkPersistenceUtils.selectLandmarkMatchingQuery(token[1],1);
                 	if (!landmarks.isEmpty()) {
                 		landmark = landmarks.get(0);
                 	}

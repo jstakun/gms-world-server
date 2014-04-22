@@ -421,7 +421,7 @@ public class LandmarkPersistenceUtils {
         return result;
     }*/
 
-    public static List<Landmark> selectLandmarkMatchingQuery(String query) {
+    public static List<Landmark> selectLandmarkMatchingQuery(String query, int limit) {
     	List<Landmark> landmarks = new ArrayList<Landmark>();
     	/*PersistenceManager pm = PMF.get().getPersistenceManager();
         
@@ -450,7 +450,7 @@ public class LandmarkPersistenceUtils {
     	
     	try {
         	String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "landmarksProvider";
-        	String params = "query=" + query;			 
+        	String params = "query=" + URLEncoder.encode(query, "UTF-8") + "&limit=" + limit;			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
         	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
         	//logger.log(Level.INFO, "Received response: " + gJson);

@@ -61,11 +61,21 @@ public class GMSUtils extends LayerHelper {
         JSONObject json = null;
         String output = CacheUtil.getString(key);
         if (output == null) {
-            List<Landmark> landmarkList = LandmarkPersistenceUtils.selectLandmarksByCoordsAndLayer(latitude, longitude, layer, limit, radius);
-            List<Landmark> results = new ArrayList<Landmark>();
-            results.addAll(Collections2.filter(landmarkList, new QueryPredicate(query)));
-            json = createCustomJSonLandmarkList(results, version, stringLimit);
-            if (!results.isEmpty()) {
+            //List<Landmark> landmarkList = LandmarkPersistenceUtils.selectLandmarksByCoordsAndLayer(latitude, longitude, layer, limit, radius);
+            
+            //if (!landmarkList.isEmpty()) {
+            //	results.addAll(Collections2.filter(landmarkList, new QueryPredicate(query)));
+            //}
+            List<Landmark> landmarkList = null;
+        	
+        	if (StringUtils.isNotEmpty(query)) {
+        		landmarkList = LandmarkPersistenceUtils.selectLandmarkMatchingQuery(query, limit);
+        	} else {
+        		landmarkList = LandmarkPersistenceUtils.selectLandmarksByCoordsAndLayer(latitude, longitude, layer, limit, radius);
+        	}
+        	
+            json = createCustomJSonLandmarkList(landmarkList, version, stringLimit);
+            if (!landmarkList.isEmpty()) {
                 CacheUtil.put(key, json.toString());
                 logger.log(Level.INFO, "Adding GMS landmark list to cache with key {0}", key);
             }
@@ -89,8 +99,6 @@ public class GMSUtils extends LayerHelper {
             
             List<Landmark> landmarkList = LandmarkPersistenceUtils.selectLandmarksByCoordsAndLayer(latitude, longitude, layer, limit, radius);
         	
-            //List<Landmark> landmarkList = LandmarkPersistenceUtils.selectLandmarksByCoordsAndLayer(latitudeMin, longitudeMin, latitudeMax, longitudeMax, layer, limit);
-
             if (format.equals("kml")) {
                 output = XMLUtils.createKmlLandmarkList(landmarkList, landingPage);
             } else if (format.equals("json")) {
@@ -158,10 +166,19 @@ public class GMSUtils extends LayerHelper {
 		String key = getCacheKey(getClass(), "processBinaryRequest", latitude, longitude, query, radius, version, limit, stringLimit, layer, flexString2);
 		List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)CacheUtil.getObject(key);
         if (landmarks == null) {
-            List<Landmark> landmarkList = LandmarkPersistenceUtils.selectLandmarksByCoordsAndLayer(latitude, longitude, layer, limit, radius);
-            Collection<Landmark> results = Collections2.filter(landmarkList, new QueryPredicate(query));
-            landmarks = new ArrayList<ExtendedLandmark>();            
-            landmarks.addAll(Collections2.transform(results, new LandmarkTransformFunction(layer, locale)));
+        	landmarks = new ArrayList<ExtendedLandmark>();
+        	List<Landmark> landmarkList = null;
+        	
+        	if (StringUtils.isNotEmpty(query)) {
+        		landmarkList = LandmarkPersistenceUtils.selectLandmarkMatchingQuery(query, limit);
+        	} else {
+        		landmarkList = LandmarkPersistenceUtils.selectLandmarksByCoordsAndLayer(latitude, longitude, layer, limit, radius);
+        	}
+        	
+            if (!landmarkList.isEmpty()) {
+            	//Collection<Landmark> results = Collections2.filter(landmarkList, new QueryPredicate(query));      
+            	landmarks.addAll(Collections2.transform(landmarkList, new LandmarkTransformFunction(layer, locale)));
+            }
 
             if (!landmarks.isEmpty()) {
                 CacheUtil.put(key, landmarks);
@@ -191,11 +208,11 @@ public class GMSUtils extends LayerHelper {
 	}
 	
 	private class LandmarkTransformFunction implements Function<Landmark, ExtendedLandmark> {
-		private String layer = null;
+		//private String layer = null;
 		private Locale locale = null;
 		
 		public LandmarkTransformFunction(String layer, Locale locale) {
-			this.layer = layer;
+			//this.layer = layer;
 			this.locale = locale;
 		}
 		
@@ -207,7 +224,7 @@ public class GMSUtils extends LayerHelper {
 	    	String url = UrlUtils.getLandmarkUrl(source);	        
 	    	Map<String, String> tokens = new HashMap<String, String>();
 	    	tokens.put("description", source.getDescription());	    	
-	    	ExtendedLandmark target = LandmarkFactory.getLandmark(name, null, qc, layer, new AddressInfo(), creationDate, null);
+	    	ExtendedLandmark target = LandmarkFactory.getLandmark(name, null, qc, source.getLayer(), new AddressInfo(), creationDate, null);
 	    	target.setUrl(url);
 	    	target.setDescription(JSONUtils.buildLandmarkDesc(target, tokens, locale));
 	    	return target;

@@ -42,11 +42,8 @@ public class CrashReportServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        try {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        
             String title = "New crash report";
             String titleSuffix = "";
             int versionCode = 0;
@@ -87,21 +84,9 @@ public class CrashReportServlet extends HttpServlet {
                 } else {
                 	logger.log(Level.INFO, sb.toString());
                 }
-                
-                out.println("<html>");
-                out.println("<head>");
-                out.println("<title>CrashReport Servlet</title>");
-                out.println("</head>");
-                out.println("<body>");
-                out.println("Servlet CrashReport Servlet executed.");
-                out.println("</body>");
-                out.println("</html>");
             } else {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            }
-        } finally {
-            out.close();
-        }
+            } 
     }
 
     /** 

@@ -7,15 +7,11 @@ package com.jstakun.lm.server.utils.persistence;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.jdo.PersistenceManager;
-import javax.jdo.Query;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
@@ -24,11 +20,9 @@ import org.json.JSONObject;
 import com.google.gdata.util.common.util.Base64;
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
-import com.jstakun.lm.server.persistence.PMF;
 import com.jstakun.lm.server.persistence.User;
 import com.jstakun.lm.server.utils.CryptoTools;
 import com.jstakun.lm.server.utils.HttpUtils;
-import com.jstakun.lm.server.utils.Sha1;
 
 /**
  *
@@ -39,9 +33,7 @@ public class UserPersistenceUtils {
     private static final Logger logger = Logger.getLogger(UserPersistenceUtils.class.getName());
 
     public static void persistUser(String login, String password, String email, String firstname, String lastname, boolean local) {
-        User user = new User(login, password, email, firstname, lastname);
-        PersistenceManager pm = PMF.get().getPersistenceManager();
-
+        
         try {
         	String landmarksUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "addItem";
         	String params = "login=" + URLEncoder.encode(login, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8") + "&type=user";
@@ -69,23 +61,22 @@ public class UserPersistenceUtils {
         	logger.log(Level.SEVERE, e.getMessage(), e);
         }
 
-        //TODO comment
-        if (local) {
-        	try {
+        /*if (local) {
+        	//User user = new User(login, password, email, firstname, lastname);
+            //PersistenceManager pm = PMF.get().getPersistenceManager();
+            try {
         		user = pm.makePersistent(user);
         	} catch (Exception ex) {
         		logger.log(Level.SEVERE, ex.getMessage(), ex);
         	} finally {
         		pm.close();
         	}
-        }	
-        //
+        }*/
     }
 
     public static User selectUserByLogin(String username) {
-    	//TODO comment
     	User user = null;
-        PersistenceManager pm = PMF.get().getPersistenceManager();
+        /*PersistenceManager pm = PMF.get().getPersistenceManager();
 
         try {
             Query query = pm.newQuery(User.class, "login == username");
@@ -101,10 +92,9 @@ public class UserPersistenceUtils {
         } finally {
             pm.close();
         }
-        //
+        */
         
-        //TODO uncomment
-        /*try {
+        try {
         	String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "itemProvider";
         	String params = "type=user&login=" + username;			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
@@ -120,12 +110,12 @@ public class UserPersistenceUtils {
         	}
         } catch (Exception e) {
         	logger.log(Level.SEVERE, e.getMessage(), e);
-        }*/
+        }
 
         return user;
     }
 
-    //TODO replace with remoteRegistration
+    /*
     public static boolean confirmUserRegistration(String login, Boolean confirmation) {
         PersistenceManager pm = PMF.get().getPersistenceManager();
         User user = selectUserByLogin(login);
@@ -148,9 +138,9 @@ public class UserPersistenceUtils {
         }
 
         return result;
-    }
+    }*/
     
-    public static boolean confirmRemoteRegistration(String login) {
+    public static boolean confirmUserRegistration(String login) {
     	boolean confirmed = false;
     	try {
         	String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "itemProvider";
@@ -227,7 +217,7 @@ public class UserPersistenceUtils {
             }
     	} 
     	
-    	//TODO comment
+    	/*
     	if (!auth) {
     		User user = selectUserByLogin(username);
         	if (user != null && password != null) {
@@ -252,10 +242,9 @@ public class UserPersistenceUtils {
         		}
         	}
     	}
-    	//
+    	*/
     	
-    	//TODO uncomment
-    	/*if (!auth) {
+    	if (!auth) {
     		String passwordString = new String(password);
         	if (password.length % 8 == 0) {
             	try {
@@ -270,7 +259,7 @@ public class UserPersistenceUtils {
         	} else {
         		logger.log(Level.SEVERE, "User {0} authn failed with {1}", new Object[]{username, passwordString});
         	}
-    	}*/
+    	}
     	
     	return auth;
     }

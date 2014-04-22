@@ -69,6 +69,7 @@ import fi.foyt.foursquare.api.io.Response;
 public class FoursquareApi {
 
   public static final String DEFAULT_VERSION = "20120701";
+  //private static Logger logger = Logger.getLogger(FoursquareApi.class.getName());
 
   /**
    * Constructor.
@@ -1639,6 +1640,9 @@ public class FoursquareApi {
    */
   private ApiRequestResponse doApiRequest(Method method, String path, boolean auth, Object... params) throws JSONException, FoursquareApiException {
     String url = getApiRequestUrl(path, auth, params);
+    
+    //logger.log(Level.INFO, "Foursquare API calling endpoint {0}", url);
+    
     Response response = ioHandler.fetchData(url, method);
 
     if (useCallback) {

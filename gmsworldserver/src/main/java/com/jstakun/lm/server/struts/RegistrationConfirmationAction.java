@@ -56,7 +56,7 @@ public class RegistrationConfirmationAction extends Action {
                 confirm = Boolean.TRUE;
             }
 
-            result = UserPersistenceUtils.confirmUserRegistration(login, confirm);
+            result = UserPersistenceUtils.confirmUserRegistration(login);
             if (result) {
                User user = UserPersistenceUtils.selectUserByLogin(login);
                if (user != null) {

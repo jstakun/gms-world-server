@@ -101,7 +101,7 @@
         <dependency>
         	<groupId>net.gms-world</groupId>
         	<artifactId>foursquareapi2</artifactId>
-        	<version>0.0.2-SNAPSHOT</version>
+        	<version>0.0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
         	<groupId>commons-io</groupId>
