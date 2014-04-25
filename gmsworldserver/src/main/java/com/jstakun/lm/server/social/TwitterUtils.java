@@ -58,7 +58,7 @@ public class TwitterUtils {
                 } else if (type == Commons.BLOGEO) {
                     message = String.format(rb.getString("Social.tw.status"), "new geo message to Blogeo", landmark.getName(), url);
                 } else if (type == Commons.LANDMARK) {
-                    message = String.format(rb.getString("Social.tw.status"), "new place to GMS World", landmark.getName(), url);
+                    message = String.format(rb.getString("Social.tw.status"), "new point of interest to GMS World", landmark.getName(), url);
                 } else if (type == Commons.MY_POS) {
                     message = String.format(rb.getString("Social.tw.myloc"),  url);
                 } else if (type == Commons.LOGIN) {
@@ -66,8 +66,11 @@ public class TwitterUtils {
                 }            
 
                 if (message != null) {
-                	//logger.log(Level.INFO, message);
-                    StatusUpdate update = new StatusUpdate(message);
+                	//message length must be < 140
+                    if (message.length() > 140 && url != null) {
+                		message = String.format(rb.getString("Social.tw.short"), url);
+                	}
+                	StatusUpdate update = new StatusUpdate(message);
                     if (landmark != null) {
                     	update.setDisplayCoordinates(true);
                         update.setLocation(new GeoLocation(landmark.getLatitude(), landmark.getLongitude()));
