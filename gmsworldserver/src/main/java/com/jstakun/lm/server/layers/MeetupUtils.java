@@ -7,6 +7,7 @@ package com.jstakun.lm.server.layers;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.JSONUtils;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
+
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,7 +43,7 @@ public class MeetupUtils extends LayerHelper {
         String output = CacheUtil.getString(key);
 
         if (output == null) {
-            String meetupUrl = "https://api.meetup.com/2/open_events?key=" + Commons.MEETUP_API_KEY + "&lon=" + longitude + "&lat="
+            String meetupUrl = "https://api.meetup.com/2/open_events?key=" + Commons.getProperty(Property.MEETUP_API_KEY) + "&lon=" + longitude + "&lat="
                     + latitude + "&radius=" + radius + "&page=" + limit + "&order=time&text_format=plain";
             //order=time,distance,trending
             if (StringUtils.isNotEmpty(query)) {
@@ -197,7 +199,7 @@ public class MeetupUtils extends LayerHelper {
 		List<ExtendedLandmark> output = (List<ExtendedLandmark>)CacheUtil.getObject(key);
 
         if (output == null) {
-            String meetupUrl = "https://api.meetup.com/2/open_events?key=" + Commons.MEETUP_API_KEY + "&lon=" + lng + "&lat="
+            String meetupUrl = "https://api.meetup.com/2/open_events?key=" + Commons.getProperty(Property.MEETUP_API_KEY) + "&lon=" + lng + "&lat="
                     + lat + "&radius=" + radius + "&page=" + limit + "&order=time&text_format=plain";
             //order=time,distance,trending
             if (StringUtils.isNotEmpty(query)) {

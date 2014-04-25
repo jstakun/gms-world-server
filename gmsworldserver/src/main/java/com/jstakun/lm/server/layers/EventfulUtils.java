@@ -7,6 +7,7 @@ package com.jstakun.lm.server.layers;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.JSONUtils;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
+
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,7 +49,7 @@ public class EventfulUtils extends LayerHelper {
         if (output == null) {
             String eventfulUrl = "http://api.eventful.com/json/events/search?"
                     + "location=" + latitude + "," + longitude + "&within=" + radius
-                    + "&date=Future&units=km&format=json&page_size=" + limit + "&app_key=" + Commons.EVENTFUL_APP_KEY;
+                    + "&date=Future&units=km&format=json&page_size=" + limit + "&app_key=" + Commons.getProperty(Property.EVENTFUL_APP_KEY);
             if (StringUtils.isNotEmpty(query)) {
                 eventfulUrl += "&keywords=" + URLEncoder.encode(query, "UTF-8");
             }
@@ -70,7 +72,7 @@ public class EventfulUtils extends LayerHelper {
 
         String output = CacheUtil.getString(key);
         if (output == null) {
-            String eventfulUrl = "http://api.eventful.com/json/events/search?" + queryString + "&app_key=" + Commons.EVENTFUL_APP_KEY;
+            String eventfulUrl = "http://api.eventful.com/json/events/search?" + queryString + "&app_key=" + Commons.getProperty(Property.EVENTFUL_APP_KEY);
             if (StringUtils.isNotEmpty(query)) {
                 eventfulUrl += "&keywords=" + query;
             }
@@ -90,7 +92,7 @@ public class EventfulUtils extends LayerHelper {
     }
 
     protected static String processRequest(String queryString) throws MalformedURLException, IOException {
-        return HttpUtils.processFileRequest(new URL("http://api.eventful.com/json/events/search?" + queryString + "&app_key=" + Commons.EVENTFUL_APP_KEY));
+        return HttpUtils.processFileRequest(new URL("http://api.eventful.com/json/events/search?" + queryString + "&app_key=" + Commons.getProperty(Property.EVENTFUL_APP_KEY)));
     }
 
     private static Map<String, Object> createEventfulJsonObject(JSONObject event, int version, int stringLimit) throws JSONException {
@@ -179,7 +181,7 @@ public class EventfulUtils extends LayerHelper {
         if (output == null) {
             String eventfulUrl = "http://api.eventful.com/json/events/search?"
                     + "location=" + lat + "," + lng + "&within=" + radius
-                    + "&date=Future&units=km&format=json&page_size=" + limit + "&app_key=" + Commons.EVENTFUL_APP_KEY;
+                    + "&date=Future&units=km&format=json&page_size=" + limit + "&app_key=" + Commons.getProperty(Property.EVENTFUL_APP_KEY);
             if (StringUtils.isNotEmpty(query)) {
                 eventfulUrl += "&keywords=" + URLEncoder.encode(query, "UTF-8");
             }

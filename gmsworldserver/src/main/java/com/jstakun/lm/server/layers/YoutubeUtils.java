@@ -19,6 +19,7 @@ import com.google.gdata.util.ServiceException;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.utils.JSONUtils;
 import com.jstakun.lm.server.utils.MathUtils;
 import com.jstakun.lm.server.utils.NumberUtils;
@@ -54,7 +55,7 @@ public class YoutubeUtils extends LayerHelper {
     private static final String VIDEOS_FEED = YOUTUBE_GDATA_SERVER + "/feeds/api/videos";
     
     private static VideoFeed getVideoFeed(double latitude, double longitude, String query, int radius, int limit) throws MalformedURLException, IOException, ServiceException {
-        YouTubeService ytservice = new YouTubeService("GMS World", Commons.YOUTUBE_API_KEY);
+        YouTubeService ytservice = new YouTubeService("GMS World", Commons.getProperty(Property.YOUTUBE_API_KEY));
 
         YouTubeQuery vquery = new YouTubeQuery(new URL(VIDEOS_FEED));
 

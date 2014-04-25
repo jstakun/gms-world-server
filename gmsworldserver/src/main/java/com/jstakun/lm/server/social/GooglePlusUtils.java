@@ -25,6 +25,7 @@ import com.google.api.services.plus.Plus;
 import com.google.api.services.plus.model.ItemScope;
 import com.google.api.services.plus.model.Moment;
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.UrlUtils;
@@ -118,12 +119,12 @@ public class GooglePlusUtils {
         HttpTransport httpTransport = new UrlFetchTransport();
         JsonFactory jsonFactory = new JacksonFactory();
 
-        GoogleCredential requestInitializer = new GoogleCredential.Builder().setClientSecrets(Commons.GL_PLUS_KEY, Commons.GL_PLUS_SECRET).
+        GoogleCredential requestInitializer = new GoogleCredential.Builder().setClientSecrets(Commons.getProperty(Property.GL_PLUS_KEY), Commons.getProperty(Property.GL_PLUS_SECRET)).
                 setJsonFactory(jsonFactory).
                 setTransport(httpTransport).build();
 
         if (accessToken == null && refreshToken == null) {
-            requestInitializer.setAccessToken(Commons.gl_plus_token).setRefreshToken(Commons.gl_plus_refresh);
+            requestInitializer.setAccessToken(Commons.getProperty(Property.gl_plus_token)).setRefreshToken(Commons.getProperty(Property.gl_plus_refresh));
         } else {
             requestInitializer.setAccessToken(accessToken).setRefreshToken(refreshToken);
         }
@@ -181,7 +182,7 @@ public class GooglePlusUtils {
             try {
                 logger.log(Level.INFO, "GooglePlusUtils.requestAccessToken(): renewing access token...");
                 TokenResponse response = new GoogleRefreshTokenRequest(new NetHttpTransport(),
-                        new JacksonFactory(), refreshToken, Commons.GL_PLUS_KEY, Commons.GL_PLUS_SECRET).execute();
+                        new JacksonFactory(), refreshToken, Commons.getProperty(Property.GL_PLUS_KEY), Commons.getProperty(Property.GL_PLUS_SECRET)).execute();
                 String accessToken = response.getAccessToken();
                 Long expires_in = response.getExpiresInSeconds();
                 if (accessToken != null) {

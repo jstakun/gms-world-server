@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.UrlUtils;
@@ -126,7 +127,7 @@ public class FacebookUtils {
         }
         Landmark landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
         if (landmark != null) {
-            FacebookClient facebookClient = new DefaultFacebookClient(Commons.fb_page_token);
+            FacebookClient facebookClient = new DefaultFacebookClient(Commons.getProperty(Property.fb_page_token));
             ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
             Parameter params[] = null;
             //message, picture, link, name, caption, description, source, place, tags
@@ -139,7 +140,7 @@ public class FacebookUtils {
                         Parameter.with("link", landmarkUrl),
                         Parameter.with("picture", ConfigurationManager.SERVER_URL + "images/" + images[imageId])
                     };
-            sendMessage(facebookClient, Commons.FB_GMS_WORLD_FEED, params, false);
+            sendMessage(facebookClient, Commons.getProperty(Property.FB_GMS_WORLD_FEED), params, false);
         } else {
             logger.log(Level.SEVERE, "Landmark key is wrong! Key: {0}", key);
         }
@@ -147,7 +148,7 @@ public class FacebookUtils {
     
     protected static void sendImageMessage(String imageUrl, String showImageUrl, String username) {
         if (imageUrl != null) {
-            FacebookClient facebookClient = new DefaultFacebookClient(Commons.fb_page_token);
+            FacebookClient facebookClient = new DefaultFacebookClient(Commons.getProperty(Property.fb_page_token));
             ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
             String userMask = UrlUtils.createUsernameMask(username);
             //logger.log(Level.INFO, "FB message link is: {0}", link);
@@ -159,7 +160,7 @@ public class FacebookUtils {
                 Parameter.with("picture", imageUrl)
             };
 
-            sendMessage(facebookClient, Commons.FB_GMS_WORLD_FEED, params, false);
+            sendMessage(facebookClient, Commons.getProperty(Property.FB_GMS_WORLD_FEED), params, false);
         } else {
             logger.log(Level.SEVERE, "Image url is null!");
         }

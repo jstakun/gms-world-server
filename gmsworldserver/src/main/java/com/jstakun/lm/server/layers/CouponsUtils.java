@@ -12,6 +12,7 @@ import com.jstakun.gms.android.deals.Deal;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.JSONUtils;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
@@ -30,6 +31,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
+
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 
@@ -64,7 +66,7 @@ public class CouponsUtils extends LayerHelper {
         String cachedResponse = CacheUtil.getString(key);
         if (cachedResponse == null) {
 
-            String url = "http://api.8coupons.com/v1/getdeals?key=" + Commons.COUPONS_KEY + "&lat=" + lat + "&lon=" + lng + "&mileradius=" + radius + "&limit=" + limit + "&orderby=date"; //popular, radius, date
+            String url = "http://api.8coupons.com/v1/getdeals?key=" + Commons.getProperty(Property.COUPONS_KEY) + "&lat=" + lat + "&lon=" + lng + "&mileradius=" + radius + "&limit=" + limit + "&orderby=date"; //popular, radius, date
             if (StringUtils.isNotEmpty(query)) {
                 url += "&search=" + URLEncoder.encode(query, "UTF-8");
             }
@@ -325,7 +327,7 @@ public class CouponsUtils extends LayerHelper {
 		String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, limit, stringLimit, categoryid, language);
 		List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)CacheUtil.getObject(key);
         if (landmarks == null) {
-            String url = "http://api.8coupons.com/v1/getdeals?key=" + Commons.COUPONS_KEY + "&lat=" + lat + "&lon=" + lng + "&mileradius=" + radius + "&limit=" + limit + "&orderby=date"; //popular, radius, date
+            String url = "http://api.8coupons.com/v1/getdeals?key=" + Commons.getProperty(Property.COUPONS_KEY) + "&lat=" + lat + "&lon=" + lng + "&mileradius=" + radius + "&limit=" + limit + "&orderby=date"; //popular, radius, date
             if (StringUtils.isNotEmpty(query)) {
                 url += "&search=" + URLEncoder.encode(query, "UTF-8");
             }

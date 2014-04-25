@@ -17,6 +17,7 @@ import org.json.JSONObject;
 import com.google.common.collect.ImmutableMap;
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
+import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.social.NotificationUtils;
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.TokenUtil;
@@ -37,16 +38,16 @@ public final class LnCommons {
                                                                                   
     
     protected static String getAuthorizationUrl() {
-    	return String.format(AUTHORIZE_URL, Commons.LN_API_KEY, SCOPE, Commons.LN_STATE, CALLBACK_URI);
+    	return String.format(AUTHORIZE_URL, Commons.getProperty(Property.LN_API_KEY), SCOPE, Commons.getProperty(Property.LN_STATE), CALLBACK_URI);
     }
     
     protected static String getAccessTokenUrl(String code) {
-	 	return String.format(TOKEN_URL, code, CALLBACK_URI, Commons.LN_API_KEY, Commons.LN_API_SECRET); 
+	 	return String.format(TOKEN_URL, code, CALLBACK_URI, Commons.getProperty(Property.LN_API_KEY), Commons.getProperty(Property.LN_API_SECRET)); 
     }
     
     protected static Map<String, String> authorize(String code, String state) throws Exception {
     	Map<String, String> userData = null;
-    	if (code != null && StringUtils.equals(state, Commons.LN_STATE)) {
+    	if (code != null && StringUtils.equals(state, Commons.getProperty(Property.LN_STATE))) {
         	
         	URL tokenUrl = new URL(LnCommons.getAccessTokenUrl(code));
 	

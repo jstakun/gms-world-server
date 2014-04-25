@@ -16,6 +16,7 @@ import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.MailUtils;
@@ -153,11 +154,11 @@ public class NotificationUtils {
     	if (StringUtils.equals(service, Commons.FACEBOOK)) {
     		FacebookUtils.sendMessageToPageFeed(key, landmarkUrl);
     	} else if (StringUtils.equals(service, Commons.TWITTER)) {
-    		TwitterUtils.sendMessage(key, landmarkUrl, ConfigurationManager.getParam(ConfigurationManager.TW_TOKEN, null), ConfigurationManager.getParam(ConfigurationManager.TW_SECRET, null), Commons.SERVER);
+    		TwitterUtils.sendMessage(key, landmarkUrl, Commons.getProperty(Property.TW_TOKEN), Commons.getProperty(Property.TW_SECRET), Commons.SERVER);
     	} else if (StringUtils.equals(service, Commons.GOOGLE_BLOGGER)) {
-    		GoogleBloggerUtils.sendMessage(key, landmarkUrl, Commons.gl_plus_token, Commons.gl_plus_refresh, true);
+    		GoogleBloggerUtils.sendMessage(key, landmarkUrl, Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), true);
     	} else if (StringUtils.equals(service, Commons.GOOGLE_PLUS)) {
-    		GooglePlusUtils.sendMessage(Commons.gl_plus_token, Commons.gl_plus_refresh, key, landmarkUrl, Commons.SERVER);
+    		GooglePlusUtils.sendMessage(Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), key, landmarkUrl, Commons.SERVER);
     	} else if (StringUtils.equals(service, Commons.MAIL)) {
     		MailUtils.sendLandmarkCreationNotification(title, body);
     		//send landmark creation notification email to user

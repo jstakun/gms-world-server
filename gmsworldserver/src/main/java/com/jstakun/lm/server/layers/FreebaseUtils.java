@@ -28,6 +28,7 @@ import com.google.api.services.freebase.Freebase;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.utils.JSONUtils;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
@@ -97,8 +98,8 @@ public class FreebaseUtils extends LayerHelper {
 	private static Freebase getFreebase() {
         HttpTransport httpTransport = new UrlFetchTransport();
         JsonFactory jsonFactory = new JacksonFactory();
-        GoogleCredential requestInitializer = new GoogleCredential.Builder().setClientSecrets(Commons.GL_PLUS_KEY, Commons.GL_PLUS_SECRET).setJsonFactory(jsonFactory).setTransport(httpTransport).build();
-        requestInitializer.setAccessToken(Commons.gl_plus_token).setRefreshToken(Commons.gl_plus_refresh);
+        GoogleCredential requestInitializer = new GoogleCredential.Builder().setClientSecrets(Commons.getProperty(Property.GL_PLUS_KEY), Commons.getProperty(Property.GL_PLUS_SECRET)).setJsonFactory(jsonFactory).setTransport(httpTransport).build();
+        requestInitializer.setAccessToken(Commons.getProperty(Property.gl_plus_token)).setRefreshToken(Commons.getProperty(Property.gl_plus_refresh));
         Freebase freebase = new Freebase.Builder(httpTransport, jsonFactory, requestInitializer).setApplicationName("Landmark Manager").build();
         return freebase;
     }

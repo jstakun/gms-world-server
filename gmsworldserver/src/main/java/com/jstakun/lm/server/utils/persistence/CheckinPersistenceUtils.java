@@ -22,6 +22,7 @@ import org.json.JSONObject;
 
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
+import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.persistence.Checkin;
 import com.jstakun.lm.server.utils.DateUtils;
 import com.jstakun.lm.server.utils.HttpUtils;
@@ -49,7 +50,7 @@ public class CheckinPersistenceUtils {
         	String landmarksUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "addItem";
         	String params = "username=" + username + "&landmarkId=" + landmarkKey + "&itemType=" + type + "&type=checkin";
         	//logger.log(Level.INFO, "Calling: " + landmarksUrl);
-        	String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl), "POST", null, params, Commons.RH_GMS_USER);
+        	String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
         	logger.log(Level.INFO, "Received response: " + landmarksJson);
         } catch (Exception e) {
         	logger.log(Level.SEVERE, e.getMessage(), e);
@@ -78,7 +79,7 @@ public class CheckinPersistenceUtils {
         	String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "itemProvider";
         	String params = "type=checkin&landmarkId=" + key;			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
-        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
+        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
         	//logger.log(Level.INFO, "Received response: " + gJson);
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "[")) {
         		JSONArray arr = new JSONArray(gJson);

@@ -18,6 +18,7 @@ import org.json.JSONObject;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.JSONUtils;
 import com.jstakun.lm.server.utils.NumberUtils;
@@ -36,7 +37,7 @@ public class InstagramUtils extends LayerHelper {
 		if (landmarks == null) {
 			landmarks = new ArrayList<ExtendedLandmark>();
 			if (lat != 0.0d && lng != 0.0d) {
-				String instagramUrl = "https://api.instagram.com/v1/media/search?lat=" + lat + "&lng=" + lng + "&distance=" + normalizedDistance + "&count=" + normalizedLimit + "&client_id=" + Commons.INSTAGRAM_CLIENT_ID;			
+				String instagramUrl = "https://api.instagram.com/v1/media/search?lat=" + lat + "&lng=" + lng + "&distance=" + normalizedDistance + "&count=" + normalizedLimit + "&client_id=" + Commons.getProperty(Property.INSTAGRAM_CLIENT_ID);			
 				String instagramJson = HttpUtils.processFileRequest(new URL(instagramUrl));		
 				createCustomJsonInstagramList(landmarks, instagramJson, stringLimit, locale);		 	
 				if (!landmarks.isEmpty()) {

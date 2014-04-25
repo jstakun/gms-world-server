@@ -13,6 +13,7 @@ import com.aetrion.flickr.photos.SearchParameters;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.utils.JSONUtils;
 import com.jstakun.lm.server.utils.NumberUtils;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
@@ -97,7 +98,7 @@ public class FlickrUtils extends LayerHelper {
     }
 
     private static PhotoList getPhotoList(SearchParameters sp, String query, int limit) throws ParserConfigurationException, JSONException {
-        Flickr f = new Flickr(Commons.FLICKR_APIKEY, Commons.FLICKR_sharedSecret, new REST());
+        Flickr f = new Flickr(Commons.getProperty(Property.FLICKR_APIKEY), Commons.getProperty(Property.FLICKR_sharedSecret), new REST());
 
         PhotosInterface photosIntf = f.getPhotosInterface();
         //sp.setMinTakenDate(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 24 * 365 * 5))); //5 years old max

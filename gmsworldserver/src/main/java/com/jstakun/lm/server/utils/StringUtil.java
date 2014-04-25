@@ -5,10 +5,12 @@
 package com.jstakun.lm.server.utils;
 
 import java.text.DecimalFormat;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.Commons.Property;
 
 /**
  *
@@ -82,7 +84,7 @@ public class StringUtil {
     public static String getUsername(Object attr, String header) {
     	String username = (String) attr;
 
-        if ((StringUtils.equals(username, Commons.APP_USER) || StringUtils.equals(username, Commons.MYPOS_USER) || attr == null) && StringUtils.isNotEmpty(header)) {
+        if ((StringUtils.equals(username, Commons.getProperty(Property.APP_USER)) || StringUtils.equals(username, Commons.getProperty(Property.MYPOS_USER)) || attr == null) && StringUtils.isNotEmpty(header)) {
             username = header;
         }
         

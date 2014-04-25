@@ -22,6 +22,7 @@ import org.json.JSONObject;
 
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
+import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.persistence.Layer;
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.memcache.CacheAction;
@@ -92,7 +93,7 @@ public class LayerPersistenceUtils {
         			        "&formatted=" + URLEncoder.encode(formatted, "UTF-8") + "&type=layer" +
         			        "&e=" + enabled + "&m=" + manageable + "&c=" + checkinable;
         	//logger.log(Level.INFO, "Calling: " + landmarksUrl);
-        	String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl), "POST", null, params, Commons.RH_GMS_USER);
+        	String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
         	logger.log(Level.INFO, "Received response: " + landmarksJson);
         } catch (Exception e) {
         	logger.log(Level.SEVERE, e.getMessage(), e);
@@ -143,7 +144,7 @@ public class LayerPersistenceUtils {
 					String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "itemProvider";
 					String params = "type=layer";			 
 					//logger.log(Level.INFO, "Calling: " + gUrl);
-					String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
+					String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
 					//logger.log(Level.INFO, "Received response: " + gJson);
 					if (StringUtils.startsWith(StringUtils.trim(gJson), "[")) {
 						JSONArray root = new JSONArray(gJson);

@@ -7,6 +7,7 @@ package com.jstakun.lm.server.layers;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.utils.UrlUtils;
 import com.jstakun.lm.server.utils.ThreadUtil;
 
@@ -88,7 +89,7 @@ public class FoursquareUtils extends LayerHelper {
         String cachedResponse = CacheUtil.getString(key);
         
         if (cachedResponse == null) {
-            FoursquareApi api = new FoursquareApi(Commons.FS_CLIENT_ID, Commons.FS_CLIENT_SECRET, null, null, new DefaultIOHandler());
+            FoursquareApi api = getFoursquareApi(null);
             api.setUseCallback(false);
 
             List<Map<String, Object>> jsonArray = new ArrayList<Map<String, Object>>();
@@ -208,7 +209,7 @@ public class FoursquareUtils extends LayerHelper {
            List<ExtendedLandmark> response = (List<ExtendedLandmark>) CacheUtil.getObject(key);
            
            if (response == null) {
-               FoursquareApi api = new FoursquareApi(Commons.FS_CLIENT_ID, Commons.FS_CLIENT_SECRET, null, null, new DefaultIOHandler());
+               FoursquareApi api = getFoursquareApi(null);
                api.setUseCallback(false);
                response = new ArrayList<ExtendedLandmark>();
                //venues search
@@ -367,7 +368,7 @@ public class FoursquareUtils extends LayerHelper {
         String key = getCacheKey(FoursquareUtils.class, "exploreVenuesToJSon", lat, lng, query, radius, version, limit, 0, token, locale);
         String jsonString = CacheUtil.getString(key);
         if (jsonString == null) {
-            FoursquareApi api = new FoursquareApi(Commons.FS_CLIENT_ID, Commons.FS_CLIENT_SECRET, null, token, new DefaultIOHandler());
+            FoursquareApi api = getFoursquareApi(token);
             api.setUseCallback(false);
             List<Map<String, Object>> jsonArray = new ArrayList<Map<String, Object>>();
             Result<Recommended> recommended = api.venuesExplore(lat + "," + lng, null, null, null, radius, null, query, limit, "friends");
@@ -431,7 +432,7 @@ public class FoursquareUtils extends LayerHelper {
         String key = getCacheKey(FoursquareUtils.class, "exploreVenuesToLandmark", lat, lng, query, radius, version, limit, 0, token, locale);
         List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)CacheUtil.getObject(key);
         if (landmarks == null) {
-            FoursquareApi api = new FoursquareApi(Commons.FS_CLIENT_ID, Commons.FS_CLIENT_SECRET, null, token, new DefaultIOHandler());
+            FoursquareApi api = getFoursquareApi(token);
             api.setUseCallback(false);
             Result<Recommended> recommended = api.venuesExplore(lat + "," + lng, null, null, null, radius, null, query, limit, "friends");
             landmarks = new ArrayList<ExtendedLandmark>();
@@ -493,7 +494,7 @@ public class FoursquareUtils extends LayerHelper {
         List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>) CacheUtil.getObject(key);
 
         if (landmarks == null) {
-            FoursquareApi api = new FoursquareApi(Commons.FS_CLIENT_ID, Commons.FS_CLIENT_SECRET, null, token, new DefaultIOHandler());
+            FoursquareApi api = getFoursquareApi(token);
             api.setUseCallback(false);
             //api.setVersion(VDATE);
             
@@ -559,7 +560,7 @@ public class FoursquareUtils extends LayerHelper {
         String jsonString = CacheUtil.getString(key);
 
         if (jsonString == null) {
-            FoursquareApi api = new FoursquareApi(Commons.FS_CLIENT_ID, Commons.FS_CLIENT_SECRET, null, token, new DefaultIOHandler());
+            FoursquareApi api = getFoursquareApi(token);
             api.setUseCallback(false);
             //api.setVersion(VDATE);
             List<Map<String, Object>> jsonArray = new ArrayList<Map<String, Object>>();
@@ -810,8 +811,9 @@ public class FoursquareUtils extends LayerHelper {
     }
 
     private static Map<String, Map<String, String>> getVenueDetails(List<String> venueIds, String locale) throws UnsupportedEncodingException, MalformedURLException, IOException, JSONException {
-        StringBuilder urlPrefix = new StringBuilder("https://api.foursquare.com/v2/multi").append("?client_id=").append(Commons.FS_CLIENT_ID).
-                append("&client_secret=").append(Commons.FS_CLIENT_SECRET).
+        StringBuilder urlPrefix = new StringBuilder("https://api.foursquare.com/v2/multi").
+        		append("?client_id=").append(Commons.getProperty(Property.FS_CLIENT_ID)).
+                append("&client_secret=").append(Commons.getProperty(Property.FS_CLIENT_SECRET)).
                 append("&v=").append(FoursquareApi.DEFAULT_VERSION);
 
         String multiRequest = "";
@@ -1001,7 +1003,7 @@ public class FoursquareUtils extends LayerHelper {
      
     protected static int addVenue(String accessToken, String name, String desc, String primaryCategoryId, String ll) {
     	try {
-    		FoursquareApi api = new FoursquareApi(Commons.FS_CLIENT_ID, Commons.FS_CLIENT_SECRET, null, accessToken, new DefaultIOHandler());
+    		FoursquareApi api = getFoursquareApi(accessToken);
     		Result<CompleteVenue> result = api.venuesAdd(name, null, null, null, null, null, null, ll, primaryCategoryId, desc);
     		int res = result.getMeta().getCode();
     		if (res != 200) {
@@ -1367,5 +1369,10 @@ public class FoursquareUtils extends LayerHelper {
     
     private static void handleError(ResultMeta meta, String key) {
     	logger.log(Level.SEVERE, "Received FS response {0} {1}: {2}", new Object[]{meta.getCode(), meta.getErrorDetail(), key});
+    }
+    
+    private static FoursquareApi getFoursquareApi(String token) {
+    	return new FoursquareApi(Commons.getProperty(Property.FS_CLIENT_ID), Commons.getProperty(Property.FS_CLIENT_SECRET), null, token, new DefaultIOHandler());
+        
     }
 }

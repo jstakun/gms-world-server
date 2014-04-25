@@ -37,6 +37,7 @@ import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
+import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.persistence.PMF;
 import com.jstakun.lm.server.persistence.Screenshot;
 import com.jstakun.lm.server.utils.DateUtils;
@@ -62,7 +63,7 @@ public class ScreenshotPersistenceUtils {
         		params += "&username=" + username;
         	}
         	//logger.log(Level.INFO, "Calling: " + landmarksUrl);
-        	String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl), "POST", null, params, Commons.RH_GMS_USER);
+        	String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
         	logger.log(Level.INFO, "Received response: " + landmarksJson);
         	if (StringUtils.startsWith(StringUtils.trim(landmarksJson), "{")) {
         		JSONObject resp = new JSONObject(landmarksJson);
@@ -152,7 +153,7 @@ public class ScreenshotPersistenceUtils {
         	String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "itemProvider";
         	String params = "type=screenshot&id=" + k;			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
-        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
+        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
         	//logger.log(Level.INFO, "Received response: " + gJson);
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
         		JSONObject root = new JSONObject(gJson);

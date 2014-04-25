@@ -13,6 +13,7 @@ import com.jstakun.gms.android.deals.Deal;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.utils.AuthUtils;
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.JSONUtils;
@@ -104,10 +105,10 @@ public class YelpUtils extends LayerHelper {
     	
     		OAuthHmacSha1Signer hmacSigner = new OAuthHmacSha1Signer();
     		OAuthParameters parameters = new OAuthParameters();
-    		parameters.setOAuthConsumerKey(Commons.YELP_Consumer_Key);
-    		parameters.setOAuthConsumerSecret(Commons.YELP_Consumer_Secret);
-    		parameters.setOAuthToken(Commons.YELP_Token);
-    		parameters.setOAuthTokenSecret(Commons.YELP_Token_Secret);
+    		parameters.setOAuthConsumerKey(Commons.getProperty(Property.YELP_Consumer_Key));
+    		parameters.setOAuthConsumerSecret(Commons.getProperty(Property.YELP_Consumer_Secret));
+    		parameters.setOAuthToken(Commons.getProperty(Property.YELP_Token));
+    		parameters.setOAuthTokenSecret(Commons.getProperty(Property.YELP_Token_Secret));
     		parameters.setOAuthTimestamp(Long.toString(System.currentTimeMillis()));
     		int nonce = (int) (Math.random() * 1e8);
     		parameters.setOAuthNonce(Integer.toString(nonce));
@@ -147,7 +148,7 @@ public class YelpUtils extends LayerHelper {
     }
 
     protected static boolean hasNeighborhoods(double lat, double lng) throws IOException, JSONException {
-        String url = "http://api.yelp.com/neighborhood_search?lat=" + StringUtil.formatCoordE6(lat) + "&long=" + StringUtil.formatCoordE6(lng) + "&ywsid=" + Commons.YELP_ywsid;
+        String url = "http://api.yelp.com/neighborhood_search?lat=" + StringUtil.formatCoordE6(lat) + "&long=" + StringUtil.formatCoordE6(lng) + "&ywsid=" + Commons.getProperty(Property.YELP_ywsid);
         String json = HttpUtils.processFileRequest(new URL(url));
         boolean hasNeighborhood = false;
         if (StringUtils.startsWith(json, "{")) {

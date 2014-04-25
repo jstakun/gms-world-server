@@ -17,6 +17,7 @@ import twitter4j.auth.RequestToken;
 
 import com.google.common.collect.ImmutableMap;
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.social.NotificationUtils;
 import com.jstakun.lm.server.utils.TokenUtil;
@@ -31,7 +32,7 @@ public final class TwCommons {
     
     protected static String getAuthorizationUrl() throws TwitterException {
     	Twitter twitter = new TwitterFactory().getInstance();
-		twitter.setOAuthConsumer(Commons.TW_CONSUMER_KEY, Commons.TW_CONSUMER_SECRET);
+		twitter.setOAuthConsumer(Commons.getProperty(Property.TW_CONSUMER_KEY), Commons.getProperty(Property.TW_CONSUMER_SECRET));
 		RequestToken requestToken = twitter.getOAuthRequestToken(TwCommons.CALLBACK_URL);
 		if (requestToken != null) {
 		CacheUtil.put("twRequestToken_" + requestToken.getToken(), requestToken);
@@ -43,7 +44,7 @@ public final class TwCommons {
     
     protected static Map<String, String> authorize(String token, String verifier) throws Exception {
     	Twitter twitter = new TwitterFactory().getInstance();
-		twitter.setOAuthConsumer(Commons.TW_CONSUMER_KEY, Commons.TW_CONSUMER_SECRET);
+		twitter.setOAuthConsumer(Commons.getProperty(Property.TW_CONSUMER_KEY), Commons.getProperty(Property.TW_CONSUMER_SECRET));
 		RequestToken requestToken = (RequestToken) CacheUtil.getObject("twRequestToken_" + token);
 		
 		Map<String, String> userData = new HashMap<String, String>();

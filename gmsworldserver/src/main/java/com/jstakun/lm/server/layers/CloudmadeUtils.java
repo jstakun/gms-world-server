@@ -6,6 +6,7 @@ package com.jstakun.lm.server.layers;
 
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
+import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.persistence.GeocodeCachePersistenceUtils;
@@ -42,12 +43,12 @@ public class CloudmadeUtils {
 
         if (output == null) {
             if (token == null && username != null) {
-                URL url = new URL("http://auth.cloudmade.com/token/" + Commons.CLOUDMADE_APIKEY + "?userid=" + username);
+                URL url = new URL("http://auth.cloudmade.com/token/" + Commons.getProperty(Property.CLOUDMADE_APIKEY) + "?userid=" + username);
                 token = HttpUtils.processFileRequest(url, "POST", null, null);
             }
 
             if (token != null) {
-                String routeString = "http://navigation.cloudmade.com/" + Commons.CLOUDMADE_APIKEY + "/api/" + API_version + "/" + loc_start + "," + loc_end + "/" + type + ".js?tId=" + tId + "&token=" + token;
+                String routeString = "http://navigation.cloudmade.com/" + Commons.getProperty(Property.CLOUDMADE_APIKEY) + "/api/" + API_version + "/" + loc_start + "," + loc_end + "/" + type + ".js?tId=" + tId + "&token=" + token;
                 //System.out.println("calling: " + routeString);
                 URL routeUrl = new URL(routeString);
                 String resp = HttpUtils.processFileRequest(routeUrl, "GET", null, null);
@@ -68,12 +69,12 @@ public class CloudmadeUtils {
     
     private static String getReverseGeocodeUrlV2(double lat, double lng, String token) {
     	String coords = lat + "," + lng;
-    	return "http://geocoding.cloudmade.com/" + Commons.CLOUDMADE_APIKEY + "/geocoding/v2/find.js?object_type=address&around=" + coords + "&distance=closest&return_location=true&results=1&token=" + token;
+    	return "http://geocoding.cloudmade.com/" + Commons.getProperty(Property.CLOUDMADE_APIKEY) + "/geocoding/v2/find.js?object_type=address&around=" + coords + "&distance=closest&return_location=true&results=1&token=" + token;
     }
     
     private static String getReverseGeocodeUrlV3(double lat, double lng, String token) {
     	String coords = lat + ";" + lng;
-    	return "http://beta.geocoding.cloudmade.com/v3/" + Commons.CLOUDMADE_APIKEY + "/api/geo.location.search.2?format=json&source=OSM&enc=UTF-8&limit=1&q=" + coords + "&token=" + token;
+    	return "http://beta.geocoding.cloudmade.com/v3/" + Commons.getProperty(Property.CLOUDMADE_APIKEY) + "/api/geo.location.search.2?format=json&source=OSM&enc=UTF-8&limit=1&q=" + coords + "&token=" + token;
     }
     
     private static String processReverseGeocodeV2(String resp, String key) throws JSONException {
@@ -165,7 +166,7 @@ public class CloudmadeUtils {
     }
 
     private static String getGeocodeUrlV2(String location, String token) throws UnsupportedEncodingException {
-    	return "http://geocoding.cloudmade.com/" + Commons.CLOUDMADE_APIKEY + "/geocoding/v2/find.js?query=" + URLEncoder.encode(location, "UTF-8") + "&results=1&token=" + token;
+    	return "http://geocoding.cloudmade.com/" + Commons.getProperty(Property.CLOUDMADE_APIKEY) + "/geocoding/v2/find.js?query=" + URLEncoder.encode(location, "UTF-8") + "&results=1&token=" + token;
     }
     
     private static JSONObject processGeocodeV2(String resp) throws JSONException {
@@ -200,16 +201,16 @@ public class CloudmadeUtils {
         String address = CacheUtil.getString(key);
 
         if (address == null) {
-            String token = CacheUtil.getString(Commons.CLOUDMADE_TOKEN_KEY);
+            String token = CacheUtil.getString(Commons.getProperty(Property.CLOUDMADE_TOKEN_KEY));
 
             if (token == null) {
-                URL url = new URL("http://auth.cloudmade.com/token/" + Commons.CLOUDMADE_APIKEY + "?userid=" + Commons.CLOUDMADE_USERNAME);
+                URL url = new URL("http://auth.cloudmade.com/token/" + Commons.getProperty(Property.CLOUDMADE_APIKEY) + "?userid=" + Commons.getProperty(Property.CLOUDMADE_USERNAME));
                 token = HttpUtils.processFileRequest(url, "POST", null, null);
             }
 
             if (token != null) {
                 address = "";
-                CacheUtil.put(Commons.CLOUDMADE_TOKEN_KEY, token);
+                CacheUtil.put(Commons.getProperty(Property.CLOUDMADE_TOKEN_KEY), token);
                 //String geocodeString = getReverseGeocodeUrlV3(lat, lng, token);
                 String geocodeString = getReverseGeocodeUrlV2(lat, lng, token);
                 URL geocodeUrl = new URL(geocodeString);
@@ -229,18 +230,18 @@ public class CloudmadeUtils {
 
     public static JSONObject processGeocode(String location, String email) {
 
-        String token = CacheUtil.getString(Commons.CLOUDMADE_TOKEN_KEY);
+        String token = CacheUtil.getString(Commons.getProperty(Property.CLOUDMADE_TOKEN_KEY));
         JSONObject jsonResponse = null;
 
         try {
 
             if (token == null) {
-                URL url = new URL("http://auth.cloudmade.com/token/" + Commons.CLOUDMADE_APIKEY + "?userid=" + Commons.CLOUDMADE_USERNAME);
+                URL url = new URL("http://auth.cloudmade.com/token/" + Commons.getProperty(Property.CLOUDMADE_APIKEY) + "?userid=" + Commons.getProperty(Property.CLOUDMADE_USERNAME));
                 token = HttpUtils.processFileRequest(url, "POST", null, null);
             }
 
             if (token != null) {
-                CacheUtil.put(Commons.CLOUDMADE_TOKEN_KEY, token);
+                CacheUtil.put(Commons.getProperty(Property.CLOUDMADE_TOKEN_KEY), token);
                 String geocodeString = getGeocodeUrlV2(location, token);
                 URL geocodeUrl = new URL(geocodeString);
                 String resp = HttpUtils.processFileRequest(geocodeUrl, "GET", null, null);

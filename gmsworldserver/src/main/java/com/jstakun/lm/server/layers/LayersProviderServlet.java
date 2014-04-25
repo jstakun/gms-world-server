@@ -24,6 +24,7 @@ import org.json.JSONObject;
 
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.utils.GeocodeUtils;
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.NumberUtils;
@@ -397,7 +398,7 @@ public class LayersProviderServlet extends HttpServlet {
                         token = URLDecoder.decode(request.getParameter("token"), "UTF-8");
                     }
                     if (StringUtils.isEmpty(token)) {
-                        token = Commons.FS_OAUTH_TOKEN;
+                        token = Commons.getProperty(Property.FS_OAUTH_TOKEN);
                     }
                     String categoryid = null;
                     if (StringUtils.isNotEmpty(request.getParameter("categoryid"))) {
@@ -551,7 +552,7 @@ public class LayersProviderServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        InputStream stream = getServletContext().getResourceAsStream(Commons.privKeyFile);
+        InputStream stream = getServletContext().getResourceAsStream(Commons.getProperty(Property.mcopenapi_privKeyFile));
         LayerHelperFactory.getMcOpenApiUtils().setPrivateKey(stream);
     }
 

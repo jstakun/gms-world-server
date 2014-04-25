@@ -7,6 +7,7 @@ package com.jstakun.lm.server.layers;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.JSONUtils;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
+
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,7 +41,7 @@ public class WebcamUtils extends LayerHelper {
 
         if (output == null) {
             URL webcamUrl = new URL("http://api.webcams.travel/rest?"
-                    + "method=wct.webcams.list_nearby&devid=" + Commons.WEBCAM_API_KEY
+                    + "method=wct.webcams.list_nearby&devid=" + Commons.getProperty(Property.WEBCAM_API_KEY)
                     + "&lat=" + lat + "&lng=" + lng + "&radius=" + radius
                     + "&unit=km&format=json&per_page=" + limit);
 
@@ -105,7 +107,7 @@ public class WebcamUtils extends LayerHelper {
 
 	     if (output == null) {
 	            URL webcamUrl = new URL("http://api.webcams.travel/rest?"
-	                    + "method=wct.webcams.list_nearby&devid=" + Commons.WEBCAM_API_KEY
+	                    + "method=wct.webcams.list_nearby&devid=" + Commons.getProperty(Property.WEBCAM_API_KEY)
 	                    + "&lat=" + lat + "&lng=" + lng + "&radius=" + radius
 	                    + "&unit=km&format=json&per_page=" + limit);
 

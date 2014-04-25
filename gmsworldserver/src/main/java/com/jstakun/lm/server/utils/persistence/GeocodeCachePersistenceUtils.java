@@ -24,6 +24,7 @@ import org.json.JSONObject;
 
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
+import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.persistence.GeocodeCache;
 import com.jstakun.lm.server.utils.DateUtils;
 import com.jstakun.lm.server.utils.HttpUtils;
@@ -56,7 +57,7 @@ public class GeocodeCachePersistenceUtils {
         	String params = "type=geocode&latitude=" + latitude + "&longitude=" + longitude + 
         			"&address=" + URLEncoder.encode(location, "UTF-8");			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
-        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
+        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
         	logger.log(Level.INFO, "Received response: " + gJson);
         } catch (Exception e) {
         	logger.log(Level.SEVERE, e.getMessage(), e);
@@ -85,7 +86,7 @@ public class GeocodeCachePersistenceUtils {
         	String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "itemProvider";
         	String params = "type=geocode&address=" + URLEncoder.encode(address, "UTF-8");			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
-        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
+        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
         	//logger.log(Level.INFO, "Received response: " + gJson);
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
         		JSONObject root = new JSONObject(gJson);
@@ -128,7 +129,7 @@ public class GeocodeCachePersistenceUtils {
         	String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "itemProvider";
         	String params = "type=geocode&limit=" + limit;			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
-        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
+        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
         	//logger.log(Level.INFO, "Received response: " + gJson);
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "[")) {
         		JSONArray root = new JSONArray(gJson);
@@ -169,7 +170,7 @@ public class GeocodeCachePersistenceUtils {
         	String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "itemProvider";
         	String params = "type=geocode&id=" + k;			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
-        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
+        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
         	//logger.log(Level.INFO, "Received response: " + gJson);
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
         		JSONObject root = new JSONObject(gJson);

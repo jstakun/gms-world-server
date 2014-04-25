@@ -18,6 +18,7 @@ import com.google.api.services.blogger.model.Blog;
 import com.google.api.services.blogger.model.BlogList;
 import com.google.api.services.blogger.model.Post;
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.UrlUtils;
@@ -125,8 +126,8 @@ public class GoogleBloggerUtils {
     private static Blogger getBlogger() {
         HttpTransport httpTransport = new UrlFetchTransport();
         JsonFactory jsonFactory = new JacksonFactory();
-        GoogleCredential requestInitializer = new GoogleCredential.Builder().setClientSecrets(Commons.GL_PLUS_KEY, Commons.GL_PLUS_SECRET).setJsonFactory(jsonFactory).setTransport(httpTransport).build();
-        requestInitializer.setAccessToken(Commons.gl_plus_token).setRefreshToken(Commons.gl_plus_refresh);
+        GoogleCredential requestInitializer = new GoogleCredential.Builder().setClientSecrets(Commons.getProperty(Property.GL_PLUS_KEY), Commons.getProperty(Property.GL_PLUS_SECRET)).setJsonFactory(jsonFactory).setTransport(httpTransport).build();
+        requestInitializer.setAccessToken(Commons.getProperty(Property.gl_plus_token)).setRefreshToken(Commons.getProperty(Property.gl_plus_refresh));
         Blogger blogger = new Blogger.Builder(httpTransport, jsonFactory, requestInitializer).setApplicationName("Landmark Manager").build();
 
         return blogger;
@@ -137,7 +138,7 @@ public class GoogleBloggerUtils {
 	    
 	    try {
 	    	HttpTransport httpTransport = new UrlFetchTransport();
-	        GenericUrl url = new GenericUrl("https://maps.googleapis.com/maps/api/place/check-in/json?sensor=false&key=" + Commons.GOOGLE_API_KEY);
+	        GenericUrl url = new GenericUrl("https://maps.googleapis.com/maps/api/place/check-in/json?sensor=false&key=" + Commons.getProperty(Property.GOOGLE_API_KEY));
 	        Map<String, String> data = new HashMap<String, String>();
 	        data.put("reference", reference);
 	        JsonHttpContent content = new JsonHttpContent(new JacksonFactory(), data);

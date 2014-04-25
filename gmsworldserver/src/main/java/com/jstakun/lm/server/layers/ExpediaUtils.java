@@ -8,6 +8,7 @@ import com.jstakun.gms.android.deals.Deal;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.JSONUtils;
 import com.jstakun.lm.server.utils.NumberUtils;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
+
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
@@ -45,11 +47,13 @@ public class ExpediaUtils extends LayerHelper {
 
 			URL expediaUrl = new URL(
 					"http://api.ean.com/ean-services/rs/hotel/v3/list?json"
-							+ "&apiKey=" + Commons.EXPEDIA_KEY + "&latitude="
-							+ Double.toString(latitude) + "&longitude="
-							+ Double.toString(longitude) + "&searchRadius=" + r
-							+ "&sort=OVERALL_VALUE" + // QUALITY_REVERSE,PRICE,PRICE_AVERAGE,PRICE_REVERSE
-							"&searchRadiusUnit=KM" + "&locale=" + lang);
+							+ "&apiKey=" + Commons.getProperty(Property.EXPEDIA_KEY) 
+							+ "&latitude=" + Double.toString(latitude) 
+							+ "&longitude=" + Double.toString(longitude) 
+							+ "&searchRadius=" + r
+							+ "&sort=OVERALL_VALUE" // QUALITY_REVERSE,PRICE,PRICE_AVERAGE,PRICE_REVERSE
+							+ "&searchRadiusUnit=KM" 
+							+ "&locale=" + lang);
 
 			// System.out.println(expediaUrl.toString());
 
@@ -172,11 +176,13 @@ public class ExpediaUtils extends LayerHelper {
 		if (output == null) {
 			URL expediaUrl = new URL(
 					"http://api.ean.com/ean-services/rs/hotel/v3/list?json"
-							+ "&apiKey=" + Commons.EXPEDIA_KEY + "&latitude="
-							+ Double.toString(lat) + "&longitude="
-							+ Double.toString(lng) + "&searchRadius=" + r
-							+ "&sort=OVERALL_VALUE" + // QUALITY_REVERSE,PRICE,PRICE_AVERAGE,PRICE_REVERSE
-							"&searchRadiusUnit=KM" + "&locale=" + lang);
+							+ "&apiKey=" + Commons.getProperty(Property.EXPEDIA_KEY) 
+							+ "&latitude=" + Double.toString(lat) 
+							+ "&longitude=" + Double.toString(lng) 
+							+ "&searchRadius=" + r
+							+ "&sort=OVERALL_VALUE" // QUALITY_REVERSE,PRICE,PRICE_AVERAGE,PRICE_REVERSE
+							+ "&searchRadiusUnit=KM" 
+							+ "&locale=" + lang);
 
 			// System.out.println(expediaUrl.toString());
 

@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import com.google.common.collect.ImmutableMap;
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.social.NotificationUtils;
 import com.jstakun.lm.server.utils.HttpUtils;
@@ -31,11 +32,11 @@ public final class FSCommons {
 	 private static final Logger logger = Logger.getLogger(FSCommons.class.getName());
 	 
 	 protected static String getAuthorizationUrl() {
-	        return String.format(AUTHORIZE_URL, Commons.FS_CLIENT_ID, CALLBACK_URI);
+	        return String.format(AUTHORIZE_URL, Commons.getProperty(Property.FS_CLIENT_ID), CALLBACK_URI);
 	 }       		
 	 
 	 protected static String getAccessTokenUrl(String code) {
-		 	return String.format(TOKEN_URL, Commons.FS_CLIENT_ID, Commons.FS_CLIENT_SECRET, CALLBACK_URI, code); 
+		 	return String.format(TOKEN_URL, Commons.getProperty(Property.FS_CLIENT_ID), Commons.getProperty(Property.FS_CLIENT_SECRET), CALLBACK_URI, code); 
 	 }
 	 
 	 protected static Map<String, String> authorize(String code) throws Exception {
@@ -84,7 +85,7 @@ public final class FSCommons {
 		Map<String, String> userData = new HashMap<String, String>();
 		
 		try {
-			FoursquareApi api = new FoursquareApi(Commons.FS_CLIENT_ID, Commons.FS_CLIENT_SECRET, null, accessToken, new DefaultIOHandler());
+			FoursquareApi api = new FoursquareApi(Commons.getProperty(Property.FS_CLIENT_ID), Commons.getProperty(Property.FS_CLIENT_SECRET), null, accessToken, new DefaultIOHandler());
 		
 			Result<CompleteUser> result = api.user("self");
 		

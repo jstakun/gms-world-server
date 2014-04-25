@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
+import com.jstakun.lm.server.config.Commons.Property;
 
 public class TokenUtil {
 
@@ -18,7 +19,7 @@ public class TokenUtil {
     		if (user != null) {
     			tokenUrl += "&user=" + user;
     		}
-    		String tokenJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(tokenUrl), Commons.RH_GMS_USER);		
+    		String tokenJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(tokenUrl), Commons.getProperty(Property.RH_GMS_USER));		
 			if (StringUtils.startsWith(tokenJson, "{")) {
 				JSONObject root = new JSONObject(tokenJson);
 				JSONObject output = root.getJSONObject("output");

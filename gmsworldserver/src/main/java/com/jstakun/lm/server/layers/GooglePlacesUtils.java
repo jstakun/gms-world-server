@@ -27,6 +27,7 @@ import com.google.appengine.api.ThreadManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.JSONUtils;
 import com.jstakun.lm.server.utils.NumberUtils;
@@ -164,7 +165,7 @@ public class GooglePlacesUtils extends LayerHelper {
         String cachedResponse = CacheUtil.getString(key);
         if (cachedResponse == null) {
             List<String> placeDetails = Collections.synchronizedList(new ArrayList<String>());
-            String queryStringSuffix = "&types=" + types + "&sensor=false&key=" + Commons.GOOGLE_API_KEY;
+            String queryStringSuffix = "&types=" + types + "&sensor=false&key=" + Commons.getProperty(Property.GOOGLE_API_KEY);
 
             String url = "location=" + latitude + "," + longitude + "&radius=" + r + "&language=" + language;
             if (query != null) {
@@ -421,7 +422,7 @@ public class GooglePlacesUtils extends LayerHelper {
         @Override
         public void run() {
             try {
-                URL itemDetails = new URL("https://maps.googleapis.com/maps/api/place/details/json?reference=" + reference + "&sensor=false&key=" + Commons.GOOGLE_API_KEY + "&language=" + language);
+                URL itemDetails = new URL("https://maps.googleapis.com/maps/api/place/details/json?reference=" + reference + "&sensor=false&key=" + Commons.getProperty(Property.GOOGLE_API_KEY) + "&language=" + language);
                 String details = HttpUtils.processFileRequest(itemDetails);
                 placeDetails.add(details);
             } catch (Exception e) {
@@ -440,7 +441,7 @@ public class GooglePlacesUtils extends LayerHelper {
         List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)CacheUtil.getObject(key);
         if (landmarks == null) {
             List<String> placeDetails = new ArrayList<String>();
-            String queryStringSuffix = "&types=" + types + "&sensor=false&key=" + Commons.GOOGLE_API_KEY;
+            String queryStringSuffix = "&types=" + types + "&sensor=false&key=" + Commons.getProperty(Property.GOOGLE_API_KEY);
 
             String url = "location=" + lat + "," + lng + "&radius=" + r + "&language=" + language;
             if (query != null) {

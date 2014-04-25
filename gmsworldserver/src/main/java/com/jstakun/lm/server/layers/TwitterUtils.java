@@ -28,6 +28,7 @@ import twitter4j.auth.AccessToken;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.utils.JSONUtils;
 import com.jstakun.lm.server.utils.NumberUtils;
@@ -233,12 +234,12 @@ public class TwitterUtils extends LayerHelper {
 
     private static Twitter getTwitter(String token, String secret) {
         Twitter twitter = new TwitterFactory().getInstance();
-        twitter.setOAuthConsumer(Commons.TW_CONSUMER_KEY, Commons.TW_CONSUMER_SECRET);
+        twitter.setOAuthConsumer(Commons.getProperty(Property.TW_CONSUMER_KEY), Commons.getProperty(Property.TW_CONSUMER_SECRET));
         AccessToken accessToken;
         if (token != null && secret != null) {
             accessToken = new AccessToken(token, secret);
         } else {
-            accessToken = new AccessToken(ConfigurationManager.getParam(ConfigurationManager.TW_TOKEN, null), ConfigurationManager.getParam(ConfigurationManager.TW_SECRET, null));
+            accessToken = new AccessToken(Commons.getProperty(Property.TW_TOKEN), Commons.getProperty(Property.TW_SECRET));
         }
         twitter.setOAuthAccessToken(accessToken);
         return twitter;

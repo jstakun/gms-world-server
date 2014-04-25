@@ -17,6 +17,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.google.common.collect.ImmutableMap;
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.social.NotificationUtils;
 import com.jstakun.lm.server.utils.TokenUtil;
@@ -36,12 +37,12 @@ public final class FBCommons {
  
     protected static String getLoginRedirectURL() {
         //display=touch
-        return "https://graph.facebook.com/oauth/authorize?client_id=" + Commons.fb_client_id + "&display=wap&redirect_uri=" + redirect_uri + "&scope=" + SCOPE;
+        return "https://graph.facebook.com/oauth/authorize?client_id=" + Commons.getProperty(Property.fb_client_id) + "&display=wap&redirect_uri=" + redirect_uri + "&scope=" + SCOPE;
 
     }
 
     protected static String getAuthURL(String authCode) {
-        return "https://graph.facebook.com/oauth/access_token?client_id=" + Commons.fb_client_id + "&redirect_uri=" + redirect_uri + "&client_secret=" + Commons.fb_secret + "&code=" + authCode;
+        return "https://graph.facebook.com/oauth/access_token?client_id=" + Commons.getProperty(Property.fb_client_id) + "&redirect_uri=" + redirect_uri + "&client_secret=" + Commons.getProperty(Property.fb_secret) + "&code=" + authCode;
     }
     
     protected static Map<String, String> authorize(String code) throws Exception {

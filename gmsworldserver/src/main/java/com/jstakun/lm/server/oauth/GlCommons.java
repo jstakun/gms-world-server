@@ -25,6 +25,7 @@ import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.api.services.plus.model.Person;
 import com.google.common.collect.ImmutableMap;
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.social.GooglePlusUtils;
 import com.jstakun.lm.server.social.NotificationUtils;
@@ -49,7 +50,7 @@ public final class GlCommons {
             + "&request_visible_actions=%s";
     
     protected static String getAuthorizationUrl() throws UnsupportedEncodingException {
-        return String.format(AUTHORIZE_URL, URLEncoder.encode(SCOPE, "UTF-8"), URLEncoder.encode(CALLBACK_URI, "UTF-8"), Commons.GL_PLUS_KEY, URLEncoder.encode("https://schemas.google.com/AddActivity", "UTF-8"));
+        return String.format(AUTHORIZE_URL, URLEncoder.encode(SCOPE, "UTF-8"), URLEncoder.encode(CALLBACK_URI, "UTF-8"), Commons.getProperty(Property.GL_PLUS_KEY), URLEncoder.encode("https://schemas.google.com/AddActivity", "UTF-8"));
     }
     
     protected static Map<String, String> authorize(String code) throws Exception {
@@ -57,7 +58,7 @@ public final class GlCommons {
 
         Map<String, String> userData = null;
         
-        String result = HttpUtils.processFileRequest(url, "POST", null, "code=" + code + "&client_id=" + Commons.GL_PLUS_KEY + "&client_secret=" + Commons.GL_PLUS_SECRET + "&redirect_uri=" + GlCommons.CALLBACK_URI + "&grant_type=authorization_code");
+        String result = HttpUtils.processFileRequest(url, "POST", null, "code=" + code + "&client_id=" + Commons.getProperty(Property.GL_PLUS_KEY) + "&client_secret=" + Commons.getProperty(Property.GL_PLUS_SECRET) + "&redirect_uri=" + GlCommons.CALLBACK_URI + "&grant_type=authorization_code");
         String accessToken = null, refreshToken = null;
         long expires_in = -1;
         
@@ -132,7 +133,7 @@ public final class GlCommons {
 	        JsonFactory jsonFactory = new JacksonFactory();
 	
 	        GoogleCredential requestInitializer = new GoogleCredential.Builder().
-	                setClientSecrets(Commons.GL_PLUS_KEY, Commons.GL_PLUS_SECRET).
+	                setClientSecrets(Commons.getProperty(Property.GL_PLUS_KEY), Commons.getProperty(Property.GL_PLUS_SECRET)).
 	                setJsonFactory(jsonFactory).
 	                setTransport(httpTransport).build();
 	

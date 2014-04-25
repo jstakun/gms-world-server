@@ -7,6 +7,7 @@ package com.jstakun.lm.server.layers;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.JSONUtils;
 import com.jstakun.lm.server.utils.MathUtils;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
+
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,7 +45,7 @@ public class GeonamesUtils extends LayerHelper {
 
         if (output == null) {
 
-            URL geonamesUrl = new URL("http://api.geonames.org/findNearbyWikipediaJSON?lat=" + lat + "&lng=" + lng + "&maxRows=" + MAXROWS + "&radius=" + r + "&username=" + Commons.GEONAMES_USERNAME + "&lang=" + lang);
+            URL geonamesUrl = new URL("http://api.geonames.org/findNearbyWikipediaJSON?lat=" + lat + "&lng=" + lng + "&maxRows=" + MAXROWS + "&radius=" + r + "&username=" + Commons.getProperty(Property.GEONAMES_USERNAME) + "&lang=" + lang);
 
             String geonamesResponse = HttpUtils.processFileRequest(geonamesUrl);
 
@@ -113,7 +115,7 @@ public class GeonamesUtils extends LayerHelper {
 
         if (output == null) {
 
-            URL geonamesUrl = new URL("http://api.geonames.org/findNearbyWikipediaJSON?lat=" + lat + "&lng=" + lng + "&maxRows=" + MAXROWS + "&radius=" + r + "&username=" + Commons.GEONAMES_USERNAME + "&lang=" + lang);
+            URL geonamesUrl = new URL("http://api.geonames.org/findNearbyWikipediaJSON?lat=" + lat + "&lng=" + lng + "&maxRows=" + MAXROWS + "&radius=" + r + "&username=" + Commons.getProperty(Property.GEONAMES_USERNAME) + "&lang=" + lang);
 
             String geonamesResponse = HttpUtils.processFileRequest(geonamesUrl);
             

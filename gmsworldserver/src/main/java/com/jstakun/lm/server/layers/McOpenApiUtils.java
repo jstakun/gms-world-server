@@ -11,6 +11,7 @@ import com.google.gdata.util.common.util.Base64;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.utils.AuthUtils;
 import com.jstakun.lm.server.utils.CryptoTools;
 import com.jstakun.lm.server.utils.HttpUtils;
@@ -96,9 +97,9 @@ public class McOpenApiUtils extends LayerHelper {
         if (privateKey == null) {
             try {
                 KeyStore ks = KeyStore.getInstance("PKCS12");
-                char[] pwd = new String(CryptoTools.decrypt(Base64.decode(Commons.mcopenapi_ksPwd.getBytes()))).toCharArray();
+                char[] pwd = new String(CryptoTools.decrypt(Base64.decode(Commons.getProperty(Property.mcopenapi_ksPwd).getBytes()))).toCharArray();
                 ks.load(stream, pwd);
-                Key key = ks.getKey(Commons.mcopenapi_keyAlias, pwd);
+                Key key = ks.getKey(Commons.getProperty(Property.mcopenapi_keyAlias), pwd);
                 privateKey = (PrivateKey) key;
             } catch (Exception ex) {
                 logger.log(Level.SEVERE, null, ex);
@@ -112,7 +113,7 @@ public class McOpenApiUtils extends LayerHelper {
         if (privateKey != null) {
             OAuthRsaSha1Signer rsaSigner = new OAuthRsaSha1Signer();
             OAuthParameters params = new OAuthParameters();
-            params.setOAuthConsumerKey(Commons.mcopenapi_prodConsumerKey);
+            params.setOAuthConsumerKey(Commons.getProperty(Property.mcopenapi_prodConsumerKey));
             params.setOAuthNonce(OAuthUtil.getNonce());
             params.setOAuthTimestamp(OAuthUtil.getTimestamp());
             params.setOAuthSignatureMethod("RSA-SHA1");

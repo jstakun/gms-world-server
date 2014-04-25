@@ -27,6 +27,7 @@ import com.jstakun.gms.android.deals.Deal;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.persistence.Hotel;
 import com.jstakun.lm.server.utils.DateUtils;
 import com.jstakun.lm.server.utils.HttpUtils;
@@ -80,7 +81,7 @@ public class HotelsCombinedUtils extends LayerHelper {
             
             String hotelsUrl = HOTELS_PROVIDER_URL + "?lat=" + lat + "&lng=" + lng + "&radius=" + radius + "&limit=" + limit;			
 			logger.log(Level.INFO, "Calling: " + hotelsUrl);
-            String hotelsJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.RH_GMS_USER);		
+            String hotelsJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER));		
 			List<Hotel> hotels = jsonToHotelList(hotelsJson);      	
 			logger.log(Level.INFO, "Found " + hotels.size() + " hotels...");		
             if (!hotels.isEmpty()) {
@@ -259,7 +260,7 @@ public class HotelsCombinedUtils extends LayerHelper {
         	String hotelsUrl = HOTELS_PROVIDER_URL + "?lat=" + lat + "&lng=" + lng + "&radius=" + radius + "&limit=" + limit;			
         	logger.log(Level.INFO, "Calling: " + hotelsUrl);
         	//String hotelsJson = HttpUtils.processFileRequest(new URL(hotelsUrl));	
-        	String hotelsJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.RH_GMS_USER);
+        	String hotelsJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER));
 			List<Hotel> hotels = jsonToHotelList(hotelsJson);
 			logger.log(Level.INFO, "Found " + hotels.size() + " hotels...");
         	landmarks.addAll(Lists.transform(hotels, new HotelToExtendedLandmarkFunction(language, locale)));

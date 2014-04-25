@@ -7,6 +7,7 @@ package com.jstakun.lm.server.layers;
 import org.json.JSONObject;
 
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.MathUtils;
 import com.jstakun.lm.server.utils.NumberUtils;
@@ -16,6 +17,7 @@ import com.restfb.Parameter;
 import com.restfb.exception.FacebookOAuthException;
 import com.restfb.json.JsonArray;
 import com.restfb.json.JsonObject;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -24,6 +26,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -61,15 +64,7 @@ public class FBPlacesServlet extends HttpServlet {
                 String distance = request.getParameter("distance");
                 int limit = NumberUtils.getInt(request.getParameter("limit"), 30);
 
-                //String username = (String) request.getSession().getAttribute("token");
-                //String password = (String) request.getSession().getAttribute("password");
-                //OAuthToken token = OAuthTokenPersistenceUtils.selectOAuthTokenByService(username, password, Commons.FACEBOOK);
-
-                //String t = null;
-                //if (token != null) {
-                //	t = token.getToken();
-                //}
-                FacebookClient facebookClient = new DefaultFacebookClient(Commons.fb_app_token);
+                FacebookClient facebookClient = new DefaultFacebookClient(Commons.getProperty(Property.fb_app_token));
 
                 String query = request.getParameter("q");
                 JsonObject placesSearch = null;

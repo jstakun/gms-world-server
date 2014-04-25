@@ -7,6 +7,7 @@ package com.jstakun.lm.server.layers;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.JSONUtils;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
+
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,7 +49,7 @@ public class LastfmUtils extends LayerHelper {
 
         if (output == null) {
             URL lastfmUrl = new URL("http://ws.audioscrobbler.com/2.0/?method=geo.getevents&lat=" + latitude
-                    + "&long=" + longitude + "&distance=" + radius + "&limit=" + limit + "&format=json&api_key=" + Commons.LASTFM_API_KEY);
+                    + "&long=" + longitude + "&distance=" + radius + "&limit=" + limit + "&format=json&api_key=" + Commons.getProperty(Property.LASTFM_API_KEY));
             String lastfmResponse = HttpUtils.processFileRequest(lastfmUrl);
 
             json = createCustomJsonLastfmList(lastfmResponse, version, stringLimit);
@@ -299,7 +301,7 @@ public class LastfmUtils extends LayerHelper {
         
         if (landmarks == null) {
             URL lastfmUrl = new URL("http://ws.audioscrobbler.com/2.0/?method=geo.getevents&lat=" + lat
-                    + "&long=" + lng + "&distance=" + radius + "&limit=" + limit + "&format=json&api_key=" + Commons.LASTFM_API_KEY);
+                    + "&long=" + lng + "&distance=" + radius + "&limit=" + limit + "&format=json&api_key=" + Commons.getProperty(Property.LASTFM_API_KEY));
             String lastfmResponse = HttpUtils.processFileRequest(lastfmUrl);
 
             landmarks = createCustomLandmarkLastfmList(lastfmResponse, stringLimit, locale);

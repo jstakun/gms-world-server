@@ -4,6 +4,7 @@ import com.jstakun.gms.android.deals.Deal;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.JSONUtils;
 import com.jstakun.lm.server.utils.MathUtils;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
+
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,7 +48,7 @@ public class GrouponUtils extends LayerHelper {
 
         String cachedResponse = CacheUtil.getString(key);
         if (cachedResponse == null) {
-            URL grouponUrl = new URL("http://api.groupon.com/v2/deals.json?client_id=" + Commons.GROUPON_CLIENT_ID + "&force_http_success=true&lat=" + lat + "&lng=" + lng + "&radius=" + radius + "&show=title,announcementTitle,division,dealUrl,tags,startAt,endAt,merchant,options,mediumImageUrl"); //smallImageUrl
+            URL grouponUrl = new URL("http://api.groupon.com/v2/deals.json?client_id=" + Commons.getProperty(Property.GROUPON_CLIENT_ID) + "&force_http_success=true&lat=" + lat + "&lng=" + lng + "&radius=" + radius + "&show=title,announcementTitle,division,dealUrl,tags,startAt,endAt,merchant,options,mediumImageUrl"); //smallImageUrl
             String grouponResponse = HttpUtils.processFileRequest(grouponUrl);
             if (version == 1) {
                 json = createCustomJsonGrouponListV1(grouponResponse, dealLimit);
@@ -340,7 +342,7 @@ public class GrouponUtils extends LayerHelper {
 		String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, dealLimit, stringLimit, categoryid, flexString2);
 		List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)CacheUtil.getObject(key);
         if (landmarks == null) {
-            URL grouponUrl = new URL("http://api.groupon.com/v2/deals.json?client_id=" + Commons.GROUPON_CLIENT_ID + "&force_http_success=true&lat=" + lat + "&lng=" + lng + "&radius=" + radius + "&show=title,announcementTitle,division,dealUrl,tags,startAt,endAt,merchant,options,mediumImageUrl"); //smallImageUrl
+            URL grouponUrl = new URL("http://api.groupon.com/v2/deals.json?client_id=" + Commons.getProperty(Property.GROUPON_CLIENT_ID) + "&force_http_success=true&lat=" + lat + "&lng=" + lng + "&radius=" + radius + "&show=title,announcementTitle,division,dealUrl,tags,startAt,endAt,merchant,options,mediumImageUrl"); //smallImageUrl
             String grouponResponse = HttpUtils.processFileRequest(grouponUrl);
             landmarks = createCustomLandmarkGrouponList(grouponResponse, categoryid, dealLimit, query, stringLimit, locale);
             if (!landmarks.isEmpty()) {

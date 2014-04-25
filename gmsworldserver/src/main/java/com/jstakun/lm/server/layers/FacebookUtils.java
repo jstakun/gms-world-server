@@ -26,6 +26,7 @@ import com.google.appengine.api.ThreadManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.utils.JSONUtils;
 import com.jstakun.lm.server.utils.MathUtils;
 import com.jstakun.lm.server.utils.NumberUtils;
@@ -602,7 +603,7 @@ public class FacebookUtils extends LayerHelper {
             if (StringUtils.isNotEmpty(fbtoken)) {
                 facebookClient = new DefaultFacebookClient(fbtoken);
             } else {
-                facebookClient = new DefaultFacebookClient(Commons.fb_app_token);
+                facebookClient = new DefaultFacebookClient(Commons.getProperty(Property.fb_app_token));
             }
 
             JsonObject placesSearch = null;
@@ -1125,7 +1126,7 @@ public class FacebookUtils extends LayerHelper {
             if (StringUtils.isNotEmpty(fbtoken)) {
                 facebookClient = new DefaultFacebookClient(fbtoken);
             } else {
-                facebookClient = new DefaultFacebookClient(Commons.fb_app_token);
+                facebookClient = new DefaultFacebookClient(Commons.getProperty(Property.fb_app_token));
             }
 
             JsonObject placesSearch = null;

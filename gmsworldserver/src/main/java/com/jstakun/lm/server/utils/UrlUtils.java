@@ -6,6 +6,7 @@ package com.jstakun.lm.server.utils;
 
 import com.rosaloves.bitlyj.Url;
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.persistence.Landmark;
 
@@ -26,7 +27,7 @@ import static com.rosaloves.bitlyj.Bitly.*;
 public class UrlUtils {
 
     private static final Logger logger = Logger.getLogger(UrlUtils.class.getName());
-    private static final Provider bitly = as(Commons.BITLY_USERNAME, Commons.BITLY_APIKEY);
+    private static final Provider bitly = as(Commons.getProperty(Property.BITLY_USERNAME), Commons.getProperty(Property.BITLY_APIKEY));
     public final static String BITLY_URL = "http://bit.ly/";
     private static final long DB_MIGRATION_DATE = 1373846399000L; //14-07-13 23:59:59
 
@@ -57,7 +58,7 @@ public class UrlUtils {
                     if (id.contains(".")) {
                         url = "http://www.linkedin.com/profile/view?id=" + id;
                     } else {
-                        url = "http://www.linkedin.com/x/profile/" + Commons.LN_API_KEY + "/" + id;
+                        url = "http://www.linkedin.com/x/profile/" + Commons.getProperty(Property.LN_API_KEY) + "/" + id;
                     }
                 } else if (user.endsWith("@gl")) {
                     url = "http://www.blogger.com/feeds/" + id + "/posts/default";

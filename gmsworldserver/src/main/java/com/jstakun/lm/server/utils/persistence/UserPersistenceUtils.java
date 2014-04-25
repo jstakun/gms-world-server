@@ -20,6 +20,7 @@ import org.json.JSONObject;
 import com.google.gdata.util.common.util.Base64;
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
+import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.persistence.User;
 import com.jstakun.lm.server.utils.CryptoTools;
 import com.jstakun.lm.server.utils.HttpUtils;
@@ -49,7 +50,7 @@ public class UserPersistenceUtils {
             }
             
         	//logger.log(Level.INFO, "Calling: " + landmarksUrl);
-        	String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl), "POST", null, params, Commons.RH_GMS_USER);
+        	String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
         	logger.log(Level.INFO, "Received response: " + landmarksJson);
         	if (StringUtils.startsWith(StringUtils.trim(landmarksJson), "{")) {
         		JSONObject resp = new JSONObject(landmarksJson);
@@ -98,7 +99,7 @@ public class UserPersistenceUtils {
         	String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "itemProvider";
         	String params = "type=user&login=" + username;			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
-        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
+        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
         	//logger.log(Level.INFO, "Received response: " + gJson);
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
         		JSONObject root = new JSONObject(gJson);
@@ -146,7 +147,7 @@ public class UserPersistenceUtils {
         	String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "itemProvider";
         	String params = "type=user&confirm=1&login=" + URLEncoder.encode(login, "UTF-8");			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
-        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
+        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
         	//logger.log(Level.INFO, "Received response: " + gJson);
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
         		JSONObject root = new JSONObject(gJson);
@@ -269,7 +270,7 @@ public class UserPersistenceUtils {
     	try {
     		String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "itemProvider";
     		String params = "type=user&login=" + URLEncoder.encode(login, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8");			 
-    		String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.RH_GMS_USER);
+    		String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
     		if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
     			JSONObject root = new JSONObject(gJson);
     			auth = root.optBoolean("auth", false);

@@ -34,8 +34,6 @@ public final class ConfigurationManager {
     public static final String NOTIFICATIONS_INTERVAL = "notificationsInterval"; //notifications interval
     public static final String LM_VERSION = "lmVersion"; //LM app version
     public static final String DA_VERSION = "daVersion"; //DA app version
-    public static final String TW_TOKEN = "twToken"; //TW GMS World token
-    public static final String TW_SECRET = "twSecret";//TW GMS World secret
     public static final String EXCLUDED = "excluded";//list of excluded from engagement email
     public static final String CLOSED_URLS = "closed";//temporary closed urls
     public static final String IP_TOTAL_LIMIT = "totalLimit"; //total call limit from ip
@@ -67,6 +65,10 @@ public final class ConfigurationManager {
     
     public static final String USER_EMAIL = "userEmail";
 
+	public static final String SUPPORT_MAIL = "support@gms-world.net";
+	public static final String ADMIN_MAIL = "jstakun.appspot@gmail.com";
+	public static final String ADMIN_NICK = "GMS World Administrator";
+    
     private static Map<String, String> configuration = new HashMap<String, String>();
     public static final String CONFIG = "config";
     
@@ -102,8 +104,4 @@ public final class ConfigurationManager {
     public static Map<String, String> getConfiguration() {
     	return Collections.unmodifiableMap(configuration);
     }
-
-	public static final String SUPPORT_MAIL = "support@gms-world.net";
-	public static final String ADMIN_MAIL = "jstakun.appspot@gmail.com";
-	public static final String ADMIN_NICK = "GMS World Administrator";
 }

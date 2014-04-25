@@ -6,9 +6,11 @@ package com.jstakun.lm.server.layers;
 
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.JSONUtils;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
+
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -18,6 +20,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
+
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,7 +42,7 @@ public class HotwireUtils extends LayerHelper {
         JSONObject json = null;
 
         if (output == null) {
-            URL hotwireUrl = new URL("http://api.hotwire.com/v1/deal/hotel?dest=" + latitude + "," + longitude + "&distance=*~" + radius + "&apikey=" + Commons.HOTWIRE_KEY + "&format=json&sort=price&starrating=3~*&&daystoarrival=0~2&sortorder=asc&limit=" + limit); //&diversity=city
+            URL hotwireUrl = new URL("http://api.hotwire.com/v1/deal/hotel?dest=" + latitude + "," + longitude + "&distance=*~" + radius + "&apikey=" + Commons.getProperty(Property.HOTWIRE_KEY) + "&format=json&sort=price&starrating=3~*&&daystoarrival=0~2&sortorder=asc&limit=" + limit); //&diversity=city
             String hotwireResponse = HttpUtils.processFileRequest(hotwireUrl);
 
             json = createCustomJsonHotwireList(hotwireResponse, version);
