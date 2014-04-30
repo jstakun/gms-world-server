@@ -7,56 +7,30 @@ package com.jstakun.lm.server.persistence;
 
 import java.util.Date;
 
-import javax.jdo.annotations.IdGeneratorStrategy;
-import javax.jdo.annotations.IdentityType;
-import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
-import javax.jdo.annotations.PrimaryKey;
-
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.Text;
-
 /**
  *
  * @author jstakun
  */
-@PersistenceCapable(identityType=IdentityType.APPLICATION, detachable="true")
 public class User {
-  @PrimaryKey
-  @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-  private Key key;
-
-  @Persistent
+  
   private String login;
 
-  @Persistent
   private String password;
 
-  @Persistent
   private String email;
 
-  @Persistent
   private String firstname;
 
-  @Persistent
   private String lastname;
 
-  @Persistent
   private Date regDate;
 
-  @Persistent
   private Boolean confirmed;
 
-  @Persistent
   private Date confirmDate;
 
-  @Persistent
   private String personalInfo;
 
-  @Persistent
-  private Text personalInfoLong;
-
-  @Persistent
   private Date lastLogonDate;
 
   public User(String login, String password, String email, String firstname, String lastname)
@@ -72,10 +46,6 @@ public class User {
   
   public User() {
 	  this.regDate = new Date(System.currentTimeMillis());
-  }
-
-  public Key getKey() {
-    return key;
   }
 
   public String getPassword()
@@ -144,20 +114,6 @@ public class User {
      */
     public String getLastname() {
         return lastname;
-    }
-
-    /**
-     * @return the personalInfoLong
-     */
-    public Text getPersonalInfoLong() {
-        return personalInfoLong;
-    }
-
-    /**
-     * @param personalInfoLong the personalInfoLong to set
-     */
-    public void setPersonalInfoLong(Text personalInfoLong) {
-        this.personalInfoLong = personalInfoLong;
     }
 
     /**

@@ -80,7 +80,7 @@ import org.apache.commons.lang.StringUtils;
 public class FoursquareUtils extends LayerHelper {
 
     private static final CheckinComparator checkinComparator = new CheckinComparator();
-    private static final String FOURSQUARE_PREFIX = "http://foursquare.com/venue/";
+    protected static final String FOURSQUARE_PREFIX = "http://foursquare.com/venue/";
     
     @Override
     protected JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String intent, String locale) throws JSONException, MalformedURLException, IOException, FoursquareApiException {
@@ -317,7 +317,7 @@ public class FoursquareUtils extends LayerHelper {
            return response;
    	}
 
-    protected static JSONObject processMerchantRequest(double lat, double lng, String categoryid, int radius, int version, int limit, int stringLimit, String token, String locale) throws MalformedURLException, IOException, JSONException {
+    /*protected static JSONObject processMerchantRequest(double lat, double lng, String categoryid, int radius, int version, int limit, int stringLimit, String token, String locale) throws MalformedURLException, IOException, JSONException {
         String key = getCacheKey(FoursquareUtils.class, "processMerchantRequest", lat, lng, categoryid, radius, version, limit, stringLimit, token, locale);
         JSONObject response = null;
         String cachedResponse = CacheUtil.getString(key);
@@ -362,7 +362,7 @@ public class FoursquareUtils extends LayerHelper {
         }
 
         return landmarks;
-    }
+    }*/
 
     protected static String exploreVenuesToJSon(double lat, double lng, String query, int radius, int limit, int version, String token, String locale) throws JSONException, MalformedURLException, IOException, FoursquareApiException {
         String key = getCacheKey(FoursquareUtils.class, "exploreVenuesToJSon", lat, lng, query, radius, version, limit, 0, token, locale);
@@ -810,7 +810,7 @@ public class FoursquareUtils extends LayerHelper {
         return landmark;
     }
 
-    private static Map<String, Map<String, String>> getVenueDetails(List<String> venueIds, String locale) throws UnsupportedEncodingException, MalformedURLException, IOException, JSONException {
+    protected static Map<String, Map<String, String>> getVenueDetails(List<String> venueIds, String locale) throws UnsupportedEncodingException, MalformedURLException, IOException, JSONException {
         StringBuilder urlPrefix = new StringBuilder("https://api.foursquare.com/v2/multi").
         		append("?client_id=").append(Commons.getProperty(Property.FS_CLIENT_ID)).
                 append("&client_secret=").append(Commons.getProperty(Property.FS_CLIENT_SECRET)).
@@ -855,7 +855,7 @@ public class FoursquareUtils extends LayerHelper {
         return attrs;
     }
 
-    private static JSONObject createCustomJsonFoursquareMerchantList(String fourquareJson, String locale, String categoryid, int stringLimit) throws JSONException {
+    /*private static JSONObject createCustomJsonFoursquareMerchantList(String fourquareJson, String locale, String categoryid, int stringLimit) throws JSONException {
         List<Map<String, Object>> jsonArray = new ArrayList<Map<String, Object>>();
 
         if (StringUtils.startsWith(fourquareJson, "{")) {
@@ -999,7 +999,7 @@ public class FoursquareUtils extends LayerHelper {
 
         JSONObject json = new JSONObject().put("ResultSet", jsonArray);
         return json;
-    }
+    }*/
      
     protected static int addVenue(String accessToken, String name, String desc, String primaryCategoryId, String ll) {
     	try {
@@ -1194,7 +1194,7 @@ public class FoursquareUtils extends LayerHelper {
         }
     }
     
-    private static List<ExtendedLandmark> createCustomLandmarksFoursquareMerchantList(String fourquareJson, String locale, String categoryid, int stringLimit, Locale l) throws JSONException {
+    /*private static List<ExtendedLandmark> createCustomLandmarksFoursquareMerchantList(String fourquareJson, String locale, String categoryid, int stringLimit, Locale l) throws JSONException {
         List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
         
     	if (StringUtils.startsWith(fourquareJson, "{")) {
@@ -1365,7 +1365,7 @@ public class FoursquareUtils extends LayerHelper {
         }
 
         return landmarks;
-    }
+    }*/
     
     private static void handleError(ResultMeta meta, String key) {
     	logger.log(Level.SEVERE, "Received FS response {0} {1}: {2}", new Object[]{meta.getCode(), meta.getErrorDetail(), key});

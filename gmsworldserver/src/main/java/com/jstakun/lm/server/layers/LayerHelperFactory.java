@@ -21,6 +21,8 @@ public class LayerHelperFactory {
 
     private static final FoursquareUtils foursquareUtils = new FoursquareUtils();
 
+    private static final FoursquareMerchantUtils foursquareMerchantUtils = new FoursquareMerchantUtils();
+
     private static final GooglePlacesUtils googlePlacesUtils = new GooglePlacesUtils();
 
     private static final GrouponUtils grouponUtils = new GrouponUtils();
@@ -233,6 +235,13 @@ public class LayerHelperFactory {
      */
     protected static SearchUtils getSearchUtils() {
         return searchUtils;
+    }
+    
+    /**
+     * @return the foursquareMerchantUtils
+     */
+    protected static FoursquareMerchantUtils getFoursquareMerchantUtils() {
+    	return foursquareMerchantUtils;
     }
 
 }

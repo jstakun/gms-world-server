@@ -406,10 +406,10 @@ public class LayersProviderServlet extends HttpServlet {
                     }
 
                     if (outFormat.equals(Format.BIN)) {
-                    	List<ExtendedLandmark> landmarks = FoursquareUtils.processBinaryMerchantRequest(latitude, longitude, categoryid, radius * 1000, version, limit, stringLimit, token, language, l);
-                    	LayerHelperFactory.getFoursquareUtils().serialize(landmarks, response.getOutputStream(), version);
+                    	List<ExtendedLandmark> landmarks = LayerHelperFactory.getFoursquareMerchantUtils().processBinaryRequest(latitude, longitude, categoryid, radius * 1000, version, limit, stringLimit, token, language, l);
+                    	LayerHelperFactory.getFoursquareMerchantUtils().serialize(landmarks, response.getOutputStream(), version);
                     } else {
-                        outString = FoursquareUtils.processMerchantRequest(latitude, longitude, categoryid, radius * 1000, version, limit, stringLimit, token, language).toString();
+                        outString = LayerHelperFactory.getFoursquareMerchantUtils().processRequest(latitude, longitude, categoryid, radius * 1000, version, limit, stringLimit, token, language).toString();
                     }                                  
                 }
             } else if (StringUtils.contains(uri, "expediaProvider")) {
