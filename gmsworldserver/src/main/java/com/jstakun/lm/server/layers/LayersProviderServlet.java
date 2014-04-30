@@ -400,10 +400,7 @@ public class LayersProviderServlet extends HttpServlet {
                     if (StringUtils.isEmpty(token)) {
                         token = Commons.getProperty(Property.FS_OAUTH_TOKEN);
                     }
-                    String categoryid = null;
-                    if (StringUtils.isNotEmpty(request.getParameter("categoryid"))) {
-                        categoryid = request.getParameter("categoryid");
-                    }
+                    String categoryid = request.getParameter("categoryid");
 
                     if (outFormat.equals(Format.BIN)) {
                     	List<ExtendedLandmark> landmarks = LayerHelperFactory.getFoursquareMerchantUtils().processBinaryRequest(latitude, longitude, null, radius * 1000, version, limit, stringLimit, token, categoryid, l);
