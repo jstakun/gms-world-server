@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 
 import org.apache.commons.lang.StringUtils;
@@ -23,7 +22,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.google.appengine.api.ThreadManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.lm.server.config.Commons;
@@ -382,8 +380,7 @@ public class GooglePlacesUtils extends LayerHelper {
     private static void processDetails(List<String> placeDetails, JSONArray results, int limit, String language) throws JSONException, MalformedURLException, IOException {
 
         Map<String, Thread> venueDetailsThreads = new ConcurrentHashMap<String, Thread>();
-        ThreadFactory foursquareThreadFactory = ThreadManager.currentRequestThreadFactory();
-
+        
         int l = limit;
         if (results.length() < l) {
         	l = results.length();
@@ -395,7 +392,7 @@ public class GooglePlacesUtils extends LayerHelper {
             JSONObject item = results.getJSONObject(i);
             String reference = item.getString("reference");
 
-            Thread venueDetailsRetriever = foursquareThreadFactory.newThread(new VenueDetailsRetriever(venueDetailsThreads, placeDetails,
+            Thread venueDetailsRetriever = ThreadUtil.newThread(new VenueDetailsRetriever(venueDetailsThreads, placeDetails,
                     reference, language));
 
             venueDetailsThreads.put(reference, venueDetailsRetriever);

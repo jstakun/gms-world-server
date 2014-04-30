@@ -4,7 +4,23 @@
  */
 package com.jstakun.lm.server.layers;
 
-import com.google.appengine.api.ThreadManager;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+
+import org.apache.commons.lang.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.google.gdata.client.authn.oauth.OAuthException;
 import com.google.gdata.client.authn.oauth.OAuthHmacSha1Signer;
 import com.google.gdata.client.authn.oauth.OAuthParameters;
@@ -23,24 +39,6 @@ import com.jstakun.lm.server.utils.ThreadUtil;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.openlapi.AddressInfo;
 import com.openlapi.QualifiedCoordinates;
-
-import java.io.IOException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ThreadFactory;
-import java.util.logging.Level;
-
-import org.apache.commons.lang.StringUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  *
@@ -62,12 +60,11 @@ public class YelpUtils extends LayerHelper {
             
         	if (!CacheUtil.containsKey(CACHE_KEY)) {
         		Map<Integer, Thread> venueDetailsThreads = new ConcurrentHashMap<Integer, Thread>();
-        		ThreadFactory yelpThreadFactory = ThreadManager.currentRequestThreadFactory();
         		boolean isDeal = Boolean.parseBoolean(hasDeals);
         		int offset = 0;
 
         		while (offset < normalizedLimit) {
-        			Thread venueDetailsRetriever = yelpThreadFactory.newThread(new VenueDetailsRetriever(venueDetailsThreads, venueArray,
+        			Thread venueDetailsRetriever = ThreadUtil.newThread(new VenueDetailsRetriever(venueDetailsThreads, venueArray,
                         lat, lng, query, normalizedRadius, offset, isDeal, stringLimit, language, "json", null));
         			venueDetailsThreads.put(offset, venueDetailsRetriever);
         			venueDetailsRetriever.start();
@@ -336,12 +333,11 @@ public class YelpUtils extends LayerHelper {
     	if (!CacheUtil.containsKey(CACHE_KEY)) {
         	
     		Map<Integer, Thread> venueDetailsThreads = new ConcurrentHashMap<Integer, Thread>();
-    		ThreadFactory yelpThreadFactory = ThreadManager.currentRequestThreadFactory();
     		int normalizedRadius = NumberUtils.normalizeNumber(radius, 1000, 40000);
     		int offset = 0;
 
     		while (offset < limit) {
-    			Thread venueDetailsRetriever = yelpThreadFactory.newThread(new ReviewDetailsRetriever(venueDetailsThreads, reviewsArray,
+    			Thread venueDetailsRetriever = ThreadUtil.newThread(new ReviewDetailsRetriever(venueDetailsThreads, reviewsArray,
                     latitude, longitude, query, normalizedRadius, offset, hasDeals, language));
     			venueDetailsThreads.put(offset, venueDetailsRetriever);
     			venueDetailsRetriever.start();
@@ -448,12 +444,11 @@ public class YelpUtils extends LayerHelper {
             
         	if (!CacheUtil.containsKey(CACHE_KEY)) {
         		Map<Integer, Thread> venueDetailsThreads = new ConcurrentHashMap<Integer, Thread>();
-        		ThreadFactory yelpThreadFactory = ThreadManager.currentRequestThreadFactory();
         		boolean isDeal = Boolean.parseBoolean(hasDeals);
         		int offset = 0;
 
         		while (offset < normalizedLimit) {
-        			Thread venueDetailsRetriever = yelpThreadFactory.newThread(new VenueDetailsRetriever(venueDetailsThreads, landmarks,
+        			Thread venueDetailsRetriever = ThreadUtil.newThread(new VenueDetailsRetriever(venueDetailsThreads, landmarks,
                         lat, lng, query, normalizedRadius, offset, isDeal, stringLimit, language, "bin", locale));
         			venueDetailsThreads.put(offset, venueDetailsRetriever);
         			venueDetailsRetriever.start();

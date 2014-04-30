@@ -19,7 +19,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 
 import org.apache.commons.lang.StringUtils;
@@ -28,7 +27,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.ocpsoft.prettytime.PrettyTime;
 
-import com.google.appengine.api.ThreadManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.lm.server.config.Commons;
@@ -807,8 +805,6 @@ public class FoursquareUtils extends LayerHelper {
 
         String multiRequest = "";
 
-        ThreadFactory foursquareThreadFactory = ThreadManager.currentRequestThreadFactory();
-
         Map<String, Map<String, String>> attrs = new HashMap<String, Map<String, String>>();
 
         Map<String, Thread> venueDetailsThreads = new ConcurrentHashMap<String, Thread>();
@@ -828,7 +824,7 @@ public class FoursquareUtils extends LayerHelper {
             if (i % 5 == 4 || i == (venueIds.size() - 1)) {
                 //call foursquare
 
-                Thread venueDetailsRetriever = foursquareThreadFactory.newThread(new VenueDetailsRetriever(venueDetailsThreads, attrs,
+                Thread venueDetailsRetriever = ThreadUtil.newThread(new VenueDetailsRetriever(venueDetailsThreads, attrs,
                         locale, urlPrefix.toString(), multiRequest, venueId, bitlyFailed));
 
                 venueDetailsThreads.put(multiRequest, venueDetailsRetriever);
