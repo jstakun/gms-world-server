@@ -35,7 +35,7 @@ public class FoursquareMerchantUtils extends FoursquareUtils {
 	
 	@Override
 	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String token, String categoryid, Locale l) throws MalformedURLException, IOException, JSONException {
-        String key = getCacheKey(FoursquareMerchantUtils.class, "processBinaryRequest", lat, lng, categoryid, radius, version, limit, stringLimit, token, l.getLanguage());
+        String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, categoryid, radius, version, limit, stringLimit, token, l.getLanguage());
         List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)CacheUtil.getObject(key);
         
         if (landmarks == null) {
@@ -58,7 +58,7 @@ public class FoursquareMerchantUtils extends FoursquareUtils {
 	
 	@Override
 	public JSONObject processRequest(double lat, double lng, String categoryid, int radius, int version, int limit, int stringLimit, String token, String locale) throws MalformedURLException, IOException, JSONException {
-        String key = getCacheKey(FoursquareMerchantUtils.class, "processRequest", lat, lng, categoryid, radius, version, limit, stringLimit, token, locale);
+        String key = getCacheKey(getClass(), "processRequest", lat, lng, categoryid, radius, version, limit, stringLimit, token, locale);
         JSONObject response = null;
         String cachedResponse = CacheUtil.getString(key);
         
@@ -220,7 +220,7 @@ public class FoursquareMerchantUtils extends FoursquareUtils {
                     }
                 } 
             } catch (Exception ex) {
-                logger.log(Level.SEVERE, "FoursquareUtils.createCustomJsonFoursquareMerchantList() exception:", ex);
+                logger.log(Level.SEVERE, "FoursquareMerchantUtils.createCustomJsonFoursquareMerchantList() exception:", ex);
             }
         }
 
@@ -394,7 +394,7 @@ public class FoursquareMerchantUtils extends FoursquareUtils {
                     }
                 }
             } catch (Exception ex) {
-                logger.log(Level.SEVERE, "FoursquareUtils.createCustomLandmarksFoursquareMerchantList() exception:", ex);
+                logger.log(Level.SEVERE, "FoursquareMerchantUtils.createCustomLandmarksFoursquareMerchantList() exception:", ex);
             }
         }
 

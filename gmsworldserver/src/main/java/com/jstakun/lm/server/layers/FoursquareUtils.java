@@ -4,58 +4,8 @@
  */
 package com.jstakun.lm.server.layers;
 
-import com.jstakun.gms.android.landmarks.ExtendedLandmark;
-import com.jstakun.gms.android.landmarks.LandmarkFactory;
-import com.jstakun.lm.server.config.Commons;
-import com.jstakun.lm.server.config.Commons.Property;
-import com.jstakun.lm.server.utils.UrlUtils;
-import com.jstakun.lm.server.utils.ThreadUtil;
-
-import java.util.concurrent.ConcurrentHashMap;
-
-import com.google.appengine.api.ThreadManager;
-
-import java.util.concurrent.ThreadFactory;
-
-import fi.foyt.foursquare.api.entities.HereNow;
-
-import org.apache.commons.lang.StringEscapeUtils;
-
-import fi.foyt.foursquare.api.FoursquareApiException;
-
-import java.io.UnsupportedEncodingException;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.ocpsoft.prettytime.PrettyTime;
-
-import com.jstakun.lm.server.utils.HttpUtils;
-import com.jstakun.lm.server.utils.JSONUtils;
-import com.jstakun.lm.server.utils.MathUtils;
-import com.jstakun.lm.server.utils.NumberUtils;
-import com.jstakun.lm.server.utils.memcache.CacheUtil;
-import com.openlapi.AddressInfo;
-import com.openlapi.QualifiedCoordinates;
-
-import fi.foyt.foursquare.api.FoursquareApi;
-import fi.foyt.foursquare.api.Result;
-import fi.foyt.foursquare.api.ResultMeta;
-import fi.foyt.foursquare.api.entities.Category;
-import fi.foyt.foursquare.api.entities.Checkin;
-import fi.foyt.foursquare.api.entities.CompactVenue;
-import fi.foyt.foursquare.api.entities.CompleteVenue;
-import fi.foyt.foursquare.api.entities.Contact;
-import fi.foyt.foursquare.api.entities.Icon;
-import fi.foyt.foursquare.api.entities.Location;
-import fi.foyt.foursquare.api.entities.Photo;
-import fi.foyt.foursquare.api.entities.Recommendation;
-import fi.foyt.foursquare.api.entities.RecommendationGroup;
-import fi.foyt.foursquare.api.entities.Recommended;
-import fi.foyt.foursquare.api.entities.VenuesSearchResult;
-import fi.foyt.foursquare.api.io.DefaultIOHandler;
-
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -64,14 +14,53 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.ocpsoft.prettytime.PrettyTime;
+
+import com.google.appengine.api.ThreadManager;
+import com.jstakun.gms.android.landmarks.ExtendedLandmark;
+import com.jstakun.gms.android.landmarks.LandmarkFactory;
+import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.Commons.Property;
+import com.jstakun.lm.server.utils.HttpUtils;
+import com.jstakun.lm.server.utils.JSONUtils;
+import com.jstakun.lm.server.utils.MathUtils;
+import com.jstakun.lm.server.utils.NumberUtils;
+import com.jstakun.lm.server.utils.ThreadUtil;
+import com.jstakun.lm.server.utils.UrlUtils;
+import com.jstakun.lm.server.utils.memcache.CacheUtil;
+import com.openlapi.AddressInfo;
+import com.openlapi.QualifiedCoordinates;
+
+import fi.foyt.foursquare.api.FoursquareApi;
+import fi.foyt.foursquare.api.FoursquareApiException;
+import fi.foyt.foursquare.api.Result;
+import fi.foyt.foursquare.api.ResultMeta;
+import fi.foyt.foursquare.api.entities.Category;
+import fi.foyt.foursquare.api.entities.Checkin;
+import fi.foyt.foursquare.api.entities.CompactVenue;
+import fi.foyt.foursquare.api.entities.CompleteVenue;
+import fi.foyt.foursquare.api.entities.Contact;
+import fi.foyt.foursquare.api.entities.HereNow;
+import fi.foyt.foursquare.api.entities.Icon;
+import fi.foyt.foursquare.api.entities.Location;
+import fi.foyt.foursquare.api.entities.Photo;
+import fi.foyt.foursquare.api.entities.Recommendation;
+import fi.foyt.foursquare.api.entities.RecommendationGroup;
+import fi.foyt.foursquare.api.entities.Recommended;
+import fi.foyt.foursquare.api.entities.VenuesSearchResult;
+import fi.foyt.foursquare.api.io.DefaultIOHandler;
 
 /**
  *
