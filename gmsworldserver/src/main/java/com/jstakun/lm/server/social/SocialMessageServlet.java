@@ -64,20 +64,20 @@ public class SocialMessageServlet extends HttpServlet {
 				response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 			}	 
 		} else if (StringUtils.contains(uri, "lnSendUpdate")) {
-			String secret = request.getParameter("secret");
-			if (StringUtils.isNotEmpty(token) && StringUtils.isNotEmpty(secret)) {
+			if (StringUtils.isNotEmpty(token)) {
 				params.put("token", token);
-				params.put("secret", secret);
 				params.put("service", Commons.LINKEDIN);
 				NotificationUtils.createNotificationTask(params);
 			} else {
-				logger.log(Level.SEVERE, "LN access token and secret is empty!");
+				logger.log(Level.SEVERE, "LN access token is empty!");
 				response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 			}
 		} else if (StringUtils.contains(uri, "glSendPost")) {
 			String refresh = request.getParameter("refresh_token");
 			if (StringUtils.isNotEmpty(token) || StringUtils.isNotEmpty(refresh)) {
-				params.put("token", token);
+				if (token != null) {
+					params.put("token", token);
+				}
 				if (refresh != null) {
 					params.put("refresh_token", refresh);
 				}

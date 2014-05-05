@@ -174,7 +174,10 @@ public class NotificationUtils {
     	String accessToken = params.get("accessToken")[0];
     	String username = params.get("username")[0];
     	String name = params.get("name")[0];
-    	String email = params.get("email")[0];
+    	String email = null;
+    	if (params.containsKey("email")) {
+    		email = params.get("email")[0];
+    	}
     	String layer = null;
     	
     	logger.log(Level.INFO, "Sending user login notification to {0}...", service);
@@ -189,7 +192,7 @@ public class NotificationUtils {
         	GooglePlusUtils.sendMessage(accessToken, refreshToken, null, ConfigurationManager.SERVER_URL, Commons.LOGIN);
         	layer = "Google";
     	} else if (StringUtils.equals(service, Commons.LINKEDIN)) {
-    		LinkedInUtils.sendPost(ConfigurationManager.SERVER_URL, "GMS World", Commons.LOGIN, accessToken, null);
+    		LinkedInUtils.sendPost(ConfigurationManager.SERVER_URL, "GMS World", Commons.LOGIN, accessToken);
     		layer = "LinkedIn";
     	} else if (StringUtils.equals(service, Commons.TWITTER)) {
     		String tokenSecret = params.get("tokenSecret")[0];
@@ -210,7 +213,10 @@ public class NotificationUtils {
     	int type = NumberUtils.getInt(params.get("type")[0],-1);
     	String title = params.get("title")[0];
     	String key = params.get("key")[0];
-    	String token = params.get("token")[0];
+    	String token = null;
+    	if (params.containsKey("token")) {
+    		token = params.get("token")[0];
+    	}
     	
     	logger.log(Level.INFO, "Sending notification to {0} user social profile...", service);
     	
@@ -220,8 +226,7 @@ public class NotificationUtils {
     		String refreshToken = params.get("refresh_token")[0];
     	    GooglePlusUtils.sendMessage(token, refreshToken, key, url, type);
     	} else if (StringUtils.equals(service, Commons.LINKEDIN)) {
-    		String secret = params.get("secret")[0];
-    		LinkedInUtils.sendPost(url, title, type, token, secret);
+    		LinkedInUtils.sendPost(url, title, type, token);
     	} else if (StringUtils.equals(service, Commons.TWITTER)) {
     		String secret = params.get("secret")[0];
     		TwitterUtils.sendMessage(key, url, token, secret, type);

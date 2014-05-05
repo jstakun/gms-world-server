@@ -479,6 +479,7 @@ public class LayersProviderServlet extends HttpServlet {
                     	List<ExtendedLandmark> landmarks = FacebookUtils.getFriendsCheckinsToLandmarks(latitude, longitude, version, limit, stringLimit, token, l);
                     	LayerHelperFactory.getFacebookUtils().serialize(landmarks, response.getOutputStream(), version);
                     } else {
+                    	//outString = new JSONObject().put("ResultSet", landmarks).toString();
                     	outString = FacebookUtils.getFriendsCheckinsToJSon(latitude, longitude, version, limit, stringLimit, token).toString();
                     }
                 }

@@ -20,7 +20,7 @@ public class LinkedInUtils {
 	
 	private static final Logger logger = Logger.getLogger(LinkedInUtils.class.getName());
 	
-	protected static void sendPost(String url, String title, int type, String token, String secret) {
+	protected static void sendPost(String url, String title, int type, String token) {
 		ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
 		InputStream is = null;
 		try {

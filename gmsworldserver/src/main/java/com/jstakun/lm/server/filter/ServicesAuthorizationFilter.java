@@ -96,8 +96,12 @@ public class ServicesAuthorizationFilter implements Filter {
             		} catch (JSONException e) {
                 		logger.log(Level.SEVERE, e.getMessage(), e);
                 	}
+            	} else if (StringUtils.contains(httpRequest.getRequestURI(), "crashReport")) {
+            		auth = true; //TODO temporary solution, will be removed
             	}
             }
+            
+            
 
             if (auth) {
                 chain.doFilter(request, response);
@@ -112,6 +116,12 @@ public class ServicesAuthorizationFilter implements Filter {
 			    out.println("</body></html>");
 			    out.close();
             }
+        } else {
+        	PrintWriter out = response.getWriter();
+		    out.println("<html><head><title>401 Unauthorized</title></head><body>");
+		    out.println("<h3>Request Unauthorized.</h3>");
+		    out.println("</body></html>");
+		    out.close();
         }
     }
 

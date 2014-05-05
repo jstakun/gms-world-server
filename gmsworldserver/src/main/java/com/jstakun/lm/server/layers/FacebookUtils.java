@@ -137,7 +137,7 @@ public class FacebookUtils extends LayerHelper {
                             }
                         }
 
-                        JSONUtils.putOptValue(desc, "description", place.description, stringLength, false);
+                        JSONUtils.putOptValue(desc, "description", place.description, stringLength, true);
 
                         if (!desc.isEmpty()) {
                             jsonObject.put("desc", desc);
@@ -280,7 +280,7 @@ public class FacebookUtils extends LayerHelper {
                         	landmark.setThumbnail(photo.src_small);
                         }
                         
-                        JSONUtils.putOptValue(tokens, "description", place.description, stringLength, false);
+                        JSONUtils.putOptValue(tokens, "description", place.description, stringLength, true);
                        
                         pageDescs.put(photo.place_id, tokens);
                         	   
@@ -393,7 +393,12 @@ public class FacebookUtils extends LayerHelper {
                         placeCheckins.put(checkinUser, checkinDate);
                         userCheckins.put(placeid, placeCheckins);
 
-                        JSONUtils.putOptValue(tokens, "description", place.description, stringLength, false);
+                        JSONUtils.putOptValue(tokens, "description", place.description, stringLength, true);
+                        if (tokens.containsKey("description")) {
+                        	String desc = ((String)tokens.get("description")); 
+                        	tokens.put("description", desc.replaceAll("/pages/w/", "http://facebook.com/pages/w/"));
+                        }
+                        
                         JSONUtils.putOptValue(tokens, "address", place.displaySubtext, stringLength, false);
 
                         ExtendedLandmark landmark = LandmarkFactory.getLandmark(name, placeid, qc, Commons.FACEBOOK_LAYER, new AddressInfo(), checkinDate, null);
@@ -536,7 +541,7 @@ public class FacebookUtils extends LayerHelper {
                         //desc.put("category", getCategoryFromDisplayString(place.displaySubtext));
                         desc.put("creationDate", Long.toString(checkinDate));
 
-                        JSONUtils.putOptValue(desc, "description", place.description, stringLength, false);
+                        JSONUtils.putOptValue(desc, "description", place.description, stringLength, true);
                         JSONUtils.putOptValue(desc, "address", place.displaySubtext, stringLength, false);
 
                         if (!desc.isEmpty()) {
@@ -820,18 +825,6 @@ public class FacebookUtils extends LayerHelper {
         return landmarks;
     }
 
-    /*private static String getCategoryFromDisplayString(String displayStr) {
-        String response = "";
-        String[] tokens = StringUtils.split(displayStr, "・");
-        for (int i = 0; i < tokens.length - 1; i++) {
-            response += tokens[i];
-            if (i < tokens.length - 2) {
-                response += "/";
-            }
-        }
-        return response;
-    }*/
-
     private static void readFacebookPlacesDetails(FacebookClient facebookClient, List<String> pages, Map<String, Map<String, String>> pageDescs, int stringLength) {
         if (!pages.isEmpty()) {
             //limited due to url fetch limit = 2048 characters
@@ -908,7 +901,11 @@ public class FacebookUtils extends LayerHelper {
 
                     HashMap<String, String> details = new HashMap<String, String>();
 
-                    JSONUtils.putOptValue(details, "description", pageDetails.desc, stringLength, false);
+                    JSONUtils.putOptValue(details, "description", pageDetails.desc, stringLength, true);
+                    if (details.containsKey("description")) {
+                    	String desc = ((String)details.get("description")); 
+                    	details.put("description", desc.replaceAll("/pages/w/", "http://facebook.com/pages/w/"));
+                    }
 
                     if (StringUtils.isNotEmpty(pageDetails.phone)) {
                         details.put("phone", pageDetails.phone);
