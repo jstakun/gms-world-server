@@ -4,8 +4,8 @@
  */
 package com.jstakun.lm.server.utils.xml;
 
-import com.aetrion.flickr.photos.Photo;
-import com.aetrion.flickr.photos.PhotoList;
+import com.flickr4java.flickr.photos.Photo;
+import com.flickr4java.flickr.photos.PhotoList;
 import com.google.gdata.data.geo.impl.GeoRssWhere;
 import com.google.gdata.data.media.mediarss.MediaPlayer;
 import com.google.gdata.data.youtube.VideoEntry;
@@ -107,13 +107,12 @@ public class XMLUtils {
         return xml.toString();
     }
 
-    public static String createCustomXmlPhotoList(PhotoList photos) {
+    public static String createCustomXmlPhotoList(PhotoList<Photo> photos) {
         StringBuilder xml = new StringBuilder();
         xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n");
         xml.append("<landmarks>\r\n");
 
-        for (Object photo : photos) {
-            Photo p = (Photo) photo;
+        for (Photo p : photos) {
             xml.append(" <landmark>\r\n");
             xml.append("  <name>" + p.getTitle() + "</name>\r\n");
             xml.append("  <description>" + p.getUrl() + "</description>\r\n");
@@ -128,7 +127,7 @@ public class XMLUtils {
         return xml.toString();
     }
 
-    public static String createKmlPhotoList(PhotoList photos) {
+    public static String createKmlPhotoList(PhotoList<Photo> photos) {
         StringBuilder xml = new StringBuilder();
 
         xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n");
@@ -139,9 +138,7 @@ public class XMLUtils {
         xml.append("   <name>Landmark Manager Public Landmarks</name>\r\n");
 
 
-        for (Object photo : photos) {
-            Photo p = (Photo) photo;
-
+        for (Photo p : photos) {
             xml.append("   <Placemark>\r\n");
             xml.append("    <name>" + p.getTitle() + "</name>\r\n");
             xml.append("    <description>" + p.getUrl() + "</description>\r\n");

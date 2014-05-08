@@ -4,12 +4,12 @@
  */
 package com.jstakun.lm.server.layers;
 
-import com.aetrion.flickr.Flickr;
-import com.aetrion.flickr.REST;
-import com.aetrion.flickr.photos.Photo;
-import com.aetrion.flickr.photos.PhotoList;
-import com.aetrion.flickr.photos.PhotosInterface;
-import com.aetrion.flickr.photos.SearchParameters;
+import com.flickr4java.flickr.Flickr;
+import com.flickr4java.flickr.REST;
+import com.flickr4java.flickr.photos.Photo;
+import com.flickr4java.flickr.photos.PhotoList;
+import com.flickr4java.flickr.photos.PhotosInterface;
+import com.flickr4java.flickr.photos.SearchParameters;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.lm.server.config.Commons;
@@ -57,7 +57,7 @@ public class FlickrUtils extends LayerHelper {
             sp.setLatitude(Double.toString(latitude));
             sp.setLongitude(Double.toString(longitude));
             sp.setRadius(r);
-            PhotoList photoList = getPhotoList(sp, query, limit);
+            PhotoList<Photo> photoList = getPhotoList(sp, query, limit);
             json = createCustomJsonFlickrPhotoList(photoList, version, stringLimit);
             if (!photoList.isEmpty()) {
                 CacheUtil.put(key, json.toString());
@@ -78,7 +78,7 @@ public class FlickrUtils extends LayerHelper {
         if (output == null) {
             SearchParameters sp = new SearchParameters();
             sp.setBBox(Double.toString(longitudeMin), Double.toString(latitudeMin), Double.toString(longitudeMax), Double.toString(latitudeMax));
-            PhotoList photoList = getPhotoList(sp, query, limit);
+            PhotoList<Photo> photoList = getPhotoList(sp, query, limit);
             if (format.equals("kml")) {
                 output = XMLUtils.createKmlPhotoList(photoList);
             } else if (format.equals("json")) {
@@ -97,10 +97,9 @@ public class FlickrUtils extends LayerHelper {
         return output;
     }
 
-    private static PhotoList getPhotoList(SearchParameters sp, String query, int limit) throws ParserConfigurationException, JSONException {
-        Flickr f = new Flickr(Commons.getProperty(Property.FLICKR_APIKEY), Commons.getProperty(Property.FLICKR_sharedSecret), new REST());
-
-        PhotosInterface photosIntf = f.getPhotosInterface();
+    private static PhotoList<Photo> getPhotoList(SearchParameters sp, String query, int limit) throws ParserConfigurationException, JSONException {
+    	PhotosInterface photosIntf = new PhotosInterface(Commons.getProperty(Property.FLICKR_APIKEY), Commons.getProperty(Property.FLICKR_sharedSecret), new REST("https://api.flickr.com"));
+        
         //sp.setMinTakenDate(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 24 * 365 * 5))); //5 years old max
         sp.setSort(SearchParameters.DATE_TAKEN_DESC);
         sp.setHasGeo(true);
@@ -123,7 +122,7 @@ public class FlickrUtils extends LayerHelper {
 
         sp.setExtras(hs);
 
-        PhotoList photoList = new PhotoList();
+        PhotoList<Photo> photoList = new PhotoList<Photo>();
 
         try {
             photoList = photosIntf.search(sp, limit, 1);
@@ -134,12 +133,10 @@ public class FlickrUtils extends LayerHelper {
         return photoList;
     }
 
-    private static JSONObject createCustomJsonFlickrPhotoList(PhotoList photos, int version, int stringLimit) throws JSONException {
+    private static JSONObject createCustomJsonFlickrPhotoList(PhotoList<Photo> photos, int version, int stringLimit) throws JSONException {
         List<Map<String, Object>> jsonArray = new ArrayList<Map<String, Object>>();
         
-        for (int i = 0; i < photos.size(); i++) {
-
-            Photo p = (Photo) photos.get(i);
+        for (Photo p : photos) {
 
             if (p.hasGeoData()) {
                 Map<String, Object> jsonObject = new HashMap<String, Object>();
@@ -203,7 +200,7 @@ public class FlickrUtils extends LayerHelper {
             sp.setLatitude(Double.toString(lat));
             sp.setLongitude(Double.toString(lng));
             sp.setRadius(r);
-            PhotoList photoList = getPhotoList(sp, query, limit);
+            PhotoList<Photo> photoList = getPhotoList(sp, query, limit);
             output = createLandmarksFlickrPhotoList(photoList,  stringLimit, locale);
             if (!output.isEmpty()) {
                 CacheUtil.put(key, output);
@@ -215,12 +212,10 @@ public class FlickrUtils extends LayerHelper {
         return output;
 	}
 	
-	private static List<ExtendedLandmark> createLandmarksFlickrPhotoList(PhotoList photos, int stringLimit, Locale locale) throws JSONException {
+	private static List<ExtendedLandmark> createLandmarksFlickrPhotoList(PhotoList<Photo> photos, int stringLimit, Locale locale) throws JSONException {
 		List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
         
-        for (int i = 0; i < photos.size(); i++) {
-
-            Photo p = (Photo) photos.get(i);
+        for (Photo p : photos) {
 
             if (p.hasGeoData()) {
                 
@@ -240,15 +235,18 @@ public class FlickrUtils extends LayerHelper {
                 //if (p.getDateTaken() != null) {
                 //    JSONUtils.putOptDate(tokens, "taken_date", formatter.format(p.getDateTaken()), formatter);
                 //}
+                
+                long creationDate = -1;
                 if (p.getDatePosted() != null) {
-                    JSONUtils.putOptDate(tokens, "taken_date", formatter.format(p.getDatePosted()), formatter);
+                    //JSONUtils.putOptDate(tokens, "taken_date", formatter.format(p.getDatePosted()), formatter);
+                	creationDate = p.getDatePosted().getTime();
                 }
                 //if (p.getDateAdded() != null) {
                 //    JSONUtils.putOptDate(tokens, "upload_date", formatter.format(p.getDateAdded()), formatter);
                 //}
                  
                 QualifiedCoordinates qc = new QualifiedCoordinates(lat, lng, 0f, 0f, 0f);
-                ExtendedLandmark landmark = LandmarkFactory.getLandmark(name, null, qc, Commons.FLICKR_LAYER, new AddressInfo(), -1, null);
+                ExtendedLandmark landmark = LandmarkFactory.getLandmark(name, null, qc, Commons.FLICKR_LAYER, new AddressInfo(), creationDate, null);
                 landmark.setUrl(url); 
                 
                 if (p.getThumbnailUrl() != null) {
