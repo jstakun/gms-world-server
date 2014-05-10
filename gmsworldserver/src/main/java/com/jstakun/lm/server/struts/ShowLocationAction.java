@@ -4,17 +4,20 @@
  */
 package com.jstakun.lm.server.struts;
 
-import com.jstakun.lm.server.layers.CloudmadeUtils;
-import com.jstakun.lm.server.utils.HttpUtils;
-import com.jstakun.lm.server.utils.StringUtil;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+
+import com.jstakun.lm.server.layers.GeocodeHelperFactory;
+import com.jstakun.lm.server.utils.HttpUtils;
+import com.jstakun.lm.server.utils.StringUtil;
 
 /**
  *
@@ -45,7 +48,7 @@ public class ShowLocationAction extends org.apache.struts.action.Action {
                 double lon = Double.parseDouble(request.getParameter("lon"));
                 request.setAttribute("lat", StringUtil.formatCoordE6(lat));
                 request.setAttribute("lon", StringUtil.formatCoordE6(lon));
-                String address = CloudmadeUtils.getReverseGeocode(lat,lon);
+                String address = GeocodeHelperFactory.getMapQuestUtils().processReverseGeocode(lat, lon);
                 if (StringUtils.isNotEmpty(address)) {
                     request.setAttribute("address", address);
                 }

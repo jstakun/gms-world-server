@@ -25,7 +25,6 @@ import org.json.JSONObject;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.Commons.Property;
-import com.jstakun.lm.server.utils.GeocodeUtils;
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.NumberUtils;
 import com.jstakun.lm.server.utils.StringUtil;

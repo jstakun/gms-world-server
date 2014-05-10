@@ -5,19 +5,20 @@
 package com.jstakun.lm.server.layers;
 
 import com.jstakun.lm.server.persistence.Layer;
-import com.jstakun.lm.server.utils.GeocodeUtils;
 import com.jstakun.lm.server.utils.JSONUtils;
 import com.jstakun.lm.server.utils.NumberUtils;
 import com.jstakun.lm.server.utils.StringUtil;
 import com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils;
 import com.jstakun.lm.server.utils.xml.XMLUtils;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;

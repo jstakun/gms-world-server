@@ -5,6 +5,7 @@
 package com.jstakun.lm.server.layers;
 
 import com.jstakun.lm.server.utils.HttpUtils;
+import com.jstakun.lm.server.utils.NumberUtils;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -15,6 +16,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.json.JSONObject;
 
 /**
  *
@@ -40,22 +43,22 @@ public class RouteProviderServlet extends HttpServlet {
         response.setContentType("text/json;charset=UTF-8");
         PrintWriter out = response.getWriter();
         try {
-            if (HttpUtils.isEmptyAny(request, "lat_start", "lng_start", "lat_end", "lng_end", "type", "username", "tId")) {
+            if (HttpUtils.isEmptyAny(request, "lat_start", "lng_start", "lat_end", "lng_end", "type", "username")) {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             } else {
-                String token = request.getParameter("token");
                 String username = request.getParameter("username");
                 String type = request.getParameter("type");
-                String tId = request.getParameter("tId");
-                String loc_start = request.getParameter("lat_start") + "," + request.getParameter("lng_start");
-                String loc_end = request.getParameter("lat_end") + "," + request.getParameter("lng_end");
+                double lat_start = NumberUtils.getDouble(request.getParameter("lat_start"), 0d);
+                double lng_start = NumberUtils.getDouble(request.getParameter("lng_start"), 0d);
+                double lat_end = NumberUtils.getDouble(request.getParameter("lat_end"), 0d);
+                double lng_end = NumberUtils.getDouble(request.getParameter("lng_end"), 0d);
 
-                String output = CloudmadeUtils.getRoute(token, username, type, tId, loc_start, loc_end);
+                JSONObject output = GeocodeHelperFactory.getMapQuestUtils().getRoute(lat_start, lng_start, lat_end, lng_end, type, username);
 
                 if (output == null) {
-                    response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                  	response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);                
                 } else {
-                    out.print(output);
+                    out.print(output.toString());
                 }
             }
         } catch (Exception e) {
@@ -99,6 +102,6 @@ public class RouteProviderServlet extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Routes provider";
     }// </editor-fold>
 }

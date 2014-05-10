@@ -45,8 +45,8 @@ public class TwitterUtils {
         	    	landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
                 }
             
-                ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
-                if (type == Commons.SERVER) {
+        	    ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
+                if (type == Commons.SERVER && landmark != null) {
                     String username = landmark.getUsername();
                     String userMask;
                     if (StringUtils.endsWith(username, "@tw")) {
@@ -55,9 +55,9 @@ public class TwitterUtils {
                         userMask = UrlUtils.createUsernameMask(username);
                     }
                     message = String.format(rb.getString("Social.tw.server"), userMask, landmark.getName(), url);
-                } else if (type == Commons.BLOGEO) {
+                } else if (type == Commons.BLOGEO && landmark != null) {
                     message = String.format(rb.getString("Social.tw.status"), "new geo message to Blogeo", landmark.getName(), url);
-                } else if (type == Commons.LANDMARK) {
+                } else if (type == Commons.LANDMARK && landmark != null) {
                     message = String.format(rb.getString("Social.tw.status"), "new point of interest to GMS World", landmark.getName(), url);
                 } else if (type == Commons.MY_POS) {
                     message = String.format(rb.getString("Social.tw.myloc"),  url);

@@ -2,28 +2,8 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.jstakun.lm.server.utils;
+package com.jstakun.lm.server.layers;
 
-import com.jstakun.gms.android.landmarks.ExtendedLandmark;
-import com.jstakun.gms.android.landmarks.LandmarkFactory;
-import com.jstakun.lm.server.config.Commons;
-import com.jstakun.lm.server.config.ConfigurationManager;
-import com.jstakun.lm.server.layers.CloudmadeUtils;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.jstakun.lm.server.persistence.GeocodeCache;
-import com.jstakun.lm.server.persistence.Landmark;
-import com.jstakun.lm.server.utils.memcache.CacheUtil;
-import com.jstakun.lm.server.utils.persistence.GeocodeCachePersistenceUtils;
-import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
-import com.openlapi.AddressInfo;
-import com.openlapi.QualifiedCoordinates;
-
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +14,21 @@ import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.jstakun.gms.android.landmarks.ExtendedLandmark;
+import com.jstakun.gms.android.landmarks.LandmarkFactory;
+import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.persistence.GeocodeCache;
+import com.jstakun.lm.server.persistence.Landmark;
+import com.jstakun.lm.server.utils.JSONUtils;
+import com.jstakun.lm.server.utils.MathUtils;
+import com.jstakun.lm.server.utils.StringUtil;
+import com.jstakun.lm.server.utils.persistence.GeocodeCachePersistenceUtils;
+import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
+import com.openlapi.AddressInfo;
+import com.openlapi.QualifiedCoordinates;
 
 /**
  *
@@ -43,7 +38,7 @@ public class GeocodeUtils {
 
     private static final Logger logger = Logger.getLogger(GeocodeUtils.class.getName());
 
-    private static JSONObject processGoogleGeocode(String addressIn, String email) {
+    /*private static JSONObject processGoogleGeocode(String addressIn, String email) {
         JSONObject jsonResponse = new JSONObject();
         try {
             logger.log(Level.INFO, "Calling Google geocode: {0}", addressIn);
@@ -78,19 +73,6 @@ public class GeocodeUtils {
 
                            if (ConfigurationManager.getParam(ConfigurationManager.SAVE_GEOCODE_AS_LANDMARK, ConfigurationManager.OFF).equals(ConfigurationManager.ON)) {
                                LandmarkPersistenceUtils.persistLandmark(address, "", lat, lng, 0.0, "geocode", null, Commons.GEOCODES_LAYER, email);
-                               /*try {
-                               		String landmarksUrl = "http://landmarks-gmsworld.rhcloud.com/actions/addLandmark";
-                               		String params = "latitude=" + lat + "&longitude=" + lng + "&name=" + URLEncoder.encode(address, "UTF-8") + 
-                               			"&username=geocode&layer=" + Commons.GEOCODES_LAYER;			 
-                               		if (email != null) {
-                               			params += "&email=" + email;
-                               		}
-                               		//logger.log(Level.INFO, "Calling: " + landmarksUrl);
-                               		String landmarksJson = HttpUtils.processFileRequest(new URL(landmarksUrl), "POST", null, params);
-                               		logger.log(Level.INFO, "Received response: " + landmarksJson);
-                               } catch (Exception e) {
-                               		logger.log(Level.SEVERE, e.getMessage(), e);
-                               }*/
                            }
                         } catch (Exception ex) {
                                logger.log(Level.SEVERE, ex.getMessage(), ex);
@@ -123,7 +105,7 @@ public class GeocodeUtils {
         }
 
         return jsonResponse;
-    }
+    }*/
 
     private static String processGeocodeCache(GeocodeCache gc) {
         return "{\"status\":\"OK\",\"lat\":\"" + StringUtil.formatCoordE6(gc.getLatitude()) + "\",\"lng\":\"" + StringUtil.formatCoordE6(gc.getLongitude()) + "\",\"type\":\"g\"}";
@@ -133,7 +115,7 @@ public class GeocodeUtils {
         return "{\"status\":\"OK\",\"lat\":\"" + StringUtil.formatCoordE6(landmark.getLatitude()) + "\",\"lng\":\"" + StringUtil.formatCoordE6(landmark.getLongitude()) + "\",\"type\":\"l\"}";
     }
 
-    public static String processGoogleReverseGeocode(String coords) {
+    /*public static String processGoogleReverseGeocode(String coords) {
         String address = CacheUtil.getString("GRG_" + coords);
 
         if (address == null) {
@@ -165,9 +147,9 @@ public class GeocodeUtils {
         }
 
         return address;
-    }
+    }*/
 
-        public static double getLatitude(String latitudeString) {
+    protected static double getLatitude(String latitudeString) {
         double latitude = 90.0;
         if (StringUtils.isNotEmpty(latitudeString)) {
             try {
@@ -180,7 +162,7 @@ public class GeocodeUtils {
         return latitude;
     }
 
-    public static double getLongitude(String longitudeString) {
+    protected static double getLongitude(String longitudeString) {
         double longitude = 180.0;
         if (StringUtils.isNotEmpty(longitudeString)) {
             try {
@@ -193,7 +175,7 @@ public class GeocodeUtils {
         return longitude;
     }
 
-    public static boolean isNorthAmericaLocation(String latitude, String longitude) {
+    protected static boolean isNorthAmericaLocation(String latitude, String longitude) {
         boolean isNA = false;
 
         try {
@@ -216,7 +198,7 @@ public class GeocodeUtils {
         return isNA;
     }
 
-    public static String processRequest(String address, String email, Locale locale, boolean appendCountry) {
+    protected static String processRequest(String address, String email, Locale locale, boolean appendCountry) {
         GeocodeCache gc = null;
         String jsonResp = "{}";
         String addr = "";
@@ -257,11 +239,11 @@ public class GeocodeUtils {
                 if (landmark != null) {
                     jsonResp = processLandmark(landmark);
                 } else {
-                    JSONObject resp = processGoogleGeocode(addr, email);
+                    JSONObject resp = GeocodeHelperFactory.getGoogleGeocodeUtils().processGeocode(addr, email);
                     try {
                         if (resp.getString("status").equals("Error")) {
                             logger.log(Level.INFO, "Search geocode response {0}", resp.toString());
-                            resp = CloudmadeUtils.processGeocode(addr, email);
+                            resp = GeocodeHelperFactory.getMapQuestUtils().processGeocode(addr, email);
                         }
                     } catch (Exception e) {
                         logger.log(Level.SEVERE, e.getMessage(), e);
@@ -273,7 +255,7 @@ public class GeocodeUtils {
         return jsonResp;
     }
 
-    public static JSONObject geocodeToJSonObject(String address, String jsonResp) {
+    protected static JSONObject geocodeToJSonObject(String address, String jsonResp) {
 
         //"{\"status\":\"OK\",\"lat\":\"" + gc.getLatitude() + "\",\"lng\":\"" + gc.getLongitude() + "\",\"type\":\"g\"}"
 
@@ -314,7 +296,7 @@ public class GeocodeUtils {
         return reply;
     }
     
-    public static ExtendedLandmark geocodeToLandmark(String address, String jsonResp, Locale locale) {
+    protected static ExtendedLandmark geocodeToLandmark(String address, String jsonResp, Locale locale) {
     	ExtendedLandmark landmark = null;
     	try {
             if (StringUtils.startsWith(jsonResp, "{")) {
@@ -340,7 +322,7 @@ public class GeocodeUtils {
         return landmark;
     }
 
-    public static boolean geocodeEquals(String geocode1, String geocode2) {
+    protected static boolean geocodeEquals(String geocode1, String geocode2) {
         boolean resp = false;
         if (StringUtils.startsWith(geocode1, "{") && StringUtils.startsWith(geocode2, "{")) {
             try {

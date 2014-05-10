@@ -24,7 +24,6 @@ import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.social.NotificationUtils;
 import com.jstakun.lm.server.utils.CryptoTools;
-import com.jstakun.lm.server.utils.GeocodeUtils;
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.NumberUtils;
 import com.jstakun.lm.server.utils.StringUtil;
@@ -82,8 +81,7 @@ public class PersistLandmarkServlet extends HttpServlet {
                 } 
 
                 if (layer.equals(Commons.MY_POS_CODE)) {
-                    description = GeocodeUtils.processGoogleReverseGeocode(latitude + "," + longitude);
-                    //description = GeocodeUtils.processYahooReverseGeocode(latitude + "," + longitude);
+                    description = GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(latitude, longitude);
                 }
 
                 String email = request.getParameter("email");

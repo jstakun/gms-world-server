@@ -203,7 +203,7 @@
  </servlet>
  <servlet>
   <servlet-name>GeocodeServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.servlet.GeocodeServlet</servlet-class>
+  <servlet-class>com.jstakun.lm.server.layers.GeocodeServlet</servlet-class>
  </servlet>
  <servlet>
   <servlet-name>FbPlacesServlet</servlet-name>

@@ -12,7 +12,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import com.jstakun.lm.server.layers.CloudmadeUtils;
+import com.jstakun.lm.server.layers.GeocodeHelperFactory;
 import com.jstakun.lm.server.persistence.Screenshot;
 import com.jstakun.lm.server.utils.FileUtils;
 
@@ -43,7 +43,7 @@ public class ShowImageAction extends org.apache.struts.action.Action {
         Screenshot s = FileUtils.getScreenshot(key, false);
         
         if (s != null) {
-        	String address = CloudmadeUtils.getReverseGeocode(s.getLatitude(),s.getLongitude());
+        	String address = GeocodeHelperFactory.getMapQuestUtils().processReverseGeocode(s.getLatitude(),s.getLongitude());
             if (StringUtils.isNotEmpty(address)) {
                 request.setAttribute("address", address);
             }

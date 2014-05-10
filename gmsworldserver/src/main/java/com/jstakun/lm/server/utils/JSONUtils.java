@@ -267,7 +267,7 @@ public class JSONUtils {
         return result;
     }
     
-    private static String formatAddress(AddressInfo address) {
+    public static String formatAddress(AddressInfo address) {
         List<String> tokens = new ArrayList<String>();
         
         if (address.getField(AddressInfo.STREET) != null) {

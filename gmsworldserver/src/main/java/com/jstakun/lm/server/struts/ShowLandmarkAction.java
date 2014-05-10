@@ -19,7 +19,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import com.jstakun.lm.server.layers.CloudmadeUtils;
+import com.jstakun.lm.server.layers.GeocodeHelperFactory;
 import com.jstakun.lm.server.persistence.Checkin;
 import com.jstakun.lm.server.persistence.Comment;
 import com.jstakun.lm.server.persistence.Landmark;
@@ -73,8 +73,7 @@ public class ShowLandmarkAction extends Action {
                     
             	    if (landmark != null) {
                         request.setAttribute("landmark", landmark);
-                        //String address = GeocodeUtils.processGoogleReverseGeocode(landmark.getLatitude() + "," + landmark.getLongitude());
-                        String address = CloudmadeUtils.getReverseGeocode(landmark.getLatitude(),landmark.getLongitude());
+                        String address = GeocodeHelperFactory.getMapQuestUtils().processReverseGeocode(landmark.getLatitude(),landmark.getLongitude());
                         if (StringUtils.isNotEmpty(address)) {
                             request.setAttribute("address", address);
                         }

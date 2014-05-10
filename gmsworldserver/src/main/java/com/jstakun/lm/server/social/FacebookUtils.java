@@ -142,7 +142,7 @@ public class FacebookUtils {
                     };
             sendMessage(facebookClient, Commons.getProperty(Property.FB_GMS_WORLD_FEED), params, false);
         } else {
-            logger.log(Level.SEVERE, "Landmark key is wrong! Key: {0}", key);
+            logger.log(Level.SEVERE, "Landmark with key {0} is empty!", key);
         }
     }
     

@@ -2,19 +2,21 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.jstakun.lm.server.servlet;
+package com.jstakun.lm.server.layers;
 
 import com.google.gdata.util.common.util.Base64;
 import com.jstakun.lm.server.utils.CryptoTools;
-import com.jstakun.lm.server.utils.GeocodeUtils;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang.StringUtils;
 
 
@@ -30,8 +32,6 @@ public class GeocodeServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(GeocodeServlet.class.getName());
 
-    //http://where.yahooapis.com/geocode?location=701+First+Ave,+Sunnyvale,+CA&appid=<id>
-    //http://maps.googleapis.com/maps/api/geocode/xml?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&sensor=false
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request

@@ -60,15 +60,16 @@ public class GooglePlusUtils {
                 imageId = 2;
             }
 
+            //TODO handle NPE if landmark == null
             String message = null;
             ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
-            if (type == Commons.SERVER) {
+            if (type == Commons.SERVER && landmark != null) {
                 String username = landmark.getUsername();
                 String userMask = UrlUtils.createUsernameMask(username);
                 message = String.format(rb.getString("Social.gl.server"), userMask, landmark.getName(), url);
             } else if (type == Commons.BLOGEO) {
                 message = String.format(rb.getString("Social.gl.message.blogeo"), url);
-            } else if (type == Commons.LANDMARK) {
+            } else if (type == Commons.LANDMARK && landmark != null) {
                 message = String.format(rb.getString("Social.gl.message.landmark"), landmark.getName(), url);
             } else if (type == Commons.MY_POS) {
             	message = String.format(rb.getString("Social.gl.message.mypos"), url);
