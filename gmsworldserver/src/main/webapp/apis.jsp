@@ -81,12 +81,14 @@
                         <b>Routes</b>
                         <ul>
                             <li><a href="http://developers.cloudmade.com/projects">Cloudmade</a></li>
+                            <li><a href="http://www.mapquestapi.com/geocoding/">MapQuest</a></li>
                         </ul>
                     </p>
                     <p>
                         <b>Geocoding</b>
                         <ul>
                             <li><a href="http://code.google.com/apis/maps/documentation/geocoding/">Google</a></li>
+                            <li><a href="http://www.mapquestapi.com/geocoding/">MapQuest</a></li>
                             <li><a href="http://developer.yahoo.com/geo/placefinder/">Yahoo</a></li>
                             <li><a href="http://developers.cloudmade.com/projects/show/geocoding-http-api">Cloudmade</a></li>
                         </ul>

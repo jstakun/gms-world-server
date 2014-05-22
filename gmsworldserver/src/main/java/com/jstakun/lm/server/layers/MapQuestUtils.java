@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 
 import org.apache.commons.lang.StringUtils;
@@ -179,7 +180,7 @@ public class MapQuestUtils extends GeocodeHelper {
 		
 		if (output == null) {
 			 response = new JSONObject();
-			 String routeUrlString = "http://open.mapquestapi.com/directions/v2/route?key=" + Commons.getProperty(Property.MAPQUEST_APPKEY)+ "&ambiguities=ignore&from=" + lat_start + "," + lng_start + "&to=" + lat_end + "," + lng_end + "&routeType=" + normalizedType + "&shapeFormat=raw&fullShape=true&narrativeType=none&unit=k";
+			 String routeUrlString = "http://open.mapquestapi.com/directions/v2/route?key=" + Commons.getProperty(Property.MAPQUEST_APPKEY)+ "&ambiguities=ignore&from=" + lat_start + "," + lng_start + "&to=" + lat_end + "," + lng_end + "&routeType=" + normalizedType + "&shapeFormat=raw&fullShape=true&narrativeType=none&unit=k&doReverseGeocode=false&generalize=0";
 			 //System.out.print(routeUrlString);
 			 URL routeUrl = new URL(routeUrlString);
              String resp = HttpUtils.processFileRequest(routeUrl, "GET", null, null);
@@ -188,6 +189,7 @@ public class MapQuestUtils extends GeocodeHelper {
                  JSONObject route = root.getJSONObject("route");
                  if (route.has("shape")) {
                 	 JSONObject shape = route.getJSONObject("shape");
+                	 //logger.log(Level.INFO, "Shape: " + shape.toString());
                 	 JSONArray shapePoints = shape.getJSONArray("shapePoints");
                 	 if (shapePoints.length() > 0) {
                 		 List<double[]> route_geometry = new ArrayList<double[]>(shapePoints.length()/2);

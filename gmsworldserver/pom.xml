@@ -10,7 +10,7 @@
 
     <properties>
         <appengine.app.version>1</appengine.app.version>
-        <appengine.target.version>1.9.3</appengine.target.version>
+        <appengine.target.version>1.9.4</appengine.target.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>1.7</jdk.version>
     </properties>
@@ -247,7 +247,7 @@
         <dependency>
         	<groupId>com.google.appengine.tools</groupId>
         	<artifactId>appengine-gcs-client</artifactId>
-        	<version>RELEASE</version>
+        	<version>0.3.12</version>
         </dependency>
         <dependency>
         	<groupId>com.flickr4java</groupId>

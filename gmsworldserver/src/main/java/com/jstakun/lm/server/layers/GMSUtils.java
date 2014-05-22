@@ -5,7 +5,19 @@
 package com.jstakun.lm.server.layers;
 
 import java.io.UnsupportedEncodingException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.logging.Level;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -24,21 +36,6 @@ import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 import com.jstakun.lm.server.utils.xml.XMLUtils;
 import com.openlapi.AddressInfo;
 import com.openlapi.QualifiedCoordinates;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.logging.Level;
-
-import org.apache.commons.lang.StringUtils;
 
 /**
  *

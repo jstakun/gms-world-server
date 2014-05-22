@@ -270,6 +270,20 @@ public class JSONUtils {
     public static String formatAddress(AddressInfo address) {
         List<String> tokens = new ArrayList<String>();
         
+        //logger.log(Level.INFO, "Formatting address with locale " + locale.getCountry() + "_" + locale.getLanguage() );
+        
+        //if (StringUtils.equalsIgnoreCase(address.getField(AddressInfo.COUNTRY),"US"))
+        //US
+        //House number and street name
+        //Name of town, State ZIP code
+        //country
+        
+        //PL
+        //Street name and number
+        //ZIP code city
+        //State
+        //country
+        
         if (address.getField(AddressInfo.STREET) != null) {
             tokens.add(address.getField(AddressInfo.STREET));
         }
@@ -343,9 +357,15 @@ public class JSONUtils {
         
         AddressInfo address = landmark.getAddressInfo();
         String locality = formatAddress(address);
+        if (locality.isEmpty()) {
+        	//Google places provides formatted address
+        	locality = tokens.remove("address");
+        }
+        
         if (StringUtils.isNotEmpty(locality)) {
             result.add(String.format(rb.getString("Landmark.address"), locality));
-        }
+        }  
+        
         if (StringUtils.isNotEmpty(address.getField(AddressInfo.PHONE_NUMBER))) {
             otherNamed.add(String.format(rb.getString("Landmark.phone"), address.getField(AddressInfo.PHONE_NUMBER)));
         }

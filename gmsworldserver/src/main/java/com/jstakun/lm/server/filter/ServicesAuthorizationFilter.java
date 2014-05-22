@@ -63,6 +63,7 @@ public class ServicesAuthorizationFilter implements Filter {
             HttpServletResponse httpResponse = (HttpServletResponse) response;
             String authHeader = httpRequest.getHeader("Authorization");
             boolean auth = false;
+            boolean noservice = false;
 
             if (authHeader != null) {
             	byte[] username = null;
@@ -92,7 +93,11 @@ public class ServicesAuthorizationFilter implements Filter {
         				if (StringUtils.startsWith(tokenJson, "{")) {
         					JSONObject root = new JSONObject(tokenJson);
         					auth = root.getBoolean("output");
-        				}	
+        				} else if (tokenJson == null) {
+        				    noservice = true;
+        				} else {
+        					logger.log(Level.SEVERE, "Received following server response {0}", tokenJson);
+        				}
             		} catch (JSONException e) {
                 		logger.log(Level.SEVERE, e.getMessage(), e);
                 	}
@@ -105,9 +110,17 @@ public class ServicesAuthorizationFilter implements Filter {
 
             if (auth) {
                 chain.doFilter(request, response);
+            } else if (noservice) {
+            	logger.log(Level.SEVERE, "Service Unavailable!");
+                httpResponse.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+                response.setContentType("text/html");
+			    PrintWriter out = response.getWriter();
+			    out.println("<html><head><title>503 Service Unavailable</title></head><body>");
+			    out.println("<h3>Service Unavailable.</h3>");
+			    out.println("</body></html>");
+			    out.close();
             } else {
-            	logger.log(Level.SEVERE, "Authz failed!");
-                //httpResponse.setHeader("WWW-Authenticate", BASIC_REALM);
+            	logger.log(Level.SEVERE, "Authorization failed!");
                 httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.setContentType("text/html");
 			    PrintWriter out = response.getWriter();

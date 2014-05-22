@@ -4,17 +4,7 @@
  */
 package com.jstakun.lm.server.layers;
 
-import com.jstakun.lm.server.config.Commons;
-import com.jstakun.lm.server.config.ConfigurationManager;
-import com.jstakun.lm.server.config.Commons.Property;
-import com.jstakun.lm.server.utils.HttpUtils;
-import com.jstakun.lm.server.utils.memcache.CacheUtil;
-import com.jstakun.lm.server.utils.persistence.GeocodeCachePersistenceUtils;
-import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
-
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.logging.Level;
@@ -26,21 +16,31 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.config.Commons.Property;
+import com.jstakun.lm.server.config.ConfigurationManager;
+import com.jstakun.lm.server.utils.HttpUtils;
+import com.jstakun.lm.server.utils.memcache.CacheUtil;
+import com.jstakun.lm.server.utils.persistence.GeocodeCachePersistenceUtils;
+import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
+
 /**
  *
  * @author jstakun
  */
-public class CloudmadeUtils {
+public class CloudmadeUtils extends GeocodeHelper {
 
     private static final String API_version = "0.3";
     //private static final String API_latest = "latest";
     private static final Logger logger = Logger.getLogger(CloudmadeUtils.class.getName());
     private static final char[] delim = new char[]{',',' '};
 
-    /*protected static String getRoute(String token, String username, String type, String tId, String loc_start, String loc_end) throws MalformedURLException, IOException, JSONException {
-        String key = CloudmadeUtils.class.getName() + "_" + loc_start + "_" + loc_end + "_" + type;
-        String output = CacheUtil.getString(key);
-
+    protected JSONObject getRoute(double lat_start, double lng_start, double lat_end, double lng_end, String type, String username) throws Exception {
+    	String key = getRouteKey(CloudmadeUtils.class, lat_start, lng_start, lat_end, lng_end, type, username);		
+        String output = CacheUtil.getString(key);     
+        String token = CacheUtil.getString(Commons.getProperty(Property.CLOUDMADE_TOKEN_KEY) + "_" + username);
+        JSONObject json = null; 
+        
         if (output == null) {
             if (token == null && username != null) {
                 URL url = new URL("http://auth.cloudmade.com/token/" + Commons.getProperty(Property.CLOUDMADE_APIKEY) + "?userid=" + username);
@@ -48,14 +48,12 @@ public class CloudmadeUtils {
             }
 
             if (token != null) {
-                String routeString = "http://navigation.cloudmade.com/" + Commons.getProperty(Property.CLOUDMADE_APIKEY) + "/api/" + API_version + "/" + loc_start + "," + loc_end + "/" + type + ".js?tId=" + tId + "&token=" + token;
+                String routeString = "http://navigation.cloudmade.com/" + Commons.getProperty(Property.CLOUDMADE_APIKEY) + "/api/" + API_version + "/" + lat_start + "," + lng_start + "," + lat_end + "," + lng_end + "/" + type + ".js?tId=" + System.currentTimeMillis() + "&token=" + token;
                 //System.out.println("calling: " + routeString);
                 URL routeUrl = new URL(routeString);
                 String resp = HttpUtils.processFileRequest(routeUrl, "GET", null, null);
                 if (resp != null) {
-                    JSONObject json = new JSONObject(resp);
-                    json.put("token", token);
-                    output = json.toString();
+                    json = new JSONObject(resp);
                     CacheUtil.put(key, output);
                     logger.log(Level.INFO, "Adding route to cache with key {0}", key);
                 }
@@ -64,8 +62,8 @@ public class CloudmadeUtils {
             logger.log(Level.INFO, "Reading route from cache with key {0}", key);
         }
 
-        return output;
-    }*/
+        return json;
+    }
     
     private static String getReverseGeocodeUrlV2(double lat, double lng, String token) {
     	String coords = lat + "," + lng;
@@ -194,7 +192,7 @@ public class CloudmadeUtils {
         return jsonResponse;
     }
     
-    /*public static String getReverseGeocode(double lat, double lng) throws MalformedURLException, IOException, JSONException {
+    protected String processReverseGeocode(double lat, double lng) throws Exception {
         String key = CloudmadeUtils.class.getName() + "_" + lat + "_" + lng;
         String address = CacheUtil.getString(key);
 
@@ -223,11 +221,11 @@ public class CloudmadeUtils {
             logger.log(Level.INFO, "Reading Cloudmade geocode from cache with key {0}", address);
         }
         return address;
-    }*/
+    }
 
-    /*public static JSONObject processGeocode(String location, String email) {
+    public JSONObject processGeocode(String location, String email) {
 
-        //String token = CacheUtil.getString(Commons.getProperty(Property.CLOUDMADE_TOKEN_KEY));
+        String token = CacheUtil.getString(Commons.getProperty(Property.CLOUDMADE_TOKEN_KEY));
         JSONObject jsonResponse = null;
 
         try {
@@ -271,5 +269,7 @@ public class CloudmadeUtils {
                 logger.log(Level.SEVERE, e.getMessage(), e);
             }
         }
-    }*/
+        
+        return jsonResponse;
+    }
 }

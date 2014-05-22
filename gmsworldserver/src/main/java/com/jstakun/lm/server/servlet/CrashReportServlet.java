@@ -4,12 +4,7 @@
  */
 package com.jstakun.lm.server.servlet;
 
-import com.jstakun.lm.server.config.ConfigurationManager;
-import com.jstakun.lm.server.utils.MailUtils;
-import com.jstakun.lm.server.utils.NumberUtils;
-
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
@@ -21,6 +16,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+
+import com.jstakun.lm.server.config.ConfigurationManager;
+import com.jstakun.lm.server.utils.MailUtils;
+import com.jstakun.lm.server.utils.NumberUtils;
 
 /**
  *
@@ -79,9 +78,10 @@ public class CrashReportServlet extends HttpServlet {
                 int lmVersion = NumberUtils.getInt(ConfigurationManager.getParam(ConfigurationManager.LM_VERSION, "0"), 0);
                 int daVersion = NumberUtils.getInt(ConfigurationManager.getParam(ConfigurationManager.DA_VERSION, "0"), 0);
                 
-                if (versionCode >= lmVersion || (versionCode >= daVersion && versionCode < 500)) {
+                if (versionCode >= (lmVersion-5) || (versionCode >= (daVersion-5) && versionCode < 500)) {
                 	MailUtils.sendCrashReport(title, sb.toString());
                 } else {
+                	logger.log(Level.INFO, "App version code: " + versionCode);
                 	logger.log(Level.INFO, sb.toString());
                 }
             } else {
