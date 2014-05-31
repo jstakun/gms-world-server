@@ -131,7 +131,12 @@ public class LayerPersistenceUtils {
 			}
     	});	   	
     	
-        return (String) layersCacheAction.getObjectFromCache(key);
+    	String resp = (String) layersCacheAction.getObjectFromCache(key);
+        if (StringUtils.isEmpty(resp)) {
+        	resp = name;
+        }
+        
+    	return resp;
     }
     
     private static List<Layer> getAllLayers() {

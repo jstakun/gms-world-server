@@ -267,22 +267,12 @@ public class JSONUtils {
         return result;
     }
     
-    public static String formatAddress(AddressInfo address) {
-        List<String> tokens = new ArrayList<String>();
-        
-        //logger.log(Level.INFO, "Formatting address with locale " + locale.getCountry() + "_" + locale.getLanguage() );
-        
-        //if (StringUtils.equalsIgnoreCase(address.getField(AddressInfo.COUNTRY),"US"))
-        //US
-        //House number and street name
-        //Name of town, State ZIP code
-        //country
-        
-        //PL
-        //Street name and number
-        //ZIP code city
-        //State
-        //country
+    private static void formatOtherAddress(AddressInfo address, List<String> tokens) {
+    	//Other
+        //STREET
+        //POSTAL_CODE CITY
+        //STATE
+        //COUNTRY
         
         if (address.getField(AddressInfo.STREET) != null) {
             tokens.add(address.getField(AddressInfo.STREET));
@@ -298,7 +288,6 @@ public class JSONUtils {
             }
             line += address.getField(AddressInfo.CITY);
         }
-        
         if (line.length() > 0) {
             tokens.add(line);
         }
@@ -306,8 +295,49 @@ public class JSONUtils {
         if (address.getField(AddressInfo.STATE) != null) {
             tokens.add(address.getField(AddressInfo.STATE));
         }
+        
         if (address.getField(AddressInfo.COUNTRY) != null) {
             tokens.add(address.getField(AddressInfo.COUNTRY));
+        }
+    }
+    
+    private static void formatUSAddress(AddressInfo address, List<String> tokens) {
+    	//US
+        //STREET
+        //CITY, STATE POSTAL_CODE
+        //COUNTRY
+        if (address.getField(AddressInfo.STREET) != null) {
+            tokens.add(address.getField(AddressInfo.STREET));
+        }
+    	
+        String line = "";
+    	if (address.getField(AddressInfo.CITY) != null) {
+            line += address.getField(AddressInfo.CITY) + ", ";
+        }
+    	if (address.getField(AddressInfo.STATE) != null) {
+            line += address.getField(AddressInfo.STATE);
+            if (address.getField(AddressInfo.POSTAL_CODE) != null) {
+                line += " " + address.getField(AddressInfo.POSTAL_CODE);
+            }
+    	}
+    	if (line.length() > 0) {
+            tokens.add(line);
+        }
+    	
+    	if (address.getField(AddressInfo.COUNTRY) != null) {
+            tokens.add(address.getField(AddressInfo.COUNTRY));
+        }
+    }
+    
+    public static String formatAddress(AddressInfo address) {
+        List<String> tokens = new ArrayList<String>();
+        
+        //logger.log(Level.INFO, "Formatting address with locale " + locale.getCountry() + "_" + locale.getLanguage() );
+        
+        if (StringUtils.equalsIgnoreCase(address.getField(AddressInfo.COUNTRY),"US")) {
+        	formatUSAddress(address, tokens);
+        } else {
+        	formatOtherAddress(address, tokens);
         }
         
         if (!tokens.isEmpty()) {

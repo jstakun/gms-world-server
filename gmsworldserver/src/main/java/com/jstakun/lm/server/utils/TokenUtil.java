@@ -26,7 +26,7 @@ public class TokenUtil {
 				String key = output.getString("key");
 				return key;
 			} else {
-				throw new Exception("Server error: " + tokenJson);
+				throw new Exception("Received following server response: " + tokenJson);
 			}
     	} else {
     		throw new Exception("Scope is missing");
