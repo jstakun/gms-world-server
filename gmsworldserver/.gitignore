@@ -18,3 +18,4 @@ test-output
 .externalToolBuilders
 *~
 /eclipse-launch-profiles
+/datanucleus.log

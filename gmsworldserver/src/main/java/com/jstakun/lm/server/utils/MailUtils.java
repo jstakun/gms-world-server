@@ -191,7 +191,8 @@ public class MailUtils {
             String excluded = ConfigurationManager.getParam(ConfigurationManager.EXCLUDED, "");
             String[] excludedList = StringUtils.split(excluded, "|");
             if (StringUtils.indexOfAny(toA, excludedList) >= 0) {
-            	sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.ADMIN_MAIL, ConfigurationManager.ADMIN_NICK, "Copy of excluded engagement message to " + toA, message, "text/html");
+               //sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.ADMIN_MAIL, ConfigurationManager.ADMIN_NICK, "Copy of excluded engagement message to " + toA, message, "text/html");
+               logger.log(Level.INFO, "Skipped sending engagement message to " + toA);
             } else {
                sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, "Landmark Manager User", "Message from Landmark Manager", message, "text/html");
                //TODO remove after tests
