@@ -43,7 +43,7 @@ public class FreebaseUtils extends LayerHelper {
 	private static final String IMAGE_PREFIX = "https://usercontent.googleapis.com/freebase/v1/image";
 	private static final String URL_PREFIX = ConfigurationManager.SERVER_URL + "freebaseView/";
 
-	//https://www.googleapis.com/freebase/v1/search?indent=true&filter=(all (within radius:10km lon:20.95 lat:52.25))&output=(description name geocode url object property category location)
+	//https://www.googleapis.com/freebase/v1/search?indent=true&filter=(all (within radius:10km lon:26.7 lat:44.25))&output=(description name geocode url object property category location)
 	
 	//https://www.googleapis.com/freebase/v1/search?indent=true&filter=(all mid:/m/05qhw)&output=(description name geocode url object property category location)&limit=1
 	
@@ -81,7 +81,11 @@ public class FreebaseUtils extends LayerHelper {
 		
 		//TODO "message" : "Invalid language code(s): 'ur'. Languages served are: en,es,fr,de,it,pt,zh,ja,ko,ru,sv,fi,da,nl,el,ro,tr,hu,th,pl,cs,id,bg,uk,ca,eu,no,sl,sk,hr,sr,ar,hi,vi,fa,ga,iw,lv,lt,fil"
 		
-		search.setLang(Arrays.asList(locale.getLanguage()));
+		if (StringUtils.equalsIgnoreCase(locale.getLanguage(), "en"))
+			search.setLang(Arrays.asList("en"));
+		else {
+			search.setLang(Arrays.asList(locale.getLanguage(),"en"));
+		}
 		
 		InputStream is = search.executeAsInputStream();
 		if (is != null) {
@@ -124,68 +128,78 @@ public class FreebaseUtils extends LayerHelper {
 	        			   
 	        				   String name = result.getString("name");
 	        			   
-	        				   String mid = StringUtils.substring(result.getString("mid"), 3);
-	        			   
-	        				   JSONObject desc = output.getJSONObject("description");
-	        				   JSONArray desc_arr = desc.optJSONArray("/common/topic/description"); 
-	        			   
-	        				   String descr = null;
-	        				   if (desc_arr != null) {
-	        					   if (stringLimit > 0) {
-	        						   descr = StringUtils.abbreviate(desc_arr.getString(0), stringLimit);
-	        					   } else {
-	        						   descr = desc_arr.getString(0);
-	        					   }
-	        				   }
+	        				   if (StringUtils.isNotEmpty(name)) {
 	        				   
-	        				   JSONObject urlo = output.getJSONObject("url");
-	        				   JSONArray url_arr = urlo.optJSONArray("/common/topic/official_website");
-	        					   
-	        				   long creationDate = -1;
-	        				   JSONObject objecto = output.optJSONObject("object");
-	        				   if (objecto != null) {
-	        					   JSONArray object_arr = objecto.optJSONArray("/type/object/timestamp");
+	        					   String mid = StringUtils.substring(result.getString("mid"), 3);
 	        			   
-	        					   if (object_arr != null) {
-	        						   try {
-	        							   String str = object_arr.getString(0).replace('T', ' ').replace('Z', ' ');
-	        							   Date start = formatter.parse(str);
-	        					   		   creationDate = start.getTime();
-	        				   			} catch (ParseException e) {
-	        				   				logger.log(Level.SEVERE, null, e);
-	        				   			}     	   
+	        					   JSONObject desc = output.getJSONObject("description");
+	        					   JSONArray desc_arr = desc.optJSONArray("/common/topic/description"); 
+	        			   
+	        					   String descr = null;
+	        					   try {
+	        						   if (desc_arr != null) {
+	        							   Object descObj = desc_arr.get(0);
+	        							   if (descObj instanceof String) {
+	        								   descr = (String) descObj;
+	        							   } else if (descObj instanceof JSONObject) {
+	        								   descr = desc_arr.getJSONObject(0).getString("value");
+	        							   }
+	        							   if (stringLimit > 0 && descr != null) {
+	        								   descr = StringUtils.abbreviate(descr, stringLimit);
+	        							   } 
+	        						   }
+	        					   } catch (Exception e) {
+	        						   logger.log(Level.SEVERE, "Received following description: " + desc_arr);
 	        					   }
-	        				   }  
+	        				   
+	        					   JSONObject urlo = output.getJSONObject("url");
+	        					   JSONArray url_arr = urlo.optJSONArray("/common/topic/official_website");
+	        					   
+	        					   long creationDate = -1;
+	        					   JSONObject objecto = output.optJSONObject("object");
+	        					   if (objecto != null) {
+	        						   JSONArray object_arr = objecto.optJSONArray("/type/object/timestamp");
 	        			   
-	        				   QualifiedCoordinates qc = new QualifiedCoordinates(lat, lng, 0f, 0f, 0f);
-	        				   ExtendedLandmark landmark = LandmarkFactory.getLandmark(name, null, qc, Commons.FREEBASE_LAYER, new AddressInfo(), creationDate, null);
-	        	           
-	        	           		JSONObject propertyo = output.optJSONObject("property");
-	        	           		if (propertyo != null) {
-	        	        	   		JSONArray property_arr = propertyo.optJSONArray("/common/topic/image");
+	        						   if (object_arr != null) {
+	        							   try {
+	        								   String str = object_arr.getString(0).replace('T', ' ').replace('Z', ' ');
+	        								   Date start = formatter.parse(str);
+	        								   creationDate = start.getTime();
+	        				   				} catch (ParseException e) {
+	        				   					logger.log(Level.SEVERE, null, e);
+	        				   				}     	   
+	        						    }
+	        					    }  
 	        			   
-	        			   			if (property_arr != null) {
-	        			   				JSONObject image = property_arr.getJSONObject(0);
-	        			   				landmark.setThumbnail(IMAGE_PREFIX + image.getString("mid"));
-	        			   			}       			   
-	        	           		}
+	        				   		QualifiedCoordinates qc = new QualifiedCoordinates(lat, lng, 0f, 0f, 0f);
+	        				   		ExtendedLandmark landmark = LandmarkFactory.getLandmark(name, null, qc, Commons.FREEBASE_LAYER, new AddressInfo(), creationDate, null);
 	        	           
-	        	           		Map<String, String> tokens = new HashMap<String, String>();
-	        	           		if (descr != null) {
-	        	        	   		tokens.put("description", descr);
-	        	           		}	        	           
+	        	           			JSONObject propertyo = output.optJSONObject("property");
+	        	           			if (propertyo != null) {
+	        	        	   			JSONArray property_arr = propertyo.optJSONArray("/common/topic/image");
+	        			   				if (property_arr != null) {
+	        			   					JSONObject image = property_arr.getJSONObject(0);
+	        			   					landmark.setThumbnail(IMAGE_PREFIX + image.getString("mid"));
+	        			   				}       			   
+	        	           			}
 	        	           
-	        	           		if (url_arr != null) {
-	        	        	   		//landmark.setUrl(url_arr.getString(0));
-	        	        	   		tokens.put("homepage", url_arr.getString(0));
-	        	           		}
+	        	           			Map<String, String> tokens = new HashMap<String, String>();
+	        	           			if (descr != null) {
+	        	        	   			tokens.put("description", descr);
+	        	           			}	        	           
 	        	           
-	        	           		landmark.setUrl(URL_PREFIX + mid);
+	        	           			if (url_arr != null) {
+	        	        	   			//landmark.setUrl(url_arr.getString(0));
+	        	        	   			tokens.put("homepage", url_arr.getString(0));
+	        	           			}
 	        	           
-	        	           		String description = JSONUtils.buildLandmarkDesc(landmark, tokens, locale);
-	        	           		landmark.setDescription(description);
+	        	           			landmark.setUrl(URL_PREFIX + mid);
+	        	           
+	        	           			String description = JSONUtils.buildLandmarkDesc(landmark, tokens, locale);
+	        	           			landmark.setDescription(description);
 	        				
-	        	           		landmarks.add(landmark);
+	        	           			landmarks.add(landmark);
+	        				   }
 	        			   }
 	        		   }
 	        	   } else {

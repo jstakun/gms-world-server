@@ -82,6 +82,13 @@ public class User {
     }
 
     /**
+     * @param email the email to set
+     */
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    
+    /**
      * @return the email
      */
     public String getEmail() {

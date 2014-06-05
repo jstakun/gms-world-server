@@ -21,6 +21,7 @@ import javax.jdo.Query;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.google.appengine.api.blobstore.BlobKey;
@@ -36,11 +37,12 @@ import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.jstakun.lm.server.config.Commons;
-import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.config.Commons.Property;
+import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.persistence.PMF;
 import com.jstakun.lm.server.persistence.Screenshot;
 import com.jstakun.lm.server.utils.DateUtils;
+import com.jstakun.lm.server.utils.FileUtils;
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.StringUtil;
 
@@ -106,6 +108,42 @@ public class ScreenshotPersistenceUtils {
         }
 
         return result;
+    }
+    
+    public static int deleteScreenshotsOlderThanDate(int ndays) {
+    	 int result = 0;
+    	 
+    	 try {
+         	String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "itemProvider";
+         	String params = "type=screenshot&ndays=" + ndays;			 
+         	//logger.log(Level.INFO, "Calling: " + gUrl);
+         	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
+         	//logger.log(Level.INFO, "Received response: " + gJson);
+         	if (StringUtils.startsWith(StringUtils.trim(gJson), "[")) {
+         		JSONArray root = new JSONArray(gJson);
+         		int size = root.length();
+         		logger.log(Level.INFO, size + " screenshots will be deleted...");
+             	for (int i=0;i<size; i++) {
+         			JSONObject screenshot = root.getJSONObject(i);
+         			String filename = screenshot.getString("filename");
+         			int id = screenshot.getInt("id");
+         			if (FileUtils.deleteFileV2(filename)) {
+             	    	gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/itemProvider?type=screenshot&id=" + id + "&action=remove"; 
+         				String response = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
+         			    logger.log(Level.INFO, "Deleting screenshot " + id + " response: " + response);
+         			    result++;
+         			} else {
+         				logger.log(Level.SEVERE, "Failed to delete screenshot " + filename);
+         			}
+         		}
+         	} else {
+        		logger.log(Level.SEVERE, "Received following server response: " + gJson);
+        	}
+        } catch (Exception e) {
+        	logger.log(Level.SEVERE, e.getMessage(), e);
+        }
+         	   	 
+    	return result;
     }
 
     public static Screenshot selectScreenshot(String k) {

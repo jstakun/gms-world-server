@@ -92,6 +92,8 @@ public class GeocodeCachePersistenceUtils {
         		JSONObject root = new JSONObject(gJson);
         		if (root.has("latitude") && root.has("longitude")) {
         			gc = jsonToGeocode(root);
+        		} else if (root.has("error")) {
+        			logger.log(Level.SEVERE, "Received following server error: " + root.getString("error"));
         		}
         	} else {
         		logger.log(Level.SEVERE, "Received following server response: " + gJson);
