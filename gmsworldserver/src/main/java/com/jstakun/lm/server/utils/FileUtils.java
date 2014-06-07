@@ -1,7 +1,6 @@
 package com.jstakun.lm.server.utils;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,7 +19,6 @@ import com.google.appengine.tools.cloudstorage.GcsFilename;
 import com.google.appengine.tools.cloudstorage.GcsOutputChannel;
 import com.google.appengine.tools.cloudstorage.GcsService;
 import com.google.appengine.tools.cloudstorage.GcsServiceFactory;
-
 import com.jstakun.lm.server.persistence.Screenshot;
 import com.jstakun.lm.server.utils.memcache.CacheAction;
 import com.jstakun.lm.server.utils.persistence.ScreenshotPersistenceUtils;
@@ -44,7 +42,7 @@ public class FileUtils {
         return fileService.getBlobKey(file);
 	}*/	
 	
-	public static void saveFileV2(String fileName, InputStream is, double lat, double lng) throws IOException {
+	/*public static void saveFileV2(String fileName, InputStream is, double lat, double lng) throws IOException {
 		String bucketName = AppIdentityServiceFactory.getAppIdentityService().getDefaultGcsBucketName();
 		GcsService gcsService = GcsServiceFactory.createGcsService();
         GcsFilename filename = new GcsFilename(bucketName, fileName);
@@ -61,6 +59,23 @@ public class FileUtils {
         while ((nRead = is.read(data, 0, data.length)) != -1) {
             writeChannel.write(ByteBuffer.wrap(data, 0, nRead));
         }
+        
+        writeChannel.close();
+	}*/
+	
+	public static void saveFileV2(String fileName, byte[] screenshot, double lat, double lng) throws IOException {
+		String bucketName = AppIdentityServiceFactory.getAppIdentityService().getDefaultGcsBucketName();
+		GcsService gcsService = GcsServiceFactory.createGcsService();
+        GcsFilename filename = new GcsFilename(bucketName, fileName);
+        GcsFileOptions options = new GcsFileOptions.Builder()
+            .mimeType("image/jpeg")
+            .acl("public-read")
+            .addUserMetadata("lat", Double.toString(lat))
+            .addUserMetadata("lng", Double.toString(lng))
+            .build();
+        GcsOutputChannel writeChannel = gcsService.createOrReplace(filename, options);
+        
+        writeChannel.write(ByteBuffer.wrap(screenshot, 0, screenshot.length));
         
         writeChannel.close();
 	}

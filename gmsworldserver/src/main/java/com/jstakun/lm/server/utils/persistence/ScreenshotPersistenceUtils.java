@@ -127,13 +127,8 @@ public class ScreenshotPersistenceUtils {
          			JSONObject screenshot = root.getJSONObject(i);
          			String filename = screenshot.getString("filename");
          			int id = screenshot.getInt("id");
-         			if (FileUtils.deleteFileV2(filename)) {
-             	    	gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/itemProvider?type=screenshot&id=" + id + "&action=remove"; 
-         				String response = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
-         			    logger.log(Level.INFO, "Deleting screenshot " + id + " response: " + response);
-         			    result++;
-         			} else {
-         				logger.log(Level.SEVERE, "Failed to delete screenshot " + filename);
+         			if (deleteScreenshot(filename, id)) {
+         				result++;
          			}
          		}
          	} else {
@@ -144,6 +139,24 @@ public class ScreenshotPersistenceUtils {
         }
          	   	 
     	return result;
+    }
+    
+    public static boolean deleteScreenshot(String filename, int id) {
+    	boolean deleted = false;
+    	try {
+    		if (FileUtils.deleteFileV2(filename)) {
+    			String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/itemProvider"; 
+    			String params = "type=screenshot&id=" + id + "&action=remove";
+    			String response = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
+    			logger.log(Level.INFO, "Deleting screenshot " + id + " response: " + response);
+    			deleted = true;    
+    		} else {
+    			logger.log(Level.SEVERE, "Failed to delete screenshot " + filename);
+    		}
+    	} catch (Exception e) {
+        	logger.log(Level.SEVERE, e.getMessage(), e);
+        }
+    	return deleted;
     }
 
     public static Screenshot selectScreenshot(String k) {

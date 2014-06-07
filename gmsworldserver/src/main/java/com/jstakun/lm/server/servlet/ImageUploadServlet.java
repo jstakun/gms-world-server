@@ -18,12 +18,15 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.google.common.collect.ImmutableMap;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.social.NotificationUtils;
 import com.jstakun.lm.server.utils.FileUtils;
+import com.jstakun.lm.server.utils.ImageUtils;
+import com.jstakun.lm.server.utils.MailUtils;
 import com.jstakun.lm.server.utils.NumberUtils;
 import com.jstakun.lm.server.utils.StringUtil;
 import com.jstakun.lm.server.utils.UrlUtils;
@@ -73,31 +76,44 @@ public class ImageUploadServlet extends HttpServlet {
 
                     if (StringUtils.startsWith(itemName, "screenshot")) {
 
-                        FileUtils.saveFileV2(itemName, item.openStream(), lat, lng);
+                    	byte[] screenshot = IOUtils.toByteArray(item.openStream());
+                    	
+                    	if (screenshot != null && screenshot.length > 0) {
+                    	
+                    		FileUtils.saveFileV2(itemName, screenshot, lat, lng);
                         
-                        String username = StringUtil.getUsername(request.getAttribute("username"),request.getHeader("username"));
+                    		String username = StringUtil.getUsername(request.getAttribute("username"),request.getHeader("username"));
                         
-                        String key = ScreenshotPersistenceUtils.persistScreenshot(username, lat, lng, itemName);
+                    		String key = ScreenshotPersistenceUtils.persistScreenshot(username, lat, lng, itemName);
                         
-                        if (key != null) {
-                            //String imageUrl = FileUtils.getImageUrlV2(itemName);
-                        	String imageUrl = ConfigurationManager.SERVER_URL + "image/" + key;
-                        	String showImageUrl = UrlUtils.getShortUrl(ConfigurationManager.SERVER_URL + "showImage/" + key);
+                    		if (key != null) {
+	                            String imageUrl = ConfigurationManager.SERVER_URL + "image/" + key;
+	                        	String showImageUrl = UrlUtils.getShortUrl(ConfigurationManager.SERVER_URL + "showImage/" + key);
                     		
-                            Map<String, String> params = new ImmutableMap.Builder<String, String>().
-                            put("showImageUrl", showImageUrl).
-                            put("imageUrl", imageUrl).
-                            put("lat", Double.toString(lat)).
-                            put("lng", Double.toString(lng)).
-                            put("username", StringUtils.isNotEmpty(username) ? username : "").build();
-                    		NotificationUtils.createImageCreationNotificationTask(params);
+	                        	Map<String, String> params = new ImmutableMap.Builder<String, String>().
+	                        	put("showImageUrl", showImageUrl).
+                                put("imageUrl", imageUrl).
+                                put("lat", Double.toString(lat)).
+                                put("lng", Double.toString(lng)).
+                                put("username", StringUtils.isNotEmpty(username) ? username : "").build();
+	                        	NotificationUtils.createImageCreationNotificationTask(params);
                     		
-                    		output = "File saved with key " + key;
-                        } else {
-                        	output = "Key is empty!";
-                            logger.log(Level.SEVERE, "Key is empty!");
-                            logger.log(Level.INFO, "Deleted file " + FileUtils.deleteFileV2(itemName));
-                        }
+	                        	try {
+	                        		if (ImageUtils.isBlackImage(screenshot)) {
+	                        			MailUtils.sendBlackScreenshotNotification("Check this screenshot: " + imageUrl);
+	                        		}	
+	                        	} catch (Exception e) {
+	                        		logger.log(Level.SEVERE, "ImageUploadServlet.processRequest() exception", e);
+	                        	}
+	                        	output = "File saved with key " + key;
+                    		} else {
+                    			output = "Key is empty!";
+                    			logger.log(Level.SEVERE, "Key is empty!");
+                    			logger.log(Level.INFO, "Deleted file " + FileUtils.deleteFileV2(itemName));
+                    		}
+                    	} else {
+                    		output = "Empty screenshot found.";
+                    	}
                     } else {
                         output = "File is not a screenshot.";
                     }

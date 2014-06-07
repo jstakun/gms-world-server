@@ -64,7 +64,8 @@ public class TaskServlet extends HttpServlet {
                     	Date nDaysAgo = DateUtils.getDayInPast(ndays, true);
                         long count = ScreenshotPersistenceUtils.deleteScreenshotsOlderThanDate(nDaysAgo);
                         //TODO replace on 01/07/14
-                        //long count = ScreenshotPersistenceUtils.deleteScreenshotsOlderThanDate(ndays);
+                        count += ScreenshotPersistenceUtils.deleteScreenshotsOlderThanDate(ndays);
+                        //
                         logger.log(Level.INFO, "Deleted {0} screenshots.", count);
                     } else {
                         logger.log(Level.INFO, "Wrong parameter entity: {0}", entity);

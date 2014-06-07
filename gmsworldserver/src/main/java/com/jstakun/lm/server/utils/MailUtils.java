@@ -157,6 +157,10 @@ public class MailUtils {
     public static void sendUserCreationNotification(String body) {
         sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.ADMIN_MAIL, ConfigurationManager.ADMIN_NICK, "New user", body, "text/plain");
     }
+    
+    public static void sendBlackScreenshotNotification(String body) {
+        sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.ADMIN_MAIL, ConfigurationManager.ADMIN_NICK, "Black screenshot", body, "text/plain");
+    }
 
     public static void sendCrashReport(String title, String body) {
         sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, title, body, "text/plain");
