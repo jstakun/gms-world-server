@@ -41,6 +41,9 @@ public class FsAddVenueServlet extends HttpServlet {
     			int responseCode = FoursquareUtils.addVenue(accessToken, name, desc, catId, ll);
     			if (responseCode != HttpServletResponse.SC_OK) {
     				response.sendError(responseCode);
+    			} else {
+    				//TODO remove foursquare layer from cache
+    				//com.jstakun.lm.server.layers.FoursquareUtils_processBinaryRequest_52.24_20.96_11000_12_93_256_checkin_pl
     			}
     		} else {
     			response.sendError(HttpServletResponse.SC_BAD_REQUEST);
