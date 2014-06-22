@@ -69,14 +69,14 @@ public final class GlCommons {
             expires_in = resp.optInt("expires_in", -1);
         }
 
-        if (accessToken != null && refreshToken != null) {
+        if (StringUtils.isNotEmpty(accessToken)) {
 
             userData = getUserData(accessToken, refreshToken);
             
-            String token = accessToken;
-            if (refreshToken != null) {
-                token = token + " " + refreshToken;
+            if (StringUtils.isNotEmpty(refreshToken)) {
                 userData.put("refresh_token", refreshToken);
+            } else {
+            	logger.log(Level.INFO, "Refresh token is empty!");
             }
             
             userData.put("token", accessToken);
@@ -90,13 +90,12 @@ public final class GlCommons {
             Map<String, String> params = new ImmutableMap.Builder<String, String>().
                		put("service", Commons.GOOGLE_PLUS).
             		put("accessToken", accessToken).
-            		put("refreshToken", refreshToken).
             		put("email", userData.containsKey(ConfigurationManager.USER_EMAIL) ? userData.get(ConfigurationManager.USER_EMAIL) : "").
             		put("username", userData.get(ConfigurationManager.GL_USERNAME)).
             		put("name", userData.get(ConfigurationManager.GL_NAME)).build();
             NotificationUtils.createNotificationTask(params);
         } else {
-    		throw new Exception("AccessToken or RefreshToken is empty");
+    		throw new Exception("Access token is empty");
     	}
         
         return userData;
