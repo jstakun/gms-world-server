@@ -16,6 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import twitter4j.GeoLocation;
+import twitter4j.Place;
 import twitter4j.Query;
 import twitter4j.QueryResult;
 import twitter4j.Status;
@@ -29,7 +30,6 @@ import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.Commons.Property;
-import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.utils.JSONUtils;
 import com.jstakun.lm.server.utils.NumberUtils;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
@@ -165,73 +165,6 @@ public class TwitterUtils extends LayerHelper {
         return landmarks;
     }
 
-    /*public static void sendMessage(String key, String url, String token, String secret, int type) {
-        try {
-        	    Landmark landmark = null; 
-        	    String message = null;
-        	    
-        	    if (key != null) {
-        	    	landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
-                }
-            
-                ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
-                if (type == Commons.SERVER) {
-                    String username = landmark.getUsername();
-                    String userMask;
-                    if (StringUtils.endsWith(username, "@tw")) {
-                        userMask = "@" + username.substring(0, username.length() - 3);
-                    } else {
-                        userMask = UrlUtils.createUsernameMask(username);
-                    }
-                    message = String.format(rb.getString("Social.tw.server"), userMask, landmark.getName(), url);
-                } else if (type == Commons.BLOGEO) {
-                    message = String.format(rb.getString("Social.tw.status"), "new geo message to Blogeo", landmark.getName(), url);
-                } else if (type == Commons.LANDMARK) {
-                    message = String.format(rb.getString("Social.tw.status"), "new point of interest to GMS World", landmark.getName(), url);
-                } else if (type == Commons.MY_POS) {
-                    message = String.format(rb.getString("Social.tw.myloc"),  url);
-                } else if (type == Commons.LOGIN) {
-                    message = String.format(rb.getString("Social.login.2"), url);
-                }            
-
-                if (message != null) {
-                	//logger.log(Level.INFO, message);
-                    StatusUpdate update = new StatusUpdate(message);
-                    if (landmark != null) {
-                    	update.setDisplayCoordinates(true);
-                        update.setLocation(new GeoLocation(landmark.getLatitude(), landmark.getLongitude()));
-                    }
-                    Status s = getTwitter(token, secret).updateStatus(update);
-                    logger.log(Level.INFO, "Sent twitter update id: {0}", s.getId());
-                } 
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
-        }
-    }
-
-    public static void sendImageMessage(String showImageUrl, String username, double latitude, double longitude) {
-        try {
-            String userMask;
-
-            if (StringUtils.endsWith(username, "@tw")) {
-                userMask = "@" + username.substring(0, username.length() - 3);
-            } else {
-                userMask = UrlUtils.createUsernameMask(username);
-            }
-
-            String message = userMask + " has just posted new screenshot to GMS World. Check it out: " + showImageUrl;
-
-            StatusUpdate update = new StatusUpdate(message);
-            update.setDisplayCoordinates(true);
-            update.setLocation(new GeoLocation(latitude, longitude));
-            Status s = getTwitter(null, null).updateStatus(update);
-            logger.log(Level.INFO, "Sent twitter update id: {0}", s.getId());
-
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
-        }
-    }*/
-
     private static Twitter getTwitter(String token, String secret) {
         Twitter twitter = new TwitterFactory().getInstance();
         twitter.setOAuthConsumer(Commons.getProperty(Property.TW_CONSUMER_KEY), Commons.getProperty(Property.TW_CONSUMER_SECRET));
@@ -282,5 +215,26 @@ public class TwitterUtils extends LayerHelper {
         }
         
         return reply;
+	}
+	
+	//TODO testing
+	public static void getFriendsStatuses(String token, String secret) throws TwitterException {
+		Twitter twitter = getTwitter(token, secret);
+		long userId = twitter.getId();
+		List<User> friends = twitter.getFriendsList(userId, 0); //long userId, long cursor
+		System.out.println("Found " + friends.size() + " friends");
+		for (User friend : friends) {
+			Status status = friend.getStatus();
+		    if (status != null) {
+		    	GeoLocation location = status.getGeoLocation();
+		    	if (location != null) {
+		    		System.out.println(location.getLatitude() + ", " + location.getLongitude());
+		    	}
+		    	Place place = status.getPlace();
+		    	if (place != null) {
+		    		System.out.println("Found place " + place.toString() + ", " + place.getName());
+		    	}
+		    }
+		}		
 	}
 }
