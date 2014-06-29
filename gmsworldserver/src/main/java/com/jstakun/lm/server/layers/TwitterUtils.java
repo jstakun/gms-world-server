@@ -221,7 +221,9 @@ public class TwitterUtils extends LayerHelper {
 	public static void getFriendsStatuses(String token, String secret) throws TwitterException {
 		Twitter twitter = getTwitter(token, secret);
 		long userId = twitter.getId();
-		List<User> friends = twitter.getFriendsList(userId, 0); //long userId, long cursor
+		System.out.println("User name: " + twitter.getScreenName());
+		List<User> friends = twitter.getFollowersList(userId, 0);
+		//List<User> friends = twitter.getFriendsList(userId, 0); //long userId, long cursor
 		System.out.println("Found " + friends.size() + " friends");
 		for (User friend : friends) {
 			Status status = friend.getStatus();

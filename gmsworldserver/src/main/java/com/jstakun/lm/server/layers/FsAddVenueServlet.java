@@ -32,11 +32,15 @@ public class FsAddVenueServlet extends HttpServlet {
     	String service = request.getParameter("service");
     	
     	if (StringUtils.equals(service, "fs")) {
-    		if (!HttpUtils.isEmptyAny(request, "accessToken", "name", "catId", "ll")) {
+    		if (!HttpUtils.isEmptyAny(request, "accessToken", "name", "ll")) {
     			String accessToken = request.getParameter("accessToken");
     			String name = request.getParameter("name");
     			String desc = request.getParameter("desc");
     			String catId = request.getParameter("catId");
+    			if (StringUtils.isEmpty(catId)) {
+    				//catId = "4d4b7105d754a06375d81259"; //Professional & Other Places
+    				catId = "4bf58dd8d48988d103941735"; //Home (private)
+    			}
     			String ll = request.getParameter("ll");
     			int responseCode = FoursquareUtils.addVenue(accessToken, name, desc, catId, ll);
     			if (responseCode != HttpServletResponse.SC_OK) {

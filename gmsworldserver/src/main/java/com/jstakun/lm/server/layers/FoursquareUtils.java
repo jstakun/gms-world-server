@@ -992,7 +992,7 @@ public class FoursquareUtils extends LayerHelper {
     		Result<CompleteVenue> result = api.venuesAdd(name, null, null, null, null, null, null, ll, primaryCategoryId, desc);
     		int res = result.getMeta().getCode();
     		if (res != 200) {
-    			handleError(result.getMeta(), name + "_" + desc + "_" + primaryCategoryId + "_" + ll);
+    			handleError(result.getMeta(), "name:" + name + ",desc:" + desc + ",cat:" + primaryCategoryId + ",ll:" + ll);
     		}
     		return res;
     	} catch (Exception ex) {
