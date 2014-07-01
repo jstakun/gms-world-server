@@ -212,7 +212,10 @@ public class NotificationUtils {
     	String url = params.get("url")[0];
     	int type = NumberUtils.getInt(params.get("type")[0],-1);
     	String title = params.get("title")[0];
-    	String key = params.get("key")[0];
+    	String key = null;
+    	if (params.containsKey("key")) {
+    		key = params.get("key")[0];
+    	}
     	String token = null;
     	if (params.containsKey("token")) {
     		token = params.get("token")[0];

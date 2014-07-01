@@ -125,18 +125,24 @@ public class TwitterUtils extends LayerHelper {
         return json;
     }
     
-    private static List<ExtendedLandmark> createCustomLandmarksList(List<Status> tweets, Locale locale) {
+    private static List<ExtendedLandmark> createCustomLandmarksList(List<Status> tweets, List<User> users, Locale locale, boolean isFriends) {
     	List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
         Autolink autolink = new Autolink();
 
-        for (Status tweet : tweets) {
-
-            GeoLocation location = tweet.getGeoLocation();
-            if (location != null) {
+        for (int i=0;i<tweets.size();i++) {
+        	Status tweet = tweets.get(i);
+        	if (tweet != null && tweet.getGeoLocation() != null && (tweet.getUser() != null || (users != null && users.get(i) != null))) {
+        		GeoLocation location = tweet.getGeoLocation();
                 User user = tweet.getUser();
                 
+                if (user == null) {
+                	user = users.get(i);
+                }
+                
                 String name = user.getScreenName();
-                String url = "http://twitter.com/" + user.getScreenName();
+                String thumbnail = user.getBiggerProfileImageURL();
+                
+                String url = "http://twitter.com/" + name;
                 
                 Map<String, String> tokens = new HashMap<String, String>();
                 String text = autolink.autoLink(tweet.getText());
@@ -151,8 +157,12 @@ public class TwitterUtils extends LayerHelper {
                 AddressInfo address = new AddressInfo();
                 QualifiedCoordinates qc = new QualifiedCoordinates(location.getLatitude(), location.getLongitude(), 0f, 0f, 0f);
                 ExtendedLandmark landmark = LandmarkFactory.getLandmark(name, null, qc, Commons.TWITTER_LAYER, address, creationDate, null);
-                landmark.setThumbnail(user.getBiggerProfileImageURL());
+                landmark.setThumbnail(thumbnail);
                 landmark.setUrl(url);
+                
+                if (isFriends) {
+                	landmark.setHasCheckinsOrPhotos(true);
+                }
                 
                 String description = JSONUtils.buildLandmarkDesc(landmark, tokens, locale);
                 landmark.setDescription(description);
@@ -203,7 +213,7 @@ public class TwitterUtils extends LayerHelper {
             QueryResult results = getTwitter(null, null).search(twquery);
             List<Status> tweets = results.getTweets();
 
-            reply = createCustomLandmarksList(tweets, locale);
+            reply = createCustomLandmarksList(tweets, null, locale, false);
 
             if (!reply.isEmpty()) {
                 CacheUtil.put(key, reply);
@@ -216,7 +226,7 @@ public class TwitterUtils extends LayerHelper {
         return reply;
 	}
 	
-	protected static List<ExtendedLandmark> getFriendsStatuses(String token, String secret, Locale locale) throws TwitterException {
+	public static List<ExtendedLandmark> getFriendsStatuses(String token, String secret, Locale locale) throws TwitterException {
 		List<ExtendedLandmark> landmarks = null;
 		Twitter twitter = getTwitter(token, secret);
 		String username = twitter.getScreenName();
@@ -224,9 +234,10 @@ public class TwitterUtils extends LayerHelper {
 		if (!friends.isEmpty()) {
 			List<Status> friendsStatuses = new ArrayList<Status>(friends.size());
 			for (User friend : friends) {
-				friendsStatuses.add(friend.getStatus());
+				Status status = friend.getStatus();
+				friendsStatuses.add(status);
 			}
-			landmarks = createCustomLandmarksList(friendsStatuses, locale);
+			landmarks = createCustomLandmarksList(friendsStatuses, friends, locale, true);
 		} else {
 			logger.log(Level.INFO, "No friends found");
 			landmarks = new ArrayList<ExtendedLandmark>();
