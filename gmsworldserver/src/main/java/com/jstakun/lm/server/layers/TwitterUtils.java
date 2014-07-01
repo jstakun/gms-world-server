@@ -16,7 +16,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import twitter4j.GeoLocation;
-import twitter4j.Place;
 import twitter4j.Query;
 import twitter4j.QueryResult;
 import twitter4j.Status;
@@ -217,26 +216,21 @@ public class TwitterUtils extends LayerHelper {
         return reply;
 	}
 	
-	//TODO testing
-	public static void getFriendsStatuses(String token, String secret) throws TwitterException {
+	protected static List<ExtendedLandmark> getFriendsStatuses(String token, String secret, Locale locale) throws TwitterException {
+		List<ExtendedLandmark> landmarks = null;
 		Twitter twitter = getTwitter(token, secret);
-		long userId = twitter.getId();
-		System.out.println("User name: " + twitter.getScreenName());
-		List<User> friends = twitter.getFollowersList(userId, 0);
-		//List<User> friends = twitter.getFriendsList(userId, 0); //long userId, long cursor
-		System.out.println("Found " + friends.size() + " friends");
-		for (User friend : friends) {
-			Status status = friend.getStatus();
-		    if (status != null) {
-		    	GeoLocation location = status.getGeoLocation();
-		    	if (location != null) {
-		    		System.out.println(location.getLatitude() + ", " + location.getLongitude());
-		    	}
-		    	Place place = status.getPlace();
-		    	if (place != null) {
-		    		System.out.println("Found place " + place.toString() + ", " + place.getName());
-		    	}
-		    }
-		}		
+		String username = twitter.getScreenName();
+		List<User> friends = twitter.getFriendsList(username, -1);
+		if (!friends.isEmpty()) {
+			List<Status> friendsStatuses = new ArrayList<Status>(friends.size());
+			for (User friend : friends) {
+				friendsStatuses.add(friend.getStatus());
+			}
+			landmarks = createCustomLandmarksList(friendsStatuses, locale);
+		} else {
+			logger.log(Level.INFO, "No friends found");
+			landmarks = new ArrayList<ExtendedLandmark>();
+		}
+		return landmarks;
 	}
 }

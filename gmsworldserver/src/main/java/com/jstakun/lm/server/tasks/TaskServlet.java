@@ -63,7 +63,7 @@ public class TaskServlet extends HttpServlet {
                         //
                     	Date nDaysAgo = DateUtils.getDayInPast(ndays, true);
                         long count = ScreenshotPersistenceUtils.deleteScreenshotsOlderThanDate(nDaysAgo);
-                        //TODO remove on 01/07/14
+                        //TODO remove on 02/07/14
                         count += ScreenshotPersistenceUtils.deleteScreenshotsOlderThanDate(ndays);
                         //
                         logger.log(Level.INFO, "Deleted {0} screenshots.", count);

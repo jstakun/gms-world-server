@@ -519,6 +519,19 @@ public class LayersProviderServlet extends HttpServlet {
                     	outString = FoursquareUtils.exploreVenuesToJSon(latitude, longitude, null, radius * 1000, limit, version, token, language).toString();
                     }
                 }    
+            } else if (StringUtils.contains(uri, "twFriends")) {
+            	if (HttpUtils.isEmptyAny(request, "token", "secret")) {
+            		response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            	} else {
+            		String token = URLDecoder.decode(request.getParameter("token"), "UTF-8");
+            		String secret = URLDecoder.decode(request.getParameter("secret"), "UTF-8");
+            		List<ExtendedLandmark> landmarks = TwitterUtils.getFriendsStatuses(token, secret, l);
+                    if (outFormat.equals(Format.BIN)) {
+                    	LayerHelperFactory.getTwitterUtils().serialize(landmarks, response.getOutputStream(), version);
+                    } else {
+                    	outString = new JSONObject().put("ResultSet", landmarks).toString();
+                    }
+            	}
             } else if (StringUtils.contains(uri, "qypeProvider") || StringUtils.contains(uri, "upcomingProvider") || StringUtils.contains(uri, "gowallaProvider")) {
             	logger.log(Level.INFO, "Closed api request uri: {0}", uri);
             } else {

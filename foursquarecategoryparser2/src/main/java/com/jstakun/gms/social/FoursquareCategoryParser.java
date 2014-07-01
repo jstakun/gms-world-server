@@ -27,7 +27,7 @@ public class FoursquareCategoryParser {
      */
     public static void main(String[] args) {
         try {
-            File f = new File("categories.json");
+            File f = new File("fscategories.json");
             String jsonFileContent = FileUtils.readFileToString(f, "UTF-8");
             String parsed = parseFoursquareCategories(jsonFileContent);
             FileUtils.write(new File("categoriesParsed.json"), parsed, "UTF-8");
@@ -50,10 +50,10 @@ public class FoursquareCategoryParser {
                 ArrayList<Map<String, String>> childArray = new ArrayList<Map<String, String>>();
                 parseFoursquareCategory(parentCategory.getJSONArray("categories"), childArray);
                 String id = parentCategory.getString("id");
-                //String name = parentCategory.getString("pluralName");
+                String name = parentCategory.getString("pluralName");
                 JSONObject json = new JSONObject();
                 json.put("id", id);
-                //json.put("name", name);
+                json.put("name", name);
                 json.put("subcategories", childArray);
                 System.out.println(json.toString());
                 cats.put(json);
