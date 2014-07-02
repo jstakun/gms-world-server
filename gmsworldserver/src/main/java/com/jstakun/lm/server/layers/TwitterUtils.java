@@ -261,8 +261,13 @@ public class TwitterUtils extends LayerHelper {
         	} else {
         		logger.log(Level.INFO, "No followers found");
         	}		
+        	
+        	if (!landmarks.isEmpty()) {
+                CacheUtil.put(key, landmarks);
+                logger.log(Level.INFO, "Adding TW friends to cache with key {0}", key);
+            }
         } else {
-        	logger.log(Level.INFO, "Reading tw friends list from cache with key {0}", key);
+        	logger.log(Level.INFO, "Reading TW friends list from cache with key {0}", key);
         }
 		return landmarks;
 	}
