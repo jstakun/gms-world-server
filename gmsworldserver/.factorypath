@@ -1,5 +1,5 @@
 <factorypath>
-    <factorypathentry kind="VARJAR" id="M2_REPO/com/google/appengine/appengine-api-1.0-sdk/1.9.3/appengine-api-1.0-sdk-1.9.3.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/google/appengine/appengine-api-1.0-sdk/1.9.6/appengine-api-1.0-sdk-1.9.6.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/jstl/jstl/1.2/jstl-1.2.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/json/json/20140107/json-20140107.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/twitter4j/twitter4j-core/3.0.5/twitter4j-core-3.0.5.jar" enabled="true" runInBatchMode="false"/>
@@ -35,8 +35,7 @@
     <factorypathentry kind="VARJAR" id="M2_REPO/org/ocpsoft/prettytime/prettytime/3.2.4.Final/prettytime-3.2.4.Final.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/com/rosaloves/bitlyj/2.0.0/bitlyj-2.0.0.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/net/sf/jtidy/jtidy/r938/jtidy-r938.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="M2_REPO/com/google/appengine/appengine-jsr107cache/1.9.3/appengine-jsr107cache-1.9.3.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="M2_REPO/com/aetrion/flickrj/1.2/flickrj-1.2.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/google/appengine/appengine-jsr107cache/1.9.6/appengine-jsr107cache-1.9.6.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/com/mastercard/mcapi/1.0/mcapi-1.0.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/com/google/http-client/google-http-client-jackson/1.17.0-rc/google-http-client-jackson-1.17.0-rc.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/com/google/http-client/google-http-client/1.17.0-rc/google-http-client-1.17.0-rc.jar" enabled="true" runInBatchMode="false"/>
@@ -61,7 +60,7 @@
     <factorypathentry kind="VARJAR" id="M2_REPO/commons-lang/commons-lang/2.6/commons-lang-2.6.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/javax/jdo/jdo2-api/2.3-eb/jdo2-api-2.3-eb.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/javax/transaction/transaction-api/1.1/transaction-api-1.1.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="M2_REPO/com/google/appengine/tools/appengine-gcs-client/0.3.9/appengine-gcs-client-0.3.9.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/google/appengine/tools/appengine-gcs-client/0.3.12/appengine-gcs-client-0.3.12.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/com/google/guava/guava/15.0/guava-15.0.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/joda-time/joda-time/2.3/joda-time-2.3.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/com/google/api-client/google-api-client/1.18.0-rc/google-api-client-1.18.0-rc.jar" enabled="true" runInBatchMode="false"/>
@@ -73,6 +72,7 @@
     <factorypathentry kind="VARJAR" id="M2_REPO/com/google/oauth-client/google-oauth-client-servlet/1.18.0-rc/google-oauth-client-servlet-1.18.0-rc.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/com/google/http-client/google-http-client-jdo/1.18.0-rc/google-http-client-jdo-1.18.0-rc.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/com/google/api-client/google-api-client-servlet/1.18.0-rc/google-api-client-servlet-1.18.0-rc.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="M2_REPO/com/google/apis/google-api-services-storage/v1beta2-rev42-1.18.0-rc/google-api-services-storage-v1beta2-rev42-1.18.0-rc.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/google/apis/google-api-services-storage/v1-rev1-1.18.0-rc/google-api-services-storage-v1-rev1-1.18.0-rc.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/flickr4java/flickr4java/2.8/flickr4java-2.8.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="PLUGIN" id="org.eclipse.jst.ws.annotations.core" enabled="true" runInBatchMode="false"/>
 </factorypath>

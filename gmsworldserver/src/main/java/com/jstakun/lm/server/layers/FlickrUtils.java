@@ -98,7 +98,7 @@ public class FlickrUtils extends LayerHelper {
     }
 
     private static PhotoList<Photo> getPhotoList(SearchParameters sp, String query, int limit) throws ParserConfigurationException, JSONException {
-    	PhotosInterface photosIntf = new PhotosInterface(Commons.getProperty(Property.FLICKR_APIKEY), Commons.getProperty(Property.FLICKR_sharedSecret), new REST("https://api.flickr.com"));
+    	PhotosInterface photosIntf = new PhotosInterface(Commons.getProperty(Property.FLICKR_APIKEY), Commons.getProperty(Property.FLICKR_sharedSecret), new REST()); // new REST("https://api.flickr.com"));
         
         //sp.setMinTakenDate(new Date(System.currentTimeMillis() - (1000 * 60 * 60 * 24 * 365 * 5))); //5 years old max
         sp.setSort(SearchParameters.DATE_TAKEN_DESC);
@@ -190,7 +190,7 @@ public class FlickrUtils extends LayerHelper {
     }
 
 	@Override
-	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flex, String flexString2, Locale locale) throws Exception {
+	protected List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flex, String flexString2, Locale locale) throws Exception {
 		int r = NumberUtils.normalizeNumber(radius, 1, 32);
         String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, r, version, limit, stringLimit, flex, flexString2);
         List<ExtendedLandmark> output = (List<ExtendedLandmark>)CacheUtil.getObject(key);

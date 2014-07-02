@@ -7,53 +7,22 @@ package com.jstakun.lm.server.persistence;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.jdo.annotations.Extension;
-import javax.jdo.annotations.IdGeneratorStrategy;
-import javax.jdo.annotations.IdentityType;
-import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
-import javax.jdo.annotations.PrimaryKey;
-
-import com.google.appengine.api.blobstore.BlobKey;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
-
 /**
  *
  * @author jstakun
  */
-@PersistenceCapable(identityType = IdentityType.APPLICATION)
 public class Screenshot implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @PrimaryKey
-    @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-    private Key key;
-    @Persistent
     private Date creationDate;
-    @Persistent
-    @Extension(vendorName = "datanucleus", key = "gae.unindexed", value = "true")
     private String username;
-    @Persistent
-    @Extension(vendorName = "datanucleus", key = "gae.unindexed", value = "true")
     private double latitude;
-    @Persistent
-    @Extension(vendorName = "datanucleus", key = "gae.unindexed", value = "true")
     private double longitude;
-    @Persistent
-    @Extension(vendorName = "datanucleus", key = "gae.unindexed", value = "true")
     private boolean auth;
-    @Persistent
-    @Extension(vendorName = "datanucleus", key = "gae.unindexed", value = "true")
-    private BlobKey blobKey;
-    @Persistent
-    private String keyString;
-    
     private String filename;
-    
     private String url;
 
-    public Screenshot(String username, boolean auth, double latitude, double longitude, BlobKey blobKey, Date creationDate) {
+    public Screenshot(String username, boolean auth, double latitude, double longitude, Date creationDate) {
         if (creationDate == null) {
             this.setCreationDate(new Date(System.currentTimeMillis()));
         } else {
@@ -63,18 +32,10 @@ public class Screenshot implements Serializable {
         this.auth = auth;
         this.setLatitude(latitude);
         this.setLongitude(longitude);
-        this.blobKey = blobKey;
     }
     
     public Screenshot() {
     	
-    }
-
-    /**
-     * @return the key
-     */
-    public Key getKey() {
-        return key;
     }
 
     /**
@@ -112,26 +73,7 @@ public class Screenshot implements Serializable {
         return auth;
     }
 
-    /**
-     * @return the blobKey
-     */
-    public BlobKey getBlobKey() {
-        return blobKey;
-    }
-    
-    public String getKeyString() {
-        if (keyString == null) {
-            return KeyFactory.keyToString(key);
-        } else {
-            return keyString;
-        }
-    }
-
-    public void setKeyString(String keyString) {
-        this.keyString = keyString;
-    }
-
-	public String getFilename() {
+    public String getFilename() {
 		return filename;
 	}
 

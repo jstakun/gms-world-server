@@ -10,7 +10,7 @@
 
     <properties>
         <appengine.app.version>1</appengine.app.version>
-        <appengine.target.version>1.9.4</appengine.target.version>
+        <appengine.target.version>1.9.6</appengine.target.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>1.7</jdk.version>
     </properties>
@@ -250,9 +250,19 @@
         	<version>0.3.12</version>
         </dependency>
         <dependency>
+        	<groupId>log4j</groupId>
+        	<artifactId>log4j</artifactId>
+        	<version>1.2.17</version>
+        </dependency>
+        <dependency>
+        	<groupId>org.scribe</groupId>
+        	<artifactId>scribe</artifactId>
+        	<version>1.3.5</version>
+        </dependency>
+        <dependency>
         	<groupId>com.flickr4java</groupId>
-        	<artifactId>flickr</artifactId>
-        	<version>2.5</version>
+        	<artifactId>flickr4java</artifactId>
+        	<version>2.8</version>
         </dependency>
     </dependencies>
 

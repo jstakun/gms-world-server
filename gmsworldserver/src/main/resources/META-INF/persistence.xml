@@ -12,10 +12,8 @@
             <property name="datanucleus.ConnectionURL" value="appengine"/>
         </properties>
         <class>com.jstakun.lm.server.persistence.Config</class>
-        <class>com.jstakun.lm.server.persistence.Screenshot</class>
         <class>com.jstakun.lm.server.persistence.Search</class>
-        <class>com.jstakun.lm.server.persistence.ServiceLog</class>
-        <class>com.jstakun.lm.server.persistence.User</class> 
+        <class>com.jstakun.lm.server.persistence.ServiceLog</class> 
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
     </persistence-unit>
 </persistence>

@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.jstakun.lm.server.utils.persistence;
 
 import java.lang.reflect.InvocationTargetException;
@@ -14,37 +9,19 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.jdo.JDOObjectNotFoundException;
-import javax.jdo.PersistenceManager;
-import javax.jdo.Query;
-
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.google.appengine.api.blobstore.BlobKey;
-import com.google.appengine.api.blobstore.BlobstoreService;
-import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.FetchOptions;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.Query.Filter;
-import com.google.appengine.api.datastore.Query.FilterOperator;
-import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.config.ConfigurationManager;
-import com.jstakun.lm.server.persistence.PMF;
 import com.jstakun.lm.server.persistence.Screenshot;
 import com.jstakun.lm.server.utils.DateUtils;
 import com.jstakun.lm.server.utils.FileUtils;
 import com.jstakun.lm.server.utils.HttpUtils;
-import com.jstakun.lm.server.utils.StringUtil;
 
 /**
  *
@@ -78,7 +55,7 @@ public class ScreenshotPersistenceUtils {
         return key;
     }
 
-    public static long deleteScreenshotsOlderThanDate(Date day) {
+    /*public static long deleteScreenshotsOlderThanDate(Date day) {
         int result = 0;
         DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
         BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
@@ -108,7 +85,7 @@ public class ScreenshotPersistenceUtils {
         }
 
         return result;
-    }
+    }*/
     
     public static int deleteScreenshotsOlderThanDate(int ndays) {
     	 int result = 0;
@@ -159,15 +136,15 @@ public class ScreenshotPersistenceUtils {
     	return deleted;
     }
 
-    public static Screenshot selectScreenshot(String k) {
+    /*public static Screenshot selectScreenshot(String k) {
     	if (StringUtils.isNumeric(k)){
     		return getRemoteScreenshot(k);
     	} else {
     		return getLocalScreenshot(k);
     	}
-    }
+    }*/
     
-    private static Screenshot getLocalScreenshot(String k) {
+    /*private static Screenshot getLocalScreenshot(String k) {
         Screenshot s = null;
 
         PersistenceManager pm = PMF.get().getPersistenceManager();
@@ -195,9 +172,9 @@ public class ScreenshotPersistenceUtils {
         }
 
         return s;
-    }
+    }*/
     
-    private static Screenshot getRemoteScreenshot(String k)
+    public static Screenshot selectScreenshot(String k)
     {
     	Screenshot s = null;
     	try {

@@ -134,13 +134,9 @@ public class FileUtils {
         	s = (Screenshot) screenshotCacheAction.getObjectFromCache(key);
         	if (s != null) {
         		try {
-                	if (s.getBlobKey() != null) {
-                		s.setUrl(FileUtils.getImageUrl(s.getBlobKey(), thumbnail));
-                	} else {
-                		s.setUrl(FileUtils.getImageUrlV2(s.getFilename(), thumbnail));
-                	}              	
+                	s.setUrl(FileUtils.getImageUrlV2(s.getFilename(), thumbnail));
                 } catch (Exception e) {
-                	logger.log(Level.SEVERE, "FileUtils.getImageUrl() exception", e);
+                	logger.log(Level.SEVERE, "FileUtils.getScreenshot() exception", e);
                 }
         	}	
 		} 	

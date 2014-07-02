@@ -226,22 +226,44 @@ public class TwitterUtils extends LayerHelper {
         return reply;
 	}
 	
-	public static List<ExtendedLandmark> getFriendsStatuses(String token, String secret, Locale locale) throws TwitterException {
-		List<ExtendedLandmark> landmarks = null;
-		Twitter twitter = getTwitter(token, secret);
-		String username = twitter.getScreenName();
-		List<User> friends = twitter.getFriendsList(username, -1);
-		if (!friends.isEmpty()) {
-			List<Status> friendsStatuses = new ArrayList<Status>(friends.size());
-			for (User friend : friends) {
-				Status status = friend.getStatus();
-				friendsStatuses.add(status);
-			}
-			landmarks = createCustomLandmarksList(friendsStatuses, friends, locale, true);
-		} else {
-			logger.log(Level.INFO, "No friends found");
-			landmarks = new ArrayList<ExtendedLandmark>();
-		}
+	protected static List<ExtendedLandmark> getFriendsStatuses(String token, String secret, Locale locale) throws TwitterException, UnsupportedEncodingException {
+		String key = getCacheKey(TwitterUtils.class, "getFriendsStatuses", 0, 0, null, 0, 1, 1, 0, token, locale.getCountry());
+        List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>) CacheUtil.getObject(key);
+
+        if (landmarks == null) {
+        	Twitter twitter = getTwitter(token, secret);
+        	String username = twitter.getScreenName();
+		
+        	List<User> friends = twitter.getFriendsList(username, -1);
+        	if (!friends.isEmpty()) {
+        		List<Status> friendsStatuses = new ArrayList<Status>(friends.size());
+        		for (User friend : friends) {
+        			Status status = friend.getStatus();
+        			friendsStatuses.add(status);
+        		}
+        		landmarks = createCustomLandmarksList(friendsStatuses, friends, locale, true);
+        		logger.log(Level.INFO, "Found " + landmarks.size() + " friends statuses");
+        	} else {
+        		logger.log(Level.INFO, "No friends found");
+        		landmarks = new ArrayList<ExtendedLandmark>();
+        	}
+		
+        	List<User> followers = twitter.getFollowersList(username, -1);
+        	if (!followers.isEmpty()) {
+        		List<Status> followersStatuses = new ArrayList<Status>(followers.size());
+        		for (User follower : followers) {
+        			Status status = follower.getStatus();
+        			followersStatuses.add(status);
+        		}
+        		int friendsSize = landmarks.size();
+        		landmarks.addAll(createCustomLandmarksList(followersStatuses, friends, locale, true));
+        		logger.log(Level.INFO, "Found " + (landmarks.size()-friendsSize) + " followers statuses");
+        	} else {
+        		logger.log(Level.INFO, "No followers found");
+        	}		
+        } else {
+        	logger.log(Level.INFO, "Reading tw friends list from cache with key {0}", key);
+        }
 		return landmarks;
 	}
 }

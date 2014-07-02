@@ -60,11 +60,11 @@ public class TaskServlet extends HttpServlet {
                         logger.log(Level.INFO, "Deleted {0} logs.", count);
                     } else if (entity.equalsIgnoreCase("screenshot")) {
                     	int ndays = NumberUtils.getInt(ConfigurationManager.getParam(ConfigurationManager.SCREENSHOT_OLDER_THAN_DAYS, "90"), 90);
+                        //removed on 02/07/14
+                    	//Date nDaysAgo = DateUtils.getDayInPast(ndays, true);
+                        //long count = ScreenshotPersistenceUtils.deleteScreenshotsOlderThanDate(nDaysAgo);
                         //
-                    	Date nDaysAgo = DateUtils.getDayInPast(ndays, true);
-                        long count = ScreenshotPersistenceUtils.deleteScreenshotsOlderThanDate(nDaysAgo);
-                        //TODO remove on 02/07/14
-                        count += ScreenshotPersistenceUtils.deleteScreenshotsOlderThanDate(ndays);
+                        long count = ScreenshotPersistenceUtils.deleteScreenshotsOlderThanDate(ndays);
                         //
                         logger.log(Level.INFO, "Deleted {0} screenshots.", count);
                     } else {
