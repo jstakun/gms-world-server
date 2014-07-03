@@ -256,7 +256,7 @@ public class TwitterUtils extends LayerHelper {
         			followersStatuses.add(status);
         		}
         		int friendsSize = landmarks.size();
-        		landmarks.addAll(createCustomLandmarksList(followersStatuses, friends, locale, true));
+        		landmarks.addAll(createCustomLandmarksList(followersStatuses, followers, locale, true));
         		logger.log(Level.INFO, "Found " + (landmarks.size()-friendsSize) + " followers statuses");
         	} else {
         		logger.log(Level.INFO, "No followers found");
