@@ -42,7 +42,7 @@ public class FsAddVenueServlet extends HttpServlet {
     				catId = "4bf58dd8d48988d103941735"; //Home (private)
     			}
     			String ll = request.getParameter("ll");
-    			int responseCode = FoursquareUtils.addVenue(accessToken, name, desc, catId, ll);
+    			int responseCode = LayerHelperFactory.getFoursquareUtils().addVenue(accessToken, name, desc, catId, ll);
     			if (responseCode != HttpServletResponse.SC_OK) {
     				response.sendError(responseCode);
     			} else {

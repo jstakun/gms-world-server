@@ -22,6 +22,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
+import twitter4j.TwitterException;
+
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.Commons.Property;
@@ -29,6 +31,8 @@ import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.NumberUtils;
 import com.jstakun.lm.server.utils.StringUtil;
 import com.restfb.exception.FacebookOAuthException;
+
+import fi.foyt.foursquare.api.FoursquareApiException;
 
 /**
  *
@@ -239,7 +243,7 @@ public class LayersProviderServlet extends HttpServlet {
             			if (version > 4) {
                         	outString = LayerHelperFactory.getFlickrUtils().processRequest(latitudeMin, longitudeMin, null, radius * 1000, version, limit, stringLimit, null, null).toString();
                     	} else {
-                        	outString = FlickrUtils.processRequest(latitudeMin, latitudeMax, longitudeMin, longitudeMax, null, version, limit, stringLimit, formatParam);
+                        	outString = LayerHelperFactory.getFlickrUtils().processRequest(latitudeMin, latitudeMax, longitudeMin, longitudeMax, null, version, limit, stringLimit, formatParam);
                     	}
             		} 
                 }
@@ -254,7 +258,7 @@ public class LayersProviderServlet extends HttpServlet {
                 		if (version > 4) {
                 			outString = LayerHelperFactory.getGmsUtils().processRequest(latitudeMin, longitudeMin, null, radius * 1000, version, limit, stringLimit, layer, null).toString();
                 		} else {
-                			outString = GMSUtils.processRequest(latitudeMin, longitudeMin, latitudeMax, longitudeMax, version, limit, stringLimit, layer, formatParam);
+                			outString = LayerHelperFactory.getGmsUtils().processRequest(latitudeMin, longitudeMin, latitudeMax, longitudeMax, version, limit, stringLimit, layer, formatParam);
                 		}
                 	}	
                 }
@@ -305,9 +309,9 @@ public class LayersProviderServlet extends HttpServlet {
             			response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             		} else {
             			if (outFormat.equals(Format.JSON)) {
-            				outString = EventfulUtils.processRequest(null, version, stringLimit, request.getQueryString());
+            				outString = LayerHelperFactory.getEventfulUtils().processRequest(null, version, stringLimit, request.getQueryString());
             			} else {
-            				outString = EventfulUtils.processRequest(request.getQueryString());
+            				outString = LayerHelperFactory.getEventfulUtils().processRequest(request.getQueryString());
             			}
             		}
             	}
@@ -476,35 +480,35 @@ public class LayersProviderServlet extends HttpServlet {
                 } else {
                 	String token = URLDecoder.decode(request.getParameter("token"), "UTF-8");
                 	if (outFormat.equals(Format.BIN)) {
-                    	List<ExtendedLandmark> landmarks = FacebookUtils.getFriendsCheckinsToLandmarks(latitude, longitude, version, limit, stringLimit, token, l);
+                    	List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getFriendsCheckinsToLandmarks(latitude, longitude, version, limit, stringLimit, token, l);
                     	LayerHelperFactory.getFacebookUtils().serialize(landmarks, response.getOutputStream(), version);
                     } else {
                     	//outString = new JSONObject().put("ResultSet", landmarks).toString();
-                    	outString = FacebookUtils.getFriendsCheckinsToJSon(latitude, longitude, version, limit, stringLimit, token).toString();
+                    	outString = LayerHelperFactory.getFacebookUtils().getFriendsCheckinsToJSon(latitude, longitude, version, limit, stringLimit, token).toString();
                     }
                 }
             } else if (StringUtils.contains(uri, "fbPhotos")) {
-            	 if (HttpUtils.isEmptyAny(request,"lat","lng","token") && HttpUtils.isEmptyAny(request,"latitude","longitude","token")) {
+            	if (HttpUtils.isEmptyAny(request,"lat","lng","token") && HttpUtils.isEmptyAny(request,"latitude","longitude","token")) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                  } else {
                 	String token = URLDecoder.decode(request.getParameter("token"), "UTF-8");
                 	if (outFormat.equals(Format.BIN)) {
-                    	List<ExtendedLandmark> landmarks = FacebookUtils.getFriendsPhotosToLandmark(latitude, longitude, version, limit, stringLimit, token, l);
+                    	List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getFriendsPhotosToLandmark(latitude, longitude, version, limit, stringLimit, token, l);
                     	LayerHelperFactory.getFacebookUtils().serialize(landmarks, response.getOutputStream(), version);
                     } else {
-                    	outString = FacebookUtils.getFriendsPhotosToJSon(latitude, longitude, version, limit, stringLimit, token).toString();              
+                    	outString = LayerHelperFactory.getFacebookUtils().getFriendsPhotosToJSon(latitude, longitude, version, limit, stringLimit, token).toString();              
                     }
                  }
             } else if (StringUtils.contains(uri, "fsCheckins")) {
-            	String token = URLDecoder.decode(request.getParameter("token"), "UTF-8");
-                if (HttpUtils.isEmptyAny(request,"lat","lng","radius","token") && HttpUtils.isEmptyAny(request,"latitude","longitude","radius","token")) {
+            	if (HttpUtils.isEmptyAny(request,"lat","lng","radius","token") && HttpUtils.isEmptyAny(request,"latitude","longitude","radius","token")) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 } else { 
-                	if (outFormat.equals(Format.BIN)) {
-                    	List<ExtendedLandmark> landmarks = FoursquareUtils.getFriendsCheckinsToLandmarks(latitude, longitude, limit, version, token, language, l);
+                	String token = URLDecoder.decode(request.getParameter("token"), "UTF-8");
+                    if (outFormat.equals(Format.BIN)) {
+                    	List<ExtendedLandmark> landmarks = LayerHelperFactory.getFoursquareUtils().getFriendsCheckinsToLandmarks(latitude, longitude, limit, version, token, language, l);
                     	LayerHelperFactory.getFoursquareUtils().serialize(landmarks, response.getOutputStream(), version);
                     } else {
-                    	outString = FoursquareUtils.getFriendsCheckinsToJSon(latitude, longitude, limit, version, token, language).toString();
+                    	outString = LayerHelperFactory.getFoursquareUtils().getFriendsCheckinsToJSon(latitude, longitude, limit, version, token, language).toString();
                     }  
                 }
             } else if (StringUtils.contains(uri, "fsRecommended")) {
@@ -513,10 +517,10 @@ public class LayersProviderServlet extends HttpServlet {
                 } else {
                     String token = URLDecoder.decode(request.getParameter("token"), "UTF-8");
                     if (outFormat.equals(Format.BIN)) {
-                    	List<ExtendedLandmark> landmarks = FoursquareUtils.exploreVenuesToLandmark(latitude, longitude, null, radius * 1000, limit, version, token, language, l);
+                    	List<ExtendedLandmark> landmarks = LayerHelperFactory.getFoursquareUtils().exploreVenuesToLandmark(latitude, longitude, null, radius * 1000, limit, version, token, language, l);
                     	LayerHelperFactory.getFoursquareUtils().serialize(landmarks, response.getOutputStream(), version);
                     } else {
-                    	outString = FoursquareUtils.exploreVenuesToJSon(latitude, longitude, null, radius * 1000, limit, version, token, language).toString();
+                    	outString = LayerHelperFactory.getFoursquareUtils().exploreVenuesToJSon(latitude, longitude, null, radius * 1000, limit, version, token, language).toString();
                     }
                 }    
             } else if (StringUtils.contains(uri, "twFriends")) {
@@ -525,7 +529,7 @@ public class LayersProviderServlet extends HttpServlet {
             	} else {
             		String token = URLDecoder.decode(request.getParameter("token"), "UTF-8");
             		String secret = URLDecoder.decode(request.getParameter("secret"), "UTF-8");
-            		List<ExtendedLandmark> landmarks = TwitterUtils.getFriendsStatuses(token, secret, l);
+            		List<ExtendedLandmark> landmarks = LayerHelperFactory.getTwitterUtils().getFriendsStatuses(token, secret, l);
                     if (outFormat.equals(Format.BIN)) {
                     	LayerHelperFactory.getTwitterUtils().serialize(landmarks, response.getOutputStream(), version);
                     } else {
@@ -544,6 +548,24 @@ public class LayersProviderServlet extends HttpServlet {
             } else {
             	response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             }
+        } catch (TwitterException e) {
+        	logger.log(Level.SEVERE, e.getMessage(), e);
+        	if (e.getStatusCode() == HttpServletResponse.SC_UNAUTHORIZED) {
+        		if (outPrinter != null) {
+                	outString = "{\"error\":{\"message\":\"Twitter authentication error\"}}";
+                } else {
+                	response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                }
+        	}
+        } catch (FoursquareApiException e) {
+        	if (StringUtils.equals(e.getMessage(), "Unauthorized")) {
+        		if (outPrinter != null) {
+                	outString = "{\"error\":{\"message\":\"Foursquare authentication error\"}}";
+                } else {
+                	response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                }
+        	}
+        	logger.log(Level.SEVERE, e.getMessage(), e);
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
         } finally {

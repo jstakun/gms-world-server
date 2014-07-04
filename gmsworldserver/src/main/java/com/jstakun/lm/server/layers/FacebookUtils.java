@@ -48,7 +48,7 @@ public class FacebookUtils extends LayerHelper {
 
 	private static final String FBPLACES_PREFIX = "http://touch.facebook.com/profile.php?id=";
 	
-    protected static String getFriendsPhotosToJSon(double lat, double lng, int version, int limit, int stringLength, String token) throws JSONException, UnsupportedEncodingException {
+    protected String getFriendsPhotosToJSon(double lat, double lng, int version, int limit, int stringLength, String token) throws JSONException, UnsupportedEncodingException {
 
         String key = getCacheKey(FacebookUtils.class, "getFriendsPhotosToJSon", 0, 0, null, 0, version, limit, stringLength, token, null);
         String jsonString = CacheUtil.getString(key);
@@ -195,7 +195,7 @@ public class FacebookUtils extends LayerHelper {
         return jsonString;
     }
     
-    protected static List<ExtendedLandmark> getFriendsPhotosToLandmark(double lat, double lng, int version, int limit, int stringLength, String token, Locale locale) throws JSONException, UnsupportedEncodingException {
+    protected List<ExtendedLandmark> getFriendsPhotosToLandmark(double lat, double lng, int version, int limit, int stringLength, String token, Locale locale) throws JSONException, UnsupportedEncodingException {
 
         String key = getCacheKey(FacebookUtils.class, "getFriendsPhotosToLandmarks", 0, 0, null, 0, version, limit, stringLength, token, null);
         List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)CacheUtil.getObject(key);
@@ -332,7 +332,7 @@ public class FacebookUtils extends LayerHelper {
         return landmarks;
     }
 
-    protected static List<ExtendedLandmark> getFriendsCheckinsToLandmarks(double lat, double lng, int version, int limit, int stringLength, String token, Locale locale) throws JSONException, UnsupportedEncodingException {
+    protected List<ExtendedLandmark> getFriendsCheckinsToLandmarks(double lat, double lng, int version, int limit, int stringLength, String token, Locale locale) throws JSONException, UnsupportedEncodingException {
 
         String key = getCacheKey(FacebookUtils.class, "getFriendsCheckinsToLandmarks", 0, 0, null, 0, version, limit, stringLength, token, null);
         List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)CacheUtil.getObject(key);
@@ -473,7 +473,7 @@ public class FacebookUtils extends LayerHelper {
         return landmarks;
     }
     
-    protected static String getFriendsCheckinsToJSon(double lat, double lng, int version, int limit, int stringLength, String token) throws JSONException, UnsupportedEncodingException {
+    protected String getFriendsCheckinsToJSon(double lat, double lng, int version, int limit, int stringLength, String token) throws JSONException, UnsupportedEncodingException {
 
         String key = getCacheKey(FacebookUtils.class, "getFriendsCheckinsToJSon", 0, 0, null, 0, version, limit, stringLength, token, null);
         String jsonString = CacheUtil.getString(key);

@@ -32,7 +32,7 @@ import com.jstakun.lm.server.utils.StringUtil;
 public abstract class LayerHelper {
 
     protected static final Logger logger = Logger.getLogger(LayerHelper.class.getName());
-
+    
     protected JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2) throws Exception {
     	return null;
     }
@@ -92,7 +92,7 @@ public abstract class LayerHelper {
     	}
     }
     
-    protected static String getCacheKey(Class<?> clazz, String methodName, double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2) throws UnsupportedEncodingException {
+    protected String getCacheKey(Class<?> clazz, String methodName, double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2) throws UnsupportedEncodingException {
         List<String> params = new ArrayList<String>(12);
 
         params.add(clazz.getName());

@@ -74,12 +74,12 @@
         <dependency>
         	<groupId>org.twitter4j</groupId>
         	<artifactId>twitter4j-core</artifactId>
-        	<version>3.0.5</version>
+        	<version>4.0.2</version>
         </dependency>
         <dependency>
         	<groupId>com.twitter</groupId>
         	<artifactId>twitter-text</artifactId>
-        	<version>1.6.1</version>
+        	<version>1.9.5</version>
         </dependency>
         <dependency>
         	<groupId>org.apache.struts</groupId>
@@ -124,7 +124,7 @@
         <dependency>
         	<groupId>bitwalker</groupId>
         	<artifactId>UserAgentUtils</artifactId>
-        	<version>1.12</version>
+        	<version>1.13</version>
         </dependency>
         <dependency>
         	<groupId>org.tuckey</groupId>
@@ -139,12 +139,12 @@
         <dependency>
         	<groupId>com.google.apis</groupId>
         	<artifactId>google-api-services-blogger</artifactId>
-        	<version>v3-rev25-1.17.0-rc</version>
+        	<version>v3-rev37-1.18.0-rc</version>
         </dependency>
         <dependency>
         	<groupId>com.google.apis</groupId>
         	<artifactId>google-api-services-plus</artifactId>
-        	<version>v1-rev99-1.17.0-rc</version>
+        	<version>v1-rev128-1.18.0-rc</version>
         </dependency>
         <dependency>
         	<groupId>commons-fileupload</groupId>
@@ -159,7 +159,7 @@
         <dependency>
         	<groupId>org.ocpsoft.prettytime</groupId>
         	<artifactId>prettytime</artifactId>
-        	<version>3.2.4.Final</version>
+        	<version>3.2.5.Final</version>
         </dependency>
         <dependency>
         	<groupId>com.rosaloves</groupId>
@@ -184,12 +184,12 @@
         <dependency>
         	<groupId>com.google.http-client</groupId>
         	<artifactId>google-http-client-jackson</artifactId>
-        	<version>1.17.0-rc</version>
+        	<version>1.18.0-rc</version>
         </dependency>
         <dependency>
         	<groupId>com.google.http-client</groupId>
         	<artifactId>google-http-client-appengine</artifactId>
-        	<version>1.17.0-rc</version>
+        	<version>1.18.0-rc</version>
         </dependency>
         <dependency>
         	<groupId>org.apache.struts</groupId>
@@ -226,7 +226,7 @@
         <dependency>
         	<groupId>com.google.apis</groupId>
         	<artifactId>google-api-services-freebase</artifactId>
-        	<version>v1-rev46-1.17.0-rc</version>
+        	<version>v1-rev53-1.18.0-rc</version>
         </dependency>
         <dependency>
         	<groupId>junit</groupId>
@@ -247,7 +247,7 @@
         <dependency>
         	<groupId>com.google.appengine.tools</groupId>
         	<artifactId>appengine-gcs-client</artifactId>
-        	<version>0.3.12</version>
+        	<version>0.3.13</version>
         </dependency>
         <dependency>
         	<groupId>log4j</groupId>

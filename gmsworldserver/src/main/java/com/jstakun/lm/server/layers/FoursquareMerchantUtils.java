@@ -82,7 +82,7 @@ public class FoursquareMerchantUtils extends FoursquareUtils {
         return response;
     }
 	
-	private static JSONObject createCustomJsonFoursquareMerchantList(String fourquareJson, String locale, String categoryid, int stringLimit) throws JSONException {
+	private JSONObject createCustomJsonFoursquareMerchantList(String fourquareJson, String locale, String categoryid, int stringLimit) throws JSONException {
         List<Map<String, Object>> jsonArray = new ArrayList<Map<String, Object>>();
 
         if (StringUtils.startsWith(fourquareJson, "{")) {
@@ -228,7 +228,7 @@ public class FoursquareMerchantUtils extends FoursquareUtils {
         return json;
     }
 	
-	private static List<ExtendedLandmark> createCustomLandmarksFoursquareMerchantList(String fourquareJson, String locale, String categoryid, int stringLimit, Locale l) throws JSONException {
+	private List<ExtendedLandmark> createCustomLandmarksFoursquareMerchantList(String fourquareJson, String locale, String categoryid, int stringLimit, Locale l) throws JSONException {
         List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
         
     	if (StringUtils.startsWith(fourquareJson, "{")) {

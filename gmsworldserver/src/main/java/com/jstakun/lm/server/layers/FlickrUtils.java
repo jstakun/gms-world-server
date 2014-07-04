@@ -70,7 +70,7 @@ public class FlickrUtils extends LayerHelper {
         return json;
     }
 
-    protected static String processRequest(double latitudeMin, double latitudeMax, double longitudeMin, double longitudeMax, String query, int version, int limit, int stringLimit, String format) throws JSONException, ParserConfigurationException, UnsupportedEncodingException {
+    protected String processRequest(double latitudeMin, double latitudeMax, double longitudeMin, double longitudeMax, String query, int version, int limit, int stringLimit, String format) throws JSONException, ParserConfigurationException, UnsupportedEncodingException {
         String key = getCacheKey(FlickrUtils.class, "processRequest", (latitudeMin + latitudeMax) / 2, (longitudeMin + longitudeMax) / 2, query, 0, version, limit, stringLimit, format, null);
 
 

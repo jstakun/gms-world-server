@@ -67,7 +67,7 @@ public class EventfulUtils extends LayerHelper {
         return json;
     }
 
-    protected static String processRequest(String query, int version, int stringLimit, String queryString) throws IOException, JSONException, ParseException {
+    protected String processRequest(String query, int version, int stringLimit, String queryString) throws IOException, JSONException, ParseException {
         String key = getCacheKey(EventfulUtils.class, "processRequest", 0, 0, query, 0, version, 0, stringLimit, queryString, null);
 
         String output = CacheUtil.getString(key);
@@ -91,7 +91,7 @@ public class EventfulUtils extends LayerHelper {
         return output;
     }
 
-    protected static String processRequest(String queryString) throws MalformedURLException, IOException {
+    protected String processRequest(String queryString) throws MalformedURLException, IOException {
         return HttpUtils.processFileRequest(new URL("http://api.eventful.com/json/events/search?" + queryString + "&app_key=" + Commons.getProperty(Property.EVENTFUL_APP_KEY)));
     }
 

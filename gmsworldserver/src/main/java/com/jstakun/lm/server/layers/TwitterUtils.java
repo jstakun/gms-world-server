@@ -12,6 +12,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -42,7 +44,8 @@ import com.twitter.Autolink;
  */
 public class TwitterUtils extends LayerHelper {
 
-    @Override
+    
+	@Override
     protected JSONObject processRequest(double latitude, double longitude, String query, int distance, int version, int limit, int stringLimit, String lang, String flexString2) throws TwitterException, JSONException, UnsupportedEncodingException {
         int radius = NumberUtils.normalizeNumber(distance, 1, 3);
 
@@ -226,7 +229,7 @@ public class TwitterUtils extends LayerHelper {
         return reply;
 	}
 	
-	protected static List<ExtendedLandmark> getFriendsStatuses(String token, String secret, Locale locale) throws TwitterException, UnsupportedEncodingException {
+	protected List<ExtendedLandmark> getFriendsStatuses(String token, String secret, Locale locale) throws TwitterException, UnsupportedEncodingException {
 		String key = getCacheKey(TwitterUtils.class, "getFriendsStatuses", 0, 0, null, 0, 1, 1, 0, token, locale.getCountry());
         List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>) CacheUtil.getObject(key);
 
