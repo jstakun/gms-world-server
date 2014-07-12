@@ -100,6 +100,7 @@ public class ImageUploadServlet extends HttpServlet {
                     		
 	                        	try {
 	                        		if (ImageUtils.isBlackImage(screenshot)) {
+	                        			logger.log(Level.SEVERE, "This image might be black: " + imageUrl);
 	                        			MailUtils.sendBlackScreenshotNotification("Check this screenshot: " + imageUrl);
 	                        		}	
 	                        	} catch (Exception e) {

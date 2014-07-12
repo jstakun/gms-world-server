@@ -426,22 +426,6 @@
   <servlet-name>LandmarkFilterTaskServlet</servlet-name>
   <url-pattern>/tasks/landmarkFilterTask</url-pattern>
  </servlet-mapping>
- <!-- servlet-mapping>
-  <servlet-name>FBCheckinsServlet</servlet-name>
-  <url-pattern>/services/fbCheckins,/s/fbCheckins</url-pattern>
- </servlet-mapping>
- <servlet-mapping>
-  <servlet-name>FoursquareCheckinsServlet</servlet-name>
-  <url-pattern>/services/fsCheckins,/s/fsCheckins</url-pattern>
- </servlet-mapping>
- <servlet-mapping>
-  <servlet-name>FBPhotosServlet</servlet-name>
-  <url-pattern>/services/fbPhotos,/s/fbPhotos</url-pattern>
- </servlet-mapping>
- <servlet-mapping>
-  <servlet-name>FoursquareRecommendedServlet</servlet-name>
-  <url-pattern>/services/fsRecommended,/s/fsRecommended</url-pattern>
- </servlet-mapping-->
  <servlet-mapping>
   <servlet-name>NotificationsServlet</servlet-name>
   <url-pattern>/notifications,/services/notifications,/s/notifications</url-pattern>

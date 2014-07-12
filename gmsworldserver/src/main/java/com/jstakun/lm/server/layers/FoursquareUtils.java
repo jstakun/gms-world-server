@@ -214,15 +214,14 @@ public class FoursquareUtils extends LayerHelper {
                	params.put("query", query);
                }
                
-               Result<VenuesSearchResult> result = api.venuesSearch(params); 
-               
+               Result<VenuesSearchResult> result = api.venuesSearch(params);              
                
                if (result.getMeta().getCode() == 200) {
                    VenuesSearchResult searchResult = result.getResult();
                    CompactVenue[] venues = searchResult.getVenues();
                    logger.log(Level.INFO, "No of Foursquare search venues {0}", venues.length);
                    if (venues.length > 0) {
-                   		List<String> venueIds = new ArrayList<String>();
+                	    List<String> venueIds = new ArrayList<String>();
 
                    		for (int j = 0; j < venues.length; j++) {
                    			venueIds.add(venues[j].getId());
@@ -238,7 +237,7 @@ public class FoursquareUtils extends LayerHelper {
                    				attrs = new HashMap<String, String>();
                    			}
                        
-                   			ExtendedLandmark landmark = parseCompactVenueToLandmark(venue, attrs, lat, lng, l);
+                   			ExtendedLandmark landmark = parseCompactVenueToLandmark(venue, attrs, l);
                    			if (landmark != null) {
                    				response.add(landmark);
                    			}
@@ -258,7 +257,7 @@ public class FoursquareUtils extends LayerHelper {
 
                    if (venues.length > 0) {
                    		List<String> venueIds = new ArrayList<String>();
-
+                   		 
                    		for (int j = 0; j < venues.length; j++) {
                    			venueIds.add(venues[j].getId());
                    		}
@@ -285,7 +284,7 @@ public class FoursquareUtils extends LayerHelper {
                    				//}
                    			}
 
-                   			ExtendedLandmark landmark = parseCompactVenueToLandmark(venue, attrs, lat, lng, l);
+                   			ExtendedLandmark landmark = parseCompactVenueToLandmark(venue, attrs, l);
                    			if (landmark != null) {
                    				response.add(landmark);
                    			}
@@ -410,7 +409,7 @@ public class FoursquareUtils extends LayerHelper {
 
                         attrs.put("rating", "5");
 
-                        ExtendedLandmark landmark = parseCompactVenueToLandmark(venue, attrs, lat, lng, l);
+                        ExtendedLandmark landmark = parseCompactVenueToLandmark(venue, attrs, l);
                         if (landmark != null) {
                         	landmarks.add(landmark);
                         }
@@ -445,41 +444,70 @@ public class FoursquareUtils extends LayerHelper {
             if (response.getMeta().getCode() == 200) {
                 Checkin[] checkins = response.getResult();
                 logger.log(Level.INFO, "No of Foursquare checkins {0}", checkins.length);
-                
-                
+                ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource", l);
+                PrettyTime prettyTime = new PrettyTime(l);
+            	Calendar cal = Calendar.getInstance();
+            	List<CompactVenue> venues = new ArrayList<CompactVenue>();
+            	Map<String, Map<String, String>> venuesAttrs = new HashMap<String, Map<String, String>>(); 
+                       
                 for (int j = 0; j < checkins.length; j++) {
                     Checkin checkin = checkins[j];
-
                     CompactVenue venue = checkin.getVenue();
-
                     if (venue != null) {
-
-                        Photo[] photos = checkin.getPhotos().getItems();
-                        String photo = null;
-                        if (photos.length > 0) {
-                            photo = photos[0].getUrl();
-                        }
-
-                        String username = checkin.getUser().getFirstName();
-                        String lastname = checkin.getUser().getLastName();
-                        if (StringUtils.isNotEmpty(lastname)) {
-                            username += " " + lastname;
-                        }
-
-                        long creationDate = checkin.getCreatedAt() * 1000;
-
-                        Map<String, String> attrs = new HashMap<String, String>();
-                        attrs.put("creationDate", Long.toString(creationDate));
-                        attrs.put("username", username);
-
-                        if (photo != null) {
-                            attrs.put("photo", photo);
-                        }
-                        ExtendedLandmark landmark = parseCompactVenueToLandmark(venue, attrs, latitude, longitude, l);
-                        if (landmark != null) {
-                        	landmarks.add(landmark);
-                        }                  
+                    	String venueid = venue.getId();
+                    	
+                    	venues.add(venue);                   	
+                    	Map<String, String> attrs = venuesAttrs.get(venueid);
+                    	
+                    	if (attrs == null) {
+                    		attrs = new HashMap<String, String>();                    
+                    		//photo
+                    		Photo[] photos = checkin.getPhotos().getItems();
+                    		String photo = null;
+                    		if (photos.length > 0) {
+                    			photo = photos[0].getUrl();
+                    		}
+                    		if (photo != null) {
+                    			attrs.put("photo", photo);
+                    		}
+                        
+                    		//creationDate
+                    		long creationDate = checkin.getCreatedAt() * 1000;
+                    		attrs.put("creationDate", Long.toString(creationDate));
+                        
+                    		//checkin
+                    		String username = checkin.getUser().getFirstName();
+                    		String lastname = checkin.getUser().getLastName();
+                    		if (StringUtils.isNotEmpty(lastname)) {
+                    			username += " " + lastname;
+                    		}
+                    		cal.setTimeInMillis(creationDate);
+                    		String checkinStr = String.format(rb.getString("Landmark.checkinUser"), username, prettyTime.format(cal.getTime())); 
+                    		attrs.put("checkin", checkinStr);
+                    		
+                    		venuesAttrs.put(venueid, attrs);
+                    	} else {
+                    		//creationDate
+                    		long creationDate = checkin.getCreatedAt() * 1000;
+                    		String username = checkin.getUser().getFirstName();
+                    		String lastname = checkin.getUser().getLastName();
+                    		if (StringUtils.isNotEmpty(lastname)) {
+                    			username += " " + lastname;
+                    		}
+                    		cal.setTimeInMillis(creationDate);
+                    		String checkinStr = String.format(rb.getString("Landmark.checkinUser"), username, prettyTime.format(cal.getTime())); 
+                    		attrs.put("checkin", attrs.get("checkin") + ", " + checkinStr);
+                    	}                 
                     }
+                }
+                
+                for (CompactVenue venue : venues) {
+                	//create landmark
+                	Map<String, String> attrs = venuesAttrs.get(venue.getId());
+                	ExtendedLandmark landmark = parseCompactVenueToLandmark(venue, attrs, l);
+                    if (landmark != null) {
+                    	landmarks.add(landmark);
+                    } 
                 }
             } else {
             	handleError(response.getMeta(), key);
@@ -525,18 +553,18 @@ public class FoursquareUtils extends LayerHelper {
                             photo = photos[0].getUrl();
                         }
 
+                        Map<String, String> attrs = new HashMap<String, String>();
+                        
                         String username = checkin.getUser().getFirstName();
                         String lastname = checkin.getUser().getLastName();
                         if (StringUtils.isNotEmpty(lastname)) {
                             username += " " + lastname;
                         }
-
-                        long creationDate = checkin.getCreatedAt() * 1000;
-
-                        Map<String, String> attrs = new HashMap<String, String>();
-                        attrs.put("creationDate", Long.toString(creationDate));
                         attrs.put("username", username);
 
+                        long creationDate = checkin.getCreatedAt() * 1000;
+                        attrs.put("creationDate", Long.toString(creationDate));
+                        
                         if (version > 1 && photo != null) {
                             attrs.put("photo", photo);
                         }
@@ -643,7 +671,7 @@ public class FoursquareUtils extends LayerHelper {
         return jsonObject;
     }
     
-    private static ExtendedLandmark parseCompactVenueToLandmark(CompactVenue venue, Map<String, String> desc, double myLat, double myLng, Locale locale) {
+    private static ExtendedLandmark parseCompactVenueToLandmark(CompactVenue venue, Map<String, String> desc, Locale locale) {
     	ExtendedLandmark landmark = null;
     	Location location = venue.getLocation();
 
@@ -717,14 +745,9 @@ public class FoursquareUtils extends LayerHelper {
             	landmark.setRating(rating);
             }
             
-            String username = desc.remove("username");
-            if (username != null) {
-            	PrettyTime prettyTime = new PrettyTime(locale);
-            	ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource", locale);
-                Calendar cal = Calendar.getInstance();
-            	cal.setTimeInMillis(creationDate);
-            	String checkins = String.format(rb.getString("Landmark.checkinUser"), username, prettyTime.format(cal.getTime())); 
-            	tokens.put("checkins", checkins);
+            String checkin = desc.remove("checkin");
+            if (StringUtils.isNotEmpty(checkin)) {
+            	tokens.put("checkins", checkin);
                 landmark.setHasCheckinsOrPhotos(true);
             }
 

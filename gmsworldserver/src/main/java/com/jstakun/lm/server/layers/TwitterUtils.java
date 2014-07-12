@@ -12,8 +12,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -259,7 +257,12 @@ public class TwitterUtils extends LayerHelper {
         			followersStatuses.add(status);
         		}
         		int friendsSize = landmarks.size();
-        		landmarks.addAll(createCustomLandmarksList(followersStatuses, followers, locale, true));
+        		List<ExtendedLandmark> followersLandmarks = createCustomLandmarksList(followersStatuses, followers, locale, true);
+        		for (ExtendedLandmark followerLandmark : followersLandmarks) {
+        			if (!landmarks.contains(followerLandmark)) {
+        				landmarks.add(followerLandmark);
+        			}
+        		}
         		logger.log(Level.INFO, "Found " + (landmarks.size()-friendsSize) + " followers statuses");
         	} else {
         		logger.log(Level.INFO, "No followers found");
