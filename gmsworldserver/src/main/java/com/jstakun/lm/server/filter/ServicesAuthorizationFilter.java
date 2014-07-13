@@ -93,7 +93,7 @@ public class ServicesAuthorizationFilter implements Filter {
         				if (StringUtils.startsWith(tokenJson, "{")) {
         					JSONObject root = new JSONObject(tokenJson);
         					auth = root.getBoolean("output");
-        				} else if (tokenJson == null) {
+        				} else if (tokenJson == null || StringUtils.contains(tokenJson, "503 Service Temporarily Unavailable")) {
         				    noservice = true;
         				} else {
         					logger.log(Level.SEVERE, "Received following server response {0}", tokenJson);

@@ -454,13 +454,12 @@ public class FoursquareUtils extends LayerHelper {
                     Checkin checkin = checkins[j];
                     CompactVenue venue = checkin.getVenue();
                     if (venue != null) {
-                    	String venueid = venue.getId();
-                    	
-                    	venues.add(venue);                   	
+                    	String venueid = venue.getId();                	
                     	Map<String, String> attrs = venuesAttrs.get(venueid);
                     	
                     	if (attrs == null) {
-                    		attrs = new HashMap<String, String>();                    
+                    		venues.add(venue);                   	
+                        	attrs = new HashMap<String, String>();                    
                     		//photo
                     		Photo[] photos = checkin.getPhotos().getItems();
                     		String photo = null;
