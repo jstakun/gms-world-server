@@ -2,7 +2,6 @@ package com.jstakun.lm.server.layers;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,10 +15,8 @@ import org.apache.struts.action.ActionMapping;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 
 public class FreebaseViewAction extends Action {
-	private static final String SUCCESS = "success";
 	private static final String MOBILE = "mobile";
-	private static final Logger logger = Logger.getLogger(FreebaseViewAction.class.getName());
-
+	
     /**
      * This is the action called from the Struts framework.
      * @param mapping The ActionMapping used to select this instance.

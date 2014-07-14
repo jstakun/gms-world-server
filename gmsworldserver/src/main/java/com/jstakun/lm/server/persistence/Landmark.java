@@ -37,7 +37,7 @@ public class Landmark implements Serializable {
     
     private String hash;
    
-    private String email;
+    //private String email;
 
     public Landmark(double latitude, double longitude, double altitude, String name, String description, String username, Date validityDate, String layer, List<String> geoCells, String email) {
         this();
@@ -49,7 +49,7 @@ public class Landmark implements Serializable {
         this.username = username;
         this.validityDate = validityDate;       
         this.layer = layer;
-        this.email = email;
+        //this.email = email;
     }
     
     public Landmark() {

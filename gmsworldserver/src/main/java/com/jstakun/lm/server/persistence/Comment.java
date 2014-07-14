@@ -12,13 +12,13 @@ public class Comment implements Serializable {
 
   private static final long serialVersionUID = 1L;
   private Date creationDate;
-  private String landmarkKey;
+  //private String landmarkKey;
   private String message;
   private String username;
 
   public Comment(String username, String landmarkKey, String message) {
      this();
-	 this.landmarkKey = landmarkKey;
+	 //this.landmarkKey = landmarkKey;
      this.message = message;
      this.username = username;
   }

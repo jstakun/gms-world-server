@@ -1,14 +1,6 @@
 package net.gms_world.gmsworldserver;
 
-import static org.junit.Assert.*;
-
-import java.util.List;
-import java.util.Locale;
-
 import org.junit.Test;
-
-import com.jstakun.gms.android.landmarks.ExtendedLandmark;
-import com.jstakun.lm.server.layers.FlickrUtils;
 
 public class FlickrTest {
 

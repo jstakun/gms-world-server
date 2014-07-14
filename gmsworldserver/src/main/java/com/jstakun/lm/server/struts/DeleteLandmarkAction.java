@@ -1,6 +1,5 @@
 package com.jstakun.lm.server.struts;
 
-import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -27,7 +26,7 @@ public class DeleteLandmarkAction extends Action {
 
         if (request.getParameter("key") != null)
         {
-            String key = (String)request.getParameter("key"); 
+            //String key = (String)request.getParameter("key"); 
             //TODO implement LandmarkPersistenceUtils.deleteLandmark(key);
         }
 

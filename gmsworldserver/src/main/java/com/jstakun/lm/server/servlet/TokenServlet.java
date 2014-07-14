@@ -25,7 +25,6 @@ public class TokenServlet extends HttpServlet {
      */
     public TokenServlet() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
 	/**

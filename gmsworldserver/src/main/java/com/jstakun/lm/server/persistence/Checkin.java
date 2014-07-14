@@ -15,16 +15,16 @@ import java.util.Date;
 public class Checkin implements Serializable {
   private static final long serialVersionUID = 1L;
   private Date creationDate;
-  private String landmarkKey;
   private String username;
-  private Integer type; //0 qr, 1 web
+  //private String landmarkKey;
+  //private Integer type; //0 qr, 1 web
 
   public Checkin(String username, String landmarkKey, Integer type)
   {
 	  this();
       this.username = username;
-      this.landmarkKey = landmarkKey;
-      this.type = type;
+      //this.landmarkKey = landmarkKey;
+      //this.type = type;
   }
   
   public Checkin() {

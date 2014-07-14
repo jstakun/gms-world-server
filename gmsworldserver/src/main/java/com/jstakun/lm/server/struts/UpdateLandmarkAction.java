@@ -1,6 +1,5 @@
 package com.jstakun.lm.server.struts;
 
-import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Date;

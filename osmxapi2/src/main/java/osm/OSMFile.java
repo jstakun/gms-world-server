@@ -123,7 +123,6 @@ public class OSMFile {
      * @return
      */
     public Node findNodeById(int id) {
-        // TODO Need a better data structure for id => primitive
         for (Node node : nodes) {
             if (node.getID() == id) {
                 return node;
@@ -137,7 +136,6 @@ public class OSMFile {
      * @return
      */
     public Primitive findRelationById(int refId) {
-        // TODO Need a better data structure for id => primitive
         for (Relation relation : relations) {
             if (relation.getID() == refId) {
                 return relation;
@@ -151,7 +149,6 @@ public class OSMFile {
      * @return
      */
     public Primitive findWayById(int refId) {
-        // TODO Need a better data structure for id => primitive
         for (Way way : ways) {
             if (way.getID() == refId) {
                 return way;

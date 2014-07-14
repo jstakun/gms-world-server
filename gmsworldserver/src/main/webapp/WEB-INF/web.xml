@@ -241,19 +241,11 @@
   <servlet-name>EmailingTaskServlet</servlet-name>
   <servlet-class>com.jstakun.lm.server.tasks.EmailingTaskServlet</servlet-class>
  </servlet>
- <servlet>
-  <servlet-name>PersonalizeTaskServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.tasks.PersonalizeTaskServlet</servlet-class>
- </servlet>
- <!-- servlet>
+ <!--servlet>
   <servlet-name>_ah_sessioncleanup</servlet-name>
   <servlet-class>com.google.apphosting.utils.servlet.SessionCleanupServlet</servlet-class>
- </servlet-->
- <servlet>
-  <servlet-name>LandmarkFilterTaskServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.tasks.LandmarkFilterTaskServlet</servlet-class>
  </servlet>
- <!-- servlet>
+ <servlet>
   <servlet-name>FBCheckinsServlet</servlet-name>
   <servlet-class>com.jstakun.lm.server.servlet.FBCheckinsServlet</servlet-class>
  </servlet>
@@ -417,14 +409,6 @@
  <servlet-mapping>
   <servlet-name>EmailingTaskServlet</servlet-name>
   <url-pattern>/tasks/emailingTask</url-pattern>
- </servlet-mapping>
- <servlet-mapping>
-  <servlet-name>PersonalizeTaskServlet</servlet-name>
-  <url-pattern>/tasks/personalizeTask</url-pattern>
- </servlet-mapping>
- <servlet-mapping>
-  <servlet-name>LandmarkFilterTaskServlet</servlet-name>
-  <url-pattern>/tasks/landmarkFilterTask</url-pattern>
  </servlet-mapping>
  <servlet-mapping>
   <servlet-name>NotificationsServlet</servlet-name>

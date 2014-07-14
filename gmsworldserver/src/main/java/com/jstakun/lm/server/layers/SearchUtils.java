@@ -12,8 +12,7 @@ public class SearchUtils extends LayerHelper {
 			String query, int radius, int version, int limit, int stringLimit,
 			String flexString, String flexString2, Locale locale)
 			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		throw new Exception("Not yet implemented");
 	}
 
 	

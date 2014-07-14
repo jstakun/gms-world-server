@@ -5,7 +5,6 @@
 
 package com.jstakun.lm.server.persistence;
 
-import java.util.Date;
 
 /**
  *
@@ -23,15 +22,15 @@ public class User {
 
   private String lastname;
 
-  private Date regDate;
+  //private Date regDate;
 
   private Boolean confirmed;
 
-  private Date confirmDate;
+  //private Date confirmDate;
 
   private String personalInfo;
 
-  private Date lastLogonDate;
+  //private Date lastLogonDate;
 
   public User(String login, String password, String email, String firstname, String lastname)
   {
@@ -45,7 +44,7 @@ public class User {
   }
   
   public User() {
-	  this.regDate = new Date(System.currentTimeMillis());
+	  //this.regDate = new Date(System.currentTimeMillis());
   }
 
   public String getPassword()
@@ -70,9 +69,9 @@ public class User {
     /**
      * @param confirmDate the confirmDate to set
      */
-    public void setConfirmDate(Date confirmDate) {
-        this.confirmDate = confirmDate;
-    }
+    //public void setConfirmDate(Date confirmDate) {
+    //    this.confirmDate = confirmDate;
+    //}
 
     /**
      * @return the login
@@ -126,7 +125,7 @@ public class User {
     /**
      * @param lastLogonDate the lastLogonDate to set
      */
-    public void setLastLogonDate(Date lastLogonDate) {
-        this.lastLogonDate = lastLogonDate;
-    }
+    //public void setLastLogonDate(Date lastLogonDate) {
+    //    this.lastLogonDate = lastLogonDate;
+    //}
 }

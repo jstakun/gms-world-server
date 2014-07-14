@@ -3,7 +3,6 @@ package osm.primitive;
 public class User {
 
     public User(int uid, String user) {
-        // TODO Auto-generated constructor stub
     }
 
     int id;

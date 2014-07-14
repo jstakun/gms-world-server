@@ -14,11 +14,6 @@ public class SaveEverything extends AbstractOutputter {
         this.finalOutput = finalOutput;
     }
     
-    private boolean checkChanges() {
-        // Never save the file.
-        return false;
-    }
-    
     public void write(OSMFile out) {
         for (OutputFilter filter : filters) {
             out = filter.apply(out);

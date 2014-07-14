@@ -9,8 +9,10 @@ public class NumberUtilsTest {
 	@Test
 	public void test() {
 		//fail("Not yet implemented");
-		int limit = (int)1E16;
-        /*long start = System.currentTimeMillis();
+		
+		//int limit = (int)1E16;
+        
+		/*long start = System.currentTimeMillis();
         for (int i=0;i<limit;i++) {
             String number = i + 0.25 + "";
             Double.parseDouble(number);
@@ -34,7 +36,7 @@ public class NumberUtilsTest {
         end = System.currentTimeMillis();
         System.out.println("Double.valueOf(): " + (end - start) + " ms");*/
 
-        long start = System.currentTimeMillis();
+        /*long start = System.currentTimeMillis();
         for (int i=0;i<limit;i++) {
             double number = 12345678 / 1E6;
         }
@@ -46,7 +48,7 @@ public class NumberUtilsTest {
             double number = 12345678 * 0.000001;
         }
         end = System.currentTimeMillis();
-        System.out.println("Mult: " + (end - start) + " ms");
+        System.out.println("Mult: " + (end - start) + " ms");*/
 	}
 
 }

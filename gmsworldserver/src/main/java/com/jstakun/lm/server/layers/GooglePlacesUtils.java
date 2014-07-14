@@ -42,7 +42,7 @@ import com.openlapi.QualifiedCoordinates;
  */
 public class GooglePlacesUtils extends LayerHelper {
 
-	private static final String[] TYPES = {
+	/*private static final String[] TYPES = {
 		"accounting",
 	    "airport",
 	    "amusement_park",
@@ -139,7 +139,7 @@ public class GooglePlacesUtils extends LayerHelper {
 	    "university",
 	    "veterinary_care",
 	    "zoo",		
-	};
+	};*/
 	
 	private static final int QUOTA_LIMIT = 30;
 	private static final String types = "establishment";

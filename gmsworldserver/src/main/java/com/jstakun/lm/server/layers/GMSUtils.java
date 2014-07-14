@@ -22,7 +22,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
@@ -189,7 +188,7 @@ public class GMSUtils extends LayerHelper {
         return landmarks;
 	}
 	
-	private class QueryPredicate implements Predicate<Landmark> {
+	/*private class QueryPredicate implements Predicate<Landmark> {
 
 		String query = null;
 		
@@ -202,7 +201,7 @@ public class GMSUtils extends LayerHelper {
 			return (query == null || StringUtils.containsIgnoreCase(l.getName(), query) || StringUtils.containsIgnoreCase(l.getDescription(), query)); 
 		}
 		
-	}
+	}*/
 	
 	private class LandmarkTransformFunction implements Function<Landmark, ExtendedLandmark> {
 		//private String layer = null;
