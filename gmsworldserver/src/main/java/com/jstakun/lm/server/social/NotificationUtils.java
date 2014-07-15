@@ -188,7 +188,10 @@ public class NotificationUtils {
     	} else if (StringUtils.equals(service, Commons.FOURSQUARE)) {
     		layer = Commons.FOURSQUARE_LAYER;
     	} else if (StringUtils.equals(service, Commons.GOOGLE_PLUS)) {
-    		String refreshToken = params.get("refreshToken")[0];
+    		String refreshToken = null;
+    		if (params.containsKey("refreshToken")) {
+    			refreshToken = params.get("refreshToken")[0];
+    		}
         	GooglePlusUtils.sendMessage(accessToken, refreshToken, null, ConfigurationManager.SERVER_URL, Commons.LOGIN);
         	layer = "Google";
     	} else if (StringUtils.equals(service, Commons.LINKEDIN)) {

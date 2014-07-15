@@ -27,7 +27,22 @@
             	<img src="/images/openshift.png" alt="Powered by OpenShift" />
             </a>
         </p>
+        
+        <p>
+            <a href="https://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui">
+  				<img alt="Get it on Google Play" src="/images/en_generic_rgb_wo_60.png" />
+			</a>
+        </p>
        
+        <p>
+            <a href="http://www.amazon.com/gp/product/B004X2NR7O/ref=mas_pm_Landmark_Manager">
+            	<img alt="Get it on Amazon AppStore" src="/images/amazon-apps-store.png"/>
+            </a>	
+        </p>
+        
+        <p>
+            <a href="http://apps.opera.com/badge.php?a=c&v=dark&did=7629&pid=36609" target="_blank"><img src="https://apps.opera.com/badge.php?a=s&v=dark&did=7629&pid=36609" width="173" height="55" alt="Opera Mobile Store" title="Opera Mobile Store"/></a>  
+        </p>
     </div>
 
     <div class="sidemenu">
