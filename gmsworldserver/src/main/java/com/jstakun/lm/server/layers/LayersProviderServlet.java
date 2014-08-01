@@ -439,7 +439,7 @@ public class LayersProviderServlet extends HttpServlet {
                         }
 
                 		outString = LayerHelperFactory.getHotelsCombinedUtils().processRequest(latitudeMin, longitudeMin, null, radius, version, limit, stringLimit, language, flex2).toString();
-                	}
+                    }
                 }
             } else if (StringUtils.contains(uri, "twitterProvider")) {
                 if (HttpUtils.isEmptyAny(request, "lat", "lng", "radius") && HttpUtils.isEmptyAny(request, "latitude", "longitude", "radius")) {

@@ -492,35 +492,23 @@ public class JSONUtils {
                     ratingStr = "<img src=\"star_0\" alt=\"_\"/>";
                 }
             }
-        	ratingStr = rb.getString("Landmark.userRating") + " " + ratingStr;
+        	NumberFormat nf = NumberFormat.getNumberInstance(locale);
+            nf.setMaximumFractionDigits(2);
+            nf.format(r);
+            
+        	ratingStr = String.format(rb.getString("Landmark.userRating"), nf.format(r), ratingStr);
         }
         
-        //if (ratingStr.length() > 0) {
-        //    if (!layer.equals(Commons.YELP_LAYER)) {
-        //        ratingStr += ",";
-        //    }
-        //    ratingStr += " ";
-        //}
-            
         int reviews = landmark.getNumberOfReviews();
         if (reviews == 1) {
-        	if (!ratingStr.isEmpty()) {
-        		ratingStr += ", ";
-        	}
-            ratingStr += rb.getString("Landmark.numberOfReviews_single");
+        	ratingStr += rb.getString("Landmark.numberOfReviews_single");
         } else if (reviews > 1 && reviews < 5) {
-        	if (!ratingStr.isEmpty()) {
-        		ratingStr += ", ";
-        	}
-            ratingStr += String.format(rb.getString("Landmark.numberOfReviews_2_4"), reviews); 
+        	ratingStr += String.format(rb.getString("Landmark.numberOfReviews_2_4"), reviews); 
         } else if (reviews > 4) {
-        	if (!ratingStr.isEmpty()) {
-        		ratingStr += ", ";
-        	}
-            ratingStr += String.format(rb.getString("Landmark.numberOfReviews_multiple"), reviews);
+        	ratingStr += String.format(rb.getString("Landmark.numberOfReviews_multiple"), reviews);
         }
         
-        if (ratingStr.length() > 0) {
+        if (StringUtils.isNotEmpty(ratingStr)) {
             otherNamed.add(ratingStr);
         }
 

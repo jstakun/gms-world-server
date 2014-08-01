@@ -79,6 +79,8 @@ public class ImageUploadServlet extends HttpServlet {
                     	byte[] screenshot = IOUtils.toByteArray(item.openStream());
                     	
                     	if (screenshot != null && screenshot.length > 0) {
+                    		
+                    		itemName = System.currentTimeMillis() + "_" + itemName;
                     	
                     		FileUtils.saveFileV2(itemName, screenshot, lat, lng);
                         
