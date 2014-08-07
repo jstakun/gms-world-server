@@ -69,7 +69,9 @@ public final class ConfigurationManager {
 	public static final String ADMIN_MAIL = "jstakun.appspot@gmail.com";
 	public static final String ADMIN_NICK = "GMS World Administrator";
     
-    private static Map<String, String> configuration = new HashMap<String, String>();
+	//TODO need to extend BaseConfigurationMangaer
+	
+	private static Map<String, String> configuration = new HashMap<String, String>();
     public static final String CONFIG = "config";
     
     public static void populateConfig()

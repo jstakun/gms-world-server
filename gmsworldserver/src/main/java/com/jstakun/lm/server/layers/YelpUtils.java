@@ -64,7 +64,7 @@ public class YelpUtils extends LayerHelper {
         		int offset = 0;
 
         		while (offset < normalizedLimit) {
-        			Thread venueDetailsRetriever = ThreadUtil.newThread(new VenueDetailsRetriever(venueDetailsThreads, venueArray,
+        			Thread venueDetailsRetriever = threadProvider.newThread(new VenueDetailsRetriever(venueDetailsThreads, venueArray,
                         lat, lng, query, normalizedRadius, offset, isDeal, stringLimit, language, "json", null));
         			venueDetailsThreads.put(offset, venueDetailsRetriever);
         			venueDetailsRetriever.start();
@@ -326,7 +326,7 @@ public class YelpUtils extends LayerHelper {
         return total;
     }
 
-    public static Map<String, Map<String, String>> processReviewsRequest(double latitude, double longitude, String query, int radius, int limit, boolean hasDeals, String language) throws JSONException, IOException, OAuthException {
+    public Map<String, Map<String, String>> processReviewsRequest(double latitude, double longitude, String query, int radius, int limit, boolean hasDeals, String language) throws JSONException, IOException, OAuthException {
         
     	Map<String, Map<String, String>> reviewsArray = new HashMap<String, Map<String, String>>();
     	
@@ -337,7 +337,7 @@ public class YelpUtils extends LayerHelper {
     		int offset = 0;
 
     		while (offset < limit) {
-    			Thread venueDetailsRetriever = ThreadUtil.newThread(new ReviewDetailsRetriever(venueDetailsThreads, reviewsArray,
+    			Thread venueDetailsRetriever = threadProvider.newThread(new ReviewDetailsRetriever(venueDetailsThreads, reviewsArray,
                     latitude, longitude, query, normalizedRadius, offset, hasDeals, language));
     			venueDetailsThreads.put(offset, venueDetailsRetriever);
     			venueDetailsRetriever.start();
@@ -448,7 +448,7 @@ public class YelpUtils extends LayerHelper {
         		int offset = 0;
 
         		while (offset < normalizedLimit) {
-        			Thread venueDetailsRetriever = ThreadUtil.newThread(new VenueDetailsRetriever(venueDetailsThreads, landmarks,
+        			Thread venueDetailsRetriever = threadProvider.newThread(new VenueDetailsRetriever(venueDetailsThreads, landmarks,
                         lat, lng, query, normalizedRadius, offset, isDeal, stringLimit, language, "bin", locale));
         			venueDetailsThreads.put(offset, venueDetailsRetriever);
         			venueDetailsRetriever.start();

@@ -825,7 +825,7 @@ public class FacebookUtils extends LayerHelper {
         return landmarks;
     }
 
-    private static void readFacebookPlacesDetails(FacebookClient facebookClient, List<String> pages, Map<String, Map<String, String>> pageDescs, int stringLength) {
+    private void readFacebookPlacesDetails(FacebookClient facebookClient, List<String> pages, Map<String, Map<String, String>> pageDescs, int stringLength) {
         if (!pages.isEmpty()) {
             //limited due to url fetch limit = 2048 characters
             int first = 0, last = 50;
@@ -840,7 +840,7 @@ public class FacebookUtils extends LayerHelper {
 
                 String pageIds = StringUtils.join(pages.subList(first, last), ",");
 
-                Thread venueDetailsRetriever = ThreadUtil.newThread(new VenueDetailsRetriever(venueDetailsThreads, pageDescs,
+                Thread venueDetailsRetriever = threadProvider.newThread(new VenueDetailsRetriever(venueDetailsThreads, pageDescs,
                         facebookClient, pageIds, stringLength));
 
                 venueDetailsThreads.put(pageIds, venueDetailsRetriever);

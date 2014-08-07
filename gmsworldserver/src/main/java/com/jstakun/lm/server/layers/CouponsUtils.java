@@ -11,11 +11,13 @@ import org.json.JSONObject;
 import com.jstakun.gms.android.deals.Deal;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
+
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.Commons.Property;
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.JSONUtils;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
+
 import com.openlapi.AddressInfo;
 import com.openlapi.QualifiedCoordinates;
 
@@ -80,7 +82,7 @@ public class CouponsUtils extends LayerHelper {
                 Map<String, Map<String, String>> reviewsArray = new HashMap<String, Map<String, String>>();
                 try {
                     if (YelpUtils.hasNeighborhoods(lat, lng)) {
-                        reviewsArray = YelpUtils.processReviewsRequest(lat, lng, query, radius * 1000, limit, true, language);
+                        reviewsArray = LayerHelperFactory.getYelpUtils().processReviewsRequest(lat, lng, query, radius * 1000, limit, true, language);
                     }
                 } catch (Exception e) {
                     logger.log(Level.SEVERE, null, e);
@@ -341,7 +343,7 @@ public class CouponsUtils extends LayerHelper {
                 Map<String, Map<String, String>> reviewsArray = new HashMap<String, Map<String, String>>();
                 try {
                     if (YelpUtils.hasNeighborhoods(lat, lng)) {
-                        reviewsArray = YelpUtils.processReviewsRequest(lat, lng, query, radius * 1000, limit, true, language);
+                        reviewsArray = LayerHelperFactory.getYelpUtils().processReviewsRequest(lat, lng, query, radius * 1000, limit, true, language);
                     }
                 } catch (Exception e) {
                     logger.log(Level.SEVERE, null, e);

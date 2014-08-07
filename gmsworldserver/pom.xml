@@ -17,10 +17,6 @@
 
     <repositories>
     	<repository>
-    		<id>sonatype-releases</id>
-    		<url>https://oss.sonatype.org/content/repositories/releases/</url>
-  		</repository>
-  		<repository>
   			<id>bitwalker.user-agent-utils.mvn.repo</id>
   			<url>https://raw.github.com/HaraldWalker/user-agent-utils/mvn-repo/</url>
   			<!-- use snapshot version -->
@@ -30,6 +26,10 @@
    			</snapshots>
 		</repository>
 		<repository>
+    		<id>sonatype-releases</id>
+    		<url>https://oss.sonatype.org/content/repositories/releases/</url>
+  		</repository>
+  		<repository>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>

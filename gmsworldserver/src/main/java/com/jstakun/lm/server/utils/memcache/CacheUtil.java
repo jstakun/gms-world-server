@@ -78,22 +78,6 @@ public class CacheUtil {
 	    }
 	}
 	
-	/*public static <T> List<T> getList(Class<T> type, String key) {
-		Object o = getObject(key);
-		if (o != null && o instanceof List) {
-			Type genericType = o.getClass();
-			ParameterizedType pType = (ParameterizedType)genericType;
-			Class<?> paramType = (Class<?>) pType.getActualTypeArguments()[0];
-			if (paramType.isAssignableFrom(type)) {
-				return (List<T>) o;
-			} else {
-				return null;
-			}
-		} else {
-			return null;
-		}
-	}*/
-	
 	public static boolean containsKey(String key) {
 		return getCache().containsKey(key);
 	}

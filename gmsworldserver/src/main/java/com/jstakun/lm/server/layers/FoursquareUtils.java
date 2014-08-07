@@ -801,7 +801,7 @@ public class FoursquareUtils extends LayerHelper {
             if (i % 5 == 4 || i == (venueIds.size() - 1)) {
                 //call foursquare
 
-                Thread venueDetailsRetriever = ThreadUtil.newThread(new VenueDetailsRetriever(venueDetailsThreads, attrs,
+                Thread venueDetailsRetriever = threadProvider.newThread(new VenueDetailsRetriever(venueDetailsThreads, attrs,
                         locale, urlPrefix.toString(), multiRequest, venueId, bitlyFailed));
 
                 venueDetailsThreads.put(multiRequest, venueDetailsRetriever);

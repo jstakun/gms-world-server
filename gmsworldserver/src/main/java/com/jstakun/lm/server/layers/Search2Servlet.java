@@ -18,6 +18,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -29,6 +30,7 @@ import org.json.JSONObject;
 import com.google.appengine.api.ThreadManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.lm.server.config.Commons;
+import com.jstakun.lm.server.utils.GoogleThreadProvider;
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.JSONUtils;
 import com.jstakun.lm.server.utils.NumberUtils;
@@ -54,6 +56,16 @@ public class Search2Servlet extends HttpServlet {
     private List<ExtendedLandmark> foundLandmarks;
     private Locale locale;
 
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        GoogleThreadProvider googleThreadProvider = new GoogleThreadProvider();
+        LayerHelperFactory.getFacebookUtils().setThreadProvider(googleThreadProvider);
+        LayerHelperFactory.getFoursquareUtils().setThreadProvider(googleThreadProvider);
+        LayerHelperFactory.getFoursquareMerchantUtils().setThreadProvider(googleThreadProvider);
+        LayerHelperFactory.getYelpUtils().setThreadProvider(googleThreadProvider);
+        LayerHelperFactory.getGooglePlacesUtils().setThreadProvider(googleThreadProvider);
+    }
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request

@@ -37,8 +37,4 @@ public class ThreadUtil {
             }
         }
     }
-    
-    public static Thread newThread(Runnable r) {
-    	return ThreadManager.createThreadForCurrentRequest(r); //.currentRequestThreadFactory().newThread(r);
-    }
 }

@@ -24,6 +24,7 @@ import org.json.JSONObject;
 
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.lm.server.utils.StringUtil;
+import com.jstakun.lm.server.utils.ThreadProvider;
 
 /**
  *
@@ -32,7 +33,11 @@ import com.jstakun.lm.server.utils.StringUtil;
 public abstract class LayerHelper {
 
     protected static final Logger logger = Logger.getLogger(LayerHelper.class.getName());
-    
+    protected ThreadProvider threadProvider = null;
+	
+	public void setThreadProvider(ThreadProvider threadProvider){
+		this.threadProvider = threadProvider;
+	}
     protected JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2) throws Exception {
     	return null;
     }

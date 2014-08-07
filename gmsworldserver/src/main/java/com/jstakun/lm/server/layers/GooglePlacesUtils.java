@@ -187,7 +187,7 @@ public class GooglePlacesUtils extends LayerHelper {
         return response;
     }
     
-    private static void processRadarRequest(List<String> placeDetails, String queryString, int limit, String language) throws MalformedURLException, IOException, JSONException {
+    private void processRadarRequest(List<String> placeDetails, String queryString, int limit, String language) throws MalformedURLException, IOException, JSONException {
         String url = "https://maps.googleapis.com/maps/api/place/radarsearch/json?" + queryString;
         URL placesUrl = new URL(url);
         String placesResponse = HttpUtils.processFileRequest(placesUrl);
@@ -377,7 +377,7 @@ public class GooglePlacesUtils extends LayerHelper {
         return landmarks;
     }
 
-    private static void processDetails(List<String> placeDetails, JSONArray results, int limit, String language) throws JSONException, MalformedURLException, IOException {
+    private void processDetails(List<String> placeDetails, JSONArray results, int limit, String language) throws JSONException, MalformedURLException, IOException {
 
         Map<String, Thread> venueDetailsThreads = new ConcurrentHashMap<String, Thread>();
         
@@ -392,7 +392,7 @@ public class GooglePlacesUtils extends LayerHelper {
             JSONObject item = results.getJSONObject(i);
             String reference = item.getString("reference");
 
-            Thread venueDetailsRetriever = ThreadUtil.newThread(new VenueDetailsRetriever(venueDetailsThreads, placeDetails,
+            Thread venueDetailsRetriever = threadProvider.newThread(new VenueDetailsRetriever(venueDetailsThreads, placeDetails,
                     reference, language));
 
             venueDetailsThreads.put(reference, venueDetailsRetriever);
