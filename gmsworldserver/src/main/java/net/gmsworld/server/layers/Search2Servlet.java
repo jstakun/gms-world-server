@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.jstakun.lm.server.layers;
+package net.gmsworld.server.layers;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -36,6 +36,7 @@ import com.jstakun.lm.server.utils.JSONUtils;
 import com.jstakun.lm.server.utils.NumberUtils;
 import com.jstakun.lm.server.utils.StringUtil;
 import com.jstakun.lm.server.utils.ThreadUtil;
+import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 
 /**
  *
@@ -59,12 +60,8 @@ public class Search2Servlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        //GoogleThreadProvider googleThreadProvider = new GoogleThreadProvider();
-        //LayerHelperFactory.getFacebookUtils().setThreadProvider(googleThreadProvider);
-        //LayerHelperFactory.getFoursquareUtils().setThreadProvider(googleThreadProvider);
-        //LayerHelperFactory.getFoursquareMerchantUtils().setThreadProvider(googleThreadProvider);
-        //LayerHelperFactory.getYelpUtils().setThreadProvider(googleThreadProvider);
-        //LayerHelperFactory.getGooglePlacesUtils().setThreadProvider(googleThreadProvider);
+        LayerHelperFactory.setCacheProvider(new GoogleCacheProvider());
+        LayerHelperFactory.setThreadProvider(new GoogleThreadProvider());
     }
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.

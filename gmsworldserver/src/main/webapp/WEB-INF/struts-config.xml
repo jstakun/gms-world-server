@@ -136,7 +136,7 @@
             <forward name="success" path="/image.jsp"/>
             <forward name="mobile" path="/m/image.jsp"/>
          </action>
-         <action path="/freebaseView" type="com.jstakun.lm.server.layers.FreebaseViewAction">
+         <action path="/freebaseView" type="net.gmsworld.server.layers.FreebaseViewAction">
             <forward name="mobile" path="/m/freebase.jsp"/>
          </action>
          <action path="/welcome" type="com.jstakun.lm.server.struts.WelcomeAction">

@@ -1,5 +1,7 @@
 package com.jstakun.lm.server.utils.memcache;
 
+import net.gmsworld.server.utils.memcache.CacheProvider;
+
 public class GoogleCacheProvider implements CacheProvider {
 
 	@Override

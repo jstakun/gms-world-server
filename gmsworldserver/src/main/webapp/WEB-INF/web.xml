@@ -162,7 +162,7 @@
  </filter-mapping-->
  <servlet>
   <servlet-name>LandmarkPersistenceServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.layers.PersistLandmarkServlet</servlet-class>
+  <servlet-class>net.gmsworld.server.layers.PersistLandmarkServlet</servlet-class>
  </servlet>
  <servlet>
   <servlet-name>action</servlet-name>
@@ -187,7 +187,7 @@
  </servlet>
  <servlet>
   <servlet-name>ListLayersServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.layers.ListLayersServlet</servlet-class>
+  <servlet-class>net.gmsworld.server.layers.ListLayersServlet</servlet-class>
  </servlet>
  <servlet>
   <servlet-name>OAuthServlet</servlet-name>
@@ -203,11 +203,11 @@
  </servlet>
  <servlet>
   <servlet-name>GeocodeServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.layers.GeocodeServlet</servlet-class>
+  <servlet-class>net.gmsworld.server.layers.GeocodeServlet</servlet-class>
  </servlet>
  <servlet>
   <servlet-name>FbPlacesServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.layers.FBPlacesServlet</servlet-class>
+  <servlet-class>net.gmsworld.server.layers.FBPlacesServlet</servlet-class>
  </servlet>
  <servlet>
   <servlet-name>ServiceLogAnalyticsServlet</servlet-name>
@@ -215,7 +215,7 @@
  </servlet>
  <servlet>
   <servlet-name>PanoramioProviderServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.layers.PanoramioProviderServlet</servlet-class>
+  <servlet-class>net.gmsworld.server.layers.PanoramioProviderServlet</servlet-class>
  </servlet>
  <servlet>
   <servlet-name>AddCommentServlet</servlet-name>
@@ -223,7 +223,7 @@
  </servlet>
  <servlet>
   <servlet-name>RouteProviderServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.layers.RouteProviderServlet</servlet-class>
+  <servlet-class>net.gmsworld.server.layers.RouteProviderServlet</servlet-class>
  </servlet>
  <servlet>
   <servlet-name>TaskServlet</servlet-name>
@@ -263,7 +263,7 @@
  </servlet-->
  <servlet>
   <servlet-name>Search2Servlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.layers.Search2Servlet</servlet-class>
+  <servlet-class>net.gmsworld.server.layers.Search2Servlet</servlet-class>
   <load-on-startup>1</load-on-startup>
  </servlet>
  <servlet>
@@ -272,7 +272,7 @@
  </servlet>
  <servlet>
   <servlet-name>LayersProviderServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.layers.LayersProviderServlet</servlet-class>
+  <servlet-class>net.gmsworld.server.layers.LayersProviderServlet</servlet-class>
   <load-on-startup>1</load-on-startup>
  </servlet>
  <servlet>
@@ -301,7 +301,7 @@
  </servlet>
  <servlet>
   <servlet-name>FsAddVenueServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.layers.FsAddVenueServlet</servlet-class>
+  <servlet-class>net.gmsworld.server.layers.FsAddVenueServlet</servlet-class>
  </servlet>
  <servlet>
   <servlet-name>NotificationTaskServlet</servlet-name>

@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.jstakun.lm.server.layers;
+package net.gmsworld.server.layers;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,6 +31,7 @@ import com.jstakun.lm.server.utils.GoogleThreadProvider;
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.NumberUtils;
 import com.jstakun.lm.server.utils.StringUtil;
+import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.restfb.exception.FacebookOAuthException;
 
 import fi.foyt.foursquare.api.FoursquareApiException;
@@ -48,7 +49,7 @@ public class LayersProviderServlet extends HttpServlet {
 	private static final Logger logger = Logger.getLogger(LayersProviderServlet.class.getName());
 	private static enum Format {BIN, XML, KML, JSON};
 
-    /**
+	/**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
      * @param response servlet response
@@ -588,12 +589,8 @@ public class LayersProviderServlet extends HttpServlet {
         super.init(config);
         InputStream stream = getServletContext().getResourceAsStream(Commons.getProperty(Property.mcopenapi_privKeyFile));
         LayerHelperFactory.getMcOpenApiUtils().setPrivateKey(stream);
-        //GoogleThreadProvider googleThreadProvider = new GoogleThreadProvider();
-        //LayerHelperFactory.getFacebookUtils().setThreadProvider(googleThreadProvider);
-        //LayerHelperFactory.getFoursquareUtils().setThreadProvider(googleThreadProvider);
-        //LayerHelperFactory.getFoursquareMerchantUtils().setThreadProvider(googleThreadProvider);  
-        //LayerHelperFactory.getYelpUtils().setThreadProvider(googleThreadProvider);
-        //LayerHelperFactory.getGooglePlacesUtils().setThreadProvider(googleThreadProvider);
+        LayerHelperFactory.setCacheProvider(new GoogleCacheProvider());
+        LayerHelperFactory.setThreadProvider(new GoogleThreadProvider());
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
