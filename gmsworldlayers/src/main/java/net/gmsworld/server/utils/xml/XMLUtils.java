@@ -10,7 +10,10 @@ import com.google.gdata.data.geo.impl.GeoRssWhere;
 import com.google.gdata.data.media.mediarss.MediaPlayer;
 import com.google.gdata.data.youtube.VideoEntry;
 import com.google.gdata.data.youtube.YouTubeMediaGroup;
+import net.gmsworld.server.utils.persistence.Landmark;
+
 import net.gmsworld.server.utils.UrlUtils;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -20,6 +23,66 @@ import java.util.List;
  */
 public class XMLUtils {
 
+	public static String createCustomXmlLandmarkList(List<Landmark> landmarkList, String landingPage) {
+        StringBuilder xml = new StringBuilder();
+        xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n");
+        xml.append("<landmarks>\r\n");
+
+        Iterator<Landmark> iter = landmarkList.iterator();
+
+        while (iter.hasNext()) {
+            Landmark landmark = iter.next();
+            xml.append(" <landmark>\r\n");
+            xml.append("  <name>" + landmark.getName() + "</name>\r\n");
+            xml.append("  <description>" + landmark.getDescription() + "</description>\r\n");
+            xml.append("  <latitude>" + landmark.getLatitude() + "</latitude>\r\n");
+            xml.append("  <longitude>" + landmark.getLongitude() + "</longitude>\r\n");
+            xml.append("  <key>" + landmark.getId() + "</key>\r\n");
+            xml.append(" </landmark>\r\n");
+        }
+
+        xml.append("</landmarks>\r\n");
+
+        return xml.toString();
+    }
+
+    public static String createKmlLandmarkList(List<Landmark> landmarkList, String landingPage) {
+        StringBuilder xml = new StringBuilder();
+
+        xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n");
+        xml.append("<kml xmlns=\"http://www.opengis.net/kml/2.2\">\r\n");
+        xml.append(" <Document>\r\n");
+        xml.append("  <name>Landmark Manager Search Results</name>\r\n");
+        xml.append("  <Folder>\r\n");
+        xml.append("   <name>Landmark Manager Public Landmarks</name>\r\n");
+
+        Iterator<Landmark> iter = landmarkList.iterator();
+
+        while (iter.hasNext()) {
+            Landmark landmark = iter.next();
+
+            xml.append("   <Placemark>\r\n");
+            xml.append("    <name>" + landmark.getName() + "</name>\r\n");
+            //xml.append("   <description>" + landmark.getDescription() + "</description>\r\n");
+            xml.append("    <description>" + landingPage + landmark.getId() + "</description>\r\n");
+            //<IconStyle>
+            //<Icon>
+            //<href>http://maps.google.com/mapfiles/kml/pal3/icon61.png</href>
+            //</Icon>
+            //</IconStyle>
+            xml.append("   <Point>\r\n");
+            xml.append("    <coordinates>" + landmark.getLongitude() + "," + landmark.getLatitude() + ",0</coordinates>\r\n");
+            xml.append("   </Point>\r\n");
+            xml.append("  </Placemark>\r\n");
+
+        }
+        xml.append("  </Folder>\r\n");
+        xml.append("</Document>\r\n");
+        xml.append("</kml>");
+
+        return xml.toString();
+    }
+	
     public static String createCustomXmlPhotoList(PhotoList<Photo> photos) {
         StringBuilder xml = new StringBuilder();
         xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n");

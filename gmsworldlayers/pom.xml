@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.gms-world</groupId>
   <artifactId>gmsworldlayers</artifactId>
-  <version>0.0.2-SNAPSHOT</version>
+  <version>0.0.3-SNAPSHOT</version>
   
   <repositories>
      <repository>
@@ -99,6 +99,11 @@
   		<groupId>org.ocpsoft.prettytime</groupId>
   		<artifactId>prettytime</artifactId>
   		<version>3.2.5.Final</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>commons-validator</groupId>
+  		<artifactId>commons-validator</artifactId>
+  		<version>1.4.0</version>
   	</dependency>
   </dependencies>
 </project>

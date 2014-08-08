@@ -9,11 +9,14 @@ import static com.rosaloves.bitlyj.Bitly.shorten;
 
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.config.ConfigurationManager;
+import net.gmsworld.server.utils.persistence.Landmark;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -29,6 +32,7 @@ public class UrlUtils {
     private static final Logger logger = Logger.getLogger(UrlUtils.class.getName());
     private static final Provider bitly = as(Commons.getProperty(Property.BITLY_USERNAME), Commons.getProperty(Property.BITLY_APIKEY));
     public final static String BITLY_URL = "http://bit.ly/";
+    private static final long DB_MIGRATION_DATE = 1373846399000L; //14-07-13 23:59:59
     
     //http://www.facebook.com/profile.php?id=uid
     //http://twitter.com/uid
@@ -149,6 +153,20 @@ public class UrlUtils {
         } catch (Exception ex) {
             logger.log(Level.WARNING, "Bitly API exception: ", ex);
             return null;
+        }
+    }
+    
+    public static String getLandmarkUrl(Landmark landmark) {
+        String hash = landmark.getHash();
+        Date creationDate = landmark.getCreationDate();
+        //hash not empty and not /showLandmark/null
+        if ((creationDate == null || creationDate.getTime() > DB_MIGRATION_DATE) && StringUtils.isNotEmpty(hash) && !StringUtils.equals(hash, "12wsNzG")) { 
+            //logger.log(Level.INFO, "Landmark " + landmark.getName() + " created after migration");
+            //logger.log(Level.INFO, landmark.getCreationDate().getTime() + " > " + DB_MIGRATION_DATE);
+        	return BITLY_URL + hash;
+        } else {
+        	//logger.log(Level.INFO, "Landmark " + landmark.getName() + " created before migration");
+        	return ConfigurationManager.SERVER_URL + "showLandmark/" + landmark.getId();
         }
     }
 }
