@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package net.gmsworld.server.layers;
 
 import java.io.InputStream;
@@ -58,6 +54,10 @@ public class McOpenApiUtils extends LayerHelper {
 
     private static PrivateKey privateKey = null;
 
+    protected boolean isPrivateKeySet() {
+    	return (privateKey != null);
+    }
+    
     @Override
     protected JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2) throws Exception {
         String key = getCacheKey(getClass(), "processRequest", lat, lng, query, radius, version, limit, stringLimit, flexString, flexString2);
