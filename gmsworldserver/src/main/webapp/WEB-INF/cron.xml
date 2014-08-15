@@ -19,6 +19,11 @@
     <description>Clean up screenshots older than 60 days</description>
     <schedule>every day 04:30</schedule>
   </cron>
+  <cron>
+    <url>/cron/taskExecute?action=rhcloud</url>
+    <description>Red Hat OpenShift public cloud health check</description>
+    <schedule>every 60 minutes</schedule>
+  </cron>
 </cronentries>
 
 

@@ -76,6 +76,8 @@ public class TaskExecuteServlet extends HttpServlet {
                         forDays = "0";
                     }
                     queue.add(withUrl("/tasks/landmarkFilterTask").param("filterProperty", filterProperty).param("pattern", pattern).param("resultProperty", resultProperty).param("forDays", forDays));
+                } else if (action.equalsIgnoreCase("rhcloud")) {
+                	queue.add(withUrl("/tasks/execute").param("action", "rhcloud"));
                 }
             }
             out.println("Task executed.<br/><br/><a href=\"index.jsp\">Back</a>");

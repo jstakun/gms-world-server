@@ -6,12 +6,14 @@ package com.jstakun.lm.server.tasks;
 
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.utils.DateUtils;
+import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.NumberUtils;
 import com.jstakun.lm.server.utils.persistence.ScreenshotPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.ServiceLogPersistenceUtils;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URL;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -70,8 +72,14 @@ public class TaskServlet extends HttpServlet {
                     } else {
                         logger.log(Level.INFO, "Wrong parameter entity: {0}", entity);
                     }
+                } else if (action.equalsIgnoreCase("rhcloud")) {
+                	logger.log(Level.INFO, "Checking if hotels app is running...");
+                	HttpUtils.processFileRequest(new URL("http://hotels-gmsworld.rhcloud.com/snoop.jsp"));
+                	logger.log(Level.INFO, "Checking if landmarks app is running...");
+                	HttpUtils.processFileRequest(new URL("http://landmarks-gmsworld.rhcloud.com/snoop.jsp"));
+                	logger.log(Level.INFO, "Done");
                 } else {
-                    logger.log(Level.INFO, "Wrong parameter action: {0}", action);
+                    logger.log(Level.SEVERE, "Wrong parameter action: {0}", action);
                 }
             }
         } finally {
