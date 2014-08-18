@@ -54,7 +54,7 @@ public final class Commons {
 		WEBCAM_API_KEY, //
 		YELP_Consumer_Key, YELP_Consumer_Secret, YELP_Token, YELP_Token_Secret, YELP_ywsid, //
 		YOUTUBE_API_KEY, //
-		RH_GMS_USER, //
+		RH_GMS_USER, RH_ACCOUNT //
 	};
 	
 	public static String getProperty(Property property) {

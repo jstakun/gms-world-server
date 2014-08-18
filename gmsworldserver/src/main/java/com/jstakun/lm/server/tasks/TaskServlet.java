@@ -121,7 +121,7 @@ public class TaskServlet extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Task Servlet";
+        return "Cron Tasks Servlet";
     }
     
     private static void rhcloudHealthCheck(String appname, String healthCheckUrl) throws IOException {
@@ -132,8 +132,12 @@ public class TaskServlet extends HttpServlet {
     	logger.log(Level.INFO, "Received server response code " + status);
     	if (status != null && status == 503) {
     		logger.log(Level.SEVERE, "Received Service Unavailable error response!");
-    		String apiUrl = "https://openshift.redhat.com/broker/rest/domains/" + domainName + "/applications/" + appname + "/events";
-        	String response = HttpUtils.processFileRequestWithBasicAuthn(new URL(apiUrl), "POST", null, "event=start", Commons.getProperty(Property.RH_ACCOUNT));
+    		URL apiUrl = new URL("https://openshift.redhat.com/broker/rest/domains/" + domainName + "/applications/" + appname + "/events");
+        	String response = HttpUtils.processFileRequestWithBasicAuthn(apiUrl, "POST", "application/json", "event=start", Commons.getProperty(Property.RH_ACCOUNT));
+        	status = HttpUtils.getResponseCode(apiUrl.toExternalForm());
+        	if (status != null && status != 200) {
+        		logger.log(Level.SEVERE, "Received server response code " + status);
+        	}
         	logger.log(Level.INFO, "Received following server response: {0}", response);
     	}
     }
