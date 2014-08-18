@@ -5,15 +5,20 @@
 package com.jstakun.lm.server.utils;
 
 import com.google.gdata.util.common.util.Base64;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
@@ -25,6 +30,7 @@ public class HttpUtils {
 
     private static final Logger logger = Logger.getLogger(HttpUtils.class.getName());
     private static final int timeoutMs = 30000;
+    private static final Map<String, Integer> httpResponseStatuses = new HashMap<String, Integer>();
 
     public static String processFileRequestWithLocale(URL fileUrl, String locale) throws IOException {
         return processFileRequest(fileUrl, false, null, null, "GET", locale, null, null);
@@ -92,6 +98,7 @@ public class HttpUtils {
             //int length = conn.getContentLength();
             if (conn != null) {
                 int responseCode = conn.getResponseCode();
+                httpResponseStatuses.put(fileUrl.toExternalForm(), responseCode);
 
                 if (responseCode == HttpServletResponse.SC_OK) {
                     is = conn.getInputStream();
@@ -185,5 +192,9 @@ public class HttpUtils {
             }
         }
         return isMissing;
+    }
+    
+    public static Integer getResponseCode(String url) {
+    	return httpResponseStatuses.get(url);
     }
 }

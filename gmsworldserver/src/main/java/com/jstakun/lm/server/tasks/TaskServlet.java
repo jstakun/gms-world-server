@@ -23,6 +23,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
+
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -36,6 +39,7 @@ public class TaskServlet extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(TaskServlet.class.getName());
+	private static final String domainName = "gmsworld";
 
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -73,10 +77,8 @@ public class TaskServlet extends HttpServlet {
                         logger.log(Level.INFO, "Wrong parameter entity: {0}", entity);
                     }
                 } else if (action.equalsIgnoreCase("rhcloud")) {
-                	logger.log(Level.INFO, "Checking if hotels app is running...");
-                	HttpUtils.processFileRequest(new URL("http://hotels-gmsworld.rhcloud.com/snoop.jsp"));
-                	logger.log(Level.INFO, "Checking if landmarks app is running...");
-                	HttpUtils.processFileRequest(new URL("http://landmarks-gmsworld.rhcloud.com/snoop.jsp"));
+                	rhcloudHealthCheck("hotels", "http://hotels-gmsworld.rhcloud.com/snoop.jsp");
+                	rhcloudHealthCheck("landmarks", "http://landmarks-gmsworld.rhcloud.com/snoop.jsp");
                 	logger.log(Level.INFO, "Done");
                 } else {
                     logger.log(Level.SEVERE, "Wrong parameter action: {0}", action);
@@ -120,5 +122,19 @@ public class TaskServlet extends HttpServlet {
     @Override
     public String getServletInfo() {
         return "Task Servlet";
+    }
+    
+    private static void rhcloudHealthCheck(String appname, String healthCheckUrl) throws IOException {
+    	logger.log(Level.INFO, "Checking if {0} app is running...", appname);
+    	URL rhcloudUrl = new URL(healthCheckUrl);
+    	HttpUtils.processFileRequest(rhcloudUrl);
+    	Integer status = HttpUtils.getResponseCode(rhcloudUrl.toExternalForm()); 
+    	logger.log(Level.INFO, "Received server response code " + status);
+    	if (status != null && status == 503) {
+    		logger.log(Level.SEVERE, "Received Service Unavailable error response!");
+    		String apiUrl = "https://openshift.redhat.com/broker/rest/domains/" + domainName + "/applications/" + appname + "/events";
+        	String response = HttpUtils.processFileRequestWithBasicAuthn(new URL(apiUrl), "POST", null, "event=start", Commons.getProperty(Property.RH_ACCOUNT));
+        	logger.log(Level.INFO, "Received following server response: {0}", response);
+    	}
     }
 }
