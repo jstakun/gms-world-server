@@ -1,5 +1,5 @@
 <%@page contentType="text/html" pageEncoding="utf-8"%>
-<%@page import="com.jstakun.gms.android.landmarks.ExtendedLandmark,
+<%@page import="com.jstakun.gms.android.landmarks.old.ExtendedLandmark,
                 com.jstakun.lm.server.utils.MathUtils" %>
 <!DOCTYPE html>
 <html>

@@ -126,7 +126,7 @@ public class OsmXapiUtils extends LayerHelper {
     }
 
     @Override
-    protected JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String amenity, String bbox) throws Exception {
+	public JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String amenity, String bbox) throws Exception {
         //String key = "OSM_" + bbox + "_" + limit + "_" + amenity;
 
         String key = getCacheKey(getClass(), "processRequest", 0, 0, query, radius, version, limit, stringLimit, amenity, bbox);
@@ -159,7 +159,7 @@ public class OsmXapiUtils extends LayerHelper {
     }
 
 	@Override
-	protected List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String amenity, String bbox, Locale locale)	throws Exception {
+	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String amenity, String bbox, Locale locale)	throws Exception {
 		String key = getCacheKey(getClass(), "processBinaryRequest", 0, 0, query, radius, version, limit, stringLimit, amenity, bbox);
 
 		List<ExtendedLandmark> output = (List<ExtendedLandmark>)cacheProvider.getObject(key);

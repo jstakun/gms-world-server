@@ -23,14 +23,6 @@ import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.ocpsoft.prettytime.PrettyTime;
-
-import com.jstakun.gms.android.landmarks.ExtendedLandmark;
-import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.HttpUtils;
@@ -39,7 +31,15 @@ import net.gmsworld.server.utils.MathUtils;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.ThreadUtil;
 import net.gmsworld.server.utils.UrlUtils;
-import net.gmsworld.server.utils.memcache.CacheProvider;
+
+import org.apache.commons.lang.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.ocpsoft.prettytime.PrettyTime;
+
+import com.jstakun.gms.android.landmarks.ExtendedLandmark;
+import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.openlapi.AddressInfo;
 import com.openlapi.QualifiedCoordinates;
 
@@ -72,7 +72,7 @@ public class FoursquareUtils extends LayerHelper {
     protected static final String FOURSQUARE_PREFIX = "http://foursquare.com/venue/";
     
     @Override
-    protected JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String intent, String locale) throws JSONException, MalformedURLException, IOException, FoursquareApiException {
+	public JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String intent, String locale) throws JSONException, MalformedURLException, IOException, FoursquareApiException {
         String key = getCacheKey(getClass(), "processRequest", lat, lng, query, radius, version, limit, stringLimit, intent, locale);
         JSONObject response = null;
         String cachedResponse = cacheProvider.getString(key);
@@ -193,7 +193,7 @@ public class FoursquareUtils extends LayerHelper {
     }
     
     @Override
-    protected List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String intent, String locale, Locale l) throws Exception {
+	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String intent, String locale, Locale l) throws Exception {
        	String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, limit, stringLimit, intent, locale);
            List<ExtendedLandmark> response = (List<ExtendedLandmark>) cacheProvider.getObject(key);
            
@@ -305,7 +305,7 @@ public class FoursquareUtils extends LayerHelper {
            return response;
    	}
 
-    protected String exploreVenuesToJSon(double lat, double lng, String query, int radius, int limit, int version, String token, String locale) throws JSONException, MalformedURLException, IOException, FoursquareApiException {
+    public String exploreVenuesToJSon(double lat, double lng, String query, int radius, int limit, int version, String token, String locale) throws JSONException, MalformedURLException, IOException, FoursquareApiException {
         String key = getCacheKey(FoursquareUtils.class, "exploreVenuesToJSon", lat, lng, query, radius, version, limit, 0, token, locale);
         String jsonString = cacheProvider.getString(key);
         if (jsonString == null) {
@@ -369,7 +369,7 @@ public class FoursquareUtils extends LayerHelper {
         return jsonString;
      }
     
-    protected List<ExtendedLandmark> exploreVenuesToLandmark(double lat, double lng, String query, int radius, int limit, int version, String token, String locale, Locale l) throws JSONException, MalformedURLException, IOException, FoursquareApiException {
+    public List<ExtendedLandmark> exploreVenuesToLandmark(double lat, double lng, String query, int radius, int limit, int version, String token, String locale, Locale l) throws JSONException, MalformedURLException, IOException, FoursquareApiException {
         String key = getCacheKey(FoursquareUtils.class, "exploreVenuesToLandmark", lat, lng, query, radius, version, limit, 0, token, locale);
         List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)cacheProvider.getObject(key);
         if (landmarks == null) {
@@ -430,7 +430,7 @@ public class FoursquareUtils extends LayerHelper {
         return landmarks;
     }
 
-    protected List<ExtendedLandmark> getFriendsCheckinsToLandmarks(double latitude, double longitude, int limit, int version, String token, String locale, Locale l) throws FoursquareApiException, JSONException, UnsupportedEncodingException {
+    public List<ExtendedLandmark> getFriendsCheckinsToLandmarks(double latitude, double longitude, int limit, int version, String token, String locale, Locale l) throws FoursquareApiException, JSONException, UnsupportedEncodingException {
         String key = getCacheKey(FoursquareUtils.class, "getFriendsCheckinsToLandmark", 0, 0, null, 0, version, limit, 0, token, locale);
         List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>) cacheProvider.getObject(key);
 
@@ -524,7 +524,7 @@ public class FoursquareUtils extends LayerHelper {
         return landmarks;
     }
 
-    protected String getFriendsCheckinsToJSon(double latitude, double longitude, int limit, int version, String token, String locale) throws FoursquareApiException, JSONException, UnsupportedEncodingException {
+    public String getFriendsCheckinsToJSon(double latitude, double longitude, int limit, int version, String token, String locale) throws FoursquareApiException, JSONException, UnsupportedEncodingException {
         String key = getCacheKey(FoursquareUtils.class, "getFriendsCheckinsToJSon", 0, 0, null, 0, version, limit, 0, token, locale);
         String jsonString = cacheProvider.getString(key);
 
@@ -817,7 +817,7 @@ public class FoursquareUtils extends LayerHelper {
         return attrs;
     }
      
-    protected int addVenue(String accessToken, String name, String desc, String primaryCategoryId, String ll) {
+    public int addVenue(String accessToken, String name, String desc, String primaryCategoryId, String ll) {
     	try {
     		FoursquareApi api = getFoursquareApi(accessToken);
     		Result<CompleteVenue> result = api.venuesAdd(name, null, null, null, null, null, null, ll, primaryCategoryId, desc);

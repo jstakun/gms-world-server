@@ -59,7 +59,7 @@ public class McOpenApiUtils extends LayerHelper {
     }
     
     @Override
-    protected JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2) throws Exception {
+	public JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2) throws Exception {
         String key = getCacheKey(getClass(), "processRequest", lat, lng, query, radius, version, limit, stringLimit, flexString, flexString2);
         String output = cacheProvider.getString(key);
 
@@ -93,7 +93,7 @@ public class McOpenApiUtils extends LayerHelper {
         return null;
     }
 
-    protected void setPrivateKey(InputStream stream) {
+    public void setPrivateKey(InputStream stream) {
         if (privateKey == null) {
             try {
                 KeyStore ks = KeyStore.getInstance("PKCS12");
@@ -184,7 +184,7 @@ public class McOpenApiUtils extends LayerHelper {
     }
 
 	@Override
-	protected List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale) throws Exception {
+	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale) throws Exception {
 		String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, limit, stringLimit, flexString, flexString2);
 		List<ExtendedLandmark> output = (List<ExtendedLandmark>)cacheProvider.getObject(key);
 

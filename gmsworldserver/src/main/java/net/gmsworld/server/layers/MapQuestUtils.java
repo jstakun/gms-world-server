@@ -27,7 +27,7 @@ public class MapQuestUtils extends GeocodeHelper {
 	private static final char[] delim = new char[]{',',' '};
 	
 	@Override
-	protected JSONObject processGeocode(String location, String email) {
+	public JSONObject processGeocode(String location, String email) {
 		String urlString = "http://open.mapquestapi.com/geocoding/v1/address?key=" + Commons.getProperty(Property.MAPQUEST_APPKEY) + "&location=" + location;
 		//System.out.println(urlString);
 		JSONObject jsonResponse = null;
@@ -155,7 +155,7 @@ public class MapQuestUtils extends GeocodeHelper {
 	}
 
 	@Override
-	protected JSONObject getRoute(double lat_start, double lng_start, double lat_end, double lng_end, String type, String username) throws IOException {
+	public JSONObject getRoute(double lat_start, double lng_start, double lat_end, double lng_end, String type, String username) throws IOException {
 		JSONObject response = null; 
 		String key = getRouteKey(MapQuestUtils.class, lat_start, lng_start, lat_end, lng_end, type, username);
 		String output = CacheUtil.getString(key);

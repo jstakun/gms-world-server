@@ -119,7 +119,7 @@ public class Search2Servlet extends HttpServlet {
                 		layers.put(Commons.LM_SERVER_LAYER, searchThreadFactory.newThread(new JSonSearchTask(Commons.LM_SERVER_LAYER))); //
                 		layers.put(Commons.FLICKR_LAYER, searchThreadFactory.newThread(new JSonSearchTask(Commons.FLICKR_LAYER))); //
                 		layers.put(Commons.EVENTFUL_LAYER, searchThreadFactory.newThread(new JSonSearchTask(Commons.EVENTFUL_LAYER))); //
-                		if (YelpUtils.hasNeighborhoods(latitude, longitude)) {
+                		if (LayerHelperFactory.getYelpUtils().hasNeighborhoods(latitude, longitude)) {
                 			layers.put(Commons.YELP_LAYER, searchThreadFactory.newThread(new JSonSearchTask(Commons.YELP_LAYER))); //
                 		}
                 		if (version > 1082) {
@@ -143,7 +143,7 @@ public class Search2Servlet extends HttpServlet {
                 		layers.put(Commons.LM_SERVER_LAYER, searchThreadFactory.newThread(new SerialSearchTask(Commons.LM_SERVER_LAYER))); //
                 		layers.put(Commons.FLICKR_LAYER, searchThreadFactory.newThread(new SerialSearchTask(Commons.FLICKR_LAYER))); //
                 		layers.put(Commons.EVENTFUL_LAYER, searchThreadFactory.newThread(new SerialSearchTask(Commons.EVENTFUL_LAYER))); //
-                		if (YelpUtils.hasNeighborhoods(latitude, longitude)) {
+                		if (LayerHelperFactory.getYelpUtils().hasNeighborhoods(latitude, longitude)) {
                 			layers.put(Commons.YELP_LAYER, searchThreadFactory.newThread(new SerialSearchTask(Commons.YELP_LAYER))); //
                 		}
                 		if (version > 1082) {

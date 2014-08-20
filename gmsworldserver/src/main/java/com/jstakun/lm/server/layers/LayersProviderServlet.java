@@ -19,6 +19,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.gmsworld.server.layers.LayerHelperFactory;
+
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
@@ -27,7 +29,6 @@ import twitter4j.TwitterException;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.lm.server.config.Commons;
 import com.jstakun.lm.server.config.Commons.Property;
-import com.jstakun.lm.server.utils.GoogleThreadProvider;
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.NumberUtils;
 import com.jstakun.lm.server.utils.StringUtil;
@@ -162,7 +163,7 @@ public class LayersProviderServlet extends HttpServlet {
                 if (HttpUtils.isEmptyAny(request, "lat", "lng", "radius") && HttpUtils.isEmptyAny(request, "latitude", "longitude", "radius")) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 } else {
-                    if (YelpUtils.hasNeighborhoods(latitude, longitude)) {
+                    if (LayerHelperFactory.getYelpUtils().hasNeighborhoods(latitude, longitude)) {
                         radius = NumberUtils.getRadius(request.getParameter("radius"), 1000, 40000);
                         int deals = NumberUtils.getInt(request.getHeader("X-GMS-AppId"), 0);
                         String hasDeals = "false";
@@ -588,12 +589,6 @@ public class LayersProviderServlet extends HttpServlet {
         super.init(config);
         InputStream stream = getServletContext().getResourceAsStream(Commons.getProperty(Property.mcopenapi_privKeyFile));
         LayerHelperFactory.getMcOpenApiUtils().setPrivateKey(stream);
-        //GoogleThreadProvider googleThreadProvider = new GoogleThreadProvider();
-        //LayerHelperFactory.getFacebookUtils().setThreadProvider(googleThreadProvider);
-        //LayerHelperFactory.getFoursquareUtils().setThreadProvider(googleThreadProvider);
-        //LayerHelperFactory.getFoursquareMerchantUtils().setThreadProvider(googleThreadProvider);  
-        //LayerHelperFactory.getYelpUtils().setThreadProvider(googleThreadProvider);
-        //LayerHelperFactory.getGooglePlacesUtils().setThreadProvider(googleThreadProvider);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

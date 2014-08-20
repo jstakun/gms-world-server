@@ -70,18 +70,18 @@ public class LayerHelperFactory {
     
     private static final SearchUtils searchUtils = new SearchUtils();
     
-    protected static void setCacheProvider(CacheProvider cp) {
+    public static void setCacheProvider(CacheProvider cp) {
     	cacheProvider = cp;
     }
     
-    protected static void setThreadProvider(ThreadProvider tp) {
+    public static void setThreadProvider(ThreadProvider tp) {
     	threadProvider = tp;
     }
     
     /**
      * @return the googlePlacesUtils
      */
-    protected static GooglePlacesUtils getGooglePlacesUtils() {
+    public static GooglePlacesUtils getGooglePlacesUtils() {
     	googlePlacesUtils.setCacheProvider(cacheProvider);
     	googlePlacesUtils.setThreadProvider(threadProvider);
         return googlePlacesUtils;
@@ -90,7 +90,7 @@ public class LayerHelperFactory {
     /**
      * @return the grouponUtils
      */
-    protected static GrouponUtils getGrouponUtils() {
+    public static GrouponUtils getGrouponUtils() {
     	grouponUtils.setCacheProvider(cacheProvider);
     	return grouponUtils;
     }
@@ -98,7 +98,7 @@ public class LayerHelperFactory {
     /**
      * @return the meetupUtils
      */
-    protected static MeetupUtils getMeetupUtils() {
+    public static MeetupUtils getMeetupUtils() {
     	 meetupUtils.setCacheProvider(cacheProvider);
     	return meetupUtils;
     }
@@ -106,7 +106,7 @@ public class LayerHelperFactory {
     /**
      * @return the picasaUtils
      */
-    protected static PicasaUtils getPicasaUtils() {
+    public static PicasaUtils getPicasaUtils() {
     	picasaUtils.setCacheProvider(cacheProvider);
     	return picasaUtils;
     }
@@ -114,7 +114,7 @@ public class LayerHelperFactory {
     /**
      * @return the twitterUtils
      */
-    protected static TwitterUtils getTwitterUtils() {
+    public static TwitterUtils getTwitterUtils() {
     	twitterUtils.setCacheProvider(cacheProvider);
     	return twitterUtils;
     }
@@ -122,7 +122,7 @@ public class LayerHelperFactory {
     /**
      * @return the yelpUtils
      */
-    protected static YelpUtils getYelpUtils() {
+    public static YelpUtils getYelpUtils() {
     	yelpUtils.setCacheProvider(cacheProvider);
     	yelpUtils.setThreadProvider(threadProvider);
     	return yelpUtils;
@@ -131,7 +131,7 @@ public class LayerHelperFactory {
     /**
      * @return the youtubeUtils
      */
-    protected static YoutubeUtils getYoutubeUtils() {
+    public static YoutubeUtils getYoutubeUtils() {
     	youtubeUtils.setCacheProvider(cacheProvider);
     	return youtubeUtils;
     }
@@ -139,7 +139,7 @@ public class LayerHelperFactory {
     /**
      * @return the gmsUtils
      */
-    protected static GMSUtils getGmsUtils() {
+    public static GMSUtils getGmsUtils() {
     	gmsUtils.setCacheProvider(cacheProvider);
     	return gmsUtils;
     }
@@ -147,7 +147,7 @@ public class LayerHelperFactory {
     /**
      * @return the eventfulUtils
      */
-    protected static EventfulUtils getEventfulUtils() {
+    public static EventfulUtils getEventfulUtils() {
     	eventfulUtils.setCacheProvider(cacheProvider);
     	return eventfulUtils;
     }
@@ -155,7 +155,7 @@ public class LayerHelperFactory {
     /**
      * @return the couponsUtils
      */
-    protected static CouponsUtils getCouponsUtils() {
+    public static CouponsUtils getCouponsUtils() {
     	couponsUtils.setCacheProvider(cacheProvider);
     	return couponsUtils;
     }
@@ -163,7 +163,7 @@ public class LayerHelperFactory {
     /**
      * @return the mcOpenApiUtils
      */
-    protected static McOpenApiUtils getMcOpenApiUtils() {
+    public static McOpenApiUtils getMcOpenApiUtils() {
     	mcOpenApiUtils.setCacheProvider(cacheProvider);
     	return mcOpenApiUtils;
     }
@@ -171,7 +171,7 @@ public class LayerHelperFactory {
     /**
      * @return the facebookUtils
      */
-    protected static FacebookUtils getFacebookUtils() {
+    public static FacebookUtils getFacebookUtils() {
     	facebookUtils.setCacheProvider(cacheProvider);
     	facebookUtils.setThreadProvider(threadProvider);
     	return facebookUtils;
@@ -180,7 +180,7 @@ public class LayerHelperFactory {
     /**
      * @return the flickrUtils
      */
-    protected static FlickrUtils getFlickrUtils() {
+    public static FlickrUtils getFlickrUtils() {
     	flickrUtils.setCacheProvider(cacheProvider);
     	return flickrUtils;
     }
@@ -188,7 +188,7 @@ public class LayerHelperFactory {
     /**
      * @return the foursquareUtils
      */
-    protected static FoursquareUtils getFoursquareUtils() {
+    public static FoursquareUtils getFoursquareUtils() {
     	foursquareUtils.setCacheProvider(cacheProvider);
     	foursquareUtils.setThreadProvider(threadProvider);
     	return foursquareUtils;
@@ -197,7 +197,7 @@ public class LayerHelperFactory {
     /**
      * @return the osmXapiUtils
      */
-    protected static OsmXapiUtils getOsmXapiUtils() {
+    public static OsmXapiUtils getOsmXapiUtils() {
     	osmXapiUtils.setCacheProvider(cacheProvider);
     	return osmXapiUtils;
     }
@@ -205,7 +205,7 @@ public class LayerHelperFactory {
     /**
      * @return the geonamesUtils
      */
-    protected static GeonamesUtils getGeonamesUtils() {
+    public static GeonamesUtils getGeonamesUtils() {
     	geonamesUtils.setCacheProvider(cacheProvider);
     	return geonamesUtils;
     }
@@ -213,7 +213,7 @@ public class LayerHelperFactory {
     /**
      * @return the lastfmUtils
      */
-    protected static LastfmUtils getLastfmUtils() {
+    public static LastfmUtils getLastfmUtils() {
     	lastfmUtils.setCacheProvider(cacheProvider);
     	return lastfmUtils;
     }
@@ -221,7 +221,7 @@ public class LayerHelperFactory {
     /**
      * @return the webcamUtils
      */
-    protected static WebcamUtils getWebcamUtils() {
+    public static WebcamUtils getWebcamUtils() {
     	webcamUtils.setCacheProvider(cacheProvider);
     	return webcamUtils;
     }
@@ -229,7 +229,7 @@ public class LayerHelperFactory {
     /**
      * @return the panoramioUtils
      */
-    protected static PanoramioUtils getPanoramioUtils() {
+    public static PanoramioUtils getPanoramioUtils() {
     	panoramioUtils.setCacheProvider(cacheProvider);
     	return panoramioUtils;
     }
@@ -237,7 +237,7 @@ public class LayerHelperFactory {
     /**
      * @return the expediaUtils
      */
-    protected static ExpediaUtils getExpediaUtils() {
+    public static ExpediaUtils getExpediaUtils() {
     	expediaUtils.setCacheProvider(cacheProvider);
     	return expediaUtils;
     }
@@ -245,7 +245,7 @@ public class LayerHelperFactory {
     /**
      * @return the hotelsCombinedUtils
      */
-    protected static HotelsCombinedUtils getHotelsCombinedUtils() {
+    public static HotelsCombinedUtils getHotelsCombinedUtils() {
     	hotelsCombinedUtils.setCacheProvider(cacheProvider);
     	return hotelsCombinedUtils;
     }
@@ -253,7 +253,7 @@ public class LayerHelperFactory {
     /**
      * @return the instagramUtils
      */
-    protected static InstagramUtils getInstagramUtils() {
+    public static InstagramUtils getInstagramUtils() {
     	instagramUtils.setCacheProvider(cacheProvider);
     	return instagramUtils;
     }
@@ -261,7 +261,7 @@ public class LayerHelperFactory {
     /**
      * @return the feebaseUtils
      */
-    protected static FreebaseUtils getFreebaseUtils() {
+    public static FreebaseUtils getFreebaseUtils() {
     	freebaseUtils.setCacheProvider(cacheProvider);
     	return freebaseUtils;
     }
@@ -269,7 +269,7 @@ public class LayerHelperFactory {
     /**
      * @return the searchUtils
      */
-    protected static SearchUtils getSearchUtils() {
+    public static SearchUtils getSearchUtils() {
     	searchUtils.setCacheProvider(cacheProvider);
     	return searchUtils;
     }
@@ -277,7 +277,7 @@ public class LayerHelperFactory {
     /**
      * @return the foursquareMerchantUtils
      */
-    protected static FoursquareMerchantUtils getFoursquareMerchantUtils() {
+    public static FoursquareMerchantUtils getFoursquareMerchantUtils() {
     	foursquareMerchantUtils.setCacheProvider(cacheProvider);
     	foursquareMerchantUtils.setThreadProvider(threadProvider);
     	return foursquareMerchantUtils;
@@ -286,7 +286,7 @@ public class LayerHelperFactory {
     /**
      * @return the hotwireUtils
      */
-    protected static HotwireUtils getHotwireUtils() {
+    public static HotwireUtils getHotwireUtils() {
     	hotwireUtils.setCacheProvider(cacheProvider);
     	return hotwireUtils;
     }

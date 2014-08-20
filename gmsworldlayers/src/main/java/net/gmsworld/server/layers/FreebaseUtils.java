@@ -13,6 +13,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.config.ConfigurationManager;
+import net.gmsworld.server.utils.JSONUtils;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
@@ -27,11 +32,6 @@ import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.api.services.freebase.Freebase;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
-import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.config.Commons.Property;
-import net.gmsworld.server.config.ConfigurationManager;
-import net.gmsworld.server.utils.JSONUtils;
-import net.gmsworld.server.utils.memcache.CacheProvider;
 import com.openlapi.AddressInfo;
 import com.openlapi.QualifiedCoordinates;
 
@@ -48,7 +48,7 @@ public class FreebaseUtils extends LayerHelper {
 	//https://www.googleapis.com/freebase/v1/search?indent=true&filter=(all mid:/m/05qhw)&output=(description name geocode url object property category location)&limit=1
 	
 	@Override
-	protected List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale) throws Exception {
+	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale) throws Exception {
 		String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, limit, stringLimit, flexString, flexString2);
 		List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>) cacheProvider.getObject(key);
 		
@@ -65,7 +65,7 @@ public class FreebaseUtils extends LayerHelper {
 		return landmarks;
 	}
 
-	protected List<ExtendedLandmark> search(List<String> filter, String query, int limit, int stringLimit, Locale locale) throws IOException {
+	public List<ExtendedLandmark> search(List<String> filter, String query, int limit, int stringLimit, Locale locale) throws IOException {
 		List<ExtendedLandmark> landmarks;
 		landmarks = new ArrayList<ExtendedLandmark>();
 		Freebase freebase = getFreebase();

@@ -11,7 +11,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -19,6 +18,8 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import net.gmsworld.server.config.Commons;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
@@ -30,8 +31,6 @@ import org.w3c.tidy.Tidy;
 
 import com.jstakun.gms.android.deals.Deal;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
-import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.config.ConfigurationManager;
 import com.openlapi.AddressInfo;
 
 /**

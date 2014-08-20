@@ -16,6 +16,14 @@ import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.utils.JSONUtils;
+import net.gmsworld.server.utils.MathUtils;
+import net.gmsworld.server.utils.NumberUtils;
+import net.gmsworld.server.utils.ThreadUtil;
+import net.gmsworld.server.utils.UrlUtils;
+
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,17 +31,6 @@ import org.ocpsoft.prettytime.PrettyTime;
 
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
-
-import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.config.Commons.Property;
-import net.gmsworld.server.utils.JSONUtils;
-import net.gmsworld.server.utils.MathUtils;
-import net.gmsworld.server.utils.NumberUtils;
-import net.gmsworld.server.utils.ThreadProvider;
-import net.gmsworld.server.utils.ThreadUtil;
-import net.gmsworld.server.utils.UrlUtils;
-import net.gmsworld.server.utils.memcache.CacheProvider;
-
 import com.openlapi.AddressInfo;
 import com.openlapi.QualifiedCoordinates;
 import com.restfb.DefaultFacebookClient;
@@ -51,7 +48,7 @@ public class FacebookUtils extends LayerHelper {
 
 	private static final String FBPLACES_PREFIX = "http://touch.facebook.com/profile.php?id=";
 	
-	protected String getFriendsPhotosToJSon(double lat, double lng, int version, int limit, int stringLength, String token) throws JSONException, UnsupportedEncodingException {
+	public String getFriendsPhotosToJSon(double lat, double lng, int version, int limit, int stringLength, String token) throws JSONException, UnsupportedEncodingException {
 
         String key = getCacheKey(FacebookUtils.class, "getFriendsPhotosToJSon", 0, 0, null, 0, version, limit, stringLength, token, null);
         String jsonString = cacheProvider.getString(key);
@@ -198,7 +195,7 @@ public class FacebookUtils extends LayerHelper {
         return jsonString;
     }
     
-    protected List<ExtendedLandmark> getFriendsPhotosToLandmark(double lat, double lng, int version, int limit, int stringLength, String token, Locale locale) throws JSONException, UnsupportedEncodingException {
+    public List<ExtendedLandmark> getFriendsPhotosToLandmark(double lat, double lng, int version, int limit, int stringLength, String token, Locale locale) throws JSONException, UnsupportedEncodingException {
 
         String key = getCacheKey(FacebookUtils.class, "getFriendsPhotosToLandmarks", 0, 0, null, 0, version, limit, stringLength, token, null);
         List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)cacheProvider.getObject(key);
@@ -335,7 +332,7 @@ public class FacebookUtils extends LayerHelper {
         return landmarks;
     }
 
-    protected List<ExtendedLandmark> getFriendsCheckinsToLandmarks(double lat, double lng, int version, int limit, int stringLength, String token, Locale locale) throws JSONException, UnsupportedEncodingException {
+    public List<ExtendedLandmark> getFriendsCheckinsToLandmarks(double lat, double lng, int version, int limit, int stringLength, String token, Locale locale) throws JSONException, UnsupportedEncodingException {
 
         String key = getCacheKey(FacebookUtils.class, "getFriendsCheckinsToLandmarks", 0, 0, null, 0, version, limit, stringLength, token, null);
         List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)cacheProvider.getObject(key);
@@ -476,7 +473,7 @@ public class FacebookUtils extends LayerHelper {
         return landmarks;
     }
     
-    protected String getFriendsCheckinsToJSon(double lat, double lng, int version, int limit, int stringLength, String token) throws JSONException, UnsupportedEncodingException {
+    public String getFriendsCheckinsToJSon(double lat, double lng, int version, int limit, int stringLength, String token) throws JSONException, UnsupportedEncodingException {
 
         String key = getCacheKey(FacebookUtils.class, "getFriendsCheckinsToJSon", 0, 0, null, 0, version, limit, stringLength, token, null);
         String jsonString = cacheProvider.getString(key);
@@ -595,7 +592,7 @@ public class FacebookUtils extends LayerHelper {
     }
 
     @Override
-    protected JSONObject processRequest(double latitude, double longitude, String query, int distance, int version, int limit, int stringLength, String fbtoken, String flexString2) throws JsonException, JSONException, UnsupportedEncodingException {
+	public JSONObject processRequest(double latitude, double longitude, String query, int distance, int version, int limit, int stringLength, String fbtoken, String flexString2) throws JsonException, JSONException, UnsupportedEncodingException {
 
         int dist = NumberUtils.normalizeNumber(distance, 1000, 50000);
 
@@ -939,7 +936,7 @@ public class FacebookUtils extends LayerHelper {
     }
    
 	@Override
-	protected List<ExtendedLandmark> processBinaryRequest(double latitude, double longitude, String query, int distance, int version, int limit, int stringLength, String fbtoken, String flexString2, Locale locale) throws Exception {
+	public List<ExtendedLandmark> processBinaryRequest(double latitude, double longitude, String query, int distance, int version, int limit, int stringLength, String fbtoken, String flexString2, Locale locale) throws Exception {
 		int dist = NumberUtils.normalizeNumber(distance, 1000, 50000);
 
         String key = getCacheKey(getClass(), "processRequest", latitude, longitude, query, dist, version, limit, stringLength, fbtoken, flexString2);

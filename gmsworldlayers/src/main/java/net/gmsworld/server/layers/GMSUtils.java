@@ -51,7 +51,7 @@ public class GMSUtils extends LayerHelper {
     };
 
     @Override
-    protected JSONObject processRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String layer, String flexString2) throws JSONException, UnsupportedEncodingException {
+	public JSONObject processRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String layer, String flexString2) throws JSONException, UnsupportedEncodingException {
         String key = getCacheKey(getClass(), "processRequest", latitude, longitude, query, radius, version, limit, stringLimit, layer, flexString2);
         JSONObject json = null;
         String output = cacheProvider.getString(key);
@@ -82,7 +82,7 @@ public class GMSUtils extends LayerHelper {
         return json;
     }
 
-    protected String processRequest(double latitudeMin, double longitudeMin, double latitudeMax, double longitudeMax, int version, int limit, int stringLimit, String layer, String format) throws JSONException, UnsupportedEncodingException {
+    public String processRequest(double latitudeMin, double longitudeMin, double latitudeMax, double longitudeMax, int version, int limit, int stringLimit, String layer, String format) throws JSONException, UnsupportedEncodingException {
         String key = getCacheKey(GMSUtils.class, "processRequest", (latitudeMin + latitudeMax)/2, (longitudeMin + longitudeMax)/2, null, 0, version, limit, stringLimit, layer, format);
 
         String output = cacheProvider.getString(key);
@@ -157,7 +157,7 @@ public class GMSUtils extends LayerHelper {
     }
     
     @Override
-    protected List<ExtendedLandmark> processBinaryRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String layer, String flexString2, Locale locale) throws Exception {
+	public List<ExtendedLandmark> processBinaryRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String layer, String flexString2, Locale locale) throws Exception {
 		String key = getCacheKey(getClass(), "processBinaryRequest", latitude, longitude, query, radius, version, limit, stringLimit, layer, flexString2);
 		List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)cacheProvider.getObject(key);
         if (landmarks == null) {

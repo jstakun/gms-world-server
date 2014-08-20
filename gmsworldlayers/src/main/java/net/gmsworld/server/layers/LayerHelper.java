@@ -52,7 +52,7 @@ public abstract class LayerHelper {
 
     protected abstract List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale) throws Exception;
     
-    protected void serialize(List<ExtendedLandmark> landmarks, OutputStream out, int version) {
+    public void serialize(List<ExtendedLandmark> landmarks, OutputStream out, int version) {
     	ObjectOutputStream outObj = null;
     	DeflaterOutputStream compressor = null;
     	try {

@@ -17,6 +17,13 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.utils.HttpUtils;
+import net.gmsworld.server.utils.JSONUtils;
+import net.gmsworld.server.utils.NumberUtils;
+import net.gmsworld.server.utils.ThreadUtil;
+
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,13 +31,6 @@ import org.json.JSONObject;
 
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
-import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.config.Commons.Property;
-import net.gmsworld.server.utils.HttpUtils;
-import net.gmsworld.server.utils.JSONUtils;
-import net.gmsworld.server.utils.NumberUtils;
-import net.gmsworld.server.utils.ThreadUtil;
-import net.gmsworld.server.utils.memcache.CacheProvider;
 import com.openlapi.AddressInfo;
 import com.openlapi.QualifiedCoordinates;
 
@@ -153,7 +153,7 @@ public class GooglePlacesUtils extends LayerHelper {
 	}*/
 	
     @Override
-    protected JSONObject processRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String language, String flexString2) throws MalformedURLException, IOException, JSONException {
+	public JSONObject processRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String language, String flexString2) throws MalformedURLException, IOException, JSONException {
         int r = NumberUtils.normalizeNumber(radius, 1000, 50000);
         int l = NumberUtils.normalizeNumber(limit, 1, QUOTA_LIMIT);
         String key = getCacheKey(getClass(), "processRequest", latitude, longitude, query, r, version, l, stringLimit, language, flexString2);
@@ -431,7 +431,7 @@ public class GooglePlacesUtils extends LayerHelper {
     }
 
 	@Override
-	protected List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String language, String flexString2, Locale locale) throws Exception {
+	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String language, String flexString2, Locale locale) throws Exception {
 		int r = NumberUtils.normalizeNumber(radius, 1000, 50000);
 		int l = NumberUtils.normalizeNumber(limit, 1, QUOTA_LIMIT);
         String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, r, version, l, stringLimit, language, flexString2);

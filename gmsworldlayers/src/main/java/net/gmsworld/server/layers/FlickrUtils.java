@@ -4,23 +4,6 @@
  */
 package net.gmsworld.server.layers;
 
-import com.flickr4java.flickr.Flickr;
-import com.flickr4java.flickr.REST;
-import com.flickr4java.flickr.photos.Photo;
-import com.flickr4java.flickr.photos.PhotoList;
-import com.flickr4java.flickr.photos.PhotosInterface;
-import com.flickr4java.flickr.photos.SearchParameters;
-import com.jstakun.gms.android.landmarks.ExtendedLandmark;
-import com.jstakun.gms.android.landmarks.LandmarkFactory;
-import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.config.Commons.Property;
-import net.gmsworld.server.utils.JSONUtils;
-import net.gmsworld.server.utils.NumberUtils;
-import net.gmsworld.server.utils.memcache.CacheProvider;
-import net.gmsworld.server.utils.xml.XMLUtils;
-import com.openlapi.AddressInfo;
-import com.openlapi.QualifiedCoordinates;
-
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -33,9 +16,26 @@ import java.util.logging.Level;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.utils.JSONUtils;
+import net.gmsworld.server.utils.NumberUtils;
+import net.gmsworld.server.utils.xml.XMLUtils;
+
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.flickr4java.flickr.Flickr;
+import com.flickr4java.flickr.REST;
+import com.flickr4java.flickr.photos.Photo;
+import com.flickr4java.flickr.photos.PhotoList;
+import com.flickr4java.flickr.photos.PhotosInterface;
+import com.flickr4java.flickr.photos.SearchParameters;
+import com.jstakun.gms.android.landmarks.ExtendedLandmark;
+import com.jstakun.gms.android.landmarks.LandmarkFactory;
+import com.openlapi.AddressInfo;
+import com.openlapi.QualifiedCoordinates;
 
 /**
  *
@@ -46,7 +46,7 @@ public class FlickrUtils extends LayerHelper {
 	private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
     @Override
-    protected JSONObject processRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String flex, String flexString2) throws ParserConfigurationException, JSONException, UnsupportedEncodingException {
+	public JSONObject processRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String flex, String flexString2) throws ParserConfigurationException, JSONException, UnsupportedEncodingException {
     	int r = NumberUtils.normalizeNumber(radius, 1, 32);
         String key = getCacheKey(getClass(), "processRequest", latitude, longitude, query, r, version, limit, stringLimit, flex, flexString2);
         
@@ -70,7 +70,7 @@ public class FlickrUtils extends LayerHelper {
         return json;
     }
 
-    protected String processRequest(double latitudeMin, double latitudeMax, double longitudeMin, double longitudeMax, String query, int version, int limit, int stringLimit, String format) throws JSONException, ParserConfigurationException, UnsupportedEncodingException {
+    public String processRequest(double latitudeMin, double latitudeMax, double longitudeMin, double longitudeMax, String query, int version, int limit, int stringLimit, String format) throws JSONException, ParserConfigurationException, UnsupportedEncodingException {
         String key = getCacheKey(FlickrUtils.class, "processRequest", (latitudeMin + latitudeMax) / 2, (longitudeMin + longitudeMax) / 2, query, 0, version, limit, stringLimit, format, null);
 
 
@@ -190,10 +190,10 @@ public class FlickrUtils extends LayerHelper {
     }
 
 	@Override
-	protected List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flex, String flexString2, Locale locale) throws Exception {
+	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flex, String flexString2, Locale locale) throws Exception {
 		int r = NumberUtils.normalizeNumber(radius, 1, 32);
         String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, r, version, limit, stringLimit, flex, flexString2);
-        List<ExtendedLandmark> output = (List<ExtendedLandmark>)cacheProvider.getObject(key);
+        List<ExtendedLandmark> output = (List<ExtendedLandmark>) cacheProvider.getObject(key);
         
         if (output == null) {
             SearchParameters sp = new SearchParameters();

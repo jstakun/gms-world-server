@@ -34,7 +34,7 @@ public class HotwireUtils extends LayerHelper {
     private static final SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
 
     @Override
-    protected JSONObject processRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2) throws Exception {
+	public JSONObject processRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2) throws Exception {
         String key = getCacheKey(getClass(), "processRequest", latitude, longitude, query, radius, version, limit, stringLimit, flexString, flexString2);
 
         String output = cacheProvider.getString(key);

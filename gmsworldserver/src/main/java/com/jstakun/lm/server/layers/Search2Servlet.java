@@ -24,13 +24,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.gmsworld.server.layers.LayerHelperFactory;
+
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
 import com.google.appengine.api.ThreadManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.lm.server.config.Commons;
-import com.jstakun.lm.server.utils.GoogleThreadProvider;
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.JSONUtils;
 import com.jstakun.lm.server.utils.NumberUtils;
@@ -59,12 +60,6 @@ public class Search2Servlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        //GoogleThreadProvider googleThreadProvider = new GoogleThreadProvider();
-        //LayerHelperFactory.getFacebookUtils().setThreadProvider(googleThreadProvider);
-        //LayerHelperFactory.getFoursquareUtils().setThreadProvider(googleThreadProvider);
-        //LayerHelperFactory.getFoursquareMerchantUtils().setThreadProvider(googleThreadProvider);
-        //LayerHelperFactory.getYelpUtils().setThreadProvider(googleThreadProvider);
-        //LayerHelperFactory.getGooglePlacesUtils().setThreadProvider(googleThreadProvider);
     }
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -122,7 +117,7 @@ public class Search2Servlet extends HttpServlet {
                 		layers.put(Commons.LM_SERVER_LAYER, searchThreadFactory.newThread(new JSonSearchTask(Commons.LM_SERVER_LAYER))); //
                 		layers.put(Commons.FLICKR_LAYER, searchThreadFactory.newThread(new JSonSearchTask(Commons.FLICKR_LAYER))); //
                 		layers.put(Commons.EVENTFUL_LAYER, searchThreadFactory.newThread(new JSonSearchTask(Commons.EVENTFUL_LAYER))); //
-                		if (YelpUtils.hasNeighborhoods(latitude, longitude)) {
+                		if (LayerHelperFactory.getYelpUtils().hasNeighborhoods(latitude, longitude)) {
                 			layers.put(Commons.YELP_LAYER, searchThreadFactory.newThread(new JSonSearchTask(Commons.YELP_LAYER))); //
                 		}
                 		if (version > 1082) {
@@ -146,7 +141,7 @@ public class Search2Servlet extends HttpServlet {
                 		layers.put(Commons.LM_SERVER_LAYER, searchThreadFactory.newThread(new SerialSearchTask(Commons.LM_SERVER_LAYER))); //
                 		layers.put(Commons.FLICKR_LAYER, searchThreadFactory.newThread(new SerialSearchTask(Commons.FLICKR_LAYER))); //
                 		layers.put(Commons.EVENTFUL_LAYER, searchThreadFactory.newThread(new SerialSearchTask(Commons.EVENTFUL_LAYER))); //
-                		if (YelpUtils.hasNeighborhoods(latitude, longitude)) {
+                		if (LayerHelperFactory.getYelpUtils().hasNeighborhoods(latitude, longitude)) {
                 			layers.put(Commons.YELP_LAYER, searchThreadFactory.newThread(new SerialSearchTask(Commons.YELP_LAYER))); //
                 		}
                 		if (version > 1082) {

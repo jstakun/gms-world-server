@@ -6,6 +6,9 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.gmsworld.server.layers.FreebaseUtils;
+import net.gmsworld.server.layers.LayerHelperFactory;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;

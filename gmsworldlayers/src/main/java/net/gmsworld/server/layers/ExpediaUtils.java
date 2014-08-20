@@ -38,7 +38,7 @@ import com.openlapi.QualifiedCoordinates;
 public class ExpediaUtils extends LayerHelper {
 
 	@Override
-	protected JSONObject processRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String lang, String flexString2) throws Exception {
+	public JSONObject processRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String lang, String flexString2) throws Exception {
 		int r = NumberUtils.normalizeNumber(radius, 2, 80);
 		String key = getCacheKey(getClass(), "processRequest", latitude, longitude, query, r, version, limit, stringLimit, lang, flexString2);
 		String output = cacheProvider.getString(key);
@@ -169,7 +169,7 @@ public class ExpediaUtils extends LayerHelper {
 	}
 
 	@Override
-	protected List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String lang, String flexString2, Locale locale) throws Exception {
+	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String lang, String flexString2, Locale locale) throws Exception {
 		int r = NumberUtils.normalizeNumber(radius, 2, 80);
 		String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, r, version, limit, stringLimit, lang, flexString2);
 		List<ExtendedLandmark> output = (List<ExtendedLandmark>)cacheProvider.getObject(key);

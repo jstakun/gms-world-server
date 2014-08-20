@@ -16,6 +16,15 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.utils.AuthUtils;
+import net.gmsworld.server.utils.HttpUtils;
+import net.gmsworld.server.utils.JSONUtils;
+import net.gmsworld.server.utils.NumberUtils;
+import net.gmsworld.server.utils.StringUtil;
+import net.gmsworld.server.utils.ThreadUtil;
+
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,15 +37,6 @@ import com.google.gdata.client.authn.oauth.OAuthUtil;
 import com.jstakun.gms.android.deals.Deal;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
-import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.config.Commons.Property;
-import net.gmsworld.server.utils.AuthUtils;
-import net.gmsworld.server.utils.HttpUtils;
-import net.gmsworld.server.utils.JSONUtils;
-import net.gmsworld.server.utils.NumberUtils;
-import net.gmsworld.server.utils.StringUtil;
-import net.gmsworld.server.utils.ThreadUtil;
-import net.gmsworld.server.utils.memcache.CacheProvider;
 import com.openlapi.AddressInfo;
 import com.openlapi.QualifiedCoordinates;
 
@@ -49,7 +49,7 @@ public class YelpUtils extends LayerHelper {
 	private static final String CACHE_KEY = "YelpUsageLimitsMarker";
 	
     @Override
-    protected JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String hasDeals, String language) throws Exception {
+	public JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String hasDeals, String language) throws Exception {
         int normalizedRadius = NumberUtils.normalizeNumber(radius, 1000, 40000);
         int normalizedLimit = NumberUtils.normalizeNumber(limit, 20, 100);
         String key = getCacheKey(getClass(), "processRequest", lat, lng, query, normalizedRadius, version, normalizedLimit, stringLimit, hasDeals, language);
@@ -144,7 +144,7 @@ public class YelpUtils extends LayerHelper {
         return responseBody;
     }
 
-    protected static boolean hasNeighborhoods(double lat, double lng) throws IOException, JSONException {
+    public boolean hasNeighborhoods(double lat, double lng) throws IOException, JSONException {
         String url = "http://api.yelp.com/neighborhood_search?lat=" + StringUtil.formatCoordE6(lat) + "&long=" + StringUtil.formatCoordE6(lng) + "&ywsid=" + Commons.getProperty(Property.YELP_ywsid);
         String json = HttpUtils.processFileRequest(new URL(url));
         boolean hasNeighborhood = false;
@@ -432,7 +432,7 @@ public class YelpUtils extends LayerHelper {
     }
 
 	@Override
-	protected List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String hasDeals, String language, Locale locale)
+	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String hasDeals, String language, Locale locale)
 			throws Exception {
 		int normalizedRadius = NumberUtils.normalizeNumber(radius, 1000, 40000);
         int normalizedLimit = NumberUtils.normalizeNumber(limit, 20, 100);

@@ -12,6 +12,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.utils.JSONUtils;
+import net.gmsworld.server.utils.NumberUtils;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -27,11 +32,6 @@ import twitter4j.auth.AccessToken;
 
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
-import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.config.Commons.Property;
-import net.gmsworld.server.utils.JSONUtils;
-import net.gmsworld.server.utils.NumberUtils;
-import net.gmsworld.server.utils.memcache.CacheProvider;
 import com.openlapi.AddressInfo;
 import com.openlapi.QualifiedCoordinates;
 import com.twitter.Autolink;
@@ -44,7 +44,7 @@ public class TwitterUtils extends LayerHelper {
 
     
 	@Override
-    protected JSONObject processRequest(double latitude, double longitude, String query, int distance, int version, int limit, int stringLimit, String lang, String flexString2) throws TwitterException, JSONException, UnsupportedEncodingException {
+    public JSONObject processRequest(double latitude, double longitude, String query, int distance, int version, int limit, int stringLimit, String lang, String flexString2) throws TwitterException, JSONException, UnsupportedEncodingException {
         int radius = NumberUtils.normalizeNumber(distance, 1, 3);
 
         String key = getCacheKey(getClass(), "processRequest", latitude, longitude, query, radius, version, limit, stringLimit, lang, flexString2);
@@ -189,7 +189,7 @@ public class TwitterUtils extends LayerHelper {
     }
 
 	@Override
-	protected List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int distance, int version, int limit, int stringLimit, String lang, String flexString2, Locale locale) throws Exception {
+	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int distance, int version, int limit, int stringLimit, String lang, String flexString2, Locale locale) throws Exception {
 		
 		int radius = NumberUtils.normalizeNumber(distance, 1, 3);
 
@@ -227,7 +227,7 @@ public class TwitterUtils extends LayerHelper {
         return reply;
 	}
 	
-	protected List<ExtendedLandmark> getFriendsStatuses(String token, String secret, Locale locale) throws TwitterException, UnsupportedEncodingException {
+	public List<ExtendedLandmark> getFriendsStatuses(String token, String secret, Locale locale) throws TwitterException, UnsupportedEncodingException {
 		String key = getCacheKey(TwitterUtils.class, "getFriendsStatuses", 0, 0, null, 0, 1, 1, 0, token, locale.getCountry());
         List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>) cacheProvider.getObject(key);
 

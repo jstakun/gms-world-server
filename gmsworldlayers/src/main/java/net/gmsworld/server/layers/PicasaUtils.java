@@ -47,7 +47,7 @@ public class PicasaUtils extends LayerHelper {
     private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Override
-    protected JSONObject processRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String bbox, String flexString2) throws MalformedURLException, IOException, ServiceException, JSONException {
+	public JSONObject processRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String bbox, String flexString2) throws MalformedURLException, IOException, ServiceException, JSONException {
 
         double lat = 0d, lng = 0d;
         String[] coords = StringUtils.split(bbox, ",");
@@ -169,7 +169,7 @@ public class PicasaUtils extends LayerHelper {
     }
 
 	@Override
-	protected List<ExtendedLandmark> processBinaryRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String bbox, String flexString2, Locale locale) throws Exception {
+	public List<ExtendedLandmark> processBinaryRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String bbox, String flexString2, Locale locale) throws Exception {
 		double lat = 0d, lng = 0d;
         String[] coords = StringUtils.split(bbox, ",");
         if (coords.length == 4) {

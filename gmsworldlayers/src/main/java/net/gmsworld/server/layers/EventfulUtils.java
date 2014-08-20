@@ -42,7 +42,7 @@ public class EventfulUtils extends LayerHelper {
     private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
     @Override
-    protected JSONObject processRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String flex, String flexString2) throws MalformedURLException, IOException, JSONException, ParseException {
+    public JSONObject processRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String flex, String flexString2) throws MalformedURLException, IOException, JSONException, ParseException {
         String key = getCacheKey(getClass(), "processRequest", latitude, longitude, query, radius, version, limit, stringLimit, flex, flexString2);
         String output = cacheProvider.getString(key);
         JSONObject json = null;
@@ -67,7 +67,7 @@ public class EventfulUtils extends LayerHelper {
         return json;
     }
 
-    protected String processRequest(String query, int version, int stringLimit, String queryString) throws IOException, JSONException, ParseException {
+    public String processRequest(String query, int version, int stringLimit, String queryString) throws IOException, JSONException, ParseException {
         String key = getCacheKey(EventfulUtils.class, "processRequest", 0, 0, query, 0, version, 0, stringLimit, queryString, null);
 
         String output = cacheProvider.getString(key);
@@ -91,7 +91,7 @@ public class EventfulUtils extends LayerHelper {
         return output;
     }
 
-    protected String processRequest(String queryString) throws MalformedURLException, IOException {
+    public String processRequest(String queryString) throws MalformedURLException, IOException {
         return HttpUtils.processFileRequest(new URL("http://api.eventful.com/json/events/search?" + queryString + "&app_key=" + Commons.getProperty(Property.EVENTFUL_APP_KEY)));
     }
 

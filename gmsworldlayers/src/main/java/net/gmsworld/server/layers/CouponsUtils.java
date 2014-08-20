@@ -58,7 +58,7 @@ public class CouponsUtils extends LayerHelper {
     }
 
     @Override
-    protected JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String categoryid, String language) throws MalformedURLException, IOException, JSONException, ParseException {
+    public JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String categoryid, String language) throws MalformedURLException, IOException, JSONException, ParseException {
         String key = getCacheKey(getClass(), "processRequest", lat, lng, query, radius, version, limit, stringLimit, categoryid, language);
 
         JSONObject json = null;
@@ -79,7 +79,7 @@ public class CouponsUtils extends LayerHelper {
             if (StringUtils.isNotEmpty(couponsResponse)) {
                 Map<String, Map<String, String>> reviewsArray = new HashMap<String, Map<String, String>>();
                 try {
-                    if (YelpUtils.hasNeighborhoods(lat, lng)) {
+                    if (LayerHelperFactory.getYelpUtils().hasNeighborhoods(lat, lng)) {
                         reviewsArray = LayerHelperFactory.getYelpUtils().processReviewsRequest(lat, lng, query, radius * 1000, limit, true, language);
                     }
                 } catch (Exception e) {
@@ -323,7 +323,7 @@ public class CouponsUtils extends LayerHelper {
     }
 
 	@Override
-	protected List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String categoryid, String language, Locale locale) throws Exception {
+	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String categoryid, String language, Locale locale) throws Exception {
 		String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, limit, stringLimit, categoryid, language);
 		List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)cacheProvider.getObject(key);
         if (landmarks == null) {
@@ -340,7 +340,7 @@ public class CouponsUtils extends LayerHelper {
             if (StringUtils.isNotEmpty(couponsResponse)) {
                 Map<String, Map<String, String>> reviewsArray = new HashMap<String, Map<String, String>>();
                 try {
-                    if (YelpUtils.hasNeighborhoods(lat, lng)) {
+                    if (LayerHelperFactory.getYelpUtils().hasNeighborhoods(lat, lng)) {
                         reviewsArray = LayerHelperFactory.getYelpUtils().processReviewsRequest(lat, lng, query, radius * 1000, limit, true, language);
                     }
                 } catch (Exception e) {
