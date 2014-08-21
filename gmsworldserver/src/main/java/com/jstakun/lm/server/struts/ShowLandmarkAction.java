@@ -19,11 +19,13 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import com.jstakun.lm.server.layers.GeocodeHelperFactory;
+import net.gmsworld.server.layers.GeocodeHelperFactory;
+
 import com.jstakun.lm.server.persistence.Checkin;
 import com.jstakun.lm.server.persistence.Comment;
 import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.memcache.CacheAction;
+import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.jstakun.lm.server.utils.persistence.CheckinPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.CommentPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.CommonPersistenceUtils;
@@ -39,6 +41,11 @@ import eu.bitwalker.useragentutils.OperatingSystem;
 public class ShowLandmarkAction extends Action {
 
     private static final Logger logger = Logger.getLogger(ShowLandmarkAction.class.getName());
+    
+    public ShowLandmarkAction() {
+    	super();
+    	GeocodeHelperFactory.setCacheProvider(new GoogleCacheProvider());
+    }
 
     @Override
     public ActionForward execute(ActionMapping mapping, ActionForm form,

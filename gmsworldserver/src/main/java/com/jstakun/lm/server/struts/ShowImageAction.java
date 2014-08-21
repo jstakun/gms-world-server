@@ -12,9 +12,11 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import com.jstakun.lm.server.layers.GeocodeHelperFactory;
+import net.gmsworld.server.layers.GeocodeHelperFactory;
+
 import com.jstakun.lm.server.persistence.Screenshot;
 import com.jstakun.lm.server.utils.FileUtils;
+import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 
 import eu.bitwalker.useragentutils.OperatingSystem;
 
@@ -24,6 +26,10 @@ import eu.bitwalker.useragentutils.OperatingSystem;
  */
 public class ShowImageAction extends org.apache.struts.action.Action {
 
+	public ShowImageAction() {
+		super();
+		GeocodeHelperFactory.setCacheProvider(new GoogleCacheProvider());
+	}
      /**
      * This is the action called from the Struts framework.
      * @param mapping The ActionMapping used to select this instance.

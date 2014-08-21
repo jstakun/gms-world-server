@@ -6,12 +6,14 @@ package net.gmsworld.server.layers;
 
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.NumberUtils;
+import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +33,12 @@ public class RouteProviderServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(RouteProviderServlet.class.getName());
 
+	
+	@Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        GeocodeHelperFactory.setCacheProvider(new GoogleCacheProvider());
+    }
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request

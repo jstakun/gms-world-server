@@ -15,9 +15,11 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import com.jstakun.lm.server.layers.GeocodeHelperFactory;
+import net.gmsworld.server.layers.GeocodeHelperFactory;
+
 import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.StringUtil;
+import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 
 /**
  *
@@ -25,9 +27,13 @@ import com.jstakun.lm.server.utils.StringUtil;
  */
 public class ShowLocationAction extends org.apache.struts.action.Action {
 
-    /* forward name="success" path="" */
     private static final Logger logger = Logger.getLogger(ShowLocationAction.class.getName());
 
+    public ShowLocationAction() {
+    	super();
+    	GeocodeHelperFactory.setCacheProvider(new GoogleCacheProvider());
+    }
+    
     /**
      * This is the action called from the Struts framework.
      * @param mapping The ActionMapping used to select this instance.
