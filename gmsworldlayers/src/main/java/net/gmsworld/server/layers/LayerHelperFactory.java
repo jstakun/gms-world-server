@@ -271,6 +271,7 @@ public class LayerHelperFactory {
      */
     public static SearchUtils getSearchUtils() {
     	searchUtils.setCacheProvider(cacheProvider);
+    	searchUtils.setThreadProvider(threadProvider);
     	return searchUtils;
     }
     
