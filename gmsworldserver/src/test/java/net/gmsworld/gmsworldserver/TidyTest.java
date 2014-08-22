@@ -1,4 +1,4 @@
-package net.gms_world.gmsworldserver;
+package net.gmsworld.gmsworldserver;
 
 //import static org.junit.Assert.*;
 

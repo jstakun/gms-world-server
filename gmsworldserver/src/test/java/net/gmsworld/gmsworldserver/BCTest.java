@@ -1,4 +1,4 @@
-package net.gms_world.gmsworldserver;
+package net.gmsworld.gmsworldserver;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
