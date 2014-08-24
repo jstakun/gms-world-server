@@ -113,9 +113,10 @@ public class HttpUtils {
                     logger.log(Level.SEVERE, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString()});   
                 }
                 file = IOUtils.toString(is, "UTF-8");
-            }
+            } 
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
+            httpResponseStatuses.remove(fileUrl.toExternalForm());
         } finally {
             if (is != null) {
                 is.close();
@@ -195,6 +196,6 @@ public class HttpUtils {
     }
     
     public static Integer getResponseCode(String url) {
-    	return httpResponseStatuses.get(url);
+    	return httpResponseStatuses.remove(url);
     }
 }
