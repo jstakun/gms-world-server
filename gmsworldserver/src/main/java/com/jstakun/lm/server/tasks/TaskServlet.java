@@ -129,9 +129,9 @@ public class TaskServlet extends HttpServlet {
     	URL rhcloudUrl = new URL(healthCheckUrl);
     	HttpUtils.processFileRequest(rhcloudUrl);
     	Integer status = HttpUtils.getResponseCode(rhcloudUrl.toExternalForm()); 
-    	logger.log(Level.INFO, "Received server response code " + status);
     	if (status != null && status == 503) {
     		logger.log(Level.SEVERE, "Received Service Unavailable error response!");
+    		logger.log(Level.INFO, "Trying to start the application {0}...", appname);
     		URL apiUrl = new URL("https://openshift.redhat.com/broker/rest/domains/" + domainName + "/applications/" + appname + "/events");
         	String response = HttpUtils.processFileRequestWithBasicAuthn(apiUrl, "POST", "application/json", "event=start", Commons.getProperty(Property.RH_ACCOUNT));
         	status = HttpUtils.getResponseCode(apiUrl.toExternalForm());
@@ -139,6 +139,8 @@ public class TaskServlet extends HttpServlet {
         		logger.log(Level.SEVERE, "Received server response code " + status);
         	}
         	logger.log(Level.INFO, "Received following server response: {0}", response);
+    	} else {
+    		logger.log(Level.INFO, "Received server response code " + status);
     	}
     }
 }
