@@ -165,7 +165,7 @@ public final class ExtendedLandmark extends Landmark implements Externalizable {
         this.deal = deal;
     }
 
-    public boolean isDeal() {
+    public boolean containsDeal() {
         return (deal != null && (deal.getPrice() >= 0 || StringUtils.isNotEmpty(deal.getDealType())));
     }
 
@@ -292,7 +292,7 @@ public final class ExtendedLandmark extends Landmark implements Externalizable {
 		} else {
 			out.writeBoolean(false);
 		}
-		if (isDeal()) {
+		if (containsDeal()) {
 			out.writeBoolean(true);
 			out.writeObject(deal);
 		} else {

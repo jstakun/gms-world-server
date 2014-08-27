@@ -242,7 +242,7 @@ public class AddressInfo implements Externalizable {
 	/**
 	 * Store the fields.
 	 */
-	private final String[] fields;
+	private String[] fields;
 
 	/**
 	 * Constructs an AddressInfo object with all the values of the fields set to null.
@@ -347,4 +347,12 @@ public class AddressInfo implements Externalizable {
    	    	}
 		}
 	}    
+	
+	public String[] getFields() {
+		return fields;
+	}
+	
+	public void setFields(String[] fields) {
+		this.fields = fields;
+	}
 }

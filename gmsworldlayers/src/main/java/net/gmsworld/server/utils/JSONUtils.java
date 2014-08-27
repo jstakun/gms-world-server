@@ -325,7 +325,7 @@ public class JSONUtils {
         }
         
         //System.out.println("P: " + deal.getPrice() + ", D: " + deal.getDiscount() + ", S: " + deal.getSave());
-        if (landmark.isDeal()) {
+        if (landmark.containsDeal()) {
             String priceFormatted = formatDeal(landmark.getDeal(), locale, rb);
             if (StringUtils.isNotEmpty(priceFormatted)) {
                 result.add(priceFormatted);
