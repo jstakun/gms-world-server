@@ -15,11 +15,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.gmsworld.server.utils.NumberUtils;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.utils.MailUtils;
-import com.jstakun.lm.server.utils.NumberUtils;
 
 /**
  *
@@ -75,8 +76,8 @@ public class CrashReportServlet extends HttpServlet {
                     title += titleSuffix;
                 }
 
-                int lmVersion = NumberUtils.getInt(ConfigurationManager.getParam(ConfigurationManager.LM_VERSION, "0"), 0);
-                int daVersion = NumberUtils.getInt(ConfigurationManager.getParam(ConfigurationManager.DA_VERSION, "0"), 0);
+                int lmVersion = NumberUtils.getInt(ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.LM_VERSION, "0"), 0);
+                int daVersion = NumberUtils.getInt(ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.DA_VERSION, "0"), 0);
                 
                 if (versionCode >= (lmVersion-5) || (versionCode >= (daVersion-5) && versionCode < 500)) {
                 	MailUtils.sendCrashReport(title, sb.toString());

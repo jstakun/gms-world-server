@@ -8,11 +8,7 @@
 <%@page import="com.jstakun.lm.server.persistence.Landmark,
         com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils,
         com.jstakun.lm.server.persistence.Comment,
-        com.jstakun.lm.server.utils.UrlUtils,
-        com.jstakun.lm.server.utils.DateUtils,
-        java.util.List,
-        com.google.appengine.api.datastore.KeyFactory,
-        com.jstakun.lm.server.utils.StringUtil" %>
+        com.jstakun.lm.server.utils.UrlUtils,net.gmsworld.server.utils.DateUtils,java.util.List,com.google.appengine.api.datastore.KeyFactory,net.gmsworld.server.utils.StringUtil" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <!-- content-outer -->
 <html xmlns="http://www.cw3.org/1999/xhtml" xml:lang="en" lang="en">

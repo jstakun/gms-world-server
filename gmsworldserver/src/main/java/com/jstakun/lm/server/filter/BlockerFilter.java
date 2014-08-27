@@ -16,9 +16,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.jstakun.lm.server.config.Commons;
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.utils.StringUtil;
+
 import com.jstakun.lm.server.config.ConfigurationManager;
-import com.jstakun.lm.server.utils.StringUtil;
 
 import eu.bitwalker.useragentutils.Browser;
 
@@ -77,7 +78,7 @@ public class BlockerFilter implements Filter {
             //    logger.log(Level.WARNING, "User agent: " + browser.getName() + ", " + httpRequest.getHeader("User-Agent") + ", appId: " + appIdVal);         	
             } else {
             	logger.log(Level.WARNING, "User agent: " + browser.getName() + ", " + userAgent + ", appId: " + appIdVal);    
-            	String closed = ConfigurationManager.getParam(ConfigurationManager.CLOSED_URLS, "");
+            	String closed = ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.CLOSED_URLS, "");
             	//logger.log(Level.INFO, "Temporary closed uris: " + closed);          
                 String[] closedUrlsList = StringUtils.split(closed, ",");
                 if (closedUrlsList != null && closedUrlsList.length > 0) {

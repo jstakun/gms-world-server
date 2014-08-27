@@ -5,9 +5,10 @@ import java.net.URL;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
-import com.jstakun.lm.server.config.Commons;
-import com.jstakun.lm.server.config.ConfigurationManager;
-import com.jstakun.lm.server.config.Commons.Property;
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.ConfigurationManager;
+import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.utils.HttpUtils;
 
 public class TokenUtil {
 

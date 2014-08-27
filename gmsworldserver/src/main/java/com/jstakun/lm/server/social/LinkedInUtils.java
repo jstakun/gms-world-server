@@ -13,8 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 
-import com.jstakun.lm.server.config.Commons;
-import com.jstakun.lm.server.config.ConfigurationManager;
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.ConfigurationManager;
 
 public class LinkedInUtils {
 	

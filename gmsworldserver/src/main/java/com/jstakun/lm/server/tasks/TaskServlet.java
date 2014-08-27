@@ -5,9 +5,6 @@
 package com.jstakun.lm.server.tasks;
 
 import com.jstakun.lm.server.config.ConfigurationManager;
-import com.jstakun.lm.server.utils.DateUtils;
-import com.jstakun.lm.server.utils.HttpUtils;
-import com.jstakun.lm.server.utils.NumberUtils;
 import com.jstakun.lm.server.utils.persistence.ScreenshotPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.ServiceLogPersistenceUtils;
 
@@ -25,6 +22,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.utils.DateUtils;
+import net.gmsworld.server.utils.HttpUtils;
+import net.gmsworld.server.utils.NumberUtils;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -61,11 +61,11 @@ public class TaskServlet extends HttpServlet {
                 if (action.equalsIgnoreCase("purge")) {
                     if (entity.equalsIgnoreCase("log")) {
                         //long count = ServiceLogPersistenceUtils.deleteAllLogs();
-                        Date nDaysAgo = DateUtils.getDayInPast(Integer.parseInt(ConfigurationManager.getParam(ConfigurationManager.LOG_OLDER_THAN_DAYS, "60")), false);
+                        Date nDaysAgo = DateUtils.getDayInPast(Integer.parseInt(ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.LOG_OLDER_THAN_DAYS, "60")), false);
                         long count = ServiceLogPersistenceUtils.deleteLogsOlderThanDate(nDaysAgo);
                         logger.log(Level.INFO, "Deleted {0} logs.", count);
                     } else if (entity.equalsIgnoreCase("screenshot")) {
-                    	int ndays = NumberUtils.getInt(ConfigurationManager.getParam(ConfigurationManager.SCREENSHOT_OLDER_THAN_DAYS, "90"), 90);
+                    	int ndays = NumberUtils.getInt(ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.SCREENSHOT_OLDER_THAN_DAYS, "90"), 90);
                         //removed on 02/07/14
                     	//Date nDaysAgo = DateUtils.getDayInPast(ndays, true);
                         //long count = ScreenshotPersistenceUtils.deleteScreenshotsOlderThanDate(nDaysAgo);

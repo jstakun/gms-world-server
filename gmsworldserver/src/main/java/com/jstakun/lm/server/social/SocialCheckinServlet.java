@@ -11,8 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.jstakun.lm.server.config.Commons;
-import com.jstakun.lm.server.utils.HttpUtils;
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.utils.HttpUtils;
 
 /**
  * Servlet implementation class SocialCheckinServlet

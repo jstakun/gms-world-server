@@ -5,16 +5,20 @@
 package com.jstakun.lm.server.struts;
 
 import com.jstakun.lm.server.persistence.Landmark;
-import com.jstakun.lm.server.utils.DateUtils;
-import com.jstakun.lm.server.utils.NumberUtils;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import net.gmsworld.server.utils.DateUtils;
+import net.gmsworld.server.utils.NumberUtils;
+
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;

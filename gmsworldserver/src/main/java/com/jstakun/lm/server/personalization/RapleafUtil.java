@@ -1,17 +1,15 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.lm.server.personalization;
 
-import com.jstakun.lm.server.config.Commons;
-import com.jstakun.lm.server.utils.HttpUtils;
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.utils.HttpUtils;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.apache.commons.lang.StringUtils;
 
 /**

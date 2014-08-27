@@ -7,12 +7,13 @@ package com.jstakun.lm.server.struts;
 import java.net.URLDecoder;
 
 import com.jstakun.lm.server.persistence.User;
-import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.MailUtils;
 import com.jstakun.lm.server.utils.persistence.UserPersistenceUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import net.gmsworld.server.utils.HttpUtils;
 
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;

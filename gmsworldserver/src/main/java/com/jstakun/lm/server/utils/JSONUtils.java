@@ -30,8 +30,11 @@ import org.w3c.tidy.Tidy;
 
 import com.jstakun.gms.android.deals.Deal;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
-import com.jstakun.lm.server.config.Commons;
-import com.jstakun.lm.server.config.ConfigurationManager;
+
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.ConfigurationManager;
+import net.gmsworld.server.utils.NumberUtils;
+
 import com.jstakun.lm.server.persistence.Layer;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 import com.openlapi.AddressInfo;

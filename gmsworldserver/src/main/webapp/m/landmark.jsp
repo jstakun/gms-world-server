@@ -2,9 +2,7 @@
 <%@page import="com.jstakun.lm.server.persistence.Landmark,
         com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils,
         com.jstakun.lm.server.persistence.Comment,
-        com.jstakun.lm.server.utils.UrlUtils,
-        com.jstakun.lm.server.utils.DateUtils,
-        com.jstakun.lm.server.utils.StringUtil,
+        com.jstakun.lm.server.utils.UrlUtils,net.gmsworld.server.utils.DateUtils,net.gmsworld.server.utils.StringUtil,
         java.util.List,
         java.util.Date,
         com.google.appengine.api.datastore.KeyFactory" %>

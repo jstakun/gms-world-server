@@ -22,12 +22,13 @@ import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.jstakun.lm.server.config.Commons;
-import com.jstakun.lm.server.config.Commons.Property;
-import com.jstakun.lm.server.config.ConfigurationManager;
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.config.ConfigurationManager;
+import net.gmsworld.server.utils.DateUtils;
+import net.gmsworld.server.utils.HttpUtils;
+
 import com.jstakun.lm.server.persistence.Landmark;
-import com.jstakun.lm.server.utils.DateUtils;
-import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 
 /**
@@ -570,7 +571,7 @@ public class LandmarkPersistenceUtils {
         }*/
     	
     	try {
-    		String limit = ConfigurationManager.getParam(ConfigurationManager.NUM_OF_LANDMARKS, "10");
+    		String limit = com.jstakun.lm.server.config.ConfigurationManager.getParam(ConfigurationManager.NUM_OF_LANDMARKS, "10");
         	String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "landmarksProvider";
         	String params = "limit=" + limit;			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);

@@ -15,12 +15,14 @@ import org.apache.commons.lang.StringUtils;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
-import com.jstakun.lm.server.config.Commons;
-import com.jstakun.lm.server.config.Commons.Property;
-import com.jstakun.lm.server.config.ConfigurationManager;
+
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.config.ConfigurationManager;
+import net.gmsworld.server.utils.NumberUtils;
+
 import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.MailUtils;
-import com.jstakun.lm.server.utils.NumberUtils;
 import com.jstakun.lm.server.utils.UrlUtils;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 

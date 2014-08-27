@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.lm.server.utils.persistence;
 
 import java.lang.reflect.InvocationTargetException;
@@ -18,12 +14,15 @@ import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
 import com.google.gdata.util.common.util.Base64;
-import com.jstakun.lm.server.config.Commons;
-import com.jstakun.lm.server.config.ConfigurationManager;
-import com.jstakun.lm.server.config.Commons.Property;
+
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.ConfigurationManager;
+import net.gmsworld.server.config.Commons.Property;
+
 import com.jstakun.lm.server.persistence.User;
-import com.jstakun.lm.server.utils.CryptoTools;
-import com.jstakun.lm.server.utils.HttpUtils;
+
+import net.gmsworld.server.utils.CryptoTools;
+import net.gmsworld.server.utils.HttpUtils;
 
 /**
  *

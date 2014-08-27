@@ -1,11 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package net.gmsworld.server.layers;
 
 import com.google.gdata.util.common.util.Base64;
-import com.jstakun.lm.server.utils.CryptoTools;
+import net.gmsworld.server.utils.CryptoTools;
 
 import java.io.IOException;
 import java.io.PrintWriter;

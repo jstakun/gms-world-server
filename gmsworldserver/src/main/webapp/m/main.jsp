@@ -3,8 +3,7 @@
          com.jstakun.lm.server.persistence.Landmark,
          com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils,
          org.ocpsoft.prettytime.PrettyTime,
-         com.jstakun.lm.server.utils.UrlUtils,
-         com.jstakun.lm.server.utils.DateUtils,
+         com.jstakun.lm.server.utils.UrlUtils,net.gmsworld.server.utils.DateUtils,
          com.jstakun.lm.server.utils.memcache.CacheUtil,
          java.util.List"%>
 <!DOCTYPE html>

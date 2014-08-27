@@ -1,16 +1,13 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package net.gmsworld.server.layers;
 
 import org.json.JSONObject;
 
-import com.jstakun.lm.server.config.Commons;
-import com.jstakun.lm.server.config.Commons.Property;
-import com.jstakun.lm.server.utils.HttpUtils;
-import com.jstakun.lm.server.utils.MathUtils;
-import com.jstakun.lm.server.utils.NumberUtils;
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.utils.HttpUtils;
+import net.gmsworld.server.utils.MathUtils;
+import net.gmsworld.server.utils.NumberUtils;
+
 import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;
 import com.restfb.Parameter;

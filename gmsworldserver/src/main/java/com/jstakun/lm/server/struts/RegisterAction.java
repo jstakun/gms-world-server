@@ -1,11 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.jstakun.lm.server.struts;
 
-import com.jstakun.lm.server.config.ConfigurationManager;
+import net.gmsworld.server.config.ConfigurationManager;
 import com.jstakun.lm.server.utils.MailUtils;
 import com.jstakun.lm.server.utils.persistence.UserPersistenceUtils;
 import java.io.IOException;

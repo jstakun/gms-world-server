@@ -12,7 +12,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import com.jstakun.lm.server.config.Commons;
+import net.gmsworld.server.config.Commons;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 
 /**

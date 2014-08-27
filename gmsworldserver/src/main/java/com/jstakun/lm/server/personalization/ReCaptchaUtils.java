@@ -1,6 +1,6 @@
 package com.jstakun.lm.server.personalization;
 
-import com.jstakun.lm.server.config.Commons;
+import net.gmsworld.server.config.Commons;
 
 import net.tanesha.recaptcha.ReCaptcha;
 import net.tanesha.recaptcha.ReCaptchaFactory;

@@ -4,22 +4,26 @@
  */
 package com.jstakun.lm.server.social;
 
-import com.jstakun.lm.server.config.ConfigurationManager;
+import net.gmsworld.server.config.ConfigurationManager;
+import net.gmsworld.server.utils.StringUtil;
+
 import com.jstakun.lm.server.persistence.Landmark;
-import com.jstakun.lm.server.utils.StringUtil;
 import com.jstakun.lm.server.utils.UrlUtils;
 import com.jstakun.lm.server.utils.persistence.CheckinPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.CommonPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 

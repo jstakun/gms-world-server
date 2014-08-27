@@ -6,9 +6,7 @@
 package com.jstakun.lm.server.servlet;
 
 import com.jstakun.lm.server.config.ConfigurationManager;
-import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.MailUtils;
-import com.jstakun.lm.server.utils.NumberUtils;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -21,6 +19,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import net.gmsworld.server.utils.HttpUtils;
+import net.gmsworld.server.utils.NumberUtils;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
@@ -62,11 +63,11 @@ public class NotificationsServlet extends HttpServlet {
                     reply.put("type", type);
                     if (StringUtils.equalsIgnoreCase(appId,"0")) {
                         //LM
-                        String version = ConfigurationManager.getParam(ConfigurationManager.LM_VERSION, "0");
+                        String version = ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.LM_VERSION, "0");
                         reply.put("value", version);
                     } else if (StringUtils.equalsIgnoreCase(appId,"1")) {
                         //DA
-                        String version = ConfigurationManager.getParam(ConfigurationManager.DA_VERSION, "0");
+                        String version = ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.DA_VERSION, "0");
                         reply.put("value", version);
                     }
                 } else if (StringUtils.equals(type, "u")) {
@@ -78,7 +79,7 @@ public class NotificationsServlet extends HttpServlet {
                 	logger.log(Level.INFO, "Received usage notification from " + (email != null ? email : "guest") + 
                 			" last startup time: " + DateFormat.getDateTimeInstance().format(cal.getTime()) + 
                 			", use count: " + useCount);
-                	int interval = NumberUtils.getInt(ConfigurationManager.getParam(ConfigurationManager.NOTIFICATIONS_INTERVAL, "14"), 14);
+                	int interval = NumberUtils.getInt(ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.NOTIFICATIONS_INTERVAL, "14"), 14);
                 	if (System.currentTimeMillis() - lastStartupTime > (interval * ONE_DAY) && email != null) {
                 		//send email notification if lastStartupTime > week ago 
                     	//send not more that once a week

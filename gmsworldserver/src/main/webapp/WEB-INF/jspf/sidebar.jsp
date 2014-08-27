@@ -3,8 +3,7 @@
 <%@ page import="com.jstakun.lm.server.utils.persistence.GeocodeCachePersistenceUtils,
                 com.jstakun.lm.server.persistence.GeocodeCache,
                 java.util.List,
-                com.jstakun.lm.server.utils.memcache.CacheUtil,
-                com.jstakun.lm.server.utils.DateUtils,
+                com.jstakun.lm.server.utils.memcache.CacheUtil,net.gmsworld.server.utils.DateUtils,
                 com.google.appengine.api.datastore.KeyFactory" %>
 <div id="sidebar">
 

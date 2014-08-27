@@ -1,10 +1,8 @@
 <%@page contentType="text/html" pageEncoding="utf-8"%>
 <%@ page import="com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils,
                  com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils,
-                 com.jstakun.lm.server.utils.UrlUtils,
-                 com.jstakun.lm.server.utils.StringUtil,
-                 com.jstakun.lm.server.persistence.Landmark,
-                 com.jstakun.lm.server.utils.DateUtils,
+                 com.jstakun.lm.server.utils.UrlUtils,net.gmsworld.server.utils.StringUtil,
+                 com.jstakun.lm.server.persistence.Landmark,net.gmsworld.server.utils.DateUtils,
                  java.util.List"%>
 <!DOCTYPE html>
 <html>

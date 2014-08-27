@@ -26,10 +26,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.gdata.util.common.util.Base64;
-import com.jstakun.lm.server.config.Commons;
+
+import net.gmsworld.server.config.Commons;
+
 import com.jstakun.lm.server.config.ConfigurationManager;
-import com.jstakun.lm.server.config.Commons.Property;
-import com.jstakun.lm.server.utils.HttpUtils;
+
+import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.utils.HttpUtils;
+
 import com.jstakun.lm.server.utils.persistence.UserPersistenceUtils;
 
 /**
@@ -88,7 +92,7 @@ public class ServicesAuthorizationFilter implements Filter {
             	String scope = httpRequest.getHeader(Commons.SCOPE_HEADER);
             	if (authHeader != null && scope != null) {
             		try {
-            			String tokenUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "isValidToken?scope=" + scope + "&key=" + authHeader;
+            			String tokenUrl = net.gmsworld.server.config.ConfigurationManager.RHCLOUD_SERVER_URL + "isValidToken?scope=" + scope + "&key=" + authHeader;
             			String tokenJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(tokenUrl), Commons.getProperty(Property.RH_GMS_USER));		
         				if (StringUtils.startsWith(tokenJson, "{")) {
         					JSONObject root = new JSONObject(tokenJson);

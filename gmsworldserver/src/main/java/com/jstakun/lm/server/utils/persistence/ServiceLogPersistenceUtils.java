@@ -14,12 +14,15 @@ import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.jstakun.lm.server.persistence.PMF;
 import com.jstakun.lm.server.persistence.ServiceLog;
-import com.jstakun.lm.server.utils.DateUtils;
+
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
+
+import net.gmsworld.server.utils.DateUtils;
 
 /**
  *

@@ -24,12 +24,14 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.api.services.plus.model.Person;
 import com.google.common.collect.ImmutableMap;
-import com.jstakun.lm.server.config.Commons;
-import com.jstakun.lm.server.config.Commons.Property;
-import com.jstakun.lm.server.config.ConfigurationManager;
+
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.config.ConfigurationManager;
+import net.gmsworld.server.utils.HttpUtils;
+
 import com.jstakun.lm.server.social.GooglePlusUtils;
 import com.jstakun.lm.server.social.NotificationUtils;
-import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.TokenUtil;
 
 /**

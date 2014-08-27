@@ -1,4 +1,4 @@
-package com.jstakun.lm.server.utils;
+package net.gmsworld.server.utils;
 
 import java.awt.image.BufferedImage;
 

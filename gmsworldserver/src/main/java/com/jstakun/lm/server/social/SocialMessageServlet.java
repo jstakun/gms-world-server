@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.jstakun.lm.server.config.Commons;
+import net.gmsworld.server.config.Commons;
 
 /**
  * Servlet implementation class SocialMessageServlet

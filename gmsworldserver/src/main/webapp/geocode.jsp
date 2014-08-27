@@ -5,9 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="utf-8"%>
-<%@page import="com.jstakun.lm.server.persistence.GeocodeCache,
-                com.jstakun.lm.server.utils.StringUtil,
-                com.jstakun.lm.server.utils.DateUtils" %>
+<%@page import="com.jstakun.lm.server.persistence.GeocodeCache,net.gmsworld.server.utils.StringUtil,net.gmsworld.server.utils.DateUtils" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <!-- content-outer -->
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">

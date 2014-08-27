@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 
-import com.jstakun.lm.server.config.ConfigurationManager;
+import net.gmsworld.server.config.ConfigurationManager;
 import com.jstakun.lm.server.utils.MailUtils;
 import com.jstakun.lm.server.utils.TokenUtil;
 

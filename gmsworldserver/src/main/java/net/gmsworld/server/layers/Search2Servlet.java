@@ -29,13 +29,17 @@ import org.json.JSONObject;
 
 import com.google.appengine.api.ThreadManager;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
-import com.jstakun.lm.server.config.Commons;
+
+import net.gmsworld.server.config.Commons;
+
 import com.jstakun.lm.server.utils.GoogleThreadProvider;
-import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.JSONUtils;
-import com.jstakun.lm.server.utils.NumberUtils;
-import com.jstakun.lm.server.utils.StringUtil;
-import com.jstakun.lm.server.utils.ThreadUtil;
+
+import net.gmsworld.server.utils.HttpUtils;
+import net.gmsworld.server.utils.NumberUtils;
+import net.gmsworld.server.utils.StringUtil;
+import net.gmsworld.server.utils.ThreadUtil;
+
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 
 /**

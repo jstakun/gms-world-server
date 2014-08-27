@@ -8,11 +8,11 @@ import java.net.URL;
 
 import javax.imageio.ImageIO;
 
+import net.gmsworld.server.utils.ImageUtils;
+
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-
-import com.jstakun.lm.server.utils.ImageUtils;
 
 public class ImageUtilsTest {
 

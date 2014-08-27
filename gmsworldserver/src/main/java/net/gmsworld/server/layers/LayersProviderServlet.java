@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package net.gmsworld.server.layers;
 
 import java.io.IOException;
@@ -25,12 +21,14 @@ import org.json.JSONObject;
 import twitter4j.TwitterException;
 
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
-import com.jstakun.lm.server.config.Commons;
-import com.jstakun.lm.server.config.Commons.Property;
+
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.utils.HttpUtils;
+import net.gmsworld.server.utils.NumberUtils;
+import net.gmsworld.server.utils.StringUtil;
+
 import com.jstakun.lm.server.utils.GoogleThreadProvider;
-import com.jstakun.lm.server.utils.HttpUtils;
-import com.jstakun.lm.server.utils.NumberUtils;
-import com.jstakun.lm.server.utils.StringUtil;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.restfb.exception.FacebookOAuthException;
 

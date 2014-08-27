@@ -7,9 +7,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="com.jstakun.lm.server.persistence.Landmark,
         com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils,
-        java.util.List,
-        com.jstakun.lm.server.utils.DateUtils,
-        com.jstakun.lm.server.utils.StringUtil,
+        java.util.List,net.gmsworld.server.utils.DateUtils,net.gmsworld.server.utils.StringUtil,
         com.jstakun.lm.server.utils.UrlUtils,
         org.apache.commons.lang.StringEscapeUtils" %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"

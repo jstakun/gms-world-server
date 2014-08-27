@@ -1,8 +1,6 @@
 <%@page contentType="text/html" pageEncoding="utf-8"%>
 <%@page import="com.jstakun.lm.server.persistence.Screenshot,
-        com.jstakun.lm.server.utils.UrlUtils,
-        com.jstakun.lm.server.utils.DateUtils,
-        com.jstakun.lm.server.utils.StringUtil" %>
+        com.jstakun.lm.server.utils.UrlUtils,net.gmsworld.server.utils.DateUtils,net.gmsworld.server.utils.StringUtil" %>
 <!DOCTYPE html>
 <html>
 

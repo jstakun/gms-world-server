@@ -1,8 +1,7 @@
 <%-- any content can be specified here e.g.: --%>
 <%@ page pageEncoding="utf-8" %>
 <%@ page import="com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils,
-                 com.jstakun.lm.server.persistence.Landmark,
-                 com.jstakun.lm.server.utils.DateUtils,
+                 com.jstakun.lm.server.persistence.Landmark,net.gmsworld.server.utils.DateUtils,
                  com.jstakun.lm.server.utils.UrlUtils,
                  java.util.List"%>
 <div id="footer-outer" class="clear"><div id="footer-wrap">

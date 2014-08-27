@@ -24,7 +24,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 
-import com.jstakun.lm.server.config.ConfigurationManager;
+import net.gmsworld.server.config.ConfigurationManager;
 
 /**
  *
@@ -192,7 +192,7 @@ public class MailUtils {
             is = context.getResourceAsStream("/WEB-INF/emails/engage.html");
             String message = IOUtils.toString(is);
             
-            String excluded = ConfigurationManager.getParam(ConfigurationManager.EXCLUDED, "");
+            String excluded = com.jstakun.lm.server.config.ConfigurationManager.getParam(ConfigurationManager.EXCLUDED, "");
             String[] excludedList = StringUtils.split(excluded, "|");
             if (StringUtils.indexOfAny(toA, excludedList) >= 0) {
                //sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.ADMIN_MAIL, ConfigurationManager.ADMIN_NICK, "Copy of excluded engagement message to " + toA, message, "text/html");

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.lm.server.utils.persistence;
 
 import java.lang.reflect.InvocationTargetException;
@@ -22,12 +18,13 @@ import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.jstakun.lm.server.config.Commons;
-import com.jstakun.lm.server.config.ConfigurationManager;
-import com.jstakun.lm.server.config.Commons.Property;
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.ConfigurationManager;
+import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.utils.DateUtils;
+import net.gmsworld.server.utils.HttpUtils;
+
 import com.jstakun.lm.server.persistence.GeocodeCache;
-import com.jstakun.lm.server.utils.DateUtils;
-import com.jstakun.lm.server.utils.HttpUtils;
 
 /**
  *
@@ -127,7 +124,7 @@ public class GeocodeCachePersistenceUtils {
         }*/
     	
     	try {
-    		String limit = ConfigurationManager.getParam(ConfigurationManager.NUM_OF_GEOCODES, "10");
+    		String limit = com.jstakun.lm.server.config.ConfigurationManager.getParam(ConfigurationManager.NUM_OF_GEOCODES, "10");
         	String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "itemProvider";
         	String params = "type=geocode&limit=" + limit;			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);

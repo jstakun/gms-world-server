@@ -1,9 +1,5 @@
 package net.gmsworld.server.layers;
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Date;
@@ -21,13 +17,17 @@ import org.apache.commons.lang.StringUtils;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gdata.util.common.util.Base64;
-import com.jstakun.lm.server.config.Commons;
-import com.jstakun.lm.server.config.ConfigurationManager;
+
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.ConfigurationManager;
+
 import com.jstakun.lm.server.social.NotificationUtils;
-import com.jstakun.lm.server.utils.CryptoTools;
-import com.jstakun.lm.server.utils.HttpUtils;
-import com.jstakun.lm.server.utils.NumberUtils;
-import com.jstakun.lm.server.utils.StringUtil;
+
+import net.gmsworld.server.utils.CryptoTools;
+import net.gmsworld.server.utils.HttpUtils;
+import net.gmsworld.server.utils.NumberUtils;
+import net.gmsworld.server.utils.StringUtil;
+
 import com.jstakun.lm.server.utils.UrlUtils;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;

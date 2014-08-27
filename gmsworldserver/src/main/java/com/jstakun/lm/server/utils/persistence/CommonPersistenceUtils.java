@@ -1,10 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.lm.server.utils.persistence;
 
-import com.jstakun.lm.server.config.ConfigurationManager;
+import net.gmsworld.server.config.ConfigurationManager;
 import com.jstakun.lm.server.utils.UrlUtils;
 
 import java.util.logging.Level;

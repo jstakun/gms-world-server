@@ -6,8 +6,6 @@ package net.gmsworld.server.layers;
 
 import com.jstakun.lm.server.persistence.Layer;
 import com.jstakun.lm.server.utils.JSONUtils;
-import com.jstakun.lm.server.utils.NumberUtils;
-import com.jstakun.lm.server.utils.StringUtil;
 import com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils;
 import com.jstakun.lm.server.utils.xml.XMLUtils;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
@@ -23,6 +21,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import net.gmsworld.server.utils.NumberUtils;
+import net.gmsworld.server.utils.StringUtil;
 
 /**
  *

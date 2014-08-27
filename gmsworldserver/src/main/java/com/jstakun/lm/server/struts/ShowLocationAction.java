@@ -16,9 +16,9 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import net.gmsworld.server.layers.GeocodeHelperFactory;
+import net.gmsworld.server.utils.HttpUtils;
+import net.gmsworld.server.utils.StringUtil;
 
-import com.jstakun.lm.server.utils.HttpUtils;
-import com.jstakun.lm.server.utils.StringUtil;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 
 /**

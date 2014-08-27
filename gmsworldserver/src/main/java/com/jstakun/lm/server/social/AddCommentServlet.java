@@ -4,10 +4,11 @@
  */
 package com.jstakun.lm.server.social;
 
-import com.jstakun.lm.server.config.ConfigurationManager;
+import net.gmsworld.server.config.ConfigurationManager;
+import net.gmsworld.server.utils.HttpUtils;
+import net.gmsworld.server.utils.StringUtil;
+
 import com.jstakun.lm.server.persistence.Landmark;
-import com.jstakun.lm.server.utils.HttpUtils;
-import com.jstakun.lm.server.utils.StringUtil;
 import com.jstakun.lm.server.utils.UrlUtils;
 import com.jstakun.lm.server.utils.persistence.CommentPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.CommonPersistenceUtils;

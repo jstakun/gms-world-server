@@ -22,13 +22,15 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.google.common.collect.ImmutableMap;
-import com.jstakun.lm.server.config.ConfigurationManager;
+
+import net.gmsworld.server.config.ConfigurationManager;
+import net.gmsworld.server.utils.ImageUtils;
+import net.gmsworld.server.utils.NumberUtils;
+import net.gmsworld.server.utils.StringUtil;
+
 import com.jstakun.lm.server.social.NotificationUtils;
 import com.jstakun.lm.server.utils.FileUtils;
-import com.jstakun.lm.server.utils.ImageUtils;
 import com.jstakun.lm.server.utils.MailUtils;
-import com.jstakun.lm.server.utils.NumberUtils;
-import com.jstakun.lm.server.utils.StringUtil;
 import com.jstakun.lm.server.utils.UrlUtils;
 import com.jstakun.lm.server.utils.persistence.ScreenshotPersistenceUtils;
 
