@@ -8,7 +8,8 @@
 <%@page import="com.jstakun.lm.server.persistence.Landmark,
         com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils,
         java.util.Map,
-        java.util.Iterator,net.gmsworld.server.utils.DateUtils,
+        java.util.Iterator,
+        net.gmsworld.server.utils.DateUtils,
         com.jstakun.lm.server.utils.UrlUtils,
         org.apache.commons.lang.StringEscapeUtils" %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
@@ -38,7 +39,7 @@
             html, body {width: 100%; height: 100%}
             body {margin-top: 0px; margin-right: 0px; margin-left: 0px; margin-bottom: 0px}
         </style>
-        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false&libraries=visualization">
+        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=visualization">
         </script>
         <script type="text/javascript">
             function initialize()
@@ -56,7 +57,9 @@
                 var pointArray = new google.maps.MVCArray(landmarks);
 
                 var heatmap = new google.maps.visualization.HeatmapLayer({
-                    data: pointArray
+                    data: pointArray,
+                    maxIntensity: 10,
+                    opacity: 0.8
                 });
 
                 heatmap.setMap(map);
@@ -73,10 +76,12 @@
          }
       %>
              ];
+
+            google.maps.event.addDomListener(window, 'load', initialize);   
         </script>
         <% }%>
     </head>
-    <body onLoad="initialize()">
+    <body>
         <% if (heatMapData != null) {%>
         <div id="map_canvas" style="width:100%; height:100%"></div>
         <script type="text/javascript">

@@ -1,4 +1,4 @@
-package net.gmsworld.gmsworldserver;
+package net.gmsworld.server.layers;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
