@@ -2,5 +2,18 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.gms-world</groupId>
   <artifactId>osmxapi2</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
+   
+  <distributionManagement>
+  <repository>
+     <id>deployment</id>
+     <name>Internal Releases</name>
+     <url>http://localhost:8081/nexus/content/repositories/thirdparty/</url>
+  </repository>
+  <snapshotRepository>
+     <id>deployment</id>
+     <name>Internal Releases</name>
+     <url>http://localhost:8081/nexus/content/repositories/snapshots/</url>
+  </snapshotRepository>
+</distributionManagement> 
 </project>

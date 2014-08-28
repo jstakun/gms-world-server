@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.gms-world</groupId>
   <artifactId>foursquarecategoryparser2</artifactId>
-  <version>0.0.2-SNAPSHOT</version>
+  <version>0.0.2</version>
   <dependencies>
   	<dependency>
   		<groupId>commons-io</groupId>
@@ -15,4 +15,17 @@
   		<version>20131018</version>
   	</dependency>
   </dependencies>
+  
+   <distributionManagement>
+  <repository>
+     <id>deployment</id>
+     <name>Internal Releases</name>
+     <url>http://localhost:8081/nexus/content/repositories/thirdparty/</url>
+  </repository>
+  <snapshotRepository>
+     <id>deployment</id>
+     <name>Internal Releases</name>
+     <url>http://localhost:8081/nexus/content/repositories/snapshots/</url>
+  </snapshotRepository>
+</distributionManagement> 
 </project>

@@ -15,30 +15,6 @@
         <jdk.version>1.7</jdk.version>
     </properties>
 
-    <repositories>
-    	<repository>
-  			<id>bitwalker.user-agent-utils.mvn.repo</id>
-  			<url>https://raw.github.com/HaraldWalker/user-agent-utils/mvn-repo/</url>
-  			<!-- use snapshot version -->
-  			<snapshots>
-     			<enabled>true</enabled>
-      			<updatePolicy>always</updatePolicy>
-   			</snapshots>
-		</repository>
-		<repository>
-    		<id>sonatype-releases</id>
-    		<url>https://oss.sonatype.org/content/repositories/releases/</url>
-  		</repository>
-  		<repository>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<id>central</id>
-			<name>bintray</name>
-			<url>http://jcenter.bintray.com</url>
-		</repository>
-  	</repositories>
-
     <dependencies>
         <!-- Compile/runtime dependencies -->
         <dependency>
@@ -93,7 +69,7 @@
         </dependency>
         <dependency>
         	<groupId>bitwalker</groupId>
-        	<artifactId>UserAgentUtils</artifactId>
+        	<artifactId>useragentutils</artifactId>
         	<version>1.13</version>
         </dependency>
         <dependency>
@@ -207,7 +183,7 @@
         <dependency>
         	<groupId>net.gms-world</groupId>
         	<artifactId>gmsworldlayers</artifactId>
-        	<version>0.0.3-SNAPSHOT</version>
+        	<version>0.0.3</version>
         </dependency>
     </dependencies>
 
