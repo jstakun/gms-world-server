@@ -20,7 +20,7 @@
   <repository>
      <id>deployment</id>
      <name>Internal Releases</name>
-     <url>http://localhost:8081/nexus/content/repositories/thirdparty/</url>
+     <url>http://localhost:8081/nexus/content/repositories/releases/</url>
   </repository>
   <snapshotRepository>
      <id>deployment</id>
