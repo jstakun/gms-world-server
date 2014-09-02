@@ -34,7 +34,10 @@ public class FoursquareMerchantUtils extends FoursquareUtils {
 	
 	@Override
 	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String token, String categoryid, Locale l) throws MalformedURLException, IOException, JSONException {
-        String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, categoryid, radius, version, limit, stringLimit, token, l.getLanguage());
+		if (lat == 0d && lng == 0d) {
+     		  throw new IllegalArgumentException("Latitude or longiude mustn't be zero!");
+     	}
+  	    String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, categoryid, radius, version, limit, stringLimit, token, l.getLanguage());
         List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)cacheProvider.getObject(key);
         
         if (landmarks == null) {
