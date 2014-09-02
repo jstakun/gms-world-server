@@ -36,7 +36,6 @@ public class LayersTest {
 	   LayerHelperFactory.setThreadProvider(new JvmThreadProvider());	
 	   
 	   List<Method> methods = getStaticGetMethods(LayerHelperFactory.class);
-	   
 	   for (Method m : methods) {
 		   try {
 			   data.add(new Object[]{ m.invoke(null,(Object[])null) });
@@ -49,7 +48,9 @@ public class LayersTest {
 		   }
 	   }
 	   
-	   System.out.println("Found " + methods.size() + " layers.");
+	   //data.add(new Object[]{LayerHelperFactory.getFoursquareUtils()});
+	   
+	   System.out.println("Found " + data.size() + " layers.");
 	   
 	   return data;
 	}
