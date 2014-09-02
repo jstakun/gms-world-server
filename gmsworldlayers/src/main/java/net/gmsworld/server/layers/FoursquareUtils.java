@@ -195,7 +195,7 @@ public class FoursquareUtils extends LayerHelper {
     @Override
 	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String intent, String locale, Locale l) throws Exception {
        	   if (lat == 0d && lng == 0d) {
-       		  throw new IllegalArgumentException("Latitude or longiude mustn't be zero!");
+       		  throw new IllegalArgumentException("Latitude or longitude mustn't be zero!");
        	   }
     	   String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, limit, stringLimit, intent, locale);
            List<ExtendedLandmark> response = (List<ExtendedLandmark>) cacheProvider.getObject(key);
