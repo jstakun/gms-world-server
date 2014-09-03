@@ -7,14 +7,8 @@ package net.gmsworld.server.layers;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,22 +18,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
-import org.json.JSONObject;
-
-import com.google.appengine.api.ThreadManager;
-import com.jstakun.gms.android.landmarks.ExtendedLandmark;
-
-import net.gmsworld.server.config.Commons;
-
-import com.jstakun.lm.server.utils.GoogleThreadProvider;
-import com.jstakun.lm.server.utils.JSONUtils;
-
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
-import net.gmsworld.server.utils.ThreadUtil;
 
+import org.apache.commons.lang.StringUtils;
+import org.json.JSONObject;
+
+import com.jstakun.gms.android.landmarks.ExtendedLandmark;
+import com.jstakun.lm.server.utils.GoogleThreadProvider;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 
 /**
@@ -54,13 +41,13 @@ public class Search2Servlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(Search2Servlet.class.getName());
     private double latitude, longitude;
-    private String query, ftoken, language;
-    private int radius, dealLimit, limit, stringLimit, counter;
-    private Map<String, Thread> layers;
-    private Map<String, JSONObject> jsonMap;
+    private String query, ftoken;
+    private int radius, limit, stringLimit, dealLimit;
     private List<ExtendedLandmark> foundLandmarks;
     private Locale locale;
-
+    private JSONObject jsonResponse;
+    
+    
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
@@ -76,7 +63,6 @@ public class Search2Servlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        layers = new ConcurrentHashMap<String, Thread>();
         String format = StringUtil.getStringParam(request.getParameter("format"), "json");
         PrintWriter out = null;
         
@@ -91,28 +77,32 @@ public class Search2Servlet extends HttpServlet {
             if (HttpUtils.isEmptyAny(request, "lat", "lng", "radius", "query")) {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             } else {
-                counter = 0;
                 latitude = GeocodeUtils.getLatitude(request.getParameter("lat"));
                 longitude = GeocodeUtils.getLongitude(request.getParameter("lng"));
                 query = URLDecoder.decode(request.getParameter("query"), "utf-8");
                 ftoken = request.getParameter("ftoken");
                 radius = NumberUtils.getRadius(request.getParameter("radius"), 10, 6371);
-                language = StringUtil.getLanguage(request.getLocale().getLanguage(), "en", 2);
+                //language = StringUtil.getLanguage(request.getLocale().getLanguage(), "en", 2);
                 dealLimit = NumberUtils.getInt(request.getParameter("dealLimit"), 300);
                 limit = NumberUtils.getInt(request.getParameter("limit"), 30);
                 stringLimit = StringUtil.getStringLengthLimit(request.getParameter("display"));
                 int version = NumberUtils.getVersion(request.getParameter("version"), 1);
-                boolean isDeal = false;
+                String flexString = "0";
                 if (StringUtils.isNotEmpty(request.getParameter("deals"))) {
-                    isDeal = true;
+                    flexString = "1";
                 }
-                int geocode = 0;
-                if (StringUtils.isNotEmpty(request.getParameter("geocode"))) {
-                    geocode = NumberUtils.getInt(request.getParameter("geocode"), 0);
-                }
+                flexString += "_" + NumberUtils.getInt(request.getParameter("geocode"),0);
+                flexString += "_" + dealLimit;
+                
                 locale = request.getLocale();
                 
-                ThreadFactory searchThreadFactory = ThreadManager.currentRequestThreadFactory();
+                if (format.equals("json")) { 
+                	jsonResponse = LayerHelperFactory.getSearchUtils().processRequest(latitude, longitude, query, radius, version, limit, stringLimit, flexString, ftoken, locale);
+                } else {
+                	foundLandmarks = LayerHelperFactory.getSearchUtils().processBinaryRequest(latitude, longitude, query, radius, version, limit, stringLimit, flexString, ftoken, locale);
+                }
+                
+                /*ThreadFactory searchThreadFactory = ThreadManager.currentRequestThreadFactory();
 
                 if (format.equals("json")) { 
                 	jsonMap = new HashMap<String, JSONObject>();
@@ -172,42 +162,14 @@ public class Search2Servlet extends HttpServlet {
                     t.start();
                 }
 
-                ThreadUtil.waitForLayers(layers);
-
-                /*String username = StringUtil.getUsername(request.getAttribute("username"), request.getParameter("username"));
-                boolean auth = false;
-                if (StringUtils.isNotEmpty(username)) {
-                    auth = true;
-                }
-                
-                String queryString = request.getQueryString(); //GET
-                if (queryString == null) {
-                	//POST
-                	List<String> params = new ArrayList<String>();
-                	Map<String, String[]> requestParams = request.getParameterMap();
-                	for (Iterator<Map.Entry<String, String[]>> iter = requestParams.entrySet().iterator(); iter.hasNext();) {
-                        Map.Entry<String, String[]> entry = iter.next();
-                	    String[] value = entry.getValue();
-                	    if (value.length > 0) {
-                	    	params.add(entry.getKey() + "=" + value[0]);
-                	    }
-                	}    
-                	queryString = StringUtils.join(params, "&");
-                }
-                
-                String requestUri = request.getRequestURI() + "?" + queryString;              
-                SearchPersistenceUtils.persistSearch(username, requestUri, auth, latitude, longitude, radius, query, language, counter);
-                MailUtils.sendSearchQueryNotification(query, isDeal, counter, requestUri);*/
-                
-                logger.log(Level.INFO, "Found {0} landmarks", counter);
+                ThreadUtil.waitForLayers(layers);*/
             }
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
         } finally {
             if (format.equals("json")) {
         		try {
-        			JSONObject responseJson = new JSONObject().put("ResultSet", jsonMap);
-        			out.print(responseJson);
+        			out.print(jsonResponse);
         		} catch (Exception e) {
         			logger.log(Level.SEVERE, e.getMessage(), e);
         		}
@@ -254,7 +216,7 @@ public class Search2Servlet extends HttpServlet {
         return "Search2 servlet";
     }// </editor-fold>
 
-    private class JSonSearchTask implements Runnable {
+    /*private class JSonSearchTask implements Runnable {
 
         private String layer = null;
      
@@ -370,5 +332,5 @@ public class Search2Servlet extends HttpServlet {
                 layers.remove(layer);
             }		
 		}
-    }    
+    } */   
 }
