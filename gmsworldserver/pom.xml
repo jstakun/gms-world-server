@@ -183,7 +183,7 @@
         <dependency>
         	<groupId>net.gms-world</groupId>
         	<artifactId>gmsworldlayers</artifactId>
-        	<version>0.0.4.2</version>
+        	<version>0.0.4.3</version>
         </dependency>
     </dependencies>
 

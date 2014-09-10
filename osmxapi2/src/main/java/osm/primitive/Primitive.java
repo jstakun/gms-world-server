@@ -11,7 +11,7 @@ import java.util.List;
  */
 public abstract class Primitive {
 
-    private int id;
+    private long id;
     private User user;
     private boolean visible = true;
     private Integer version = null;
@@ -33,11 +33,11 @@ public abstract class Primitive {
         return this.visible;
     }
     
-    public void setID(int id) {
+    public void setID(long id) {
         this.id = id;
     }
     
-    public int getID() {
+    public long getID() {
         return this.id;
     }
 
@@ -64,7 +64,11 @@ public abstract class Primitive {
 
     @Override
     public int hashCode() {
-        return id;
+        if (id >= Integer.MIN_VALUE && id <= Integer.MAX_VALUE) {
+        	return (int)id;
+        } else {
+        	return super.hashCode();
+        }
     }
 
     public String getTagValue(String key) {

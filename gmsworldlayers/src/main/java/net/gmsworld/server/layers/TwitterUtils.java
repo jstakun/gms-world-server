@@ -29,6 +29,7 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.User;
 import twitter4j.auth.AccessToken;
+import twitter4j.conf.ConfigurationBuilder;
 
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
@@ -176,16 +177,23 @@ public class TwitterUtils extends LayerHelper {
     }
 
     private static Twitter getTwitter(String token, String secret) {
-        Twitter twitter = new TwitterFactory().getInstance();
-        twitter.setOAuthConsumer(Commons.getProperty(Property.TW_CONSUMER_KEY), Commons.getProperty(Property.TW_CONSUMER_SECRET));
-        AccessToken accessToken;
+        ConfigurationBuilder cb = new ConfigurationBuilder();
+    	cb.setDebugEnabled(false)
+    	  .setOAuthConsumerKey(Commons.getProperty(Property.TW_CONSUMER_KEY))
+    	  .setOAuthConsumerSecret(Commons.getProperty(Property.TW_CONSUMER_SECRET))
+    	  .setHttpReadTimeout(60000);
+    	TwitterFactory twitterFactory = new TwitterFactory(cb.build());
+    	
+    	AccessToken accessToken;
         if (token != null && secret != null) {
             accessToken = new AccessToken(token, secret);
         } else {
             accessToken = new AccessToken(Commons.getProperty(Property.TW_TOKEN), Commons.getProperty(Property.TW_SECRET));
         }
-        twitter.setOAuthAccessToken(accessToken);
-        return twitter;
+        
+        Twitter twitter = twitterFactory.getInstance(accessToken);
+        
+    	return twitter;
     }
 
 	@Override

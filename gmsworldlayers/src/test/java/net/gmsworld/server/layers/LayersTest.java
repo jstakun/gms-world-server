@@ -1,6 +1,5 @@
 package net.gmsworld.server.layers;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.lang.reflect.InvocationTargetException;
@@ -48,7 +47,8 @@ public class LayersTest {
 		   }
 	   }
 	   
-	   //data.add(new Object[]{LayerHelperFactory.getFoursquareUtils()});
+	   //data.add(new Object[]{LayerHelperFactory.getTwitterUtils()});
+	   //data.add(new Object[]{LayerHelperFactory.getOsmXapiUtils()});
 	   
 	   System.out.println("Found " + data.size() + " layers.");
 	   
@@ -63,6 +63,7 @@ public class LayersTest {
 		try {
 			//new york test
 			String bbox = "-75.01,39.71,-73.01,41.71";
+			//OSM List<ExtendedLandmark> landmarks = layer.processBinaryRequest(40.71, -74.01, null, 10000, 1115, limit, 1024, "atm", bbox, Locale.US);
 			List<ExtendedLandmark> landmarks = layer.processBinaryRequest(40.71, -74.01, null, 10000, 1115, limit, 1024, bbox, "", Locale.US);
 			int size = landmarks.size();
 			System.out.println("Found " + size + " landmarks");

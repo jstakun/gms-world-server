@@ -77,7 +77,7 @@ public class OSMChangeOutputter extends AbstractOutputter {
             Relation way = relationIter.next();
     
             out.write("    <relation id=\"");
-            out.write(Integer.toString(way.getID()));
+            out.write(Long.toString(way.getID()));
             out.write("\">\n");
     
             Iterator<Member> memberIter = way.getMemberIterator();
@@ -97,7 +97,7 @@ public class OSMChangeOutputter extends AbstractOutputter {
             out.write("      <member type=\"");
             out.write(member.getMember().getType().toString());
             out.write("\" ref=\"");
-            out.write(Integer.toString(member.getMember().getID()));
+            out.write(Long.toString(member.getMember().getID()));
             out.write("\" role=\"");
             out.write(member.getRole());
             out.write("\"/>\n");
@@ -109,7 +109,7 @@ public class OSMChangeOutputter extends AbstractOutputter {
             Way way = (Way) wayIter.next();
     
             out.write("    <way id=\"");
-            out.write(Integer.toString(way.getID()));
+            out.write(Long.toString(way.getID()));
             out.write("\">\n");
     
             Iterator<Node> nodeIter = way.getNodeIterator();
@@ -127,7 +127,7 @@ public class OSMChangeOutputter extends AbstractOutputter {
             Primitive node = nodeIter.next();
     
             out.write("      <nd ref=\"");
-            out.write(Integer.toString(node.getID()));
+            out.write(Long.toString(node.getID()));
             out.write("\"/>\n");
         }
     }
@@ -137,7 +137,7 @@ public class OSMChangeOutputter extends AbstractOutputter {
             Node node = nodeIter.next();
     
             out.write("    <node id=\"");
-            out.write(Integer.toString(node.getID()));
+            out.write(Long.toString(node.getID()));
             out.write("\" lat=\"");
             out.write(Double.toString(node.getLat()));
             out.write("\" lon=\"");

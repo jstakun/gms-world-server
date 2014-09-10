@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package net.gmsworld.server.layers;
 
 import java.io.IOException;
@@ -62,13 +58,8 @@ public class OsmXapiUtils extends LayerHelper {
             pm.parseInputStream(is);       
             file = parser.getOSMFile();
         } else {
-            logger.log(Level.SEVERE, "Received following response from osm server: " + conn.getResponseCode() + " " + conn.getResponseMessage());
+            logger.log(Level.WARNING, "Received following response code: " + conn.getResponseCode() + ", and content: " + conn.getContent());
         }
-
-        //OSMSaxParser parser = new OSMSaxParser();
-        //ParserManager pm = new ParserManager(parser);
-        //pm.parseUri(xapiUrl);
-        //file = parser.getOSMFile();
 
         return file;
     }
@@ -142,13 +133,17 @@ public class OsmXapiUtils extends LayerHelper {
             		logger.log(Level.INFO, "Adding OSM landmark list to cache with key {0}", key);
             	}
             } else {
-            	logger.log(Level.WARNING, "OSMFile is null!");
+            	logger.log(Level.WARNING, "OSMFile is empty!");
             }
         } else {
             logger.log(Level.INFO, "Reading OSM landmark list from cache with key {0}", key);
         }
 
-        return new JSONObject(output);
+        if (output != null) {
+        	return new JSONObject(output);
+        } else {
+        	return new JSONObject().put("ResultSet", new ArrayList<String>());
+        }
     }
     
     private static void putOptValue(Node node, String name, Map<String, String> outMap, String outName) {
@@ -174,7 +169,7 @@ public class OsmXapiUtils extends LayerHelper {
             		logger.log(Level.INFO, "Adding OSM landmark list to cache with key {0}", key);
             	}
             } else {
-            	logger.log(Level.SEVERE, "OSMFile is null!");
+            	logger.log(Level.WARNING, "OSMFile is empty!");
             }
         } else {
             logger.log(Level.INFO, "Reading OSM landmark list from cache with key {0}", key);

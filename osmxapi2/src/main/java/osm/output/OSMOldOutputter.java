@@ -91,7 +91,7 @@ public class OSMOldOutputter extends AbstractOutputter {
             out.write("    <member type=\"");
             out.write(member.getMember().getType().toString());
             out.write("\" ref=\"");
-            out.write(Integer.toString(member.getMember().getID()));
+            out.write(Long.toString(member.getMember().getID()));
             out.write("\" role=\"");
             out.write(member.getRole());
             out.write("\"/>\n");
@@ -121,7 +121,7 @@ public class OSMOldOutputter extends AbstractOutputter {
             Node node = nodeIter.next();
     
             out.write("    <nd ref=\"");
-            out.write(Integer.toString(node.getID()));
+            out.write(Long.toString(node.getID()));
             out.write("\"/>\n");
         }
     }
@@ -150,7 +150,7 @@ public class OSMOldOutputter extends AbstractOutputter {
     }
 
     private static void writePrimitveAttrs(Writer out, Primitive prim) throws IOException {
-        writeAttr(out, "id", Integer.toString(prim.getID()));
+        writeAttr(out, "id", Long.toString(prim.getID()));
 
         if (prim.getVersion() != null) {
             writeAttr(out, "version", prim.getVersion().toString());

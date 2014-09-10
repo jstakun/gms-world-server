@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package net.gmsworld.server.layers;
 
 import java.io.IOException;
@@ -82,7 +78,6 @@ public class Search2Servlet extends HttpServlet {
                 query = URLDecoder.decode(request.getParameter("query"), "utf-8");
                 ftoken = request.getParameter("ftoken");
                 radius = NumberUtils.getRadius(request.getParameter("radius"), 10, 6371);
-                //language = StringUtil.getLanguage(request.getLocale().getLanguage(), "en", 2);
                 dealLimit = NumberUtils.getInt(request.getParameter("dealLimit"), 300);
                 limit = NumberUtils.getInt(request.getParameter("limit"), 30);
                 stringLimit = StringUtil.getStringLengthLimit(request.getParameter("display"));

@@ -91,8 +91,8 @@ public class OSMSaxParser extends DefaultHandler {
      * @param attributes
      */
     private void handlePrimitiveAttributes(Attributes attributes) {
-        int id = Integer.parseInt(attributes.getValue("id"));
-//        String date = attributes.getValue("timestamp");
+        long id = Long.parseLong(attributes.getValue("id"));
+        //String date = attributes.getValue("timestamp");
         int ver = Integer.parseInt(attributes.getValue("version"));
         int uid = Integer.parseInt(attributes.getValue("uid"));
         String username = attributes.getValue("user");
