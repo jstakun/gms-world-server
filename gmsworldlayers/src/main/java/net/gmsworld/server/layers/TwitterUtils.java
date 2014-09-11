@@ -181,7 +181,7 @@ public class TwitterUtils extends LayerHelper {
     	cb.setDebugEnabled(false)
     	  .setOAuthConsumerKey(Commons.getProperty(Property.TW_CONSUMER_KEY))
     	  .setOAuthConsumerSecret(Commons.getProperty(Property.TW_CONSUMER_SECRET))
-    	  .setHttpReadTimeout(60000);
+    	  .setHttpReadTimeout(50000);
     	TwitterFactory twitterFactory = new TwitterFactory(cb.build());
     	
     	AccessToken accessToken;
