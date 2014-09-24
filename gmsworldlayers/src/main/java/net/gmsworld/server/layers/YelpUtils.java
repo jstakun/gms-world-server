@@ -374,7 +374,6 @@ public class YelpUtils extends LayerHelper {
             this.language = language;
         }
 
-        @Override
         public void run() {
             try {
                 String responseBody = processRequest(latitude, longitude, query, radius, hasDeals, offset, language);
@@ -414,7 +413,6 @@ public class YelpUtils extends LayerHelper {
             this.locale = locale;
         }
 
-        @Override
         public void run() {
             try {
                 String responseBody = processRequest(latitude, longitude, query, radius, hasDeals, offset, language);

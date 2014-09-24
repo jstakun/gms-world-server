@@ -416,7 +416,6 @@ public class GooglePlacesUtils extends LayerHelper {
             this.language = language;
         }
 
-        @Override
         public void run() {
             try {
                 URL itemDetails = new URL("https://maps.googleapis.com/maps/api/place/details/json?reference=" + reference + "&sensor=false&key=" + Commons.getProperty(Property.GOOGLE_API_KEY) + "&language=" + language);

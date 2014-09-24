@@ -287,7 +287,6 @@ public class HotelsCombinedUtils extends LayerHelper {
     		this.locale = locale;
     	}
     	
-		@Override
 		public ExtendedLandmark apply(Hotel hotel) {
 			return hotelToLandmark(hotel, language, locale);
 		}

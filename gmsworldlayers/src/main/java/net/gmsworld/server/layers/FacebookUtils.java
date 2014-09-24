@@ -885,7 +885,6 @@ public class FacebookUtils extends LayerHelper {
             this.stringLength = stringLength;
         }
 
-        @Override
         public void run() {
             try {
 

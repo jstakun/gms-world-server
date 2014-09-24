@@ -211,7 +211,6 @@ public class GMSUtils extends LayerHelper {
 			this.locale = locale;
 		}
 		
-		@Override
 		public ExtendedLandmark apply(Landmark source) {
 			QualifiedCoordinates qc = new QualifiedCoordinates(source.getLatitude(), source.getLongitude(), 0f, 0f, 0f);
 	    	String name = source.getName();

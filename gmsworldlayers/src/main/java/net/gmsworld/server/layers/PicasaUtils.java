@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package net.gmsworld.server.layers;
 
 import java.io.IOException;
@@ -188,14 +184,34 @@ public class PicasaUtils extends LayerHelper {
             myQuery.setStringCustomParameter("kind", "photo");
             myQuery.setStringCustomParameter("bbox", bbox); //west, south, east, north i.e. "50.0,20.0,53.0,23.0"
             myQuery.setPublishedMin(new DateTime(System.currentTimeMillis() - (1000 * 60 * 60 * 24 * 365)));
+            myQuery.setStringCustomParameter("thumbsize", "72u"); //32, 48, 64, 72, 104, 144, 150, 160
             myQuery.setMaxResults(limit);
             if (StringUtils.isNotEmpty(query)) {
                 myQuery.setFullTextQuery(query);
             }
 
+            //System.out.println("Calling: " + myQuery.getFeedUrl().toExternalForm() + myQuery.getQueryUri());
+            
             AlbumFeed searchResultsFeed = myService.query(myQuery, AlbumFeed.class);
+            
+            //System.out.println("Found: " +  searchResultsFeed.getTotalResults() + " " + 
+            //		searchResultsFeed.getItemsPerPage() + " " + searchResultsFeed.getStartIndex());
+            
+            //photos-meta.jar
+            
+            //List<GphotoEntry> entries = searchResultsFeed.getEntries();
+  
+            //List<PhotoEntry> photos = new ArrayList<PhotoEntry>(entries.size());
+            
+            logger.log(Level.INFO, "Found: " + searchResultsFeed.getTotalResults() + "-" + searchResultsFeed.getPhotoEntries().size() + " entries");
+            
+            //for (GphotoEntry<PhotoEntry> entry : entries) {
+            //	PhotoEntry p = new PhotoEntry(entry);
+            //	photos.add(p);
+            //}
+            
             output = createLandmarksPicasaPhotoList(searchResultsFeed.getPhotoEntries(), stringLimit, locale);
-
+            
             if (!output.isEmpty()) {
                 cacheProvider.put(key, output);
                 logger.log(Level.INFO, "Adding PC landmark list to cache with key {0}", key);

@@ -47,8 +47,8 @@ public class LayersTest {
 		   }
 	   }
 	   
-	   //data.add(new Object[]{LayerHelperFactory.getTwitterUtils()});
-	   //data.add(new Object[]{LayerHelperFactory.getOsmXapiUtils()});
+	   //data.add(new Object[]{LayerHelperFactory.getPicasaUtils()});
+	   //data.add(new Object[]{LayerHelperFactory.getExpediaUtils()});
 	   
 	   System.out.println("Found " + data.size() + " layers.");
 	   

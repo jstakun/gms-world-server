@@ -168,7 +168,6 @@ public class SearchUtils extends LayerHelper {
 			this.layers = layers;
 		}
 
-		@Override
 		public void run() {
 			JSONObject json = null;
 
@@ -241,7 +240,6 @@ public class SearchUtils extends LayerHelper {
 			this.foundLandmarks = foundLandmarks;
 		}
 
-		@Override
 		public void run() {
 			logger.log(Level.INFO, "Processing search in layer {0}", layer);
 			List<ExtendedLandmark> landmarks = null;

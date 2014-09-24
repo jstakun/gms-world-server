@@ -837,7 +837,6 @@ public class FoursquareUtils extends LayerHelper {
 
     private static class CheckinComparator implements Comparator<Map<String, Object>> {
 
-        @Override
         public int compare(Map<String, Object> jsonObject0, Map<String, Object> jsonObject1) {
             double distance0 = 1E5;
             if (jsonObject0.containsKey("distance")) {
@@ -876,7 +875,6 @@ public class FoursquareUtils extends LayerHelper {
             this.bitlyFailed = bitlyFailed;
         }
 
-        @Override
         public void run() {
             try {
                 URL url = new URL(urlPrefix.toString() + "&requests=" + URLEncoder.encode(multiRequest, "UTF-8"));
