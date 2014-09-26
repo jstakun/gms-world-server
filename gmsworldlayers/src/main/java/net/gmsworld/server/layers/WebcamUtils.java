@@ -122,6 +122,7 @@ public class WebcamUtils extends LayerHelper {
 	     } else {
 	        logger.log(Level.INFO, "Reading WC landmark list from cache with key {0}", key);
 	     }
+	     logger.log(Level.INFO, "Returning " + output.size() + " landmarks ...");
 
 	     return output;
 	}

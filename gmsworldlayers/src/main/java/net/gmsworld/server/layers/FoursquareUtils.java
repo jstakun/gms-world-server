@@ -304,6 +304,7 @@ public class FoursquareUtils extends LayerHelper {
            } else {
                logger.log(Level.INFO, "Reading FS landmark list from cache with key {0}", key);
            }
+           logger.log(Level.INFO, "Found {0} landmarks", response.size()); 
 
            return response;
    	}

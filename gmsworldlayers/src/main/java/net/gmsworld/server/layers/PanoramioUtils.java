@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package net.gmsworld.server.layers;
 
 import java.net.URL;
@@ -155,6 +151,8 @@ public class PanoramioUtils extends LayerHelper {
         } else {
             logger.log(Level.INFO, "Reading PN landmark list from cache with key {0}", key);
         }
+        logger.log(Level.INFO, "Found {0} landmarks", output.size()); 
+        
         return output;
 	}
 	

@@ -469,6 +469,8 @@ public class YelpUtils extends LayerHelper {
         } else {
             logger.log(Level.INFO, "Reading YP landmark list from cache with key {0}", key);
         }
+        logger.log(Level.INFO, "Returning " + landmarks.size() + " landmarks ...");
+        
         return landmarks;
 	}
 	

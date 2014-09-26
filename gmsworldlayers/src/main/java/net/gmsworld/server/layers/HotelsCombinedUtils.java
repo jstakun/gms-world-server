@@ -272,6 +272,7 @@ public class HotelsCombinedUtils extends LayerHelper {
         } else {
             logger.log(Level.INFO, "Reading H landmark list from cache with key {0}", key);
         }
+        logger.log(Level.INFO, "Found {0} landmarks", landmarks.size()); 
 
         return landmarks;
 	}

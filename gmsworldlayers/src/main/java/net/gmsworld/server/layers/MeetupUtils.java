@@ -217,6 +217,7 @@ public class MeetupUtils extends LayerHelper {
         } else {
             logger.log(Level.INFO, "Reading MTU landmark list from cache with key {0}", key);
         }
+        logger.log(Level.INFO, "Found {0} landmarks", output.size()); 
 
         return output;
 	}

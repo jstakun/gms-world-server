@@ -194,6 +194,7 @@ public class EventfulUtils extends LayerHelper {
                 logger.log(Level.INFO, "Adding EV landmark list to cache with key {0}", key);
             }
         }
+        logger.log(Level.INFO, "Found {0} landmarks", output.size()); 
         
         return output;
 	}

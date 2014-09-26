@@ -231,6 +231,7 @@ public class TwitterUtils extends LayerHelper {
         } else {
             logger.log(Level.INFO, "Reading TW landmark list from cache with key {0}", key);
         }
+        logger.log(Level.INFO, "Returning " + reply.size() + " landmarks ...");
         
         return reply;
 	}

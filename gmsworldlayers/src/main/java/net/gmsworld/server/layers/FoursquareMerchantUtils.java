@@ -54,6 +54,7 @@ public class FoursquareMerchantUtils extends FoursquareUtils {
         } else {
             logger.log(Level.INFO, "Reading FSM landmark list from cache with key {0}", key);
         }
+        logger.log(Level.INFO, "Found {0} landmarks", landmarks.size()); 
 
         return landmarks;
     }
