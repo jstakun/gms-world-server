@@ -89,6 +89,11 @@
     <url-pattern>/gllogin</url-pattern>
     <url-pattern>/fblogin</url-pattern>
     <url-pattern>/token</url-pattern>
+    <url-pattern>/showLandmark/*</url-pattern>
+    <url-pattern>/showGeocode/*</url-pattern>
+    <url-pattern>/showLayer/*</url-pattern>
+    <url-pattern>/showImage/*</url-pattern>
+    <url-pattern>/showUser/*</url-pattern>
  </filter-mapping>
  <filter-mapping>
   <filter-name>BlockerFilter</filter-name>
@@ -134,6 +139,11 @@
     <url-pattern>/gllogin</url-pattern>
     <url-pattern>/fblogin</url-pattern>
     <url-pattern>/token</url-pattern>
+    <url-pattern>/showLandmark/*</url-pattern>
+    <url-pattern>/showGeocode/*</url-pattern>
+    <url-pattern>/showLayer/*</url-pattern>
+    <url-pattern>/showImage/*</url-pattern>
+    <url-pattern>/showUser/*</url-pattern>
  </filter-mapping>
  <filter-mapping>
   <filter-name>ServicesAuthorizationFilter</filter-name>
