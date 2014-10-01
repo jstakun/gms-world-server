@@ -72,10 +72,9 @@ public class BlockerFilter implements Filter {
             if (appIdVal == -1 && StringUtils.containsIgnoreCase(browser.getName(), "download")) {
             	logger.log(Level.SEVERE, "Remote Addr: " + ip + ", username: " + username + ", blocked AppId = -1, User agent: " + browser.getName() + ", " + userAgent);
                 block = true;
-            //} else if (appIdVal == -1) {	
-            //	logger.log(Level.WARNING, "Remote Addr: " + ip + ", appId = -1, User agent: " + browser.getName() + ", " + httpRequest.getHeader("User-Agent"));
-            //} else if (browser.getGroup() == Browser.BOT || browser.getGroup() == Browser.BOT_MOBILE || browser.getGroup() == Browser.UNKNOWN) {
-            //    logger.log(Level.WARNING, "User agent: " + browser.getName() + ", " + httpRequest.getHeader("User-Agent") + ", appId: " + appIdVal);         	
+            } else if (appIdVal == -1 && StringUtils.contains(browser.getName(), "LongURL")) {	
+            	logger.log(Level.SEVERE, "Remote Addr: " + ip + ", username: " + username + ", blocked AppId = -1, User agent: " + browser.getName() + ", " + userAgent);
+                block = true;
             } else {
             	logger.log(Level.WARNING, "User agent: " + browser.getName() + ", " + userAgent + ", appId: " + appIdVal);    
             	String closed = ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.CLOSED_URLS, "");
