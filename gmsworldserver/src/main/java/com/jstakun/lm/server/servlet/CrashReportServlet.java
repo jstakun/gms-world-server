@@ -79,7 +79,7 @@ public class CrashReportServlet extends HttpServlet {
                 int lmVersion = NumberUtils.getInt(ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.LM_VERSION, "0"), 0);
                 int daVersion = NumberUtils.getInt(ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.DA_VERSION, "0"), 0);
                 
-                if (versionCode >= (lmVersion-5) || (versionCode >= (daVersion-5) && versionCode < 500)) {
+                if (versionCode >= (lmVersion-3) || (versionCode >= (daVersion-3) && versionCode < 500)) {
                 	MailUtils.sendCrashReport(title, sb.toString());
                 } else {
                 	logger.log(Level.INFO, "App version code: " + versionCode);
