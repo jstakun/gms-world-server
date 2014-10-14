@@ -62,24 +62,30 @@ public class BlockerFilter implements Filter {
                 }
             }
 
-            String userAgent = httpRequest.getHeader("User-Agent");
-            
+            //blocked user agents
+            String userAgent = httpRequest.getHeader("User-Agent");    
             Browser browser = Browser.parseUserAgentString(userAgent);
+        
+            if (appIdVal == -1) {
+                String blockedAgents = com.jstakun.lm.server.config.ConfigurationManager.getParam("blockedAgents", "");
+                String[] blockedAgentsList = StringUtils.split(blockedAgents, "|");
             
-            //if (StringUtils.isEmpty(userAgent)) {
-            //logger.log(Level.WARNING, "Empty user agent, remote addr: " + ip + ", username: " + username);
-            //block = true;
-            if (appIdVal == -1 && StringUtils.containsIgnoreCase(browser.getName(), "download")) {
-            	logger.log(Level.SEVERE, "Remote Addr: " + ip + ", username: " + username + ", blocked AppId = -1, User agent: " + browser.getName() + ", " + userAgent);
-                block = true;
-            } else if (appIdVal == -1 && StringUtils.contains(browser.getName(), "LongURL")) {	
-            	logger.log(Level.SEVERE, "Remote Addr: " + ip + ", username: " + username + ", blocked AppId = -1, User agent: " + browser.getName() + ", " + userAgent);
-                block = true;
-            } else {
+                if (blockedAgentsList != null && blockedAgentsList.length > 0) {
+                	for (int i=0;i<blockedAgentsList.length;i++) {
+                		if (StringUtils.containsIgnoreCase(browser.getName(),blockedAgentsList[i])) {
+                			logger.log(Level.SEVERE, "Remote Addr: " + ip + ", username: " + username + ", blocked AppId = -1, User agent: " + browser.getName() + ", " + userAgent);
+                			block = true;
+                			break;
+                		}
+                	}
+                }
+            }
+            
+            //blocked urls
+            if (!block) {
             	logger.log(Level.WARNING, "User agent: " + browser.getName() + ", " + userAgent + ", appId: " + appIdVal);    
             	String closed = ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.CLOSED_URLS, "");
-            	//logger.log(Level.INFO, "Temporary closed uris: " + closed);          
-                String[] closedUrlsList = StringUtils.split(closed, ",");
+            	String[] closedUrlsList = StringUtils.split(closed, ",");
                 if (closedUrlsList != null && closedUrlsList.length > 0) {
                 	String uri = httpRequest.getRequestURI();
                 	for (int i=0;i<closedUrlsList.length;i++) {
