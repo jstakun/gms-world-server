@@ -64,7 +64,7 @@ public class BlockerFilter implements Filter {
 
             //blocked user agents
             String userAgent = httpRequest.getHeader("User-Agent");    
-            Browser browser = Browser.parseUserAgentString(userAgent);
+            //Browser browser = Browser.parseUserAgentString(userAgent);
         
             if (appIdVal == -1) {
                 String blockedAgents = com.jstakun.lm.server.config.ConfigurationManager.getParam("blockedAgents", "");
@@ -72,8 +72,9 @@ public class BlockerFilter implements Filter {
             
                 if (blockedAgentsList != null && blockedAgentsList.length > 0) {
                 	for (int i=0;i<blockedAgentsList.length;i++) {
-                		if (StringUtils.containsIgnoreCase(browser.getName(),blockedAgentsList[i])) {
-                			logger.log(Level.SEVERE, "Remote Addr: " + ip + ", username: " + username + ", blocked AppId = -1, User agent: " + browser.getName() + ", " + userAgent);
+                		//System.out.println("Checking if " + userAgent + "=" + blockedAgentsList[i]);
+                		if (StringUtils.containsIgnoreCase(userAgent,blockedAgentsList[i])) {
+                			logger.log(Level.SEVERE, "Remote Addr: " + ip + ", username: " + username + ", blocked AppId = -1, User agent: " + userAgent);
                 			block = true;
                 			break;
                 		}
@@ -83,14 +84,14 @@ public class BlockerFilter implements Filter {
             
             //blocked urls
             if (!block) {
-            	logger.log(Level.WARNING, "User agent: " + browser.getName() + ", " + userAgent + ", appId: " + appIdVal);    
+            	logger.log(Level.WARNING, "User agent: " + userAgent + ", appId: " + appIdVal);    
             	String closed = ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.CLOSED_URLS, "");
             	String[] closedUrlsList = StringUtils.split(closed, ",");
                 if (closedUrlsList != null && closedUrlsList.length > 0) {
                 	String uri = httpRequest.getRequestURI();
                 	for (int i=0;i<closedUrlsList.length;i++) {
                 		if (StringUtils.equals(uri, closedUrlsList[i])) {
-                			logger.log(Level.SEVERE, "Remote Addr: " + ip + ", username: " + username + ", User agent: " + browser.getName() + ", " + userAgent);
+                			logger.log(Level.SEVERE, "Remote Addr: " + ip + ", username: " + username + ", User agent: " + userAgent);
                         	block = true;
                         	break;
                 		}
