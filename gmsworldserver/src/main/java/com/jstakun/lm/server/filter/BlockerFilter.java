@@ -14,14 +14,12 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
-
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.utils.StringUtil;
 
-import com.jstakun.lm.server.config.ConfigurationManager;
+import org.apache.commons.lang.StringUtils;
 
-import eu.bitwalker.useragentutils.Browser;
+import com.jstakun.lm.server.config.ConfigurationManager;
 
 /**
  * Servlet Filter implementation class BlockerFilter
@@ -74,7 +72,7 @@ public class BlockerFilter implements Filter {
                 	for (int i=0;i<blockedAgentsList.length;i++) {
                 		//System.out.println("Checking if " + userAgent + "=" + blockedAgentsList[i]);
                 		if (StringUtils.containsIgnoreCase(userAgent,blockedAgentsList[i])) {
-                			logger.log(Level.SEVERE, "Remote Addr: " + ip + ", username: " + username + ", blocked AppId = -1, User agent: " + userAgent);
+                			logger.log(Level.SEVERE, "Remote Addr: " + ip + ", User agent: " + userAgent + ", username: " + username + ", blocked AppId = -1");
                 			block = true;
                 			break;
                 		}
@@ -91,7 +89,7 @@ public class BlockerFilter implements Filter {
                 	String uri = httpRequest.getRequestURI();
                 	for (int i=0;i<closedUrlsList.length;i++) {
                 		if (StringUtils.equals(uri, closedUrlsList[i])) {
-                			logger.log(Level.SEVERE, "Remote Addr: " + ip + ", username: " + username + ", User agent: " + userAgent);
+                			logger.log(Level.SEVERE, "Remote Addr: " + ip + ", User agent: " + userAgent + ", username: " + username + ", AppId = " + appIdVal);
                         	block = true;
                         	break;
                 		}
