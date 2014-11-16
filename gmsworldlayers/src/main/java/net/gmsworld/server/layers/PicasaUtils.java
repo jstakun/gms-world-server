@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.logging.Level;
 
 import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.JSONUtils;
 
 import org.apache.commons.lang.StringUtils;
@@ -40,7 +41,7 @@ import com.openlapi.QualifiedCoordinates;
  */
 public class PicasaUtils extends LayerHelper {
 
-    private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final String dateFormat = "yyyy-MM-dd HH:mm:ss";
 
     @Override
 	public JSONObject processRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String bbox, String flexString2) throws MalformedURLException, IOException, ServiceException, JSONException {
@@ -103,6 +104,7 @@ public class PicasaUtils extends LayerHelper {
 
                     if (version >= 3) {
                         if (photo.getTimestamp() != null) {
+                        	SimpleDateFormat formatter = DateUtils.getSimpleDateFormat(dateFormat);
                             JSONUtils.putOptDate(desc, "taken_date", formatter.format(photo.getTimestamp()), formatter);
                         }
                         List<Person> authors = photo.getAuthors();
@@ -240,7 +242,8 @@ public class PicasaUtils extends LayerHelper {
                 Map<String, String> tokens = new HashMap<String, String>();
  
                 if (photo.getTimestamp() != null) {
-                   JSONUtils.putOptDate(tokens, "taken_date", formatter.format(photo.getTimestamp()), formatter);
+                	SimpleDateFormat formatter = DateUtils.getSimpleDateFormat(dateFormat);
+                    JSONUtils.putOptDate(tokens, "taken_date", formatter.format(photo.getTimestamp()), formatter);
                 }
                         
                 List<Person> authors = photo.getAuthors();

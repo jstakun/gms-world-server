@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.config.ConfigurationManager;
+import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.JSONUtils;
 
 import org.apache.commons.io.IOUtils;
@@ -38,7 +39,7 @@ import com.openlapi.QualifiedCoordinates;
 public class FreebaseUtils extends LayerHelper {
 	
 	//2006-10-22T09:16:37.0012Z
-	private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSS ");
+	private static final String dateFormat = "yyyy-MM-dd HH:mm:ss.SSSS ";
 	
 	private static final String IMAGE_PREFIX = "https://usercontent.googleapis.com/freebase/v1/image";
 	private static final String URL_PREFIX = ConfigurationManager.SERVER_URL + "freebaseView/";
@@ -164,8 +165,7 @@ public class FreebaseUtils extends LayerHelper {
 	        						   if (object_arr != null) {
 	        							   try {
 	        								   String str = object_arr.getString(0).replace('T', ' ').replace('Z', ' ');
-	        								   Date start = formatter.parse(str);
-	        								   creationDate = start.getTime();
+	        								   creationDate = DateUtils.parseDate(dateFormat, str).getTime();
 	        				   				} catch (ParseException e) {
 	        				   					logger.log(Level.SEVERE, null, e);
 	        				   				}     	   

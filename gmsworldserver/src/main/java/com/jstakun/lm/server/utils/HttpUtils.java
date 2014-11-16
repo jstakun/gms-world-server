@@ -92,24 +92,23 @@ public class HttpUtils {
                 conn.connect();
             }
             //int length = conn.getContentLength();
-            if (conn != null) {
-                int responseCode = conn.getResponseCode();
-                httpResponseStatuses.put(fileUrl.toExternalForm(), responseCode);
+            
+            int responseCode = conn.getResponseCode();
+            httpResponseStatuses.put(fileUrl.toExternalForm(), responseCode);
 
-                if (responseCode == HttpServletResponse.SC_OK) {
-                    is = conn.getInputStream();
+            if (responseCode == HttpServletResponse.SC_OK) {
+                is = conn.getInputStream();
                    
-                    //byte[] buf = new byte[1024];
-                    //int count = 0;
-                    //while ((count = is.read(buf)) >= 0) {
-                    //    file.append(new String(buf, 0, count));
-                    //}
-                } else {
-                    is = conn.getErrorStream();
-                    logger.log(Level.SEVERE, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString()});   
-                }
-                file = IOUtils.toString(is, "UTF-8");
-            } 
+                //byte[] buf = new byte[1024];
+                //int count = 0;
+                //while ((count = is.read(buf)) >= 0) {
+                //    file.append(new String(buf, 0, count));
+                //}
+            } else {
+                is = conn.getErrorStream();
+                logger.log(Level.SEVERE, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString()});   
+            }
+            file = IOUtils.toString(is, "UTF-8");
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
             httpResponseStatuses.remove(fileUrl.toExternalForm());

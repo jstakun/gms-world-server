@@ -15,6 +15,7 @@ import java.util.logging.Level;
 
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.JSONUtils;
 import net.gmsworld.server.utils.MathUtils;
@@ -37,7 +38,7 @@ import com.openlapi.QualifiedCoordinates;
 public class GrouponUtils extends LayerHelper {
 
     //2011-08-20 03:59:59
-    private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final String dateFormat = "yyyy-MM-dd HH:mm:ss";
 
     
     @Override
@@ -142,18 +143,16 @@ public class GrouponUtils extends LayerHelper {
                         }
 
                         if (version >= 3) {
-                            if (start_date != null) {
+                        	if (start_date != null) {
                                 try {
-                                    Date start = formatter.parse(start_date);
-                                    start_date = Long.toString(start.getTime());
+                                	start_date = Long.toString(DateUtils.parseDate(dateFormat, start_date).getTime());
                                 } catch (Exception e) {
                                     start_date = null;
                                 }
                             }
                             if (end_date != null) {
                                 try {
-                                    Date end = formatter.parse(end_date);
-                                    end_date = Long.toString(end.getTime());
+                                    end_date = Long.toString(DateUtils.parseDate(dateFormat, end_date).getTime());
                                 } catch (Exception e) {
                                     end_date = null;
                                 }
@@ -435,18 +434,16 @@ public class GrouponUtils extends LayerHelper {
                         }
 
                         if (start_date_str != null) {
-                                try {
-                                    Date start = formatter.parse(start_date_str);
-                                    start_date = start.getTime();
-                                } catch (Exception e) {
-                                }
+                           try {
+                                    start_date = DateUtils.parseDate(dateFormat, start_date_str).getTime();
+                            } catch (Exception e) {
                             }
-                            if (end_date_str != null) {
-                                try {
-                                    Date end = formatter.parse(end_date_str);
-                                    end_date = end.getTime();
-                                } catch (Exception e) {
-                                }
+                        }
+                        if (end_date_str != null) {
+                            try {
+                                    end_date = DateUtils.parseDate(dateFormat, end_date_str).getTime();
+                            } catch (Exception e) {
+                            }
                         }
                         
 

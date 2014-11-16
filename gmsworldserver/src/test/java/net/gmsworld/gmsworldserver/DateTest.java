@@ -16,7 +16,7 @@ public class DateTest {
 	
 	@Test
 	public void test() {
-		Date now = new Date();
+		//Date now = new Date();
 		
 		shortdf.setTimeZone(TimeZone.getTimeZone("CET"));
 	

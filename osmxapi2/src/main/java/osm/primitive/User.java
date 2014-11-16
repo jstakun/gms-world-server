@@ -2,11 +2,13 @@ package osm.primitive;
 
 public class User {
 
-    public User(int uid, String user) {
+    public User(int id, String user) {
+       this.id = id;
+       this.name = user;
     }
 
-    int id;
-    String name;
+    private int id;
+    private String name;
 
     public String getName() {
         return name;
@@ -15,5 +17,4 @@ public class User {
     public int getId() {
         return id;
     }
-
 }

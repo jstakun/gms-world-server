@@ -16,9 +16,12 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 
 import com.google.common.collect.ImmutableMap;
+
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.config.ConfigurationManager;
+import net.gmsworld.server.utils.DateUtils;
+
 import com.jstakun.lm.server.social.NotificationUtils;
 import com.jstakun.lm.server.utils.TokenUtil;
 import com.restfb.DefaultFacebookClient;
@@ -31,7 +34,7 @@ import com.restfb.types.User;
  */
 public final class FBCommons {
     
-	private static final SimpleDateFormat outf = new SimpleDateFormat("yyyyMMdd", java.util.Locale.US);
+	private static final String outf = "yyyyMMdd";
     private static final String redirect_uri = ConfigurationManager.SSL_SERVER_URL + "fbauth";
     private static final String SCOPE = "publish_stream,offline_access,user_birthday,email,friends_status,user_status,friends_photos,user_photos"; //manage_pages
  
@@ -131,7 +134,7 @@ public final class FBCommons {
 	    }
 	    Date birthday = me.getBirthdayAsDate();
 	    if (birthday != null) {
-	    	String outd = outf.format(birthday);
+	    	String outd = DateUtils.formatDate(outf, birthday);
 			userData.put(ConfigurationManager.FB_BIRTHDAY, outd);
 	    } 
 		

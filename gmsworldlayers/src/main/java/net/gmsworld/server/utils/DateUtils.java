@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package net.gmsworld.server.utils;
 
 import java.text.DateFormat;
@@ -20,18 +16,23 @@ import org.apache.commons.beanutils.converters.DateConverter;
  */
 public class DateUtils {
 
-    private static DateFormat dayMonthYear = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
-    private static DateFormat monthYearLong = new SimpleDateFormat("MMMMMM yyyy", Locale.getDefault());
-    private static DateFormat monthYearShort = new SimpleDateFormat("MM-yyyy", Locale.getDefault());
-    private static DateFormat monthShort = new SimpleDateFormat("MMM", Locale.getDefault());
+    private static final String dayMonthYear = "dd-MM-yyyy";
+    private static final String monthYearLong = "MMMMMM yyyy";
+    private static final String monthYearShort = "MM-yyyy";
+    private static final String monthShort = "MMM";
     
     private static final String rhcloudDatetimeFormat = "yyyy-MM-dd'T'HH:mm:ss";
     private static final String rhcloudTimeZone = "GMT-4:00";
-    private static DateConverter dtConverter = null;
+    private static final DateConverter dtConverter = new DateConverter();
+    
+    static {
+    	dtConverter.setPattern(rhcloudDatetimeFormat);
+		dtConverter.setTimeZone(TimeZone.getTimeZone(rhcloudTimeZone));
+    }
     
     
     public static String getMonthString(Date date) {
-        return monthShort.format(date);
+        return formatDate(monthShort, date);
     }
 
     public static String getShortMonthYearString(int interval) {
@@ -43,17 +44,17 @@ public class DateUtils {
     }
 
     public static String getLongMonthYearString(Date date) {
-        return monthYearLong.format(date);
+        return formatDate(monthYearLong, date);
     }
 
-    private static String getMonthYearString(int interval, DateFormat formatter) {
+    private static String getMonthYearString(int interval, String format) {
         Calendar calendar = Calendar.getInstance();
 
         if (interval > 0) {
             calendar.add(Calendar.MONTH, -interval);
         }
 
-        return formatter.format(calendar.getTime());
+        return formatDate(format, calendar.getTime());
     }
 
     public static String getTimeString(Date date) {
@@ -117,12 +118,12 @@ public class DateUtils {
     }
 
     public static Date getFirstDayOfMonth(String month) throws ParseException {
-        return dayMonthYear.parse("01-" + month);
+        return parseDate(dayMonthYear, "01-" + month);
     }
 
     public static Date getDay(String day) throws ParseException {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(dayMonthYear.parse(day));
+        calendar.setTime(parseDate(dayMonthYear, day));
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
@@ -131,7 +132,7 @@ public class DateUtils {
     }
 
     public static String getDay(Date day) throws ParseException {
-        return dayMonthYear.format(day);
+        return formatDate(dayMonthYear, day);
     }
 
     public static Date getNextDay(Date day) {
@@ -181,11 +182,24 @@ public class DateUtils {
     }
     
     public static DateConverter getRHCloudDateConverter() {
-    	if (dtConverter == null) {
-    		dtConverter = new DateConverter();
-    		dtConverter.setPattern(rhcloudDatetimeFormat);
-    		dtConverter.setTimeZone(TimeZone.getTimeZone(rhcloudTimeZone));
-    	}
-		return dtConverter; 
+    	return dtConverter; 
+    }
+    
+    public static Date afterOneHundredYearsFromNow() {
+    	Calendar cal = Calendar.getInstance();
+    	cal.add(Calendar.YEAR, 100);
+    	return cal.getTime();
+    }
+    
+    public static String formatDate(String format, Date date) {
+    	return getSimpleDateFormat(format).format(date);
+    }
+    
+    public static Date parseDate(String format, String date) throws ParseException {
+    	return getSimpleDateFormat(format).parse(date);
+    }
+    
+    public static SimpleDateFormat getSimpleDateFormat(String format) {
+    	return new SimpleDateFormat(format);
     }
 }

@@ -18,6 +18,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.JSONUtils;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.xml.XMLUtils;
@@ -43,7 +44,7 @@ import com.openlapi.QualifiedCoordinates;
  */
 public class FlickrUtils extends LayerHelper {
 
-	private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private static final String dateFormat = "yyyy-MM-dd HH:mm:ss";
 	
     @Override
 	public JSONObject processRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String flex, String flexString2) throws ParserConfigurationException, JSONException, UnsupportedEncodingException {
@@ -156,11 +157,12 @@ public class FlickrUtils extends LayerHelper {
                     Map<String, String> desc = new HashMap<String, String>();
                     JSONUtils.putOptValue(desc, "description", p.getDescription(), stringLimit, false);
                     if (version >= 3) {
-                        //if (p.getDateTaken() != null) {
+                    	SimpleDateFormat formatter = DateUtils.getSimpleDateFormat(dateFormat);
+                        //if (p.getDateTaken() != null) {  
                         //    JSONUtils.putOptDate(desc, "taken_date", formatter.format(p.getDateTaken()), formatter);
                         //}
                         if (p.getDatePosted() != null) {
-                            JSONUtils.putOptDate(desc, "taken_date", formatter.format(p.getDatePosted()), formatter);
+                        	JSONUtils.putOptDate(desc, "taken_date", formatter.format(p.getDatePosted()), formatter);
                         }
                         //if (p.getDateAdded() != null) {
                         //    JSONUtils.putOptDate(desc, "upload_date", formatter.format(p.getDateAdded()), formatter);

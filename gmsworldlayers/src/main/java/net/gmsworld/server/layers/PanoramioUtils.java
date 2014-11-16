@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.JSONUtils;
 import net.gmsworld.server.utils.MathUtils;
@@ -30,7 +31,7 @@ import com.openlapi.QualifiedCoordinates;
  */
 public class PanoramioUtils extends LayerHelper {
 	
-	private static final SimpleDateFormat formatter = new SimpleDateFormat("dd MMMM yyyy", Locale.US);
+	private static final String dateFormat = "dd MMMM yyyy";
 
     @Override
 	public JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String bbox, String flexString2) throws Exception {
@@ -178,7 +179,7 @@ public class PanoramioUtils extends LayerHelper {
                         long creationDate = -1;
                         String upload_date = photo.optString("upload_date");
                         if (upload_date != null) {
-                        	creationDate = formatter.parse(upload_date).getTime(); //20 January 2007 
+                        	creationDate = DateUtils.parseDate(dateFormat, upload_date).getTime(); //20 January 2007 
                         }
                         
                         QualifiedCoordinates qc = new QualifiedCoordinates(lat, lng, 0f, 0f, 0f);

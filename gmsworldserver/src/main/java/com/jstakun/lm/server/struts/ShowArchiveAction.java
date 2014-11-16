@@ -30,7 +30,7 @@ import org.apache.struts.action.ActionMapping;
 public class ShowArchiveAction extends org.apache.struts.action.Action {
 
     private static final int INTERVAL = 10;
-    private static final DateFormat df = new SimpleDateFormat("MM-yyyy", Locale.getDefault());
+    private static final String df = "MM-yyyy";
     
     /**
      * This is the action called from the Struts framework.
@@ -53,10 +53,10 @@ public class ShowArchiveAction extends org.apache.struts.action.Action {
 
         String m = null;
         try {
-            m = DateUtils.getLongMonthYearString(df.parse(month));
+            m = DateUtils.getLongMonthYearString(DateUtils.parseDate(df, month));
         } catch (Exception ex) {
             Date now = new Date();
-            month = df.format(now);
+            month = DateUtils.formatDate(df, now);
             m = DateUtils.getLongMonthYearString(now);
         }
 

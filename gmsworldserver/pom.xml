@@ -10,7 +10,7 @@
 
     <properties>
         <appengine.app.version>1</appengine.app.version>
-        <appengine.target.version>1.9.9</appengine.target.version>
+        <appengine.target.version>1.9.15</appengine.target.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>1.7</jdk.version>
     </properties>
@@ -183,7 +183,7 @@
         <dependency>
         	<groupId>net.gms-world</groupId>
         	<artifactId>gmsworldlayers</artifactId>
-        	<version>0.0.4.5</version>
+        	<version>0.0.4.6</version>
         </dependency>
     </dependencies>
 
