@@ -487,121 +487,124 @@ public class YelpUtils extends LayerHelper {
                         JSONObject business = businesses.getJSONObject(i);
 
                         JSONObject location = business.getJSONObject("location");
-                        JSONObject coordinate = location.getJSONObject("coordinate");
+                        
+                        JSONObject coordinate = location.optJSONObject("coordinate");
 
-                        String name = business.getString("name");
-                        String url = business.getString("mobile_url");
+                        if (coordinate != null) {
+                        	String name = business.getString("name");
+                        	String url = business.getString("mobile_url");
 
-                        QualifiedCoordinates qc = new QualifiedCoordinates(coordinate.getDouble("latitude"), coordinate.getDouble("longitude"), 0f, 0f, 0f);
+                        	QualifiedCoordinates qc = new QualifiedCoordinates(coordinate.getDouble("latitude"), coordinate.getDouble("longitude"), 0f, 0f, 0f);
              		   
-                        AddressInfo address = new AddressInfo();
-                        if (business.has("display_phone") && !business.isNull("display_phone")) {
-                           	address.setField(AddressInfo.PHONE_NUMBER, business.getString("display_phone"));
-                        }
+                        	AddressInfo address = new AddressInfo();
+                        	if (business.has("display_phone") && !business.isNull("display_phone")) {
+                        		address.setField(AddressInfo.PHONE_NUMBER, business.getString("display_phone"));
+                        	}
                         
-                        if (location.has("display_address")) {
-                            JSONArray displayAddressArray = location.getJSONArray("display_address");
-                            String display_address = "";
-                            for (int j = 0; j < displayAddressArray.length(); j++) {
-                                if (display_address.length() > 0) {
-                                    display_address += ", ";
-                                }
-                                display_address += displayAddressArray.getString(j);
-                            }
-                            address.setField(AddressInfo.STREET, display_address);
-                        }
-                        
-                        ExtendedLandmark landmark = LandmarkFactory.getLandmark(name, null, qc, Commons.YELP_LAYER, address, -1, null);
-             		    landmark.setUrl(url);
+                        	if (location.has("display_address")) {
+                        		JSONArray displayAddressArray = location.getJSONArray("display_address");
+                        		String display_address = "";
+                        		for (int j = 0; j < displayAddressArray.length(); j++) {
+                        			if (display_address.length() > 0) {
+                        				display_address += ", ";
+                        			}
+                        			display_address += displayAddressArray.getString(j);
+                        		}
+                        		address.setField(AddressInfo.STREET, display_address);
+                        	}
+                      
+                        	ExtendedLandmark landmark = LandmarkFactory.getLandmark(name, null, qc, Commons.YELP_LAYER, address, -1, null);
+                        	landmark.setUrl(url);
              		   
-                        if (business.has("rating")) {
-                           landmark.setRating(business.getDouble("rating"));
-                        }
-                        if (business.has("review_count")) {
-                        	landmark.setNumberOfReviews(business.getInt("review_count"));
-                        }
+                        	if (business.has("rating")) {
+                        		landmark.setRating(business.getDouble("rating"));
+                        	}
+                        	if (business.has("review_count")) {
+                        		landmark.setNumberOfReviews(business.getInt("review_count"));
+                        	}
 
-                        String icon = business.optString("image_url");
-                        if (StringUtils.isNotEmpty(icon)) {
-                            landmark.setThumbnail(icon);
-                        }
+                        	String icon = business.optString("image_url");
+                        	if (StringUtils.isNotEmpty(icon)) {
+                        		landmark.setThumbnail(icon);
+                        	}
                         
-                        Map<String, String> tokens = new HashMap<String, String>();
+                        	Map<String, String> tokens = new HashMap<String, String>();
                         
-                        JSONUtils.putOptValue(tokens, "description", business, "snippet_text", false, stringLimit, false);
+                        	JSONUtils.putOptValue(tokens, "description", business, "snippet_text", false, stringLimit, false);
 
-                        //categories
-                        String category = "";
-                        JSONArray categories = business.optJSONArray("categories");
-                        if (categories != null && categories.length() > 0) {
-                        	String[] categoryCodes = new String[categories.length()];
-                        	for (int j = 0; j < categories.length() ; j++) {
-                        		JSONArray cat = categories.getJSONArray(j);
-                        		category += cat.getString(0);
-                        		categoryCodes[j] = cat.getString(1);
-                        		if (j <  categories.length()-1) {
-                        			category += ", ";
+                        	//categories
+                        	String category = "";
+                        	JSONArray categories = business.optJSONArray("categories");
+                        	if (categories != null && categories.length() > 0) {
+                        		String[] categoryCodes = new String[categories.length()];
+                        		for (int j = 0; j < categories.length() ; j++) {
+                        			JSONArray cat = categories.getJSONArray(j);
+                        			category += cat.getString(0);
+                        			categoryCodes[j] = cat.getString(1);
+                        			if (j <  categories.length()-1) {
+                        				category += ", ";
+                        			}
+                        		}
+                        		if (StringUtils.isNotEmpty(category)) {
+                        			tokens.put("category", category);
+                        		}
+                        		if (hasDeals) {
+                        			String[] categoryCode = YelpCategoryMapping.findMapping(categoryCodes);
+                        			landmark.setCategoryId(Integer.valueOf(categoryCode[0]).intValue());
+                        			String subcat = categoryCode[1];
+                        			if (StringUtils.isNotEmpty(subcat)) {
+                        				landmark.setSubCategoryId(Integer.valueOf(subcat).intValue());
+                        			}
                         		}
                         	}
-                        	if (StringUtils.isNotEmpty(category)) {
-                        		tokens.put("category", category);
-                        	}
-                        	if (hasDeals) {
-                        		String[] categoryCode = YelpCategoryMapping.findMapping(categoryCodes);
-                        		landmark.setCategoryId(Integer.valueOf(categoryCode[0]).intValue());
-                        		String subcat = categoryCode[1];
-                        		if (StringUtils.isNotEmpty(subcat)) {
-                        			landmark.setSubCategoryId(Integer.valueOf(subcat).intValue());
-                        		}
-                        	}
-                        }
                         
-                        //deals
-                        JSONArray deals = business.optJSONArray("deals");
-                        if (deals != null && deals.length() > 0) {
-                        	for (int d = 0; d < deals.length(); d++) {
-                                JSONObject deal = deals.getJSONObject(d);
+                        	//deals
+                        	JSONArray deals = business.optJSONArray("deals");
+                        	if (deals != null && deals.length() > 0) {
+                        		for (int d = 0; d < deals.length(); d++) {
+                        			JSONObject deal = deals.getJSONObject(d);
                                 
-                                long creationDate = deal.getLong("time_start")*1000;
-                                landmark.setCreationDate(creationDate);
-                                tokens.put("start_date", Long.toString(creationDate));
-                                long endDate = 0;
-                                if (deal.has("time_end")) {
-                                	endDate = deal.getLong("time_end")*1000;
-                                	tokens.put("end_date", Long.toString(endDate));
-                                }
-                                landmark.setUrl(deal.getString("url"));
-                                landmark.setName(deal.getString("title") + " Deal At " + business.getString("name"));
-                                //desc.put("icon", deal.getString("image_url"));
-                                String description = ""; 
-                                if (deal.has("what_you_get")) {
-                                	description = "<b>What You Get</b><br/>" + deal.getString("what_you_get") + "<br/>";
-                                } if (deal.has("important_restrictions")) {
-                                	description += "<b>Important Restrictions</b><br/>" + deal.getString("important_restrictions") + "<br/>";
-                                } if (deal.has("additional_restrictions")) {
-                                	description += "<b>Additional Restrictions</b><br/>" + deal.getString("additional_restrictions") + "<br/>";
-                                }
-                                tokens.put("description", description);
-                                String currencyCode = deal.getString("currency_code");
-                                JSONArray options = deal.getJSONArray("options");
+                        			long creationDate = deal.getLong("time_start")*1000;
+                        			landmark.setCreationDate(creationDate);
+                        			tokens.put("start_date", Long.toString(creationDate));
+                        			long endDate = 0;
+                        			if (deal.has("time_end")) {
+                        				endDate = deal.getLong("time_end")*1000;
+                        				tokens.put("end_date", Long.toString(endDate));
+                        			}
+                        			landmark.setUrl(deal.getString("url"));
+                        			landmark.setName(deal.getString("title") + " Deal At " + business.getString("name"));
+                        			//desc.put("icon", deal.getString("image_url"));
+                        			String description = ""; 
+                        			if (deal.has("what_you_get")) {
+                        				description = "<b>What You Get</b><br/>" + deal.getString("what_you_get") + "<br/>";
+                        			} if (deal.has("important_restrictions")) {
+                        				description += "<b>Important Restrictions</b><br/>" + deal.getString("important_restrictions") + "<br/>";
+                        			} if (deal.has("additional_restrictions")) {
+                        				description += "<b>Additional Restrictions</b><br/>" + deal.getString("additional_restrictions") + "<br/>";
+                        			}
+                        			tokens.put("description", description);
+                        			String currencyCode = deal.getString("currency_code");
+                        			JSONArray options = deal.getJSONArray("options");
                                 
-                                JSONObject option = options.getJSONObject(0);
+                        			JSONObject option = options.getJSONObject(0);
                                 
-                                double original_price = option.getDouble("original_price") / 100d;
-                                double price = option.getDouble("price") / 100d;
-                                double save = (original_price - price);
+                        			double original_price = option.getDouble("original_price") / 100d;
+                        			double price = option.getDouble("price") / 100d;
+                        			double save = (original_price - price);
                                 
-                                double discount = (100d - (price / original_price * 100d)) / 100d;
+                        			double discount = (100d - (price / original_price * 100d)) / 100d;
                                 
-                                Deal dealObj = new Deal(price, discount, save, null, currencyCode);
-                                dealObj.setEndDate(endDate);
-                                landmark.setDeal(dealObj);
-                        	}     
-                        }
+                                	Deal dealObj = new Deal(price, discount, save, null, currencyCode);
+                                	dealObj.setEndDate(endDate);
+                                	landmark.setDeal(dealObj);
+                        		}     
+                        	}
                         
-                        landmark.setDescription(JSONUtils.buildLandmarkDesc(landmark, tokens, locale));
+                        	landmark.setDescription(JSONUtils.buildLandmarkDesc(landmark, tokens, locale));
                                               
-                        landmarks.add(landmark);
+                        	landmarks.add(landmark);
+                        }
                     }
                 }
             } else {

@@ -49,6 +49,7 @@ public class LayersTest {
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getPicasaUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getExpediaUtils()});
+	   //data.add(new Object[]{LayerHelperFactory.getYelpUtils()});
 	   
 	   System.out.println("Found " + data.size() + " layers.");
 	   
@@ -61,10 +62,16 @@ public class LayersTest {
 	@Test
 	public void test() {
 		try {
+			//warsaw test
+			//double lat = 52.25;
+			//double lng = 20.95;
+			//String bbox = "51.25,19.95,53.25,21.95";
 			//new york test
+			double lat = 40.71;
+			double lng = -74.01;
 			String bbox = "-75.01,39.71,-73.01,41.71";
-			//OSM List<ExtendedLandmark> landmarks = layer.processBinaryRequest(40.71, -74.01, null, 10000, 1115, limit, 1024, "atm", bbox, Locale.US);
-			List<ExtendedLandmark> landmarks = layer.processBinaryRequest(40.71, -74.01, null, 10000, 1115, limit, 1024, bbox, "", Locale.US);
+			//OSM List<ExtendedLandmark> landmarks = layer.processBinaryRequest(lat, lng, null, 10000, 1115, limit, 1024, "atm", bbox, Locale.US);
+			List<ExtendedLandmark> landmarks = layer.processBinaryRequest(lat, lng, null, 10000, 1115, limit, 1024, bbox, "", Locale.US);
 			int size = landmarks.size();
 			System.out.println("Found " + size + " landmarks");
 			assertNotNull(landmarks);
