@@ -60,14 +60,18 @@ public class LayerPersistenceUtils {
     	CacheAction layersCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
 			@Override
 			public Object executeAction() {
-				List<Layer> result = new ArrayList<Layer>();
 				List<Layer> allLayers = getAllLayers();
-	    		for (Layer l : allLayers) {
-	    			if (l.geVersion() > 0 && l.geVersion() <= version) {
-	    				result.add(l);
+				if (allLayers != null) {
+					List<Layer> result = new ArrayList<Layer>();
+					for (Layer l : allLayers) {
+	    				if (l.geVersion() > 0 && l.geVersion() <= version) {
+	    					result.add(l);
+	    				}
 	    			}
-	    		}	        
-				return result;
+					return result;
+				} else {
+					return null;
+				}
 			}
 		});
 	    return (List<Layer>) layersCacheAction.getObjectFromCache(key);
@@ -141,8 +145,8 @@ public class LayerPersistenceUtils {
     	CacheAction layersCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
 			@Override
 			public Object executeAction() {
-				List<Layer> layers = new ArrayList<Layer>();
 				try {
+					List<Layer> layers = new ArrayList<Layer>();
 					String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "itemProvider";
 					String params = "type=layer";			 
 					//logger.log(Level.INFO, "Calling: " + gUrl);
@@ -163,13 +167,15 @@ public class LayerPersistenceUtils {
 							BeanUtils.populate(l, layerMap);
 							layers.add(l);
 						}
+						return layers;
 					} else {
 						logger.log(Level.SEVERE, "Received following server response: " + gJson);
+						return null;
 					}
 				} catch (Exception e) {
 					logger.log(Level.SEVERE, e.getMessage(), e);
-				}		
-				return layers;
+					return null;
+				}	
 			}
 		});
 	    return (List<Layer>) layersCacheAction.getObjectFromCache(key);

@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.JSONUtils;
+import net.gmsworld.server.utils.MathUtils;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
@@ -170,12 +171,36 @@ public class PicasaUtils extends LayerHelper {
 	public List<ExtendedLandmark> processBinaryRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String bbox, String flexString2, Locale locale) throws Exception {
 		double lat = 0d, lng = 0d;
         String[] coords = StringUtils.split(bbox, ",");
+        //set new bbox
+        
+        double[] dcoords = new double[]{0d, 0d, 0d, 0d};
         if (coords.length == 4) {
-            lat = (Double.parseDouble(coords[2]) + Double.parseDouble(coords[0])) / 2;
-            lng = (Double.parseDouble(coords[3]) + Double.parseDouble(coords[1])) / 2;
+        	dcoords[0] = Double.parseDouble(coords[0]);
+        	dcoords[1] = Double.parseDouble(coords[1]);
+        	dcoords[2] = Double.parseDouble(coords[2]);
+        	dcoords[3] = Double.parseDouble(coords[3]);
+        	
+            lat = (dcoords[2] + dcoords[0]) / 2;
+            lng = (dcoords[3] + dcoords[1]) / 2;
         }
 
-        String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, limit, stringLimit, bbox, flexString2);
+        if ((dcoords[2] - dcoords[0]) < 0.1) {
+        	dcoords[2] += 0.05;
+        	dcoords[0] -= 0.05;
+        }
+        
+        if ((dcoords[3] - dcoords[1]) < 0.1) {
+        	dcoords[3] += 0.05;
+        	dcoords[1] -= 0.05;
+        }
+        
+        String normalizedBbox = MathUtils.normalizeE2(dcoords[0]) + "," +
+        		MathUtils.normalizeE2(dcoords[1]) + "," +
+        		MathUtils.normalizeE2(dcoords[2]) + "," +
+        		MathUtils.normalizeE2(dcoords[3]);    
+        //
+        
+        String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, limit, stringLimit, normalizedBbox, flexString2);
 
         List<ExtendedLandmark> output = (List<ExtendedLandmark>)cacheProvider.getObject(key);
 
@@ -184,7 +209,7 @@ public class PicasaUtils extends LayerHelper {
             URL baseSearchUrl = new URL("https://picasaweb.google.com/data/feed/api/all");
             Query myQuery = new Query(baseSearchUrl);
             myQuery.setStringCustomParameter("kind", "photo");
-            myQuery.setStringCustomParameter("bbox", bbox); //west, south, east, north i.e. "50.0,20.0,53.0,23.0"
+            myQuery.setStringCustomParameter("bbox", normalizedBbox); //west, south, east, north i.e. "50.0,20.0,53.0,23.0"
             myQuery.setPublishedMin(new DateTime(System.currentTimeMillis() - (1000 * 60 * 60 * 24 * 365)));
             myQuery.setStringCustomParameter("thumbsize", "72u"); //32, 48, 64, 72, 104, 144, 150, 160
             myQuery.setMaxResults(limit);
@@ -205,7 +230,7 @@ public class PicasaUtils extends LayerHelper {
   
             //List<PhotoEntry> photos = new ArrayList<PhotoEntry>(entries.size());
             
-            logger.log(Level.INFO, "Found: " + searchResultsFeed.getTotalResults() + "-" + searchResultsFeed.getPhotoEntries().size() + " entries");
+            logger.log(Level.INFO, "Found: " + searchResultsFeed.getTotalResults() + "-" + searchResultsFeed.getPhotoEntries().size() + " entries in normalized bbox: " + normalizedBbox);
             
             //for (GphotoEntry<PhotoEntry> entry : entries) {
             //	PhotoEntry p = new PhotoEntry(entry);

@@ -69,7 +69,7 @@ public class LayersTest {
 			//new york test
 			double lat = 40.71;
 			double lng = -74.01;
-			String bbox = "-75.01,39.71,-73.01,41.71";
+			String bbox = "-74.06,40.66,-74.01,40.71";//"-75.01,39.71,-73.01,41.71";
 			//OSM List<ExtendedLandmark> landmarks = layer.processBinaryRequest(lat, lng, null, 10000, 1115, limit, 1024, "atm", bbox, Locale.US);
 			List<ExtendedLandmark> landmarks = layer.processBinaryRequest(lat, lng, null, 10000, 1115, limit, 1024, bbox, "", Locale.US);
 			int size = landmarks.size();

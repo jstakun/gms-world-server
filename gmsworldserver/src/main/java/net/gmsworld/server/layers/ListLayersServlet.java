@@ -1,18 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package net.gmsworld.server.layers;
-
-import com.jstakun.lm.server.persistence.Layer;
-import com.jstakun.lm.server.utils.JSONUtils;
-import com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils;
-import com.jstakun.lm.server.utils.xml.XMLUtils;
-import com.jstakun.lm.server.utils.memcache.CacheUtil;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,6 +13,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
+
+import com.jstakun.lm.server.persistence.Layer;
+import com.jstakun.lm.server.utils.JSONUtils;
+import com.jstakun.lm.server.utils.memcache.CacheUtil;
+import com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils;
+import com.jstakun.lm.server.utils.xml.XMLUtils;
 
 /**
  *
@@ -74,18 +69,20 @@ public class ListLayersServlet extends HttpServlet {
             String json = CacheUtil.getString(key);
             if (json == null) {
                 List<Layer> layerList = LayerPersistenceUtils.listAllLayers(2);
-                try {
-                    if (version == 1) {
-                        json = JSONUtils.createCustomJSonLayersList(layerList, latitudeMin, longitudeMin, latitudeMax, longitudeMax);
-                    } else {
-                        json = JSONUtils.createCustomJSonLayersList(layerList, latitudeMin, longitudeMin, radius * 1000);
-                    }
-                    if (json != null) {
-                        CacheUtil.put(key, json);
-                        logger.log(Level.INFO, "Adding layer landmark to cache with key {0}", key);
-                    }
-                } catch (Exception e) {
-                    logger.log(Level.SEVERE, e.getMessage(), e);
+                if (layerList != null) {
+                	try {
+                    	if (version == 1) {
+                        	json = JSONUtils.createCustomJSonLayersList(layerList, latitudeMin, longitudeMin, latitudeMax, longitudeMax);
+                    	} else {
+                        	json = JSONUtils.createCustomJSonLayersList(layerList, latitudeMin, longitudeMin, radius * 1000);
+                    	}
+                    	if (json != null) {
+                        	CacheUtil.put(key, json);
+                        	logger.log(Level.INFO, "Adding layer landmark to cache with key {0}", key);
+                    	}
+                	} 	catch (Exception e) {
+                    	logger.log(Level.SEVERE, e.getMessage(), e);
+                	}
                 }
             } else {
                 logger.log(Level.INFO, "Reading layer list from cache with key {0}", key);
@@ -100,18 +97,19 @@ public class ListLayersServlet extends HttpServlet {
             String xml = CacheUtil.getString(XML_KEY);
             if (xml == null) {
                 try {
-                    List<Layer> layerList = new ArrayList<Layer>();
-                    layerList = LayerPersistenceUtils.listAllLayers(1);
-                    xml = XMLUtils.createCustomXmlLayersList(layerList);
-                    CacheUtil.put(XML_KEY, xml);
+                    List<Layer> layerList = LayerPersistenceUtils.listAllLayers(1);
+                    if (layerList != null && !layerList.isEmpty()) {
+                    	xml = XMLUtils.createCustomXmlLayersList(layerList);
+                    	CacheUtil.put(XML_KEY, xml);
+                    } else {
+                    	xml = "<layers/>";
+                    }               
                 } catch (Exception e) {
                     logger.log(Level.SEVERE, e.getMessage(), e);
                 }
             }
             out.print(xml);
         }
-
-
         out.close();
     }
 
