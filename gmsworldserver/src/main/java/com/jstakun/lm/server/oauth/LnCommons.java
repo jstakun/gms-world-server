@@ -82,7 +82,7 @@ public final class LnCommons {
         		throw new Exception("AccessToken is empty");
         	}
     	} else {
-    		throw new Exception("Wrong code");
+    		throw new Exception("Wrong code ro state");
     	}
     	
     	return userData;
