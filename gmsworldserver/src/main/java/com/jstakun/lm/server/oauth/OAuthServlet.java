@@ -43,6 +43,9 @@ public class OAuthServlet extends HttpServlet {
 			if (StringUtils.contains(uri, "fbauth")) {
 				String code = request.getParameter("code");
 				userData = FBCommons.authorize(code);
+			} else if (StringUtils.contains(uri, "cbauth")) {
+				String code = request.getParameter("code");
+				userData = CbCommons.authorize(code);
 			} else if (StringUtils.contains(uri, "fsauth")) {
 				String code = request.getParameter("code");
 				userData = FSCommons.authorize(code);

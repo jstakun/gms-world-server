@@ -52,6 +52,8 @@ public class OAuthLoginServlet extends HttpServlet {
 				logger.log(Level.SEVERE, e.getMessage(), e);
 				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			}
+		} else if (StringUtils.contains(uri, "cblogin")) {
+			response.sendRedirect(CbCommons.getAuthorizationUrl());
 		} else {
 			logger.log(Level.SEVERE, "Unexpected uri: {0}", uri);
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST);

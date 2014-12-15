@@ -42,7 +42,7 @@ public final class FSCommons {
 	 }
 	 
 	 protected static Map<String, String> authorize(String code) throws Exception {
-		 	URL tokenUrl = new URL(FSCommons.getAccessTokenUrl(code));
+		 	URL tokenUrl = new URL(getAccessTokenUrl(code));
 
 			String result = HttpUtils.processFileRequest(tokenUrl, "POST", null, null);
 			String accessToken = null;

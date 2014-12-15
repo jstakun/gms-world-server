@@ -50,6 +50,7 @@ public class LayersTest {
 	   //data.add(new Object[]{LayerHelperFactory.getPicasaUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getExpediaUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getYelpUtils()});
+	   //data.add(new Object[]{LayerHelperFactory.getMcOpenApiUtils()});
 	   
 	   System.out.println("Found " + data.size() + " layers.");
 	   
@@ -65,7 +66,7 @@ public class LayersTest {
 			//warsaw test
 			//double lat = 52.25;
 			//double lng = 20.95;
-			//String bbox = "51.25,19.95,53.25,21.95";
+			//String bbox = "20.96,52.24,20.97,52.25"; //"51.25,19.95,53.25,21.95";
 			//new york test
 			double lat = 40.71;
 			double lng = -74.01;

@@ -37,6 +37,10 @@ public class ConfigurationManager {
     public static final String FS_USERNAME = "fsUsername";
     public static final String FS_NAME = "fsName";
     
+    public static final String CB_USERNAME = "cbUsername";
+    public static final String CB_NAME = "cbName";
+    public static final String CB_EXPIRES_IN = "cbExpiresIn";
+    
     public static final String GL_EXPIRES_IN = "glExpiresIn";
     public static final String GL_USERNAME = "glUsername";
     public static final String GL_NAME = "glName";
