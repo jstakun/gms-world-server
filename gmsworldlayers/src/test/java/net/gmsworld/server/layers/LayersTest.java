@@ -10,6 +10,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.JvmThreadProvider;
 import net.gmsworld.server.utils.memcache.MockCacheProvider;
 
@@ -47,6 +49,8 @@ public class LayersTest {
 		   }
 	   }
 	   
+	   //data.add(new Object[]{LayerHelperFactory.getCouponsUtils()});
+	   //data.add(new Object[]{LayerHelperFactory.getFoursquareMerchantUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getPicasaUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getExpediaUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getYelpUtils()});
@@ -72,11 +76,15 @@ public class LayersTest {
 			double lng = -74.01;
 			String bbox = "-74.06,40.66,-74.01,40.71";//"-75.01,39.71,-73.01,41.71";
 			//OSM List<ExtendedLandmark> landmarks = layer.processBinaryRequest(lat, lng, null, 10000, 1115, limit, 1024, "atm", bbox, Locale.US);
+			//Foursquare List<ExtendedLandmark> landmarks = layer.processBinaryRequest(lat, lng, null, 10000, 1115, limit, 1024, Commons.getProperty(Property.FS_OAUTH_TOKEN), "1,2,3,4,5,6,7,8", Locale.US);
 			List<ExtendedLandmark> landmarks = layer.processBinaryRequest(lat, lng, null, 10000, 1115, limit, 1024, bbox, "", Locale.US);
 			int size = landmarks.size();
 			System.out.println("Found " + size + " landmarks");
 			assertNotNull(landmarks);
 			//assertEquals("Found " + size + " landmarks", limit, size);
+			for (ExtendedLandmark landmark : landmarks) {
+				System.out.println(landmark.getName() + "\n" + landmark.getDescription() + "---");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

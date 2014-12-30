@@ -68,7 +68,7 @@ import fi.foyt.foursquare.api.io.Response;
  */
 public class FoursquareApi {
 
-  public static final String DEFAULT_VERSION = "20120701";
+  public static final String DEFAULT_VERSION = "20140101";
   //private static Logger logger = Logger.getLogger(FoursquareApi.class.getName());
 
   /**

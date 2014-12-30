@@ -228,8 +228,7 @@ public class CouponsUtils extends LayerHelper {
                         save = deal.getDouble("dealSavings");
                         discount = deal.getDouble("dealDiscountPercent") / 100d;
                     }
-                    
-                    
+                                    
                     String dealTypeStr = null;
                     if (deal.has("DealTypeID") && !deal.isNull("DealTypeID")) {
                         int dealtyp = deal.getInt("DealTypeID");

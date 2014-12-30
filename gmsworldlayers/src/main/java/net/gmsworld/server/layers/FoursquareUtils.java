@@ -995,6 +995,8 @@ public class FoursquareUtils extends LayerHelper {
                                     }
                                     //
 
+                                } else {
+                                	logger.log(Level.WARNING, "Venue is null!");
                                 }
                             }
                         }
@@ -1003,6 +1005,8 @@ public class FoursquareUtils extends LayerHelper {
                             attrs.put(venueId, venueAttrs);
                         }
                     }
+                } else {
+                	logger.log(Level.WARNING, "Received following server response: " + fourquareJson);
                 }
             } catch (Exception ex) {
                 logger.log(Level.SEVERE, "FoursquareUtils.VenueDetailsRetriever execption:", ex);

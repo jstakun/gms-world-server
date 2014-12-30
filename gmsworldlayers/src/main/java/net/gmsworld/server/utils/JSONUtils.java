@@ -514,7 +514,7 @@ public class JSONUtils {
                     others.add(getLink(homepageTokens[0], rb.getString("Landmark.homepage")));
                 }
             } else if (key.equals("source")) {
-                others.add(String.format(rb.getString("Landmark.source"), getLink(value, value)));
+                others.add(String.format(rb.getString("Landmark.source"), value));
             } else if (key.equals("twitter")) {
                 others.add(String.format(rb.getString("Landmark.twitter"), getLink("http://mobile.twitter.com/" + value, "@" + value)));
             } else if (key.equals("facebook")) {
