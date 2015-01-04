@@ -76,6 +76,7 @@
                             <a href="/download/android/DealsAnywhere2.apk">Android</a>.
                             Find Deals Anywhere at <a href="http://market.android.com/details?id=com.jstakun.gms.android.ui.deals">Google Play</a>.
                             <i>Please note Android application is in Public Beta.</i>
+                            <img src="/images/qr_android_da.png" alt="Android download link QR Code"/>
                         </li>
                     </ul>
                 </p>
