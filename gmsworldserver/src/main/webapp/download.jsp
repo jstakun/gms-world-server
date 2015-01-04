@@ -49,17 +49,17 @@
                             Find Landmark Manager at <a href="http://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui">Google Play</a>,
                             <a href="http://www.amazon.com/gp/product/B004X2NR7O">Amazon Appstore</a> or <a href="http://apps.opera.com/landmark_manager.html">Opera Mobile Store</a>.
                             <i>Please note Android application is in Public Beta.</i><br/>
-                            <img src="/images/qr_android.png" alt="Android download link QR Code"/>
+                            <img src="/images/qr_android.png" alt="Landmark Manager Android download link QR Code" width="200" height="200"/>
                         </li>
                         <li>
                             <a href="/download/j2me/LandmarkManager.jar">Nokia, Motorola, Sony or any other J2ME compilant smartphone</a>.
                             <i>Please note J2ME application is in Public Beta.</i><br/>
-                            <img src="/images/qr_j2me.png" alt="Nokia, Motorola, SonyErricson or any other J2ME compilant smartphone download link QR Code"/>
+                            <img src="/images/qr_j2me.png" alt="Landmark Manager Nokia, Motorola, SonyErricson or any other J2ME compilant smartphone download link QR Code" width="200" height="200"/>
                         </li>
                         <li>
                             <a href="/download/blackberry/LandmarkManagerUIMIDlet.cod">Blackberry</a>.
                             <i>Please note Blackberry application is in Public Beta.</i><br/>
-                            <img src="/images/qr_bb.png" alt="BlackBerry download link QR Code"/>
+                            <img src="/images/qr_bb.png" alt="Landmark Manager BlackBerry download link QR Code" width="200" height="200"/>
                         </li>
                         <li>
                             <a href="mailto:support@gms-world.net?subject=iPhone version request">iPhone</a>.
@@ -76,7 +76,7 @@
                             <a href="/download/android/DealsAnywhere2.apk">Android</a>.
                             Find Deals Anywhere at <a href="http://market.android.com/details?id=com.jstakun.gms.android.ui.deals">Google Play</a>.
                             <i>Please note Android application is in Public Beta.</i>
-                            <img src="/images/qr_android_da.png" alt="Android download link QR Code"/>
+                            <img src="/images/qr_android_da.png" alt="Deals Anywhere Android download link QR Code" width="200" height="200"/>
                         </li>
                     </ul>
                 </p>
