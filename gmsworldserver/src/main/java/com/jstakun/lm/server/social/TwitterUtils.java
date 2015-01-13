@@ -56,13 +56,13 @@ public class TwitterUtils {
                     }
                     message = String.format(rb.getString("Social.tw.server"), userMask, landmark.getName(), url);
                 } else if (type == Commons.BLOGEO && landmark != null) {
-                    message = String.format(rb.getString("Social.tw.status"), "new geo message to Blogeo", landmark.getName(), url);
+                    message = String.format(rb.getString("Social.tw.status"), "new geo message to #GMSWorldBlogeo", landmark.getName(), url);
                 } else if (type == Commons.LANDMARK && landmark != null) {
-                    message = String.format(rb.getString("Social.tw.status"), "new point of interest to GMS World", landmark.getName(), url);
+                    message = String.format(rb.getString("Social.tw.status"), "new point of interest to #GMSWorld", landmark.getName(), url);
                 } else if (type == Commons.MY_POS) {
                     message = String.format(rb.getString("Social.tw.myloc"),  url);
                 } else if (type == Commons.LOGIN) {
-                    message = String.format(rb.getString("Social.login.2"), url);
+                    message = String.format(rb.getString("Social.tw.login"), url);
                 }            
 
                 if (message != null) {
@@ -98,7 +98,7 @@ public class TwitterUtils {
                 userMask = UrlUtils.createUsernameMask(username);
             }
 
-            message = userMask + " has just posted new screenshot to GMS World. Check it out: " + showImageUrl;
+            message = userMask + " has just posted new screenshot to #GMSWorld. Check it out: " + showImageUrl;
 
             StatusUpdate update = new StatusUpdate(message);
             update.setDisplayCoordinates(true);
