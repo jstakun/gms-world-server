@@ -114,7 +114,7 @@
 <div id="footer-bottom">
 
     <p class="bottom-left">
-        &copy; 2010-14 <strong>GMS World</strong>&nbsp; &nbsp; &nbsp;
+        &copy; 2010-15 <strong>GMS World</strong>&nbsp; &nbsp; &nbsp;
         <a href="http://www.bluewebtemplates.com/" title="Website Templates">website templates</a> by <a href="http://www.styleshout.com/">styleshout</a>
     </p>
 
