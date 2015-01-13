@@ -11,7 +11,7 @@
 
         <h3>About Us</h3>
         <p>
-            <a href="/index.jsp"><img src="/images/qr_main.jpg" width="40" height="40" alt="GMS qr code" class="float-left" /></a>
+            <a href="/index.jsp"><img src="/images/gms_world_qr_code.png" width="40" height="40" alt="GMS qr code" class="float-left" /></a>
             We are startup delivering mobile solutions based on geolocation functionality.
             <a href="/about.jsp">Learn more...</a>
         </p>
