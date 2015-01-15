@@ -77,7 +77,7 @@ public class LayersTest {
 			String bbox = "-74.06,40.66,-74.01,40.71";//"-75.01,39.71,-73.01,41.71";
 			//OSM List<ExtendedLandmark> landmarks = layer.processBinaryRequest(lat, lng, null, 10000, 1115, limit, 1024, "atm", bbox, Locale.US);
 			//Foursquare List<ExtendedLandmark> landmarks = layer.processBinaryRequest(lat, lng, null, 10000, 1115, limit, 1024, Commons.getProperty(Property.FS_OAUTH_TOKEN), "1,2,3,4,5,6,7,8", Locale.US);
-			List<ExtendedLandmark> landmarks = layer.processBinaryRequest(lat, lng, null, 10000, 1115, limit, 1024, bbox, "", Locale.US);
+			List<ExtendedLandmark> landmarks = layer.processBinaryRequest(lat, lng, null, 10000, 1115, limit, 1024, bbox, "", Locale.US, true);
 			int size = landmarks.size();
 			System.out.println("Found " + size + " landmarks");
 			assertNotNull(landmarks);

@@ -250,9 +250,13 @@ public class HotelsCombinedUtils extends LayerHelper {
     }
 	
 	@Override
-	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String language, String flexString2, Locale locale) throws Exception {
+	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String language, String flexString2, Locale locale, boolean useCache) throws Exception {
 	    String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, limit, stringLimit, language, null);
-        List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)cacheProvider.getObject(key);
+        List<ExtendedLandmark> landmarks = null;
+        
+        if (useCache) {
+        	landmarks = (List<ExtendedLandmark>)cacheProvider.getObject(key);
+        }
 
         if (landmarks == null) {   	
         	landmarks = new ArrayList<ExtendedLandmark>();
@@ -264,7 +268,7 @@ public class HotelsCombinedUtils extends LayerHelper {
 			logger.log(Level.INFO, "Found " + hotels.size() + " hotels...");
         	landmarks.addAll(Lists.transform(hotels, new HotelToExtendedLandmarkFunction(language, locale)));
 
-            if (!landmarks.isEmpty()) {
+            if (useCache & !landmarks.isEmpty()) {
             	cacheProvider.put(key, landmarks);
                 logger.log(Level.INFO, "Adding H landmark list to cache with key {0}", key);
             }

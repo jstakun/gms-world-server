@@ -49,7 +49,7 @@ public class FreebaseUtils extends LayerHelper {
 	//https://www.googleapis.com/freebase/v1/search?indent=true&filter=(all mid:/m/05qhw)&output=(description name geocode url object property category location)&limit=1
 	
 	@Override
-	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale) throws Exception {
+	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale, boolean useCache) throws Exception {
 		String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, limit, stringLimit, flexString, flexString2);
 		List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>) cacheProvider.getObject(key);
 		

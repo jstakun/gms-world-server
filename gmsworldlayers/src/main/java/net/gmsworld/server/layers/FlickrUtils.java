@@ -192,7 +192,7 @@ public class FlickrUtils extends LayerHelper {
     }
 
 	@Override
-	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flex, String flexString2, Locale locale) throws Exception {
+	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flex, String flexString2, Locale locale, boolean useCache) throws Exception {
 		int r = NumberUtils.normalizeNumber(radius, 1, 32);
         String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, r, version, limit, stringLimit, flex, flexString2);
         List<ExtendedLandmark> output = (List<ExtendedLandmark>) cacheProvider.getObject(key);

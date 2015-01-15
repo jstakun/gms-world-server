@@ -44,7 +44,7 @@ public abstract class LayerHelper {
     	return null;
     }
 
-    protected abstract List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale) throws Exception;
+    protected abstract List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale, boolean useCache) throws Exception;
     
     public void serialize(List<ExtendedLandmark> landmarks, OutputStream out, int version) {
     	ObjectOutputStream outObj = null;

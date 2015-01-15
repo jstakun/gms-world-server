@@ -33,7 +33,7 @@ import fi.foyt.foursquare.api.FoursquareApi;
 public class FoursquareMerchantUtils extends FoursquareUtils {
 	
 	@Override
-	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String token, String categoryid, Locale l) throws MalformedURLException, IOException, JSONException {
+	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String token, String categoryid, Locale l, boolean useCache) throws MalformedURLException, IOException, JSONException {
 		if (lat == 0d && lng == 0d) {
      		  throw new IllegalArgumentException("Latitude or longitude mustn't be zero!");
      	}

@@ -197,7 +197,7 @@ public class TwitterUtils extends LayerHelper {
     }
 
 	@Override
-	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int distance, int version, int limit, int stringLimit, String lang, String flexString2, Locale locale) throws Exception {
+	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int distance, int version, int limit, int stringLimit, String lang, String flexString2, Locale locale, boolean useCache) throws Exception {
 		
 		int radius = NumberUtils.normalizeNumber(distance, 1, 3);
 

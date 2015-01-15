@@ -168,7 +168,7 @@ public class PicasaUtils extends LayerHelper {
     }
 
 	@Override
-	public List<ExtendedLandmark> processBinaryRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String bbox, String flexString2, Locale locale) throws Exception {
+	public List<ExtendedLandmark> processBinaryRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String bbox, String flexString2, Locale locale, boolean useCache) throws Exception {
 		double lat = 0d, lng = 0d;
         String[] coords = StringUtils.split(bbox, ",");
         //set new bbox

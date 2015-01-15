@@ -430,7 +430,7 @@ public class YelpUtils extends LayerHelper {
     }
 
 	@Override
-	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String hasDeals, String language, Locale locale)
+	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String hasDeals, String language, Locale locale, boolean useCache)
 			throws Exception {
 		int normalizedRadius = NumberUtils.normalizeNumber(radius, 1000, 40000);
         int normalizedLimit = NumberUtils.normalizeNumber(limit, 20, 100);
