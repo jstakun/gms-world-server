@@ -2,6 +2,7 @@ package net.gmsworld.server.layers;
 
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -27,12 +28,12 @@ public class MapQuestUtils extends GeocodeHelper {
 	
 	@Override
 	public JSONObject processGeocode(String location, String email) {
-		String urlString = "http://open.mapquestapi.com/geocoding/v1/address?key=" + Commons.getProperty(Property.MAPQUEST_APPKEY) + "&location=" + location;
-		//System.out.println(urlString);
 		JSONObject jsonResponse = null;
 
         try {
-        	URL routeUrl = new URL(urlString);
+        	String urlString = "http://open.mapquestapi.com/geocoding/v1/address?key=" + Commons.getProperty(Property.MAPQUEST_APPKEY) + "&location=" + URLEncoder.encode(location, "UTF-8");
+    		//System.out.println(urlString);
+    		URL routeUrl = new URL(urlString);
         	String resp = HttpUtils.processFileRequest(routeUrl, "GET", null, null);
         	if (StringUtils.startsWith(resp, "{")) {
         		JSONObject root = new JSONObject(resp);

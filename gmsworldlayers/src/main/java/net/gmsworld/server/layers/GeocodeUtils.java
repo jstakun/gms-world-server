@@ -198,7 +198,7 @@ public class GeocodeUtils {
         return isNA;
     }
 
-    protected static String processRequest(String address, String email, Locale locale, boolean appendCountry) {
+    public static String processRequest(String address, String email, Locale locale, boolean appendCountry) {
         GeocodeCache gc = null;
         String jsonResp = "{}";
         String addr = "";
@@ -229,13 +229,17 @@ public class GeocodeUtils {
             } else {
                 //search for landmark matching address
                 Landmark landmark = null;
-                String[] token = addr.split(",");
+                /*String[] token = addr.split(",");
                 if (token.length > 1 && token[1].length() > 0) {
-                	List<Landmark> landmarks = LandmarkPersistenceUtils.selectLandmarkMatchingQuery(token[1],1);
+                	List<Landmark> landmarks = LandmarkPersistenceUtils.selectLandmarkMatchingQuery(token[1], 1);
                 	if (!landmarks.isEmpty()) {
                 		landmark = landmarks.get(0);
                 	}
-                }
+                }*/
+                List<Landmark> landmarks = LandmarkPersistenceUtils.selectLandmarkMatchingQuery(addr, 1);
+            	if (!landmarks.isEmpty()) {
+            		landmark = landmarks.get(0);
+            	}
                 if (landmark != null) {
                     jsonResp = processLandmark(landmark);
                 } else {
