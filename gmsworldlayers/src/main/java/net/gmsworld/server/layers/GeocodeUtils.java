@@ -243,11 +243,11 @@ public class GeocodeUtils {
                 if (landmark != null) {
                     jsonResp = processLandmark(landmark);
                 } else {
-                    JSONObject resp = GeocodeHelperFactory.getGoogleGeocodeUtils().processGeocode(addr, email);
+                    JSONObject resp = GeocodeHelperFactory.getGoogleGeocodeUtils().processGeocode(addr, email, true);
                     try {
                         if (resp.getString("status").equals("Error")) {
                             logger.log(Level.INFO, "Search geocode response {0}", resp.toString());
-                            resp = GeocodeHelperFactory.getMapQuestUtils().processGeocode(addr, email);
+                            resp = GeocodeHelperFactory.getMapQuestUtils().processGeocode(addr, email, true);
                         }
                     } catch (Exception e) {
                         logger.log(Level.SEVERE, e.getMessage(), e);

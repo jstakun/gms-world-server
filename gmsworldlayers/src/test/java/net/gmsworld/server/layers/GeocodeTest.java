@@ -1,7 +1,5 @@
 package net.gmsworld.server.layers;
 
-import static org.junit.Assert.*;
-
 import java.util.List;
 import java.util.Locale;
 
@@ -10,7 +8,6 @@ import net.gmsworld.server.utils.persistence.GeocodeCachePersistenceUtils;
 import net.gmsworld.server.utils.persistence.Landmark;
 import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;
 
-import org.json.JSONObject;
 import org.junit.Test;
 
 public class GeocodeTest {
@@ -50,11 +47,11 @@ public class GeocodeTest {
 			System.out.println("Landmark == null");
 		}
         
-        JSONObject resp = GeocodeHelperFactory.getGoogleGeocodeUtils().processGeocode(address, email);
-        System.out.println("Google: " + resp);
+        //JSONObject resp = GeocodeHelperFactory.getGoogleGeocodeUtils().processGeocode(address, email, false);
+        //System.out.println("Google: " + resp);
         
-        resp = GeocodeHelperFactory.getMapQuestUtils().processGeocode(address, email);
-        System.out.println("MapQuest: " + resp);
+        //resp = GeocodeHelperFactory.getMapQuestUtils().processGeocode(address, email, false);
+        //System.out.println("MapQuest: " + resp);
 	}
 
 }

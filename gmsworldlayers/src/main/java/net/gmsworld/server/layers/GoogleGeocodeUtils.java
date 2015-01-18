@@ -17,7 +17,7 @@ import org.json.JSONObject;
 public class GoogleGeocodeUtils extends GeocodeHelper {
 
 	@Override
-	protected JSONObject processGeocode(String addressIn, String email) {
+	protected JSONObject processGeocode(String addressIn, String email, boolean persistAsLandmark) {
         JSONObject jsonResponse = new JSONObject();
         try {
             logger.log(Level.INFO, "Calling Google geocode: {0}", addressIn);
@@ -50,9 +50,10 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
                         try {
                            GeocodeCachePersistenceUtils.persistGeocode(addressIn, 0, null, lat, lng);
 
+                           if (persistAsLandmark) {
                            //if (ConfigurationManager.getParam(ConfigurationManager.SAVE_GEOCODE_AS_LANDMARK, ConfigurationManager.OFF).equals(ConfigurationManager.ON)) {
-                           LandmarkPersistenceUtils.persistLandmark(address, "", lat, lng, 0.0, "geocode", null, Commons.GEOCODES_LAYER, email);
-                           //}
+                        	   LandmarkPersistenceUtils.persistLandmark(address, "", lat, lng, 0.0, "geocode", null, Commons.GEOCODES_LAYER, email);
+                           }
                         } catch (Exception ex) {
                                logger.log(Level.SEVERE, ex.getMessage(), ex);
                         }

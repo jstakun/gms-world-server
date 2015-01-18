@@ -27,7 +27,7 @@ public class MapQuestUtils extends GeocodeHelper {
 	private static final char[] delim = new char[]{',',' '};
 	
 	@Override
-	public JSONObject processGeocode(String location, String email) {
+	public JSONObject processGeocode(String location, String email, boolean persistAsLandmark) {
 		JSONObject jsonResponse = null;
 
         try {
@@ -51,8 +51,10 @@ public class MapQuestUtils extends GeocodeHelper {
         				try {
         					GeocodeCachePersistenceUtils.persistGeocode(location, 0, "", lat, lng);
         					//if (ConfigurationManager.getParam(ConfigurationManager.SAVE_GEOCODE_AS_LANDMARK, ConfigurationManager.OFF).equals(ConfigurationManager.ON)) {
-        					String name = WordUtils.capitalize(location, delim);
-        					LandmarkPersistenceUtils.persistLandmark(name, "", lat, lng, 0.0, "geocode", null, Commons.GEOCODES_LAYER, email);
+        					if (persistAsLandmark) {
+        						String name = WordUtils.capitalize(location, delim);
+        						LandmarkPersistenceUtils.persistLandmark(name, "", lat, lng, 0.0, "geocode", null, Commons.GEOCODES_LAYER, email);
+        					}
         					//}
         				} catch (Exception ex) {
         					logger.log(Level.SEVERE, ex.getMessage(), ex);

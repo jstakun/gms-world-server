@@ -82,9 +82,9 @@ public class LayersTest {
 			System.out.println("Found " + size + " landmarks");
 			assertNotNull(landmarks);
 			//assertEquals("Found " + size + " landmarks", limit, size);
-			for (ExtendedLandmark landmark : landmarks) {
-				System.out.println(landmark.getName() + "\n" + landmark.getDescription() + "---");
-			}
+			//for (ExtendedLandmark landmark : landmarks) {
+			//	System.out.println(landmark.getName() + "\n" + landmark.getDescription() + "---");
+			//}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

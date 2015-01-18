@@ -16,7 +16,7 @@ public abstract class GeocodeHelper {
 	
 	protected CacheProvider cacheProvider = null;
 	
-	protected abstract JSONObject processGeocode(String addressIn, String email) throws Exception;
+	protected abstract JSONObject processGeocode(String addressIn, String email, boolean persistAsLandmark) throws Exception;
 	
 	protected abstract String processReverseGeocode(double lat, double lng) throws Exception;
 	

@@ -6,16 +6,15 @@ import java.net.URLEncoder;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.utils.HttpUtils;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.config.Commons.Property;
-import net.gmsworld.server.config.ConfigurationManager;
-import net.gmsworld.server.utils.HttpUtils;
 
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.persistence.GeocodeCachePersistenceUtils;
@@ -220,7 +219,7 @@ public class CloudmadeUtils extends GeocodeHelper {
         return address;
     }
 
-    public JSONObject processGeocode(String location, String email) {
+    public JSONObject processGeocode(String location, String email, boolean persistAsLandmark) {
 
         String token = CacheUtil.getString(Commons.getProperty(Property.CLOUDMADE_TOKEN_KEY));
         JSONObject jsonResponse = null;
@@ -245,7 +244,8 @@ public class CloudmadeUtils extends GeocodeHelper {
                     	try {
                     		GeocodeCachePersistenceUtils.persistGeocode(location, 0, "", lat, lng);
 
-                            if (com.jstakun.lm.server.config.ConfigurationManager.getParam(ConfigurationManager.SAVE_GEOCODE_AS_LANDMARK, ConfigurationManager.OFF).equals(ConfigurationManager.ON)) {
+                    		if (persistAsLandmark) {
+                    		//if (com.jstakun.lm.server.config.ConfigurationManager.getParam(ConfigurationManager.SAVE_GEOCODE_AS_LANDMARK, ConfigurationManager.OFF).equals(ConfigurationManager.ON)) {
                                 String name = WordUtils.capitalize(location, delim);
                             	LandmarkPersistenceUtils.persistLandmark(name, "", lat, lng, 0.0, "geocode", null, Commons.GEOCODES_LAYER, email);
                             }

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.lm.server.struts;
 
 import javax.servlet.http.HttpServletRequest;
