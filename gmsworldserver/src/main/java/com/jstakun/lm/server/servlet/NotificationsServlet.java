@@ -85,7 +85,7 @@ public class NotificationsServlet extends HttpServlet {
                     	//send not more that once a week
                 		logger.log(Level.WARNING, email + " should be engaged to run Landmark Manager!");
                 		MailUtils.sendEngagementMessage(email, getServletContext());
-                		reply = new JSONObject().put("status", "engaged"); 
+                		reply = new JSONObject().put("status", "engaged").put("timestamp", System.currentTimeMillis()); 
                 	} else {
                 		response.setStatus(HttpServletResponse.SC_ACCEPTED);
                 		reply = new JSONObject().put("status", "accepted"); 
