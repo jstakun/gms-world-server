@@ -568,7 +568,8 @@ public class JSONUtils {
             } else if (key.equals("source")) {
                 others.add(String.format(rb.getString("Landmark.source"), getLink(value, value)));
             } else if (key.equals("twitter")) {
-                others.add(String.format(rb.getString("Landmark.twitter"), getLink("http://mobile.twitter.com/" + value, "@" + value)));
+            	others.add(getLink("http://mobile.twitter.com/" + value, "Twitter"));
+            	//others.add(String.format(rb.getString("Landmark.twitter"), getLink("http://mobile.twitter.com/" + value, "@" + value)));
             } else if (key.equals("facebook")) {
                 others.add(getLink("http://touch.facebook.com/profile.php?id=" + value, "Facebook"));
             } else if (key.equals("menu")) {
