@@ -352,84 +352,7 @@ public class YelpUtils extends LayerHelper {
         return reviewsArray;
     }
 
-    private class ReviewDetailsRetriever implements Runnable {
-
-        private Map<Integer, Thread> reviewDetailsThreads;
-        private Map<String, Map<String, String>> reviewsArray;
-        private double latitude, longitude;
-        private String query, language;
-        private int radius, offset;
-        private boolean hasDeals;
-
-        public ReviewDetailsRetriever(Map<Integer, Thread> reviewDetailsThreads, Map<String, Map<String, String>> reviewsArray,
-                double latitude, double longitude, String query, int radius, int offset, boolean hasDeals, String language) {
-            this.reviewDetailsThreads = reviewDetailsThreads;
-            this.reviewsArray = reviewsArray;
-            this.latitude = latitude;
-            this.longitude = longitude;
-            this.query = query;
-            this.radius = radius;
-            this.offset = offset;
-            this.hasDeals = hasDeals;
-            this.language = language;
-        }
-
-        public void run() {
-            try {
-                String responseBody = processRequest(latitude, longitude, query, radius, hasDeals, offset, language);
-                createCustomJsonReviewsList(responseBody, reviewsArray);
-            } catch (Exception e) {
-                logger.log(Level.SEVERE, "ReviewDetailsRetriever.run exception:", e);
-            } finally {
-                reviewDetailsThreads.remove(offset);
-            }
-        }
-    }
-
-    private class VenueDetailsRetriever implements Runnable {
-
-        private Map<Integer, Thread> venueDetailsThreads;
-        private List<? extends Object> venueArray;
-        private double latitude, longitude;
-        private String query, language, format;
-        private int radius, offset, stringLimit;
-        private boolean hasDeals;
-        private Locale locale;
-
-        public VenueDetailsRetriever(Map<Integer, Thread> venueDetailsThreads, List<? extends Object> venueArray,
-                double latitude, double longitude, String query, int radius,
-                int offset, boolean hasDeals, int stringLimit, String language, String format, Locale locale) {
-            this.venueDetailsThreads = venueDetailsThreads;
-            this.venueArray = venueArray;
-            this.latitude = latitude;
-            this.longitude = longitude;
-            this.query = query;
-            this.radius = radius;
-            this.offset = offset;
-            this.hasDeals = hasDeals;
-            this.stringLimit = stringLimit;
-            this.language = language;
-            this.format = format;
-            this.locale = locale;
-        }
-
-        public void run() {
-            try {
-                String responseBody = processRequest(latitude, longitude, query, radius, hasDeals, offset, language);
-                if (format.equals("bin")) {
-                	createCustomLandmarkYelpList(responseBody, (List<ExtendedLandmark>)venueArray, stringLimit, hasDeals, locale);
-                } else {
-                    createCustomJsonYelpList(responseBody, (List<Object>)venueArray, stringLimit, hasDeals);
-                }
-            } catch (Exception e) {
-                logger.log(Level.SEVERE, "VenueDetailsRetriever.run exception:", e);
-            } finally {
-                venueDetailsThreads.remove(offset);
-            }
-        }
-    }
-
-	@Override
+    @Override
 	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String hasDeals, String language, Locale locale, boolean useCache)
 			throws Exception {
 		int normalizedRadius = NumberUtils.normalizeNumber(radius, 1000, 40000);
@@ -621,4 +544,81 @@ public class YelpUtils extends LayerHelper {
 		}
 		logger.log(Level.SEVERE, "Received Yelp error response {0}", root);
 	}
+	
+	private class ReviewDetailsRetriever implements Runnable {
+
+        private Map<Integer, Thread> reviewDetailsThreads;
+        private Map<String, Map<String, String>> reviewsArray;
+        private double latitude, longitude;
+        private String query, language;
+        private int radius, offset;
+        private boolean hasDeals;
+
+        public ReviewDetailsRetriever(Map<Integer, Thread> reviewDetailsThreads, Map<String, Map<String, String>> reviewsArray,
+                double latitude, double longitude, String query, int radius, int offset, boolean hasDeals, String language) {
+            this.reviewDetailsThreads = reviewDetailsThreads;
+            this.reviewsArray = reviewsArray;
+            this.latitude = latitude;
+            this.longitude = longitude;
+            this.query = query;
+            this.radius = radius;
+            this.offset = offset;
+            this.hasDeals = hasDeals;
+            this.language = language;
+        }
+
+        public void run() {
+            try {
+                String responseBody = processRequest(latitude, longitude, query, radius, hasDeals, offset, language);
+                createCustomJsonReviewsList(responseBody, reviewsArray);
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, "ReviewDetailsRetriever.run exception:", e);
+            } finally {
+                reviewDetailsThreads.remove(offset);
+            }
+        }
+    }
+
+    private class VenueDetailsRetriever implements Runnable {
+
+        private Map<Integer, Thread> venueDetailsThreads;
+        private List<? extends Object> venueArray;
+        private double latitude, longitude;
+        private String query, language, format;
+        private int radius, offset, stringLimit;
+        private boolean hasDeals;
+        private Locale locale;
+
+        public VenueDetailsRetriever(Map<Integer, Thread> venueDetailsThreads, List<? extends Object> venueArray,
+                double latitude, double longitude, String query, int radius,
+                int offset, boolean hasDeals, int stringLimit, String language, String format, Locale locale) {
+            this.venueDetailsThreads = venueDetailsThreads;
+            this.venueArray = venueArray;
+            this.latitude = latitude;
+            this.longitude = longitude;
+            this.query = query;
+            this.radius = radius;
+            this.offset = offset;
+            this.hasDeals = hasDeals;
+            this.stringLimit = stringLimit;
+            this.language = language;
+            this.format = format;
+            this.locale = locale;
+        }
+
+        public void run() {
+            try {
+                String responseBody = processRequest(latitude, longitude, query, radius, hasDeals, offset, language);
+                if (format.equals("bin")) {
+                	createCustomLandmarkYelpList(responseBody, (List<ExtendedLandmark>)venueArray, stringLimit, hasDeals, locale);
+                } else {
+                    createCustomJsonYelpList(responseBody, (List<Object>)venueArray, stringLimit, hasDeals);
+                }
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, "VenueDetailsRetriever.run exception:", e);
+            } finally {
+                venueDetailsThreads.remove(offset);
+            }
+        }
+    }
 }

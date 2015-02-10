@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package net.gmsworld.server.layers;
 
 import java.io.IOException;
@@ -14,15 +10,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Callable;
 import java.util.logging.Level;
 
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.utils.ExecutorUtils;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.JSONUtils;
 import net.gmsworld.server.utils.NumberUtils;
-import net.gmsworld.server.utils.ThreadUtil;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
@@ -379,7 +375,7 @@ public class GooglePlacesUtils extends LayerHelper {
 
     private void processDetails(List<String> placeDetails, JSONArray results, int limit, String language) throws JSONException, MalformedURLException, IOException {
 
-        Map<String, Thread> venueDetailsThreads = new ConcurrentHashMap<String, Thread>();
+        //Map<String, Thread> venueDetailsThreads = new ConcurrentHashMap<String, Thread>();
         
         int l = limit;
         if (results.length() < l) {
@@ -388,45 +384,29 @@ public class GooglePlacesUtils extends LayerHelper {
         
         logger.log(Level.INFO, "Looking for: " + l + " details...");
         
-        for (int i = 0; i < l; i++) {
+        /*for (int i = 0; i < l; i++) {
             JSONObject item = results.getJSONObject(i);
             String reference = item.getString("reference");
 
-            Thread venueDetailsRetriever = threadProvider.newThread(new VenueDetailsRetriever(venueDetailsThreads, placeDetails,
-                    reference, language));
+            Thread venueDetailsRetriever = threadProvider.newThread(new VenueDetailsRetriever(venueDetailsThreads, placeDetails, reference, language));
 
             venueDetailsThreads.put(reference, venueDetailsRetriever);
 
             venueDetailsRetriever.start();
         }
 
-        ThreadUtil.waitForLayers(venueDetailsThreads);
-    }
-
-    private static class VenueDetailsRetriever implements Runnable {
-
-        private String reference, language;
-        private List<String> placeDetails;
-        private Map<String, Thread> venueDetailsThreads;
-
-        public VenueDetailsRetriever(Map<String, Thread> venueDetailsThreads, List<String> placeDetails, String reference, String language) {
-            this.venueDetailsThreads = venueDetailsThreads;
-            this.placeDetails = placeDetails;
-            this.reference = reference;
-            this.language = language;
-        }
-
-        public void run() {
-            try {
-                URL itemDetails = new URL("https://maps.googleapis.com/maps/api/place/details/json?reference=" + reference + "&sensor=false&key=" + Commons.getProperty(Property.GOOGLE_API_KEY) + "&language=" + language);
-                String details = HttpUtils.processFileRequest(itemDetails);
-                placeDetails.add(details);
-            } catch (Exception e) {
-                logger.log(Level.SEVERE, "VenueDetailsRetriever.run exception:", e);
-            } finally {
-                venueDetailsThreads.remove(reference);
-            }
-        }
+        ThreadUtil.waitForLayers(venueDetailsThreads);*/
+        
+        ExecutorUtils<String> executor = new ExecutorUtils<String>(l, placeDetails);
+        
+        for (int i = 0; i < l; i++) {
+            JSONObject item = results.getJSONObject(i);
+            String reference = item.getString("reference");
+            VenueDetailsCallable venueDetails = new VenueDetailsCallable(reference, language);
+            executor.submit(venueDetails);
+        }    
+        
+        executor.waitForResponses();
     }
 
 	@Override
@@ -459,5 +439,59 @@ public class GooglePlacesUtils extends LayerHelper {
         logger.log(Level.INFO, "Found {0} landmarks", landmarks.size()); 
 
         return landmarks;
+	}
+	
+	/*private static class VenueDetailsRetriever implements Runnable {
+
+        private String reference, language;
+        private List<String> placeDetails;
+        private Map<String, Thread> venueDetailsThreads;
+
+        public VenueDetailsRetriever(Map<String, Thread> venueDetailsThreads, List<String> placeDetails, String reference, String language) {
+            this.venueDetailsThreads = venueDetailsThreads;
+            this.placeDetails = placeDetails;
+            this.reference = reference;
+            this.language = language;
+        }
+
+        public void run() {
+            try {
+                URL itemDetails = new URL("https://maps.googleapis.com/maps/api/place/details/json?reference=" + reference + "&sensor=false&key=" + Commons.getProperty(Property.GOOGLE_API_KEY) + "&language=" + language);
+                String details = HttpUtils.processFileRequest(itemDetails);
+                placeDetails.add(details);
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, "VenueDetailsRetriever.run exception:", e);
+            } finally {
+                venueDetailsThreads.remove(reference);
+            }
+        }
+    }*/
+	
+	private static class VenueDetailsCallable implements Callable<String> {
+
+		private String reference, language;
+        
+        public VenueDetailsCallable(String reference, String language) {
+            this.reference = reference;
+            this.language = language;	
+		}
+		
+		public String call() throws Exception {
+			try {
+				String url = "https://maps.googleapis.com/maps/api/place/details/json?reference=" + reference + "&sensor=false&key=" + Commons.getProperty(Property.GOOGLE_API_KEY) + "&language=" + language;
+	            URL itemDetails = new URL(url);
+	            String response = HttpUtils.processFileRequest(itemDetails);
+	            int responseCode = HttpUtils.getResponseCode(url);
+                if (responseCode == 200 && response != null) {
+                   return response;	
+                } else {
+                   logger.log(Level.SEVERE, "Received following server response code " + responseCode);
+                   return null;
+                }
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, "VenueDetailsCallable.call() exception:", e);
+                return null;
+            } 
+        }
 	}
 }

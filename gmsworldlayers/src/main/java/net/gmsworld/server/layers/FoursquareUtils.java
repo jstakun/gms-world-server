@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
@@ -804,7 +805,7 @@ public class FoursquareUtils extends LayerHelper {
             //max 5 requests
             if (i % 5 == 4 || i == (venueIds.size() - 1)) {
                 //call foursquare
-
+            	
                 Thread venueDetailsRetriever = threadProvider.newThread(new VenueDetailsRetriever(venueDetailsThreads, attrs,
                         locale, urlPrefix.toString(), multiRequest, venueId, bitlyFailed));
 
@@ -836,6 +837,18 @@ public class FoursquareUtils extends LayerHelper {
         }
     }
 
+    private static void handleError(ResultMeta meta, String key) throws FoursquareApiException {
+    	logger.log(Level.SEVERE, "Received FS response {0} {1}: {2}", new Object[]{meta.getCode(), meta.getErrorDetail(), key});
+    	if (meta.getCode() == HttpServletResponse.SC_UNAUTHORIZED) {
+    		throw new FoursquareApiException("Unauthorized");
+    	}
+    }
+    
+    private static FoursquareApi getFoursquareApi(String token) {
+    	return new FoursquareApi(Commons.getProperty(Property.FS_CLIENT_ID), Commons.getProperty(Property.FS_CLIENT_SECRET), null, token, new DefaultIOHandler());
+        
+    }
+    
     private static class CheckinComparator implements Comparator<Map<String, Object>> {
 
         public int compare(Map<String, Object> jsonObject0, Map<String, Object> jsonObject1) {
@@ -1016,15 +1029,155 @@ public class FoursquareUtils extends LayerHelper {
         }
     }
     
-    private static void handleError(ResultMeta meta, String key) throws FoursquareApiException {
-    	logger.log(Level.SEVERE, "Received FS response {0} {1}: {2}", new Object[]{meta.getCode(), meta.getErrorDetail(), key});
-    	if (meta.getCode() == HttpServletResponse.SC_UNAUTHORIZED) {
-    		throw new FoursquareApiException("Unauthorized");
-    	}
-    }
-    
-    private static FoursquareApi getFoursquareApi(String token) {
-    	return new FoursquareApi(Commons.getProperty(Property.FS_CLIENT_ID), Commons.getProperty(Property.FS_CLIENT_SECRET), null, token, new DefaultIOHandler());
+    private static class VenueDetailsCallable implements Callable<Map<String, String>> {
+    	
+    	private String locale, urlPrefix, multiRequest, venueId;
+        private boolean bitlyFailed;
+
+        public VenueDetailsCallable(String locale, String urlPrefix, String multiRequest, String venueId, boolean bitlyFailed) {
+            this.locale = locale;
+            this.urlPrefix = urlPrefix;
+            this.multiRequest = multiRequest;
+            this.venueId = venueId;
+            this.bitlyFailed = bitlyFailed;
+        }
         
+		public Map<String, String> call() throws Exception {
+			Map<String, String> venueAttrs = new HashMap<String, String>();
+            try {
+                URL url = new URL(urlPrefix.toString() + "&requests=" + URLEncoder.encode(multiRequest, "UTF-8"));
+                String fourquareJson = HttpUtils.processFileRequestWithLocale(url, locale);
+
+                if (StringUtils.startsWith(fourquareJson, "{")) {
+                    JSONObject jsonRoot = new JSONObject(fourquareJson);
+                    JSONObject meta = jsonRoot.getJSONObject("meta");
+                    int code = meta.getInt("code");
+                    if (code == 200) {
+                        JSONObject response = jsonRoot.getJSONObject("response");
+                        JSONArray responses = response.getJSONArray("responses");
+
+                        for (int j = 0; j < responses.length(); j++) {
+                            JSONObject resp = responses.getJSONObject(j);
+                            JSONObject metar = jsonRoot.getJSONObject("meta");
+                            int coder = metar.getInt("code");
+                            if (coder == 200) {
+                                JSONObject responser = resp.getJSONObject("response");
+                                JSONObject venue = responser.optJSONObject("venue");
+                                if (venue != null) {
+                                    //creationDate
+                                    Long creationDate = venue.getLong("createdAt") * 1000;
+                                    venueAttrs.put("creationDate", Long.toString(creationDate));
+                                    //
+
+                                    //photos
+                                    JSONObject photos = venue.getJSONObject("photos");
+                                    int count = photos.getInt("count");
+
+                                    if (count > 0) {
+                                    	JSONArray groups = photos.getJSONArray("groups");
+                                        boolean hasPhoto = false;
+                                        for (int k = 0; k < groups.length(); k++) {
+                                        	JSONObject group = groups.getJSONObject(k);
+                                            int groupCount = group.getInt("count");
+                                            //String type = group.getString("type");
+                                            //System.out.println("Photos: type " + type + ", count " + groupCount);
+                                            if (groupCount > 0) {
+                                            	JSONArray items = group.getJSONArray("items");
+                                                if (items.length() > 0) {
+                                                	JSONObject newest = items.getJSONObject(0);
+
+                                                	//photoUser
+                                                	JSONObject user = newest.getJSONObject("user");
+                                                    String photoUser = "";
+                                                    if (user.has("firstName")) {
+                                                        photoUser = user.getString("firstName");
+                                                    }
+                                                    if (user.has("lastName")) {
+                                                        photoUser += " " + user.getString("lastName");
+                                                    }
+                                                    if (StringUtils.isNotEmpty("photoUser")) {
+                                                        venueAttrs.put("photoUser", photoUser);
+                                                    }
+
+                                                    //photo url
+                                                    //String photo = newest.getString("url");
+                                                    	
+                                                    String photo = newest.getString("prefix") + "100x100" + newest.getString("suffix");
+                                                    	
+                                                    if (!bitlyFailed) {
+                                                    	String shortUrl = UrlUtils.getShortUrl(photo);
+                                                        if (StringUtils.equals(shortUrl, photo)) {
+                                                        	bitlyFailed = true;
+                                                        } else {
+                                                        	photo = shortUrl;
+                                                        }
+                                                     }
+                                                        
+                                                     venueAttrs.put("caption", photo);
+                                                     hasPhoto = true;
+                                                     	
+                                                     venueAttrs.put("icon", photo);
+
+                                                     //icon
+                                                     /*JSONObject sizes = newest.optJSONObject("sizes");
+                                                     if (sizes != null) {
+                                                         JSONArray imgItems = sizes.getJSONArray("items");
+                                                         for (int i=0;i<imgItems.length();i++) {
+                                                        	JSONObject item = imgItems.getJSONObject(i);
+                                                            if (item.getInt("width") == 100 && item.getInt("height") == 100) {
+                                                                venueAttrs.put("icon", item.getString("url"));
+                                                            }
+                                                         }
+                                                     }*/
+                                                }
+                                            }
+                                            if (hasPhoto) {
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    
+                                    //
+
+                                    //menu
+                                    JSONObject menu = venue.optJSONObject("menu");
+                                    if (menu != null) {
+                                        venueAttrs.put("menu", menu.getString("mobileUrl"));
+                                        //menu: {
+                                        //url: "https://foursquare.com/v/clinton-street-baking-co/40a55d80f964a52020f31ee3/menu"
+                                        //mobileUrl: "https://foursquare.com/v/40a55d80f964a52020f31ee3/device_menu"
+                                        //}
+                                    }
+                                    //
+
+                                    //stats
+                                    JSONObject stats = venue.optJSONObject("stats");
+                                    if (stats != null) {
+                                        int numOfReviews = stats.optInt("tipCount", 0);
+                                        if (numOfReviews > 0) {
+                                            venueAttrs.put("numberOfReviews", Integer.toString(numOfReviews));
+                                        }
+                                    }
+                                    //
+
+                                } else {
+                                	logger.log(Level.WARNING, "Venue is empty");
+                                }
+                            }
+                        }
+
+                        if (!venueAttrs.isEmpty()) {
+                            venueAttrs.put("venueId", venueId);
+                        }
+                    }
+                } else {
+                	logger.log(Level.WARNING, "Received following server response: " + fourquareJson);
+                }
+            } catch (Exception ex) {
+                logger.log(Level.SEVERE, "FoursquareUtils.VenueDetailsRetriever execption:", ex);
+            }
+            return venueAttrs;
+		}
+    	
     }
 }

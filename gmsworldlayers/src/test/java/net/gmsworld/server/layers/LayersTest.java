@@ -36,7 +36,7 @@ public class LayersTest {
 	   LayerHelperFactory.setCacheProvider(new MockCacheProvider());
 	   LayerHelperFactory.setThreadProvider(new JvmThreadProvider());	
 	   
-	   List<Method> methods = getStaticGetMethods(LayerHelperFactory.class);
+	   /*List<Method> methods = getStaticGetMethods(LayerHelperFactory.class);
 	   for (Method m : methods) {
 		   try {
 			   data.add(new Object[]{ m.invoke(null,(Object[])null) });
@@ -47,14 +47,16 @@ public class LayersTest {
 		   } catch (InvocationTargetException e) {
 			   e.printStackTrace();
 		   }
-	   }
+	   }*/
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getCouponsUtils()});
-	   //data.add(new Object[]{LayerHelperFactory.getFoursquareMerchantUtils()});
+	   data.add(new Object[]{LayerHelperFactory.getFoursquareMerchantUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getPicasaUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getExpediaUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getYelpUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getMcOpenApiUtils()});
+	   //data.add(new Object[]{LayerHelperFactory.getGooglePlacesUtils()});
+	   //data.add(new Object[]{LayerHelperFactory.getFoursquareUtils()});
 	   
 	   System.out.println("Found " + data.size() + " layers.");
 	   
@@ -82,9 +84,9 @@ public class LayersTest {
 			System.out.println("Found " + size + " landmarks");
 			assertNotNull(landmarks);
 			//assertEquals("Found " + size + " landmarks", limit, size);
-			//for (ExtendedLandmark landmark : landmarks) {
-			//	System.out.println(landmark.getName() + "\n" + landmark.getDescription() + "---");
-			//}
+			for (ExtendedLandmark landmark : landmarks) {
+				System.out.println(landmark.getName() + " :-> " + landmark.getDescription() + "---\n");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
