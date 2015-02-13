@@ -137,7 +137,7 @@ public class GooglePlacesUtils extends LayerHelper {
 	    "zoo",		
 	};*/
 	
-	private static final int QUOTA_LIMIT = 30;
+	private static final int QUOTA_LIMIT = 200;
 	private static final String types = "establishment";
 	
 	/*static {
@@ -284,90 +284,12 @@ public class GooglePlacesUtils extends LayerHelper {
     	List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
         
         for (int i = 0; i < placesJsonV.size(); i++) {
-            String placesJson = placesJsonV.get(i);
-
-            if (StringUtils.startsWith(placesJson, "{")) {
-                JSONObject json = new JSONObject(placesJson);
-                String status = json.getString("status");
-
-                if (status.equals("OK")) {
-
-                    JSONObject item = json.getJSONObject("result");
-                    
-                    String name = item.getString("name");
-
-                    JSONObject geometry = item.getJSONObject("geometry");
-                    JSONObject location = geometry.getJSONObject("location");
-                    String reference = item.getString("reference");
-
-                    double lat = location.getDouble("lat");
-                    double lng = location.getDouble("lng");
-
-                    Map<String, String> tokens = new HashMap<String, String>();
-                    JSONArray types = item.optJSONArray("types");
-                    String typeslist = "";
-
-                    if (types != null) {
-                        boolean addc = false;
-                        for (int j = 0; j < types.length(); j++) {
-                            if (addc) {
-                                typeslist += ", ";
-                            }
-                            typeslist += types.getString(j);
-                            addc = true;
-                        }
-                    }
-
-                    if (typeslist.length() > 0) {
-                        tokens.put("category", typeslist);
-                    }
-
-                    JSONUtils.putOptValue(tokens, "address", item, "formatted_address", false, stringLimit, false);
-              
-                    String url = item.getString("url");         
-                    
-                    /*JSONArray photos = item.optJSONArray("photos");
-                    if (photos != null) {
-                    	for (int j = 0; j < photos.length(); j++) {
-                            JSONObject photo = photos.getJSONObject(j);
-                    	    logger.log(Level.INFO, photo.toString());
-                    	}    
-                    }*/
-                    
-                    String icon = item.optString("icon");
-                    
-                    AddressInfo address = new AddressInfo();
-                    address.setField(AddressInfo.EXTENSION, reference);
-                    
-                    String website = item.optString("website");
-                    if (website != null) {
-                    	tokens.put("homepage", website);
-                    }
-                                        
-                    String phone = item.optString("international_phone_number");
-                    if (phone != null) {
-                    	address.setField(AddressInfo.PHONE_NUMBER, phone);
-                    } else {
-                    	phone = item.optString("formatted_phone_number");
-                    	if (phone != null) {
-                    		address.setField(AddressInfo.PHONE_NUMBER, phone);
-                    	}
-                    }
-                    QualifiedCoordinates qc = new QualifiedCoordinates(lat, lng, 0f, 0f, 0f);
-                    ExtendedLandmark landmark = LandmarkFactory.getLandmark(name, null, qc, Commons.GOOGLE_PLACES_LAYER, address, -1, null);
-                    landmark.setThumbnail(icon);
-                    landmark.setUrl(url);
-                    
-                    if (item.has("rating")) {
-                        landmark.setRating(item.getDouble("rating"));
-                    }
-                    
-                    String description = JSONUtils.buildLandmarkDesc(landmark, tokens, locale);
-                    landmark.setDescription(description);
-                    
-                    landmarks.add(landmark);
-                }
+            String placeJson = placesJsonV.get(i);
+            ExtendedLandmark landmark = processLandmark(placeJson, stringLimit, locale);
+            if (landmark != null) {
+            	landmarks.add(landmark);
             }
+            
         }
 
         return landmarks;
@@ -408,6 +330,92 @@ public class GooglePlacesUtils extends LayerHelper {
         
         executor.waitForResponses();
     }
+    
+    public static ExtendedLandmark processLandmark(String placeJson, int stringLimit, Locale locale) {
+    	ExtendedLandmark landmark = null;
+    	if (StringUtils.startsWith(placeJson, "{")) {
+            JSONObject json = new JSONObject(placeJson);
+            String status = json.getString("status");
+
+            if (status.equals("OK")) {
+
+                JSONObject item = json.getJSONObject("result");
+                
+                String name = item.getString("name");
+
+                JSONObject geometry = item.getJSONObject("geometry");
+                JSONObject location = geometry.getJSONObject("location");
+                String reference = item.getString("reference");
+
+                double lat = location.getDouble("lat");
+                double lng = location.getDouble("lng");
+
+                Map<String, String> tokens = new HashMap<String, String>();
+                JSONArray types = item.optJSONArray("types");
+                String typeslist = "";
+
+                if (types != null) {
+                    boolean addc = false;
+                    for (int j = 0; j < types.length(); j++) {
+                        if (addc) {
+                            typeslist += ", ";
+                        }
+                        typeslist += types.getString(j);
+                        addc = true;
+                    }
+                }
+
+                if (typeslist.length() > 0) {
+                    tokens.put("category", typeslist);
+                }
+
+                JSONUtils.putOptValue(tokens, "address", item, "formatted_address", false, stringLimit, false);
+          
+                String url = item.getString("url");         
+                
+                /*JSONArray photos = item.optJSONArray("photos");
+                if (photos != null) {
+                	for (int j = 0; j < photos.length(); j++) {
+                        JSONObject photo = photos.getJSONObject(j);
+                	    logger.log(Level.INFO, photo.toString());
+                	}    
+                }*/
+                
+                String icon = item.optString("icon");
+                
+                AddressInfo address = new AddressInfo();
+                address.setField(AddressInfo.EXTENSION, reference);
+                
+                String website = item.optString("website");
+                if (website != null) {
+                	tokens.put("homepage", website);
+                }
+                                    
+                String phone = item.optString("international_phone_number");
+                if (phone != null) {
+                	address.setField(AddressInfo.PHONE_NUMBER, phone);
+                } else {
+                	phone = item.optString("formatted_phone_number");
+                	if (phone != null) {
+                		address.setField(AddressInfo.PHONE_NUMBER, phone);
+                	}
+                }
+                QualifiedCoordinates qc = new QualifiedCoordinates(lat, lng, 0f, 0f, 0f);
+                landmark = LandmarkFactory.getLandmark(name, null, qc, Commons.GOOGLE_PLACES_LAYER, address, -1, null);
+                landmark.setThumbnail(icon);
+                landmark.setUrl(url);
+                
+                if (item.has("rating")) {
+                    landmark.setRating(item.getDouble("rating"));
+                }
+                
+                String description = JSONUtils.buildLandmarkDesc(landmark, tokens, locale);
+                landmark.setDescription(description);
+            }
+        }
+    	
+    	return landmark;
+    }
 
 	@Override
 	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String language, String flexString2, Locale locale, boolean useCache) throws Exception {
@@ -440,6 +448,24 @@ public class GooglePlacesUtils extends LayerHelper {
 
         return landmarks;
 	}
+	
+	public static String getPlaceDetails(String reference, String language) throws Exception {
+		try {
+			String url = "https://maps.googleapis.com/maps/api/place/details/json?reference=" + reference + "&sensor=false&key=" + Commons.getProperty(Property.GOOGLE_API_KEY) + "&language=" + language;
+            URL itemDetails = new URL(url);
+            String response = HttpUtils.processFileRequest(itemDetails);
+            int responseCode = HttpUtils.getResponseCode(url);
+            if (responseCode == 200 && response != null) {
+               return response;	
+            } else {
+               logger.log(Level.SEVERE, "Received following server response code " + responseCode);
+               return null;
+            }
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "GooglePlacesUtils.gerPlaceDetails() exception:", e);
+            return null;
+        } 
+    }
 	
 	/*private static class VenueDetailsRetriever implements Runnable {
 
@@ -477,21 +503,7 @@ public class GooglePlacesUtils extends LayerHelper {
 		}
 		
 		public String call() throws Exception {
-			try {
-				String url = "https://maps.googleapis.com/maps/api/place/details/json?reference=" + reference + "&sensor=false&key=" + Commons.getProperty(Property.GOOGLE_API_KEY) + "&language=" + language;
-	            URL itemDetails = new URL(url);
-	            String response = HttpUtils.processFileRequest(itemDetails);
-	            int responseCode = HttpUtils.getResponseCode(url);
-                if (responseCode == 200 && response != null) {
-                   return response;	
-                } else {
-                   logger.log(Level.SEVERE, "Received following server response code " + responseCode);
-                   return null;
-                }
-            } catch (Exception e) {
-                logger.log(Level.SEVERE, "VenueDetailsCallable.call() exception:", e);
-                return null;
-            } 
+			return getPlaceDetails(reference, language);
         }
 	}
 }

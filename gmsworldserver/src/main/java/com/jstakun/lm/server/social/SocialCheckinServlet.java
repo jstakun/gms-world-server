@@ -1,6 +1,8 @@
 package com.jstakun.lm.server.social;
 
 import java.io.IOException;
+import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -11,7 +13,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.google.common.collect.ImmutableMap;
+import com.jstakun.gms.android.landmarks.ExtendedLandmark;
+
 import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.layers.GooglePlacesUtils;
 import net.gmsworld.server.utils.HttpUtils;
 
 /**
@@ -45,6 +51,11 @@ public final class SocialCheckinServlet extends HttpServlet {
     			if (responseCode != HttpServletResponse.SC_OK) {
     				//response.sendError(responseCode);
     				logger.log(Level.SEVERE, "Received following http response code: {0}", responseCode);
+    			} else {
+    				Map<String, String> params = new ImmutableMap.Builder<String, String>().
+                            put("name", "Foursquare User").
+                    		put("url", "http://foursquare.com/venue/" + venueId).build();  
+    				NotificationUtils.createSocialCheckinNotificationTask(params);
     			}
     		} else {
     			//response.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -58,6 +69,11 @@ public final class SocialCheckinServlet extends HttpServlet {
     			int responseCode = FacebookUtils.checkin(accessToken, venueId, name);
     			if (responseCode != HttpServletResponse.SC_OK) {
     				response.sendError(responseCode);
+    			} else {
+    				Map<String, String> params = new ImmutableMap.Builder<String, String>().
+                            put("name", "Facebook User").
+                    		put("url", "http://facebook.com/profile.php?id=" + venueId).build();  
+    				NotificationUtils.createSocialCheckinNotificationTask(params);
     			}
     		} else {
     			//response.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -68,6 +84,22 @@ public final class SocialCheckinServlet extends HttpServlet {
     			int responseCode = GoogleBloggerUtils.checkin(reference);
     			if (responseCode != HttpServletResponse.SC_OK) {
     				response.sendError(responseCode);
+    			} else {
+    				try {
+    					String placeJson = GooglePlacesUtils.getPlaceDetails(reference, "en");
+    					ExtendedLandmark landmark = GooglePlacesUtils.processLandmark(placeJson, 128, Locale.US);
+    				    if (landmark != null) {
+    					   String url = landmark.getUrl();
+    					   if (StringUtils.isNotEmpty(url)) {
+    						   Map<String, String> params = new ImmutableMap.Builder<String, String>().
+    								   put("name", "Google User").
+    								   put("url", url).build();  
+    						   NotificationUtils.createSocialCheckinNotificationTask(params);
+    					   }
+    				    }   
+    				} catch (Exception e) {
+    					logger.log(Level.SEVERE, "SocialCheckinServlet.processRequest() exception", e);
+    				}
     			}
     		} else {
     			response.sendError(HttpServletResponse.SC_BAD_REQUEST);

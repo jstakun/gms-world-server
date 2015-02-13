@@ -36,7 +36,7 @@ public class LayersTest {
 	   LayerHelperFactory.setCacheProvider(new MockCacheProvider());
 	   LayerHelperFactory.setThreadProvider(new JvmThreadProvider());	
 	   
-	   /*List<Method> methods = getStaticGetMethods(LayerHelperFactory.class);
+	   List<Method> methods = getStaticGetMethods(LayerHelperFactory.class);
 	   for (Method m : methods) {
 		   try {
 			   data.add(new Object[]{ m.invoke(null,(Object[])null) });
@@ -47,10 +47,10 @@ public class LayersTest {
 		   } catch (InvocationTargetException e) {
 			   e.printStackTrace();
 		   }
-	   }*/
+	   }
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getCouponsUtils()});
-	   data.add(new Object[]{LayerHelperFactory.getFoursquareMerchantUtils()});
+	   //data.add(new Object[]{LayerHelperFactory.getFoursquareMerchantUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getPicasaUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getExpediaUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getYelpUtils()});

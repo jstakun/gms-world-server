@@ -31,21 +31,15 @@ public class NotificationTaskServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	try {
     		if (!HttpUtils.isEmptyAny(request, "key", "landmarkUrl", "title", "body", "username", "userUrl", "service")) {
-    			
     			NotificationUtils.sendLandmarkCreationNotification(request.getParameterMap(), getServletContext());
-            	
     		} else if (!HttpUtils.isEmptyAny(request, "service", "accessToken", "name", "username")) {
-    			
     			NotificationUtils.sendUserLoginNotification(request.getParameterMap(), getServletContext());
-            	
             } else if (!HttpUtils.isEmptyAny(request, "imageUrl", "showImageUrl", "lat", "lng", "service")) {
-            	
             	NotificationUtils.sendImageCreationNotification(request.getParameterMap());
-                
             } else if (!HttpUtils.isEmptyAny(request, "url", "type", "title", "service")) {
-            	
             	NotificationUtils.sendUserProfileNotification(request.getParameterMap());
-            	
+            } else if (!HttpUtils.isEmptyAny(request, "url", "name", "service")) { 
+            	NotificationUtils.sendCheckinNotification(request.getParameterMap());         	
             } else {
             	String params = "";
             	for (Enumeration<String> iter=request.getParameterNames();iter.hasMoreElements(); ) {

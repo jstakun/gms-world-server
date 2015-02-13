@@ -12,9 +12,9 @@ import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
-
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
+
 import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.UrlUtils;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
@@ -36,7 +36,7 @@ public class TwitterUtils {
         return twitter;
     }
 	
-	protected static void sendMessage(String key, String url, String token, String secret, int type) {
+	protected static void sendMessage(String key, String url, String token, String secret, int type, String name) {
 		String message = null;
 		try {
         	    Landmark landmark = null; 
@@ -63,7 +63,10 @@ public class TwitterUtils {
                     message = String.format(rb.getString("Social.tw.myloc"),  url);
                 } else if (type == Commons.LOGIN) {
                     message = String.format(rb.getString("Social.tw.login"), url);
-                }            
+                } else if (type == Commons.CHECKIN) {
+                	//TODO testing
+                	message = name + " has checked-in at " + url + " via #LandmarkManager";
+                }
 
                 if (message != null) {
                 	//message length must be < 140
