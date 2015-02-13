@@ -81,10 +81,10 @@ public final class SocialCheckinServlet extends HttpServlet {
     	} else if (StringUtils.equals(service, Commons.GOOGLE_BLOGGER) || StringUtils.equals(service, Commons.GOOGLE_PLUS)) {
     		String reference = request.getParameter("reference");
     		if (StringUtils.isNotEmpty(reference)) {
-    			int responseCode = GoogleBloggerUtils.checkin(reference);
-    			if (responseCode != HttpServletResponse.SC_OK) {
-    				response.sendError(responseCode);
-    			} else {
+    			//int responseCode = GoogleBloggerUtils.checkin(reference);
+    			//if (responseCode != HttpServletResponse.SC_OK) {
+    			//	response.sendError(responseCode);
+    			//} else {
     				try {
     					String placeJson = GooglePlacesUtils.getPlaceDetails(reference, "en");
     					ExtendedLandmark landmark = GooglePlacesUtils.processLandmark(placeJson, 128, Locale.US);
@@ -100,7 +100,7 @@ public final class SocialCheckinServlet extends HttpServlet {
     				} catch (Exception e) {
     					logger.log(Level.SEVERE, "SocialCheckinServlet.processRequest() exception", e);
     				}
-    			}
+    			//}
     		} else {
     			response.sendError(HttpServletResponse.SC_BAD_REQUEST);
     		} 

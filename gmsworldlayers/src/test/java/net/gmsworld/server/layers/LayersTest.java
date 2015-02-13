@@ -86,6 +86,7 @@ public class LayersTest {
 			//assertEquals("Found " + size + " landmarks", limit, size);
 			for (ExtendedLandmark landmark : landmarks) {
 				System.out.println(landmark.getName() + " :-> " + landmark.getDescription() + "---\n");
+				//System.out.println(landmark.getThumbnail());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

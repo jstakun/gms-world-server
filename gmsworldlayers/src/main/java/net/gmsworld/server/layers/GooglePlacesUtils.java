@@ -224,7 +224,7 @@ public class GooglePlacesUtils extends LayerHelper {
 
                     JSONObject geometry = item.getJSONObject("geometry");
                     JSONObject location = geometry.getJSONObject("location");
-                    String reference = item.getString("reference");
+                    String place_id = item.getString("place_id");
 
                     double lat = location.getDouble("lat");
                     double lng = location.getDouble("lng");
@@ -260,7 +260,7 @@ public class GooglePlacesUtils extends LayerHelper {
                     jsonObject.put("lng", lng);
                     String url = item.getString("url");
                     jsonObject.put("url", url);
-                    jsonObject.put("reference", reference);
+                    jsonObject.put("reference", place_id);
 
                     if (version >= 2) {
                         String icon = item.optString("icon");
@@ -308,11 +308,11 @@ public class GooglePlacesUtils extends LayerHelper {
         
         for (int i = 0; i < l; i++) {
             JSONObject item = results.getJSONObject(i);
-            String reference = item.getString("reference");
+            String place_id = item.getString("place_id");
 
-            Thread venueDetailsRetriever = threadProvider.newThread(new VenueDetailsRetriever(venueDetailsThreads, placeDetails, reference, language));
+            Thread venueDetailsRetriever = threadProvider.newThread(new VenueDetailsRetriever(venueDetailsThreads, placeDetails, place_id, language));
 
-            venueDetailsThreads.put(reference, venueDetailsRetriever);
+            venueDetailsThreads.put(place_id, venueDetailsRetriever);
 
             venueDetailsRetriever.start();
         }
@@ -323,8 +323,8 @@ public class GooglePlacesUtils extends LayerHelper {
         
         for (int i = 0; i < l; i++) {
             JSONObject item = results.getJSONObject(i);
-            String reference = item.getString("reference");
-            VenueDetailsCallable venueDetails = new VenueDetailsCallable(reference, language);
+            String placeid = item.getString("place_id");
+            VenueDetailsCallable venueDetails = new VenueDetailsCallable(placeid, language);
             executor.submit(venueDetails);
         }    
         
@@ -345,7 +345,7 @@ public class GooglePlacesUtils extends LayerHelper {
 
                 JSONObject geometry = item.getJSONObject("geometry");
                 JSONObject location = geometry.getJSONObject("location");
-                String reference = item.getString("reference");
+                String place_id = item.getString("place_id");
 
                 double lat = location.getDouble("lat");
                 double lng = location.getDouble("lng");
@@ -373,18 +373,23 @@ public class GooglePlacesUtils extends LayerHelper {
           
                 String url = item.getString("url");         
                 
-                /*JSONArray photos = item.optJSONArray("photos");
-                if (photos != null) {
-                	for (int j = 0; j < photos.length(); j++) {
-                        JSONObject photo = photos.getJSONObject(j);
-                	    logger.log(Level.INFO, photo.toString());
-                	}    
-                }*/
+                String icon = null;
+                JSONArray photos = item.optJSONArray("photos");
+                if (photos != null && photos.length() > 0) {
+                	//for (int j = 0; j < photos.length(); j++) {
+                    //    JSONObject photo = photos.getJSONObject(j);
+                	//    logger.log(Level.INFO, photo.toString());
+                	//}    
+                	JSONObject firstPhoto = photos.getJSONObject(0);
+                	String photoRef = firstPhoto.getString("photo_reference");
+                    icon = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=128&maxheight=128&photoreference=" + photoRef + "&key=" + Commons.getProperty(Property.GOOGLE_API_KEY);	             	
+                }
                 
-                String icon = item.optString("icon");
-                
+                if (icon == null) {
+                	icon = item.optString("icon");
+                }
                 AddressInfo address = new AddressInfo();
-                address.setField(AddressInfo.EXTENSION, reference);
+                address.setField(AddressInfo.EXTENSION, place_id);
                 
                 String website = item.optString("website");
                 if (website != null) {
@@ -449,9 +454,9 @@ public class GooglePlacesUtils extends LayerHelper {
         return landmarks;
 	}
 	
-	public static String getPlaceDetails(String reference, String language) throws Exception {
+	public static String getPlaceDetails(String placeid, String language) throws Exception {
 		try {
-			String url = "https://maps.googleapis.com/maps/api/place/details/json?reference=" + reference + "&sensor=false&key=" + Commons.getProperty(Property.GOOGLE_API_KEY) + "&language=" + language;
+			String url = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + placeid + "&key=" + Commons.getProperty(Property.GOOGLE_API_KEY) + "&language=" + language;
             URL itemDetails = new URL(url);
             String response = HttpUtils.processFileRequest(itemDetails);
             int responseCode = HttpUtils.getResponseCode(url);
@@ -469,41 +474,41 @@ public class GooglePlacesUtils extends LayerHelper {
 	
 	private static class VenueDetailsRetriever implements Runnable {
 
-        private String reference, language;
+        private String placeid, language;
         private List<String> placeDetails;
         private Map<String, Thread> venueDetailsThreads;
 
-        public VenueDetailsRetriever(Map<String, Thread> venueDetailsThreads, List<String> placeDetails, String reference, String language) {
+        public VenueDetailsRetriever(Map<String, Thread> venueDetailsThreads, List<String> placeDetails, String placeid, String language) {
             this.venueDetailsThreads = venueDetailsThreads;
             this.placeDetails = placeDetails;
-            this.reference = reference;
+            this.placeid= placeid;
             this.language = language;
         }
 
         public void run() {
             try {
-                URL itemDetails = new URL("https://maps.googleapis.com/maps/api/place/details/json?reference=" + reference + "&sensor=false&key=" + Commons.getProperty(Property.GOOGLE_API_KEY) + "&language=" + language);
+                URL itemDetails = new URL("https://maps.googleapis.com/maps/api/place/details/json?placeid=" + placeid + "&key=" + Commons.getProperty(Property.GOOGLE_API_KEY) + "&language=" + language);
                 String details = HttpUtils.processFileRequest(itemDetails);
                 placeDetails.add(details);
             } catch (Exception e) {
                 logger.log(Level.SEVERE, "VenueDetailsRetriever.run exception:", e);
             } finally {
-                venueDetailsThreads.remove(reference);
+                venueDetailsThreads.remove(placeid);
             }
         }
     }
 	
 	/*private static class VenueDetailsCallable implements Callable<String> {
 
-		private String reference, language;
+		private String placeid, language;
         
-        public VenueDetailsCallable(String reference, String language) {
-            this.reference = reference;
+        public VenueDetailsCallable(String placeid, String language) {
+            this.placeid = placeid;
             this.language = language;	
 		}
 		
 		public String call() throws Exception {
-			return getPlaceDetails(reference, language);
+			return getPlaceDetails(placeid, language);
         }
 	}*/
 }

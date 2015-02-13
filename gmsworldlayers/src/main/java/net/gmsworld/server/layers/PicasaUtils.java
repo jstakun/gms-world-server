@@ -211,7 +211,7 @@ public class PicasaUtils extends LayerHelper {
             myQuery.setStringCustomParameter("kind", "photo");
             myQuery.setStringCustomParameter("bbox", normalizedBbox); //west, south, east, north i.e. "50.0,20.0,53.0,23.0"
             myQuery.setPublishedMin(new DateTime(System.currentTimeMillis() - (1000 * 60 * 60 * 24 * 365)));
-            myQuery.setStringCustomParameter("thumbsize", "72u"); //32, 48, 64, 72, 104, 144, 150, 160
+            myQuery.setStringCustomParameter("thumbsize", "104u"); //32, 48, 64, 72, 104, 144, 150, 160
             myQuery.setMaxResults(limit);
             if (StringUtils.isNotEmpty(query)) {
                 myQuery.setFullTextQuery(query);
