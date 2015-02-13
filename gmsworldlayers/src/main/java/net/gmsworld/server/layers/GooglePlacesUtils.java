@@ -10,15 +10,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
-import net.gmsworld.server.utils.ExecutorUtils;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.JSONUtils;
 import net.gmsworld.server.utils.NumberUtils;
+import net.gmsworld.server.utils.ThreadUtil;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
@@ -297,7 +297,7 @@ public class GooglePlacesUtils extends LayerHelper {
 
     private void processDetails(List<String> placeDetails, JSONArray results, int limit, String language) throws JSONException, MalformedURLException, IOException {
 
-        //Map<String, Thread> venueDetailsThreads = new ConcurrentHashMap<String, Thread>();
+        Map<String, Thread> venueDetailsThreads = new ConcurrentHashMap<String, Thread>();
         
         int l = limit;
         if (results.length() < l) {
@@ -306,7 +306,7 @@ public class GooglePlacesUtils extends LayerHelper {
         
         logger.log(Level.INFO, "Looking for: " + l + " details...");
         
-        /*for (int i = 0; i < l; i++) {
+        for (int i = 0; i < l; i++) {
             JSONObject item = results.getJSONObject(i);
             String reference = item.getString("reference");
 
@@ -317,9 +317,9 @@ public class GooglePlacesUtils extends LayerHelper {
             venueDetailsRetriever.start();
         }
 
-        ThreadUtil.waitForLayers(venueDetailsThreads);*/
+        ThreadUtil.waitForLayers(venueDetailsThreads);
         
-        ExecutorUtils<String> executor = new ExecutorUtils<String>(l, placeDetails);
+        /*ExecutorUtils<String> executor = new ExecutorUtils<String>(l, placeDetails);
         
         for (int i = 0; i < l; i++) {
             JSONObject item = results.getJSONObject(i);
@@ -328,7 +328,7 @@ public class GooglePlacesUtils extends LayerHelper {
             executor.submit(venueDetails);
         }    
         
-        executor.waitForResponses();
+        executor.waitForResponses();*/
     }
     
     public static ExtendedLandmark processLandmark(String placeJson, int stringLimit, Locale locale) {
@@ -467,7 +467,7 @@ public class GooglePlacesUtils extends LayerHelper {
         } 
     }
 	
-	/*private static class VenueDetailsRetriever implements Runnable {
+	private static class VenueDetailsRetriever implements Runnable {
 
         private String reference, language;
         private List<String> placeDetails;
@@ -491,9 +491,9 @@ public class GooglePlacesUtils extends LayerHelper {
                 venueDetailsThreads.remove(reference);
             }
         }
-    }*/
+    }
 	
-	private static class VenueDetailsCallable implements Callable<String> {
+	/*private static class VenueDetailsCallable implements Callable<String> {
 
 		private String reference, language;
         
@@ -505,5 +505,5 @@ public class GooglePlacesUtils extends LayerHelper {
 		public String call() throws Exception {
 			return getPlaceDetails(reference, language);
         }
-	}
+	}*/
 }
