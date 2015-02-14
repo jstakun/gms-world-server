@@ -19,6 +19,7 @@ import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.layers.GooglePlacesUtils;
 import net.gmsworld.server.utils.HttpUtils;
+import net.gmsworld.server.utils.UrlUtils;
 
 /**
  * Servlet implementation class SocialCheckinServlet
@@ -54,7 +55,7 @@ public final class SocialCheckinServlet extends HttpServlet {
     			} else {
     				Map<String, String> params = new ImmutableMap.Builder<String, String>().
                             put("name", "Foursquare User").
-                    		put("url", "http://foursquare.com/venue/" + venueId).build();  
+                    		put("url", UrlUtils.getShortUrl("http://foursquare.com/venue/" + venueId)).build();  
     				NotificationUtils.createSocialCheckinNotificationTask(params);
     			}
     		} else {
@@ -72,7 +73,7 @@ public final class SocialCheckinServlet extends HttpServlet {
     			} else {
     				Map<String, String> params = new ImmutableMap.Builder<String, String>().
                             put("name", "Facebook User").
-                    		put("url", "http://facebook.com/profile.php?id=" + venueId).build();  
+                    		put("url", UrlUtils.getShortUrl("http://facebook.com/profile.php?id=" + venueId)).build();  
     				NotificationUtils.createSocialCheckinNotificationTask(params);
     			}
     		} else {
@@ -93,7 +94,7 @@ public final class SocialCheckinServlet extends HttpServlet {
     					   if (StringUtils.isNotEmpty(url)) {
     						   Map<String, String> params = new ImmutableMap.Builder<String, String>().
     								   put("name", "Google User").
-    								   put("url", url).build();  
+    								   put("url", UrlUtils.getShortUrl(url)).build();  
     						   NotificationUtils.createSocialCheckinNotificationTask(params);
     					   }
     				    }   

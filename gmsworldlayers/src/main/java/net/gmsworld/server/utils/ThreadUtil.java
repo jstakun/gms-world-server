@@ -25,7 +25,7 @@ public class ThreadUtil {
                 break;
             } else {
                 try {
-                    Thread.sleep(500L);
+                    Thread.sleep(100L);
                 } catch (InterruptedException ie) {
                 }
             }

@@ -306,18 +306,28 @@ public class GooglePlacesUtils extends LayerHelper {
         
         logger.log(Level.INFO, "Looking for: " + l + " details...");
         
-        for (int i = 0; i < l; i++) {
-            JSONObject item = results.getJSONObject(i);
-            String place_id = item.getString("place_id");
+        int count = 0;
+        
+        while (count < l) {
+        
+        	int batchSize = NumberUtils.normalizeNumber(l - count, 0, 30);
+        	
+        	logger.log(Level.INFO, "Running batch from " + count + " to " + (count+batchSize));
+        	
+        	for (int i = count; i < (count+batchSize); i++) {
+        		JSONObject item = results.getJSONObject(i);
+        		String place_id = item.getString("place_id");
+        		Thread venueDetailsRetriever = threadProvider.newThread(new VenueDetailsRetriever(venueDetailsThreads, placeDetails, place_id, language));
+        		venueDetailsThreads.put(place_id, venueDetailsRetriever);
+        		venueDetailsRetriever.start();
+        	}
 
-            Thread venueDetailsRetriever = threadProvider.newThread(new VenueDetailsRetriever(venueDetailsThreads, placeDetails, place_id, language));
-
-            venueDetailsThreads.put(place_id, venueDetailsRetriever);
-
-            venueDetailsRetriever.start();
+        	ThreadUtil.waitForLayers(venueDetailsThreads);
+        	
+        	count += batchSize;
+        	
+        	logger.log(Level.INFO, "Processed " + count + " from " + l + " places"); 
         }
-
-        ThreadUtil.waitForLayers(venueDetailsThreads);
         
         /*ExecutorUtils<String> executor = new ExecutorUtils<String>(l, placeDetails);
         

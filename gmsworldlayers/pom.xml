@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.gms-world</groupId>
   <artifactId>gmsworldlayers</artifactId>
-  <version>0.0.4.15</version>
+  <version>0.0.4.16</version>
   
   <dependencies>
   	<dependency>
