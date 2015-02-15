@@ -20,9 +20,12 @@ import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.api.services.plus.Plus;
 import com.google.api.services.plus.model.ItemScope;
 import com.google.api.services.plus.model.Moment;
+
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.config.ConfigurationManager;
+import net.gmsworld.server.utils.NumberUtils;
+
 import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.UrlUtils;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
@@ -36,7 +39,7 @@ public class GooglePlusUtils {
     private static final Logger logger = Logger.getLogger(GooglePlusUtils.class.getName());
     private static final Random random = new Random();
 
-    protected static void sendMessage(String accessToken, String refreshToken, String key, String url, int type) {
+    protected static void sendMessage(String accessToken, String refreshToken, String key, String url, int type, String name) {
         if (accessToken != null || refreshToken != null) {
             
         	Landmark landmark = null; 
@@ -45,18 +48,8 @@ public class GooglePlusUtils {
         	}
         	
         	final String[] images = {"blogeo_j.png", "blogeo_a.png", "poi_j.png", "poi_a.png"};
-            int imageId = 2;
-            try {
-                imageId = random.nextInt(4);
-            } catch (Exception e) {
-                logger.log(Level.SEVERE, e.getMessage(), e);
-            }
-            //logger.log(Level.INFO, "Image id: {0}", imageId);
-            if (imageId > 3 || imageId < 0) {
-                imageId = 2;
-            }
+        	int imageId = NumberUtils.normalizeNumber(random.nextInt(4), 0, 3);
 
-            //TODO handle NPE if landmark == null
             String message = null;
             ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
             if (type == Commons.SERVER && landmark != null) {
@@ -71,7 +64,9 @@ public class GooglePlusUtils {
             	message = String.format(rb.getString("Social.gl.message.mypos"), url);
             } else if (type == Commons.LOGIN) {
             	message = rb.getString("Social.login");
-            }           
+            } else if (type == Commons.CHECKIN) {
+            	message = name + " has checked-in at " + url + " via Landmark Manager";
+            }
 
             if (message != null) {
             	double lat = -1, lng = -1;

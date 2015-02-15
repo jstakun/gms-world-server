@@ -1,36 +1,29 @@
 package com.jstakun.lm.server.social;
 
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.config.ConfigurationManager;
+
+import org.apache.commons.lang.StringUtils;
+
 import com.google.api.client.extensions.appengine.http.UrlFetchTransport;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
-import com.google.api.client.http.GenericUrl;
-import com.google.api.client.http.HttpRequest;
-import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.HttpTransport;
-import com.google.api.client.http.json.JsonHttpContent;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.api.services.blogger.Blogger;
 import com.google.api.services.blogger.model.Blog;
 import com.google.api.services.blogger.model.BlogList;
 import com.google.api.services.blogger.model.Post;
-
-import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.config.Commons.Property;
-import net.gmsworld.server.config.ConfigurationManager;
-
 import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.UrlUtils;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.apache.commons.lang.StringUtils;
 
 /**
  *
@@ -41,37 +34,41 @@ public class GoogleBloggerUtils {
     private static final Logger logger = Logger.getLogger(GoogleBloggerUtils.class.getName());
     private static final String CACHE_KEY = "BloggerUsageLimitsMarker";
     
-    protected static void sendMessage(String key, String landmarkUrl, String token, String secret, boolean isServer) {
-        Landmark landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
-        if (landmark != null && token != null && secret != null) {
-            String message = null;
-            String url = landmarkUrl;
-            if (url == null) {
-                url = UrlUtils.getShortUrl(UrlUtils.getLandmarkUrl(landmark));
-            }
+    protected static void sendMessage(String key, String url, String token, String secret, int type, String name) {
+        if (key != null && type == Commons.SERVER) {
+        	Landmark landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
+        	if (landmark != null && token != null && secret != null) {
+        		String message = null;
+        		if (url == null) {
+        			url = UrlUtils.getShortUrl(UrlUtils.getLandmarkUrl(landmark));
+        		}
 
-            if (isServer) {
-                String username = landmark.getUsername();
-                String userMask = UrlUtils.createUsernameMask(username);
-                if (username != null) {
-                    userMask = "<a href=\"" + ConfigurationManager.SERVER_URL + "showUser/" + username + "\">" + userMask + "</a>";
+        		String username = landmark.getUsername();
+        		String userMask = UrlUtils.createUsernameMask(username);
+        		if (username != null) {
+        			userMask = "<a href=\"" + ConfigurationManager.SERVER_URL + "showUser/" + username + "\">" + userMask + "</a>";
+        		}
+    
+        		if (landmark.getLayer().equals("Social")) {
+                    message = userMask + " has just posted new geo message to Blogeo. <a href=\"" + url + "\">Check it out</a>.";
+        		} else {
+                    message = userMask + " has just posted new point of interest " + landmark.getName() + " to GMS World. <a href=\"" + url + "\">Check it out</a>.";
+        		}  
+        		
+        		if (message != null) {
+                    createPost(getBlogger(), landmark.getName(), message);
                 }
-                message = userMask + " has just posted new point of interest " + landmark.getName() + " to GMS World. <a href=\"" + url + "\">Check it out</a>.";
-            } else {
-                if (landmark.getLayer().equals("Social")) {
-                    message = "I've just posted new geo message to Blogeo. <a href=\"" + url + "\">Check it out</a>.";
-                } else {
-                    message = "I've just posted point of interest " + landmark.getName() + " to GMS World. Please check <a href=\"" + url + "\">here</a>.";
-                }
+        	} else {
+        		logger.log(Level.SEVERE, "Landmark or token is empty! Key: {0}, token: {1}, secret: {2}", new Object[]{key, token, secret});
+        	}
+        } else if (type == Commons.CHECKIN) {
+        	String message = name + " has checked-in <a href=\"" + url + "\">here</a> via Landmark Manager";
+        	if (message != null) {
+                createPost(getBlogger(), name + " check-in", message);
             }
-            if (message != null) {
-                //createPost(getBloggerService(), landmark.getName(), message, false);
-
-                createPost(getBlogger(), landmark.getName(), message);
-            }
-        } else {
-            logger.log(Level.SEVERE, "Landmark or token is empty! Key: {0}, token: {1}, secret: {2}", new Object[]{key, token, secret});
         }
+        
+        
     }
 
     protected static void sendImageMessage(String showImageUrl, String username, String imageUrl) {
@@ -83,8 +80,6 @@ public class GoogleBloggerUtils {
                 + "imageanchor=\"1\" style=\"clear: left; cssfloat: left; float: left; margin-bottom: 1em; margin-right: 1em;\">"
                 + "<img border=\"0\" src=\"" + imageUrl + "\" ya=\"true\" /></a>";
         String message = prefix + userMask + " has just posted new screenshot to GMS World. <a href=\"" + showImageUrl + "\">Check it out</a>.";
-
-        //createPost(getBloggerService(), "GMS World screenshot", message, false);
 
         createPost(getBlogger(), "GMS World screenshot", message);
     }

@@ -8,6 +8,8 @@ import java.util.logging.Logger;
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.config.ConfigurationManager;
+import net.gmsworld.server.utils.NumberUtils;
+
 import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.UrlUtils;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
@@ -113,36 +115,41 @@ public class FacebookUtils {
     }
 
     //login with manage_pages permission
-    protected static void sendMessageToPageFeed(String key, String landmarkUrl) {
+    protected static void sendMessageToPageFeed(String key, String url, String user, int type) {
         final String[] images = {"blogeo_j.png", "blogeo_a.png", "poi_j.png", "poi_a.png"};
-        int imageId = 2;
-        try {
-            imageId = random.nextInt(4);
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
-        }
-        //logger.log(Level.INFO, "Image id: {0}", imageId);
-        if (imageId > 3 || imageId < 0) {
-            imageId = 2;
-        }
-        Landmark landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
-        if (landmark != null) {
-            FacebookClient facebookClient = new DefaultFacebookClient(Commons.getProperty(Property.fb_page_token));
-            ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
-            Parameter params[] = null;
-            //message, picture, link, name, caption, description, source, place, tags
-            String userMask = UrlUtils.createUsernameMask(landmark.getUsername());
-            //logger.log(Level.INFO, "FB message link is: {0}", link);
-            params = new Parameter[]{
+        ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
+        Parameter params[] = null;
+        
+        if (type == Commons.SERVER) {
+        	Landmark landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
+        	if (landmark != null) {
+        		//message, picture, link, name, caption, description, source, place, tags
+        		String userMask = UrlUtils.createUsernameMask(landmark.getUsername());
+        		int imageId = NumberUtils.normalizeNumber(random.nextInt(4), 0, 3);
+                //logger.log(Level.INFO, "FB message link is: {0}", link);
+        		params = new Parameter[]{
                         Parameter.with("message", String.format(rb.getString("Social.fb.message.server"), userMask)),
                         Parameter.with("name", landmark.getName()),
                         Parameter.with("description", rb.getString("Social.fb.desc.server")),
-                        Parameter.with("link", landmarkUrl),
+                        Parameter.with("link", url),
                         Parameter.with("picture", ConfigurationManager.SERVER_URL + "images/" + images[imageId])
                     };
+        	} else {
+        		logger.log(Level.SEVERE, "Landmark with key {0} is empty!", key);
+        	}
+        } else if (type == Commons.CHECKIN) {
+        	params = new Parameter[]{
+                    Parameter.with("message", user + " has checked-in at " + url + " via Landmark Manager"),
+                    Parameter.with("name", "User check-in"),
+                    Parameter.with("description", "Click to check where " + user + " has checked-in"),
+                    Parameter.with("link", url),
+                    Parameter.with("picture", ConfigurationManager.SERVER_URL + "images/checkin.png")
+                };   
+        }
+        
+        if (params != null) {
+        	FacebookClient facebookClient = new DefaultFacebookClient(Commons.getProperty(Property.fb_page_token));
             sendMessage(facebookClient, Commons.getProperty(Property.FB_GMS_WORLD_FEED), params, false);
-        } else {
-            logger.log(Level.SEVERE, "Landmark with key {0} is empty!", key);
         }
     }
     
