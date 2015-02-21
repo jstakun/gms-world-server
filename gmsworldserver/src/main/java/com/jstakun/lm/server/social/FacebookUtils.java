@@ -140,8 +140,8 @@ public class FacebookUtils {
         } else if (type == Commons.CHECKIN) {
         	params = new Parameter[]{
                     Parameter.with("message", user + " has checked-in at " + name + " via Landmark Manager"),
-                    Parameter.with("name", "User check-in"),
-                    Parameter.with("description", "Click to see more detail about " + name),
+                    Parameter.with("name", name),
+                    Parameter.with("description", "Click to see more details"),
                     Parameter.with("link", url),
                     Parameter.with("picture", ConfigurationManager.SERVER_URL + "images/checkin.png")
                 };   
