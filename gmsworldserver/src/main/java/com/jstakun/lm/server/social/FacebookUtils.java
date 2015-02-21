@@ -115,7 +115,7 @@ public class FacebookUtils {
     }
 
     //login with manage_pages permission
-    protected static void sendMessageToPageFeed(String key, String url, String user, int type) {
+    protected static void sendMessageToPageFeed(String key, String url, String user, String name, int type) {
         final String[] images = {"blogeo_j.png", "blogeo_a.png", "poi_j.png", "poi_a.png"};
         ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
         Parameter params[] = null;
@@ -139,9 +139,9 @@ public class FacebookUtils {
         	}
         } else if (type == Commons.CHECKIN) {
         	params = new Parameter[]{
-                    Parameter.with("message", user + " has checked-in at " + url + " via Landmark Manager"),
+                    Parameter.with("message", user + " has checked-in at " + name + " via Landmark Manager"),
                     Parameter.with("name", "User check-in"),
-                    Parameter.with("description", "Click to see where " + user + " has checked-in"),
+                    Parameter.with("description", "Click to see more detail about " + name),
                     Parameter.with("link", url),
                     Parameter.with("picture", ConfigurationManager.SERVER_URL + "images/checkin.png")
                 };   

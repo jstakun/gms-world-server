@@ -39,7 +39,7 @@ public class GooglePlusUtils {
     private static final Logger logger = Logger.getLogger(GooglePlusUtils.class.getName());
     private static final Random random = new Random();
 
-    protected static void sendMessage(String accessToken, String refreshToken, String key, String url, int type, String name) {
+    protected static void sendMessage(String accessToken, String refreshToken, String key, String url, String user, String name, int type) {
         if (accessToken != null || refreshToken != null) {
             
         	Landmark landmark = null; 
@@ -65,7 +65,7 @@ public class GooglePlusUtils {
             } else if (type == Commons.LOGIN) {
             	message = rb.getString("Social.login");
             } else if (type == Commons.CHECKIN) {
-            	message = name + " has checked-in at " + url + " via Landmark Manager";
+            	message = user + " has checked-in at " + name + " via Landmark Manager. Check it out: " + url;
             }
 
             if (message != null) {

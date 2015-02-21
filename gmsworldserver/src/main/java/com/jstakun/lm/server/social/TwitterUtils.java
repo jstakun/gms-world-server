@@ -36,7 +36,7 @@ public class TwitterUtils {
         return twitter;
     }
 	
-	protected static void sendMessage(String key, String url, String token, String secret, int type, String name) {
+	protected static void sendMessage(String key, String url, String token, String secret, String user, String name, int type) {
 		String message = null;
 		try {
         	    Landmark landmark = null; 
@@ -64,8 +64,7 @@ public class TwitterUtils {
                 } else if (type == Commons.LOGIN) {
                     message = String.format(rb.getString("Social.tw.login"), url);
                 } else if (type == Commons.CHECKIN) {
-                	//TODO testing
-                	message = name + " has checked-in at " + url + " via #LandmarkManager";
+                	message = user + " has checked-in at " + name + " via #LandmarkManager, Check it out: " + url;
                 }
 
                 if (message != null) {

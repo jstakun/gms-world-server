@@ -175,13 +175,13 @@ public class NotificationUtils {
     	logger.log(Level.INFO, "Sending landmark creation notification to service {0}...", service);
     	
     	if (StringUtils.equals(service, Commons.FACEBOOK)) {
-    		FacebookUtils.sendMessageToPageFeed(key, landmarkUrl, null, Commons.SERVER);
+    		FacebookUtils.sendMessageToPageFeed(key, landmarkUrl, null, null, Commons.SERVER);
     	} else if (StringUtils.equals(service, Commons.TWITTER)) {
-    		TwitterUtils.sendMessage(key, landmarkUrl, Commons.getProperty(Property.TW_TOKEN), Commons.getProperty(Property.TW_SECRET), Commons.SERVER, null);
+    		TwitterUtils.sendMessage(key, landmarkUrl, Commons.getProperty(Property.TW_TOKEN), Commons.getProperty(Property.TW_SECRET), null, null, Commons.SERVER);
     	} else if (StringUtils.equals(service, Commons.GOOGLE_BLOGGER)) {
-    		GoogleBloggerUtils.sendMessage(key, landmarkUrl, Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), Commons.SERVER, null);
+    		GoogleBloggerUtils.sendMessage(key, landmarkUrl, Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), null, null, Commons.SERVER);
     	} else if (StringUtils.equals(service, Commons.GOOGLE_PLUS)) {
-    		GooglePlusUtils.sendMessage(Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), key, landmarkUrl, Commons.SERVER, null);
+    		GooglePlusUtils.sendMessage(Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), key, landmarkUrl, null, null, Commons.SERVER);
     	} else if (StringUtils.equals(service, Commons.MAIL)) {
     		MailUtils.sendLandmarkCreationNotification(title, body);
     		//send landmark creation notification email to user
@@ -215,14 +215,14 @@ public class NotificationUtils {
     		if (params.containsKey("refreshToken")) {
     			refreshToken = params.get("refreshToken")[0];
     		}
-        	GooglePlusUtils.sendMessage(accessToken, refreshToken, null, ConfigurationManager.SERVER_URL, Commons.LOGIN, null);
+        	GooglePlusUtils.sendMessage(accessToken, refreshToken, null, ConfigurationManager.SERVER_URL, null, null, Commons.LOGIN);
         	layer = "Google";
     	} else if (StringUtils.equals(service, Commons.LINKEDIN)) {
     		LinkedInUtils.sendPost(ConfigurationManager.SERVER_URL, "GMS World", Commons.LOGIN, accessToken);
     		layer = "LinkedIn";
     	} else if (StringUtils.equals(service, Commons.TWITTER)) {
     		String tokenSecret = params.get("tokenSecret")[0];
-        	TwitterUtils.sendMessage(null, ConfigurationManager.SERVER_URL, accessToken, tokenSecret, Commons.LOGIN, null);
+        	TwitterUtils.sendMessage(null, ConfigurationManager.SERVER_URL, accessToken, tokenSecret, null, null, Commons.LOGIN);
         	layer = Commons.TWITTER_LAYER;
     	}
     	
@@ -253,28 +253,29 @@ public class NotificationUtils {
         	FacebookUtils.sendMessageToUserFeed(token, url, title, type);
     	} else if (StringUtils.equals(service, Commons.GOOGLE_PLUS)) {
     		String refreshToken = params.get("refresh_token")[0];
-    	    GooglePlusUtils.sendMessage(token, refreshToken, key, url, type, null);
+    	    GooglePlusUtils.sendMessage(token, refreshToken, key, url, null, null, type);
     	} else if (StringUtils.equals(service, Commons.LINKEDIN)) {
     		LinkedInUtils.sendPost(url, title, type, token);
     	} else if (StringUtils.equals(service, Commons.TWITTER)) {
     		String secret = params.get("secret")[0];
-    		TwitterUtils.sendMessage(key, url, token, secret, type, null);
+    		TwitterUtils.sendMessage(key, url, token, secret, null, null, type);
     	}
 	}
 	
 	public static void sendCheckinNotification(Map<String, String[]> params) {
 		String service = params.get("service")[0];
     	String url = params.get("url")[0];
+    	String user = params.get("user")[0];
     	String name = params.get("name")[0];
     	
     	if (StringUtils.equals(service, Commons.FACEBOOK)) {
-    		FacebookUtils.sendMessageToPageFeed(null, url, name, Commons.CHECKIN);
+    		FacebookUtils.sendMessageToPageFeed(null, url, user, name, Commons.CHECKIN);
     	} else if (StringUtils.equals(service, Commons.TWITTER)) {
-    		TwitterUtils.sendMessage(null, url, Commons.getProperty(Property.TW_TOKEN), Commons.getProperty(Property.TW_SECRET), Commons.CHECKIN, name);
+    		TwitterUtils.sendMessage(null, url, Commons.getProperty(Property.TW_TOKEN), Commons.getProperty(Property.TW_SECRET), user, name, Commons.CHECKIN);
     	} else if (StringUtils.equals(service, Commons.GOOGLE_BLOGGER)) {
-    		GoogleBloggerUtils.sendMessage(null, url, Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), Commons.CHECKIN, name);
+    		GoogleBloggerUtils.sendMessage(null, url, Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), user, name, Commons.CHECKIN);
     	} else if (StringUtils.equals(service, Commons.GOOGLE_PLUS)) {
-    		GooglePlusUtils.sendMessage(Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), null, url, Commons.CHECKIN, name);
+    		GooglePlusUtils.sendMessage(Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), null, url, user, name, Commons.CHECKIN);
     	}
 	}
 }

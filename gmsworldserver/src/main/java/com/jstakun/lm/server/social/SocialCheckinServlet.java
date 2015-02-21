@@ -54,8 +54,9 @@ public final class SocialCheckinServlet extends HttpServlet {
     				logger.log(Level.SEVERE, "Received following http response code: {0}", responseCode);
     			} else {
     				Map<String, String> params = new ImmutableMap.Builder<String, String>().
-                            put("name", "Foursquare User").
-                    		put("url", UrlUtils.getShortUrl("http://foursquare.com/venue/" + venueId)).build();  
+                            put("user", "Foursquare User").
+                            put("name", name).
+                            put("url", UrlUtils.getShortUrl("http://foursquare.com/venue/" + venueId)).build();  
     				NotificationUtils.createSocialCheckinNotificationTask(params);
     			}
     		} else {
@@ -72,7 +73,8 @@ public final class SocialCheckinServlet extends HttpServlet {
     				response.sendError(responseCode);
     			} else {
     				Map<String, String> params = new ImmutableMap.Builder<String, String>().
-                            put("name", "Facebook User").
+    						put("user", "Facebook User").
+    						put("name", name).
                     		put("url", UrlUtils.getShortUrl("http://facebook.com/profile.php?id=" + venueId)).build();  
     				NotificationUtils.createSocialCheckinNotificationTask(params);
     			}
@@ -93,7 +95,8 @@ public final class SocialCheckinServlet extends HttpServlet {
     					   String url = landmark.getUrl();
     					   if (StringUtils.isNotEmpty(url)) {
     						   Map<String, String> params = new ImmutableMap.Builder<String, String>().
-    								   put("name", "Google User").
+    								   put("user", "Google User").
+    								   put("name", landmark.getName()).
     								   put("url", UrlUtils.getShortUrl(url)).build();  
     						   NotificationUtils.createSocialCheckinNotificationTask(params);
     					   }

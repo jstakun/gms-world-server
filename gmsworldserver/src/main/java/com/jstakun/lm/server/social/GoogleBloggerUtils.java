@@ -34,7 +34,7 @@ public class GoogleBloggerUtils {
     private static final Logger logger = Logger.getLogger(GoogleBloggerUtils.class.getName());
     private static final String CACHE_KEY = "BloggerUsageLimitsMarker";
     
-    protected static void sendMessage(String key, String url, String token, String secret, int type, String name) {
+    protected static void sendMessage(String key, String url, String token, String secret, String user, String name, int type) {
         if (key != null && type == Commons.SERVER) {
         	Landmark landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
         	if (landmark != null && token != null && secret != null) {
@@ -62,9 +62,9 @@ public class GoogleBloggerUtils {
         		logger.log(Level.SEVERE, "Landmark or token is empty! Key: {0}, token: {1}, secret: {2}", new Object[]{key, token, secret});
         	}
         } else if (type == Commons.CHECKIN) {
-        	String message = name + " has checked-in <a href=\"" + url + "\">here</a> via Landmark Manager";
+        	String message = user + " has checked-in at <a href=\"" + url + "\">" + name + "</a> via Landmark Manager";
         	if (message != null) {
-                createPost(getBlogger(), name + " check-in", message);
+                createPost(getBlogger(), user + " has checked-in at " + name, message);
             }
         }
         
