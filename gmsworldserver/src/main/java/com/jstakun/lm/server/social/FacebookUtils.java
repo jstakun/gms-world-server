@@ -141,7 +141,7 @@ public class FacebookUtils {
         	params = new Parameter[]{
                     Parameter.with("message", user + " has checked-in at " + url + " via Landmark Manager"),
                     Parameter.with("name", "User check-in"),
-                    Parameter.with("description", "Click to check where " + user + " has checked-in"),
+                    Parameter.with("description", "Click to see where " + user + " has checked-in"),
                     Parameter.with("link", url),
                     Parameter.with("picture", ConfigurationManager.SERVER_URL + "images/checkin.png")
                 };   

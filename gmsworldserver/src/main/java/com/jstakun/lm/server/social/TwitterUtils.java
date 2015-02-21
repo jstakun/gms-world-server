@@ -106,6 +106,7 @@ public class TwitterUtils {
             StatusUpdate update = new StatusUpdate(message);
             update.setDisplayCoordinates(true);
             update.setLocation(new GeoLocation(latitude, longitude));
+            //TODO update.media(name, body)
             Status s = getTwitter(null, null).updateStatus(update);
             logger.log(Level.INFO, "Sent twitter update id: {0}", s.getId());
 
