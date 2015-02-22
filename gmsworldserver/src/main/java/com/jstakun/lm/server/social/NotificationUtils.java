@@ -150,7 +150,7 @@ public class NotificationUtils {
     		if (StringUtils.equals(service, Commons.FACEBOOK)) {
     			FacebookUtils.sendImageMessage(imageUrl, showImageUrl, username);
     		} else if (StringUtils.equals(service, Commons.TWITTER)) {
-    			TwitterUtils.sendImageMessage(showImageUrl, username, lat, lng);
+    			TwitterUtils.sendImageMessage(showImageUrl, imageUrl, username, lat, lng);
     		} else if (StringUtils.equals(service, Commons.GOOGLE_BLOGGER)) {
     			GoogleBloggerUtils.sendImageMessage(showImageUrl, username, imageUrl);
     		} else if (StringUtils.equals(service, Commons.GOOGLE_PLUS)) {

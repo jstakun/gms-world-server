@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.jstakun.lm.server.persistence.Screenshot;
 import com.jstakun.lm.server.utils.FileUtils;
 
@@ -42,7 +44,11 @@ public class ImageServlet extends HttpServlet {
 	 */
 	protected void process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		final String key = (String) request.getParameter("key");
-		Screenshot s = FileUtils.getScreenshot(key, true);
+		boolean thumbnail = true;
+		if (StringUtils.equals(request.getParameter("thumbnail"), "false")) {
+			thumbnail = false;
+		}
+		Screenshot s = FileUtils.getScreenshot(key, thumbnail);
 		String imageUrl = null;
 		if (s != null) {
 			//HttpUtils.processImageFileRequest(response, s.getUrl());

@@ -1,8 +1,13 @@
 package com.jstakun.lm.server.social;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -12,8 +17,6 @@ import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
-import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.config.Commons.Property;
 
 import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.UrlUtils;
@@ -89,7 +92,7 @@ public class TwitterUtils {
         }
     }
 
-    protected static void sendImageMessage(String showImageUrl, String username, double latitude, double longitude) {
+    protected static void sendImageMessage(String showImageUrl, String imageUrl, String username, double latitude, double longitude) {
     	String message = null;
     	try {
             String userMask;
@@ -105,10 +108,16 @@ public class TwitterUtils {
             StatusUpdate update = new StatusUpdate(message);
             update.setDisplayCoordinates(true);
             update.setLocation(new GeoLocation(latitude, longitude));
-            //TODO update.media(name, body)
+            try {
+            	InputStream is  = new URL(imageUrl + "?thumbnail=false").openStream();
+            	if (is != null) {
+            		update.media("screenshot.jpg", is);
+            	}
+            } catch (Exception e) {
+            	logger.log(Level.SEVERE, "Failed to load screenshot", e);
+            }
             Status s = getTwitter(null, null).updateStatus(update);
             logger.log(Level.INFO, "Sent twitter update id: {0}", s.getId());
-
         } catch (Exception ex) {
         	if (message != null) {
             	logger.log(Level.SEVERE, "Failed to send status: {0}", message);
