@@ -1,6 +1,7 @@
 package com.jstakun.lm.server.social;
 
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,7 +37,8 @@ public class GoogleBloggerUtils {
     
     protected static void sendMessage(String key, String url, String token, String secret, String user, String name, int type) {
         if (key != null && type == Commons.SERVER) {
-        	Landmark landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
+        	ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
+            Landmark landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
         	if (landmark != null && token != null && secret != null) {
         		String message = null;
         		if (url == null) {
@@ -49,10 +51,10 @@ public class GoogleBloggerUtils {
         			userMask = "<a href=\"" + ConfigurationManager.SERVER_URL + "showUser/" + username + "\">" + userMask + "</a>";
         		}
     
-        		if (landmark.getLayer().equals("Social")) {
-                    message = userMask + " has just posted new geo message to Blogeo. <a href=\"" + url + "\">Check it out</a>.";
+        		if (landmark.getLayer().equals("Social")) { 
+                    message = String.format(rb.getString("Social.gl.server.blogeo"), userMask, url);
         		} else {
-                    message = userMask + " has just posted new point of interest " + landmark.getName() + " to GMS World. <a href=\"" + url + "\">Check it out</a>.";
+                    message = String.format(rb.getString("Social.gl.server.landmark"), userMask, landmark.getName(), url);
         		}  
         		
         		if (message != null) {
@@ -61,10 +63,11 @@ public class GoogleBloggerUtils {
         	} else {
         		logger.log(Level.SEVERE, "Landmark or token is empty! Key: {0}, token: {1}, secret: {2}", new Object[]{key, token, secret});
         	}
-        } else if (type == Commons.CHECKIN) {
-        	String message = user + " has checked-in at <a href=\"" + url + "\">" + name + "</a> via Landmark Manager";
-        	if (message != null) {
-                createPost(getBlogger(), user + " has checked-in at " + name, message);
+        } else if (type == Commons.CHECKIN) { 
+        	ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
+            String message = String.format(rb.getString("Social.gl.message.checkin"), user, url, name);
+        	if (message != null) { 
+                createPost(getBlogger(), String.format(rb.getString("Social.gl.title.checkin"), user, name), message);
             }
         }
         
@@ -72,15 +75,15 @@ public class GoogleBloggerUtils {
     }
 
     protected static void sendImageMessage(String showImageUrl, String username, String imageUrl) {
+    	ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
         String userMask = UrlUtils.createUsernameMask(username);
         if (StringUtils.isNotEmpty(username)) {
             userMask = "<a href=\"" + ConfigurationManager.SERVER_URL + "showUser/" + username + "\">" + userMask + "</a>";
         }
         String prefix = "<a href=\"" + showImageUrl + "\" "
                 + "imageanchor=\"1\" style=\"clear: left; cssfloat: left; float: left; margin-bottom: 1em; margin-right: 1em;\">"
-                + "<img border=\"0\" src=\"" + imageUrl + "\" ya=\"true\" /></a>";
-        String message = prefix + userMask + " has just posted new screenshot to GMS World. <a href=\"" + showImageUrl + "\">Check it out</a>.";
-
+                + "<img border=\"0\" src=\"" + imageUrl + "\" ya=\"true\" /></a>"; 
+        String message = String.format(rb.getString("Social.gl.server.screenshot"), prefix + userMask, showImageUrl);
         createPost(getBlogger(), "GMS World screenshot", message);
     }
 

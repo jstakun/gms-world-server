@@ -66,8 +66,8 @@ public class TwitterUtils {
                     message = String.format(rb.getString("Social.tw.myloc"),  url);
                 } else if (type == Commons.LOGIN) {
                     message = String.format(rb.getString("Social.tw.login"), url);
-                } else if (type == Commons.CHECKIN) {
-                	message = user + " has checked-in at " + name + " via #LandmarkManager, Check it out: " + url;
+                } else if (type == Commons.CHECKIN) { 
+                	message = String.format(rb.getString("Social.tw.checkin"), user, name, url);
                 }
 
                 if (message != null) {
@@ -103,7 +103,8 @@ public class TwitterUtils {
                 userMask = UrlUtils.createUsernameMask(username);
             }
 
-            message = userMask + " has just posted new screenshot to #GMSWorld. Check it out: " + showImageUrl;
+            ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
+            message = String.format(rb.getString("Social.tw.screenshot"), userMask, showImageUrl);
 
             StatusUpdate update = new StatusUpdate(message);
             update.setDisplayCoordinates(true);

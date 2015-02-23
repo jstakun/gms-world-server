@@ -65,7 +65,7 @@ public class GooglePlusUtils {
             } else if (type == Commons.LOGIN) {
             	message = rb.getString("Social.login");
             } else if (type == Commons.CHECKIN) {
-            	message = user + " has checked-in at " + name + " via Landmark Manager. Check it out: " + url;
+            	message = String.format(rb.getString("Social.gp.checkin"), user, name , url);
             }
 
             if (message != null) {
@@ -100,8 +100,9 @@ public class GooglePlusUtils {
     }
 
     protected static void sendImageMessage(String showImageUrl, String username, String imageUrl) {
-        String userMask = UrlUtils.createUsernameMask(username);
-        String message = userMask + " has just posted new screenshot to GMS World. Check it out: " + showImageUrl;
+        String userMask = UrlUtils.createUsernameMask(username); 
+        ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
+        String message = String.format(rb.getString("Social.gp.screenshot"), userMask , showImageUrl);
         Plus plus = getPlus(null, null);
         sendMoment(plus, message, "Message from GMS World", imageUrl, -1, -1);
         sendUrlMoment(plus, showImageUrl);
