@@ -13,6 +13,7 @@ import java.util.Locale;
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.JvmThreadProvider;
+import net.gmsworld.server.utils.memcache.CacheProvider;
 import net.gmsworld.server.utils.memcache.MockCacheProvider;
 
 import org.junit.Test;
@@ -27,13 +28,16 @@ import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 public class LayersTest {
 	
 	final int limit = 30;
+	private static CacheProvider cacheProvider;
 	
 	@Parameters
 	public static Collection<Object[]> data() {
 		
 	   List<Object[]> data = new ArrayList<Object[]>();	
 	   
-	   LayerHelperFactory.setCacheProvider(new MockCacheProvider());
+	   cacheProvider = new MockCacheProvider(); 
+	   
+	   LayerHelperFactory.setCacheProvider(cacheProvider);
 	   LayerHelperFactory.setThreadProvider(new JvmThreadProvider());	
 	   
 	   List<Method> methods = getStaticGetMethods(LayerHelperFactory.class);
@@ -88,6 +92,9 @@ public class LayersTest {
 				System.out.println(landmark.getName() + " :-> " + landmark.getDescription() + "---\n");
 				//System.out.println(landmark.getThumbnail());
 			}
+			String layerName = "Anything";
+			String key = layer.cacheGeoJson(landmarks, lat, lng, layerName);
+			System.out.println(cacheProvider.getString(key));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

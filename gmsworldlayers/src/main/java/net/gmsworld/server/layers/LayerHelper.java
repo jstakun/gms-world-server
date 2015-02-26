@@ -13,14 +13,20 @@ import java.util.logging.Logger;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 
-import org.apache.commons.lang.StringUtils;
-import org.json.JSONObject;
-
-import com.jstakun.gms.android.landmarks.ExtendedLandmark;
-
 import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.ThreadProvider;
 import net.gmsworld.server.utils.memcache.CacheProvider;
+
+import org.apache.commons.lang.StringUtils;
+import org.geojson.Feature;
+import org.geojson.FeatureCollection;
+import org.geojson.LngLatAlt;
+import org.geojson.Point;
+import org.json.JSONObject;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 
 /**
  *
@@ -129,4 +135,45 @@ public abstract class LayerHelper {
 
         return StringUtils.join(params, "_");
     }
+    
+    public String cacheGeoJson(List<ExtendedLandmark> landmarks, double lat, double lng, String layer) {
+    	
+    	/*{
+  			"type": "Feature",
+  			"geometry": {
+    			"type": "Point",
+    			"coordinates": [125.6, 10.1]
+  			},
+  			"properties": {
+    			"name": "Dinagat Islands"
+  			}
+		}*/
+
+    	if (!landmarks.isEmpty()) {
+    		FeatureCollection featureCollection = new FeatureCollection();
+    	
+    		for (ExtendedLandmark landmark : landmarks) {
+    			Feature f = new Feature();
+    			Point p = new Point();
+    			p.setCoordinates(new LngLatAlt(landmark.getQualifiedCoordinates().getLongitude(), landmark.getQualifiedCoordinates().getLatitude()));
+    			f.setGeometry(p);
+    			// TODO add more properties
+    			f.setProperty("name", landmark.getName());
+    			featureCollection.add(f);
+    		}
+
+    		try {
+    			String json = new ObjectMapper().writeValueAsString(featureCollection);
+    			if (cacheProvider != null) {
+    				String key = "geojson_" + StringUtil.formatCoordE2(lat) + "_" + StringUtil.formatCoordE2(lng) + "_" + layer;
+    				cacheProvider.put(key, json);
+    			    return key;
+    			}
+    		} catch (JsonProcessingException e) {
+    			logger.log(Level.SEVERE, e.getMessage(), e);
+    		}
+    	}
+    	
+    	return null;
+    }	
 }
