@@ -157,8 +157,8 @@ public abstract class LayerHelper {
     			Point p = new Point();
     			p.setCoordinates(new LngLatAlt(landmark.getQualifiedCoordinates().getLongitude(), landmark.getQualifiedCoordinates().getLatitude()));
     			f.setGeometry(p);
-    			// TODO add more properties
     			f.setProperty("name", landmark.getName());
+    			f.setProperty("url", landmark.getUrl());
     			featureCollection.add(f);
     		}
 
