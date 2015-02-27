@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package net.gmsworld.server.layers;
 
 import java.util.ArrayList;
@@ -149,7 +145,7 @@ public class GeocodeUtils {
         return address;
     }*/
 
-    protected static double getLatitude(String latitudeString) {
+    public static double getLatitude(String latitudeString) {
         double latitude = 90.0;
         if (StringUtils.isNotEmpty(latitudeString)) {
             try {
@@ -162,7 +158,7 @@ public class GeocodeUtils {
         return latitude;
     }
 
-    protected static double getLongitude(String longitudeString) {
+    public static double getLongitude(String longitudeString) {
         double longitude = 180.0;
         if (StringUtils.isNotEmpty(longitudeString)) {
             try {
