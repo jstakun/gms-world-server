@@ -176,4 +176,13 @@ public abstract class LayerHelper {
     	
     	return null;
     }	
+    
+    public String getGeoJson(double lat, double lng, String layer) {
+    	if (cacheProvider != null) {
+    		String key = "geojson_" + StringUtil.formatCoordE2(lat) + "_" + StringUtil.formatCoordE2(lng) + "_" + layer;
+			return cacheProvider.getString(key);
+    	} else {
+    		return null;
+    	}
+    }
 }

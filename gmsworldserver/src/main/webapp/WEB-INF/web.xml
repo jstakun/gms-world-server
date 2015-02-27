@@ -335,6 +335,10 @@
    <servlet-name>ImageServlet</servlet-name>
    <servlet-class>com.jstakun.lm.server.servlet.ImageServlet</servlet-class>
  </servlet>
+ <servlet>
+   <servlet-name>GeoJsonProviderServlet</servlet-name>
+   <servlet-class>net.gmsworld.server.layers.GeoJsonProviderServlet</servlet-class>
+ </servlet>
  <!--servlet>
   <servlet-name>appstats</servlet-name>
   <servlet-class>com.google.appengine.tools.appstats.AppstatsServlet</servlet-class>
@@ -520,6 +524,10 @@
  <servlet-mapping>
   <servlet-name>ImageServlet</servlet-name>
   <url-pattern>/image</url-pattern>
+ </servlet-mapping>
+ <servlet-mapping>
+   <servlet-name>GeoJsonProviderServlet</servlet-name>
+   <url-pattern>/geoJsonProvider</url-pattern>
  </servlet-mapping>
  <!--servlet-mapping>
   <servlet-name>appstats</servlet-name>

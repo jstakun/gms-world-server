@@ -15,8 +15,10 @@ public class MockCacheProvider implements CacheProvider {
 		Object o = getObject(key);
 		if (o instanceof String) {
 			return (String)o;
-		} else {
+		} else if (o != null) {
 			return o.toString();
+		} else {
+			return null;
 		}
 	}
 
