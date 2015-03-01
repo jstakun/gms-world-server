@@ -1,5 +1,7 @@
 <%@page contentType="text/html" pageEncoding="utf-8"%>
-<%@page import="net.gmsworld.server.layers.GeocodeUtils"%>
+<%@page import="net.gmsworld.server.layers.GeocodeUtils,
+                net.gmsworld.server.config.Commons,
+                net.gmsworld.server.config.ConfigurationManager"%>
 <%
 double latitude = GeocodeUtils.getLatitude(request.getParameter("lat"));
 double longitude = GeocodeUtils.getLongitude(request.getParameter("lng"));
@@ -16,6 +18,13 @@ double longitude = GeocodeUtils.getLongitude(request.getParameter("lng"));
     <script>
       var map;
 
+      //1 provider & image
+      var fsprovider = '<%= ConfigurationManager.SERVER_URL %>/geoJsonProvider?lat=<%= latitude %>&lng=<%= longitude %>&layer=<%= Commons.FOURSQUARE_LAYER %>&callback=fs_callback';
+      var fsimage = '/images/layers/foursquare.png';
+
+      var fbprovider = '<%= ConfigurationManager.SERVER_URL %>/geoJsonProvider?lat=<%= latitude %>&lng=<%= longitude %>&layer=<%= Commons.FACEBOOK_LAYER %>&callback=fb_callback';
+      var fbimage = '/images/layers/facebook.png'
+
       function initialize() {
         map = new google.maps.Map(document.getElementById('map-canvas'), {
           zoom: 14,
@@ -23,32 +32,43 @@ double longitude = GeocodeUtils.getLongitude(request.getParameter("lng"));
           mapTypeId: google.maps.MapTypeId.TERRAIN
         });
 
-        // Create a <script> tag and set the USGS URL as the source.
-        var script = document.createElement('script');
-        script.src = 'http://localhost:8080/geoJsonProvider?lat=<%= latitude %>&lng=<%= longitude %>&layer=Foursquare&callback=fs_callback';
-        document.getElementsByTagName('head')[0].appendChild(script);
+        //2 script
+        var script1 = document.createElement('script');
+        script1.src = fsprovider; 
+        document.getElementsByTagName('head')[0].appendChild(script1);
+
+        var script2 = document.createElement('script');
+        script2.src = fbprovider; 
+        document.getElementsByTagName('head')[0].appendChild(script2);
       }
 
-      // Loop through the results array and place a marker for each
-      // set of coordinates.
-      window.fs_callback = function(results) {
-        var image = 'https://playfoursquare.s3.amazonaws.com/press/2014/foursquare-icon-36x36.png';
+      function loadMarkers(results, image) {
         for (var i = 0; i < results.features.length; i++) {
           var coords = results.features[i].geometry.coordinates;
           var latLng = new google.maps.LatLng(coords[1],coords[0]);
           var marker = new google.maps.Marker({
-            position: latLng,
-            map: map,
-            title: results.features[i].properties.name,
-            icon: image,
-            url: results.features[i].properties.url
+           		position: latLng,
+            	map: map,
+            	title: results.features[i].properties.name,
+            	icon: image,
+            	url: results.features[i].properties.url
           });
           google.maps.event.addListener(marker, 'click', function() {
-    		window.location.href = this.url;
-	  });
+    			window.location.href = this.url;
+	  	  });
         }
       }
-      google.maps.event.addDomListener(window, 'load', initialize)
+
+      //3 callback function
+      window.fs_callback = function(results) {
+          loadMarkers(results, fsimage); 
+      }
+
+      window.fb_callback = function(results) {
+          loadMarkers(results, fbimage); 
+      }
+      
+      google.maps.event.addDomListener(window, 'load', initialize);
     </script>
   </head>
   <body>

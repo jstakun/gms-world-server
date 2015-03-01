@@ -142,6 +142,8 @@ public class LayersProviderServlet extends HttpServlet {
                     if (outFormat.equals(Format.BIN)) {
                         List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().processBinaryRequest(latitude, longitude, query, radius * 1000, version, limit, stringLimit, token, null, l, true);
                         LayerHelperFactory.getFacebookUtils().serialize(landmarks, response.getOutputStream(), version);
+                        String key = LayerHelperFactory.getFacebookUtils().cacheGeoJson(landmarks, latitude, longitude, Commons.FACEBOOK_LAYER);
+                	    logger.log(Level.INFO, "Saved geojson list to cache: " + key);
                     } else {
                     	outString = LayerHelperFactory.getFacebookUtils().processRequest(latitude, longitude, query, radius * 1000, version, limit, stringLimit, token, null).toString();
                     }
@@ -153,7 +155,6 @@ public class LayersProviderServlet extends HttpServlet {
                 	if (outFormat.equals(Format.BIN)) {
                 		List<ExtendedLandmark> landmarks = LayerHelperFactory.getFoursquareUtils().processBinaryRequest(latitude, longitude, null, radius * 1000, version, limit, stringLimit, "checkin", language, l, true);               	
                 		LayerHelperFactory.getFoursquareUtils().serialize(landmarks, response.getOutputStream(), version);
-                		//TODO testing
                 		String key = LayerHelperFactory.getFoursquareUtils().cacheGeoJson(landmarks, latitude, longitude, Commons.FOURSQUARE_LAYER);
                 	    logger.log(Level.INFO, "Saved geojson list to cache: " + key);
                 	} else {
