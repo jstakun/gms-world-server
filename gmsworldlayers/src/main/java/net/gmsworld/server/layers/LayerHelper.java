@@ -151,7 +151,8 @@ public abstract class LayerHelper {
 
     	if (!landmarks.isEmpty()) {
     		FeatureCollection featureCollection = new FeatureCollection();
-    	
+    		featureCollection.setProperty("layer", layer);
+    		
     		for (ExtendedLandmark landmark : landmarks) {
     			Feature f = new Feature();
     			Point p = new Point();
