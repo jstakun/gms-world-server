@@ -173,6 +173,7 @@ public abstract class LayerHelper {
     			String json = new ObjectMapper().writeValueAsString(featureCollection);
     			if (cacheProvider != null) {
     				String key = "geojson_" + StringUtil.formatCoordE2(lat) + "_" + StringUtil.formatCoordE2(lng) + "_" + layer;
+    				logger.log(Level.INFO, "Saved geojson list to cache with key: " + key);
     				cacheProvider.put(key, json);
     			    return key;
     			}

@@ -22,7 +22,29 @@ double longitude = GeocodeUtils.getLongitude(request.getParameter("lng"));
       
       var layers = [
           {"name": "<%= Commons.FOURSQUARE_LAYER %>", "icon" : "foursquare.png"},
-          {"name": "<%= Commons.FACEBOOK_LAYER %>", "icon" : "facebook.png"}
+          {"name": "<%= Commons.FACEBOOK_LAYER %>", "icon" : "facebook.png"},
+          {"name": "<%= Commons.YELP_LAYER %>", "icon" : "facebook.png"},
+          {"name": "<%= Commons.GOOGLE_PLACES_LAYER %>", "icon" : "facebook.png"},
+          {"name": "<%= Commons.COUPONS_LAYER %>", "icon" : "facebook.png"},         
+          {"name": "<%= Commons.GROUPON_LAYER %>", "icon" : "facebook.png"},  
+          {"name": "<%= Commons.MC_ATM_LAYER %>", "icon" : "facebook.png"}, 
+          {"name": "<%= Commons.FLICKR_LAYER %>", "icon" : "facebook.png"},     
+          {"name": "<%= Commons.LM_SERVER_LAYER %>", "icon" : "facebook.png"},     
+          {"name": "<%= Commons.PICASA_LAYER %>", "icon" : "facebook.png"},     
+          {"name": "<%= Commons.MEETUP_LAYER %>", "icon" : "facebook.png"},     
+          {"name": "<%= Commons.EVENTFUL_LAYER %>", "icon" : "facebook.png"},     
+          {"name": "<%= Commons.OSM_ATM_LAYER %>", "icon" : "facebook.png"},     
+          {"name": "<%= Commons.OSM_PARKING_LAYER %>", "icon" : "facebook.png"},     
+          {"name": "<%= Commons.GEOCODES_LAYER %>", "icon" : "facebook.png"},
+          {"name": "<%= Commons.LASTFM_LAYER %>", "icon" : "facebook.png"},
+          {"name": "<%= Commons.WEBCAM_LAYER %>", "icon" : "facebook.png"},
+          {"name": "<%= Commons.PANORAMIO_LAYER %>", "icon" : "facebook.png"},
+          {"name": "<%= Commons.FOURSQUARE_MERCHANT_LAYER %>", "icon" : "facebook.png"},
+          {"name": "<%= Commons.EXPEDIA_LAYER %>", "icon" : "facebook.png"},
+          {"name": "<%= Commons.HOTELS_LAYER %>", "icon" : "facebook.png"},
+          {"name": "<%= Commons.TWITTER_LAYER %>", "icon" : "facebook.png"},
+          {"name": "<%= Commons.INSTAGRAM_LAYER %>", "icon" : "facebook.png"},
+          {"name": "<%= Commons.FREEBASE_LAYER %>", "icon" : "facebook.png"},                 
       ];
 
       function initialize() {
