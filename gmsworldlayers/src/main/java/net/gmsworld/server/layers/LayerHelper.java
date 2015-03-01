@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 
+import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.ThreadProvider;
 import net.gmsworld.server.utils.memcache.CacheProvider;
@@ -159,7 +160,12 @@ public abstract class LayerHelper {
     			p.setCoordinates(new LngLatAlt(landmark.getQualifiedCoordinates().getLongitude(), landmark.getQualifiedCoordinates().getLatitude()));
     			f.setGeometry(p);
     			f.setProperty("name", landmark.getName());
-    			f.setProperty("url", landmark.getUrl());
+    			if (StringUtils.equals(layer, Commons.FACEBOOK_LAYER)) {
+    				//mobile url to browser url
+    				f.setProperty("url", StringUtils.replace(landmark.getUrl(), "touch", "www")); 
+    			} else {
+    				f.setProperty("url", landmark.getUrl());
+    			}
     			featureCollection.add(f);
     		}
 

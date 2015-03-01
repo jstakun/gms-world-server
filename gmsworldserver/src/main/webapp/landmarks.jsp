@@ -17,14 +17,16 @@ double longitude = GeocodeUtils.getLongitude(request.getParameter("lng"));
     </script>
     <script>
       var mapcenter = new google.maps.LatLng(<%= latitude %>, <%= longitude %>);
-    
+
+      var map;
+      
       var layers = [
           {"name": "<%= Commons.FOURSQUARE_LAYER %>", "icon" : "foursquare.png"},
           {"name": "<%= Commons.FACEBOOK_LAYER %>", "icon" : "facebook.png"}
       ];
 
       function initialize() {
-    	  var map = new google.maps.Map(document.getElementById('map-canvas'), {
+    	  map = new google.maps.Map(document.getElementById('map-canvas'), {
       			zoom: 14,
         		center: mapcenter,
         		mapTypeId: google.maps.MapTypeId.TERRAIN
