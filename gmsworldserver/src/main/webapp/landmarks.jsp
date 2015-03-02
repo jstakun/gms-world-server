@@ -27,25 +27,25 @@ double longitude = NumberUtils.getDouble(request.getParameter("lng"), 21.02);
           {"name": "<%= Commons.GOOGLE_PLACES_LAYER %>", "icon" : "google_plus.png"},
           {"name": "<%= Commons.COUPONS_LAYER %>", "icon" : "dollar.png"},         
           {"name": "<%= Commons.GROUPON_LAYER %>", "icon" : "marker.png"},  
-          {"name": "<%= Commons.MC_ATM_LAYER %>", "icon" : "marker.png"}, //
+          {"name": "<%= Commons.MC_ATM_LAYER %>", "icon" : "mastercard.png"}, 
           {"name": "<%= Commons.FLICKR_LAYER %>", "icon" : "flickr.png"},     
           {"name": "<%= Commons.LM_SERVER_LAYER %>", "icon" : "gmsworld.png"},     
           {"name": "<%= Commons.PICASA_LAYER %>", "icon" : "picasa.png"},     
           {"name": "<%= Commons.MEETUP_LAYER %>", "icon" : "meetup.png"},     
           {"name": "<%= Commons.YOUTUBE_LAYER %>", "icon" : "youtube.png"},     
-          {"name": "<%= Commons.EVENTFUL_LAYER %>", "icon" : "marker.png"},     //
+          {"name": "<%= Commons.EVENTFUL_LAYER %>", "icon" : "event.png"},     
           {"name": "<%= Commons.OSM_ATM_LAYER %>", "icon" : "credit_cards.png"},     
-          {"name": "<%= Commons.OSM_PARKING_LAYER %>", "icon" : "marker.png"},  //    
-          {"name": "<%= Commons.GEOCODES_LAYER %>", "icon" : "marker.png"},  //
-          {"name": "<%= Commons.LASTFM_LAYER %>", "icon" : "lastfm.png"},  //
+          {"name": "<%= Commons.OSM_PARKING_LAYER %>", "icon" : "parking.png"},      
+          {"name": "<%= Commons.GEOCODES_LAYER %>", "icon" : "wikipedia.png"},  
+          {"name": "<%= Commons.LASTFM_LAYER %>", "icon" : "lastfm.png"},  
           {"name": "<%= Commons.WEBCAM_LAYER %>", "icon" : "webcam.png"},
           {"name": "<%= Commons.PANORAMIO_LAYER %>", "icon" : "panoramio.png"},
-          {"name": "<%= Commons.FOURSQUARE_MERCHANT_LAYER %>", "icon" : "marker.png"},   //
-          {"name": "<%= Commons.EXPEDIA_LAYER %>", "icon" : "marker.png"},        // 
-          {"name": "<%= Commons.HOTELS_LAYER %>", "icon" : "marker.png"},         //
+          {"name": "<%= Commons.FOURSQUARE_MERCHANT_LAYER %>", "icon" : "gift.png"},   
+          {"name": "<%= Commons.EXPEDIA_LAYER %>", "icon" : "expedia.png"},         
+          {"name": "<%= Commons.HOTELS_LAYER %>", "icon" : "hotel.png"},         
           {"name": "<%= Commons.TWITTER_LAYER %>", "icon" : "twitter.png"},
           {"name": "<%= Commons.INSTAGRAM_LAYER %>", "icon" : "instagram.png"},
-          {"name": "<%= Commons.FREEBASE_LAYER %>", "icon" : "marker.png"},        //         
+          {"name": "<%= Commons.FREEBASE_LAYER %>", "icon" : "freebase.png"},                
       ];
 
       function initialize() {
