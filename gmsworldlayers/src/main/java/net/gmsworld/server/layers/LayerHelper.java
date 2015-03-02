@@ -150,11 +150,12 @@ public abstract class LayerHelper {
   			}
 		}*/
 
-    	if (!landmarks.isEmpty()) {
-    		FeatureCollection featureCollection = new FeatureCollection();
-    		featureCollection.setProperty("layer", layer);
+    	FeatureCollection featureCollection = new FeatureCollection();
+		featureCollection.setProperty("layer", layer);
+		
+		if (!landmarks.isEmpty()) {
     		
-    		for (ExtendedLandmark landmark : landmarks) {
+			for (ExtendedLandmark landmark : landmarks) {
     			Feature f = new Feature();
     			Point p = new Point();
     			p.setCoordinates(new LngLatAlt(landmark.getQualifiedCoordinates().getLongitude(), landmark.getQualifiedCoordinates().getLatitude()));
@@ -168,8 +169,9 @@ public abstract class LayerHelper {
     			}
     			featureCollection.add(f);
     		}
+		}	
 
-    		try {
+    	try {
     			String json = new ObjectMapper().writeValueAsString(featureCollection);
     			if (cacheProvider != null) {
     				String key = "geojson_" + StringUtil.formatCoordE2(lat) + "_" + StringUtil.formatCoordE2(lng) + "_" + layer;
@@ -177,9 +179,8 @@ public abstract class LayerHelper {
     				cacheProvider.put(key, json);
     			    return key;
     			}
-    		} catch (JsonProcessingException e) {
+    	} catch (JsonProcessingException e) {
     			logger.log(Level.SEVERE, e.getMessage(), e);
-    		}
     	}
     	
     	return null;

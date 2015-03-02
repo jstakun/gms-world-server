@@ -1,10 +1,10 @@
 <%@page contentType="text/html" pageEncoding="utf-8"%>
-<%@page import="net.gmsworld.server.layers.GeocodeUtils,
+<%@page import="net.gmsworld.server.utils.NumberUtils,
                 net.gmsworld.server.config.Commons,
                 net.gmsworld.server.config.ConfigurationManager"%>
 <%
-double latitude = GeocodeUtils.getLatitude(request.getParameter("lat"));
-double longitude = GeocodeUtils.getLongitude(request.getParameter("lng"));
+double latitude = NumberUtils.getDouble(request.getParameter("lat"), 52.23);
+double longitude = NumberUtils.getDouble(request.getParameter("lng"), 21.02);
 %>
 <!DOCTYPE html>
 <html>
@@ -50,9 +50,9 @@ double longitude = GeocodeUtils.getLongitude(request.getParameter("lng"));
 
       function initialize() {
     	  map = new google.maps.Map(document.getElementById('map-canvas'), {
-      			zoom: 14,
+      			zoom: 15,
         		center: mapcenter,
-        		mapTypeId: google.maps.MapTypeId.TERRAIN
+        		mapTypeId: google.maps.MapTypeId.ROADMAP //TERRAIN, SATELLITE, HYBRID
           });
 
           for (var i = 0; i < layers.length; i++) {
@@ -80,7 +80,7 @@ double longitude = GeocodeUtils.getLongitude(request.getParameter("lng"));
             		url: results.features[i].properties.url
           		});
           		google.maps.event.addListener(marker, 'click', function() {
-    				window.location.href = this.url;
+    				window.open(this.url);
 	  	  });
         }
       }

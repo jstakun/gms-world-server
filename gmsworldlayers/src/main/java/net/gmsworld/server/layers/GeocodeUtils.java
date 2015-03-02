@@ -145,7 +145,7 @@ public class GeocodeUtils {
         return address;
     }*/
 
-    public static double getLatitude(String latitudeString) {
+    protected static double getLatitude(String latitudeString) {
         double latitude = 90.0;
         if (StringUtils.isNotEmpty(latitudeString)) {
             try {
@@ -158,7 +158,7 @@ public class GeocodeUtils {
         return latitude;
     }
 
-    public static double getLongitude(String longitudeString) {
+    protected static double getLongitude(String longitudeString) {
         double longitude = 180.0;
         if (StringUtils.isNotEmpty(longitudeString)) {
             try {
