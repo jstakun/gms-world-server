@@ -15,11 +15,18 @@ double longitude = NumberUtils.getDouble(request.getParameter("lng"), 21.02);
     <script
       src="https://maps.googleapis.com/maps/api/js?libraries=visualization">
     </script>
+    <script 
+      src="/js/markerclusterer.js">
+    </script>
     <script>
       var mapcenter = new google.maps.LatLng(<%= latitude %>, <%= longitude %>);
 
       var map;
-      
+
+      var mc;
+
+      var counter = 0;
+
       var layers = [
           {"name": "<%= Commons.FOURSQUARE_LAYER %>", "icon" : "foursquare.png"},
           {"name": "<%= Commons.FACEBOOK_LAYER %>", "icon" : "facebook.png"},
@@ -66,35 +73,52 @@ double longitude = NumberUtils.getDouble(request.getParameter("lng"), 21.02);
   				map: map,
   				icon: '/images/flagblue.png',
   	  	  });
+
+          var mcOptions = {gridSize: 50, maxZoom: 19};
+          var markers = [flagmarker]; 
+          mc = new MarkerClusterer(map, markers, mcOptions);
       }
 
       function loadMarkers(results, image) {
-          for (var i = 0; i < results.features.length; i++) {
-          		var coords = results.features[i].geometry.coordinates;
-          		var latLng = new google.maps.LatLng(coords[1],coords[0]);
-          		var marker = new google.maps.Marker({
-           			position: latLng,
-            		map: map,
-            		title: results.features[i].properties.name,
-            		icon: image,
-            		url: results.features[i].properties.url
-          		});
-          		google.maps.event.addListener(marker, 'click', function() {
-    				window.open(this.url);
-	  	  });
-        }
+    	  	var markers = []; 
+          	for (var i = 0; i < results.features.length; i++) {
+          			var coords = results.features[i].geometry.coordinates;
+          			var latLng = new google.maps.LatLng(coords[1],coords[0]);
+          			var marker = new google.maps.Marker({
+           				position: latLng,
+            			map: map,
+            			title: results.features[i].properties.name,
+            			icon: image,
+            			url: results.features[i].properties.url
+          			});
+          			google.maps.event.addListener(marker, 'click', function() {
+    					window.open(this.url);	
+	  	  			});
+          			markers.push(marker);	
+        	}
+          	if (markers.length > 0) {  
+	  				mc.addMarkers(markers, true);
+	  		}
       }
 
       window.layers_callback = function(results) {
-    	  for (var i = 0; i < layers.length; i++) {
-          		if (results.properties.layer == layers[i].name) {
-                    var image = '/images/layers/' + layers[i].icon; 
-          	  		loadMarkers(results, image);
-          	  		break;
-          		}   
-           } 
+          if (results.properties != null) {
+          		var layer = results.properties.layer;
+    	  		for (var i = 0; i < layers.length; i++) {
+          			 if (layer == layers[i].name) {
+                    		var image = '/images/layers/' + layers[i].icon; 
+          	  				loadMarkers(results, image);
+          	  				break;
+          			 }	   
+           		} 
+      	   }
+           counter++;
+		   console.log("Loaded " + mc.getTotalMarkers() + " markers from (" + counter + "/" + layers.length + ") layers!");
+		   if (counter == layers.length) {
+				mc.redraw();
+		   }
       }
-      
+
       google.maps.event.addDomListener(window, 'load', initialize);
     </script>
   </head>
