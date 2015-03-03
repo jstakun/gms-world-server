@@ -254,6 +254,8 @@ public class McOpenApiUtils extends LayerHelper {
                 
                 String description = JSONUtils.buildLandmarkDesc(landmark, tokens, locale);
                 landmark.setDescription(description);
+                
+                //landmark.setUrl(url);
 				
                 landmarks.add(landmark);
             }

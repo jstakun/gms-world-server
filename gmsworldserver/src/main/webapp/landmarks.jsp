@@ -92,7 +92,9 @@ double longitude = NumberUtils.getDouble(request.getParameter("lng"), 21.02);
             			url: results.features[i].properties.url
           			});
           			google.maps.event.addListener(marker, 'click', function() {
-    					window.open(this.url);	
+              			if (this.url != null) {
+    						window.open(this.url);	
+          				}
 	  	  			});
           			markers.push(marker);	
         	}

@@ -59,13 +59,16 @@
                                   <img src="http://maps.google.com/maps/api/staticmap?center=<%= landmark.getLatitude()%>,<%= landmark.getLongitude()%>&zoom=12&size=640x256&sensor=false&markers=icon:http://gms-world.appspot.com/images/flagblue.png|<%= landmark.getLatitude()%>,<%= landmark.getLongitude()%>" alt="Landmark on Google Map" width="640" height="256"/>
                               </a>
                           </p> 
-                          <p class="post-details">
-                            <a href="/showLandmark/<%= key %>/fullScreen">See full screen map</a>
+                          <p class="post-details">                          
                         <% 
                             if (System.currentTimeMillis() - landmark.getCreationDate().getTime() < (1000 * 3600 * 2)) {
                         %>    
-                            , <a href="/landmarks.jsp?lat=<%= landmark.getLatitude()%>&lng=<%= landmark.getLongitude()%>">Landmarks (Experimental)</a> 
+                              <a href="/landmarks.jsp?lat=<%= landmark.getLatitude()%>&lng=<%= landmark.getLongitude()%>">See landmarks on the map (Experimental)</a> 
                         <%
+                            } else {
+                        %>
+                              <a href="/showLandmark/<%= key %>/fullScreen">See full screen map</a>
+                        <% 
                             }
                         %>
                             <%= request.getAttribute("address") != null ? "<br/>Geocode address: " + request.getAttribute("address") : ""%><br/>
