@@ -84,12 +84,16 @@ double longitude = NumberUtils.getDouble(request.getParameter("lng"), 21.02);
           	for (var i = 0; i < results.features.length; i++) {
           			var coords = results.features[i].geometry.coordinates;
           			var latLng = new google.maps.LatLng(coords[1],coords[0]);
+          			var url = results.features[i].properties.url;
+          			if (url == null) {
+						url = results.features[i].properties.mobile_url
+                  	}
           			var marker = new google.maps.Marker({
            				position: latLng,
             			map: map,
             			title: results.features[i].properties.name,
             			icon: image,
-            			url: results.features[i].properties.url
+            			url: url 
           			});
           			google.maps.event.addListener(marker, 'click', function() {
               			if (this.url != null) {

@@ -255,7 +255,7 @@ public class McOpenApiUtils extends LayerHelper {
                 String description = JSONUtils.buildLandmarkDesc(landmark, tokens, locale);
                 landmark.setDescription(description);
                 
-                //landmark.setUrl(url);
+                //TODO set url from streetview api landmark.setUrl(url);
 				
                 landmarks.add(landmark);
             }
