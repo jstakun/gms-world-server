@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.lm.server.utils.memcache;
 
 import java.util.HashMap;
@@ -32,6 +28,7 @@ public class CacheUtil {
 	private static final Expiration ONE_HOUR_EXPIRATION = Expiration.byDeltaSeconds(60 * 60);
     private static final int TWO_HOURS = 3600 * 2;
     private static final Expiration ONE_MINUTE_EXPIRATION = Expiration.byDeltaSeconds(60);
+    private static final Expiration FOUR_HOURS_EXPIRATION = Expiration.byDeltaSeconds(4 * 60 * 60);
     //private static final MyCacheListener listener = new MyCacheListener();
 	
 	private static Cache getCache() {
@@ -86,10 +83,16 @@ public class CacheUtil {
 		return (getCache().remove(key) != null);
 	}
 	
-	public static void putToShortCache(String key, Object value) {
+	public static void putToFastCache(String key, Object value) {
 		//logger.log(Level.INFO, "putToShortCache " + key);
 		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
 		syncCache.put(key, value, ONE_MINUTE_EXPIRATION);
+	}
+	
+	public static void putToLongCache(String key, Object value) {
+		//logger.log(Level.INFO, "putToShortCache " + key);
+		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+		syncCache.put(key, value, FOUR_HOURS_EXPIRATION);
 	}
 	
 	public static void updateJSONObjectHashMap(String key, String layer, JSONObject value) {

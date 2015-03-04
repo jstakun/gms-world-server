@@ -24,7 +24,7 @@ public class WelcomeAction extends org.apache.struts.action.Action {
 		List<Landmark> landmarkList = (List<Landmark>)CacheUtil.getObject("newestLandmarks");
         if (landmarkList == null) {
             landmarkList = LandmarkPersistenceUtils.selectNewestLandmarks();
-            CacheUtil.putToShortCache("newestLandmarks", landmarkList);
+            CacheUtil.putToFastCache("newestLandmarks", landmarkList);
         }
         request.setAttribute("newestLandmarkList", landmarkList);        
 		

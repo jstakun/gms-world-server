@@ -10,6 +10,10 @@ public class MockCacheProvider implements CacheProvider {
 	public void put(String key, Object value) {
 		cache.put(key, value);
 	}
+	
+	public void put(String key, Object value, int options) {
+		put(key, value);
+	}
 
 	public String getString(String key) {
 		Object o = getObject(key);

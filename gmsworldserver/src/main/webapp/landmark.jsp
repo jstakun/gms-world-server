@@ -61,7 +61,7 @@
                           </p> 
                           <p class="post-details">                          
                         <% 
-                            if (System.currentTimeMillis() - landmark.getCreationDate().getTime() < (1000 * 3600 * 2)) {
+                            if (System.currentTimeMillis() - landmark.getCreationDate().getTime() < (1000 * 3600 * 4)) {
                         %>    
                               <a href="/landmarks.jsp?lat=<%= landmark.getLatitude()%>&lng=<%= landmark.getLongitude()%>">See landmarks on the map (Experimental)</a> 
                         <%
