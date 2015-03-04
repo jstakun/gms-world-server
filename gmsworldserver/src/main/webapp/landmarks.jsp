@@ -1,10 +1,12 @@
 <%@page contentType="text/html" pageEncoding="utf-8"%>
-<%@page import="net.gmsworld.server.utils.NumberUtils,
+<%@page import="org.apache.commons.lang.StringUtils,
+                net.gmsworld.server.utils.NumberUtils,
                 net.gmsworld.server.config.Commons,
                 net.gmsworld.server.config.ConfigurationManager"%>
 <%
-double latitude = NumberUtils.getDouble(request.getParameter("lat"), 52.23);
-double longitude = NumberUtils.getDouble(request.getParameter("lng"), 21.02);
+	double latitude = NumberUtils.getDouble(request.getParameter("lat"), 52.23);
+	double longitude = NumberUtils.getDouble(request.getParameter("lng"), 21.02);
+	boolean isMobile = StringUtils.equals(request.getParameter("mobile"), "true");
 %>
 <!DOCTYPE html>
 <html>
@@ -79,13 +81,13 @@ double longitude = NumberUtils.getDouble(request.getParameter("lng"), 21.02);
           mc = new MarkerClusterer(map, markers, mcOptions);
       }
 
-      function loadMarkers(results, image) {
+      function loadMarkers(results, image, ismobile) {
     	  	var markers = []; 
           	for (var i = 0; i < results.features.length; i++) {
           			var coords = results.features[i].geometry.coordinates;
           			var latLng = new google.maps.LatLng(coords[1],coords[0]);
           			var url = results.features[i].properties.url;
-          			if (url == null) {
+          			if (url == null || ismobile) {
 						url = results.features[i].properties.mobile_url
                   	}
           			var marker = new google.maps.Marker({
@@ -113,7 +115,7 @@ double longitude = NumberUtils.getDouble(request.getParameter("lng"), 21.02);
     	  		for (var i = 0; i < layers.length; i++) {
           			 if (layer == layers[i].name) {
                     		var image = '/images/layers/' + layers[i].icon; 
-          	  				loadMarkers(results, image);
+          	  				loadMarkers(results, image, <%= isMobile %>);
           	  				break;
           			 }	   
            		} 

@@ -45,7 +45,17 @@
             </a>
 
             <p>
-                <a href="/showLandmark/<%= key %>/fullScreen">See full screen map</a><br/>
+                <% 
+                     if (System.currentTimeMillis() - landmark.getCreationDate().getTime() < (1000 * 3600 * 2)) {
+                %>    
+                     <a href="/landmarks.jsp?lat=<%= landmark.getLatitude()%>&lng=<%= landmark.getLongitude()%>&mobile=true">See landmarks on the map (Experimental)</a><br/>
+                <%
+                     } else {
+                %>
+                     <a href="/showLandmark/<%= key %>/fullScreen">See full screen map</a><br/>
+                <% 
+                     }
+                %>
                 <%= request.getAttribute("address")!=null ? "Geocode address: "+request.getAttribute("address") : "" %><br/>
                 Latitude: <%= StringUtil.formatCoordE6(landmark.getLatitude()) %>, Longitude: <%= StringUtil.formatCoordE6(landmark.getLongitude()) %><br/>
                 Created in layer <a href="/showLayer/<%= landmark.getLayer() %>"><%= LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer()) %></a>

@@ -164,7 +164,7 @@ public abstract class LayerHelper {
     			if (StringUtils.equals(layer, Commons.FACEBOOK_LAYER)) {
     				f.setProperty("url", StringUtils.replace(landmark.getUrl(), "touch", "www")); 
     			} else if (StringUtils.equals(layer, Commons.HOTELS_LAYER)) {
-    				f.setProperty("url", StringUtils.replace(landmark.getUrl(), "?Mobile=1", "")); 
+    				f.setProperty("url", StringUtils.replace(landmark.getUrl(), "&Mobile=1", "")); 
     			} 
     			f.setProperty("mobile_url", landmark.getUrl());
     			featureCollection.add(f);
