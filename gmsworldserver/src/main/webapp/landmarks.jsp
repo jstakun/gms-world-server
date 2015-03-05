@@ -27,7 +27,9 @@
 
       var mc;
 
-      var counter = 0;
+      var layer_counter = 0;
+
+      var marker_counter = 0;
 
       var layers = [
           {"name": "<%= Commons.FOURSQUARE_LAYER %>", "icon" : "foursquare.png"},
@@ -105,7 +107,8 @@
           			markers.push(marker);	
         	}
           	if (markers.length > 0) {  
-	  				mc.addMarkers(markers, true);
+                    marker_counter += markers.length;
+  				    mc.addMarkers(markers, true);
 	  		}
       }
 
@@ -120,10 +123,11 @@
           			 }	   
            		} 
       	   }
-           counter++;
-		   console.log("Loaded " + mc.getTotalMarkers() + " markers from (" + counter + "/" + layers.length + ") layers!");
-		   if (counter == layers.length) {
-				mc.redraw();
+           layer_counter++;
+		   console.log("Loaded " + mc.getTotalMarkers() + " markers from (" + layer_counter + "/" + layers.length + ") layers!");
+		   if (layer_counter == layers.length) {
+				mc.repaint();
+				window.alert("Loaded " + marker_counter + " landmarks!");
 		   }
       }
 

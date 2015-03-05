@@ -119,9 +119,13 @@ public class GeonamesUtils extends LayerHelper {
 
             String geonamesResponse = HttpUtils.processFileRequest(geonamesUrl);
             
-            //System.out.println("Response: " + geonamesResponse);
-
-            output =  createLandmarksGeonamesList(geonamesResponse, limit, stringLimit, locale);
+            if (StringUtils.startsWith(geonamesResponse, "{")) {
+            	//System.out.println("Response: " + geonamesResponse + " from " + geonamesUrl.toString());
+            	output =  createLandmarksGeonamesList(geonamesResponse, limit, stringLimit, locale);
+            } else {
+            	logger.log(Level.WARNING, "Received following response " + geonamesResponse);
+            	output = new ArrayList<ExtendedLandmark>();
+            }
 
             if (!output.isEmpty()) {
                 cacheProvider.put(key, output);
@@ -149,6 +153,9 @@ public class GeonamesUtils extends LayerHelper {
                     double lat = geoname.getDouble("lat");
                     double lng = geoname.getDouble("lng");
                     String url = geoname.getString("wikipediaUrl");
+                    if (!StringUtils.startsWith(url, "http")) {
+                    	url = "http://" + url;
+                    }
                     
                     QualifiedCoordinates qc = new QualifiedCoordinates(lat, lng, 0f, 0f, 0f);
                     ExtendedLandmark landmark = LandmarkFactory.getLandmark(name, null, qc, Commons.WIKIPEDIA_LAYER, new AddressInfo(), -1, null);
