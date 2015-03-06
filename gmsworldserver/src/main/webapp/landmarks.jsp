@@ -2,6 +2,7 @@
 <%@page import="org.apache.commons.lang.StringUtils,
                 net.gmsworld.server.utils.NumberUtils,
                 net.gmsworld.server.config.Commons,
+                net.gmsworld.server.utils.StringUtil,
                 net.gmsworld.server.config.ConfigurationManager"%>
 <%
 	double latitude = NumberUtils.getDouble(request.getParameter("lat"), 52.23);
@@ -72,12 +73,24 @@
         		document.getElementsByTagName('head')[0].appendChild(script);
           }
 
+          var infowindow = new google.maps.InfoWindow(
+          {
+                content: '<span style="font-family:Cursive;font-size:14px;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;">' +
+                         '<img src="/images/flagblue.png"/><br/>' +
+                         'This is map center location: <%= StringUtil.formatCoordE6(latitude) %>, <%= StringUtil.formatCoordE6(longitude) %>'
+          });
+          
           var flagmarker = new google.maps.Marker({
   				position: mapcenter,
   				map: map,
   				icon: '/images/flagblue.png',
+  				title: 'Map center location: <%= StringUtil.formatCoordE6(latitude) %>, <%= StringUtil.formatCoordE6(longitude) %>',
   	  	  });
 
+          google.maps.event.addListener(flagmarker, 'click', function() {
+              infowindow.open(map, flagmarker);
+          });
+          
           var mcOptions = {gridSize: 50, maxZoom: 19};
           var markers = [flagmarker]; 
           mc = new MarkerClusterer(map, markers, mcOptions);

@@ -88,6 +88,7 @@ public class PersistLandmarkServlet extends HttpServlet {
                     validityDate = new Date(current.getTime() + validity);
                 } 
 
+                logger.log(Level.INFO, "Creating new landmark in layer: " + layer);
                 if (layer.equals(Commons.MY_POS_CODE)) {
                     description = GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(latitude, longitude);
                 }
@@ -124,11 +125,16 @@ public class PersistLandmarkServlet extends HttpServlet {
                 	
                     //social notifications
                     
-                    String landmarkUrl = ConfigurationManager.SERVER_URL + "showLandmark/" + id;
-                    if (hash != null) {
-                    	landmarkUrl = UrlUtils.BITLY_URL + hash;
-                    } 
-                                        
+                    String landmarkUrl = null;
+                    if (layer.equals(Commons.MY_POS_CODE)) {
+                    	landmarkUrl = UrlUtils.getShortUrl(ConfigurationManager.SERVER_URL + "landmarks.jsp?lat=" + latitude + "&lng=" + longitude);
+                    } else {
+                    	landmarkUrl = ConfigurationManager.SERVER_URL + "showLandmark/" + id;
+                    	if (hash != null) {
+                    		landmarkUrl = UrlUtils.BITLY_URL + hash;
+                    	} 
+                    }
+                    
                     String titleSuffix = "";
                     String userAgent = request.getHeader("User-Agent");
                     String[] tokens = StringUtils.split(userAgent, ",");
