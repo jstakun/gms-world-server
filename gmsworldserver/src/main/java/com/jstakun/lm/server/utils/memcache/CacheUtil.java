@@ -28,7 +28,8 @@ public class CacheUtil {
 	private static final Expiration ONE_HOUR_EXPIRATION = Expiration.byDeltaSeconds(60 * 60);
     private static final int TWO_HOURS = 3600 * 2;
     private static final Expiration ONE_MINUTE_EXPIRATION = Expiration.byDeltaSeconds(60);
-    private static final Expiration FOUR_HOURS_EXPIRATION = Expiration.byDeltaSeconds(4 * 60 * 60);
+    private static final Expiration LONG_CACHE_EXPIRATION = Expiration.byDeltaMillis(4 * 60 * 60 * 1000);
+    public static final int LONG_CACHE_LIMIT = 4 * 60 * 60 * 1000; //4h
     //private static final MyCacheListener listener = new MyCacheListener();
 	
 	private static Cache getCache() {
@@ -92,7 +93,7 @@ public class CacheUtil {
 	public static void putToLongCache(String key, Object value) {
 		//logger.log(Level.INFO, "putToShortCache " + key);
 		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
-		syncCache.put(key, value, FOUR_HOURS_EXPIRATION);
+		syncCache.put(key, value, LONG_CACHE_EXPIRATION);
 	}
 	
 	public static void updateJSONObjectHashMap(String key, String layer, JSONObject value) {

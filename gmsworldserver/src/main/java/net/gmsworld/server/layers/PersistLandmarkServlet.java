@@ -125,16 +125,11 @@ public class PersistLandmarkServlet extends HttpServlet {
                 	
                     //social notifications
                     
-                    String landmarkUrl = null;
-                    if (layer.equals(Commons.MY_POS_CODE)) {
-                    	landmarkUrl = UrlUtils.getShortUrl(ConfigurationManager.SERVER_URL + "landmarks.jsp?lat=" + latitude + "&lng=" + longitude);
-                    } else {
-                    	landmarkUrl = ConfigurationManager.SERVER_URL + "showLandmark/" + id;
-                    	if (hash != null) {
-                    		landmarkUrl = UrlUtils.BITLY_URL + hash;
-                    	} 
-                    }
-                    
+                    String landmarkUrl = ConfigurationManager.SERVER_URL + "showLandmark/" + id;
+                    if (StringUtils.isNotEmpty(hash)) {
+                    	landmarkUrl = UrlUtils.BITLY_URL + hash;
+                    } 
+                                        
                     String titleSuffix = "";
                     String userAgent = request.getHeader("User-Agent");
                     String[] tokens = StringUtils.split(userAgent, ",");

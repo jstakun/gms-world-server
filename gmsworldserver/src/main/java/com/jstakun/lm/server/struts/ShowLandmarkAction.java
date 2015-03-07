@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.lm.server.struts;
 
 import java.io.IOException;
@@ -20,11 +16,14 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import net.gmsworld.server.layers.GeocodeHelperFactory;
+import net.gmsworld.server.utils.StringUtil;
 
 import com.jstakun.lm.server.persistence.Checkin;
 import com.jstakun.lm.server.persistence.Comment;
 import com.jstakun.lm.server.persistence.Landmark;
+import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.memcache.CacheAction;
+import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.jstakun.lm.server.utils.persistence.CheckinPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.CommentPersistenceUtils;
@@ -54,12 +53,12 @@ public class ShowLandmarkAction extends Action {
             ServletException {
 
         final String key = (String) request.getParameter("key");
+        Landmark landmark = null;
         if (StringUtils.isNotEmpty(key)) {
             try {
                 //if (CommonPersistenceUtils.isKeyValid(key)) {
             	    request.setAttribute("key", key);
             	    logger.log(Level.INFO, "Searching for key: " + key);
-            	    Landmark landmark = null;
             	    
             	    CacheAction landmarkCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
         				@Override
@@ -130,8 +129,19 @@ public class ShowLandmarkAction extends Action {
                 logger.log(Level.SEVERE, e.getMessage(), e);
             }
         }
-
-        if (StringUtils.isNotEmpty(request.getParameter("fullScreenLandmarkMap"))) {
+        
+        if (landmark != null && System.currentTimeMillis() - landmark.getCreationDate().getTime() < CacheUtil.LONG_CACHE_LIMIT) {
+        	OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
+        	request.setAttribute("lat", StringUtil.formatCoordE6(landmark.getLatitude()));
+        	request.setAttribute("lng", StringUtil.formatCoordE6(landmark.getLongitude()));
+        	request.setAttribute("landmarkDesc", HttpUtils.buildLandmarkDesc(landmark, request.getAttribute("address"), request.getLocale()));
+        	request.setAttribute("landmarkName", "'" + landmark.getName() + "'");
+        	if (os.isMobileDevice()) {
+                return mapping.findForward("landmarksMobile");
+            } else {
+            	return mapping.findForward("landmarks");
+            } 
+        } else if (StringUtils.isNotEmpty(request.getParameter("fullScreenLandmarkMap"))) {
             return mapping.findForward("fullScreen");
         } else {
         	OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));

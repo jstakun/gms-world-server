@@ -2,10 +2,13 @@
 <%@page import="com.jstakun.lm.server.persistence.Landmark,
         com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils,
         com.jstakun.lm.server.persistence.Comment,
-        com.jstakun.lm.server.utils.UrlUtils,net.gmsworld.server.utils.DateUtils,net.gmsworld.server.utils.StringUtil,
+        com.jstakun.lm.server.utils.UrlUtils,
+        net.gmsworld.server.utils.DateUtils,
+        net.gmsworld.server.utils.StringUtil,
         java.util.List,
         java.util.Date,
-        com.google.appengine.api.datastore.KeyFactory" %>
+        com.google.appengine.api.datastore.KeyFactory,,
+        com.jstakun.lm.server.utils.memcache.CacheUtil" %>
 <!DOCTYPE html>
 <html>
 
@@ -46,7 +49,7 @@
 
             <p>
                 <% 
-                     if (System.currentTimeMillis() - landmark.getCreationDate().getTime() < (1000 * 3600 * 4)) {
+                     if (System.currentTimeMillis() - landmark.getCreationDate().getTime() < CacheUtil.LONG_CACHE_LIMIT) {
                 %>    
                      <a href="/landmarks.jsp?lat=<%= landmark.getLatitude()%>&lng=<%= landmark.getLongitude()%>&mobile=true">See landmarks on the map (Experimental)</a><br/>
                 <%

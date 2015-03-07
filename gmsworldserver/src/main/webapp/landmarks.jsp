@@ -5,9 +5,34 @@
                 net.gmsworld.server.utils.StringUtil,
                 net.gmsworld.server.config.ConfigurationManager"%>
 <%
-	double latitude = NumberUtils.getDouble(request.getParameter("lat"), 52.23);
-	double longitude = NumberUtils.getDouble(request.getParameter("lng"), 21.02);
+    double latitude;
+    if (request.getParameter("lat") != null) {
+		latitude = NumberUtils.getDouble(request.getParameter("lat"), 52.23);
+    } else {
+    	latitude = NumberUtils.getDouble(request.getAttribute("lat").toString(), 52.23);
+    }
+    double longitude;
+    if (request.getParameter("lng") != null) {
+		longitude = NumberUtils.getDouble(request.getParameter("lng"), 21.02);
+    } else {
+    	longitude = NumberUtils.getDouble(request.getAttribute("lng").toString(), 21.02);
+    }
 	boolean isMobile = StringUtils.equals(request.getParameter("mobile"), "true");
+	String landmarkDesc = null;
+	if (request.getAttribute("landmarkDesc") != null) {
+		landmarkDesc = request.getAttribute("landmarkDesc").toString();
+	} else {
+		landmarkDesc = "'<span style=\"font-family:Cursive;font-size:14px;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;\">'+\n" +
+                       "'<img src=\"/images/flagblue.png\"/><br/>' +\n" +
+                       "'This is map center location: " + StringUtil.formatCoordE6(latitude) + "," + StringUtil.formatCoordE6(longitude) + "'";
+ 
+	}
+	String landmarkName = null;
+	if (request.getAttribute("landmarkName") != null) {
+		landmarkName = request.getAttribute("landmarkName").toString();
+	} else {	
+		landmarkName = "'Map center location: " + StringUtil.formatCoordE6(latitude) + "," + StringUtil.formatCoordE6(longitude) + "'";
+	}
 %>
 <!DOCTYPE html>
 <html>
@@ -30,7 +55,7 @@
 
       var layer_counter = 0;
 
-      var marker_counter = 0;
+      var marker_counter = 1;
 
       var layers = [
           {"name": "<%= Commons.FOURSQUARE_LAYER %>", "icon" : "foursquare.png"},
@@ -75,16 +100,14 @@
 
           var infowindow = new google.maps.InfoWindow(
           {
-                content: '<span style="font-family:Cursive;font-size:14px;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;">' +
-                         '<img src="/images/flagblue.png"/><br/>' +
-                         'This is map center location: <%= StringUtil.formatCoordE6(latitude) %>, <%= StringUtil.formatCoordE6(longitude) %>'
+                content: <%= landmarkDesc %>
           });
           
           var flagmarker = new google.maps.Marker({
   				position: mapcenter,
   				map: map,
   				icon: '/images/flagblue.png',
-  				title: 'Map center location: <%= StringUtil.formatCoordE6(latitude) %>, <%= StringUtil.formatCoordE6(longitude) %>',
+  				title: <%= landmarkName %>,
   	  	  });
 
           google.maps.event.addListener(flagmarker, 'click', function() {
@@ -138,7 +161,7 @@
       	   }
            layer_counter++;
 		   console.log("Loaded " + mc.getTotalMarkers() + " markers from (" + layer_counter + "/" + layers.length + ") layers!");
-		   if (layer_counter == layers.length) {
+		   if (layer_counter == layers.length && marker_counter > 1) {
 				mc.repaint();
 				window.alert("Loaded " + marker_counter + " landmarks!");
 		   }

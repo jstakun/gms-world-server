@@ -58,6 +58,8 @@
             <forward name="success" path="/landmark.jsp"/>
             <forward name="mobile" path="/m/landmark.jsp"/>
             <forward name="fullScreen" path="/fullScreenLandmarkMap.jsp"/>
+            <forward name="landmarks" path="/landmarks.jsp"/>
+            <forward name="landmarksMobile" path="/landmarks.jsp?mobile=true"/>
         </action>
         <action path="/showUser" type="com.jstakun.lm.server.struts.ShowUserAction">
             <forward name="success" path="/user.jsp"/>

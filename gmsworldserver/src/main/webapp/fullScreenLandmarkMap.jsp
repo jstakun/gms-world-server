@@ -6,8 +6,11 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="com.jstakun.lm.server.persistence.Landmark,
-                com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils,net.gmsworld.server.utils.DateUtils,
-                com.jstakun.lm.server.utils.UrlUtils,net.gmsworld.server.utils.StringUtil,
+                com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils,
+                net.gmsworld.server.utils.DateUtils,
+                com.jstakun.lm.server.utils.UrlUtils,
+                net.gmsworld.server.utils.StringUtil,
+                com.jstakun.lm.server.utils.HttpUtils,
                 org.apache.commons.lang.StringEscapeUtils" %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
@@ -44,14 +47,7 @@
                 var image = '/images/flagblue.png';
                 var map = new google.maps.Map(document.getElementById("map_canvas"),myOptions);
 
-                var contentString = '<span style="font-family:Cursive;font-size:14px;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;">' +
-                                    '<img src="/images/flagblue.png"/><br/>' +
-                                    'Name: <%= StringEscapeUtils.escapeJavaScript(landmark.getName()) %>,<br/>' +
-                                    'Description: <%= StringEscapeUtils.escapeJavaScript(landmark.getDescription()) %>,<br/>' +
-                                    '<%= request.getAttribute("address") != null ? "Geocode address: " + request.getAttribute("address") + ",<br/>" : ""%>' +
-                                    'Latitude:<%= StringUtil.formatCoordE6(landmark.getLatitude()) %>, Longitude: <%= StringUtil.formatCoordE6(landmark.getLongitude()) %>,<br/>' +
-                                    'Posted on <%= DateUtils.getFormattedDateTime(request.getLocale(), landmark.getCreationDate()) %> by <%= UrlUtils.createUsernameMask(landmark.getUsername()) %>,<br/>' +
-                                    'Created in layer <%= LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer()) %>.</span>';
+                var contentString = <%= HttpUtils.buildLandmarkDesc(landmark, request.getAttribute("address"), request.getLocale()) %>;
 
                 var infowindow = new google.maps.InfoWindow(
                 {

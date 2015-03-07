@@ -8,7 +8,12 @@
 <%@page import="com.jstakun.lm.server.persistence.Landmark,
         com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils,
         com.jstakun.lm.server.persistence.Comment,
-        com.jstakun.lm.server.utils.UrlUtils,net.gmsworld.server.utils.DateUtils,java.util.List,com.google.appengine.api.datastore.KeyFactory,net.gmsworld.server.utils.StringUtil" %>
+        com.jstakun.lm.server.utils.UrlUtils,
+        net.gmsworld.server.utils.DateUtils,
+        java.util.List,
+        com.google.appengine.api.datastore.KeyFactory,
+        net.gmsworld.server.utils.StringUtil,
+        com.jstakun.lm.server.utils.memcache.CacheUtil" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <!-- content-outer -->
 <html xmlns="http://www.cw3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -61,7 +66,7 @@
                           </p> 
                           <p class="post-details">                          
                         <% 
-                            if (System.currentTimeMillis() - landmark.getCreationDate().getTime() < (1000 * 3600 * 4)) {
+                            if (System.currentTimeMillis() - landmark.getCreationDate().getTime() < CacheUtil.LONG_CACHE_LIMIT) {
                         %>    
                               <a href="/landmarks.jsp?lat=<%= landmark.getLatitude()%>&lng=<%= landmark.getLongitude()%>">See landmarks on the map (Experimental)</a> 
                         <%
