@@ -7,7 +7,7 @@
         net.gmsworld.server.utils.StringUtil,
         java.util.List,
         java.util.Date,
-        com.google.appengine.api.datastore.KeyFactory,,
+        com.google.appengine.api.datastore.KeyFactory,
         com.jstakun.lm.server.utils.memcache.CacheUtil" %>
 <!DOCTYPE html>
 <html>

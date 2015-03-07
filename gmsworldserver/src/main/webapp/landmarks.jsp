@@ -6,16 +6,16 @@
                 net.gmsworld.server.config.ConfigurationManager"%>
 <%
     double latitude;
-    if (request.getParameter("lat") != null) {
-		latitude = NumberUtils.getDouble(request.getParameter("lat"), 52.23);
+    if (request.getAttribute("lat") != null) {
+		latitude = NumberUtils.getDouble(request.getAttribute("lat").toString(), 52.23);
     } else {
-    	latitude = NumberUtils.getDouble(request.getAttribute("lat").toString(), 52.23);
+    	latitude = NumberUtils.getDouble(request.getParameter("lat"), 52.23);
     }
     double longitude;
-    if (request.getParameter("lng") != null) {
-		longitude = NumberUtils.getDouble(request.getParameter("lng"), 21.02);
+    if (request.getAttribute("lng") != null) {
+		longitude = NumberUtils.getDouble(request.getAttribute("lng").toString(), 21.02);
     } else {
-    	longitude = NumberUtils.getDouble(request.getAttribute("lng").toString(), 21.02);
+    	longitude = NumberUtils.getDouble(request.getParameter("lng"), 21.02);
     }
 	boolean isMobile = StringUtils.equals(request.getParameter("mobile"), "true");
 	String landmarkDesc = null;
