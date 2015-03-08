@@ -2,6 +2,7 @@ package com.jstakun.lm.server.config;
 
 import com.jstakun.lm.server.persistence.Config;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
+import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 import com.jstakun.lm.server.utils.persistence.ConfigPersistenceUtils;
 
 import java.util.Collections;
@@ -24,7 +25,7 @@ public final class ConfigurationManager {
          for (Config param : params) {
              configuration.put(param.getKey(), param.getValue());
          }
-         CacheUtil.put(CONFIG, configuration);
+         CacheUtil.put(CONFIG, configuration, CacheType.NORMAL);
     }
 
     private static void refreshConfig()

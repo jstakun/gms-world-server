@@ -17,6 +17,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import com.jstakun.lm.server.utils.memcache.CacheAction;
+import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 
 /**
@@ -52,7 +53,7 @@ public class GetHeatMapAction extends org.apache.struts.action.Action {
 				return LandmarkPersistenceUtils.getHeatMap(nDays);
 			}
 		});
-        Map<String, Integer> heatMapData = (Map<String, Integer>)heatMapCacheAction.getObjectFromCache(DateUtils.getDay(new Date()) + "_" + nDays + "_heatMap");
+        Map<String, Integer> heatMapData = (Map<String, Integer>)heatMapCacheAction.getObjectFromCache(DateUtils.getDay(new Date()) + "_" + nDays + "_heatMap", CacheType.NORMAL);
         
         Logger.getLogger(GetHeatMapAction.class.getName()).log(Level.INFO, "Heat map size {0}", heatMapData.size());
         

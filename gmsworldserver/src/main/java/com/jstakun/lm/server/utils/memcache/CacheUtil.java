@@ -23,6 +23,7 @@ import com.google.appengine.api.memcache.jsr107cache.GCacheFactory;
  */
 public class CacheUtil {
 
+	public enum CacheType {FAST, NORMAL, LONG};
 	private static Cache cache = null;
 	private static final Logger logger = Logger.getLogger(CacheUtil.class.getName());
 	private static final Expiration ONE_HOUR_EXPIRATION = Expiration.byDeltaSeconds(60 * 60);
@@ -48,7 +49,7 @@ public class CacheUtil {
 		return cache;
 	}
 
-	public static void put(String key, Object value) {
+	private static void put(String key, Object value) {
 		//logger.log(Level.INFO, "put " + key);
 		try {
 			getCache().put(key, value);
@@ -84,13 +85,13 @@ public class CacheUtil {
 		return (getCache().remove(key) != null);
 	}
 	
-	public static void putToFastCache(String key, Object value) {
+	private static void putToFastCache(String key, Object value) {
 		//logger.log(Level.INFO, "putToShortCache " + key);
 		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
 		syncCache.put(key, value, ONE_MINUTE_EXPIRATION);
 	}
 	
-	public static void putToLongCache(String key, Object value) {
+	private static void putToLongCache(String key, Object value) {
 		//logger.log(Level.INFO, "putToShortCache " + key);
 		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
 		syncCache.put(key, value, LONG_CACHE_EXPIRATION);
@@ -105,6 +106,16 @@ public class CacheUtil {
 	public static void increment(String key) {
 		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
 		syncCache.increment(key, 1);
+	}
+	
+	public static void put(String key, Object value, CacheType type) {
+		if (type == CacheType.NORMAL) {
+			put(key, value);
+		} else if (type == CacheType.FAST) {
+			putToFastCache(key, value);
+		} else if (type == CacheType.LONG) {
+			putToLongCache(key, value);
+		}
 	}
 	
 	/*private static class MyCacheListener implements CacheListener {

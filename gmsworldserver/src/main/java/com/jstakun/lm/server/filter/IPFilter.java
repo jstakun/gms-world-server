@@ -18,6 +18,7 @@ import net.gmsworld.server.utils.NumberUtils;
 
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
+import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 
 /**
  * Servlet Filter implementation class IPFilter
@@ -48,7 +49,7 @@ public class IPFilter implements Filter {
 
 		if (total_count == null) {
 				total_count = 1;
-				CacheUtil.put(ip_key, 0);
+				CacheUtil.put(ip_key, 0, CacheType.NORMAL);
 		} else {
 				total_count += 1;
 		}
@@ -80,7 +81,7 @@ public class IPFilter implements Filter {
 
 				if (uri_count == null) {
 					uri_count = 1;
-					CacheUtil.put(uri_key, 0);
+					CacheUtil.put(uri_key, 0, CacheType.NORMAL);
 				} else {
 					uri_count += 1;
 				}

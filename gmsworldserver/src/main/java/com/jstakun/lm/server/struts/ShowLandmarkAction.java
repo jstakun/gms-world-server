@@ -25,6 +25,7 @@ import com.jstakun.lm.server.utils.HttpUtils;
 import com.jstakun.lm.server.utils.memcache.CacheAction;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
+import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 import com.jstakun.lm.server.utils.persistence.CheckinPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.CommentPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.CommonPersistenceUtils;
@@ -75,7 +76,7 @@ public class ShowLandmarkAction extends Action {
         		            }
         				}
         			});
-            	    landmark = (Landmark) landmarkCacheAction.getObjectFromCache(key);
+            	    landmark = (Landmark) landmarkCacheAction.getObjectFromCache(key, CacheType.NORMAL);
                     
             	    if (landmark != null) {
                         request.setAttribute("landmark", landmark);
@@ -91,7 +92,7 @@ public class ShowLandmarkAction extends Action {
             					return CommentPersistenceUtils.selectCommentsByLandmark(key);
             				}
             			});
-                        List<Comment> comments = (List<Comment>)commentsCacheAction.getObjectFromCache("comments_" + key);
+                        List<Comment> comments = (List<Comment>)commentsCacheAction.getObjectFromCache("comments_" + key, CacheType.NORMAL);
                         if (comments != null && !comments.isEmpty()) {
                             request.setAttribute("comments", comments);
                         }
@@ -104,7 +105,7 @@ public class ShowLandmarkAction extends Action {
                 					return CheckinPersistenceUtils.selectCheckinsByLandmark(key);
                 				}
                 			});
-                        	List<Checkin> checkins = (List<Checkin>)checkinCacheAction.getObjectFromCache("checkins_" + key);
+                        	List<Checkin> checkins = (List<Checkin>)checkinCacheAction.getObjectFromCache("checkins_" + key, CacheType.NORMAL);
                         	
                         	if (checkins != null && !checkins.isEmpty()) {
                                 Checkin lastCheckin = checkins.get(0);

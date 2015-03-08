@@ -7,6 +7,7 @@ package com.jstakun.lm.server.struts;
 
 import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.memcache.CacheAction;
+import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 
 import java.util.List;
@@ -68,7 +69,7 @@ public class ShowLayerAction extends org.apache.struts.action.Action {
 		            }
 				}
 			});
-        	Integer count = countCacheAction.getIntFromCache(layer + "_count_key");
+        	Integer count = countCacheAction.getIntFromCache(layer + "_count_key", CacheType.NORMAL);
 
             request.setAttribute("layer", layer);
 
@@ -81,7 +82,7 @@ public class ShowLayerAction extends org.apache.struts.action.Action {
     					return LandmarkPersistenceUtils.selectLandmarksByUserAndLayer(null, layer, first, nextCandidate);
     				}
     			});
-            	layerLandmarks = (List<Landmark>)userLandmarksCacheAction.getObjectFromCache(layer + "_" + first + "_" + nextCandidate);
+            	layerLandmarks = (List<Landmark>)userLandmarksCacheAction.getObjectFromCache(layer + "_" + first + "_" + nextCandidate, CacheType.NORMAL);
                 
                 request.setAttribute("layerLandmarks", layerLandmarks);
                 request.setAttribute("collectionAttributeName", "layerLandmarks");

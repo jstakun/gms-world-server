@@ -13,7 +13,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import net.gmsworld.server.config.Commons;
+
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
+import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 
 /**
  * Servlet Filter implementation class TokenFilter
@@ -45,7 +47,7 @@ public class TokenFilter implements Filter {
 				
 				if (token_count == null) {
 					token_count = 1;
-					CacheUtil.put(authHeader, 0);
+					CacheUtil.put(authHeader, 0, CacheType.NORMAL);
 				} else {
 					token_count += 1;
 				}

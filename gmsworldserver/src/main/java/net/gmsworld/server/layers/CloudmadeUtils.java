@@ -17,6 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
+import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 import com.jstakun.lm.server.utils.persistence.GeocodeCachePersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 
@@ -50,7 +51,7 @@ public class CloudmadeUtils extends GeocodeHelper {
                 String resp = HttpUtils.processFileRequest(routeUrl, "GET", null, null);
                 if (resp != null) {
                     json = new JSONObject(resp);
-                    CacheUtil.put(key, output);
+                    CacheUtil.put(key, output, CacheType.NORMAL);
                     logger.log(Level.INFO, "Adding route to cache with key {0}", key);
                 }
             }
@@ -104,7 +105,7 @@ public class CloudmadeUtils extends GeocodeHelper {
                 }
             }
 
-            CacheUtil.put(key, address);
+            CacheUtil.put(key, address, CacheType.NORMAL);
             logger.log(Level.INFO, "Adding geocode to cache with key {0}", key);
         } else {
             logger.log(Level.WARNING, "Received following response from Cloudmade: {0}", json.toString());
@@ -202,7 +203,7 @@ public class CloudmadeUtils extends GeocodeHelper {
 
             if (token != null) {
                 address = "";
-                CacheUtil.put(Commons.getProperty(Property.CLOUDMADE_TOKEN_KEY), token);
+                CacheUtil.put(Commons.getProperty(Property.CLOUDMADE_TOKEN_KEY), token, CacheType.NORMAL);
                 //String geocodeString = getReverseGeocodeUrlV3(lat, lng, token);
                 String geocodeString = getReverseGeocodeUrlV2(lat, lng, token);
                 URL geocodeUrl = new URL(geocodeString);
@@ -231,7 +232,7 @@ public class CloudmadeUtils extends GeocodeHelper {
             }
 
             if (token != null) {
-                CacheUtil.put(Commons.getProperty(Property.CLOUDMADE_TOKEN_KEY), token);
+                CacheUtil.put(Commons.getProperty(Property.CLOUDMADE_TOKEN_KEY), token, CacheType.NORMAL);
                 String geocodeString = getGeocodeUrlV2(location, token);
                 URL geocodeUrl = new URL(geocodeString);
                 String resp = HttpUtils.processFileRequest(geocodeUrl, "GET", null, null);

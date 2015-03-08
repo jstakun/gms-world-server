@@ -30,6 +30,7 @@ import net.gmsworld.server.utils.HttpUtils;
 
 import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
+import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 
 /**
  *
@@ -219,7 +220,7 @@ public class LandmarkPersistenceUtils {
         		if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
         			JSONObject l = new JSONObject(gJson);
         			landmark = jsonToLandmark(l);
-        			CacheUtil.put(key, landmark);
+        			CacheUtil.put(key, landmark, CacheType.NORMAL);
         		} else {
         			logger.log(Level.SEVERE, "Received following server response: " + gJson);
         		}
@@ -724,7 +725,7 @@ public class LandmarkPersistenceUtils {
         if (!bucket.isEmpty()) {
             try {
                 String cacheKey = DateUtils.getDay(new Date()) + "_" + nDays + "_heatMap";
-                CacheUtil.put(cacheKey, bucket);
+                CacheUtil.put(cacheKey, bucket, CacheType.NORMAL);
             } catch (Exception ex) {
                 logger.log(Level.SEVERE, ex.getMessage(), ex);
             }

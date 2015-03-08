@@ -16,12 +16,15 @@ import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 
 import com.google.common.collect.ImmutableMap;
+
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.config.ConfigurationManager;
+
 import com.jstakun.lm.server.social.NotificationUtils;
 import com.jstakun.lm.server.utils.TokenUtil;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
+import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 
 /**
  *
@@ -35,7 +38,7 @@ public final class TwCommons {
 		twitter.setOAuthConsumer(Commons.getProperty(Property.TW_CONSUMER_KEY), Commons.getProperty(Property.TW_CONSUMER_SECRET));
 		RequestToken requestToken = twitter.getOAuthRequestToken(TwCommons.CALLBACK_URL);
 		if (requestToken != null) {
-		CacheUtil.put("twRequestToken_" + requestToken.getToken(), requestToken);
+		CacheUtil.put("twRequestToken_" + requestToken.getToken(), requestToken, CacheType.NORMAL);
 			return requestToken.getAuthenticationURL();
 		} else {
 			throw new TwitterException("RequestToken is empty");

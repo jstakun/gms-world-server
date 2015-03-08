@@ -17,6 +17,7 @@ import net.gmsworld.server.utils.StringUtil;
 import com.jstakun.lm.server.persistence.Layer;
 import com.jstakun.lm.server.utils.JSONUtils;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
+import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 import com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils;
 import com.jstakun.lm.server.utils.xml.XMLUtils;
 
@@ -77,7 +78,7 @@ public class ListLayersServlet extends HttpServlet {
                         	json = JSONUtils.createCustomJSonLayersList(layerList, latitudeMin, longitudeMin, radius * 1000);
                     	}
                     	if (json != null) {
-                        	CacheUtil.put(key, json);
+                        	CacheUtil.put(key, json, CacheType.NORMAL);
                         	logger.log(Level.INFO, "Adding layer landmark to cache with key {0}", key);
                     	}
                 	} 	catch (Exception e) {
@@ -100,7 +101,7 @@ public class ListLayersServlet extends HttpServlet {
                     List<Layer> layerList = LayerPersistenceUtils.listAllLayers(1);
                     if (layerList != null && !layerList.isEmpty()) {
                     	xml = XMLUtils.createCustomXmlLayersList(layerList);
-                    	CacheUtil.put(XML_KEY, xml);
+                    	CacheUtil.put(XML_KEY, xml, CacheType.NORMAL);
                     } else {
                     	xml = "<layers/>";
                     }               

@@ -62,7 +62,7 @@
 	List<GeocodeCache> geocodeCacheList = (List<GeocodeCache>)CacheUtil.getObject("newestGeocodes");
 	if (geocodeCacheList == null) {
 		geocodeCacheList = GeocodeCachePersistenceUtils.selectNewestGeocodes();
-		CacheUtil.putToFastCache("newestGeocodes", geocodeCacheList);
+		CacheUtil.put("newestGeocodes", geocodeCacheList, CacheUtil.CacheType.FAST);
     }
     
     for (GeocodeCache geocodeCache : geocodeCacheList)

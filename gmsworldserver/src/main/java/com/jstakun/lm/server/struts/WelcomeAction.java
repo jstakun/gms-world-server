@@ -5,15 +5,16 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import eu.bitwalker.useragentutils.OperatingSystem;
-
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import com.jstakun.lm.server.persistence.Landmark;
-import com.jstakun.lm.server.utils.memcache.CacheUtil;
+import com.jstakun.lm.server.utils.memcache.CacheAction;
+import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
+
+import eu.bitwalker.useragentutils.OperatingSystem;
 
 public class WelcomeAction extends org.apache.struts.action.Action {
 
@@ -21,11 +22,14 @@ public class WelcomeAction extends org.apache.struts.action.Action {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
             HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
-		List<Landmark> landmarkList = (List<Landmark>)CacheUtil.getObject("newestLandmarks");
-        if (landmarkList == null) {
-            landmarkList = LandmarkPersistenceUtils.selectNewestLandmarks();
-            CacheUtil.putToFastCache("newestLandmarks", landmarkList);
-        }
+		CacheAction newestLandmarksAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
+			@Override
+			public Object executeAction() {
+				return LandmarkPersistenceUtils.selectNewestLandmarks();
+			}
+		});
+		
+		List<Landmark> landmarkList = (List<Landmark>)newestLandmarksAction.getObjectFromCache("newestLandmarks", CacheType.FAST);
         request.setAttribute("newestLandmarkList", landmarkList);        
 		
 		OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));

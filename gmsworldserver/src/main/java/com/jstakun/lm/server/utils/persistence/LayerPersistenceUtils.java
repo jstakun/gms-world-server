@@ -23,6 +23,7 @@ import net.gmsworld.server.utils.HttpUtils;
 
 import com.jstakun.lm.server.persistence.Layer;
 import com.jstakun.lm.server.utils.memcache.CacheAction;
+import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 
 /**
  *
@@ -74,7 +75,7 @@ public class LayerPersistenceUtils {
 				}
 			}
 		});
-	    return (List<Layer>) layersCacheAction.getObjectFromCache(key);
+	    return (List<Layer>) layersCacheAction.getObjectFromCache(key, CacheType.NORMAL);
     }
 
     public static void persistLayer(String name, String desc, boolean enabled, boolean manageable, boolean checkinable, String formatted) {
@@ -132,7 +133,7 @@ public class LayerPersistenceUtils {
 			}
     	});	   	
     	
-    	String resp = (String) layersCacheAction.getObjectFromCache(key);
+    	String resp = (String) layersCacheAction.getObjectFromCache(key, CacheType.NORMAL);
         if (StringUtils.isEmpty(resp)) {
         	resp = name;
         }
@@ -178,7 +179,7 @@ public class LayerPersistenceUtils {
 				}	
 			}
 		});
-	    return (List<Layer>) layersCacheAction.getObjectFromCache(key);
+	    return (List<Layer>) layersCacheAction.getObjectFromCache(key, CacheType.NORMAL);
     }
     	
 }

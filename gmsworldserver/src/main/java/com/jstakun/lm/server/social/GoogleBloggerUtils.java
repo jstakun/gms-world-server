@@ -24,6 +24,7 @@ import com.google.api.services.blogger.model.Post;
 import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.UrlUtils;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
+import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 
 /**
@@ -112,7 +113,7 @@ public class GoogleBloggerUtils {
         } catch (GoogleJsonResponseException ex) {
         	int status = ex.getStatusCode();
         	if (status == 403) {
-        		CacheUtil.put(CACHE_KEY, "1");
+        		CacheUtil.put(CACHE_KEY, "1", CacheType.NORMAL);
         	}
         	logger.log(Level.SEVERE, "GoogleBloggerUtils.createPost() exception with error " + status, ex);
         } catch (Exception ex) {

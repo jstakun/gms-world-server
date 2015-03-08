@@ -3,6 +3,7 @@ package net.gmsworld.server.layers;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,6 +22,7 @@ import com.google.gdata.util.common.util.Base64;
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.ConfigurationManager;
 
+import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.social.NotificationUtils;
 
 import net.gmsworld.server.utils.CryptoTools;
@@ -29,8 +31,10 @@ import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
 
 import com.jstakun.lm.server.utils.UrlUtils;
+import com.jstakun.lm.server.utils.memcache.CacheAction;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
+import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 
 /**
@@ -71,6 +75,7 @@ public class PersistLandmarkServlet extends HttpServlet {
                 double latitude = GeocodeUtils.getLatitude(request.getParameter("latitude"));
                 double longitude = GeocodeUtils.getLongitude(request.getParameter("longitude"));
                 double altitude = NumberUtils.getDouble(request.getParameter("altitude"), 0.0);
+                boolean anonymous = StringUtil.getStringParam(request.getParameter("anonymous"), "1").equals("0");
 
                 String name = request.getParameter("name");
                 String description = request.getParameter("description");
@@ -93,8 +98,6 @@ public class PersistLandmarkServlet extends HttpServlet {
                     description = GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(latitude, longitude);
                 }
 
-                String email = request.getParameter("email");
-                
                 if (username != null && username.length() % 4 == 0) {
                 	try {
                 		username = new String(Base64.decode(username));
@@ -103,66 +106,92 @@ public class PersistLandmarkServlet extends HttpServlet {
                 	}
                 }	
                 
-                if (StringUtils.isNotEmpty(email)) {
-                    try {
-                        email = new String(CryptoTools.decrypt(Base64.decode(email.getBytes())));
-                    } catch (Exception e) {
-                        //logger.log(Level.SEVERE, e.getMessage(), e);
-                    }
+                String email = null;
+                if (!anonymous) {
+                	email = request.getParameter("email");
+                	if (StringUtils.isNotEmpty(email)) {
+                		try {
+                			email = new String(CryptoTools.decrypt(Base64.decode(email.getBytes())));
+                		} catch (Exception e) {
+                			//logger.log(Level.SEVERE, e.getMessage(), e);
+                		}
+                	}
                 }
 
-                Map<String, String> peristResponse = LandmarkPersistenceUtils.persistLandmark(name, description, latitude, longitude, altitude, username, validityDate, layer, email);
-
-                id = peristResponse.get("id");
-                hash = peristResponse.get("hash");
+                //check if this landmark has the same name and location as last saved landmark
+                boolean isSimilarToNewest = false;
+                CacheAction newestLandmarksAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
+        			@Override
+        			public Object executeAction() {
+        				return LandmarkPersistenceUtils.selectNewestLandmarks();
+        			}
+        		});
+                List<Landmark> landmarkList = (List<Landmark>)newestLandmarksAction.getObjectFromCache("newestLandmarks", CacheType.FAST);
+                if (!landmarkList.isEmpty()) {
+                	Landmark newestLandmark = landmarkList.get(0);
+                	logger.log(Level.INFO, "Newest landmark: " + newestLandmark.getName() + ", " + newestLandmark.getLatitude() + ", " + newestLandmark.getLongitude());
+            		if (StringUtils.equals(newestLandmark.getName(), name) && StringUtils.equals(StringUtil.formatCoordE2(newestLandmark.getLatitude()), StringUtil.formatCoordE2(latitude))
+                			 && StringUtils.equals(StringUtil.formatCoordE2(newestLandmark.getLongitude()), StringUtil.formatCoordE2(longitude))) {
+                		logger.log(Level.WARNING, "This landmark is similar to newest: " + name + ", " + latitude + ", " + longitude);
+                		isSimilarToNewest = true;
+                	} else {
+                		logger.log(Level.INFO, "This landmark is not similar to newest: " + name + ", " + latitude + ", " + longitude);
+                	}
+                }
                 
-                if (StringUtils.isNumeric(id)) {	
-                    //After adding landmark remove from cache layer list for the location
-                    //in order to make it visible immediately.
-                    int radius = NumberUtils.getRadius(request.getParameter("radius"), 3, 6371);
-                    String layerKey = JSON_LAYER_LIST + "_" + StringUtil.formatCoordE2(latitude) + "_" + StringUtil.formatCoordE2(longitude) + "_" + radius;
-                    logger.log(Level.INFO, "Removed from cache layer list {0}: {1}", new Object[]{layerKey, CacheUtil.remove(layerKey)});           
+                if (!isSimilarToNewest) {
+                	Map<String, String> peristResponse = LandmarkPersistenceUtils.persistLandmark(name, description, latitude, longitude, altitude, username, validityDate, layer, email);
+
+                	id = peristResponse.get("id");
+                	hash = peristResponse.get("hash");
+                
+                	if (StringUtils.isNumeric(id)) {	
+                    	//After adding landmark remove from cache layer list for the location
+                    	//in order to make it visible immediately.
+                    	int radius = NumberUtils.getRadius(request.getParameter("radius"), 3, 6371);
+                    	String layerKey = JSON_LAYER_LIST + "_" + StringUtil.formatCoordE2(latitude) + "_" + StringUtil.formatCoordE2(longitude) + "_" + radius;
+                    	logger.log(Level.INFO, "Removed from cache layer list {0}: {1}", new Object[]{layerKey, CacheUtil.remove(layerKey)});           
                 	
-                    //social notifications
+                    	//social notifications
                     
-                    String landmarkUrl = ConfigurationManager.SERVER_URL + "showLandmark/" + id;
-                    if (StringUtils.isNotEmpty(hash)) {
-                    	landmarkUrl = UrlUtils.BITLY_URL + hash;
-                    } 
+                    	String landmarkUrl = ConfigurationManager.SERVER_URL + "showLandmark/" + id;
+                    	if (StringUtils.isNotEmpty(hash)) {
+                    		landmarkUrl = UrlUtils.BITLY_URL + hash;
+                    	} 
                                         
-                    String titleSuffix = "";
-                    String userAgent = request.getHeader("User-Agent");
-                    String[] tokens = StringUtils.split(userAgent, ",");
-                    if (tokens != null) {
-                        for (int i = 0; i < tokens.length; i++) {
-                            String token = StringUtils.trimToEmpty(tokens[i]);
-                            if (token.startsWith("Package:") || token.startsWith("Version:") || token.startsWith("Version Code:")) {
-                                titleSuffix += " " + token;
-                            }
-                        }
-                    }
+                    	String titleSuffix = "";
+                    	String userAgent = request.getHeader("User-Agent");
+                    	String[] tokens = StringUtils.split(userAgent, ",");
+                    	if (tokens != null) {
+                        	for (int i = 0; i < tokens.length; i++) {
+                            	String token = StringUtils.trimToEmpty(tokens[i]);
+                            	if (token.startsWith("Package:") || token.startsWith("Version:") || token.startsWith("Version Code:")) {
+                                	titleSuffix += " " + token;
+                            	}
+                        	}
+                    	}
 
-                    String useCount = request.getHeader("X-GMS-UseCount");
-                    String messageSuffix = "";
-                    if (useCount != null) {
-                        messageSuffix = " User has opened LM " + useCount + " times.";
-                    }
+                    	String useCount = request.getHeader("X-GMS-UseCount");
+                    	String messageSuffix = "";
+                    	if (useCount != null) {
+                        	messageSuffix = " User has opened LM " + useCount + " times.";
+                    	}
 
-                    String title = "New landmark";
-                    if (StringUtils.isNotEmpty(titleSuffix)) {
-                        title += titleSuffix;
-                    }
+                    	String title = "New landmark";
+                    	if (StringUtils.isNotEmpty(titleSuffix)) {
+                        	title += titleSuffix;
+                    	}
 
-                    String body = "Landmark: " + name + " has been created by user " + ConfigurationManager.SERVER_URL + "socialProfile?uid=" + username + "." + messageSuffix;
+                    	String body = "Landmark: " + name + " has been created by user " + ConfigurationManager.SERVER_URL + "socialProfile?uid=" + username + "." + messageSuffix;
                     
-                    String userUrl = ConfigurationManager.SERVER_URL;
-                    if (StringUtils.equals(layer, "Social")) {
-                    	userUrl += "blogeo/" + username;
-                    } else {
-                    	userUrl += "showUser/" + username;
-                    }
+                    	String userUrl = ConfigurationManager.SERVER_URL;
+                    	if (StringUtils.equals(layer, "Social")) {
+                    		userUrl += "blogeo/" + username;
+                    	} else {
+                    		userUrl += "showUser/" + username;
+                    	}
                     
-                    Map<String, String> params = new ImmutableMap.Builder<String, String>().
+                    	Map<String, String> params = new ImmutableMap.Builder<String, String>().
                             put("key", id).
                     		put("landmarkUrl", landmarkUrl).
                     		put("email", StringUtils.isNotEmpty(email) ? email : "").
@@ -171,7 +200,8 @@ public class PersistLandmarkServlet extends HttpServlet {
                     		put("username", username).
                     		put("body", body).build();  
                     
-                    NotificationUtils.createLadmarkCreationNotificationTask(params);
+                    	NotificationUtils.createLadmarkCreationNotificationTask(params);
+                	}
                 }
             }
         } catch (Exception e) {

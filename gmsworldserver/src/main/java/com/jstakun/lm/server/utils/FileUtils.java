@@ -21,6 +21,7 @@ import com.google.appengine.tools.cloudstorage.GcsService;
 import com.google.appengine.tools.cloudstorage.GcsServiceFactory;
 import com.jstakun.lm.server.persistence.Screenshot;
 import com.jstakun.lm.server.utils.memcache.CacheAction;
+import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 import com.jstakun.lm.server.utils.persistence.ScreenshotPersistenceUtils;
 
 public class FileUtils {
@@ -131,7 +132,7 @@ public class FileUtils {
 					return ScreenshotPersistenceUtils.selectScreenshot(key);
 				}
 			});
-        	s = (Screenshot) screenshotCacheAction.getObjectFromCache(key);
+        	s = (Screenshot) screenshotCacheAction.getObjectFromCache(key, CacheType.NORMAL);
         	if (s != null) {
         		try {
                 	s.setUrl(FileUtils.getImageUrlV2(s.getFilename(), thumbnail));
