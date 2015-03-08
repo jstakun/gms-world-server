@@ -21,19 +21,15 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.utils.HttpUtils;
+
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.gdata.util.common.util.Base64;
-
-import net.gmsworld.server.config.Commons;
-
-import com.jstakun.lm.server.config.ConfigurationManager;
-
-import net.gmsworld.server.config.Commons.Property;
-import net.gmsworld.server.utils.HttpUtils;
-
 import com.jstakun.lm.server.utils.persistence.UserPersistenceUtils;
 
 /**

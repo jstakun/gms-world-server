@@ -10,8 +10,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.JvmThreadProvider;
 import net.gmsworld.server.utils.memcache.CacheProvider;
 import net.gmsworld.server.utils.memcache.MockCacheProvider;

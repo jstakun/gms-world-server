@@ -1,7 +1,6 @@
 package net.gmsworld.server.layers;
 
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

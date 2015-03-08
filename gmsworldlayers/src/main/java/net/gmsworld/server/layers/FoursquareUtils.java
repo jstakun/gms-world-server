@@ -1029,7 +1029,7 @@ public class FoursquareUtils extends LayerHelper {
         }
     }
     
-    private static class VenueDetailsCallable implements Callable<Map<String, String>> {
+    /*private static class VenueDetailsCallable implements Callable<Map<String, String>> {
     	
     	private String locale, urlPrefix, multiRequest, venueId;
         private boolean bitlyFailed;
@@ -1119,16 +1119,16 @@ public class FoursquareUtils extends LayerHelper {
                                                      venueAttrs.put("icon", photo);
 
                                                      //icon
-                                                     /*JSONObject sizes = newest.optJSONObject("sizes");
-                                                     if (sizes != null) {
-                                                         JSONArray imgItems = sizes.getJSONArray("items");
-                                                         for (int i=0;i<imgItems.length();i++) {
-                                                        	JSONObject item = imgItems.getJSONObject(i);
-                                                            if (item.getInt("width") == 100 && item.getInt("height") == 100) {
-                                                                venueAttrs.put("icon", item.getString("url"));
-                                                            }
-                                                         }
-                                                     }*/
+                                                     //JSONObject sizes = newest.optJSONObject("sizes");
+                                                     //if (sizes != null) {
+                                                     //    JSONArray imgItems = sizes.getJSONArray("items");
+                                                     //    for (int i=0;i<imgItems.length();i++) {
+                                                     //   	JSONObject item = imgItems.getJSONObject(i);
+                                                     //       if (item.getInt("width") == 100 && item.getInt("height") == 100) {
+                                                     //           venueAttrs.put("icon", item.getString("url"));
+                                                     //       }
+                                                     //    }
+                                                     //}
                                                 }
                                             }
                                             if (hasPhoto) {
@@ -1177,7 +1177,6 @@ public class FoursquareUtils extends LayerHelper {
                 logger.log(Level.SEVERE, "FoursquareUtils.VenueDetailsRetriever execption:", ex);
             }
             return venueAttrs;
-		}
-    	
-    }
+		}    	
+    }*/
 }
