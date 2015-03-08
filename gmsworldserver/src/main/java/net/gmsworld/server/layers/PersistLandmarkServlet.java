@@ -118,7 +118,7 @@ public class PersistLandmarkServlet extends HttpServlet {
                 	}
                 }
 
-                //check if this landmark has the same name and location as last saved landmark
+                //check if this landmark has the same name and location as newest (last saved) landmark
                 boolean isSimilarToNewest = false;
                 CacheAction newestLandmarksAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
         			@Override
