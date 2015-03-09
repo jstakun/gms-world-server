@@ -80,12 +80,7 @@ public class PersistLandmarkServlet extends HttpServlet {
                 String name = request.getParameter("name");
                 String description = request.getParameter("description");
 
-                String username = StringUtil.getUsername(request.getAttribute("username"),request.getParameter("username"));
-                
-                String layer = StringUtil.getStringParam(request.getParameter("layer"), "Public");
-
                 Date validityDate = null;
-
                 String validityStr = request.getParameter("validityDate");
                 if (StringUtils.isNotEmpty(validityStr)) {
                     long validity = Long.parseLong(validityStr);
@@ -93,16 +88,18 @@ public class PersistLandmarkServlet extends HttpServlet {
                     validityDate = new Date(current.getTime() + validity);
                 } 
 
+                String layer = StringUtil.getStringParam(request.getParameter("layer"), "Public");
                 logger.log(Level.INFO, "Creating new landmark in layer: " + layer);
                 if (layer.equals(Commons.MY_POS_CODE)) {
                     description = GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(latitude, longitude);
                 }
-
+               
+                String username = StringUtil.getUsername(request.getAttribute("username"),request.getParameter("username"));
                 if (username != null && username.length() % 4 == 0) {
                 	try {
                 		username = new String(Base64.decode(username));
                 	} catch (Exception e) {
-                		//from version 1086, 86 username is Base64 encoded string
+                			//from version 1086, 86 username is Base64 encoded string
                 	}
                 }	
                 
