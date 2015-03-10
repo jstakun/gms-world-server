@@ -116,23 +116,31 @@ public class PersistLandmarkServlet extends HttpServlet {
                 }
 
                 //check if this landmark has the same name and location as newest (last saved) landmark
+                String lat = StringUtil.formatCoordE2(latitude);
+                String lng = StringUtil.formatCoordE2(longitude);
                 boolean isSimilarToNewest = false;
-                CacheAction newestLandmarksAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
-        			@Override
-        			public Object executeAction() {
-        				return LandmarkPersistenceUtils.selectNewestLandmarks();
-        			}
-        		});
-                List<Landmark> landmarkList = (List<Landmark>)newestLandmarksAction.getObjectFromCache("newestLandmarks", CacheType.FAST);
-                if (!landmarkList.isEmpty()) {
-                	Landmark newestLandmark = landmarkList.get(0);
-                	logger.log(Level.INFO, "Newest landmark: " + newestLandmark.getName() + ", " + newestLandmark.getLatitude() + ", " + newestLandmark.getLongitude());
-            		if (StringUtils.equals(newestLandmark.getName(), name) && StringUtils.equals(StringUtil.formatCoordE2(newestLandmark.getLatitude()), StringUtil.formatCoordE2(latitude))
-                			 && StringUtils.equals(StringUtil.formatCoordE2(newestLandmark.getLongitude()), StringUtil.formatCoordE2(longitude))) {
-                		logger.log(Level.WARNING, "This landmark is similar to newest: " + name + ", " + latitude + ", " + longitude);
-                		isSimilarToNewest = true;
-                	} else {
-                		logger.log(Level.INFO, "This landmark is not similar to newest: " + name + ", " + latitude + ", " + longitude);
+                if (CacheUtil.containsKey(name + "_" + lat + "_" + lng)) {
+                	isSimilarToNewest = true;
+                	logger.log(Level.WARNING, "This landmark is similar to newest: " + name + "_" + lat + "_" + lng);
+                } else {
+                	CacheAction newestLandmarksAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
+                		@Override
+                		public Object executeAction() {
+                			return LandmarkPersistenceUtils.selectNewestLandmarks();
+                		}
+                	});
+                	
+                	List<Landmark> landmarkList = (List<Landmark>)newestLandmarksAction.getObjectFromCache("newestLandmarks", CacheType.FAST);
+                	if (!landmarkList.isEmpty()) {
+                		Landmark newestLandmark = landmarkList.get(0);
+                		logger.log(Level.INFO, "Newest landmark: " + newestLandmark.getName() + ", " + newestLandmark.getLatitude() + ", " + newestLandmark.getLongitude());
+                		if (StringUtils.equals(newestLandmark.getName(), name) && StringUtils.equals(StringUtil.formatCoordE2(newestLandmark.getLatitude()), lat)
+                			 && StringUtils.equals(StringUtil.formatCoordE2(newestLandmark.getLongitude()), lng)) {
+                			logger.log(Level.WARNING, "This landmark is similar to newest: " + name + ", " + latitude + ", " + longitude);
+                			isSimilarToNewest = true;
+                		} else {
+                			logger.log(Level.INFO, "This landmark is not similar to newest: " + name + ", " + latitude + ", " + longitude);
+                		}
                 	}
                 }
                 
@@ -149,6 +157,7 @@ public class PersistLandmarkServlet extends HttpServlet {
                     	String layerKey = JSON_LAYER_LIST + "_" + StringUtil.formatCoordE2(latitude) + "_" + StringUtil.formatCoordE2(longitude) + "_" + radius;
                     	logger.log(Level.INFO, "Removed from cache layer list {0}: {1}", new Object[]{layerKey, CacheUtil.remove(layerKey)});           
                 	
+                    	CacheUtil.put(name + "_" + lat + "_" + lng, "1", CacheType.FAST);
                     	//social notifications
                     
                     	String landmarkUrl = ConfigurationManager.SERVER_URL + "showLandmark/" + id;

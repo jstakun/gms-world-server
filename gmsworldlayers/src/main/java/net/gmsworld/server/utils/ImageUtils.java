@@ -39,9 +39,10 @@ public class ImageUtils {
 		boolean isBlack = false;
 		
 		int blackPixelsCount = 0;
-		int totalPixels = imageData.length / 3;	    
+		int totalPixels = imageData.length / 3;	  
+		int blackFactor = (int)(totalPixels * BLACK_FACTOR);
 	    
-		for (int i = 0; i < imageData.length / 3; i++) {
+		for (int i = 0; i < totalPixels; i++) {
 		    int pixel = 0xFF000000 | 
 		        ((imageData[3 * i + 0] & 0xFF) << 16) |
 		        ((imageData[3 * i + 1] & 0xFF) << 8) |
@@ -49,7 +50,7 @@ public class ImageUtils {
 		    
 		    if ((pixel & 0x00FFFFFF) == 0) {
     			blackPixelsCount++;
-    			if ((blackPixelsCount / totalPixels) > BLACK_FACTOR) {
+    			if (blackPixelsCount > blackFactor) {
     				isBlack = true;
     				break;
     			}

@@ -40,12 +40,17 @@
     <style>
       html, body, #map-canvas { margin: 0; padding: 0; height: 100%; }
     </style>
-    <script
-      src="https://maps.googleapis.com/maps/api/js?libraries=visualization">
+    <script src="/js/jquery.min.js"></script>
+    <script type="text/javascript">
+    jQuery.fn.center = function () {
+        this.css("position","absolute");
+        this.css("top", ( $(window).height() - this.height() ) / 2+$(window).scrollTop() + "px");
+        this.css("left", ( $(window).width() - this.width() ) / 2+$(window).scrollLeft() + "px");
+        return this;
+    }
     </script>
-    <script 
-      src="/js/markerclusterer.js">
-    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?libraries=visualization"></script>
+    <script src="/js/markerclusterer.js"></script>
     <script>
       var mapcenter = new google.maps.LatLng(<%= latitude %>, <%= longitude %>);
 
@@ -114,9 +119,15 @@
               infowindow.open(map, flagmarker);
           });
           
-          var mcOptions = {gridSize: 50, maxZoom: 19};
+          var mcOptions = {gridSize: 50, maxZoom: 18};
           var markers = [flagmarker]; 
           mc = new MarkerClusterer(map, markers, mcOptions);
+
+          var centerControlDiv = document.createElement('div');
+          var centerControl = new CenterControl(centerControlDiv, map, mapcenter);
+
+          centerControlDiv.index = 1;
+          map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(centerControlDiv);                 
       }
 
       function loadMarkers(results, image, ismobile) {
@@ -163,14 +174,53 @@
 		   console.log("Loaded " + mc.getTotalMarkers() + " markers from (" + layer_counter + "/" + layers.length + ") layers!");
 		   if (layer_counter == layers.length && marker_counter > 1) {
 				mc.repaint();
-				window.alert("Loaded " + marker_counter + " landmarks!");
+				//window.alert("Loaded " + marker_counter + " landmarks!");
+				$("#status").css({"background-color": "#fff", "border" : "2px solid #fff", "border-radius": "3px", "text-align": "center", "box-shadow" : "0 2px 6px rgba(0,0,0,.3)"});
+                $("#status").html("Loaded " + marker_counter + " landmarks!");
+				$("#status").center().show().delay(3000).queue(function(n) {
+					  $(this).hide(); n();
+				});
 		   }
       }
+
+      function CenterControl(controlDiv, map, center) {
+
+    	  // Set CSS for the control border
+    	  var controlUI = document.createElement('div');
+    	  controlUI.style.backgroundColor = '#fff';
+    	  controlUI.style.border = '2px solid #fff';
+    	  controlUI.style.borderRadius = '3px';
+    	  controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+    	  controlUI.style.cursor = 'pointer';
+    	  controlUI.style.marginBottom = '18px';
+    	  controlUI.style.textAlign = 'center';
+    	  controlUI.title = 'Click to recenter the map';
+    	  controlDiv.appendChild(controlUI);
+
+    	  // Set CSS for the control interior
+    	  var controlText = document.createElement('div');
+    	  controlText.style.color = 'rgb(25,25,25)';
+    	  controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+    	  controlText.style.fontSize = '14px';
+    	  controlText.style.lineHeight = '32px';
+    	  controlText.style.paddingLeft = '4px';
+    	  controlText.style.paddingRight = '4px';
+    	  controlText.innerHTML = 'Center Map';
+    	  controlUI.appendChild(controlText);
+
+    	  // Setup the click event listeners: simply set the map to
+    	  // Chicago
+    	  google.maps.event.addDomListener(controlUI, 'click', function() {
+    	    map.setCenter(center)
+    	  });
+      }
+    	      
 
       google.maps.event.addDomListener(window, 'load', initialize);
     </script>
   </head>
   <body>
     <div id="map-canvas"></div>
+    <div id="status" style="color:black;font-family:Roboto,Arial,sans-serif;font-size:14px;line-height:32px;padding-left:4px;padding-right:4px"></div>
   </body>
 </html>

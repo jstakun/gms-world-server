@@ -18,8 +18,9 @@ public class ImageUtilsTest {
 
 	@Test
 	public void testBlack() throws MalformedURLException, IOException {
-		BufferedImage blackImage = ImageIO.read(new URL("http://lh3.ggpht.com/Ti4s1kmi4eY9kZ-E2LRX1SmHgAAPtr_asUzMMsvshoYUKknScvJfLudbT0HZQvkkvjZnrYzrgwEAGyS2Li5f"));
-	    assertTrue("Image is black!", ImageUtils.isBlackImage(blackImage));
+		//BufferedImage blackImage = ImageIO.read(new URL("http://lh3.ggpht.com/Ti4s1kmi4eY9kZ-E2LRX1SmHgAAPtr_asUzMMsvshoYUKknScvJfLudbT0HZQvkkvjZnrYzrgwEAGyS2Li5f"));
+		BufferedImage blackImage = ImageIO.read(new URL("http://lh6.ggpht.com/i1OHP63MGpmEVSrt2UArxBcCg3aYf8oX4J3ui2UdevIHqcSATS8-h-Px2Xvko4ralasL434Ddt2NgoLJgTt9"));
+		assertTrue("Image is black!", ImageUtils.isBlackImage(blackImage));
 	
 	    DataBufferByte buffer = (DataBufferByte)blackImage.getData().getDataBuffer();
 	    byte[] data = buffer.getData();
