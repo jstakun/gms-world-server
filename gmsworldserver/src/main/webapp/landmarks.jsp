@@ -121,13 +121,7 @@
           
           var mcOptions = {gridSize: 50, maxZoom: 18};
           var markers = [flagmarker]; 
-          mc = new MarkerClusterer(map, markers, mcOptions);
-
-          var centerControlDiv = document.createElement('div');
-          var centerControl = new CenterControl(centerControlDiv, map, mapcenter);
-
-          centerControlDiv.index = 1;
-          map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(centerControlDiv);                 
+          mc = new MarkerClusterer(map, markers, mcOptions);                
       }
 
       function loadMarkers(results, image, ismobile) {
@@ -176,10 +170,16 @@
 				mc.repaint();
 				//window.alert("Loaded " + marker_counter + " landmarks!");
 				$("#status").css({"background-color": "#fff", "border" : "2px solid #fff", "border-radius": "3px", "text-align": "center", "box-shadow" : "0 2px 6px rgba(0,0,0,.3)"});
-                $("#status").html("Loaded " + marker_counter + " landmarks!");
+                $("#status").html(marker_counter + " landmarks were loaded on the map!");
 				$("#status").center().show().delay(3000).queue(function(n) {
 					  $(this).hide(); n();
 				});
+
+				var centerControlDiv = document.createElement('div');
+		        var centerControl = new CenterControl(centerControlDiv, map, mapcenter);
+
+		        centerControlDiv.index = 1;
+		        map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(centerControlDiv); 
 		   }
       }
 
@@ -201,7 +201,7 @@
     	  var controlText = document.createElement('div');
     	  controlText.style.color = 'rgb(25,25,25)';
     	  controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
-    	  controlText.style.fontSize = '14px';
+    	  controlText.style.fontSize = '16px';
     	  controlText.style.lineHeight = '32px';
     	  controlText.style.paddingLeft = '4px';
     	  controlText.style.paddingRight = '4px';
@@ -221,6 +221,6 @@
   </head>
   <body>
     <div id="map-canvas"></div>
-    <div id="status" style="color:black;font-family:Roboto,Arial,sans-serif;font-size:14px;line-height:32px;padding-left:4px;padding-right:4px"></div>
+    <div id="status" style="color:black;font-family:Roboto,Arial,sans-serif;font-size:16px;line-height:32px;padding-left:4px;padding-right:4px"></div>
   </body>
 </html>
