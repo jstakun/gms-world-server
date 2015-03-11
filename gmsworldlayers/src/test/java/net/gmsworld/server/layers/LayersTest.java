@@ -2,6 +2,7 @@ package net.gmsworld.server.layers;
 
 import static org.junit.Assert.assertEquals;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class LayersTest {
 	   LayerHelperFactory.setCacheProvider(cacheProvider);
 	   LayerHelperFactory.setThreadProvider(new JvmThreadProvider());	
 	   
-	   /*List<Method> methods = getStaticGetMethods(LayerHelperFactory.class);
+	   List<Method> methods = getStaticGetMethods(LayerHelperFactory.class);
 	   for (Method m : methods) {
 		   try {
 			   data.add(new Object[]{ m.invoke(null,(Object[])null) });
@@ -51,19 +52,19 @@ public class LayersTest {
 		   } catch (InvocationTargetException e) {
 			   e.printStackTrace();
 		   }
-	   }*/
+	   }
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getCouponsUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getFoursquareMerchantUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getPicasaUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getExpediaUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getYelpUtils()});
-	   data.add(new Object[]{LayerHelperFactory.getMcOpenApiUtils()});
+	   //data.add(new Object[]{LayerHelperFactory.getMcOpenApiUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getGooglePlacesUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getFoursquareUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getGeonamesUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getFacebookUtils()});
-	   data.add(new Object[]{LayerHelperFactory.getGmsUtils()});
+	   //data.add(new Object[]{LayerHelperFactory.getGmsUtils()});
 	   
 	   System.out.println("Found " + data.size() + " layers.");
 	   

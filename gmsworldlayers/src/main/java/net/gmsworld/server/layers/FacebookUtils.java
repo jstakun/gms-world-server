@@ -45,6 +45,22 @@ public class FacebookUtils extends LayerHelper {
 
 	private static final String FBPLACES_PREFIX = "http://touch.facebook.com/profile.php?id=";
 	
+	private static FBMultiQueryResults getFriendsPhotos(String token) {
+		Map<String, String> queries = new HashMap<String, String>();
+
+        //TODO this will work until 30 APR 2015
+        queries.put("photos", "SELECT object_id, caption, aid, owner, link, created, place_id, src_small FROM photo WHERE aid IN "
+                + "(SELECT aid FROM album WHERE owner IN (SELECT uid2 FROM friend WHERE uid1=me())) ORDER BY created DESC");
+        queries.put("places", "SELECT page_id, name, description, latitude, longitude, display_subtext, checkin_count FROM place WHERE page_id IN (select place_id from #photos)");
+        queries.put("users", "SELECT uid, name FROM user WHERE uid IN (select owner from #photos)");
+
+        FacebookClient facebookClient = getFacebookClient(token, Version.VERSION_1_0);
+
+        FBMultiQueryResults multiqueryResults = facebookClient.executeFqlMultiquery(queries, FBMultiQueryResults.class);
+
+        return multiqueryResults;
+	}
+	
 	public String getFriendsPhotosToJSon(double lat, double lng, int version, int limit, int stringLength, String token) throws JSONException, UnsupportedEncodingException {
 
         String key = getCacheKey(FacebookUtils.class, "getFriendsPhotosToJSon", 0, 0, null, 0, version, limit, stringLength, token, null);
@@ -52,30 +68,19 @@ public class FacebookUtils extends LayerHelper {
 
         if (jsonString == null) {
 
-            Map<String, String> queries = new HashMap<String, String>();
-
-            queries.put("photos", "SELECT object_id, caption, aid, owner, link, created, place_id, src_small FROM photo WHERE aid IN "
-                    + "(SELECT aid FROM album WHERE owner IN"
-                    + "(SELECT uid2 FROM friend WHERE uid1=me())"
-                    + ") ORDER BY created DESC");
-            queries.put("places", "SELECT page_id, name, description, latitude, longitude, display_subtext, checkin_count FROM place WHERE page_id IN (select place_id from #photos)");
-            queries.put("users", "SELECT uid, name FROM user WHERE uid IN (select owner from #photos)");
-
-            FacebookClient facebookClient = getFacebookClient(token);
-
-            FBMultiQueryResults multiqueryResults = facebookClient.executeFqlMultiquery(queries, FBMultiQueryResults.class);
+            FBMultiQueryResults multiqueryResults = getFriendsPhotos(token);
 
             Map<Long, String> users = new HashMap<Long, String>();
-            for (Iterator<FBUser> iter = multiqueryResults.users.iterator(); iter.hasNext();) {
-                FBUser user = iter.next();
+            for (FBUser user : multiqueryResults.users) {
                 users.put(user.uid, user.name);
             }
+            logger.log(Level.INFO, "Found " + multiqueryResults.users.size() + " users.");
 
             Map<String, FBPlace> places = new HashMap<String, FBPlace>();
-            for (Iterator<FBPlace> iter = multiqueryResults.places.iterator(); iter.hasNext();) {
-                FBPlace place = iter.next();
+            for (FBPlace place : multiqueryResults.places) {
                 places.put(place.pageId, place);
             }
+            logger.log(Level.INFO, "Found " + multiqueryResults.places.size() + " places.");
 
             List<Map<String, Object>> jsonArray = new ArrayList<Map<String, Object>>();
             List<String> placeids = new ArrayList<String>();
@@ -84,10 +89,11 @@ public class FacebookUtils extends LayerHelper {
 
             boolean bitlyFailed = false;
 
-            for (Iterator<FBPhoto> iter = multiqueryResults.photos.iterator(); iter.hasNext();) {
-                FBPhoto photo = iter.next();
-
-                //System.out.println("place_id: " + photo.place_id + ", link: " + photo.link);
+            logger.log(Level.INFO, "Found " + multiqueryResults.photos.size() + " photos.");
+            
+            for (FBPhoto photo : multiqueryResults.photos) {
+                
+            	//System.out.println("place_id: " + photo.place_id + ", link: " + photo.link);
                 if (photo.place_id != null && photo.link != null) {
                     FBPlace place = places.get(photo.place_id);
                     if (place != null) {
@@ -151,7 +157,7 @@ public class FacebookUtils extends LayerHelper {
 
             Map<String, Map<String, String>> pageDescs = new HashMap<String, Map<String, String>>();
 
-            readFacebookPlacesDetails(facebookClient, placeids, pageDescs, stringLength);
+            readFacebookPlacesDetails(getFacebookClient(token), placeids, pageDescs, stringLength);
 
             for (Iterator<Map<String, Object>> iter = jsonArray.iterator(); iter.hasNext();) {
                 Map<String, Object> placeDetails = iter.next();
@@ -192,7 +198,7 @@ public class FacebookUtils extends LayerHelper {
         return jsonString;
     }
     
-    public List<ExtendedLandmark> getFriendsPhotosToLandmark(double lat, double lng, int version, int limit, int stringLength, String token, Locale locale) throws JSONException, UnsupportedEncodingException {
+	public List<ExtendedLandmark> getFriendsPhotosToLandmark(double lat, double lng, int version, int limit, int stringLength, String token, Locale locale) throws UnsupportedEncodingException {
 
         String key = getCacheKey(FacebookUtils.class, "getFriendsPhotosToLandmarks", 0, 0, null, 0, version, limit, stringLength, token, null);
         List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)cacheProvider.getObject(key);
@@ -201,39 +207,27 @@ public class FacebookUtils extends LayerHelper {
         	
         	landmarks = new ArrayList<ExtendedLandmark>();
             
-            Map<String, String> queries = new HashMap<String, String>();
-
-            queries.put("photos", "SELECT object_id, caption, aid, owner, link, created, place_id, src_small FROM photo WHERE aid IN "
-                    + "(SELECT aid FROM album WHERE owner IN"
-                    + "(SELECT uid2 FROM friend WHERE uid1=me())"
-                    + ") ORDER BY created DESC");
-            queries.put("places", "SELECT page_id, name, description, latitude, longitude, display_subtext, checkin_count FROM place WHERE page_id IN (select place_id from #photos)");
-            queries.put("users", "SELECT uid, name FROM user WHERE uid IN (select owner from #photos)");
-
-            FacebookClient facebookClient = getFacebookClient(token);
-
-            FBMultiQueryResults multiqueryResults = facebookClient.executeFqlMultiquery(queries, FBMultiQueryResults.class);
+        	FBMultiQueryResults multiqueryResults = getFriendsPhotos(token);
 
             Map<Long, String> users = new HashMap<Long, String>();
-            for (Iterator<FBUser> iter = multiqueryResults.users.iterator(); iter.hasNext();) {
-                FBUser user = iter.next();
+            for (FBUser user : multiqueryResults.users) {
                 users.put(user.uid, user.name);
             }
+            logger.log(Level.INFO, "Found " + multiqueryResults.users.size() + " users.");
 
             Map<String, FBPlace> places = new HashMap<String, FBPlace>();
-            for (Iterator<FBPlace> iter = multiqueryResults.places.iterator(); iter.hasNext();) {
-                FBPlace place = iter.next();
+            for (FBPlace place : multiqueryResults.places) {
                 places.put(place.pageId, place);
             }
+            logger.log(Level.INFO, "Found " + multiqueryResults.places.size() + " places.");
 
             List<String> placeids = new ArrayList<String>();
             int counter = 0;
             boolean bitlyFailed = false;
             Map<String, Map<String, String>> pageDescs = new HashMap<String, Map<String, String>>();
             
-            for (Iterator<FBPhoto> iter = multiqueryResults.photos.iterator(); iter.hasNext();) {
-                FBPhoto photo = iter.next();
-
+            logger.log(Level.INFO, "Found " + multiqueryResults.photos.size() + " photos.");
+            for (FBPhoto photo : multiqueryResults.photos) {
                 //System.out.println("place_id: " + photo.place_id + ", link: " + photo.link);
                 if (photo.place_id != null && photo.link != null) {
                     FBPlace place = places.get(photo.place_id);
@@ -290,7 +284,7 @@ public class FacebookUtils extends LayerHelper {
                 }
             }
 
-            readFacebookPlacesDetails(facebookClient, placeids, pageDescs, stringLength);
+            readFacebookPlacesDetails(getFacebookClient(token), placeids, pageDescs, stringLength);
 
             for (ExtendedLandmark landmark : landmarks) {
             	String placeidstr = landmark.getDescription();             
@@ -329,39 +323,51 @@ public class FacebookUtils extends LayerHelper {
         return landmarks;
     }
 
-    public List<ExtendedLandmark> getFriendsCheckinsToLandmarks(double lat, double lng, int version, int limit, int stringLength, String token, Locale locale) throws JSONException, UnsupportedEncodingException {
+	private static FBMultiQueryResults getFriendsCheckins(String token, int limit) {
+		Map<String, String> queries = new HashMap<String, String>();
+
+        //TODO this will work until 30 APR 2015
+        queries.put("checkins", "SELECT author_uid, target_id, timestamp FROM checkin WHERE author_uid IN (SELECT uid2 FROM friend WHERE uid1 = me()) ORDER BY timestamp DESC LIMIT " + limit);
+		queries.put("places", "SELECT page_id, name, description, latitude, longitude, display_subtext, checkin_count FROM place WHERE page_id IN (select target_id from #checkins)");
+		//queries.put("checkins", "SELECT author_uid, page_id, timestamp FROM location_post WHERE author_uid IN (SELECT uid2 FROM friend WHERE uid1 = me()) ORDER BY timestamp DESC LIMIT " + limit);
+		//queries.put("places", "SELECT page_id, name, description, latitude, longitude, display_subtext, checkin_count FROM place WHERE page_id IN (select page_id from #checkins)");
+		queries.put("users", "SELECT uid, name FROM user WHERE uid IN (select author_uid from #checkins)");
+
+        FacebookClient facebookClient = getFacebookClient(token, Version.VERSION_1_0);
+        FBMultiQueryResults multiqueryResults = facebookClient.executeFqlMultiquery(queries, FBMultiQueryResults.class);
+        
+        return multiqueryResults;
+	}
+	
+    
+	
+	public List<ExtendedLandmark> getFriendsCheckinsToLandmarks(double lat, double lng, int version, int limit, int stringLength, String token, Locale locale) throws UnsupportedEncodingException {
 
         String key = getCacheKey(FacebookUtils.class, "getFriendsCheckinsToLandmarks", 0, 0, null, 0, version, limit, stringLength, token, null);
         List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)cacheProvider.getObject(key);
 
         if (landmarks == null) {
 
-            Map<String, String> queries = new HashMap<String, String>();
-
-            queries.put("checkins", "SELECT author_uid, target_id, timestamp FROM checkin WHERE author_uid IN (SELECT uid2 FROM friend WHERE uid1 = me()) ORDER BY timestamp DESC LIMIT " + limit);
-            queries.put("places", "SELECT page_id, name, description, latitude, longitude, display_subtext, checkin_count FROM place WHERE page_id IN (select target_id from #checkins)");
-            queries.put("users", "SELECT uid, name FROM user WHERE uid IN (select author_uid from #checkins)");
-
-            FacebookClient facebookClient = getFacebookClient(token);
-            FBMultiQueryResults multiqueryResults = facebookClient.executeFqlMultiquery(queries, FBMultiQueryResults.class);
+            FBMultiQueryResults multiqueryResults = getFriendsCheckins(token, limit);
 
             Map<Long, String> users = new HashMap<Long, String>();
-            for (Iterator<FBUser> iter = multiqueryResults.users.iterator(); iter.hasNext();) {
-                FBUser user = iter.next();
+            for (FBUser user : multiqueryResults.users) {
                 users.put(user.uid, user.name);
             }
+            logger.log(Level.INFO, "Found " + multiqueryResults.users.size() + " users.");
 
             Map<String, FBPlace> places = new HashMap<String, FBPlace>();
-            for (Iterator<FBPlace> iter = multiqueryResults.places.iterator(); iter.hasNext();) {
-                FBPlace place = iter.next();
+            for (FBPlace place : multiqueryResults.places) {
                 places.put(place.pageId, place);
             }
+            logger.log(Level.INFO, "Found " + multiqueryResults.places.size() + " places.");
 
             Map<String, Map<String, Long>> userCheckins = new HashMap<String, Map<String, Long>>();
             List<String> placeids = new ArrayList<String>();
             landmarks = new ArrayList<ExtendedLandmark>();
             Map<String, Map<String, String>> pageDescs = new HashMap<String, Map<String, String>>();
             
+            logger.log(Level.INFO, "Found " + multiqueryResults.checkins.size() + " checkins.");
             for (FBCheckin checkin : multiqueryResults.checkins) {
 
                 String placeid = checkin.targetId;
@@ -411,7 +417,7 @@ public class FacebookUtils extends LayerHelper {
                 }
             }
 
-            readFacebookPlacesDetails(facebookClient, placeids, pageDescs, stringLength);
+            readFacebookPlacesDetails(getFacebookClient(token), placeids, pageDescs, stringLength);
 
             for (ExtendedLandmark landmark : landmarks) {
             	String placeidstr = landmark.getDescription();             
@@ -477,31 +483,25 @@ public class FacebookUtils extends LayerHelper {
 
         if (jsonString == null) {
 
-            Map<String, String> queries = new HashMap<String, String>();
-
-            queries.put("checkins", "SELECT author_uid, target_id, timestamp FROM checkin WHERE author_uid IN (SELECT uid2 FROM friend WHERE uid1 = me()) ORDER BY timestamp DESC LIMIT " + limit);
-            queries.put("places", "SELECT page_id, name, description, latitude, longitude, display_subtext, checkin_count FROM place WHERE page_id IN (select target_id from #checkins)");
-            queries.put("users", "SELECT uid, name FROM user WHERE uid IN (select author_uid from #checkins)");
-
-            FacebookClient facebookClient = getFacebookClient(token);
-            FBMultiQueryResults multiqueryResults = facebookClient.executeFqlMultiquery(queries, FBMultiQueryResults.class);
+            FBMultiQueryResults multiqueryResults = getFriendsCheckins(token, limit);
 
             Map<Long, String> users = new HashMap<Long, String>();
-            for (Iterator<FBUser> iter = multiqueryResults.users.iterator(); iter.hasNext();) {
-                FBUser user = iter.next();
+            for (FBUser user : multiqueryResults.users) {
                 users.put(user.uid, user.name);
             }
+            logger.log(Level.INFO, "Found " + multiqueryResults.users.size() + " users.");
 
             Map<String, FBPlace> places = new HashMap<String, FBPlace>();
-            for (Iterator<FBPlace> iter = multiqueryResults.places.iterator(); iter.hasNext();) {
-                FBPlace place = iter.next();
+            for (FBPlace place : multiqueryResults.places) {
                 places.put(place.pageId, place);
             }
+            logger.log(Level.INFO, "Found " + multiqueryResults.places.size() + " places.");
 
             Map<String, Map<String, Long>> userCheckins = new HashMap<String, Map<String, Long>>();
             List<Map<String, Object>> jsonArray = new ArrayList<Map<String, Object>>();
             List<String> placeids = new ArrayList<String>();
 
+            logger.log(Level.INFO, "Found " + multiqueryResults.checkins.size() + " checkins.");
             for (FBCheckin checkin : multiqueryResults.checkins) {
 
                 String placeid = checkin.targetId;
@@ -552,7 +552,7 @@ public class FacebookUtils extends LayerHelper {
 
             Map<String, Map<String, String>> pageDescs = new HashMap<String, Map<String, String>>();
 
-            readFacebookPlacesDetails(facebookClient, placeids, pageDescs, stringLength);
+            readFacebookPlacesDetails(getFacebookClient(token), placeids, pageDescs, stringLength);
 
             for (Map<String, Object> placeDetails : jsonArray) {
                 String placeidstr = (String) placeDetails.get("url");
@@ -917,6 +917,10 @@ public class FacebookUtils extends LayerHelper {
     
     public static FacebookClient getFacebookClient(String token) {
     	return new DefaultFacebookClient(token, Version.VERSION_2_0);
+    }
+    
+    private static FacebookClient getFacebookClient(String token, Version version) {
+    	return new DefaultFacebookClient(token, version);
     }
     
     public String getLayerName() {
