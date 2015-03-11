@@ -51,7 +51,7 @@ public class SocialCommentServlet extends HttpServlet {
     			String venueId = request.getParameter("venueId");
     			String text = request.getParameter("text");
     			String name = request.getParameter("name");
-    			int responseCode = FacebookUtils.sendComment(accessToken, venueId, text, name);
+    			int responseCode = FacebookSocialUtils.sendComment(accessToken, venueId, text, name);
     			if (responseCode != HttpServletResponse.SC_OK) {
     				response.sendError(responseCode);
     			}

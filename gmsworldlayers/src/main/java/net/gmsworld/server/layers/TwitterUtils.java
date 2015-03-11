@@ -286,4 +286,8 @@ public class TwitterUtils extends LayerHelper {
         }
 		return landmarks;
 	}
+	
+	public String getLayerName() {
+		return Commons.TWITTER_LAYER;
+	}
 }

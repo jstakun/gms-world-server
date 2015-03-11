@@ -403,4 +403,9 @@ public class FoursquareMerchantUtils extends FoursquareUtils {
 
         return landmarks;
     }
+	
+	
+	public String getLayerName() {
+    	return Commons.FOURSQUARE_MERCHANT_LAYER;
+    }
 }

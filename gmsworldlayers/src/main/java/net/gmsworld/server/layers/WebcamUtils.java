@@ -175,4 +175,8 @@ public class WebcamUtils extends LayerHelper {
 
         return landmarks;
     }
+	
+	public String getLayerName() {
+		return Commons.WEBCAM_LAYER;
+	}
 }

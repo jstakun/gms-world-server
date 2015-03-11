@@ -314,4 +314,8 @@ public class McOpenApiUtils extends LayerHelper {
         	loadAtmCollection(lat, lng, radius, totalLimit, atms, size);
         }
 	}
+	
+	public String getLayerName() {
+    	return Commons.MC_ATM_LAYER;
+    }
 }

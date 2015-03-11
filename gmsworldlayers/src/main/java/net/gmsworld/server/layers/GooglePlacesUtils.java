@@ -482,6 +482,10 @@ public class GooglePlacesUtils extends LayerHelper {
         } 
     }
 	
+	public String getLayerName() {
+		return Commons.GOOGLE_PLACES_LAYER;
+	}
+	
 	private static class VenueDetailsRetriever implements Runnable {
 
         private String placeid, language;

@@ -203,4 +203,8 @@ public class PanoramioUtils extends LayerHelper {
 
         return landmarks;
     }
+	
+	public String getLayerName() {
+    	return Commons.PANORAMIO_LAYER;
+    }
 }

@@ -11,6 +11,7 @@ import java.util.Map;
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.config.ConfigurationManager;
+import net.gmsworld.server.layers.FacebookUtils;
 import net.gmsworld.server.utils.DateUtils;
 
 import org.apache.commons.lang.StringUtils;
@@ -18,7 +19,6 @@ import org.apache.commons.lang.StringUtils;
 import com.google.common.collect.ImmutableMap;
 import com.jstakun.lm.server.social.NotificationUtils;
 import com.jstakun.lm.server.utils.TokenUtil;
-import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;
 import com.restfb.types.User;
 
@@ -112,7 +112,7 @@ public final class FBCommons {
 	private static Map<String, String> getMyData(String token) {
 		Map<String, String> userData = new HashMap<String, String>();
 		
-		FacebookClient facebookClient = new DefaultFacebookClient(token);
+		FacebookClient facebookClient = FacebookUtils.getFacebookClient(token);
 	    User me = facebookClient.fetchObject("me", User.class);
 	    
 	    userData.put(ConfigurationManager.FB_USERNAME, me.getId());

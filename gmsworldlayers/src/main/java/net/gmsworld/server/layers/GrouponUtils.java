@@ -590,5 +590,9 @@ public class GrouponUtils extends LayerHelper {
 
         return landmarks;
     }
+	
+	public String getLayerName() {
+    	return Commons.GROUPON_LAYER;
+    }
 
 }

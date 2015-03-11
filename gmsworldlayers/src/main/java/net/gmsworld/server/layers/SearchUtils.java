@@ -86,19 +86,21 @@ public class SearchUtils extends LayerHelper {
 	@Override
 	protected List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flex, String ftoken, Locale locale, boolean useCache) throws Exception {
 		boolean isDeal = false;
-        String[] config = StringUtils.split(flex, "_");
-		if (config.length > 0 && config[0].equals("1")) {
-            isDeal = true;
-        }
-        boolean geocode = false;
-        if (config.length > 1 && config[1].equals("1")) {
-            geocode = true;
-        }
-        
+		boolean geocode = false;
         int dealLimit = 300;
-        if (config.length > 2) {
-            dealLimit = NumberUtils.getInt(config[2], 300);
-        }     
+        String[] config = StringUtils.split(flex, "_");
+        
+        if (config != null) {
+			if (config.length > 0 && config[0].equals("1")) {
+				isDeal = true;
+			}
+			if (config.length > 1 && config[1].equals("1")) {
+				geocode = true;
+			}     
+			if (config.length > 2) {
+				dealLimit = NumberUtils.getInt(config[2], 300);
+			}     
+		}
         
         String language = StringUtil.getLanguage(locale.getLanguage(), "en", 2);
         Map<String, Thread> layers = new ConcurrentHashMap<String, Thread>();
@@ -292,5 +294,9 @@ public class SearchUtils extends LayerHelper {
 			}
 		}
 	}
+	
+    public String getLayerName() {
+    	return "Search";
+    }
 
 }

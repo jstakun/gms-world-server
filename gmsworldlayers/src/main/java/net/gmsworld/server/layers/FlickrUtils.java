@@ -266,4 +266,8 @@ public class FlickrUtils extends LayerHelper {
 
         return landmarks;
     }
+	
+	public String getLayerName() {
+    	return Commons.FLICKR_LAYER;
+    }
 }

@@ -68,7 +68,7 @@ public final class SocialCheckinServlet extends HttpServlet {
     			String venueId = request.getParameter("venueId");
     			String name = request.getParameter("name");
     			
-    			int responseCode = FacebookUtils.checkin(accessToken, venueId, name);
+    			int responseCode = FacebookSocialUtils.checkin(accessToken, venueId, name);
     			if (responseCode != HttpServletResponse.SC_OK) {
     				response.sendError(responseCode);
     			} else {

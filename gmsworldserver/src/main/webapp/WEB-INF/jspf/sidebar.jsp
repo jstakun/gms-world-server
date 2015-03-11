@@ -1,10 +1,10 @@
 <%-- any content can be specified here e.g.: --%>
 <%@ page pageEncoding="utf-8" %>
 <%@ page import="com.jstakun.lm.server.utils.persistence.GeocodeCachePersistenceUtils,
-                com.jstakun.lm.server.persistence.GeocodeCache,
-                java.util.List,
-                com.jstakun.lm.server.utils.memcache.CacheUtil,net.gmsworld.server.utils.DateUtils,
-                com.google.appengine.api.datastore.KeyFactory" %>
+                 com.jstakun.lm.server.persistence.GeocodeCache,
+                 java.util.List,
+                 com.jstakun.lm.server.utils.memcache.CacheUtil,
+                 net.gmsworld.server.utils.DateUtils" %>
 <div id="sidebar">
 
     <div class="about-me">
@@ -59,12 +59,13 @@
         <h3 id="rgc">Recent Geocodes</h3>
         <ul>
 <%
+	
 	List<GeocodeCache> geocodeCacheList = (List<GeocodeCache>)CacheUtil.getObject("newestGeocodes");
 	if (geocodeCacheList == null) {
 		geocodeCacheList = GeocodeCachePersistenceUtils.selectNewestGeocodes();
 		CacheUtil.put("newestGeocodes", geocodeCacheList, CacheUtil.CacheType.FAST);
-    }
-    
+	}
+	    
     for (GeocodeCache geocodeCache : geocodeCacheList)
     {
 %>

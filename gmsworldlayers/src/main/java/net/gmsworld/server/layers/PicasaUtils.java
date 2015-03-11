@@ -322,4 +322,8 @@ public class PicasaUtils extends LayerHelper {
 
         return landmarks;
     }
+	
+    public String getLayerName() {
+    	return Commons.PICASA_LAYER;
+    }
 }

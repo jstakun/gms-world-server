@@ -285,4 +285,8 @@ public class EventfulUtils extends LayerHelper {
 
         return landmarks;
     }
+    
+    public String getLayerName() {
+    	return Commons.EVENTFUL_LAYER;
+    }
 }

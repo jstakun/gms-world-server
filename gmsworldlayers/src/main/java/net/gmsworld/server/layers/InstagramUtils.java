@@ -122,5 +122,9 @@ public class InstagramUtils extends LayerHelper {
            }           
 	   }
    }
+   
+   public String getLayerName() {
+   		return Commons.INSTAGRAM_LAYER;
+   }
 
 }

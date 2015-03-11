@@ -317,4 +317,8 @@ public class LastfmUtils extends LayerHelper {
 
         return landmarks;
 	}
+	
+	public String getLayerName() {
+    	return Commons.LASTFM_LAYER;
+    }
 }

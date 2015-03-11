@@ -26,6 +26,7 @@ import com.google.common.collect.Lists;
 import com.jstakun.gms.android.deals.Deal;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
+
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.persistence.Hotel;
@@ -35,6 +36,7 @@ import net.gmsworld.server.utils.JSONUtils;
 import net.gmsworld.server.utils.MathUtils;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
+
 import com.openlapi.AddressInfo;
 import com.openlapi.QualifiedCoordinates;
 
@@ -280,6 +282,10 @@ public class HotelsCombinedUtils extends LayerHelper {
 
         return landmarks;
 	}
+	
+	public String getLayerName() {
+    	return Commons.HOTELS_LAYER;
+    }
 		
 	
 	private class HotelToExtendedLandmarkFunction implements Function<Hotel, ExtendedLandmark> {

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package net.gmsworld.server.layers;
 
 import java.io.UnsupportedEncodingException;
@@ -25,6 +21,8 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
+
+import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.utils.persistence.Landmark;
 import net.gmsworld.server.utils.JSONUtils;
 import net.gmsworld.server.utils.MathUtils;
@@ -32,6 +30,7 @@ import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.UrlUtils;
 import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;
 import net.gmsworld.server.utils.xml.XMLUtils;
+
 import com.openlapi.AddressInfo;
 import com.openlapi.QualifiedCoordinates;
 
@@ -43,6 +42,7 @@ public class GMSUtils extends LayerHelper {
 
     private static final String landingPage = "showLandmark.do?key=";
     private static final Date migrationDate; //2012-08-25
+    private String layer;
     
     static {
         Calendar c = Calendar.getInstance();
@@ -52,7 +52,8 @@ public class GMSUtils extends LayerHelper {
 
     @Override
 	public JSONObject processRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String layer, String flexString2) throws JSONException, UnsupportedEncodingException {
-        String key = getCacheKey(getClass(), "processRequest", latitude, longitude, query, radius, version, limit, stringLimit, layer, flexString2);
+    	this.layer = layer;
+    	String key = getCacheKey(getClass(), "processRequest", latitude, longitude, query, radius, version, limit, stringLimit, layer, flexString2);
         JSONObject json = null;
         String output = cacheProvider.getString(key);
         if (output == null) {
@@ -83,8 +84,8 @@ public class GMSUtils extends LayerHelper {
     }
 
     public String processRequest(double latitudeMin, double longitudeMin, double latitudeMax, double longitudeMax, int version, int limit, int stringLimit, String layer, String format) throws JSONException, UnsupportedEncodingException {
-        String key = getCacheKey(GMSUtils.class, "processRequest", (latitudeMin + latitudeMax)/2, (longitudeMin + longitudeMax)/2, null, 0, version, limit, stringLimit, layer, format);
-
+    	this.layer = layer;
+    	String key = getCacheKey(GMSUtils.class, "processRequest", (latitudeMin + latitudeMax)/2, (longitudeMin + longitudeMax)/2, null, 0, version, limit, stringLimit, layer, format);
         String output = cacheProvider.getString(key);
         if (output == null) {
         	
@@ -158,7 +159,8 @@ public class GMSUtils extends LayerHelper {
     
     @Override
 	public List<ExtendedLandmark> processBinaryRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String layer, String flexString2, Locale locale, boolean useCache) throws Exception {
-		String key = getCacheKey(getClass(), "processBinaryRequest", latitude, longitude, query, radius, version, limit, stringLimit, layer, flexString2);
+		this.layer = layer;
+    	String key = getCacheKey(getClass(), "processBinaryRequest", latitude, longitude, query, radius, version, limit, stringLimit, layer, flexString2);
 		List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)cacheProvider.getObject(key);
         if (landmarks == null) {
         	landmarks = new ArrayList<ExtendedLandmark>();
@@ -224,4 +226,12 @@ public class GMSUtils extends LayerHelper {
 	    	return target;
 		}
 	}
+	
+	public String getLayerName() {
+		if (layer == null) {
+			return Commons.LM_SERVER_LAYER;
+		} else {
+			return layer;
+		}
+    }
 }

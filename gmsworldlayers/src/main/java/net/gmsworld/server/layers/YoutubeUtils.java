@@ -319,4 +319,8 @@ public class YoutubeUtils extends LayerHelper {
         
 		return landmarks;
 	}
+	
+	public String getLayerName() {
+		return Commons.YOUTUBE_LAYER;
+	}
 }

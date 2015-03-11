@@ -244,7 +244,7 @@ public class LayersProviderServlet extends HttpServlet {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 } else {
             		if (outFormat.equals(Format.BIN)) {
-                		List<ExtendedLandmark> landmarks = LayerHelperFactory.getFlickrUtils().processBinaryRequest(latitude, longitude, null, radius * 1000, version, limit, stringLimit, layer, null, l, true);
+                		List<ExtendedLandmark> landmarks = LayerHelperFactory.getFlickrUtils().processBinaryRequest(latitude, longitude, null, radius * 1000, version, limit, stringLimit, null, null, l, true);
                 		LayerHelperFactory.getFlickrUtils().serialize(landmarks, response.getOutputStream(), version);
                 		LayerHelperFactory.getFlickrUtils().cacheGeoJson(landmarks, latitude, longitude, Commons.FLICKR_LAYER);
             		} else { 

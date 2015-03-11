@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.config.ConfigurationManager;
+import net.gmsworld.server.layers.FacebookUtils;
 import net.gmsworld.server.utils.NumberUtils;
 
 import com.jstakun.lm.server.persistence.Landmark;
@@ -21,10 +22,10 @@ import com.restfb.json.JsonArray;
 import com.restfb.json.JsonObject;
 import com.restfb.types.FacebookType;
 
-public class FacebookUtils {
+public class FacebookSocialUtils {
 	
 	private static final Random random = new Random();
-	private static final Logger logger = Logger.getLogger(FacebookUtils.class.getName());
+	private static final Logger logger = Logger.getLogger(FacebookSocialUtils.class.getName());
 	
 	private static String sendMessage(FacebookClient facebookClient, String connection, Parameter[] params, boolean verifyPermission) {
         try {          
@@ -69,7 +70,7 @@ public class FacebookUtils {
 
 	protected static void sendMessageToUserFeed(String token, String url, String title, int type) {
         if (token != null) {
-            FacebookClient facebookClient = new DefaultFacebookClient(token);
+            FacebookClient facebookClient = FacebookUtils.getFacebookClient(token);
             Parameter params[] = null;
             //message, picture, link, name, caption, description, source, place, tags
             
@@ -148,14 +149,14 @@ public class FacebookUtils {
         }
         
         if (params != null) {
-        	FacebookClient facebookClient = new DefaultFacebookClient(Commons.getProperty(Property.fb_page_token));
+        	FacebookClient facebookClient = FacebookUtils.getFacebookClient(Commons.getProperty(Property.fb_page_token));
             sendMessage(facebookClient, Commons.getProperty(Property.FB_GMS_WORLD_FEED), params, false);
         }
     }
     
     protected static void sendImageMessage(String imageUrl, String showImageUrl, String username) {
         if (imageUrl != null) {
-            FacebookClient facebookClient = new DefaultFacebookClient(Commons.getProperty(Property.fb_page_token));
+            FacebookClient facebookClient = FacebookUtils.getFacebookClient(Commons.getProperty(Property.fb_page_token));
             ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
             String userMask = UrlUtils.createUsernameMask(username);
             //logger.log(Level.INFO, "FB message link is: {0}", link);
@@ -174,7 +175,7 @@ public class FacebookUtils {
     }
     
     protected static int checkin(String token, String place, String name) {
-    	FacebookClient facebookClient = new DefaultFacebookClient(token);
+    	FacebookClient facebookClient = FacebookUtils.getFacebookClient(token);
     	ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
     	Parameter[] params = new Parameter[]{
     			Parameter.with("message", String.format(rb.getString("Social.checkin"), name)),
@@ -189,7 +190,7 @@ public class FacebookUtils {
     }
     
     protected static int sendComment(String token, String place, String message, String name) {
-    	FacebookClient facebookClient = new DefaultFacebookClient(token);
+    	FacebookClient facebookClient = FacebookUtils.getFacebookClient(token);
     	Parameter[] params = new Parameter[]{
     			Parameter.with("message", message),
                 Parameter.with("link", place),

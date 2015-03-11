@@ -184,4 +184,8 @@ public class GeonamesUtils extends LayerHelper {
 
         return landmarks;
     }
+	
+	public String getLayerName() {
+		 return Commons.WIKIPEDIA_LAYER;
+	}
 }

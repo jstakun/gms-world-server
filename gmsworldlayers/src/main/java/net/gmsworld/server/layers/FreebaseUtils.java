@@ -37,8 +37,7 @@ import com.openlapi.QualifiedCoordinates;
 public class FreebaseUtils extends LayerHelper {
 	
 	//2006-10-22T09:16:37.0012Z
-	private static final String dateFormat = "yyyy-MM-dd HH:mm:ss.SSSS ";
-	
+	private static final String dateFormat = "yyyy-MM-dd HH:mm:ss.SSSS ";	
 	private static final String IMAGE_PREFIX = "https://usercontent.googleapis.com/freebase/v1/image";
 	private static final String URL_PREFIX = ConfigurationManager.SERVER_URL + "freebaseView/";
 
@@ -208,5 +207,9 @@ public class FreebaseUtils extends LayerHelper {
 	               logger.log(Level.SEVERE, null, ex);
 	           }        
 		   }
-	}		   
+	 }
+	
+  public String getLayerName() {
+	  return Commons.FREEBASE_LAYER;
+  }
 }

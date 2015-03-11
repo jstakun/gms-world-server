@@ -194,4 +194,8 @@ public abstract class LayerHelper {
     		return null;
     	}
     }
+    
+    public String getLayerName() {
+    	return null;
+    }
 }

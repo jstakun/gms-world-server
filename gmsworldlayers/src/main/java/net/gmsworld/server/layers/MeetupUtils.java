@@ -221,4 +221,8 @@ public class MeetupUtils extends LayerHelper {
 
         return output;
 	}
+	
+	public String getLayerName() {
+    	return Commons.MEETUP_LAYER;
+    }
 }

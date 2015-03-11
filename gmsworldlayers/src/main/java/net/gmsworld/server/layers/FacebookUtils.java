@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package net.gmsworld.server.layers;
 
 import java.io.UnsupportedEncodingException;
@@ -36,6 +32,7 @@ import com.openlapi.QualifiedCoordinates;
 import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;
 import com.restfb.Parameter;
+import com.restfb.Version;
 import com.restfb.json.JsonArray;
 import com.restfb.json.JsonException;
 import com.restfb.json.JsonObject;
@@ -64,7 +61,7 @@ public class FacebookUtils extends LayerHelper {
             queries.put("places", "SELECT page_id, name, description, latitude, longitude, display_subtext, checkin_count FROM place WHERE page_id IN (select place_id from #photos)");
             queries.put("users", "SELECT uid, name FROM user WHERE uid IN (select owner from #photos)");
 
-            FacebookClient facebookClient = new DefaultFacebookClient(token);
+            FacebookClient facebookClient = getFacebookClient(token);
 
             FBMultiQueryResults multiqueryResults = facebookClient.executeFqlMultiquery(queries, FBMultiQueryResults.class);
 
@@ -213,7 +210,7 @@ public class FacebookUtils extends LayerHelper {
             queries.put("places", "SELECT page_id, name, description, latitude, longitude, display_subtext, checkin_count FROM place WHERE page_id IN (select place_id from #photos)");
             queries.put("users", "SELECT uid, name FROM user WHERE uid IN (select owner from #photos)");
 
-            FacebookClient facebookClient = new DefaultFacebookClient(token);
+            FacebookClient facebookClient = getFacebookClient(token);
 
             FBMultiQueryResults multiqueryResults = facebookClient.executeFqlMultiquery(queries, FBMultiQueryResults.class);
 
@@ -345,7 +342,7 @@ public class FacebookUtils extends LayerHelper {
             queries.put("places", "SELECT page_id, name, description, latitude, longitude, display_subtext, checkin_count FROM place WHERE page_id IN (select target_id from #checkins)");
             queries.put("users", "SELECT uid, name FROM user WHERE uid IN (select author_uid from #checkins)");
 
-            FacebookClient facebookClient = new DefaultFacebookClient(token);
+            FacebookClient facebookClient = getFacebookClient(token);
             FBMultiQueryResults multiqueryResults = facebookClient.executeFqlMultiquery(queries, FBMultiQueryResults.class);
 
             Map<Long, String> users = new HashMap<Long, String>();
@@ -486,7 +483,7 @@ public class FacebookUtils extends LayerHelper {
             queries.put("places", "SELECT page_id, name, description, latitude, longitude, display_subtext, checkin_count FROM place WHERE page_id IN (select target_id from #checkins)");
             queries.put("users", "SELECT uid, name FROM user WHERE uid IN (select author_uid from #checkins)");
 
-            FacebookClient facebookClient = new DefaultFacebookClient(token);
+            FacebookClient facebookClient = getFacebookClient(token);
             FBMultiQueryResults multiqueryResults = facebookClient.executeFqlMultiquery(queries, FBMultiQueryResults.class);
 
             Map<Long, String> users = new HashMap<Long, String>();
@@ -602,12 +599,11 @@ public class FacebookUtils extends LayerHelper {
 
         String cachedResponse = cacheProvider.getString(key);
         if (cachedResponse == null) {
-            FacebookClient facebookClient = null;
-            if (StringUtils.isNotEmpty(fbtoken)) {
-                facebookClient = new DefaultFacebookClient(fbtoken);
-            } else {
-                facebookClient = new DefaultFacebookClient(Commons.getProperty(Property.fb_app_token));
+        	String token = fbtoken;
+        	if (!StringUtils.isNotEmpty(token)) {
+               token = Commons.getProperty(Property.fb_app_token);
             }
+        	FacebookClient facebookClient = getFacebookClient(token);
 
             JsonObject placesSearch = null;
 
@@ -858,7 +854,7 @@ public class FacebookUtils extends LayerHelper {
     /*public static List<String> getMyFriends(String token) {
 
     	List<String> friendIds = new ArrayList<String>();
-    	FacebookClient facebookClient = new DefaultFacebookClient(token);
+    	FacebookClient facebookClient = getFacebookClient(token);
     	List<User> myFriends = facebookClient.fetchConnection("me/friends", User.class).getData();
     	for (Iterator<User> friends = myFriends.iterator(); friends.hasNext();) {
     			User friend = friends.next();
@@ -876,13 +872,11 @@ public class FacebookUtils extends LayerHelper {
 
         List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)cacheProvider.getObject(key);
         if (landmarks == null) {
-            FacebookClient facebookClient = null;
-            if (StringUtils.isNotEmpty(fbtoken)) {
-                facebookClient = new DefaultFacebookClient(fbtoken);
-            } else {
-                facebookClient = new DefaultFacebookClient(Commons.getProperty(Property.fb_app_token));
+            String token = fbtoken;
+        	if (!StringUtils.isNotEmpty(token)) {
+               token = Commons.getProperty(Property.fb_app_token);
             }
-
+        	FacebookClient facebookClient = getFacebookClient(token);
             JsonObject placesSearch = null;
 
             if (query != null && query.length() > 0) {
@@ -920,6 +914,14 @@ public class FacebookUtils extends LayerHelper {
 
         return landmarks;
 	}
+    
+    public static FacebookClient getFacebookClient(String token) {
+    	return new DefaultFacebookClient(token, Version.VERSION_2_0);
+    }
+    
+    public String getLayerName() {
+    	return Commons.FACEBOOK_LAYER;
+    }
     
     private static class VenueDetailsRetriever implements Runnable {
 

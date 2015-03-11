@@ -16,6 +16,7 @@ import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.JSONUtils;
+
 import com.openlapi.AddressInfo;
 import com.openlapi.QualifiedCoordinates;
 
@@ -363,4 +364,8 @@ public class CouponsUtils extends LayerHelper {
 		
 		return landmarks;
 	}
+	
+	public String getLayerName() {
+    	return Commons.COUPONS_LAYER;
+    }
 }

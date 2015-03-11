@@ -5,6 +5,7 @@
 package net.gmsworld.server.layers;
 
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
+
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.HttpUtils;
@@ -127,4 +128,8 @@ public class HotwireUtils extends LayerHelper {
 			throws Exception {
 		throw new Exception("Not yet implemented");
 	}
+	
+	public String getLayerName() {
+    	return Commons.HOTWIRE_LAYER;
+    }
 }

@@ -8,7 +8,6 @@ import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.MathUtils;
 import net.gmsworld.server.utils.NumberUtils;
 
-import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;
 import com.restfb.Parameter;
 import com.restfb.exception.FacebookOAuthException;
@@ -61,7 +60,7 @@ public class FBPlacesServlet extends HttpServlet {
                 String distance = request.getParameter("distance");
                 int limit = NumberUtils.getInt(request.getParameter("limit"), 30);
 
-                FacebookClient facebookClient = new DefaultFacebookClient(Commons.getProperty(Property.fb_app_token));
+                FacebookClient facebookClient = FacebookUtils.getFacebookClient(Commons.getProperty(Property.fb_app_token));
 
                 String query = request.getParameter("q");
                 JsonObject placesSearch = null;

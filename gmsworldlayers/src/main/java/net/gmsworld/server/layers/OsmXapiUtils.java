@@ -37,6 +37,8 @@ import com.openlapi.QualifiedCoordinates;
  * @author jstakun
  */
 public class OsmXapiUtils extends LayerHelper {
+	
+	private String amenity;
 
     private static OSMFile getAmenities(String amenity, String bbox) throws IOException {
 
@@ -120,6 +122,7 @@ public class OsmXapiUtils extends LayerHelper {
 	public JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String amenity, String bbox) throws Exception {
         //String key = "OSM_" + bbox + "_" + limit + "_" + amenity;
 
+    	this.amenity = amenity;
         String key = getCacheKey(getClass(), "processRequest", 0, 0, query, radius, version, limit, stringLimit, amenity, bbox);
 
         String output = cacheProvider.getString(key);
@@ -155,7 +158,8 @@ public class OsmXapiUtils extends LayerHelper {
 
 	@Override
 	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String amenity, String bbox, Locale locale, boolean useCache)	throws Exception {
-		String key = getCacheKey(getClass(), "processBinaryRequest", 0, 0, query, radius, version, limit, stringLimit, amenity, bbox);
+		this.amenity = amenity;
+        String key = getCacheKey(getClass(), "processBinaryRequest", 0, 0, query, radius, version, limit, stringLimit, amenity, bbox);
 
 		List<ExtendedLandmark> output = (List<ExtendedLandmark>)cacheProvider.getObject(key);
 
@@ -228,5 +232,13 @@ public class OsmXapiUtils extends LayerHelper {
                 break;
             }
         }
+    }
+	
+	public String getLayerName() {
+		if (amenity == null) {
+			return Commons.OSM_ATM_LAYER;
+		} else {
+			return amenity;
+		}
     }
 }

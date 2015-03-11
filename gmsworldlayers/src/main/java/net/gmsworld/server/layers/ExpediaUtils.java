@@ -320,4 +320,8 @@ public class ExpediaUtils extends LayerHelper {
 
 		return landmarks;
 	}
+	
+	public String getLayerName() {
+    	return Commons.EXPEDIA_LAYER;
+    }
 }

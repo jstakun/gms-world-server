@@ -545,6 +545,10 @@ public class YelpUtils extends LayerHelper {
 		logger.log(Level.SEVERE, "Received Yelp error response {0}", root);
 	}
 	
+	public String getLayerName() {
+    	return Commons.YELP_LAYER;
+    }
+	
 	private class ReviewDetailsRetriever implements Runnable {
 
         private Map<Integer, Thread> reviewDetailsThreads;

@@ -865,6 +865,10 @@ public class FoursquareUtils extends LayerHelper {
             }
         }
     }
+    
+    public String getLayerName() {
+    	return Commons.FOURSQUARE_LAYER;
+    }
 
     private static class VenueDetailsRetriever implements Runnable {
 
