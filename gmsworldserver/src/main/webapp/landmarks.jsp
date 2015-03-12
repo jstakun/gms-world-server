@@ -98,7 +98,7 @@
           });
 
           for (var i = 0; i < layers.length; i++) {
-        		var script = document.createElement('script');
+                var script = document.createElement('script');
         		script.src = '<%= ConfigurationManager.SERVER_URL %>/geoJsonProvider?lat=<%= latitude %>&lng=<%= longitude %>&layer=' + layers[i].name + '&callback=layers_callback'; 
         		document.getElementsByTagName('head')[0].appendChild(script);
           }
@@ -154,7 +154,7 @@
       }
 
       window.layers_callback = function(results) {
-          if (results.properties != null) {
+           if (results.properties != null) {
           		var layer = results.properties.layer;
     	  		for (var i = 0; i < layers.length; i++) {
           			 if (layer == layers[i].name) {
@@ -213,8 +213,7 @@
     	  google.maps.event.addDomListener(controlUI, 'click', function() {
     	    map.setCenter(center)
     	  });
-      }
-    	      
+      }    	      
 
       google.maps.event.addDomListener(window, 'load', initialize);
     </script>

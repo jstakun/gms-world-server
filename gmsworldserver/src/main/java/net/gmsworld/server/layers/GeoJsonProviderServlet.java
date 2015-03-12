@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
@@ -67,7 +68,7 @@ public class GeoJsonProviderServlet extends HttpServlet {
         	if (StringUtils.isNotEmpty(callBackJavaScripMethodName)) {
         		json = callBackJavaScripMethodName + "("+ json + ");";
         	}
-        	response.getWriter().write(json);
+        	response.getWriter().write(StringEscapeUtils.escapeJavaScript(json));
         	response.getWriter().close();
         }
 	}
