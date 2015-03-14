@@ -6,6 +6,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Locale;
 
+import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.utils.JvmThreadProvider;
 import net.gmsworld.server.utils.memcache.MockCacheProvider;
 
@@ -18,7 +19,7 @@ public class FBTest {
 
 	@Test
 	public void test() throws UnsupportedEncodingException {	
-		String token = "CAACz4nDTrZCsBAPYX1uxPKKM0W5pZAteZCLZAsUCkhLzcauF3XQW3621cN9aY0ZCpOj8Lww9gWzVjv7jgd46jZBZAerffXB0ZBCz5YXclSws4cqsULnl26d6iqrsdrAVnsdMedqcny25kH6ZB8JYI9MDdxZBG4sZBYXEsTZCpy0QhDU0jVsQkha2aura140JUFIGATV9ZBNLZBqhvqco4SvFB7kSVZB";
+		String token = Commons.FB_TEST_TOKEN;
 		double lat = 52.25;
 		double lng = 20.95;
 		

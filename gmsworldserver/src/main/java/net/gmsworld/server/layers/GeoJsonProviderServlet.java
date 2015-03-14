@@ -9,13 +9,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
-
-import com.jstakun.lm.server.utils.memcache.CacheUtil;
-
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.StringUtil;
+
+import org.apache.commons.lang.StringUtils;
+import org.json.JSONObject;
+
+import com.jstakun.lm.server.utils.memcache.CacheUtil;
 
 /**
  * Servlet implementation class geoJsonProviderServlet
@@ -63,12 +63,22 @@ public class GeoJsonProviderServlet extends HttpServlet {
         } finally {
         	if (! StringUtils.startsWith(json, "{")) {
 				json = "{}";
+			} else {
+				try {
+					//{"type":"FeatureCollection","properties":{"layer":"Layer"},"features":[]});
+					JSONObject layerJson = new JSONObject(json);
+					int layerSize = layerJson.getJSONArray("features").length();
+					String layerName = layerJson.getJSONObject("properties").getString("layer");
+					logger.log(Level.INFO, "Sending " + layerSize + " landmarks from layer " + layerName);
+				} catch (Exception e) {
+		            logger.log(Level.SEVERE, e.getMessage(), e);
+		        }
 			}
         	String callBackJavaScripMethodName = request.getParameter("callback");
         	if (StringUtils.isNotEmpty(callBackJavaScripMethodName)) {
         		json = callBackJavaScripMethodName + "("+ json + ");";
         	}
-        	response.getWriter().write(StringEscapeUtils.escapeJavaScript(json));
+        	response.getWriter().write(json);
         	response.getWriter().close();
         }
 	}
