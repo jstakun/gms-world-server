@@ -18,6 +18,7 @@ import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.ThreadProvider;
 import net.gmsworld.server.utils.memcache.CacheProvider;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.geojson.Feature;
 import org.geojson.FeatureCollection;
@@ -160,7 +161,7 @@ public abstract class LayerHelper {
     			Point p = new Point();
     			p.setCoordinates(new LngLatAlt(landmark.getQualifiedCoordinates().getLongitude(), landmark.getQualifiedCoordinates().getLatitude()));
     			f.setGeometry(p);
-    			f.setProperty("name", landmark.getName());
+    			f.setProperty("name", StringEscapeUtils.escapeJavaScript(landmark.getName()));
     			if (StringUtils.equals(layer, Commons.FACEBOOK_LAYER)) {
     				f.setProperty("url", StringUtils.replace(landmark.getUrl(), "touch", "www")); 
     			} else if (StringUtils.equals(layer, Commons.HOTELS_LAYER)) {

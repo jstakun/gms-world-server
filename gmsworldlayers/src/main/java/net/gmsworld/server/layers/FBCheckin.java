@@ -9,7 +9,7 @@ public class FBCheckin {
 
     @Facebook("author_uid")
     Long userId;
-    @Facebook("target_id")
+    @Facebook("page_id")
     String targetId;
     @Facebook("timestamp")
     Long timestamp;
