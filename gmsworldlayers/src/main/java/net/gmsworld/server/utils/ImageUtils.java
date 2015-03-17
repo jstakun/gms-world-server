@@ -14,8 +14,8 @@ public class ImageUtils {
 		int blackPixelsCount = 0;
 		int w = image.getWidth();
 	    int h = image.getHeight();
-	    //int totalPixels = w * h;
-	    int blackFactor = (int)(w * h * BLACK_FACTOR);
+	    int totalPixels = w * h;
+	    int blackFactor = (int)(totalPixels * BLACK_FACTOR);
 	    
 	    for (int i = 0; i < h; i++) {
 	    	for (int j = 0; j < w; j++) {
@@ -30,7 +30,7 @@ public class ImageUtils {
 	    	}
 	    }  
 		
-	    logger.log(Level.INFO, "Image has " + String.format("%1.4f", ((double)blackPixelsCount/(w*h))) + " black factor.");
+	    logger.log(Level.INFO, "Image has " + String.format("%1.4f", ((double)blackPixelsCount/(totalPixels))) + " black factor.");
 	    
 	    return isBlack;
 	}
@@ -57,6 +57,8 @@ public class ImageUtils {
     		}
 		}
 		
+		logger.log(Level.INFO, "Image has " + String.format("%1.4f", ((double)blackPixelsCount/(totalPixels))) + " black factor.");
+	    
 		return isBlack;
 	}
 }

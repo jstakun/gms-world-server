@@ -36,6 +36,7 @@ import com.restfb.Version;
 import com.restfb.json.JsonArray;
 import com.restfb.json.JsonException;
 import com.restfb.json.JsonObject;
+import com.restfb.types.User;
 
 /**
  *
@@ -851,18 +852,19 @@ public class FacebookUtils extends LayerHelper {
         }
     }
 
-    /*public static List<String> getMyFriends(String token) {
+    public List<String> getMyFriends(String token) {
 
     	List<String> friendIds = new ArrayList<String>();
-    	FacebookClient facebookClient = getFacebookClient(token);
+    	FacebookClient facebookClient = getFacebookClient(token, Version.VERSION_1_0);
     	List<User> myFriends = facebookClient.fetchConnection("me/friends", User.class).getData();
     	for (Iterator<User> friends = myFriends.iterator(); friends.hasNext();) {
     			User friend = friends.next();
     			friendIds.add(friend.getId());
+    			System.out.println(friend.getId() + ": " + friend.getName());
     	}
 
     	return friendIds;
-    }*/
+    }
     
     @Override
 	public List<ExtendedLandmark> processBinaryRequest(double latitude, double longitude, String query, int distance, int version, int limit, int stringLength, String fbtoken, String flexString2, Locale locale, boolean useCache) throws Exception {

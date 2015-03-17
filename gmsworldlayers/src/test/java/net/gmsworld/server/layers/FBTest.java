@@ -28,7 +28,10 @@ public class FBTest {
 		LayerHelperFactory.setCacheProvider(new MockCacheProvider());
 		LayerHelperFactory.setThreadProvider(new JvmThreadProvider());	
 		
-		List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getFriendsCheckinsToLandmarks(lat, lng, 1, 30, 1024, token, Locale.US);
+		List<String> friends = LayerHelperFactory.getFacebookUtils().getMyFriends(token);
+		System.out.println("Found " + friends.size() + " friends");
+		
+		/*List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getFriendsCheckinsToLandmarks(lat, lng, 1, 30, 1024, token, Locale.US);
 		System.out.println("Found " + landmarks.size() + " checkins");
 		
 		printLandmarks(landmarks);
@@ -36,7 +39,7 @@ public class FBTest {
 	    landmarks =	LayerHelperFactory.getFacebookUtils().getFriendsPhotosToLandmark(lat, lng, 1, 30, 1024, token, Locale.US);
 	    System.out.println("Found " + landmarks.size() + " photos");
 	    
-	    printLandmarks(landmarks);
+	    printLandmarks(landmarks);*/
 	}
 	
 	private void printLandmarks(List<ExtendedLandmark> landmarks) {

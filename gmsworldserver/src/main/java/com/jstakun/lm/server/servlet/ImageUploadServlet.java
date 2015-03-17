@@ -83,6 +83,11 @@ public class ImageUploadServlet extends HttpServlet {
                     	if (screenshot != null && screenshot.length > 0) {
                     		
                     		itemName = System.currentTimeMillis() + "_" + itemName;
+                    		
+                    		if (ImageUtils.isBlackImage(screenshot)) {
+                    			//TODO testing
+                        		logger.log(Level.SEVERE, "This image might be black!");
+                        	}	              	
                     	
                     		FileUtils.saveFileV2(itemName, screenshot, lat, lng);
                         
@@ -101,15 +106,7 @@ public class ImageUploadServlet extends HttpServlet {
                                 put("lng", Double.toString(lng)).
                                 put("username", StringUtils.isNotEmpty(username) ? username : "").build();
 	                        	NotificationUtils.createImageCreationNotificationTask(params);
-                    		
-	                        	try {
-	                        		if (ImageUtils.isBlackImage(screenshot)) {
-	                        			logger.log(Level.SEVERE, "This image might be black: " + imageUrl);
-	                        			MailUtils.sendBlackScreenshotNotification("Check this screenshot: " + imageUrl);
-	                        		}	
-	                        	} catch (Exception e) {
-	                        		logger.log(Level.SEVERE, "ImageUploadServlet.processRequest() exception", e);
-	                        	}
+	                        	
 	                        	output = "File saved with key " + key;
                     		} else {
                     			output = "Key is empty!";
