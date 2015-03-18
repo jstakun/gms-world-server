@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.lm.server.servlet;
 
 import java.io.IOException;
@@ -15,6 +11,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.gmsworld.server.config.ConfigurationManager;
+import net.gmsworld.server.utils.ImageUtils;
+import net.gmsworld.server.utils.NumberUtils;
+import net.gmsworld.server.utils.StringUtil;
+
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
@@ -22,15 +23,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.google.common.collect.ImmutableMap;
-
-import net.gmsworld.server.config.ConfigurationManager;
-import net.gmsworld.server.utils.ImageUtils;
-import net.gmsworld.server.utils.NumberUtils;
-import net.gmsworld.server.utils.StringUtil;
-
 import com.jstakun.lm.server.social.NotificationUtils;
 import com.jstakun.lm.server.utils.FileUtils;
-import com.jstakun.lm.server.utils.MailUtils;
 import com.jstakun.lm.server.utils.UrlUtils;
 import com.jstakun.lm.server.utils.persistence.ScreenshotPersistenceUtils;
 
@@ -85,34 +79,35 @@ public class ImageUploadServlet extends HttpServlet {
                     		itemName = System.currentTimeMillis() + "_" + itemName;
                     		
                     		if (ImageUtils.isBlackImage(screenshot)) {
-                    			//TODO testing
-                        		logger.log(Level.SEVERE, "This image might be black!");
-                        	}	              	
+                    			logger.log(Level.SEVERE, "This image is black and won't be saved.");
+                    			output = "Image is black.";
+                        	} else {	              	
                     	
-                    		FileUtils.saveFileV2(itemName, screenshot, lat, lng);
+                        		FileUtils.saveFileV2(itemName, screenshot, lat, lng);
                         
-                    		String username = StringUtil.getUsername(request.getAttribute("username"),request.getHeader("username"));
+                        		String username = StringUtil.getUsername(request.getAttribute("username"),request.getHeader("username"));
                         
-                    		String key = ScreenshotPersistenceUtils.persistScreenshot(username, lat, lng, itemName);
+                        		String key = ScreenshotPersistenceUtils.persistScreenshot(username, lat, lng, itemName);
                         
-                    		if (key != null) {
-	                            String imageUrl = ConfigurationManager.SERVER_URL + "image/" + key;
-	                        	String showImageUrl = UrlUtils.getShortUrl(ConfigurationManager.SERVER_URL + "showImage/" + key);
+                        		if (key != null) {
+                        			String imageUrl = ConfigurationManager.SERVER_URL + "image/" + key;
+                        			String showImageUrl = UrlUtils.getShortUrl(ConfigurationManager.SERVER_URL + "showImage/" + key);
                     		
-	                        	Map<String, String> params = new ImmutableMap.Builder<String, String>().
-	                        	put("showImageUrl", showImageUrl).
-                                put("imageUrl", imageUrl).
-                                put("lat", Double.toString(lat)).
-                                put("lng", Double.toString(lng)).
-                                put("username", StringUtils.isNotEmpty(username) ? username : "").build();
-	                        	NotificationUtils.createImageCreationNotificationTask(params);
+                        			Map<String, String> params = new ImmutableMap.Builder<String, String>().
+                        					put("showImageUrl", showImageUrl).
+                        					put("imageUrl", imageUrl).
+                        					put("lat", Double.toString(lat)).
+                        					put("lng", Double.toString(lng)).
+                        					put("username", StringUtils.isNotEmpty(username) ? username : "").build();
+                        			NotificationUtils.createImageCreationNotificationTask(params);
 	                        	
-	                        	output = "File saved with key " + key;
-                    		} else {
-                    			output = "Key is empty!";
-                    			logger.log(Level.SEVERE, "Key is empty!");
-                    			logger.log(Level.INFO, "Deleted file " + FileUtils.deleteFileV2(itemName));
-                    		}
+                        			output = "File saved with key " + key;
+                        		} else {
+                        			output = "Key is empty!";
+                        			logger.log(Level.SEVERE, "Key is empty!");
+                        			logger.log(Level.INFO, "Deleted file " + FileUtils.deleteFileV2(itemName));
+                        		}
+                        	}
                     	} else {
                     		output = "Empty screenshot found.";
                     	}

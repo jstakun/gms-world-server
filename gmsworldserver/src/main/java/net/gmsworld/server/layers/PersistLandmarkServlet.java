@@ -177,12 +177,9 @@ public class PersistLandmarkServlet extends HttpServlet {
                         	}
                     	}
 
-                    	String useCount = request.getHeader("X-GMS-UseCount");
-                    	String messageSuffix = "";
-                    	if (useCount != null) {
-                        	messageSuffix = " User has opened LM " + useCount + " times.";
-                    	}
-
+                    	int useCount = NumberUtils.getInt(request.getHeader("X-GMS-UseCount"), 1);
+                    	String messageSuffix = " User has opened LM " + useCount + " times.";
+                    	
                     	String title = "New landmark";
                     	if (StringUtils.isNotEmpty(titleSuffix)) {
                         	title += titleSuffix;
