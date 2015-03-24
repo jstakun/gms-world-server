@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package net.gmsworld.server.layers;
 
 import net.gmsworld.server.utils.ThreadProvider;

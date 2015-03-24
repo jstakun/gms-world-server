@@ -26,6 +26,8 @@ import com.google.common.collect.ImmutableMap;
 import com.jstakun.lm.server.social.NotificationUtils;
 import com.jstakun.lm.server.utils.FileUtils;
 import com.jstakun.lm.server.utils.UrlUtils;
+import com.jstakun.lm.server.utils.memcache.CacheUtil;
+import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 import com.jstakun.lm.server.utils.persistence.ScreenshotPersistenceUtils;
 
 /**
@@ -52,8 +54,12 @@ public class ImageUploadServlet extends HttpServlet {
             double lat = NumberUtils.getDouble(request.getHeader("X-GMS-Lat"), Double.NaN);
             double lng = NumberUtils.getDouble(request.getHeader("X-GMS-Lng"), Double.NaN);
             boolean isMultipart = ServletFileUpload.isMultipartContent(request);
-
-            if (!Double.isNaN(lat) && !Double.isNaN(lng) && isMultipart) {
+            
+            String latStr = StringUtil.formatCoordE2(lat);
+            String lngStr = StringUtil.formatCoordE2(lng);
+            if (CacheUtil.containsKey("screenshot_" + latStr + "_" + lngStr)) {
+            	logger.log(Level.WARNING, "This screenshot is similar to newest: screenshot_" + latStr + "_" + lngStr);
+            } else if (!Double.isNaN(lat) && !Double.isNaN(lng) && isMultipart) {
 
                 ServletFileUpload upload = new ServletFileUpload();
                 upload.setSizeMax(ONE_MB); //1 MB
@@ -92,7 +98,10 @@ public class ImageUploadServlet extends HttpServlet {
                         		if (key != null) {
                         			String imageUrl = ConfigurationManager.SERVER_URL + "image/" + key;
                         			String showImageUrl = UrlUtils.getShortUrl(ConfigurationManager.SERVER_URL + "showImage/" + key);
-                    		
+                        			CacheUtil.put("screenshot_" + lat + "_" + lng, "1", CacheType.FAST);
+                        			
+                        			//TODO load image from imageUrl and check if it is black
+                        			
                         			Map<String, String> params = new ImmutableMap.Builder<String, String>().
                         					put("showImageUrl", showImageUrl).
                         					put("imageUrl", imageUrl).

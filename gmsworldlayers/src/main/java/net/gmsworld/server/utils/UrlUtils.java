@@ -134,6 +134,7 @@ public class UrlUtils {
     }
 
     public static String getShortUrl(String url) {
+    	//TODO use alternative shortening service
         String respUrl = url;
         if (!StringUtils.startsWith(url, BITLY_URL)) {
             try {
