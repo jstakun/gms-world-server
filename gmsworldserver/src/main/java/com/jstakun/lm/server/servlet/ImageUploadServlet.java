@@ -55,10 +55,9 @@ public class ImageUploadServlet extends HttpServlet {
             double lng = NumberUtils.getDouble(request.getHeader("X-GMS-Lng"), Double.NaN);
             boolean isMultipart = ServletFileUpload.isMultipartContent(request);
             
-            String latStr = StringUtil.formatCoordE2(lat);
-            String lngStr = StringUtil.formatCoordE2(lng);
-            if (CacheUtil.containsKey("screenshot_" + latStr + "_" + lngStr)) {
-            	logger.log(Level.WARNING, "This screenshot is similar to newest: screenshot_" + latStr + "_" + lngStr);
+            String cacheKey = "screenshot_" + StringUtil.formatCoordE2(lat) + "_" + StringUtil.formatCoordE2(lng);
+            if (CacheUtil.containsKey(cacheKey)) {
+            	logger.log(Level.WARNING, "This screenshot is similar to newest: " + cacheKey);
             } else if (!Double.isNaN(lat) && !Double.isNaN(lng) && isMultipart) {
 
                 ServletFileUpload upload = new ServletFileUpload();
@@ -98,7 +97,7 @@ public class ImageUploadServlet extends HttpServlet {
                         		if (key != null) {
                         			String imageUrl = ConfigurationManager.SERVER_URL + "image/" + key;
                         			String showImageUrl = UrlUtils.getShortUrl(ConfigurationManager.SERVER_URL + "showImage/" + key);
-                        			CacheUtil.put("screenshot_" + lat + "_" + lng, "1", CacheType.FAST);
+                        			CacheUtil.put(cacheKey, "1", CacheType.FAST);
                         			
                         			//TODO load image from imageUrl and check if it is black
                         			
