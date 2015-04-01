@@ -27,8 +27,14 @@ import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.HttpUtils;
+import net.gmsworld.server.utils.NumberUtils;
+import net.gmsworld.server.utils.StringUtil;
 
+import com.google.common.collect.ImmutableMap;
 import com.jstakun.lm.server.persistence.Landmark;
+import com.jstakun.lm.server.social.NotificationUtils;
+import com.jstakun.lm.server.utils.UrlUtils;
+import com.jstakun.lm.server.utils.memcache.CacheAction;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 
@@ -950,4 +956,84 @@ public class LandmarkPersistenceUtils {
             }
         }
     }*/
+    
+    public static boolean isSimilarToNewest(String name, String lat, String lng) {
+    	boolean isSimilarToNewest = false;
+        if (CacheUtil.containsKey(name + "_" + lat + "_" + lng)) {
+        	isSimilarToNewest = true;
+        	logger.log(Level.WARNING, "This landmark is similar to newest: " + name + "_" + lat + "_" + lng);
+        } else {
+        	CacheAction newestLandmarksAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
+        		@Override
+        		public Object executeAction() {
+        			return LandmarkPersistenceUtils.selectNewestLandmarks();
+        		}
+        	});
+        	
+        	List<Landmark> landmarkList = (List<Landmark>)newestLandmarksAction.getObjectFromCache("newestLandmarks", CacheType.FAST);
+        	if (!landmarkList.isEmpty()) {
+        		Landmark newestLandmark = landmarkList.get(0);
+        		logger.log(Level.INFO, "Newest landmark: " + newestLandmark.getName() + ", " + newestLandmark.getLatitude() + ", " + newestLandmark.getLongitude());
+        		if (StringUtils.equals(newestLandmark.getName(), name) && StringUtils.equals(StringUtil.formatCoordE2(newestLandmark.getLatitude()), lat)
+        			 && StringUtils.equals(StringUtil.formatCoordE2(newestLandmark.getLongitude()), lng)) {
+        			logger.log(Level.WARNING, "This landmark is similar to newest: " + name + ", " + lat + ", " + lng);
+        			isSimilarToNewest = true;
+        		} else {
+        			logger.log(Level.INFO, "This landmark is not similar to newest: " + name + ", " + lat + ", " + lng);
+        		}
+        	}
+        }
+        return isSimilarToNewest;
+    }
+    
+    public static void notifyOnLandmarkCreation(String name, String lat, String lng, String id, String hash, String layer, String username, String email, String userAgent, int useCount) {
+    	CacheUtil.put(name + "_" + lat + "_" + lng, "1", CacheType.FAST);
+    	//social notifications
+    
+    	String landmarkUrl = ConfigurationManager.SERVER_URL + "showLandmark/" + id;
+    	if (StringUtils.isNotEmpty(hash)) {
+    		landmarkUrl = UrlUtils.BITLY_URL + hash;
+    	} 
+                        
+    	String titleSuffix = "";
+    	String[] tokens = StringUtils.split(userAgent, ",");
+    	if (tokens != null) {
+        	for (int i = 0; i < tokens.length; i++) {
+            	String token = StringUtils.trimToEmpty(tokens[i]);
+            	if (token.startsWith("Package:") || token.startsWith("Version:") || token.startsWith("Version Code:")) {
+                	titleSuffix += " " + token;
+            	}
+        	}
+    	}
+
+    	String messageSuffix = "";
+    	if (useCount > 0) {
+    		messageSuffix = " User has opened LM " + useCount + " times.";
+    	}
+    	
+    	String title = "New landmark";
+    	if (StringUtils.isNotEmpty(titleSuffix)) {
+        	title += titleSuffix;
+    	}
+
+    	String body = "Landmark: " + name + " has been created by user " + ConfigurationManager.SERVER_URL + "socialProfile?uid=" + username + "." + messageSuffix;
+    
+    	String userUrl = ConfigurationManager.SERVER_URL;
+    	if (StringUtils.equals(layer, "Social")) {
+    		userUrl += "blogeo/" + username;
+    	} else {
+    		userUrl += "showUser/" + username;
+    	}
+    
+    	Map<String, String> params = new ImmutableMap.Builder<String, String>().
+            put("key", id).
+    		put("landmarkUrl", landmarkUrl).
+    		put("email", StringUtils.isNotEmpty(email) ? email : "").
+    		put("title", title).
+    		put("userUrl", userUrl).
+    		put("username", username).
+    		put("body", body).build();  
+    
+    	NotificationUtils.createLadmarkCreationNotificationTask(params);
+    }
 }

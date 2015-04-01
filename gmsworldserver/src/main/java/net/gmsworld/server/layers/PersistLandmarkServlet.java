@@ -3,7 +3,6 @@ package net.gmsworld.server.layers;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,27 +13,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
-
-import com.google.common.collect.ImmutableMap;
-import com.google.gdata.util.common.util.Base64;
-
 import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.config.ConfigurationManager;
-
-import com.jstakun.lm.server.persistence.Landmark;
-import com.jstakun.lm.server.social.NotificationUtils;
-
 import net.gmsworld.server.utils.CryptoTools;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
 
-import com.jstakun.lm.server.utils.UrlUtils;
-import com.jstakun.lm.server.utils.memcache.CacheAction;
+import org.apache.commons.lang.StringUtils;
+
+import com.google.gdata.util.common.util.Base64;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
-import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 
 /**
@@ -118,32 +107,7 @@ public class PersistLandmarkServlet extends HttpServlet {
                 //check if this landmark has the same name and location as newest (last saved) landmark
                 String lat = StringUtil.formatCoordE2(latitude);
                 String lng = StringUtil.formatCoordE2(longitude);
-                boolean isSimilarToNewest = false;
-                if (CacheUtil.containsKey(name + "_" + lat + "_" + lng)) {
-                	isSimilarToNewest = true;
-                	logger.log(Level.WARNING, "This landmark is similar to newest: " + name + "_" + lat + "_" + lng);
-                } else {
-                	CacheAction newestLandmarksAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
-                		@Override
-                		public Object executeAction() {
-                			return LandmarkPersistenceUtils.selectNewestLandmarks();
-                		}
-                	});
-                	
-                	List<Landmark> landmarkList = (List<Landmark>)newestLandmarksAction.getObjectFromCache("newestLandmarks", CacheType.FAST);
-                	if (!landmarkList.isEmpty()) {
-                		Landmark newestLandmark = landmarkList.get(0);
-                		logger.log(Level.INFO, "Newest landmark: " + newestLandmark.getName() + ", " + newestLandmark.getLatitude() + ", " + newestLandmark.getLongitude());
-                		if (StringUtils.equals(newestLandmark.getName(), name) && StringUtils.equals(StringUtil.formatCoordE2(newestLandmark.getLatitude()), lat)
-                			 && StringUtils.equals(StringUtil.formatCoordE2(newestLandmark.getLongitude()), lng)) {
-                			logger.log(Level.WARNING, "This landmark is similar to newest: " + name + ", " + latitude + ", " + longitude);
-                			isSimilarToNewest = true;
-                		} else {
-                			logger.log(Level.INFO, "This landmark is not similar to newest: " + name + ", " + latitude + ", " + longitude);
-                		}
-                	}
-                }
-                
+            	boolean isSimilarToNewest = LandmarkPersistenceUtils.isSimilarToNewest(name, lat, lng);
                 if (!isSimilarToNewest) {
                 	Map<String, String> peristResponse = LandmarkPersistenceUtils.persistLandmark(name, description, latitude, longitude, altitude, username, validityDate, layer, email);
 
@@ -157,7 +121,11 @@ public class PersistLandmarkServlet extends HttpServlet {
                     	String layerKey = JSON_LAYER_LIST + "_" + StringUtil.formatCoordE2(latitude) + "_" + StringUtil.formatCoordE2(longitude) + "_" + radius;
                     	logger.log(Level.INFO, "Removed from cache layer list {0}: {1}", new Object[]{layerKey, CacheUtil.remove(layerKey)});           
                 	
-                    	CacheUtil.put(name + "_" + lat + "_" + lng, "1", CacheType.FAST);
+                    	String userAgent = request.getHeader("User-Agent");
+                    	int useCount = NumberUtils.getInt(request.getHeader("X-GMS-UseCount"), 1);
+                    	LandmarkPersistenceUtils.notifyOnLandmarkCreation(name, lat, lng, id, hash, layer, username, email, userAgent, useCount);
+                    	
+                    	/*CacheUtil.put(name + "_" + lat + "_" + lng, "1", CacheType.FAST);
                     	//social notifications
                     
                     	String landmarkUrl = ConfigurationManager.SERVER_URL + "showLandmark/" + id;
@@ -203,7 +171,7 @@ public class PersistLandmarkServlet extends HttpServlet {
                     		put("username", username).
                     		put("body", body).build();  
                     
-                    	NotificationUtils.createLadmarkCreationNotificationTask(params);
+                    	NotificationUtils.createLadmarkCreationNotificationTask(params);*/
                 	}
                 }
             }
