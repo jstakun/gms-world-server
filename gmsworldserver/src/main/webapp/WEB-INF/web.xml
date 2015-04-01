@@ -280,7 +280,7 @@
  </servlet>
  <servlet>
   <servlet-name>NotificationsServlet</servlet-name>
-  <servlet-class>com.jstakun.lm.server.servlet.NotificationsServlet</servlet-class>
+  <servlet-class>net.gmsworld.server.layers.NotificationsServlet</servlet-class>
  </servlet>
  <servlet>
   <servlet-name>LayersProviderServlet</servlet-name>

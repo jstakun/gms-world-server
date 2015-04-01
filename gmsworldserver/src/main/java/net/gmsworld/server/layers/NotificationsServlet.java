@@ -3,12 +3,13 @@
  * and open the template in the editor.
  */
 
-package com.jstakun.lm.server.servlet;
+package net.gmsworld.server.layers;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,6 +30,7 @@ import org.json.JSONObject;
 import com.google.gdata.util.common.util.Base64;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.utils.MailUtils;
+import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 
 /**
  *
@@ -62,39 +64,43 @@ public class NotificationsServlet extends HttpServlet {
                 String appId = request.getParameter("appId");
                 JSONObject reply = new JSONObject();
                 
-                String lat = request.getParameter("lat");
-                String lng = request.getParameter("lng");
-                if (StringUtils.isNotEmpty(lat) && StringUtils.isNotEmpty(lng)) {
-                	logger.log(Level.INFO, "User location is " + lat + "," + lng);
-                	//TODO persist location
+                String latStr = request.getParameter("lat");
+                String lngStr = request.getParameter("lng");
+                if (StringUtils.isNotEmpty(latStr) && StringUtils.isNotEmpty(lngStr)) {
+                	try {
+                		double latitude = GeocodeUtils.getLatitude(latStr);
+                		double longitude = GeocodeUtils.getLongitude(lngStr);	
+                		String lat = StringUtil.formatCoordE2(latitude);
+                		String lng = StringUtil.formatCoordE2(longitude);
+                		logger.log(Level.INFO, "User location is " + lat + "," + lng);
+                		//persist location
                 	
-                	/*
-                	String name = "My location";
-                	String lat = StringUtil.formatCoordE2(latitude);
-                	String lng = StringUtil.formatCoordE2(longitude);
-            		boolean isSimilarToNewest = LandmarkPersistenceUtils.isSimilarToNewest(name, lat, lng);
-                	if (!isSimilarToNewest) {
-                		String username = StringUtil.getUsername(request.getAttribute("username"),request.getParameter("username"));
-                		if (username != null && username.length() % 4 == 0) {
-                			try {
-                				username = new String(Base64.decode(username));
-                			} catch (Exception e) {
-                				//from version 1086, 86 username is Base64 encoded string
-                			}
-                		}	
-                		String description = GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(latitude, longitude);            
-                		Map<String, String> peristResponse = LandmarkPersistenceUtils.persistLandmark(name, description, latitude, longitude, 0, username, null, Commons.MY_POS_CODE, null);
+                		String name = "My location";
+                		boolean isSimilarToNewest = LandmarkPersistenceUtils.isSimilarToNewest(name, lat, lng);
+                		if (!isSimilarToNewest) {
+                			String username = StringUtil.getUsername(request.getAttribute("username"),request.getParameter("username"));
+                			if (username != null && username.length() % 4 == 0) {
+                				try {
+                					username = new String(Base64.decode(username));
+                				} catch (Exception e) {
+                					//from version 1086, 86 username is Base64 encoded string
+                				}
+                			}	
+                			String description = GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(latitude, longitude);            
+                			Map<String, String> peristResponse = LandmarkPersistenceUtils.persistLandmark(name, description, latitude, longitude, 0, username, null, Commons.MY_POS_CODE, null);
 
-                		String id = peristResponse.get("id");
-                		String hash = peristResponse.get("hash");
+                			String id = peristResponse.get("id");
+                			String hash = peristResponse.get("hash");
                 
-                		if (StringUtils.isNumeric(id)) {	
-                        	String userAgent = request.getHeader("User-Agent");
-                    		int useCount = NumberUtils.getInt(request.getHeader("X-GMS-UseCount"), 1);
-                    		LandmarkPersistenceUtils.notifyOnLandmarkCreation(name, lat, lng, id, hash, Commons.MY_POS_CODE, username, null, userAgent, useCount);
-                        }
-                    } */   
-                	
+                			if (StringUtils.isNumeric(id)) {	
+                				String userAgent = request.getHeader("User-Agent");
+                				int useCount = NumberUtils.getInt(request.getHeader("X-GMS-UseCount"), 1);
+                				LandmarkPersistenceUtils.notifyOnLandmarkCreation(name, lat, lng, id, hash, Commons.MY_POS_CODE, username, null, userAgent, useCount);
+                			}
+                		}
+                	} catch (Exception e) {
+                		logger.log(Level.SEVERE, e.getMessage(), e);
+                	}
                 } else {
                 	logger.log(Level.INFO, "No user location provided");
                 }
