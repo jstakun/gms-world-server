@@ -108,8 +108,8 @@ public class PersistLandmarkServlet extends HttpServlet {
                 String lat = StringUtil.formatCoordE2(latitude);
                 String lng = StringUtil.formatCoordE2(longitude);
             	boolean isSimilarToNewest = LandmarkPersistenceUtils.isSimilarToNewest(name, lat, lng);
-                if (!isSimilarToNewest) {
-                	Map<String, String> peristResponse = LandmarkPersistenceUtils.persistLandmark(name, description, latitude, longitude, altitude, username, validityDate, layer, email);
+            	if (!isSimilarToNewest) {
+            		Map<String, String> peristResponse = LandmarkPersistenceUtils.persistLandmark(name, description, latitude, longitude, altitude, username, validityDate, layer, email);
 
                 	id = peristResponse.get("id");
                 	hash = peristResponse.get("hash");
@@ -120,59 +120,11 @@ public class PersistLandmarkServlet extends HttpServlet {
                     	int radius = NumberUtils.getRadius(request.getParameter("radius"), 3, 6371);
                     	String layerKey = JSON_LAYER_LIST + "_" + StringUtil.formatCoordE2(latitude) + "_" + StringUtil.formatCoordE2(longitude) + "_" + radius;
                     	logger.log(Level.INFO, "Removed from cache layer list {0}: {1}", new Object[]{layerKey, CacheUtil.remove(layerKey)});           
-                	
+                	    //
                     	String userAgent = request.getHeader("User-Agent");
                     	int useCount = NumberUtils.getInt(request.getHeader("X-GMS-UseCount"), 1);
                     	LandmarkPersistenceUtils.notifyOnLandmarkCreation(name, lat, lng, id, hash, layer, username, email, userAgent, useCount);
-                    	
-                    	/*CacheUtil.put(name + "_" + lat + "_" + lng, "1", CacheType.FAST);
-                    	//social notifications
-                    
-                    	String landmarkUrl = ConfigurationManager.SERVER_URL + "showLandmark/" + id;
-                    	if (StringUtils.isNotEmpty(hash)) {
-                    		landmarkUrl = UrlUtils.BITLY_URL + hash;
-                    	} 
-                                        
-                    	String titleSuffix = "";
-                    	String userAgent = request.getHeader("User-Agent");
-                    	String[] tokens = StringUtils.split(userAgent, ",");
-                    	if (tokens != null) {
-                        	for (int i = 0; i < tokens.length; i++) {
-                            	String token = StringUtils.trimToEmpty(tokens[i]);
-                            	if (token.startsWith("Package:") || token.startsWith("Version:") || token.startsWith("Version Code:")) {
-                                	titleSuffix += " " + token;
-                            	}
-                        	}
-                    	}
-
-                    	int useCount = NumberUtils.getInt(request.getHeader("X-GMS-UseCount"), 1);
-                    	String messageSuffix = " User has opened LM " + useCount + " times.";
-                    	
-                    	String title = "New landmark";
-                    	if (StringUtils.isNotEmpty(titleSuffix)) {
-                        	title += titleSuffix;
-                    	}
-
-                    	String body = "Landmark: " + name + " has been created by user " + ConfigurationManager.SERVER_URL + "socialProfile?uid=" + username + "." + messageSuffix;
-                    
-                    	String userUrl = ConfigurationManager.SERVER_URL;
-                    	if (StringUtils.equals(layer, "Social")) {
-                    		userUrl += "blogeo/" + username;
-                    	} else {
-                    		userUrl += "showUser/" + username;
-                    	}
-                    
-                    	Map<String, String> params = new ImmutableMap.Builder<String, String>().
-                            put("key", id).
-                    		put("landmarkUrl", landmarkUrl).
-                    		put("email", StringUtils.isNotEmpty(email) ? email : "").
-                    		put("title", title).
-                    		put("userUrl", userUrl).
-                    		put("username", username).
-                    		put("body", body).build();  
-                    
-                    	NotificationUtils.createLadmarkCreationNotificationTask(params);*/
-                	}
+                	} 
                 }
             }
         } catch (Exception e) {

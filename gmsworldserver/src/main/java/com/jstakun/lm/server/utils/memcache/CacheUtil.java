@@ -23,12 +23,13 @@ import com.google.appengine.api.memcache.jsr107cache.GCacheFactory;
  */
 public class CacheUtil {
 
-	public enum CacheType {FAST, NORMAL, LONG};
+	public enum CacheType {FAST, NORMAL, LANDMARK, LONG};
 	private static Cache cache = null;
 	private static final Logger logger = Logger.getLogger(CacheUtil.class.getName());
 	private static final Expiration ONE_HOUR_EXPIRATION = Expiration.byDeltaSeconds(60 * 60);
     private static final int TWO_HOURS = 3600 * 2;
     private static final Expiration ONE_MINUTE_EXPIRATION = Expiration.byDeltaSeconds(60);
+    private static final Expiration TEN_MINUTES_EXPIRATION = Expiration.byDeltaSeconds(10 * 60);
     private static final Expiration LONG_CACHE_EXPIRATION = Expiration.byDeltaMillis(4 * 60 * 60 * 1000);
     public static final int LONG_CACHE_LIMIT = 4 * 60 * 60 * 1000; //4h
     //private static final MyCacheListener listener = new MyCacheListener();
@@ -91,6 +92,12 @@ public class CacheUtil {
 		syncCache.put(key, value, ONE_MINUTE_EXPIRATION);
 	}
 	
+	private static void putToLandmarkCache(String key, Object value) {
+		//logger.log(Level.INFO, "putToShortCache " + key);
+		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+		syncCache.put(key, value, TEN_MINUTES_EXPIRATION);
+	}
+	
 	private static void putToLongCache(String key, Object value) {
 		//logger.log(Level.INFO, "putToShortCache " + key);
 		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
@@ -115,6 +122,8 @@ public class CacheUtil {
 			putToFastCache(key, value);
 		} else if (type == CacheType.LONG) {
 			putToLongCache(key, value);
+		} else if (type == CacheType.LANDMARK) {
+			putToLandmarkCache(key, value);
 		}
 	}
 	

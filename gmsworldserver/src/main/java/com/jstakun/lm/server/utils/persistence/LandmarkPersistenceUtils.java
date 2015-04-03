@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.lm.server.utils.persistence;
 
 import java.lang.reflect.InvocationTargetException;
@@ -16,19 +12,18 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.beanutils.ConvertUtils;
-import org.apache.commons.lang.StringUtils;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.HttpUtils;
-import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
+
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.lang.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import com.google.common.collect.ImmutableMap;
 import com.jstakun.lm.server.persistence.Landmark;
@@ -121,6 +116,12 @@ public class LandmarkPersistenceUtils {
         	}
         } catch (Exception e) {
         	logger.log(Level.SEVERE, e.getMessage(), e);
+        }
+        
+        if (!StringUtils.isNumeric(response.get("id"))) {
+        	String lat = StringUtil.formatCoordE2(latitude);
+            String lng = StringUtil.formatCoordE2(longitude);
+        	CacheUtil.remove(name + "_" + lat + "_" + lng);
         }
 
         return response;
@@ -983,11 +984,13 @@ public class LandmarkPersistenceUtils {
         		}
         	}
         }
+        if (!isSimilarToNewest) {
+        	CacheUtil.put(name + "_" + lat + "_" + lng, "1", CacheType.LANDMARK);
+        }
         return isSimilarToNewest;
     }
     
     public static void notifyOnLandmarkCreation(String name, String lat, String lng, String id, String hash, String layer, String username, String email, String userAgent, int useCount) {
-    	CacheUtil.put(name + "_" + lat + "_" + lng, "1", CacheType.FAST);
     	//social notifications
     
     	String landmarkUrl = ConfigurationManager.SERVER_URL + "showLandmark/" + id;

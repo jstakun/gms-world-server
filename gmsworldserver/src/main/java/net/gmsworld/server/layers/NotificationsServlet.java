@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package net.gmsworld.server.layers;
 
 import java.io.IOException;
@@ -19,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.layers.GeocodeHelperFactory;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
@@ -96,7 +90,7 @@ public class NotificationsServlet extends HttpServlet {
                 				String userAgent = request.getHeader("User-Agent");
                 				int useCount = NumberUtils.getInt(request.getHeader("X-GMS-UseCount"), 1);
                 				LandmarkPersistenceUtils.notifyOnLandmarkCreation(name, lat, lng, id, hash, Commons.MY_POS_CODE, username, null, userAgent, useCount);
-                			}
+                			} 
                 		}
                 	} catch (Exception e) {
                 		logger.log(Level.SEVERE, e.getMessage(), e);
