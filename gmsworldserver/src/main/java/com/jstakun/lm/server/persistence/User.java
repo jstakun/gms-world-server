@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.jstakun.lm.server.persistence;
 
 
@@ -120,6 +115,10 @@ public class User {
      */
     public String getLastname() {
         return lastname;
+    }
+    
+    public void setLogin(String login) {
+    	this.login = login;
     }
 
     /**

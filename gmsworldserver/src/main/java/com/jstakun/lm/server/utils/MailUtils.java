@@ -95,6 +95,9 @@ public class MailUtils {
         InputStream is = null;
         try {
             is = context.getResourceAsStream("/WEB-INF/emails/notification.html");
+            if (StringUtils.isEmpty(nick)) {
+            	nick = "GMS World User";
+            }
             String message = String.format(IOUtils.toString(is), nick);
             sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "GMS World Registration", message, "text/html");
         } catch (IOException ex) {

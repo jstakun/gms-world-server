@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package net.gmsworld.server.layers;
 
 import java.io.IOException;
@@ -22,6 +18,7 @@ import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.JSONUtils;
 import net.gmsworld.server.utils.MathUtils;
 import net.gmsworld.server.utils.NumberUtils;
+import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.UrlUtils;
 
 import org.apache.commons.lang.StringUtils;
@@ -44,6 +41,17 @@ import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.openlapi.AddressInfo;
 import com.openlapi.QualifiedCoordinates;
+import com.google.api.services.youtube.YouTube;
+import com.google.api.services.youtube.model.SearchListResponse;
+import com.google.api.services.youtube.model.SearchResult;
+import com.google.api.services.youtube.model.SearchResultSnippet;
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson.JacksonFactory;
+
 
 /**
  *
@@ -82,6 +90,42 @@ public class YoutubeUtils extends LayerHelper {
 
         return ytservice.query(vquery, VideoFeed.class);
     }
+    
+    private static List<SearchResult> getVideosV3(double latitude, double longitude, String query, int radius, int limit) throws MalformedURLException, IOException, ServiceException {
+    	
+    	HttpTransport httpTransport = new NetHttpTransport();
+        JsonFactory jsonFactory = new JacksonFactory();
+    	
+    	YouTube youtube = new YouTube.Builder(httpTransport, jsonFactory, new HttpRequestInitializer() {
+            public void initialize(HttpRequest request) throws IOException {
+            }
+        }).setApplicationName("GMS World").build();
+
+    	YouTube.Search.List search = youtube.search().list("snippet");
+    	
+        search.setKey(Commons.getProperty(Property.GOOGLE_API_KEY));
+        search.setType("video");
+
+        if (StringUtils.isNotEmpty(query)) {
+            search.setQ(query);
+        }
+        
+        search.setLocation(StringUtil.formatCoordE2(latitude) + "," + StringUtil.formatCoordE2(longitude));
+        
+        int r = NumberUtils.normalizeNumber(radius, 1, 999);
+        search.setLocationRadius(r + "mi");
+        
+        int l = NumberUtils.normalizeNumber(limit, 1, 50);
+        search.setMaxResults(new Long(l));
+        
+        search.setOrder("date"); //("viewCount");
+        //search.setPublishedAfter(DateTime.)
+        
+        SearchListResponse searchResponse = search.execute();
+        List<SearchResult> searchResultList = searchResponse.getItems();
+ 
+    	return searchResultList;
+    }
 
     @Override
 	public JSONObject processRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String flex, String flexString2) throws MalformedURLException, IOException, ServiceException, JSONException {
@@ -91,7 +135,7 @@ public class YoutubeUtils extends LayerHelper {
         JSONObject json = null;
 
         if (output == null) {
-            VideoFeed videoFeed = getVideoFeed(latitude, longitude, query, radius, limit);
+            VideoFeed videoFeed = new VideoFeed(); //getVideoFeed(latitude, longitude, query, radius, limit);
             json = createCustomJSonVideoList(videoFeed.getEntries(), version, stringLimit);
             if (!videoFeed.getEntries().isEmpty()) {
                 cacheProvider.put(key, json.toString());
@@ -105,6 +149,46 @@ public class YoutubeUtils extends LayerHelper {
         return json;
     }
 
+    private static List<ExtendedLandmark> createCustomVideoV3LandmarkList(List<SearchResult> searchResultList, int stringLimit, Locale locale, double lat, double lng) {
+    	List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
+    	logger.info("Found " + searchResultList.size() + " video entries...");
+    	
+    	for (SearchResult video : searchResultList) {
+    		SearchResultSnippet snippet = video.getSnippet();
+    		
+    		String url = "https://www.youtube.com/watch?v=" + video.getId().getVideoId();
+    		
+    		String title = snippet.getTitle();
+    		long creationDate = snippet.getPublishedAt().getValue();
+    		String desc = snippet.getDescription();
+    		
+    		String thumbnail = snippet.getThumbnails().getDefault().getUrl();
+    		
+    		QualifiedCoordinates qc = new QualifiedCoordinates(lat, lng, 0f, 0f, 0f);
+        	ExtendedLandmark landmark = LandmarkFactory.getLandmark(title, null, qc, Commons.YOUTUBE_LAYER, new AddressInfo(), creationDate, null);
+        	landmark.setUrl(url);
+        	landmark.setThumbnail(thumbnail);
+        	
+        	Map<String, String> tokens = new HashMap<String, String>();
+        	if (desc != null) {
+        		JSONUtils.putOptValue(tokens, "description", desc, stringLimit, false);
+        	}
+        	
+        	String artist = snippet.getChannelTitle();
+        	if (artist != null) {
+        		JSONUtils.putOptValue(tokens, "artist", artist, stringLimit, false);
+        	}
+        	
+        	String description = JSONUtils.buildLandmarkDesc(landmark, tokens, locale);
+        	landmark.setDescription(description);
+        	
+        	landmarks.add(landmark);
+    	}
+    	
+    	return landmarks;
+
+    }
+    
     private static List<ExtendedLandmark> createCustomLandmarkVideoList(List<VideoEntry> vel, int version, int stringLimit, Locale locale) {
     	List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
     	
@@ -304,14 +388,25 @@ public class YoutubeUtils extends LayerHelper {
 		String key = getCacheKey(getClass(), "processBinaryRequest", latitude, longitude, query, radius, version, limit, stringLimit, flexString, flexString2);
 		List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)cacheProvider.getObject(key);
         if (landmarks == null) {
-        	VideoFeed videoFeed = getVideoFeed(latitude, longitude, query, radius, limit);
+        	
+        	
+        	/*VideoFeed videoFeed = getVideoFeed(latitude, longitude, query, radius, limit);
         	if (!videoFeed.getEntries().isEmpty()) {
         		landmarks = createCustomLandmarkVideoList(videoFeed.getEntries(), version, stringLimit, locale);
                 cacheProvider.put(key, landmarks);
                 logger.log(Level.INFO, "Adding YT landmark list to cache with key {0}", key);
             } else {
             	landmarks = new ArrayList<ExtendedLandmark>();
-            }
+            }*/
+        	
+        	List<SearchResult> videos = getVideosV3(latitude, longitude, query, radius, limit);
+        	if (!videos.isEmpty()) {
+        		landmarks = createCustomVideoV3LandmarkList(videos, stringLimit, locale, latitude, longitude); 
+        		cacheProvider.put(key, landmarks);
+                logger.log(Level.INFO, "Adding YT landmark list to cache with key {0}", key);
+        	} else {
+        		landmarks = new ArrayList<ExtendedLandmark>();
+        	}
         } else {
         	logger.log(Level.INFO, "Reading YT landmark list from cache with key {0}", key);
         }
