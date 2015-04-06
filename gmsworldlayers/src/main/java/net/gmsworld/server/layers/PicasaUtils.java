@@ -200,6 +200,8 @@ public class PicasaUtils extends LayerHelper {
         		MathUtils.normalizeE2(dcoords[3]);    
         //
         
+        logger.log(Level.INFO, "Searching for pictures in " + bbox);
+        
         String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, limit, stringLimit, normalizedBbox, flexString2);
 
         List<ExtendedLandmark> output = (List<ExtendedLandmark>)cacheProvider.getObject(key);

@@ -41,7 +41,7 @@ public class LayersTest {
 	   LayerHelperFactory.setCacheProvider(cacheProvider);
 	   LayerHelperFactory.setThreadProvider(new JvmThreadProvider());	
 	   
-	   /*List<Method> methods = getStaticGetMethods(LayerHelperFactory.class);
+	   List<Method> methods = getStaticGetMethods(LayerHelperFactory.class);
 	   for (Method m : methods) {
 		   try {
 			   data.add(new Object[]{ m.invoke(null,(Object[])null) });
@@ -52,7 +52,7 @@ public class LayersTest {
 		   } catch (InvocationTargetException e) {
 			   e.printStackTrace();
 		   }
-	   }*/
+	   }
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getCouponsUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getFoursquareMerchantUtils()});
@@ -65,7 +65,7 @@ public class LayersTest {
 	   //data.add(new Object[]{LayerHelperFactory.getGeonamesUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getFacebookUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getGmsUtils()});
-	   data.add(new Object[]{LayerHelperFactory.getYoutubeUtils()});
+	   //data.add(new Object[]{LayerHelperFactory.getYoutubeUtils()});
 	   
 	   System.out.println("Found " + data.size() + " layers.");
 	   
