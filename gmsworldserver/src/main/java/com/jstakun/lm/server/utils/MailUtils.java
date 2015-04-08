@@ -50,7 +50,9 @@ public class MailUtils {
     }
 
     public static void sendLandmarkCreationNotification(String title, String body) {
-        sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.ADMIN_MAIL, ConfigurationManager.ADMIN_NICK, title, body, "text/plain");
+        //TODO stopped sending landmark creation notification mail to avoid over quota
+    	//sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.ADMIN_MAIL, ConfigurationManager.ADMIN_NICK, title, body, "text/plain");
+        logger.log(Level.INFO, title + "\n--------------------------------\n" + body);
     }
 
     public static void sendList(String title, Map<String, Collection<String>> stringMap, Map<String, Integer> recentlyCreated) {
