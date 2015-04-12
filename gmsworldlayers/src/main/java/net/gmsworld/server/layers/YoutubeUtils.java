@@ -25,6 +25,20 @@ import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpRequestInitializer;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson.JacksonFactory;
+import com.google.api.services.youtube.YouTube;
+import com.google.api.services.youtube.model.GeoPoint;
+import com.google.api.services.youtube.model.SearchListResponse;
+import com.google.api.services.youtube.model.SearchResult;
+import com.google.api.services.youtube.model.Video;
+import com.google.api.services.youtube.model.VideoListResponse;
+import com.google.api.services.youtube.model.VideoSnippet;
+import com.google.api.services.youtube.model.VideoStatistics;
 import com.google.gdata.client.youtube.YouTubeQuery;
 import com.google.gdata.client.youtube.YouTubeService;
 import com.google.gdata.data.Person;
@@ -41,16 +55,6 @@ import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.openlapi.AddressInfo;
 import com.openlapi.QualifiedCoordinates;
-import com.google.api.services.youtube.YouTube;
-import com.google.api.services.youtube.model.SearchListResponse;
-import com.google.api.services.youtube.model.SearchResult;
-import com.google.api.services.youtube.model.SearchResultSnippet;
-import com.google.api.client.http.HttpRequest;
-import com.google.api.client.http.HttpRequestInitializer;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson.JacksonFactory;
 
 
 /**
@@ -91,7 +95,7 @@ public class YoutubeUtils extends LayerHelper {
         return ytservice.query(vquery, VideoFeed.class);
     }
     
-    private static List<SearchResult> getVideosV3(double latitude, double longitude, String query, int radius, int limit) throws MalformedURLException, IOException, ServiceException {
+    private static List<Video> getVideosV3(double latitude, double longitude, String query, int radius, int limit) throws MalformedURLException, IOException, ServiceException {
     	
     	HttpTransport httpTransport = new NetHttpTransport();
         JsonFactory jsonFactory = new JacksonFactory();
@@ -123,8 +127,31 @@ public class YoutubeUtils extends LayerHelper {
         
         SearchListResponse searchResponse = search.execute();
         List<SearchResult> searchResultList = searchResponse.getItems();
- 
-    	return searchResultList;
+        
+        if (!searchResultList.isEmpty()) {
+        
+        	List<String> ids = new ArrayList<String>(searchResultList.size());
+            
+            for (SearchResult res : searchResultList) {
+            	ids.add(res.getId().getVideoId());
+            }
+            
+            //TODO check if nextPageToken exists and load more videos using page token
+            //searchResponse.getNextPageToken();
+            //search.setPageToken(arg0);
+        
+        	YouTube.Videos.List videos = youtube.videos().list("recordingDetails, statistics, snippet");
+            videos.setKey(Commons.getProperty(Property.GOOGLE_API_KEY));
+        	
+        	videos.setId(StringUtils.join(ids, ","));
+        
+        	VideoListResponse videosResponse = videos.execute();
+        	List<Video> videosList = videosResponse.getItems();
+        
+        	return videosList;
+        } else {
+        	return new ArrayList<Video>();
+        }
     }
 
     @Override
@@ -149,14 +176,14 @@ public class YoutubeUtils extends LayerHelper {
         return json;
     }
 
-    private static List<ExtendedLandmark> createCustomVideoV3LandmarkList(List<SearchResult> searchResultList, int stringLimit, Locale locale, double lat, double lng) {
+    private static List<ExtendedLandmark> createCustomVideoV3LandmarkList(List<Video> videoList, int stringLimit, Locale locale, double lat, double lng) {
     	List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
-    	logger.info("Found " + searchResultList.size() + " video entries...");
+    	logger.info("Found " + videoList.size() + " video entries...");
     	
-    	for (SearchResult video : searchResultList) {
-    		SearchResultSnippet snippet = video.getSnippet();
+    	for (Video video : videoList) {
+    		VideoSnippet snippet = video.getSnippet();
     		
-    		String url = "https://www.youtube.com/watch?v=" + video.getId().getVideoId();
+    		String url = "https://www.youtube.com/watch?v=" + video.getId();
     		
     		String title = snippet.getTitle();
     		long creationDate = snippet.getPublishedAt().getValue();
@@ -164,8 +191,14 @@ public class YoutubeUtils extends LayerHelper {
     		
     		String thumbnail = snippet.getThumbnails().getDefault().getUrl();
     		
-    		QualifiedCoordinates qc = new QualifiedCoordinates(lat, lng, 0f, 0f, 0f);
-        	ExtendedLandmark landmark = LandmarkFactory.getLandmark(title, null, qc, Commons.YOUTUBE_LAYER, new AddressInfo(), creationDate, null);
+    		QualifiedCoordinates qc = null;
+    		GeoPoint location = video.getRecordingDetails().getLocation();
+    		if (location != null) {
+    			qc = new QualifiedCoordinates(location.getLatitude(), location.getLongitude(), 0f, 0f, 0f);
+    		} else {
+    			qc = new QualifiedCoordinates(lat, lng, 0f, 0f, 0f);
+    		}
+    		ExtendedLandmark landmark = LandmarkFactory.getLandmark(title, null, qc, Commons.YOUTUBE_LAYER, new AddressInfo(), creationDate, null);
         	landmark.setUrl(url);
         	landmark.setThumbnail(thumbnail);
         	
@@ -177,6 +210,15 @@ public class YoutubeUtils extends LayerHelper {
         	String artist = snippet.getChannelTitle();
         	if (artist != null) {
         		JSONUtils.putOptValue(tokens, "artist", artist, stringLimit, false);
+        	}   	
+        	
+        	VideoStatistics stats = video.getStatistics();
+        	if (stats != null) {
+        		tokens.put("Views", stats.getViewCount().toString());
+        		//stats.getCommentCount();
+        		tokens.put("Likes", stats.getLikeCount().toString()); //"\uD83D\uDC4D"
+        		tokens.put("Dislikes", stats.getDislikeCount().toString()); //"\uD83D\uDD93"
+        		//stats.getFavoriteCount();
         	}
         	
         	String description = JSONUtils.buildLandmarkDesc(landmark, tokens, locale);
@@ -399,7 +441,7 @@ public class YoutubeUtils extends LayerHelper {
             	landmarks = new ArrayList<ExtendedLandmark>();
             }*/
         	
-        	List<SearchResult> videos = getVideosV3(latitude, longitude, query, radius, limit);
+        	List<Video> videos = getVideosV3(latitude, longitude, query, radius, limit);
         	if (!videos.isEmpty()) {
         		landmarks = createCustomVideoV3LandmarkList(videos, stringLimit, locale, latitude, longitude); 
         		cacheProvider.put(key, landmarks);

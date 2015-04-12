@@ -118,10 +118,10 @@ public class LayersTest {
 			//assertEquals("Found " + size + " landmarks", limit, size);
 			assertEquals("Layer " + layer.getLayerName() + " is empty!", landmarks.isEmpty(), false);
 			
-			//for (ExtendedLandmark landmark : landmarks) {
+			for (ExtendedLandmark landmark : landmarks) {
 				//System.out.println(landmark.getName() + " :-> " + landmark.getDescription() + "---\n");
 				//System.out.println(landmark.getThumbnail());
-			//}
+			}
 			
 			String key = layer.cacheGeoJson(landmarks, lat, lng, layer.getLayerName());
 			System.out.println(cacheProvider.getString(key));
