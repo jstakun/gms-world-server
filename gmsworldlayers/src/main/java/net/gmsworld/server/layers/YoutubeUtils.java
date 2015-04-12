@@ -136,18 +136,38 @@ public class YoutubeUtils extends LayerHelper {
             	ids.add(res.getId().getVideoId());
             }
             
-            //TODO check if nextPageToken exists and load more videos using page token
-            //searchResponse.getNextPageToken();
-            //search.setPageToken(arg0);
-        
-        	YouTube.Videos.List videos = youtube.videos().list("recordingDetails, statistics, snippet");
+          	YouTube.Videos.List videos = youtube.videos().list("recordingDetails, statistics, snippet");
             videos.setKey(Commons.getProperty(Property.GOOGLE_API_KEY));
         	
         	videos.setId(StringUtils.join(ids, ","));
         
         	VideoListResponse videosResponse = videos.execute();
         	List<Video> videosList = videosResponse.getItems();
-        
+        	
+        	//load next batch up to 100 videos in total
+            if (ids.size() < limit)
+            {
+            	String nextPageToken = searchResponse.getNextPageToken();
+            	if (StringUtils.isNotEmpty(nextPageToken)) {
+            		search.setPageToken(nextPageToken);
+            		l = NumberUtils.normalizeNumber(limit - ids.size(), 1, 50);
+            		search.setMaxResults(new Long(l));
+            		searchResponse = search.execute();
+                    searchResultList = searchResponse.getItems();
+                    if (!searchResultList.isEmpty()) {
+                    	ids.clear();
+                    	for (SearchResult res : searchResultList) {
+                    		ids.add(res.getId().getVideoId());
+                    	}
+                    	videos.setId(StringUtils.join(ids, ","));
+                    	videosResponse = videos.execute();
+                    	videosList.addAll(videosResponse.getItems());
+                    }	
+            	}
+            }
+            
+            System.out.println("Loaded " + videosList.size() + " videos.");
+        	
         	return videosList;
         } else {
         	return new ArrayList<Video>();
