@@ -144,29 +144,34 @@ public class YoutubeUtils extends LayerHelper {
         	VideoListResponse videosResponse = videos.execute();
         	List<Video> videosList = videosResponse.getItems();
         	
+        	
         	//load next batch up to 100 videos in total
-            if (ids.size() < limit)
-            {
-            	String nextPageToken = searchResponse.getNextPageToken();
-            	if (StringUtils.isNotEmpty(nextPageToken)) {
-            		search.setPageToken(nextPageToken);
-            		l = NumberUtils.normalizeNumber(limit - ids.size(), 1, 50);
-            		search.setMaxResults(new Long(l));
-            		searchResponse = search.execute();
-                    searchResultList = searchResponse.getItems();
-                    if (!searchResultList.isEmpty()) {
-                    	ids.clear();
-                    	for (SearchResult res : searchResultList) {
-                    		ids.add(res.getId().getVideoId());
-                    	}
-                    	videos.setId(StringUtils.join(ids, ","));
-                    	videosResponse = videos.execute();
-                    	videosList.addAll(videosResponse.getItems());
-                    }	
-            	}
-            }
+        	try {
+        		if (ids.size() < limit)
+        		{
+        			String nextPageToken = searchResponse.getNextPageToken();
+        			if (StringUtils.isNotEmpty(nextPageToken)) {
+        				search.setPageToken(nextPageToken);
+        				l = NumberUtils.normalizeNumber(limit - ids.size(), 1, 50);
+        				search.setMaxResults(new Long(l));
+        				searchResponse = search.execute();
+        				searchResultList = searchResponse.getItems();
+        				if (!searchResultList.isEmpty()) {
+        					ids.clear();
+        					for (SearchResult res : searchResultList) {
+        						ids.add(res.getId().getVideoId());
+        					}
+        					videos.setId(StringUtils.join(ids, ","));
+        					videosResponse = videos.execute();
+        					videosList.addAll(videosResponse.getItems());
+        				}	
+        			}
+        		}
+        	} catch (Exception e) {
+        		logger.log(Level.SEVERE, e.getMessage(), e);
+        	}
             
-            System.out.println("Loaded " + videosList.size() + " videos.");
+           logger.log(Level.INFO, "Loaded " + videosList.size() + " videos.");
         	
         	return videosList;
         } else {
