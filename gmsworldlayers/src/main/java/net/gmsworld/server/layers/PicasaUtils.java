@@ -205,7 +205,7 @@ public class PicasaUtils extends LayerHelper {
         List<ExtendedLandmark> output = (List<ExtendedLandmark>)cacheProvider.getObject(key);
 
         if (output == null) {
-            PicasawebService myService = new PicasawebService("Landmark Manager");
+            PicasawebService myService = new PicasawebService("GMS World");
             URL baseSearchUrl = new URL("https://picasaweb.google.com/data/feed/api/all");
             Query myQuery = new Query(baseSearchUrl);
             myQuery.setStringCustomParameter("kind", "photo");
@@ -217,6 +217,8 @@ public class PicasaUtils extends LayerHelper {
                 myQuery.setFullTextQuery(query);
             }
 
+            logger.log(Level.INFO, "Searching for pictures in " + normalizedBbox); 
+            
             //System.out.println("Calling: " + myQuery.getFeedUrl().toExternalForm() + myQuery.getQueryUri());
             
             AlbumFeed searchResultsFeed = myService.query(myQuery, AlbumFeed.class);

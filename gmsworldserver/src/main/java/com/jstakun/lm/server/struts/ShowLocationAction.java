@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.lm.server.struts;
 
 import java.util.logging.Level;
@@ -20,6 +16,8 @@ import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.StringUtil;
 
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
+
+import eu.bitwalker.useragentutils.OperatingSystem;
 
 /**
  *
@@ -63,13 +61,12 @@ public class ShowLocationAction extends org.apache.struts.action.Action {
             }
         }
 
-        //this action is only for mobile devices
-        //OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
+        OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
 
-        //if (os.isMobileDevice()) {
-        //    return mapping.findForward("mobile");
-        //} else {
-        return mapping.findForward("mobile");
-        //}
+        if (os.isMobileDevice()) {
+           return mapping.findForward("mobile");
+        } else {
+           return mapping.findForward("success");
+        }
     }
 }
