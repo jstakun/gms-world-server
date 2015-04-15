@@ -53,7 +53,8 @@ public class ImageUploadServlet extends HttpServlet {
         try {
             double lat = NumberUtils.getDouble(request.getHeader("X-GMS-Lat"), Double.NaN);
             double lng = NumberUtils.getDouble(request.getHeader("X-GMS-Lng"), Double.NaN);
-            boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+            boolean isMultipart = ServletFileUpload.isMultipartContent(request);           
+            String myPosKey = request.getHeader("X-GMS-MyPos-Key");
             
             String cacheKey = "screenshot_" + StringUtil.formatCoordE2(lat) + "_" + StringUtil.formatCoordE2(lng);
             if (CacheUtil.containsKey(cacheKey)) {
@@ -96,7 +97,15 @@ public class ImageUploadServlet extends HttpServlet {
                         
                         		if (key != null) {
                         			String imageUrl = ConfigurationManager.SERVER_URL + "image/" + key;
-                        			String showImageUrl = UrlUtils.getShortUrl(ConfigurationManager.SERVER_URL + "showImage/" + key);
+                        			String showImageUrl = ConfigurationManager.SERVER_URL + "showImage/" + key;
+                        			if (StringUtils.isNotEmpty(myPosKey)) {
+                        				showImageUrl += "/" + myPosKey;
+                        				logger.log(Level.INFO, "This screenshot is linked with landmark " + myPosKey);
+                                    } else {
+                                    	logger.log(Level.INFO, "This screenshot is not linked with any landmark");
+                                    }
+                        			showImageUrl = UrlUtils.getShortUrl(showImageUrl);
+                        			
                         			CacheUtil.put(cacheKey, "1", CacheType.FAST);
                         			
                         			//TODO load image from imageUrl and check if it is black

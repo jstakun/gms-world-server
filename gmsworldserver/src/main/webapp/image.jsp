@@ -25,14 +25,24 @@
 
                 <!-- main -->
                 <div id="main">
-<% if (screenshot != null) { %>
+<% if (screenshot != null) { 
+    String imageLink;
+    String myposcode = request.getParameter("myposcode");
+    if (myposcode != null) {
+    	imageLink = "/showLandmark/" + myposcode; 
+    } else {
+    	imageLink = "/showLocation/" + screenshot.getLatitude() + "/" + screenshot.getLongitude();
+    }
+%>
 
                 <h3>GMS World screenshot</h3>
 
                 <br/>
                     <!-- /main -->
                  <p class="image-section">
-                     <a href="/showLocation.do?lat=<%= screenshot.getLatitude() %>&lon=<%= screenshot.getLongitude() %>"><img src="<%= screenshot.getUrl() %>" alt="GMS World screenshot"/></a>
+                     <a href="<%= imageLink %>">
+                     	<img src="<%= screenshot.getUrl() %>" alt="GMS World screenshot"/>
+                     </a>
                  </p>
                  <p class="post-details">
                      <%= address != null ? "Geocode address: " + address + "<br/>" : ""%>

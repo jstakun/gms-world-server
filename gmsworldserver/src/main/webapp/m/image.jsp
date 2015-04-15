@@ -23,12 +23,21 @@
   Screenshot screenshot = (Screenshot)request.getAttribute("screenshot");
   String address = (String) request.getAttribute("address");
   
-  if (screenshot != null) { %>
+  if (screenshot != null) { 
+  
+	  String imageLink;
+	  String myposcode = request.getParameter("myposcode");
+	  if (myposcode != null) {
+	   	  imageLink = "/showLandmark/" + myposcode; 
+	  } else {
+	      imageLink = "/showLocation/" + screenshot.getLatitude() + "/" + screenshot.getLongitude();
+	  }
+%>
 
                 <h3>GMS World screenshot</h3>
 
-                 <a href="/showLocation.do?lat=<%= screenshot.getLatitude() %>&lon=<%= screenshot.getLongitude() %>">
-                    <img src="<%= screenshot.getUrl() %>" alt="GMS World screenshot"/>
+                 <a href="<%= imageLink %>">
+                    <img src="<%= screenshot.getUrl() %>"><img src="<%= screenshot.getUrl() %>" alt="GMS World screenshot"/>
                  </a>
                  
                  <p>

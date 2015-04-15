@@ -49,30 +49,43 @@
             <to>/showLandmark.do?key=$1&amp;fullScreenLandmarkMap=1</to>
     </rule>
 
+    <outbound-rule>
+        <from>^/showLandmark.do\?key=([a-zA-Z0-9_-]+)$</from>
+        <to>/showLandmark/$1</to>
+    </outbound-rule>
+    
+    <!-- showImage rules -->
+    
     <rule>
             <from>^/showImage/([a-zA-Z0-9_-]+)$</from>
             <to>/showImage.do?key=$1</to>
     </rule>
     
     <rule>
+            <from>^/showImage/([a-zA-Z0-9_-]+)/([0-9]+)$</from>
+            <to>/showImage.do?key=$1&amp;myposcode=$2</to>
+    </rule>
+    
+    <!-- image rules -->
+    
+    <rule>
             <from>^/image/([a-zA-Z0-9_-]+)$</from>
             <to>/image?key=$1</to>
     </rule>
+    
+    <!-- freebaseView rules -->
     
     <rule>
             <from>^/freebaseView/([a-zA-Z0-9_-]+)$</from>
             <to>/freebaseView.do?mid=$1</to>
     </rule>
     
+    <!-- showGeocode rules -->
+    
     <rule>
             <from>^/showGeocode/([a-zA-Z0-9_-]+)$</from>
             <to>/showGeocode.do?key=$1</to>
     </rule>
-
-    <outbound-rule>
-        <from>^/showLandmark.do\?key=([a-zA-Z0-9_-]+)$</from>
-        <to>/showLandmark/$1</to>
-    </outbound-rule>
 
     <!-- showUser rules -->
 
@@ -131,8 +144,15 @@
             <from>^/heatMap</from>
             <to>/getHeatMap.do</to>
     </rule>
+    
+     <!-- showLocation rules -->
+    
+    <rule>
+            <from>^/showLocation/([0-9.]+)/([0-9.]+)$</from>
+            <to>/showLocation.do?lat=$1&amp;lon=$2</to>
+    </rule>
 
-    <!-- download -->
+    <!-- download rules -->
 
     <rule>
             <from>/download/j2me/LandmarkManager.jar</from>
