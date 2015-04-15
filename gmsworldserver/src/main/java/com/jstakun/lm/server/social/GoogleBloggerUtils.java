@@ -125,31 +125,8 @@ public class GoogleBloggerUtils {
         HttpTransport httpTransport = new UrlFetchTransport();
         JsonFactory jsonFactory = new JacksonFactory();
         GoogleCredential requestInitializer = new GoogleCredential.Builder().setClientSecrets(Commons.getProperty(Property.GL_PLUS_KEY), Commons.getProperty(Property.GL_PLUS_SECRET)).setJsonFactory(jsonFactory).setTransport(httpTransport).build();
-        //requestInitializer.setAccessToken(Commons.getProperty(Property.gl_plus_token)).setRefreshToken(Commons.getProperty(Property.gl_plus_refresh));
-        Blogger blogger = new Blogger.Builder(httpTransport, jsonFactory, requestInitializer).setApplicationName("Landmark Manager").build();
-
+        requestInitializer.setAccessToken(Commons.getProperty(Property.gl_plus_token)).setRefreshToken(Commons.getProperty(Property.gl_plus_refresh));
+        Blogger blogger = new Blogger.Builder(httpTransport, jsonFactory, requestInitializer).setApplicationName("GMS World").build();
         return blogger;
     }
-
-    //"error_message" : "This endpoint has been removed."
-	/*protected static int checkin(String reference) {
-	    int result = -1;
-	    
-	    try {
-	    	HttpTransport httpTransport = new UrlFetchTransport();
-	        GenericUrl url = new GenericUrl("https://maps.googleapis.com/maps/api/place/check-in/json?key=" + Commons.getProperty(Property.GOOGLE_API_KEY));
-	        Map<String, String> data = new HashMap<String, String>();
-	        data.put("reference", reference);
-	        JsonHttpContent content = new JsonHttpContent(new JacksonFactory(), data);
-	        HttpRequest request = httpTransport.createRequestFactory().buildPostRequest(url, content);
-	        HttpResponse response = request.execute();
-	        logger.log(Level.INFO, response.parseAsString());
-	        result = response.getStatusCode();
-	    } catch (Throwable e) {
-	        logger.log(Level.SEVERE, "GoogleBloggerUtils.checkin() exception", e);   
-	        result = 500;
-	    }
-	
-	    return result;
-	}*/
 }

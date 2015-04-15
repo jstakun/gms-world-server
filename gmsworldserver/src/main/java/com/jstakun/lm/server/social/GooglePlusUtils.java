@@ -8,6 +8,12 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.config.ConfigurationManager;
+import net.gmsworld.server.utils.NumberUtils;
+import net.gmsworld.server.utils.UrlUtils;
+
 import com.google.api.client.auth.oauth2.TokenResponse;
 import com.google.api.client.auth.oauth2.TokenResponseException;
 import com.google.api.client.extensions.appengine.http.UrlFetchTransport;
@@ -20,13 +26,6 @@ import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.api.services.plus.Plus;
 import com.google.api.services.plus.model.ItemScope;
 import com.google.api.services.plus.model.Moment;
-
-import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.config.Commons.Property;
-import net.gmsworld.server.config.ConfigurationManager;
-import net.gmsworld.server.utils.NumberUtils;
-import net.gmsworld.server.utils.UrlUtils;
-
 import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 
@@ -128,13 +127,13 @@ public class GooglePlusUtils {
 
     private static void sendUrlMoment(Plus plus, String url) {
         if (url != null) {
-            Moment moment1 = new Moment();
-            moment1.setType("http://schemas.google.com/AddActivity");
-            ItemScope itemScope1 = new ItemScope();
-            itemScope1.setUrl(url);
-            moment1.setTarget(itemScope1);
+        	Moment moment = new Moment();
+        	moment.setType("http://schema.org/AddAction");
+        	ItemScope itemScope = new ItemScope();
+        	itemScope.setUrl(url);
+        	moment.setObject(itemScope);
             try {
-                Moment momentResult1 = plus.moments().insert("me", "vault", moment1).execute();
+                Moment momentResult1 = plus.moments().insert("me", "vault", moment).execute();
                 logger.log(Level.INFO, "Created activity with id: {0}", momentResult1.getId());
             } catch (IOException ex) {
                 logger.log(Level.SEVERE, "GooglePlusUtils.sendUrlMoment() exception", ex);
@@ -147,10 +146,10 @@ public class GooglePlusUtils {
     private static void sendMoment(Plus plus, String name, String desc, String image, double lat, double lng) {
         try {
             Moment moment = new Moment();
-            moment.setType("http://schemas.google.com/AddActivity");
+        	moment.setType("http://schema.org/AddAction");
             ItemScope itemScope = new ItemScope();
             itemScope.setId("gms-world-msg-" + System.currentTimeMillis());
-            itemScope.setType("http://schemas.google.com/AddActivity");
+            itemScope.setType("http://schema.org/AddAction");
             itemScope.setName(name);
             itemScope.setDescription(desc);
             itemScope.setImage(image);
@@ -160,9 +159,8 @@ public class GooglePlusUtils {
             if (lng != -1) {
                 itemScope.setLongitude(lng);
             }
-            moment.setTarget(itemScope);
+            moment.setObject(itemScope);
             Moment momentResult = plus.moments().insert("me", "vault", moment).execute();
-
             logger.log(Level.INFO, "Created activity with id: {0}", momentResult.getId());
         } catch (IOException ex) {
             logger.log(Level.SEVERE, "GooglePlusUtils.sendMoment() exception", ex);
