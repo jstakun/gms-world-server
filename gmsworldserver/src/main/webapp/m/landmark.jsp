@@ -2,7 +2,7 @@
 <%@page import="com.jstakun.lm.server.persistence.Landmark,
         com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils,
         com.jstakun.lm.server.persistence.Comment,
-        com.jstakun.lm.server.utils.UrlUtils,
+        net.gmsworld.server.utils.UrlUtils,
         net.gmsworld.server.utils.DateUtils,
         net.gmsworld.server.utils.StringUtil,
         java.util.List,
@@ -27,71 +27,73 @@
     <div class="content">
     	<article>
     	
-    	<% 
-    		Landmark landmark = (Landmark) request.getAttribute("landmark");
-        	String key = (String) request.getAttribute("key");
-    	
-    		if (landmark == null && key == null) {
-        %>
+    	<%
+    	    		Landmark landmark = (Landmark) request.getAttribute("landmark");
+    	    	    	    	        	String key = (String) request.getAttribute("key");
+    	    	    	    	    	
+    	    	    	    	    		if (landmark == null && key == null) {
+    	    	%>
         	<h3>No landmark selected.</h3>            
-        <% } else if (landmark == null) {
-        %>
+        <%
+                    	} else if (landmark == null) {
+                    %>
             <h3>This landmark has been archived and is currently unavailable.</h3>
-        <% } else {
+        <%
+        	} else {
         %>
                         
-            <h3><%= landmark.getName()%></h3>
-            <h4><%= landmark.getDescription()%></h4>
+            <h3><%=landmark.getName()%></h3>
+            <h4><%=landmark.getDescription()%></h4>
 
-            <a href="/showLandmark/<%= key %>/fullScreen">
-                <img src="http://maps.google.com/maps/api/staticmap?center=<%= landmark.getLatitude() %>,<%= landmark.getLongitude() %>&zoom=9&size=146x146&sensor=false&markers=icon:http://gms-world.appspot.com/images/flagblue.png|<%= landmark.getLatitude() %>,<%= landmark.getLongitude() %>" alt="Landmark on Google Map" height="146" width="146"/><br/>
+            <a href="/showLandmark/<%=key%>/fullScreen">
+                <img src="http://maps.google.com/maps/api/staticmap?center=<%=landmark.getLatitude()%>,<%=landmark.getLongitude()%>&zoom=9&size=146x146&sensor=false&markers=icon:http://gms-world.appspot.com/images/flagblue.png|<%=landmark.getLatitude()%>,<%=landmark.getLongitude()%>" alt="Landmark on Google Map" height="146" width="146"/><br/>
             </a>
 
             <p>
-                <% 
-                     if (System.currentTimeMillis() - landmark.getCreationDate().getTime() < CacheUtil.LONG_CACHE_LIMIT) {
-                %>    
-                     <a href="/landmarks.jsp?lat=<%= landmark.getLatitude()%>&lng=<%= landmark.getLongitude()%>&mobile=true">See landmarks on the map (Experimental)</a><br/>
                 <%
-                     } else {
+                	if (System.currentTimeMillis() - landmark.getCreationDate().getTime() < CacheUtil.LONG_CACHE_LIMIT) {
+                %>    
+                     <a href="/landmarks.jsp?lat=<%=landmark.getLatitude()%>&lng=<%=landmark.getLongitude()%>&mobile=true">See landmarks on the map (Experimental)</a><br/>
+                <%
+                	} else {
                 %>
-                     <a href="/showLandmark/<%= key %>/fullScreen">See full screen map</a><br/>
-                <% 
-                     }
+                     <a href="/showLandmark/<%=key%>/fullScreen">See full screen map</a><br/>
+                <%
+                	}
                 %>
-                <%= request.getAttribute("address")!=null ? "Geocode address: "+request.getAttribute("address") : "" %><br/>
-                Latitude: <%= StringUtil.formatCoordE6(landmark.getLatitude()) %>, Longitude: <%= StringUtil.formatCoordE6(landmark.getLongitude()) %><br/>
-                Created in layer <a href="/showLayer/<%= landmark.getLayer() %>"><%= LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer()) %></a>
-                 <div class="date"><span>Posted on <%= DateUtils.getFormattedDateTime(request.getLocale(), landmark.getCreationDate()) %> | by <a href="/showUser/<%= landmark.getUsername() %>"><%= UrlUtils.createUsernameMask(landmark.getUsername()) %></a></span></div>
+                <%=request.getAttribute("address")!=null ? "Geocode address: "+request.getAttribute("address") : ""%><br/>
+                Latitude: <%=StringUtil.formatCoordE6(landmark.getLatitude())%>, Longitude: <%=StringUtil.formatCoordE6(landmark.getLongitude())%><br/>
+                Created in layer <a href="/showLayer/<%=landmark.getLayer()%>"><%=LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer())%></a>
+                 <div class="date"><span>Posted on <%=DateUtils.getFormattedDateTime(request.getLocale(), landmark.getCreationDate())%> | by <a href="/showUser/<%=landmark.getUsername()%>"><%=UrlUtils.createUsernameMask(landmark.getUsername())%></a></span></div>
             </p>
 
             <h4>Check-ins</h4>
             <p>
-                Number of check-ins: <b><%= request.getAttribute("checkinsCount")==null ? "0" : request.getAttribute("checkinsCount") %></b> <br/>
+                Number of check-ins: <b><%=request.getAttribute("checkinsCount")==null ? "0" : request.getAttribute("checkinsCount")%></b> <br/>
                 <%
-                  if (request.getAttribute("checkinsCount") != null)
-                  {
-                     String lastCheckinUsername = (String)request.getAttribute("lastCheckinUsername");
+                	if (request.getAttribute("checkinsCount") != null)
+                                                  {
+                                                     String lastCheckinUsername = (String)request.getAttribute("lastCheckinUsername");
                 %>
-                     <div class="date"><span>Last check-in <%= DateUtils.getFormattedDateTime(request.getLocale(), (Date)request.getAttribute("lastCheckinDate")) %> | by <a href="<%= response.encodeURL("/showUser/" + lastCheckinUsername) %>"><%= UrlUtils.createUsernameMask(lastCheckinUsername) %></a></span></div>
+                     <div class="date"><span>Last check-in <%=DateUtils.getFormattedDateTime(request.getLocale(), (Date)request.getAttribute("lastCheckinDate"))%> | by <a href="<%=response.encodeURL("/showUser/" + lastCheckinUsername)%>"><%=UrlUtils.createUsernameMask(lastCheckinUsername)%></a></span></div>
                 <%
-                  }
-                  List<Comment> commentList = (List<Comment>) request.getAttribute("comments");
-                               
-                  if (commentList != null)
-                  {              
+                	}
+                                                  List<Comment> commentList = (List<Comment>) request.getAttribute("comments");
+                                                               
+                                                  if (commentList != null)
+                                                  {
                 %>
             </p>
-            <h4><%= commentList.size() %> comments</h4>
+            <h4><%=commentList.size()%> comments</h4>
               <div>
                 <ul class="vertical comments">
 				<%
-                   		for (Comment comment : commentList)
-                   		{
+					for (Comment comment : commentList)
+						                   		{
 				%>
                    <li>
-                     <p><%= comment.getMessage() %></p>                       
-                     <div class="date"><span><%= DateUtils.getFormattedDateTime(request.getLocale(), comment.getCreationDate()) %> | by <a href="<%= response.encodeURL("/showUser/" + comment.getUsername()) %>"><%= UrlUtils.createUsernameMask(comment.getUsername()) %></a></span></div>
+                     <p><%=comment.getMessage()%></p>                       
+                     <div class="date"><span><%=DateUtils.getFormattedDateTime(request.getLocale(), comment.getCreationDate())%> | by <a href="<%=response.encodeURL("/showUser/" + comment.getUsername())%>"><%=UrlUtils.createUsernameMask(comment.getUsername())%></a></span></div>
                    </li>
                 <%
                   		}

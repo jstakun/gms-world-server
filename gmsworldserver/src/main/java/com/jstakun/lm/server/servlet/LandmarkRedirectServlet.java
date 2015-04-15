@@ -52,7 +52,7 @@ public class LandmarkRedirectServlet extends HttpServlet {
             	String url = request.getParameter("url");
 	        
             	if (url == null || StringUtils.indexOfAny(layer, remote) >= 0) {
-            		url = String.format("%sshowLocation.do?lat=%s&lon=%s", ConfigurationManager.SERVER_URL, lat, lng);
+            		url = String.format("%sshowLocation/%s/%s", ConfigurationManager.SERVER_URL, lat, lng);
             	}
             	
             	if (!url.startsWith("http")) {

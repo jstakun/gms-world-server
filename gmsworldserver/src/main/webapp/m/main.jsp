@@ -3,7 +3,8 @@
          com.jstakun.lm.server.persistence.Landmark,
          com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils,
          org.ocpsoft.prettytime.PrettyTime,
-         com.jstakun.lm.server.utils.UrlUtils,net.gmsworld.server.utils.DateUtils,
+         net.gmsworld.server.utils.UrlUtils,
+         net.gmsworld.server.utils.DateUtils,
          com.jstakun.lm.server.utils.memcache.CacheUtil,
          java.util.List"%>
 <!DOCTYPE html>
@@ -34,17 +35,17 @@
         <h3>Latest Landmarks</h3>
         </article>
         <%
-            List<Landmark> landmarkList = (List<Landmark>) request.getAttribute("newestLandmarkList");
-            if (landmarkList != null) {
-            	PrettyTime prettyTime = new PrettyTime(request.getLocale());
-            	for (Landmark landmark : landmarkList) {
+        	List<Landmark> landmarkList = (List<Landmark>) request.getAttribute("newestLandmarkList");
+                            if (landmarkList != null) {
+                            	PrettyTime prettyTime = new PrettyTime(request.getLocale());
+                            	for (Landmark landmark : landmarkList) {
         %>
         <article class="underline">
-			<h4><a href="<%= response.encodeURL("/showLandmark/" + landmark.getId())%>"><%= landmark.getName() %></a></h4>
-            <a href="<%= response.encodeURL("/showLandmark/" + landmark.getId())%>"><img src="http://maps.google.com/maps/api/staticmap?center=<%= landmark.getLatitude()%>,<%= landmark.getLongitude()%>&zoom=9&size=128x128&sensor=false&markers=icon:http://gms-world.appspot.com/images/flagblue.png|<%= landmark.getLatitude()%>,<%= landmark.getLongitude()%>" alt="Landmark on Google Map" /></a>                           
+			<h4><a href="<%=response.encodeURL("/showLandmark/" + landmark.getId())%>"><%=landmark.getName()%></a></h4>
+            <a href="<%=response.encodeURL("/showLandmark/" + landmark.getId())%>"><img src="http://maps.google.com/maps/api/staticmap?center=<%=landmark.getLatitude()%>,<%=landmark.getLongitude()%>&zoom=9&size=128x128&sensor=false&markers=icon:http://gms-world.appspot.com/images/flagblue.png|<%=landmark.getLatitude()%>,<%=landmark.getLongitude()%>" alt="Landmark on Google Map" /></a>                           
 			<p>
-			Created in layer <a href="/showLayer/<%= landmark.getLayer() %>"><%= LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer()) %></a>
-            <div class="date"><span>Posted <%= prettyTime.format(landmark.getCreationDate()) %> on <%= DateUtils.getFormattedDateTime(request.getLocale(), landmark.getCreationDate()) %> | by <a href="/showUser/<%= landmark.getUsername() %>"><%= UrlUtils.createUsernameMask(landmark.getUsername()) %></a></span></div>
+			Created in layer <a href="/showLayer/<%=landmark.getLayer()%>"><%=LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer())%></a>
+            <div class="date"><span>Posted <%=prettyTime.format(landmark.getCreationDate())%> on <%=DateUtils.getFormattedDateTime(request.getLocale(), landmark.getCreationDate())%> | by <a href="/showUser/<%=landmark.getUsername()%>"><%=UrlUtils.createUsernameMask(landmark.getUsername())%></a></span></div>
             </p>
         </article>        
         <%

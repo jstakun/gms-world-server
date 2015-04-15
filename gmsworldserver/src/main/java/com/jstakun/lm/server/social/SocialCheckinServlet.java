@@ -97,7 +97,7 @@ public final class SocialCheckinServlet extends HttpServlet {
     						   Map<String, String> params = new ImmutableMap.Builder<String, String>().
     								   put("user", "Google User").
     								   put("name", landmark.getName()).
-    								   put("url", UrlUtils.getShortUrl(url)).build();  
+    								   put("url", UrlUtils.getGoogleShortUrl(url)).build();  
     						   NotificationUtils.createSocialCheckinNotificationTask(params);
     					   }
     				    }   

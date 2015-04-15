@@ -1,12 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package net.gmsworld.server.layers;
-
-import com.jstakun.lm.server.utils.JSONUtils;
-import com.jstakun.lm.server.utils.xml.KMLParser;
-import com.jstakun.lm.server.utils.xml.ParserManager;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -19,8 +11,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.gmsworld.server.utils.HttpUtils;
+import net.gmsworld.server.utils.JSONUtils;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
+
+import com.jstakun.lm.server.utils.xml.KMLParser;
+import com.jstakun.lm.server.utils.xml.ParserManager;
 
 /**
  *

@@ -1,10 +1,11 @@
 package com.jstakun.lm.server.utils.persistence;
 
 import net.gmsworld.server.config.ConfigurationManager;
-import com.jstakun.lm.server.utils.UrlUtils;
+import net.gmsworld.server.utils.UrlUtils;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.apache.commons.lang.StringUtils;
 
 /**

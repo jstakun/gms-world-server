@@ -1,6 +1,8 @@
 <%@page contentType="text/html" pageEncoding="utf-8"%>
 <%@page import="com.jstakun.lm.server.persistence.Screenshot,
-        com.jstakun.lm.server.utils.UrlUtils,net.gmsworld.server.utils.DateUtils,net.gmsworld.server.utils.StringUtil" %>
+                net.gmsworld.server.utils.UrlUtils,
+                net.gmsworld.server.utils.DateUtils,
+                net.gmsworld.server.utils.StringUtil" %>
 <!DOCTYPE html>
 <html>
 
@@ -19,35 +21,39 @@
     <div class="content">
     	<article>
     	
-<% 
-  Screenshot screenshot = (Screenshot)request.getAttribute("screenshot");
-  String address = (String) request.getAttribute("address");
-  
-  if (screenshot != null) { 
-  
-	  String imageLink;
-	  String myposcode = request.getParameter("myposcode");
-	  if (myposcode != null) {
-	   	  imageLink = "/showLandmark/" + myposcode; 
-	  } else {
-	      imageLink = "/showLocation/" + screenshot.getLatitude() + "/" + screenshot.getLongitude();
-	  }
-%>
+<%
+    		Screenshot screenshot = (Screenshot)request.getAttribute("screenshot");
+    	    	  String address = (String) request.getAttribute("address");
+    	    	  
+    	    	  if (screenshot != null) { 
+    	    	  
+    	    		  String imageLink;
+    	    		  String myposcode = request.getParameter("myposcode");
+    	    		  if (myposcode != null) {
+    	    		   	  imageLink = "/showLandmark/" + myposcode; 
+    	    		  } else {
+    	    		      imageLink = "/showLocation/" + screenshot.getLatitude() + "/" + screenshot.getLongitude();
+    	    		  }
+    	%>
 
                 <h3>GMS World screenshot</h3>
 
-                 <a href="<%= imageLink %>">
-                    <img src="<%= screenshot.getUrl() %>"><img src="<%= screenshot.getUrl() %>" alt="GMS World screenshot"/>
+                 <a href="<%=imageLink%>">
+                    <img src="<%=screenshot.getUrl()%>"><img src="<%=screenshot.getUrl()%>" alt="GMS World screenshot"/>
                  </a>
                  
                  <p>
-                     <%=  address != null ? "Geocode address: " + address + "<br/>" : ""%>
-                     Latitude: <%= StringUtil.formatCoordE6(screenshot.getLatitude()) %>, Longitude: <%= StringUtil.formatCoordE6(screenshot.getLongitude()) %><br/>
-                     <div class="date"><span>Posted on <%= DateUtils.getFormattedDateTime(request.getLocale(), screenshot.getCreationDate()) %> | by 
-    				 <% if (screenshot.getUsername() != null) { %>
-                     	<a href="<%= response.encodeURL("/showUser/" + screenshot.getUsername()) %>"><%= UrlUtils.createUsernameMask(screenshot.getUsername()) %></a>
-    				 <% } else { %>
-                     	<%= UrlUtils.createUsernameMask(screenshot.getUsername()) %>
+                     <%=address != null ? "Geocode address: " + address + "<br/>" : ""%>
+                     Latitude: <%=StringUtil.formatCoordE6(screenshot.getLatitude())%>, Longitude: <%=StringUtil.formatCoordE6(screenshot.getLongitude())%><br/>
+                     <div class="date"><span>Posted on <%=DateUtils.getFormattedDateTime(request.getLocale(), screenshot.getCreationDate())%> | by 
+    				 <%
+                     	if (screenshot.getUsername() != null) {
+                     %>
+                     	<a href="<%=response.encodeURL("/showUser/" + screenshot.getUsername())%>"><%=UrlUtils.createUsernameMask(screenshot.getUsername())%></a>
+    				 <%
+    				 	} else {
+    				 %>
+                     	<%=UrlUtils.createUsernameMask(screenshot.getUsername())%>
     				 <% } %>
                      </span></div>
                  </p>

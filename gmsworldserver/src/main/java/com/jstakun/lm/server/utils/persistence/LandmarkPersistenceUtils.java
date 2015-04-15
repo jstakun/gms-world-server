@@ -18,6 +18,7 @@ import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.StringUtil;
+import net.gmsworld.server.utils.UrlUtils;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.ConvertUtils;
@@ -28,7 +29,6 @@ import org.json.JSONObject;
 import com.google.common.collect.ImmutableMap;
 import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.social.NotificationUtils;
-import com.jstakun.lm.server.utils.UrlUtils;
 import com.jstakun.lm.server.utils.memcache.CacheAction;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;

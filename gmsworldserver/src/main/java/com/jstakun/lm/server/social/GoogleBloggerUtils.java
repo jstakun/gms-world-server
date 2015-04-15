@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.config.ConfigurationManager;
+import net.gmsworld.server.utils.UrlUtils;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -22,7 +23,6 @@ import com.google.api.services.blogger.model.Blog;
 import com.google.api.services.blogger.model.BlogList;
 import com.google.api.services.blogger.model.Post;
 import com.jstakun.lm.server.persistence.Landmark;
-import com.jstakun.lm.server.utils.UrlUtils;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
@@ -43,7 +43,7 @@ public class GoogleBloggerUtils {
         	if (landmark != null && token != null && secret != null) {
         		String message = null;
         		if (url == null) {
-        			url = UrlUtils.getShortUrl(UrlUtils.getLandmarkUrl(landmark));
+        			url = UrlUtils.getShortUrl(UrlUtils.getLandmarkUrl(landmark.getHash(), landmark.getId(), landmark.getCreationDate()));
         		}
 
         		String username = landmark.getUsername();
@@ -125,7 +125,7 @@ public class GoogleBloggerUtils {
         HttpTransport httpTransport = new UrlFetchTransport();
         JsonFactory jsonFactory = new JacksonFactory();
         GoogleCredential requestInitializer = new GoogleCredential.Builder().setClientSecrets(Commons.getProperty(Property.GL_PLUS_KEY), Commons.getProperty(Property.GL_PLUS_SECRET)).setJsonFactory(jsonFactory).setTransport(httpTransport).build();
-        requestInitializer.setAccessToken(Commons.getProperty(Property.gl_plus_token)).setRefreshToken(Commons.getProperty(Property.gl_plus_refresh));
+        //requestInitializer.setAccessToken(Commons.getProperty(Property.gl_plus_token)).setRefreshToken(Commons.getProperty(Property.gl_plus_refresh));
         Blogger blogger = new Blogger.Builder(httpTransport, jsonFactory, requestInitializer).setApplicationName("Landmark Manager").build();
 
         return blogger;

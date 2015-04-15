@@ -1,18 +1,18 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.lm.server.servlet;
 
 import com.google.gdata.util.common.util.Base64;
-import com.jstakun.lm.server.utils.UrlUtils;
 import com.jstakun.lm.server.utils.persistence.UserPersistenceUtils;
+
 import java.io.IOException;
 import java.io.PrintWriter;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import net.gmsworld.server.utils.UrlUtils;
+
 import org.apache.commons.lang.StringUtils;
 
 /**

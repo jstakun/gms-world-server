@@ -8,6 +8,8 @@
       <google.http.client.version>1.20.0</google.http.client.version>
       <freebase.version>v1-rev65-1.20.0</freebase.version>
       <youtube.version>v3-rev130-1.20.0</youtube.version>
+      <shortener.version>v1-rev40-1.20.0</shortener.version>
+      <picasa.version>1.0.10-alpha</picasa.version>  
   </properties>
   
   <dependencies>
@@ -115,7 +117,7 @@
   	<dependency>
   		<groupId>com.google.api.client</groupId>
   		<artifactId>google-api-data-picasa-v2</artifactId>
-  		<version>1.0.10-alpha</version>
+  		<version>${picasa.version}</version>
   	</dependency>
   	<dependency>
   		<groupId>de.grundid.opendatalab</groupId>
@@ -127,6 +129,11 @@
 		<artifactId>google-api-services-youtube</artifactId>
 		<version>${youtube.version}</version>
 	</dependency>
+	<dependency>
+			<groupId>com.google.apis</groupId>
+			<artifactId>google-api-services-urlshortener</artifactId>
+			<version>${shortener.version}</version>
+		</dependency>
   </dependencies>
   
    <distributionManagement>

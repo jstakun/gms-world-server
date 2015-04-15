@@ -1,8 +1,10 @@
 <%@page contentType="text/html" pageEncoding="utf-8"%>
 <%@ page import="com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils,
                  com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils,
-                 com.jstakun.lm.server.utils.UrlUtils,net.gmsworld.server.utils.StringUtil,
-                 com.jstakun.lm.server.persistence.Landmark,net.gmsworld.server.utils.DateUtils,
+                 net.gmsworld.server.utils.UrlUtils,
+                 net.gmsworld.server.utils.StringUtil,
+                 com.jstakun.lm.server.persistence.Landmark,
+                 net.gmsworld.server.utils.DateUtils,
                  java.util.List"%>
 <!DOCTYPE html>
 <html>
@@ -22,50 +24,50 @@
     <div class="content">
     	<article>
         <%
-            String user = (String)request.getAttribute("user");
-            if (user == null) {
-               user = "none";
-            }   
+        	String user = (String)request.getAttribute("user");
+                            if (user == null) {
+                               user = "none";
+                            }
         %>    	
     	
     	<h3>Landmarks created by user 
         <%
-            if (StringUtil.isSocialUser(user))
-            {
-        %>
-        <a href="/socialProfile?uid=<%= user %>"><%= user %></a>
+    	    	    		if (StringUtil.isSocialUser(user))
+    	    	    	    	    	    	            {
+    	    	    	%>
+        <a href="/socialProfile?uid=<%=user%>"><%=user%></a>
         <%
-            } else {
+        	} else {
         %>   
-        <a href="/showUser/<%= user %>"><%= user %></a>
+        <a href="/showUser/<%=user%>"><%=user%></a>
         <%
-        }
+        	}
         %>
     	</h3>
     	
     	<%
-           List<Landmark> landmarkList = (List<Landmark>) request.getAttribute("userLandmarks");
-   		   
-           if (landmarkList == null || landmarkList.isEmpty())
-           {
-        %>
+    	    		List<Landmark> landmarkList = (List<Landmark>) request.getAttribute("userLandmarks");
+    	    	    	    	   		   
+    	    	    	    	           if (landmarkList == null || landmarkList.isEmpty())
+    	    	    	    	           {
+    	    	%>
         	Found 0 landmarks in layer.
         <%
-           }
-           else
-           {
-                for (Landmark landmark : landmarkList)
-                {
-        %>
+    	    		}
+    	    	    	    	           else
+    	    	    	    	           {
+    	    	    	    	                for (Landmark landmark : landmarkList)
+    	    	    	    	                {
+    	    	%>
                     
         <article class="underline">
         
-            <h4><a href="/showLandmark/<%= landmark.getId() %>"><%= landmark.getName()%></a></h4>
+            <h4><a href="/showLandmark/<%=landmark.getId()%>"><%=landmark.getName()%></a></h4>
             
             <p>
-                Latitude: <%= StringUtil.formatCoordE6(landmark.getLatitude()) %>, Longitude: <%= StringUtil.formatCoordE6(landmark.getLongitude()) %> |
-                Created in layer <a href="/showLayer/<%= landmark.getLayer() %>"><%= LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer()) %></a>
-                 <div class="date"><span>Posted on <%= DateUtils.getFormattedDateTime(request.getLocale(), landmark.getCreationDate()) %> | by <a href="/showUser/<%= landmark.getUsername() %>"><%= UrlUtils.createUsernameMask(landmark.getUsername()) %></a></span></div>
+                Latitude: <%=StringUtil.formatCoordE6(landmark.getLatitude())%>, Longitude: <%=StringUtil.formatCoordE6(landmark.getLongitude())%> |
+                Created in layer <a href="/showLayer/<%=landmark.getLayer()%>"><%=LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer())%></a>
+                 <div class="date"><span>Posted on <%=DateUtils.getFormattedDateTime(request.getLocale(), landmark.getCreationDate())%> | by <a href="/showUser/<%=landmark.getUsername()%>"><%=UrlUtils.createUsernameMask(landmark.getUsername())%></a></span></div>
             </p>
         
         </article>

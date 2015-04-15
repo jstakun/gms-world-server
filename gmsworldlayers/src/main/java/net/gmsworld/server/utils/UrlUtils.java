@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package net.gmsworld.server.utils;
 
 import static com.rosaloves.bitlyj.Bitly.as;
@@ -19,6 +15,12 @@ import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.utils.persistence.Landmark;
 
 import org.apache.commons.lang.StringUtils;
+
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson.JacksonFactory;
+import com.google.api.services.urlshortener.Urlshortener;
 
 import com.rosaloves.bitlyj.Bitly.Provider;
 import com.rosaloves.bitlyj.Url;
@@ -133,15 +135,15 @@ public class UrlUtils {
         return result.toString();
     }
 
-    public static String getShortUrl(String url) {
-    	//TODO use alternative shortening service
-        String respUrl = url;
-        if (!StringUtils.startsWith(url, BITLY_URL)) {
+    public static String getShortUrl(String longUrl) {
+    	String respUrl = longUrl;
+        if (!StringUtils.startsWith(longUrl, BITLY_URL)) {
             try {
-                Url shortUrl = bitly.call(shorten(url));
+                Url shortUrl = bitly.call(shorten(longUrl));
                 respUrl = shortUrl.getShortUrl();
             } catch (Exception e) {
                 logger.log(Level.WARNING, "Bitly API exception: ", e);
+                respUrl = getGoogleShortUrl(longUrl);
             }
         }
         return respUrl;
@@ -170,4 +172,39 @@ public class UrlUtils {
         	return ConfigurationManager.SERVER_URL + "showLandmark/" + landmark.getId();
         }
     }
+    
+    private static Urlshortener newUrlshortener() {
+    	HttpTransport httpTransport = new NetHttpTransport();
+        JsonFactory jsonFactory = new JacksonFactory();
+        return new Urlshortener.Builder(httpTransport, jsonFactory, null).build();
+    }
+    
+    public static String getGoogleShortUrl(String longUrl) {
+    	if (!StringUtils.startsWith(longUrl, BITLY_URL)) {
+    		try {
+    			Urlshortener shortener = newUrlshortener();
+        		com.google.api.services.urlshortener.model.Url toInsert = new com.google.api.services.urlshortener.model.Url().setLongUrl(longUrl);
+            	com.google.api.services.urlshortener.model.Url shortUrl = shortener.url().insert(toInsert).setKey(Commons.getProperty(Property.GOOGLE_API_KEY)).execute();
+        		return shortUrl.getId();
+        	} catch (Exception e) {
+        		logger.log(Level.SEVERE, e.getMessage(), e);
+            	return longUrl;
+        	}
+    	} else {
+    		return longUrl;
+    	}
+    }
+    
+    public static String getLandmarkUrl(String hash, int id, Date creationDate) {
+    	//hash not empty and not /showLandmark/null
+    	if ((creationDate == null || creationDate.getTime() > DB_MIGRATION_DATE) && StringUtils.isNotEmpty(hash) && !StringUtils.equals(hash, "12wsNzG")) {
+    		//logger.log(Level.INFO, "Landmark created after migration");
+    		//logger.log(Level.INFO, creationDate.getTime() + " > " + DB_MIGRATION_DATE);
+    		return BITLY_URL + hash;
+    	} else {
+    		//logger.log(Level.INFO, "Landmark created before migration");
+    		return ConfigurationManager.SERVER_URL + "showLandmark/" + id;
+    	}
+    }
+
 }

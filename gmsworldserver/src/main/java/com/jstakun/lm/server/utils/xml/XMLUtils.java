@@ -1,8 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.lm.server.utils.xml;
+
+import java.util.Iterator;
+import java.util.List;
+
+import net.gmsworld.server.utils.UrlUtils;
 
 import com.flickr4java.flickr.photos.Photo;
 import com.flickr4java.flickr.photos.PhotoList;
@@ -12,9 +13,6 @@ import com.google.gdata.data.youtube.VideoEntry;
 import com.google.gdata.data.youtube.YouTubeMediaGroup;
 import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.persistence.Layer;
-import com.jstakun.lm.server.utils.UrlUtils;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  *

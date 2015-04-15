@@ -8,9 +8,9 @@
 <%@page import="com.jstakun.lm.server.persistence.Landmark,
                 com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils,
                 net.gmsworld.server.utils.DateUtils,
-                com.jstakun.lm.server.utils.UrlUtils,
+                net.gmsworld.server.utils.UrlUtils,
                 net.gmsworld.server.utils.StringUtil,
-                com.jstakun.lm.server.utils.HttpUtils,
+                com.jstakun.lm.server.utils.HtmlUtils,
                 org.apache.commons.lang.StringEscapeUtils" %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
@@ -47,7 +47,7 @@
                 var image = '/images/flagblue.png';
                 var map = new google.maps.Map(document.getElementById("map_canvas"),myOptions);
 
-                var contentString = <%= HttpUtils.buildLandmarkDesc(landmark, request.getAttribute("address"), request.getLocale()) %>;
+                var contentString = <%= HtmlUtils.buildLandmarkDesc(landmark, request.getAttribute("address"), request.getLocale()) %>;
 
                 var infowindow = new google.maps.InfoWindow(
                 {

@@ -14,12 +14,15 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.util.LabelValueBean;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.HttpUtils;
+import net.gmsworld.server.utils.JSONUtils;
+import net.gmsworld.server.utils.NumberUtils;
 
 import com.jstakun.lm.server.persistence.Layer;
 import com.jstakun.lm.server.utils.memcache.CacheAction;
@@ -181,5 +184,50 @@ public class LayerPersistenceUtils {
 		});
 	    return (List<Layer>) layersCacheAction.getObjectFromCache(key, CacheType.NORMAL);
     }
+    
+    public static String createCustomJSonLayersList(List<Layer> layerList, double latitude, double longitude, int radius) throws JSONException {
+    	ArrayList<Map<String, Object>> jsonArray = new ArrayList<Map<String, Object>>();
+    	Map<String, Integer> count = LandmarkPersistenceUtils.countLandmarksByCoords(latitude, longitude, radius);
+    	for (Layer layer : layerList) {
+    		Map<String, Object> jsonObject = new HashMap<String, Object>();
+    		String name = layer.getName();
+    		jsonObject.put("name", name);
+    		jsonObject.put("desc", layer.getDesc());
+    		jsonObject.put("formatted", layer.getFormatted());
+    		jsonObject.put("iconURI", ConfigurationManager.SERVER_URL + "images/" + layer.getName() + ".png");
+    		jsonObject.put("manageable", layer.isManageable());
+    		jsonObject.put("enabled", layer.isEnabled());
+    		jsonObject.put("checkinable", layer.isCheckinable());
+    		boolean isEmpty = (count.containsKey(name) ? (count.get(name) == 0) : true);
+    		jsonObject.put("isEmpty", isEmpty);
+    		jsonArray.add(jsonObject);
+    	}
+    	return JSONUtils.getJsonArrayObject(jsonArray);
+    }
+    	
+    public static String createCustomJSonLayersList(List<Layer> layerList, double latitudeMin, double longitudeMin, double latitudeMax, double longitudeMax) throws JSONException {
+    	//BoundingBox bb = new BoundingBox(latitudeMax, longitudeMax, latitudeMin, longitudeMin);
+    	//List<String> cells = GeocellManager.bestBboxSearchCells(bb, null);
+    	List<Map<String, Object>> jsonArray = new ArrayList<Map<String, Object>>();
+    	double latitude = (latitudeMin + latitudeMax) / 2;
+    	double longitude = (longitudeMin + longitudeMax) / 2;
+    	int radius = (int)(NumberUtils.distanceInKilometer(latitudeMin, latitudeMax, longitudeMin, longitudeMax) * 1000 / 2);
+    	Map<String, Integer> count = LandmarkPersistenceUtils.countLandmarksByCoords(latitude, longitude, radius);
+    	for (Layer layer : layerList) {
+    		Map<String, Object> jsonObject = new HashMap<String, Object>();
+    		String name = layer.getName();
+    		jsonObject.put("name", name);
+    		jsonObject.put("desc", layer.getDesc());
+    		jsonObject.put("formatted", layer.getFormatted());
+    		jsonObject.put("iconURI", ConfigurationManager.SERVER_URL + "images/" + name + ".png");
+    		jsonObject.put("manageable", layer.isManageable());
+    		jsonObject.put("enabled", layer.isEnabled());
+    		jsonObject.put("checkinable", layer.isCheckinable());
+    		boolean isEmpty = (count.containsKey(name) ? (count.get(name) == 0) : true);
+    		jsonObject.put("isEmpty", isEmpty);
+    		jsonArray.add(jsonObject);
+    	}
+    	return JSONUtils.getJsonArrayObject(jsonArray);
+    	}
     	
 }

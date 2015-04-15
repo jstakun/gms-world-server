@@ -15,7 +15,6 @@ import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
 
 import com.jstakun.lm.server.persistence.Layer;
-import com.jstakun.lm.server.utils.JSONUtils;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 import com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils;
@@ -73,9 +72,9 @@ public class ListLayersServlet extends HttpServlet {
                 if (layerList != null) {
                 	try {
                     	if (version == 1) {
-                        	json = JSONUtils.createCustomJSonLayersList(layerList, latitudeMin, longitudeMin, latitudeMax, longitudeMax);
+                        	json = LayerPersistenceUtils.createCustomJSonLayersList(layerList, latitudeMin, longitudeMin, latitudeMax, longitudeMax);
                     	} else {
-                        	json = JSONUtils.createCustomJSonLayersList(layerList, latitudeMin, longitudeMin, radius * 1000);
+                        	json = LayerPersistenceUtils.createCustomJSonLayersList(layerList, latitudeMin, longitudeMin, radius * 1000);
                     	}
                     	if (json != null) {
                         	CacheUtil.put(key, json, CacheType.NORMAL);

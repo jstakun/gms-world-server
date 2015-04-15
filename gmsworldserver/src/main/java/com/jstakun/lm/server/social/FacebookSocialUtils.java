@@ -10,11 +10,10 @@ import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.layers.FacebookUtils;
 import net.gmsworld.server.utils.NumberUtils;
+import net.gmsworld.server.utils.UrlUtils;
 
 import com.jstakun.lm.server.persistence.Landmark;
-import com.jstakun.lm.server.utils.UrlUtils;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
-import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;
 import com.restfb.Parameter;
 import com.restfb.exception.FacebookException;

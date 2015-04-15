@@ -15,6 +15,7 @@ import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.utils.ImageUtils;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
+import net.gmsworld.server.utils.UrlUtils;
 
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
@@ -25,7 +26,6 @@ import org.apache.commons.lang.StringUtils;
 import com.google.common.collect.ImmutableMap;
 import com.jstakun.lm.server.social.NotificationUtils;
 import com.jstakun.lm.server.utils.FileUtils;
-import com.jstakun.lm.server.utils.UrlUtils;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 import com.jstakun.lm.server.utils.persistence.ScreenshotPersistenceUtils;

@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.utils.UrlUtils;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -19,7 +20,6 @@ import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 
 import com.jstakun.lm.server.persistence.Landmark;
-import com.jstakun.lm.server.utils.UrlUtils;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 
 public class TwitterUtils {

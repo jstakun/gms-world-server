@@ -9,23 +9,23 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.gmsworld.server.layers.GeocodeHelperFactory;
+import net.gmsworld.server.utils.StringUtil;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import net.gmsworld.server.layers.GeocodeHelperFactory;
-import net.gmsworld.server.utils.StringUtil;
-
 import com.jstakun.lm.server.persistence.Checkin;
 import com.jstakun.lm.server.persistence.Comment;
 import com.jstakun.lm.server.persistence.Landmark;
-import com.jstakun.lm.server.utils.HttpUtils;
+import com.jstakun.lm.server.utils.HtmlUtils;
 import com.jstakun.lm.server.utils.memcache.CacheAction;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
-import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
+import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.jstakun.lm.server.utils.persistence.CheckinPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.CommentPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.CommonPersistenceUtils;
@@ -135,7 +135,7 @@ public class ShowLandmarkAction extends Action {
         	OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
         	request.setAttribute("lat", StringUtil.formatCoordE6(landmark.getLatitude()));
         	request.setAttribute("lng", StringUtil.formatCoordE6(landmark.getLongitude()));
-        	request.setAttribute("landmarkDesc", HttpUtils.buildLandmarkDesc(landmark, request.getAttribute("address"), request.getLocale()));
+        	request.setAttribute("landmarkDesc", HtmlUtils.buildLandmarkDesc(landmark, request.getAttribute("address"), request.getLocale()));
         	request.setAttribute("landmarkName", "'" + landmark.getName() + "'");
         	if (os.isMobileDevice()) {
                 return mapping.findForward("landmarksMobile");

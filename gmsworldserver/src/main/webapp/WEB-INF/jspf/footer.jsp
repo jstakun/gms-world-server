@@ -1,8 +1,9 @@
 <%-- any content can be specified here e.g.: --%>
 <%@ page pageEncoding="utf-8" %>
 <%@ page import="com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils,
-                 com.jstakun.lm.server.persistence.Landmark,net.gmsworld.server.utils.DateUtils,
-                 com.jstakun.lm.server.utils.UrlUtils,
+                 com.jstakun.lm.server.persistence.Landmark,
+                 net.gmsworld.server.utils.DateUtils,
+                 net.gmsworld.server.utils.UrlUtils,
                  java.util.List"%>
 <div id="footer-outer" class="clear"><div id="footer-wrap">
 
@@ -67,7 +68,7 @@
             <div class="recent-comments">
                 <ul>
 <%
-   List<Landmark> landmarkList1 = (List<Landmark>)request.getAttribute("newestLandmarkList");
+	List<Landmark> landmarkList1 = (List<Landmark>)request.getAttribute("newestLandmarkList");
 
    if (landmarkList1 == null) {
 	   landmarkList1 = LandmarkPersistenceUtils.selectNewestLandmarks();
@@ -76,8 +77,8 @@
    if (landmarkList1 != null) {
    
    		for (Landmark landmark : landmarkList1) {
- %>
- <li><a href="<%= response.encodeURL("/showLandmark/" + landmark.getId()) %>" title="<%= landmark.getName() %>"><%= landmark.getName() %></a><br/> &#45; <cite><a href="<%= response.encodeURL("/showUser/" + landmark.getUsername()) %>"><%= UrlUtils.createUsernameMask(landmark.getUsername()) %></a></cite></li>
+%>
+ <li><a href="<%=response.encodeURL("/showLandmark/" + landmark.getId())%>" title="<%=landmark.getName()%>"><%=landmark.getName()%></a><br/> &#45; <cite><a href="<%=response.encodeURL("/showUser/" + landmark.getUsername())%>"><%=UrlUtils.createUsernameMask(landmark.getUsername())%></a></cite></li>
  <%
    		}
    

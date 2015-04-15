@@ -95,17 +95,19 @@ public class YoutubeUtils extends LayerHelper {
         return ytservice.query(vquery, VideoFeed.class);
     }
     
-    private static List<Video> getVideosV3(double latitude, double longitude, String query, int radius, int limit) throws MalformedURLException, IOException, ServiceException {
-    	
+    private static YouTube getYouTube() {
     	HttpTransport httpTransport = new NetHttpTransport();
         JsonFactory jsonFactory = new JacksonFactory();
     	
-    	YouTube youtube = new YouTube.Builder(httpTransport, jsonFactory, new HttpRequestInitializer() {
+    	return new YouTube.Builder(httpTransport, jsonFactory, new HttpRequestInitializer() {
             public void initialize(HttpRequest request) throws IOException {
             }
         }).setApplicationName("GMS World").build();
-
-    	YouTube.Search.List search = youtube.search().list("snippet");
+    }
+    
+    private static List<Video> getVideosV3(double latitude, double longitude, String query, int radius, int limit) throws MalformedURLException, IOException, ServiceException {
+    	
+    	YouTube.Search.List search = getYouTube().search().list("snippet");
     	
         search.setKey(Commons.getProperty(Property.GOOGLE_API_KEY));
         search.setType("video");
@@ -136,7 +138,7 @@ public class YoutubeUtils extends LayerHelper {
             	ids.add(res.getId().getVideoId());
             }
             
-          	YouTube.Videos.List videos = youtube.videos().list("recordingDetails, statistics, snippet");
+          	YouTube.Videos.List videos = getYouTube().videos().list("recordingDetails, statistics, snippet");
             videos.setKey(Commons.getProperty(Property.GOOGLE_API_KEY));
         	
         	videos.setId(StringUtils.join(ids, ","));

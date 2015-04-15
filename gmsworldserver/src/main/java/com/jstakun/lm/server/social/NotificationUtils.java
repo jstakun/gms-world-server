@@ -10,20 +10,19 @@ import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
 
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.config.ConfigurationManager;
+import net.gmsworld.server.utils.NumberUtils;
+import net.gmsworld.server.utils.UrlUtils;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
-
-import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.config.Commons.Property;
-import net.gmsworld.server.config.ConfigurationManager;
-import net.gmsworld.server.utils.NumberUtils;
-
 import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.MailUtils;
-import com.jstakun.lm.server.utils.UrlUtils;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 
 public class NotificationUtils {
@@ -47,7 +46,7 @@ public class NotificationUtils {
 			params.put("key", key);
 			Landmark landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
 			if (landmark != null) {
-				params.put("url", UrlUtils.getShortUrl(UrlUtils.getLandmarkUrl(landmark)));
+				params.put("url", UrlUtils.getShortUrl(UrlUtils.getLandmarkUrl(landmark.getHash(), landmark.getId(), landmark.getCreationDate())));
 				if (landmark.getLayer().equals("Social")) {
 					params.put("type", Integer.toString(Commons.BLOGEO));
 					params.put("title", landmark.getName());

@@ -9,7 +9,8 @@
          com.jstakun.lm.server.persistence.Landmark,
          com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils,
          org.ocpsoft.prettytime.PrettyTime,
-         com.jstakun.lm.server.utils.UrlUtils,net.gmsworld.server.utils.DateUtils,java.util.List"%>
+         net.gmsworld.server.utils.UrlUtils,
+         net.gmsworld.server.utils.DateUtils,java.util.List"%>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <!-- content-outer -->
@@ -39,22 +40,22 @@
                     </jsp:include>
 
                     <%
-                                String month = "";
-                                if (request.getAttribute("month") != null) {
-                                    month = (String) request.getAttribute("month");
-                                }
+                    	String month = "";
+                                                    if (request.getAttribute("month") != null) {
+                                                        month = (String) request.getAttribute("month");
+                                                    }
                     %>
-                    <h3>Archives <%= month%></h3>
+                    <h3>Archives <%=month%></h3>
                     <ul class="archive">
                         <%
-                                    if (request.getAttribute("landmarkList") != null) {
-                                        List<Landmark> landmarkList = (List<Landmark>) request.getAttribute("landmarkList");
-                                        PrettyTime prettyTime = new PrettyTime(request.getLocale());
-                                        for (Landmark landmark : landmarkList) {
+                        	if (request.getAttribute("landmarkList") != null) {
+                                                                List<Landmark> landmarkList = (List<Landmark>) request.getAttribute("landmarkList");
+                                                                PrettyTime prettyTime = new PrettyTime(request.getLocale());
+                                                                for (Landmark landmark : landmarkList) {
                         %>
                         <li>
-                            <div class="post-title"><a href="<%= response.encodeURL("/showLandmark/" + landmark.getId())%>"><%= landmark.getName()%></a></div>
-                            <div class="post-details">Posted <%= prettyTime.format(landmark.getCreationDate()) %> on <%= DateUtils.getFormattedDateTime(request.getLocale(), landmark.getCreationDate()) %> by <a href="<%= landmark.getLayer().equals("Social") ? response.encodeURL("/blogeo/" + landmark.getUsername()) : response.encodeURL("/showUser/" + landmark.getUsername())%>"><%= UrlUtils.createUsernameMask(landmark.getUsername()) %></a> | Filed in layer <a href="/showLayer/<%= landmark.getLayer() %>"><%= LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer()) %></a></div>
+                            <div class="post-title"><a href="<%=response.encodeURL("/showLandmark/" + landmark.getId())%>"><%=landmark.getName()%></a></div>
+                            <div class="post-details">Posted <%=prettyTime.format(landmark.getCreationDate())%> on <%=DateUtils.getFormattedDateTime(request.getLocale(), landmark.getCreationDate())%> by <a href="<%=landmark.getLayer().equals("Social") ? response.encodeURL("/blogeo/" + landmark.getUsername()) : response.encodeURL("/showUser/" + landmark.getUsername())%>"><%=UrlUtils.createUsernameMask(landmark.getUsername())%></a> | Filed in layer <a href="/showLayer/<%= landmark.getLayer() %>"><%= LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer()) %></a></div>
                         </li>
                         <%
                                         }
