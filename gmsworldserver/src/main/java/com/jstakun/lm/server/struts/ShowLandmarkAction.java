@@ -17,6 +17,7 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.json.JSONObject;
 
 import com.jstakun.lm.server.persistence.Checkin;
 import com.jstakun.lm.server.persistence.Comment;
@@ -96,7 +97,7 @@ public class ShowLandmarkAction extends Action {
                         if (comments != null && !comments.isEmpty()) {
                             request.setAttribute("comments", comments);
                         }
-
+                        
                         if (!StringUtils.equals(landmark.getLayer(),"Social")) {
                             //List<Checkin> checkins = CheckinPersistenceUtils.selectAllLandmarkCheckins(key);
                         	CacheAction checkinCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			

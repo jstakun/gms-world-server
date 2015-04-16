@@ -33,9 +33,9 @@
                     <div class="post">
                         <%
                         	Landmark landmark = (Landmark) request.getAttribute("landmark");            
-                                                                        String key = (String) request.getAttribute("key");
+                            String key = (String) request.getAttribute("key");
                                                                         
-                                                                        if (landmark == null && key == null) {
+                            if (landmark == null && key == null) {
                         %>
                         <h3>Landmark not found.</h3>
                         <div class="post">
@@ -80,7 +80,9 @@
                         %>
                             <%=request.getAttribute("address") != null ? "<br/>Geocode address: " + request.getAttribute("address") : ""%><br/>
                             Latitude: <%=StringUtil.formatCoordE6(landmark.getLatitude())%>, Longitude: <%=StringUtil.formatCoordE6(landmark.getLongitude())%><br/>
-                            Posted on <%=DateUtils.getFormattedDateTime(request.getLocale(), landmark.getCreationDate())%> by <a href="<%=landmark.getLayer().equals("Social") ? response.encodeURL("/blogeo/" + landmark.getUsername()) : response.encodeURL("/showUser/" + landmark.getUsername())%>"><%=UrlUtils.createUsernameMask(landmark.getUsername())%></a> | Created in layer <a href="/showLayer/<%=landmark.getLayer()%>"><%=LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer())%></a><br/>
+                            Posted on <%=DateUtils.getFormattedDateTime(request.getLocale(), landmark.getCreationDate())%> by <a href="<%=landmark.getLayer().equals("Social") ? response.encodeURL("/blogeo/" + landmark.getUsername()) : response.encodeURL("/showUser/" + landmark.getUsername())%>"><%=UrlUtils.createUsernameMask(landmark.getUsername())%></a> | 
+                            Created in layer <a href="/showLayer/<%=landmark.getLayer()%>"><%=LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer())%></a><!--|
+                            User status: <%= landmark.getUseCount() %> --><br/>
                           </p>
                    
                         <%

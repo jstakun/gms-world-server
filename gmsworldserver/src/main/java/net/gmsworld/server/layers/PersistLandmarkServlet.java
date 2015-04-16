@@ -109,7 +109,8 @@ public class PersistLandmarkServlet extends HttpServlet {
                 String lng = StringUtil.formatCoordE2(longitude);
             	boolean isSimilarToNewest = LandmarkPersistenceUtils.isSimilarToNewest(name, lat, lng);
             	if (!isSimilarToNewest) {
-            		Map<String, String> peristResponse = LandmarkPersistenceUtils.persistLandmark(name, description, latitude, longitude, altitude, username, validityDate, layer, email);
+            		int useCount = NumberUtils.getInt(request.getHeader("X-GMS-UseCount"), 1);
+                	Map<String, String> peristResponse = LandmarkPersistenceUtils.persistLandmark(name, description, latitude, longitude, altitude, username, validityDate, layer, email, "{useCount:"+useCount+"}");
 
                 	id = peristResponse.get("id");
                 	hash = peristResponse.get("hash");
@@ -122,7 +123,6 @@ public class PersistLandmarkServlet extends HttpServlet {
                     	logger.log(Level.INFO, "Removed from cache layer list {0}: {1}", new Object[]{layerKey, CacheUtil.remove(layerKey)});           
                 	    //
                     	String userAgent = request.getHeader("User-Agent");
-                    	int useCount = NumberUtils.getInt(request.getHeader("X-GMS-UseCount"), 1);
                     	LandmarkPersistenceUtils.notifyOnLandmarkCreation(name, lat, lng, id, hash, layer, username, email, userAgent, useCount);
                 	} 
                 }

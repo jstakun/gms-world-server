@@ -53,7 +53,7 @@ public class LandmarkPersistenceUtils {
        }
     }*/
     
-    public static Map<String, String> persistLandmark(String name, String description, double latitude, double longitude, double altitude, String username, Date validityDate, String layer, String email) {
+    public static Map<String, String> persistLandmark(String name, String description, double latitude, double longitude, double altitude, String username, Date validityDate, String layer, String email, String flex) {
 
     	//String key = null;
         //Date vDate = validityDate;
@@ -101,6 +101,9 @@ public class LandmarkPersistenceUtils {
         	}
         	if (email != null) {
         		params += "&email=" + email;
+        	}
+        	if (flex != null) {
+        		params += "&flex=" + URLEncoder.encode(flex, "UTF-8");
         	}
         	//logger.log(Level.INFO, "Calling: " + landmarksUrl);
         	String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));

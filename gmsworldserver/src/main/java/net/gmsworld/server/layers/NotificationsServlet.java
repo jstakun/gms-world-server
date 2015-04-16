@@ -80,15 +80,15 @@ public class NotificationsServlet extends HttpServlet {
                 					//from version 1086, 86 username is Base64 encoded string
                 				}
                 			}	
-                			String description = GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(latitude, longitude);            
-                			Map<String, String> peristResponse = LandmarkPersistenceUtils.persistLandmark(name, description, latitude, longitude, 0, username, null, Commons.MY_POS_CODE, null);
+                			int useCount = NumberUtils.getInt(request.getHeader("X-GMS-UseCount"), 1);
+            				String description = GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(latitude, longitude);            
+                			Map<String, String> peristResponse = LandmarkPersistenceUtils.persistLandmark(name, description, latitude, longitude, 0, username, null, Commons.MY_POS_CODE, null, "{useCount:"+useCount+"}");
 
                 			String id = peristResponse.get("id");
                 			String hash = peristResponse.get("hash");
                 
                 			if (StringUtils.isNumeric(id)) {	
                 				String userAgent = request.getHeader("User-Agent");
-                				int useCount = NumberUtils.getInt(request.getHeader("X-GMS-UseCount"), 1);
                 				LandmarkPersistenceUtils.notifyOnLandmarkCreation(name, lat, lng, id, hash, Commons.MY_POS_CODE, username, null, userAgent, useCount);
                 			} 
                 		}

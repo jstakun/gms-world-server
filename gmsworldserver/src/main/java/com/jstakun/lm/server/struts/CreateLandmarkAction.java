@@ -41,7 +41,7 @@ public class CreateLandmarkAction extends Action {
         Date validityDate = new Date(((Timestamp)landmarkForm.get("validityDate")).getTime());
         String layer = (String)landmarkForm.get("layer");
 
-        LandmarkPersistenceUtils.persistLandmark(name, description, latitude, longitude, 0.0, username, validityDate, layer, null);
+        LandmarkPersistenceUtils.persistLandmark(name, description, latitude, longitude, 0.0, username, validityDate, layer, null, null);
 
         return mapping.findForward( "success");
     }

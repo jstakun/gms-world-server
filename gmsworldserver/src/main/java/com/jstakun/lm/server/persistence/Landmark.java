@@ -1,12 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.lm.server.persistence;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
+
+import org.json.JSONObject;
 
 /**
  *
@@ -37,20 +34,7 @@ public class Landmark implements Serializable {
     
     private String hash;
    
-    //private String email;
-
-    public Landmark(double latitude, double longitude, double altitude, String name, String description, String username, Date validityDate, String layer, List<String> geoCells, String email) {
-        this();
-    	this.latitude = latitude;
-        this.longitude = longitude;
-        this.altitude = new Double(altitude);
-        this.name = name;
-        this.description = description;
-        this.username = username;
-        this.validityDate = validityDate;       
-        this.layer = layer;
-        //this.email = email;
-    }
+    private String flex;
     
     public Landmark() {
     	this.creationDate = new Date(System.currentTimeMillis());
@@ -148,5 +132,22 @@ public class Landmark implements Serializable {
     
     public void setId(int id){
     	this.id = id;
+    }
+    
+    public void setFlex(String f) {
+        this.flex = f;
+    }
+    
+    public int getUseCount() {
+    	try {
+    		if (flex != null) {
+    			JSONObject details = new JSONObject(flex);
+    			return details.getInt("useCount");
+    		} else {
+    			return 0;
+    		}
+    	} catch (Exception e) {
+    		return -1;
+    	}
     }
 }
