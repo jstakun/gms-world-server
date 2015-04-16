@@ -1,7 +1,6 @@
 package net.gmsworld.server.layers;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URLDecoder;
 import java.util.List;
@@ -15,19 +14,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
-import org.json.JSONObject;
-
-import twitter4j.TwitterException;
-
-import com.jstakun.gms.android.landmarks.ExtendedLandmark;
-
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
 
+import org.apache.commons.lang.StringUtils;
+import org.json.JSONObject;
+
+import twitter4j.TwitterException;
+
+import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.lm.server.utils.GoogleThreadProvider;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.restfb.exception.FacebookOAuthException;
@@ -609,8 +607,6 @@ public class LayersProviderServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        InputStream stream = getServletContext().getResourceAsStream(Commons.getProperty(Property.mcopenapi_privKeyFile));
-        LayerHelperFactory.getMcOpenApiUtils().setPrivateKey(stream);
         LayerHelperFactory.setCacheProvider(new GoogleCacheProvider());
         LayerHelperFactory.setThreadProvider(new GoogleThreadProvider());
     }

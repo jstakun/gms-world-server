@@ -54,8 +54,11 @@ public class McOpenApiUtils extends LayerHelper {
 
     private static PrivateKey privateKey = null;
 
-    protected boolean isPrivateKeySet() {
-    	return (privateKey != null);
+    public McOpenApiUtils() {
+    	if (privateKey == null) {
+    		InputStream stream = getClass().getResourceAsStream(Commons.getProperty(Property.mcopenapi_privKeyFile));
+    		setPrivateKey(stream);	
+    	}
     }
     
     @Override
@@ -93,19 +96,18 @@ public class McOpenApiUtils extends LayerHelper {
         return null;
     }
 
-    public void setPrivateKey(InputStream stream) {
-        if (privateKey == null) {
-            try {
+    private void setPrivateKey(InputStream stream) {       
+         try {
                 KeyStore ks = KeyStore.getInstance("PKCS12");
                 char[] pwd = new String(CryptoTools.decrypt(Base64.decode(Commons.getProperty(Property.mcopenapi_ksPwd).getBytes()))).toCharArray();
                 ks.load(stream, pwd);
                 Key key = ks.getKey(Commons.getProperty(Property.mcopenapi_keyAlias), pwd);
                 privateKey = (PrivateKey) key;
-            } catch (Exception ex) {
+         } catch (Exception ex) {
                 logger.log(Level.SEVERE, null, ex);
-            }
-        }
+         }
     }
+    
 
     private static String getOpenAPIConnection(String httpsURL) throws Exception {
 
@@ -131,8 +133,10 @@ public class McOpenApiUtils extends LayerHelper {
             	//logger.log(Level.INFO, "Calling: " + httpsURL);
                 responseBody = HttpUtils.processFileRequestWithAuthn(new URL(httpsURL), AuthUtils.buildAuthHeaderString(params));
             } catch (Throwable e) {
-                logger.log(Level.SEVERE, e.getMessage());
+                logger.log(Level.SEVERE, e.getMessage(), e);
             }
+        } else {
+        	logger.log(Level.SEVERE, "Private key is empty!");
         }
 
         return responseBody;
