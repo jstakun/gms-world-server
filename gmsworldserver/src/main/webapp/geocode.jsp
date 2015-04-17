@@ -44,7 +44,7 @@
 
                         <p class="image-section">
                           <a href="/showGeocode.do?key=<%= key %>&fullScreenGeocodeMap=1">
-                            <img src="http://maps.google.com/maps/api/staticmap?center=<%= gc.getLatitude() %>,<%= gc.getLongitude() %>&zoom=12&size=640x256&sensor=false&markers=icon:http://gms-world.appspot.com/images/flagblue.png|<%= gc.getLatitude() %>,<%= gc.getLongitude() %>" alt="Landmark on Google Map" height="256" width="640"/>
+                            <img src="http://maps.google.com/maps/api/staticmap?center=<%= gc.getLatitude() %>,<%= gc.getLongitude() %>&zoom=12&size=640x256&sensor=false&markers=icon:http://gms-world.appspot.com/images/flagblue.png|<%= gc.getLatitude() %>,<%= gc.getLongitude() %>" alt="Geocode on Google Map" title="See geocode on the map" height="256" width="640"/>
                           </a>
                         </p>
                         <p class="post-details">

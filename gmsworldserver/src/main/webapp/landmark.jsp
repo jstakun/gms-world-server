@@ -63,7 +63,7 @@
                         
                           <p class="image-section">
                               <a href="/showLandmark/<%=key%>/fullScreen">
-                                  <img src="http://maps.google.com/maps/api/staticmap?center=<%=landmark.getLatitude()%>,<%=landmark.getLongitude()%>&zoom=12&size=640x256&sensor=false&markers=icon:http://gms-world.appspot.com/images/flagblue.png|<%=landmark.getLatitude()%>,<%=landmark.getLongitude()%>" alt="Landmark on Google Map" width="640" height="256"/>
+                                  <img src="http://maps.google.com/maps/api/staticmap?center=<%=landmark.getLatitude()%>,<%=landmark.getLongitude()%>&zoom=12&size=640x256&sensor=false&markers=icon:http://gms-world.appspot.com/images/flagblue.png|<%=landmark.getLatitude()%>,<%=landmark.getLongitude()%>" alt="Landmark on Google Map" title="See landmark on the map" width="640" height="256"/>
                               </a>
                           </p> 
                           <p class="post-details">                          

@@ -17,30 +17,32 @@
         </p>
         <p>
             <a href="http://appengine.google.com">
-            	<img src="http://code.google.com/appengine/images/appengine-noborder-120x30.gif" alt="Powered by Google App Engine" />
+            	<img src="http://code.google.com/appengine/images/appengine-noborder-120x30.gif" alt="Powered by Google App Engine" title="Powered by Google App Engine"/>
             </a>
         </p>
         
         <p>
             <a href="http://www.openshift.com">
-            	<img src="/images/openshift.png" alt="Powered by OpenShift" />
+            	<img src="/images/openshift.png" alt="Powered by OpenShift" title="Powered by OpenShift"/>
             </a>
         </p>
         
         <p>
             <a href="https://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui">
-  				<img alt="Get it on Google Play" src="/images/en_generic_rgb_wo_60.png" />
+  				<img alt="Get it on Google Play" title="Get it on Google Play" src="/images/en_generic_rgb_wo_60.png" />
 			</a>
         </p>
        
         <p>
             <a href="http://www.amazon.com/gp/product/B004X2NR7O/ref=mas_pm_Landmark_Manager">
-            	<img alt="Get it on Amazon AppStore" src="/images/amazon-apps-store.png"/>
+            	<img alt="Get it on Amazon AppStore" title="Get it on Amazon AppStore" src="/images/amazon-apps-store.png"/>
             </a>	
         </p>
         
         <p>
-            <a href="http://apps.opera.com/badge.php?a=c&v=dark&did=7629&pid=36609" target="_blank"><img src="https://apps.opera.com/badge.php?a=s&v=dark&did=7629&pid=36609" width="173" height="55" alt="Opera Mobile Store" title="Opera Mobile Store"/></a>  
+            <a href="http://apps.opera.com/badge.php?a=c&v=dark&did=7629&pid=36609" target="_blank">
+            	<img src="https://apps.opera.com/badge.php?a=s&v=dark&did=7629&pid=36609" width="173" height="55" alt="Get it on Opera Mobile Store" title="Get in on Opera Mobile Store"/>
+            </a>  
         </p>
     </div>
 

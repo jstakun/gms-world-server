@@ -32,19 +32,27 @@ public class HtmlUtils {
 	}
 	
 	public static String getStatusImage(int useCount) {
-		if (useCount > 0 && useCount < 10) {
-			return "<br/><img src=\"/images/statusicon1.gif\"/>";
-		} else if (useCount > 10 && useCount < 50) {
-			return "<br/><img src=\"/images/statusicon2.gif\"/>";
-		} else if (useCount > 50 && useCount < 100) {
-			return "<br/><img src=\"/images/statusicon3.gif\"/>";
-		} else if (useCount > 100 && useCount < 500) {
-			return "<br/><img src=\"/images/statusicon4.gif\"/>";
-		} else if (useCount > 500) {
-			return "<br/><img src=\"/images/statusicon5.gif\"/>";
+		String htmlStr = "<br/>";
+		int icon = 0;
+		String title = null;
+		if (useCount == 1) {
+			title = useCount + " discovery";
 		} else {
-			return "<br/><img src=\"/images/statusicon0.gif\"/>";
+			title = useCount + " discoveries";
 		}
+		if (useCount > 0 && useCount < 10) {
+			icon = 1;
+		} else if (useCount > 10 && useCount < 50) {
+			icon = 2;
+		} else if (useCount > 50 && useCount < 100) {
+			icon = 3;
+		} else if (useCount > 100 && useCount < 500) {
+			icon = 4;
+		} else if (useCount > 500) {
+			icon = 5;
+		} 
+		htmlStr += "<img src=\"/images/statusicon" + icon + ".gif\" title=\"" + title + "\"/>";
+		return htmlStr;
 	}
 
 }
