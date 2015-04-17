@@ -1,7 +1,5 @@
 package net.gmsworld.server.layers;
 
-import static org.junit.Assert.*;
-
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.List;
@@ -12,7 +10,6 @@ import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.JvmThreadProvider;
 import net.gmsworld.server.utils.memcache.MockCacheProvider;
 
-import org.json.JSONException;
 import org.junit.Test;
 
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;

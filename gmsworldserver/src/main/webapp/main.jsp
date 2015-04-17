@@ -11,6 +11,7 @@
          org.ocpsoft.prettytime.PrettyTime,
          net.gmsworld.server.utils.UrlUtils,
          net.gmsworld.server.utils.DateUtils,
+         com.jstakun.lm.server.utils.HtmlUtils,
          com.jstakun.lm.server.utils.memcache.CacheUtil,
          java.util.List"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -74,8 +75,8 @@
                             <h4><a href="<%=response.encodeURL("/showLandmark/" + landmark.getId())%>"><%=landmark.getName()%></a></h4>
                             Posted <%=prettyTime.format(landmark.getCreationDate())%> on <%=DateUtils.getFormattedDateTime(request.getLocale(), landmark.getCreationDate())%>
                             by <a href="<%=landmark.getLayer().equals("Social") ? response.encodeURL("/blogeo/" + landmark.getUsername()) : response.encodeURL("/showUser/" + landmark.getUsername())%>"><%=UrlUtils.createUsernameMask(landmark.getUsername())%></a> | 
-                            Filed in layer <a href="/showLayer/<%= landmark.getLayer() %>"><%= LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer())%></a><!--|
-                            User status: <%= landmark.getUseCount() %> -->
+                            Filed in layer <a href="/showLayer/<%= landmark.getLayer() %>"><%= LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer())%></a>
+                            <%= HtmlUtils.getStatusImage(landmark.getUseCount())%><br/>
                         </p>
                     </div>
                     <%
