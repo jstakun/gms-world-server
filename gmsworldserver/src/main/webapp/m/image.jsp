@@ -39,7 +39,7 @@
                 <h3>GMS World screenshot</h3>
 
                  <a href="<%=imageLink%>">
-                    <img src="<%=screenshot.getUrl()%>"><img src="<%=screenshot.getUrl()%>" alt="GMS World screenshot"/>
+                    <img src="<%=screenshot.getUrl()%>" alt="GMS World screenshot"/>
                  </a>
                  
                  <p>
