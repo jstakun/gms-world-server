@@ -6,6 +6,7 @@
 
 <%@page contentType="text/html" pageEncoding="utf-8"%>
 <%@ page import="com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils,
+                 com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils,
                  net.gmsworld.server.utils.StringUtil,
                  com.jstakun.lm.server.persistence.Landmark,
                  net.gmsworld.server.utils.DateUtils,
@@ -79,7 +80,7 @@
           Creation Date
         </th>
         <th>
-          Validity Date
+          Layer
         </th>
       </tr>
 <%
@@ -113,7 +114,7 @@
         <td width="17%"><%= StringUtil.formatCoordE6(landmark.getLatitude()) %></td>
         <td width="17%"><%= StringUtil.formatCoordE6(landmark.getLongitude()) %></td>
         <td width="17%"><%= DateUtils.getFormattedDateTime(request.getLocale(), landmark.getCreationDate()) %></td>
-        <td width="17%"><%= DateUtils.getFormattedDateTime(request.getLocale(), landmark.getValidityDate()) %></td>
+        <td width="17%"><a href="/showLayer/<%=landmark.getLayer()%>"><%=LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer())%></a></td>
       </tr>
 <%
             }
