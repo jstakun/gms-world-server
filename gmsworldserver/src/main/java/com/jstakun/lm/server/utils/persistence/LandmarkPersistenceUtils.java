@@ -978,7 +978,7 @@ public class LandmarkPersistenceUtils {
         	if (!landmarkList.isEmpty()) {
         		Landmark newestLandmark = landmarkList.get(0);
         		logger.log(Level.INFO, "Newest landmark: " + newestLandmark.getName() + ", " + newestLandmark.getLatitude() + ", " + newestLandmark.getLongitude());
-        		if (StringUtils.equals(newestLandmark.getName(), name) && StringUtils.equals(StringUtil.formatCoordE2(newestLandmark.getLatitude()), lat)
+        		if (StringUtils.equalsIgnoreCase(newestLandmark.getName(), name) && StringUtils.equals(StringUtil.formatCoordE2(newestLandmark.getLatitude()), lat)
         			 && StringUtils.equals(StringUtil.formatCoordE2(newestLandmark.getLongitude()), lng)) {
         			logger.log(Level.WARNING, "This landmark is similar to newest: " + name + ", " + lat + ", " + lng);
         			isSimilarToNewest = true;
