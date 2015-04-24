@@ -97,7 +97,7 @@ public class ShowLandmarkAction extends Action {
                             request.setAttribute("comments", comments);
                         }
                         
-                        if (!StringUtils.equals(landmark.getLayer(),"Social")) {
+                        if (!landmark.isSocial()) {
                             //List<Checkin> checkins = CheckinPersistenceUtils.selectAllLandmarkCheckins(key);
                         	CacheAction checkinCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
                 				@Override

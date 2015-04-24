@@ -52,7 +52,7 @@ public class GoogleBloggerUtils {
         			userMask = "<a href=\"" + ConfigurationManager.SERVER_URL + "showUser/" + username + "\">" + userMask + "</a>";
         		}
     
-        		if (landmark.getLayer().equals("Social")) { 
+        		if (landmark.isSocial()) { 
                     message = String.format(rb.getString("Social.gl.server.blogeo"), userMask, url);
         		} else {
                     message = String.format(rb.getString("Social.gl.server.landmark"), userMask, landmark.getName(), url);

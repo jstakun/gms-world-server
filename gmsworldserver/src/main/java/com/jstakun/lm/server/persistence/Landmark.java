@@ -3,6 +3,9 @@ package com.jstakun.lm.server.persistence;
 import java.io.Serializable;
 import java.util.Date;
 
+import net.gmsworld.server.config.Commons;
+
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
 /**
@@ -36,8 +39,14 @@ public class Landmark implements Serializable {
    
     private String flex;
     
+    private String email;
+    
     public Landmark() {
     	this.creationDate = new Date(System.currentTimeMillis());
+    	this.email = "";
+    	this.id = -1;
+    	this.altitude = 0d;
+    	this.description = "";
     }
 
     public String getName() {
@@ -138,6 +147,18 @@ public class Landmark implements Serializable {
         this.flex = f;
     }
     
+    public String getFlex() {
+    	return flex;
+    }
+    
+    public void setEmail(String e) {
+    	this.email = e;
+    }
+    
+    public String getEmail() {
+    	return email;
+    }
+    
     public int getUseCount() {
     	try {
     		if (flex != null) {
@@ -149,5 +170,16 @@ public class Landmark implements Serializable {
     	} catch (Exception e) {
     		return -1;
     	}
+    }
+    
+    public boolean compare(Landmark l) {
+    	return StringUtils.equalsIgnoreCase(getName(), l.getName()) && 
+    			Math.abs(getLatitude() - l.getLatitude()) < 0.02d &&
+    			Math.abs(getLongitude() - l.getLongitude()) < 0.02d &&
+    			StringUtils.equals(getLayer(), l.getLayer());
+    }
+    
+    public boolean isSocial() {
+    	return StringUtils.equals(getLayer(), Commons.SOCIAL);
     }
 }

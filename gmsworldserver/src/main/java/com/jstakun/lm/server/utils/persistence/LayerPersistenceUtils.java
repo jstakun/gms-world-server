@@ -228,6 +228,5 @@ public class LayerPersistenceUtils {
     		jsonArray.add(jsonObject);
     	}
     	return JSONUtils.getJsonArrayObject(jsonArray);
-    	}
-    	
+    }	
 }

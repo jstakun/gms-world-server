@@ -13,6 +13,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.utils.NumberUtils;
 
 import org.apache.struts.action.ActionForm;
@@ -56,10 +57,10 @@ public class BlogeoAction extends org.apache.struts.action.Action {
         if (user != null)
         {
             request.setAttribute("user", user);
-            List<Landmark> userLandmarks = LandmarkPersistenceUtils.selectLandmarksByUserAndLayer(user, "Social", first, first+INTERVAL);
+            List<Landmark> userLandmarks = LandmarkPersistenceUtils.selectLandmarksByUserAndLayer(user, Commons.SOCIAL, first, first+INTERVAL);
             request.setAttribute("userLandmarks", userLandmarks);
 
-            int count = LandmarkPersistenceUtils.countLandmarksByUserAndLayer(user, "Social");
+            int count = LandmarkPersistenceUtils.countLandmarksByUserAndLayer(user, Commons.SOCIAL);
 
             if (count - first - INTERVAL > 0) {
                 next = first + INTERVAL;

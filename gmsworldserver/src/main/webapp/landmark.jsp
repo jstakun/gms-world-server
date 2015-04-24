@@ -80,15 +80,15 @@
                         %>
                             <%=request.getAttribute("address") != null ? "<br/>Geocode address: " + request.getAttribute("address") : ""%><br/>
                             Latitude: <%=StringUtil.formatCoordE6(landmark.getLatitude())%>, Longitude: <%=StringUtil.formatCoordE6(landmark.getLongitude())%><br/>
-                            Posted on <%=DateUtils.getFormattedDateTime(request.getLocale(), landmark.getCreationDate())%> by <a href="<%=landmark.getLayer().equals("Social") ? response.encodeURL("/blogeo/" + landmark.getUsername()) : response.encodeURL("/showUser/" + landmark.getUsername())%>"><%=UrlUtils.createUsernameMask(landmark.getUsername())%></a> 
+                            Posted on <%=DateUtils.getFormattedDateTime(request.getLocale(), landmark.getCreationDate())%> by <a href="<%=landmark.isSocial() ? response.encodeURL("/blogeo/" + landmark.getUsername()) : response.encodeURL("/showUser/" + landmark.getUsername())%>"><%=UrlUtils.createUsernameMask(landmark.getUsername())%></a> 
                             | Created in layer <a href="/showLayer/<%=landmark.getLayer()%>"><%=LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer())%></a>
                             <%= HtmlUtils.getStatusImage(landmark.getUseCount())%>
                           </p>
                    
                         <%
-                                           	if (!landmark.getLayer().equals("Social"))
-                                                                                                                    {
-                                           %>
+                            if (!landmark.isSocial())
+                            {
+                        %>
                         <h4>Check-ins</h4>
                         <p class="post-info">
                             Number of check-ins: <b><%=request.getAttribute("checkinsCount") == null ? "0" : request.getAttribute("checkinsCount")%></b> <br/>

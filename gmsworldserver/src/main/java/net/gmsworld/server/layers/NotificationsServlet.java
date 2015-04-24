@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.util.Calendar;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,6 +22,7 @@ import org.json.JSONObject;
 
 import com.google.gdata.util.common.util.Base64;
 import com.jstakun.lm.server.config.ConfigurationManager;
+import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.MailUtils;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 
@@ -62,34 +62,32 @@ public class NotificationsServlet extends HttpServlet {
                 String lngStr = request.getParameter("lng");
                 if (StringUtils.isNotEmpty(latStr) && StringUtils.isNotEmpty(lngStr)) {
                 	try {
-                		double latitude = GeocodeUtils.getLatitude(latStr);
-                		double longitude = GeocodeUtils.getLongitude(lngStr);	
-                		String lat = StringUtil.formatCoordE2(latitude);
-                		String lng = StringUtil.formatCoordE2(longitude);
-                		logger.log(Level.INFO, "User location is " + lat + "," + lng);
+                		Landmark l = new Landmark();           	                       
+                        l.setLatitude(GeocodeUtils.getLatitude(latStr));
+                		l.setLongitude(GeocodeUtils.getLongitude(lngStr));	
+                		logger.log(Level.INFO, "User location is " + latStr + "," + lngStr);
                 		//persist location
-                	
-                		String name = "My location";
-                		boolean isSimilarToNewest = LandmarkPersistenceUtils.isSimilarToNewest(name, lat, lng);
+                	    
+                		l.setName(Commons.MY_POSITION_LAYER);
+                		boolean isSimilarToNewest = LandmarkPersistenceUtils.isSimilarToNewest(l);
                 		if (!isSimilarToNewest) {
-                			String username = StringUtil.getUsername(request.getAttribute("username"),request.getParameter("username"));
-                			if (username != null && username.length() % 4 == 0) {
-                				try {
-                					username = new String(Base64.decode(username));
-                				} catch (Exception e) {
-                					//from version 1086, 86 username is Base64 encoded string
-                				}
-                			}	
+                			String u = StringUtil.getUsername(request.getAttribute("username"),request.getParameter("username"));
+                            if (u != null && u.length() % 4 == 0) {
+                            	try {
+                            		u = new String(Base64.decode(u));
+                            	} catch (Exception e) {
+                            			//from version 1086, 86 username is Base64 encoded string
+                            	}
+                            }	
+                            l.setUsername(u);
                 			int useCount = NumberUtils.getInt(request.getHeader("X-GMS-UseCount"), 1);
-            				String description = GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(latitude, longitude);            
-                			Map<String, String> peristResponse = LandmarkPersistenceUtils.persistLandmark(name, description, latitude, longitude, 0, username, null, Commons.MY_POS_CODE, null, "{useCount:"+useCount+"}");
+                			l.setFlex("{useCount:"+useCount+"}");
+            				l.setDescription(GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(l.getLatitude(), l.getLongitude())); 
+            				l.setLayer(Commons.MY_POS_CODE);
+                			LandmarkPersistenceUtils.persistLandmark(l);
 
-                			String id = peristResponse.get("id");
-                			String hash = peristResponse.get("hash");
-                
-                			if (StringUtils.isNumeric(id)) {	
-                				String userAgent = request.getHeader("User-Agent");
-                				LandmarkPersistenceUtils.notifyOnLandmarkCreation(name, lat, lng, id, hash, Commons.MY_POS_CODE, username, null, userAgent, useCount);
+                			if (l.getId() > 0) {	
+                				LandmarkPersistenceUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"));
                 			} 
                 		}
                 	} catch (Exception e) {

@@ -99,7 +99,7 @@
         <td width="17%"><%= StringUtil.formatCoordE6(landmark.getLatitude()) %></td>
         <td width="17%"><%= StringUtil.formatCoordE6(landmark.getLongitude()) %></td>
         <td width="17%"><%= DateUtils.getFormattedDateTime(request.getLocale(), landmark.getCreationDate()) %></td>
-        <td width="17%"><a href="<%=landmark.getLayer().equals("Social") ? response.encodeURL("/blogeo/" + landmark.getUsername()) : response.encodeURL("/showUser/" + landmark.getUsername())%>"><%=UrlUtils.createUsernameMask(landmark.getUsername())%></a></td>
+        <td width="17%"><a href="<%=landmark.isSocial() ? response.encodeURL("/blogeo/" + landmark.getUsername()) : response.encodeURL("/showUser/" + landmark.getUsername())%>"><%=UrlUtils.createUsernameMask(landmark.getUsername())%></a></td>
       </tr>
 <%
             }

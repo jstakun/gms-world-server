@@ -17,6 +17,7 @@ import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.HttpUtils;
+import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.UrlUtils;
 
@@ -53,40 +54,8 @@ public class LandmarkPersistenceUtils {
        }
     }*/
     
-    public static Map<String, String> persistLandmark(String name, String description, double latitude, double longitude, double altitude, String username, Date validityDate, String layer, String email, String flex) {
+    private static Map<String, String> persistLandmark(String name, String description, double latitude, double longitude, double altitude, String username, Date validityDate, String layer, String email, String flex) {
 
-    	//String key = null;
-        //Date vDate = validityDate;
-
-        /*PersistenceManager pm = PMF.get().getPersistenceManager();
-
-        try {
-            if (vDate == null) {
-                vDate = defaultValidityDate;
-            }
-            Point p = new Point(latitude, longitude);
-            List<String> cells = GeocellManager.generateGeoCell(p);
-
-            landmark = new Landmark(latitude, longitude, altitude, name, description, username, vDate, layer, cells, email);
-
-            pm.makePersistent(landmark);
-
-            key = landmark.getKeyString();
-            
-            landmark.setKeyString(key.toLowerCase());
-
-            String hash = UrlUtils.getHash(ConfigurationManager.SERVER_URL + "showLandmark/" + key.toLowerCase());
-            if (hash != null) {
-                landmark.setHash(hash);
-            }
-
-            pm.makePersistent(landmark);
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
-        } finally {
-            pm.close();
-        }*/
-        
     	Map<String, String> response = new HashMap<String, String>();
     	
         try {
@@ -96,10 +65,10 @@ public class LandmarkPersistenceUtils {
         	if (validityDate != null) {
         		params +=	"&validityDate=" + validityDate.getTime();
         	}	
-        	if (description != null) {
+        	if (StringUtils.isNotEmpty(description)) {
         		params += "&description=" + URLEncoder.encode(description, "UTF-8"); 
         	}
-        	if (email != null) {
+        	if (StringUtils.isNotEmpty(email)) {
         		params += "&email=" + email;
         	}
         	if (flex != null) {
@@ -130,6 +99,14 @@ public class LandmarkPersistenceUtils {
         return response;
     }
 
+    public static void persistLandmark(Landmark l) {
+    	Map<String, String> persistResponse = persistLandmark(l.getName(), l.getDescription(), l.getLatitude(), l.getLongitude(), l.getAltitude(), l.getUsername(), l.getValidityDate(), l.getLayer(), l.getEmail(), l.getFlex());
+    	l.setId(NumberUtils.getInt(persistResponse.get("id"),-1));
+    	l.setHash(persistResponse.get("hash"));
+    }
+    
+    
+    
     /*public static List<Landmark> selectAllLandmarks() {
     	List<Landmark> results = new ArrayList<Landmark>();
         PersistenceManager pm = PMF.get().getPersistenceManager();
@@ -961,8 +938,11 @@ public class LandmarkPersistenceUtils {
         }
     }*/
     
-    public static boolean isSimilarToNewest(String name, String lat, String lng) {
+    public static boolean isSimilarToNewest(Landmark l) {
     	boolean isSimilarToNewest = false;
+    	String name = l.getName();
+    	String lat = StringUtil.formatCoordE2(l.getLatitude());
+    	String lng = StringUtil.formatCoordE2(l.getLongitude());
         if (CacheUtil.containsKey(name + "_" + lat + "_" + lng)) {
         	isSimilarToNewest = true;
         	logger.log(Level.WARNING, "This landmark is similar to newest: " + name + "_" + lat + "_" + lng);
@@ -978,8 +958,7 @@ public class LandmarkPersistenceUtils {
         	if (!landmarkList.isEmpty()) {
         		Landmark newestLandmark = landmarkList.get(0);
         		logger.log(Level.INFO, "Newest landmark: " + newestLandmark.getName() + ", " + newestLandmark.getLatitude() + ", " + newestLandmark.getLongitude());
-        		if (StringUtils.equalsIgnoreCase(newestLandmark.getName(), name) && StringUtils.equals(StringUtil.formatCoordE2(newestLandmark.getLatitude()), lat)
-        			 && StringUtils.equals(StringUtil.formatCoordE2(newestLandmark.getLongitude()), lng)) {
+        		if (l.compare(newestLandmark)) {
         			logger.log(Level.WARNING, "This landmark is similar to newest: " + name + ", " + lat + ", " + lng);
         			isSimilarToNewest = true;
         		} else {
@@ -993,12 +972,12 @@ public class LandmarkPersistenceUtils {
         return isSimilarToNewest;
     }
     
-    public static void notifyOnLandmarkCreation(String name, String lat, String lng, String id, String hash, String layer, String username, String email, String userAgent, int useCount) {
+    public static void notifyOnLandmarkCreation(Landmark l, String userAgent) {
     	//social notifications
     
-    	String landmarkUrl = ConfigurationManager.SERVER_URL + "showLandmark/" + id;
-    	if (StringUtils.isNotEmpty(hash)) {
-    		landmarkUrl = UrlUtils.BITLY_URL + hash;
+    	String landmarkUrl = ConfigurationManager.SERVER_URL + "showLandmark/" + l.getId();
+    	if (StringUtils.isNotEmpty(l.getHash())) {
+    		landmarkUrl = UrlUtils.BITLY_URL + l.getHash();
     	} 
                         
     	String titleSuffix = "";
@@ -1013,8 +992,8 @@ public class LandmarkPersistenceUtils {
     	}
 
     	String messageSuffix = "";
-    	if (useCount > 0) {
-    		messageSuffix = " User has opened LM " + useCount + " times.";
+    	if (l.getUseCount() > 0) {
+    		messageSuffix = " User has opened LM " + l.getUseCount() + " times.";
     	}
     	
     	String title = "New landmark";
@@ -1022,22 +1001,23 @@ public class LandmarkPersistenceUtils {
         	title += titleSuffix;
     	}
 
-    	String body = "Landmark: " + name + " has been created by user " + ConfigurationManager.SERVER_URL + "socialProfile?uid=" + username + "." + messageSuffix;
+    	String body = "Landmark: " + l.getName() + " has been created by user " + 
+    			ConfigurationManager.SERVER_URL + "socialProfile?uid=" + l.getUsername() + "." + messageSuffix;
     
     	String userUrl = ConfigurationManager.SERVER_URL;
-    	if (StringUtils.equals(layer, "Social")) {
-    		userUrl += "blogeo/" + username;
+    	if (l.isSocial()) {
+    		userUrl += "blogeo/" + l.getUsername();
     	} else {
-    		userUrl += "showUser/" + username;
+    		userUrl += "showUser/" + l.getUsername();
     	}
     
     	Map<String, String> params = new ImmutableMap.Builder<String, String>().
-            put("key", id).
+            put("key", Integer.toString(l.getId())).
     		put("landmarkUrl", landmarkUrl).
-    		put("email", StringUtils.isNotEmpty(email) ? email : "").
+    		put("email", l.getEmail()).
     		put("title", title).
     		put("userUrl", userUrl).
-    		put("username", username).
+    		put("username", l.getUsername()).
     		put("body", body).build();  
     
     	NotificationUtils.createLadmarkCreationNotificationTask(params);

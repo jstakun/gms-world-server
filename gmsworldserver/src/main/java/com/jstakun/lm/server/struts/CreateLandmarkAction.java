@@ -1,11 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.jstakun.lm.server.struts;
 
+import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
+
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -33,16 +30,18 @@ public class CreateLandmarkAction extends Action {
                                                                       ServletException {
         DynaActionForm landmarkForm = (DynaActionForm) form;
         
-        String name = (String)landmarkForm.get("name");
-        String description =  (String)landmarkForm.get("description");
-        double latitude = ((Double)landmarkForm.get("latitude")).doubleValue();
-        double longitude = ((Double)landmarkForm.get("longitude")).doubleValue();
-        String username = (String)landmarkForm.get("createdBy");
-        Date validityDate = new Date(((Timestamp)landmarkForm.get("validityDate")).getTime());
-        String layer = (String)landmarkForm.get("layer");
+        Landmark l = new Landmark();
+        
+        l.setName((String)landmarkForm.get("name"));
+        l.setDescription((String)landmarkForm.get("description"));
+        l.setLatitude(((Double)landmarkForm.get("latitude")).doubleValue());
+        l.setLongitude(((Double)landmarkForm.get("longitude")).doubleValue());
+        l.setUsername((String)landmarkForm.get("createdBy"));
+        l.setValidityDate(new Date(((Timestamp)landmarkForm.get("validityDate")).getTime()));
+        l.setLayer((String)landmarkForm.get("layer"));
 
-        LandmarkPersistenceUtils.persistLandmark(name, description, latitude, longitude, 0.0, username, validityDate, layer, null, null);
-
+        LandmarkPersistenceUtils.persistLandmark(l);      
+        
         return mapping.findForward( "success");
     }
 

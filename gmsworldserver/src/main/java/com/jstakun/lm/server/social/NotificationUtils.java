@@ -47,7 +47,7 @@ public class NotificationUtils {
 			Landmark landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
 			if (landmark != null) {
 				params.put("url", UrlUtils.getShortUrl(UrlUtils.getLandmarkUrl(landmark.getHash(), landmark.getId(), landmark.getCreationDate())));
-				if (landmark.getLayer().equals("Social")) {
+				if (landmark.isSocial()) {
 					params.put("type", Integer.toString(Commons.BLOGEO));
 					params.put("title", landmark.getName());
 				} else if (landmark.getLayer().equals(Commons.MY_POS_CODE)) {
