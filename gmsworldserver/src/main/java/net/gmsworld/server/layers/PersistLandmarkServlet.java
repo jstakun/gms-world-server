@@ -74,11 +74,12 @@ public class PersistLandmarkServlet extends HttpServlet {
                     l.setValidityDate(new Date(current.getTime() + validity));
                 } 
                 
-                String layer = StringUtil.getStringParam(request.getParameter("layer"), "Public");
+                String layer = StringUtil.getStringParam(request.getParameter("layer"), Commons.LM_SERVER_LAYER);
                 logger.log(Level.INFO, "Creating new landmark in layer: " + layer);
                 if (layer.equals(Commons.MY_POS_CODE)) {
                     l.setDescription(GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(l.getLatitude(), l.getLongitude()));
                 }
+                l.setLayer(layer);
                
                 String u = StringUtil.getUsername(request.getAttribute("username"),request.getParameter("username"));
                 if (u != null && u.length() % 4 == 0) {
