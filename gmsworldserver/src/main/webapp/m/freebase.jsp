@@ -1,5 +1,6 @@
 <%@page contentType="text/html" pageEncoding="utf-8"%>
-<%@page import="com.jstakun.gms.android.landmarks.ExtendedLandmark,net.gmsworld.server.utils.MathUtils" %>
+<%@page import="com.jstakun.gms.android.landmarks.ExtendedLandmark,
+                net.gmsworld.server.utils.MathUtils" %>
 <!DOCTYPE html>
 <html>
 
@@ -42,11 +43,7 @@
                <p>
                 <%= landmark.getDescription() %> 
                </p>
-               
-               <!-- a href="/freebaseView/<%= mid %>">
-                   <img src="http://maps.google.com/maps/api/staticmap?center=<%= MathUtils.normalizeE6(landmark.getLatitudeE6()) %>,<%= MathUtils.normalizeE6(landmark.getLongitudeE6()) %>&zoom=9&size=146x146&sensor=false&markers=icon:http://gms-world.appspot.com/images/flagblue.png|<%= MathUtils.normalizeE6(landmark.getLatitudeE6()) %>,<%= MathUtils.normalizeE6(landmark.getLongitudeE6()) %>" alt="Landmark on Google Map" height="146" width="146"/><br/>
-               </a--> 
-             
+                          
             <%
               }
             %>

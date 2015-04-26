@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.utils.CryptoTools;
 import net.gmsworld.server.utils.HttpUtils;
+import net.gmsworld.server.utils.ImageUtils;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
 
@@ -22,6 +23,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.google.gdata.util.common.util.Base64;
 import com.jstakun.lm.server.persistence.Landmark;
+import com.jstakun.lm.server.utils.FileUtils;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
@@ -117,7 +119,14 @@ public class PersistLandmarkServlet extends HttpServlet {
                     	int radius = NumberUtils.getRadius(request.getParameter("radius"), 3, 6371);
                     	String layerKey = JSON_LAYER_LIST + "_" + StringUtil.formatCoordE2(l.getLatitude()) + "_" + StringUtil.formatCoordE2(l.getLongitude()) + "_" + radius;
                     	logger.log(Level.INFO, "Removed from cache layer list {0}: {1}", new Object[]{layerKey, CacheUtil.remove(layerKey)});           
-                	    //
+                	    try {
+                	    	//save map image thumbnail
+                	    	byte[] thumbnail = ImageUtils.loadImage(l.getLatitude(), l.getLongitude(), "128x128", 9); 
+                	    	FileUtils.saveFileV2("landmark_" + StringUtil.formatCoordE6(l.getLatitude()) + "_" + StringUtil.formatCoordE6(l.getLongitude()) + ".jpg", thumbnail, l.getLatitude(), l.getLongitude());
+                	    } catch (Exception e) {
+                	    	logger.log(Level.SEVERE, e.getMessage(), e);
+                	    }
+                    	//send notification to social networks
                     	LandmarkPersistenceUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"));
                 	} 
                 }

@@ -46,7 +46,7 @@
             <h4><%=landmark.getDescription()%></h4>
 
             <a href="/showLandmark/<%=key%>/fullScreen">
-                <img src="http://maps.google.com/maps/api/staticmap?center=<%=landmark.getLatitude()%>,<%=landmark.getLongitude()%>&zoom=9&size=146x146&sensor=false&markers=icon:http://gms-world.appspot.com/images/flagblue.png|<%=landmark.getLatitude()%>,<%=landmark.getLongitude()%>" alt="Landmark on Google Map" height="146" width="146"/><br/>
+                <img src="/image?lat=<%=landmark.getLatitude()%>&lng=<%=landmark.getLongitude()%>" alt="Landmark on Google Map" height="128" width="128"/><br/>
             </a>
 
             <p>

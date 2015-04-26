@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.utils.HttpUtils;
+import net.gmsworld.server.utils.ImageUtils;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
 
@@ -23,7 +25,9 @@ import org.json.JSONObject;
 import com.google.gdata.util.common.util.Base64;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.persistence.Landmark;
+import com.jstakun.lm.server.utils.FileUtils;
 import com.jstakun.lm.server.utils.MailUtils;
+import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 
 /**
@@ -39,6 +43,11 @@ public class NotificationsServlet extends HttpServlet {
 	private static final Logger logger = Logger.getLogger(NotificationsServlet.class.getName());
     private static final long ONE_DAY = 1000 * 60 * 60 * 24;
 	
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        GeocodeHelperFactory.setCacheProvider(new GoogleCacheProvider());
+    }
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
@@ -46,8 +55,7 @@ public class NotificationsServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/json;charset=UTF-8");
         PrintWriter out = response.getWriter();
         try {
@@ -87,6 +95,13 @@ public class NotificationsServlet extends HttpServlet {
                 			LandmarkPersistenceUtils.persistLandmark(l);
 
                 			if (l.getId() > 0) {	
+                				try {
+                        	    	//save map image thumbnail
+                        	    	byte[] thumbnail = ImageUtils.loadImage(l.getLatitude(), l.getLongitude(), "128x128", 9); 
+                        	    	FileUtils.saveFileV2("landmark_" + StringUtil.formatCoordE6(l.getLatitude()) + "_" + StringUtil.formatCoordE6(l.getLongitude()) + ".jpg", thumbnail, l.getLatitude(), l.getLongitude());
+                        	    } catch (Exception e) {
+                        	    	logger.log(Level.SEVERE, e.getMessage(), e);
+                        	    }
                 				LandmarkPersistenceUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"));
                 			} 
                 		}

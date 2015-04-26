@@ -115,7 +115,7 @@ public class FacebookSocialUtils {
     }
 
     //login with manage_pages permission
-    protected static void sendMessageToPageFeed(String key, String url, String user, String name, int type) {
+    protected static void sendMessageToPageFeed(String key, String url, String user, String name, String imageUrl, int type) {
         final String[] images = {"blogeo_j.png", "blogeo_a.png", "poi_j.png", "poi_a.png"};
         ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
         Parameter params[] = null;
@@ -125,15 +125,17 @@ public class FacebookSocialUtils {
         	if (landmark != null) {
         		//message, picture, link, name, caption, description, source, place, tags
         		String userMask = UrlUtils.createUsernameMask(landmark.getUsername());
-        		int imageId = NumberUtils.normalizeNumber(random.nextInt(4), 0, 3);
-                //logger.log(Level.INFO, "FB message link is: {0}", link);
-        		params = new Parameter[]{
+        		if (imageUrl == null) {
+        			int imageId = NumberUtils.normalizeNumber(random.nextInt(4), 0, 3);
+        		    imageUrl = ConfigurationManager.SERVER_URL + "images/" + images[imageId];
+        		}
+                params = new Parameter[]{
                         Parameter.with("message", String.format(rb.getString("Social.fb.message.server"), userMask)),
                         Parameter.with("name", landmark.getName()),
                         Parameter.with("description", rb.getString("Social.fb.desc.server")),
                         Parameter.with("link", url),
-                        Parameter.with("picture", ConfigurationManager.SERVER_URL + "images/" + images[imageId])
-                    };
+                        Parameter.with("picture", imageUrl)
+                };
         	} else {
         		logger.log(Level.SEVERE, "Landmark with key {0} is empty!", key);
         	}
@@ -144,7 +146,7 @@ public class FacebookSocialUtils {
                     Parameter.with("description", rb.getString("Social.fb.desc.checkin")),
                     Parameter.with("link", url),
                     Parameter.with("picture", ConfigurationManager.SERVER_URL + "images/checkin.png")
-                };   
+            };   
         }
         
         if (params != null) {

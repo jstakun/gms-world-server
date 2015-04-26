@@ -5,7 +5,10 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="utf-8"%>
-<%@page import="com.jstakun.lm.server.persistence.GeocodeCache,net.gmsworld.server.utils.StringUtil,net.gmsworld.server.utils.DateUtils" %>
+<%@page import="com.jstakun.lm.server.persistence.GeocodeCache,
+				net.gmsworld.server.utils.StringUtil,
+				net.gmsworld.server.utils.ImageUtils,
+				net.gmsworld.server.utils.DateUtils" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <!-- content-outer -->
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -44,7 +47,7 @@
 
                         <p class="image-section">
                           <a href="/showGeocode.do?key=<%= key %>&fullScreenGeocodeMap=1">
-                            <img src="http://maps.google.com/maps/api/staticmap?center=<%= gc.getLatitude() %>,<%= gc.getLongitude() %>&zoom=12&size=640x256&sensor=false&markers=icon:http://gms-world.appspot.com/images/flagblue.png|<%= gc.getLatitude() %>,<%= gc.getLongitude() %>" alt="Geocode on Google Map" title="See geocode on the map" height="256" width="640"/>
+                            <img src="<%= ImageUtils.getGoogleMapsImageUrl(gc.getLatitude(), gc.getLongitude(), "640x256", 12) %>" alt="Geocode on Google Map" title="See geocode on the map" width="640" height="256"/>
                           </a>
                         </p>
                         <p class="post-details">

@@ -64,6 +64,8 @@ public class RouteProviderServlet extends HttpServlet {
 
                 JSONObject output = GeocodeHelperFactory.getMapQuestUtils().getRoute(lat_start, lng_start, lat_end, lng_end, type, username);
 
+                //read output "route_geometry"
+                
                 if (output == null) {
                   	response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);                
                 } else {

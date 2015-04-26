@@ -28,7 +28,7 @@
                 <h3>Your location</h3>
                 <h4>You've selected following location:</h4>
 
-                <img src="http://maps.google.com/maps/api/staticmap?center=<%= lat%>,<%= lon%>&zoom=9&size=146x146&sensor=false&markers=icon:http://gms-world.appspot.com/images/flagblue.png|<%= lat %>,<%= lon %>" alt="Landmark on Google Map" height="146" width="146"/><br/>
+                <img src="/image?lat=<%= lat%>&lng=<%= lon%>" alt="Location on Google Map" height="128" width="128"/><br/>
                 
                 <p>
                    <%= request.getAttribute("address")!=null ? "Geocode address: " + request.getAttribute("address") : "" %><br/>

@@ -36,7 +36,7 @@ public class GoogleBloggerUtils {
     private static final Logger logger = Logger.getLogger(GoogleBloggerUtils.class.getName());
     private static final String CACHE_KEY = "BloggerUsageLimitsMarker";
     
-    protected static void sendMessage(String key, String url, String token, String secret, String user, String name, int type) {
+    protected static void sendMessage(String key, String url, String token, String secret, String user, String name, String imageUrl, int type) {
         if (key != null && type == Commons.SERVER) {
         	ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
             Landmark landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
@@ -51,7 +51,7 @@ public class GoogleBloggerUtils {
         		if (username != null) {
         			userMask = "<a href=\"" + ConfigurationManager.SERVER_URL + "showUser/" + username + "\">" + userMask + "</a>";
         		}
-    
+                //TODO add imageUrl
         		if (landmark.isSocial()) { 
                     message = String.format(rb.getString("Social.gl.server.blogeo"), userMask, url);
         		} else {

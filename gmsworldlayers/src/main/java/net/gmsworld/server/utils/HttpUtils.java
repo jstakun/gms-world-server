@@ -122,6 +122,41 @@ public class HttpUtils {
         return file;
     }
 
+    public static void processImageFileRequest(OutputStream out, String imageUrl) throws IOException {
+    	InputStream is = null;
+        try {
+            URL fileUrl = new URL(imageUrl);
+            HttpURLConnection conn = (HttpURLConnection) fileUrl.openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+            int responseCode = conn.getResponseCode();
+
+            if (responseCode == HttpServletResponse.SC_OK) {
+                is = conn.getInputStream();
+
+                logger.log(Level.INFO, "Received image, size: "+ conn.getContentLength() + " bytes, type: " + conn.getContentType());
+                               
+                       byte[] buf = new byte[1024];
+                int count = 0;
+                while ((count = is.read(buf)) >= 0) {
+                    out.write(buf, 0, count);
+                }
+            } else {
+            	logger.log(Level.SEVERE, "Received server response code " + responseCode);
+            }
+
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+        } finally {
+            if (is != null) {
+                is.close();
+            }
+            if (out != null) {
+            	out.close();
+            }
+        }
+    }
+    
     public static void processImageFileRequest(HttpServletResponse response, String imageUrl) throws IOException {
 
         InputStream is = null;
@@ -130,7 +165,6 @@ public class HttpUtils {
         try {
             URL fileUrl = new URL(imageUrl);
             HttpURLConnection conn = (HttpURLConnection) fileUrl.openConnection();
-            out = response.getOutputStream();
             conn.setRequestMethod("GET");
             conn.connect();
             int responseCode = conn.getResponseCode();
@@ -147,6 +181,7 @@ public class HttpUtils {
 
                 byte[] buf = new byte[1024];
                 int count = 0;
+                out = response.getOutputStream();
                 while ((count = is.read(buf)) >= 0) {
                     out.write(buf, 0, count);
                 }

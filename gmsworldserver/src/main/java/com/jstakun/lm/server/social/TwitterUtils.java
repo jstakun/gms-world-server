@@ -39,7 +39,7 @@ public class TwitterUtils {
         return twitter;
     }
 	
-	protected static void sendMessage(String key, String url, String token, String secret, String user, String name, int type) {
+	protected static void sendMessage(String key, String url, String token, String secret, String user, String name, String imageUrl, int type) {
 		String message = null;
 		try {
         	    Landmark landmark = null; 
@@ -79,6 +79,16 @@ public class TwitterUtils {
                     if (landmark != null) {
                     	update.setDisplayCoordinates(true);
                         update.setLocation(new GeoLocation(landmark.getLatitude(), landmark.getLongitude()));
+                        if (imageUrl != null) {
+                        	try {
+                            	InputStream is  = new URL(imageUrl).openStream();
+                            	if (is != null) {
+                            		update.media("landmark.jpg", is);
+                            	}
+                            } catch (Exception e) {
+                            	logger.log(Level.SEVERE, "Failed to load landmark.", e);
+                            }
+                        }
                     }
                     Status s = getTwitter(token, secret).updateStatus(update);
                     logger.log(Level.INFO, "Sent twitter update id: {0}", s.getId());
@@ -115,7 +125,7 @@ public class TwitterUtils {
             		update.media("screenshot.jpg", is);
             	}
             } catch (Exception e) {
-            	logger.log(Level.SEVERE, "Failed to load screenshot", e);
+            	logger.log(Level.SEVERE, "Failed to load screenshot.", e);
             }
             Status s = getTwitter(null, null).updateStatus(update);
             logger.log(Level.INFO, "Sent twitter update id: {0}", s.getId());

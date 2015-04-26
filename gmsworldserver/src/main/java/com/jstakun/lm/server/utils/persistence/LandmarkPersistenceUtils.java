@@ -1010,6 +1010,8 @@ public class LandmarkPersistenceUtils {
     	} else {
     		userUrl += "showUser/" + l.getUsername();
     	}
+    	
+    	String imageUrl = ConfigurationManager.SERVER_URL + "image?lat=" + l.getLatitude() + "&lng=" + l.getLongitude();
     
     	Map<String, String> params = new ImmutableMap.Builder<String, String>().
             put("key", Integer.toString(l.getId())).
@@ -1018,7 +1020,8 @@ public class LandmarkPersistenceUtils {
     		put("title", title).
     		put("userUrl", userUrl).
     		put("username", l.getUsername()).
-    		put("body", body).build();  
+    		put("body", body).
+    		put("imageUrl", imageUrl).build();  
     
     	NotificationUtils.createLadmarkCreationNotificationTask(params);
     }

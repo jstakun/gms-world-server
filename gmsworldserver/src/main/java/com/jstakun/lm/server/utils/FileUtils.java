@@ -109,7 +109,7 @@ public class FileUtils {
 	}
 	
 	//"http://storage.googleapis.com/" + bucketName + "/" + fileName;
-	private static String getImageUrlV2(String fileName, boolean thumbnail) {
+	public static String getImageUrlV2(String fileName, boolean thumbnail) {
 		String bucketName = AppIdentityServiceFactory.getAppIdentityService().getDefaultGcsBucketName();
 		BlobKey bk = getCloudStorageBlobKey(bucketName, fileName);
 		return getImageUrl(bk, thumbnail);

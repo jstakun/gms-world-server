@@ -33,7 +33,7 @@
            <h3>Geocode location for: <%= gc.getLocation() %></h3>
 
            <a href="/showGeocode.do?key=<%= key %>&fullScreenGeocodeMap=1">
-            <img src="http://maps.google.com/maps/api/staticmap?center=<%= gc.getLatitude() %>,<%= gc.getLongitude() %>&zoom=9&size=146x146&sensor=false&markers=icon:http://gms-world.appspot.com/images/flagblue.png|<%= gc.getLatitude() %>,<%= gc.getLongitude() %>" alt="Landmark on Google Map" height="146" width="146"/><br/>
+            <img src="/image?lat=<%= gc.getLatitude() %>&lng=<%= gc.getLongitude() %>" alt="Geocode on Google Map" height="128" width="128"/><br/>
            </a>
                                       
            <p>
