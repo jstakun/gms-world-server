@@ -1,13 +1,12 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package net.gmsworld.server.layers;
 
+import com.jstakun.lm.server.utils.FileUtils;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,8 +17,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.gmsworld.server.utils.HttpUtils;
+import net.gmsworld.server.utils.ImageUtils;
 import net.gmsworld.server.utils.NumberUtils;
+import net.gmsworld.server.utils.StringUtil;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -64,11 +66,29 @@ public class RouteProviderServlet extends HttpServlet {
 
                 JSONObject output = GeocodeHelperFactory.getMapQuestUtils().getRoute(lat_start, lng_start, lat_end, lng_end, type, username);
 
-                //read output "route_geometry"
-                
                 if (output == null) {
                   	response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);                
                 } else {
+                	
+                	try {
+                		JSONArray route_geometry = output.optJSONArray("route_geometry");
+                		if (route_geometry != null && route_geometry.length() > 1) {
+                			List<Double[]> path = new ArrayList<Double[]>(route_geometry.length());
+                			for (int i=0;i<route_geometry.length();i++) {
+                				JSONArray point = route_geometry.getJSONArray(i);	
+                				path.add(new Double[]{point.getDouble(0), point.getDouble(1)});
+                				if (i >= 50) {
+                					break;
+                				}
+                			}
+                    
+                			byte[] pathImage = ImageUtils.loadPath(path, "640x256");
+                			FileUtils.saveFileV2("path_" + StringUtil.formatCoordE6(lat_start) + "_" + StringUtil.formatCoordE6(lng_start) + "_" + StringUtil.formatCoordE6(lat_end) + "_" + StringUtil.formatCoordE6(lng_end) + ".jpg", pathImage, lat_start, lng_start);
+                		}
+                	} catch (Exception e) {
+                		logger.log(Level.SEVERE, e.getMessage(), e);
+                	}
+                    
                     out.print(output.toString());
                 }
             }
@@ -80,7 +100,6 @@ public class RouteProviderServlet extends HttpServlet {
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /** 
      * Handles the HTTP <code>GET</code> method.
      * @param request servlet request
@@ -114,5 +133,5 @@ public class RouteProviderServlet extends HttpServlet {
     @Override
     public String getServletInfo() {
         return "Routes provider";
-    }// </editor-fold>
+    }
 }

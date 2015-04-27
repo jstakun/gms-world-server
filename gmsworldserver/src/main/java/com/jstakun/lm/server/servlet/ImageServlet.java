@@ -71,7 +71,7 @@ public class ImageServlet extends HttpServlet {
 					logger.log(Level.INFO, "Loading image " + image + " from cache.");
 				} catch (Exception e) {
 					logger.log(Level.SEVERE, e.getMessage());
-					imageUrl = ImageUtils.getGoogleMapsImageUrl(lat, lng, "128x128", 9);
+					imageUrl = ImageUtils.getGoogleMapsImageUrl(lat, lng, "128x128", 9, false);
 				}
 				response.sendRedirect(imageUrl);
 			} catch (Exception e) {

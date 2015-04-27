@@ -3,11 +3,16 @@ package net.gmsworld.server.utils;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.gmsworld.server.config.Commons;
+
+import org.apache.commons.lang.StringUtils;
 
 public class ImageUtils {
 
@@ -65,16 +70,29 @@ public class ImageUtils {
 		return isBlack;
 	}
 	
-	public static String getGoogleMapsImageUrl(double latitude, double longitude, String size, int zoom) {
+	public static String getGoogleMapsImageUrl(double latitude, double longitude, String size, int zoom, boolean anonymous) {
 		String lat = StringUtil.formatCoordE6(latitude);
 		String lng = StringUtil.formatCoordE6(longitude);
-		return "http://maps.google.com/maps/api/staticmap?center=" + lat + "," + lng + "&zoom=" + zoom + "&size=" + size + "&markers=icon:http://gms-world.appspot.com/images/flagblue.png|" + lat + "," + lng; // + "&key=" + Commons.getProperty(Commons.Property.GOOGLE_API_KEY);
+		String mapsUrl = "http://maps.google.com/maps/api/staticmap?center=" + lat + "," + lng + "&zoom=" + zoom + "&size=" + size + "&markers=icon:http://gms-world.appspot.com/images/flagblue.png|" + lat + "," + lng; 
+		if (!anonymous) {
+			mapsUrl += "&key=" + Commons.getProperty(Commons.Property.GOOGLE_API_KEY);
+		}
+		return mapsUrl;
 	}
 	
-	public static String getGoogleMapsPathUrl(List<Double> path, String size, int zoom) {
-		//TODO not yet implemented
-		//path=color:0xff0000ff|weight:5|40.737102,-73.990318|40.749825,-73.987963|40.752946,-73.987384|40.755823,-73.986397
-	    return null;
+	public static String getGoogleMapsPathUrl(List<Double[]> path, String size, boolean anonymous) throws UnsupportedEncodingException {
+		String mapsUrl = "http://maps.google.com/maps/api/staticmap?size=" + size; 
+		if (!anonymous) {
+			mapsUrl += "&key=" + Commons.getProperty(Commons.Property.GOOGLE_API_KEY);
+		}
+		if (! path.isEmpty()) {
+			List<String> coords = new ArrayList<String>(path.size());
+			for (Double[] point : path) {
+				coords.add(StringUtil.formatCoordE6(point[0]) + "," + StringUtil.formatCoordE6(point[1])); 
+			}
+			mapsUrl += "&path=color:0xff0000ff" + URLEncoder.encode("|weight:5|" + StringUtils.join(coords, '|'));
+		}
+		return mapsUrl;
 	}
 	
 	public static byte[] loadImage(String imageUrl) throws IOException {
@@ -84,6 +102,10 @@ public class ImageUtils {
 	}
 	
 	public static byte[] loadImage(double latitude, double longitude, String size, int zoom) throws IOException {
-		return loadImage(getGoogleMapsImageUrl(latitude, longitude, size, zoom));
+		return loadImage(getGoogleMapsImageUrl(latitude, longitude, size, zoom, false));
+	}
+	
+	public static byte[] loadPath(List<Double[]> path, String size) throws IOException {
+		return loadImage(getGoogleMapsPathUrl(path, size, false));
 	}
 }

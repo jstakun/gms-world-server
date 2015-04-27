@@ -47,7 +47,7 @@
 
                         <p class="image-section">
                           <a href="/showGeocode.do?key=<%= key %>&fullScreenGeocodeMap=1">
-                            <img src="<%= ImageUtils.getGoogleMapsImageUrl(gc.getLatitude(), gc.getLongitude(), "640x256", 12) %>" alt="Geocode on Google Map" title="See geocode on the map" width="640" height="256"/>
+                            <img src="<%= ImageUtils.getGoogleMapsImageUrl(gc.getLatitude(), gc.getLongitude(), "640x256", 12, true) %>" alt="Geocode on Google Map" title="See geocode on the map" width="640" height="256"/>
                           </a>
                         </p>
                         <p class="post-details">

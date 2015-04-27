@@ -44,7 +44,7 @@
                 <h3>Your location</h3>
                 <h4>You've selected following location:</h4>
 
-                <img src="<%= ImageUtils.getGoogleMapsImageUrl(lat.doubleValue(), lon.doubleValue(), "640x256", 10) %>" alt="Landmark on Google Map" height="256" width="640"/><br/>
+                <img src="<%= ImageUtils.getGoogleMapsImageUrl(lat.doubleValue(), lon.doubleValue(), "640x256", 10, true) %>" alt="Landmark on Google Map" height="256" width="640"/><br/>
                 
                 <p>
                    <%= request.getAttribute("address")!=null ? "Geocode address: " + request.getAttribute("address") : "" %><br/>
