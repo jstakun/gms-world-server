@@ -90,7 +90,9 @@ public class ImageUtils {
 			for (Double[] point : path) {
 				coords.add(StringUtil.formatCoordE6(point[0]) + "," + StringUtil.formatCoordE6(point[1])); 
 			}
-			mapsUrl += "&path=color:0xff0000ff" + URLEncoder.encode("|weight:5|" + StringUtils.join(coords, '|'));
+			mapsUrl += "&path=color:0xff0000ff" + URLEncoder.encode("|weight:5|" + StringUtils.join(coords, '|'), "UTF-8");
+			mapsUrl += "&markers=color:green%7Clabel:S%7C" + coords.get(0);
+			mapsUrl += "&markers=color:red%7Clabel:E%7C" + coords.get(coords.size()-1);
 		}
 		return mapsUrl;
 	}

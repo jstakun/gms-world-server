@@ -74,10 +74,11 @@ public class RouteProviderServlet extends HttpServlet {
                 		JSONArray route_geometry = output.optJSONArray("route_geometry");
                 		if (route_geometry != null && route_geometry.length() > 1) {
                 			List<Double[]> path = new ArrayList<Double[]>(route_geometry.length());
+                			//TODO remove every nth points to have up to 64 points
                 			for (int i=0;i<route_geometry.length();i++) {
                 				JSONArray point = route_geometry.getJSONArray(i);	
                 				path.add(new Double[]{point.getDouble(0), point.getDouble(1)});
-                				if (i >= 50) {
+                				if (i >= 64) {
                 					break;
                 				}
                 			}
