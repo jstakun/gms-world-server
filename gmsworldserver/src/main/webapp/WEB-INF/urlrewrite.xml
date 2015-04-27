@@ -148,7 +148,7 @@
      <!-- showLocation rules -->
     
     <rule>
-            <from>^/showLocation/([0-9.]+)/([0-9.]+)$</from>
+            <from>^/showLocation/([0-9.-]+)/([0-9.-]+)$</from>
             <to>/showLocation.do?lat=$1&amp;lon=$2</to>
     </rule>
 

@@ -51,11 +51,16 @@ public class GoogleBloggerUtils {
         		if (username != null) {
         			userMask = "<a href=\"" + ConfigurationManager.SERVER_URL + "showUser/" + username + "\">" + userMask + "</a>";
         		}
-                //TODO add imageUrl
+                String prefix = "";
+        		if (imageUrl != null) {
+        			prefix = "<a href=\"" + imageUrl + "\" "
+                        + "imageanchor=\"1\" style=\"clear: left; cssfloat: left; float: left; margin-bottom: 1em; margin-right: 1em;\">"
+                        + "<img border=\"0\" src=\"" + imageUrl + "\" ya=\"true\" /></a>"; 
+        		}
         		if (landmark.isSocial()) { 
-                    message = String.format(rb.getString("Social.gl.server.blogeo"), userMask, url);
+                    message = String.format(rb.getString("Social.gl.server.blogeo"), prefix + userMask, url);
         		} else {
-                    message = String.format(rb.getString("Social.gl.server.landmark"), userMask, landmark.getName(), url);
+                    message = String.format(rb.getString("Social.gl.server.landmark"), prefix + userMask, landmark.getName(), url);
         		}  
         		
         		if (message != null) {
