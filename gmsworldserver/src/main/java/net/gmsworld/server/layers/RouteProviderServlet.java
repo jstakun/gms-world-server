@@ -1,5 +1,7 @@
 package net.gmsworld.server.layers;
 
+import com.google.common.collect.ImmutableMap;
+import com.jstakun.lm.server.social.NotificationUtils;
 import com.jstakun.lm.server.utils.FileUtils;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 
@@ -7,6 +9,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,11 +19,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.ImageUtils;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -35,7 +40,7 @@ public class RouteProviderServlet extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(RouteProviderServlet.class.getName());
-
+    private static final int LIMIT = 64;
 	
 	@Override
     public void init(ServletConfig config) throws ServletException {
@@ -73,18 +78,34 @@ public class RouteProviderServlet extends HttpServlet {
                 	try {
                 		JSONArray route_geometry = output.optJSONArray("route_geometry");
                 		if (route_geometry != null && route_geometry.length() > 1) {
-                			List<Double[]> path = new ArrayList<Double[]>(route_geometry.length());
-                			//TODO remove every nth points to have up to 64 points
+                			int filter = route_geometry.length() / LIMIT + 1;
+                			List<Double[]> path = new ArrayList<Double[]>(LIMIT);
+                			
+                			//remove every nth points to have up to LIMIT points
                 			for (int i=0;i<route_geometry.length();i++) {
-                				JSONArray point = route_geometry.getJSONArray(i);	
-                				path.add(new Double[]{point.getDouble(0), point.getDouble(1)});
-                				if (i >= 64) {
-                					break;
-                				}
+                	            if (i != 0 && i != (route_geometry.length()-1) && i % filter == 0) { 
+                	            	JSONArray point = route_geometry.getJSONArray(i);	
+                	            	path.add(new Double[]{point.getDouble(0), point.getDouble(1)});
+                	            }
                 			}
+                			logger.log(Level.INFO, "Path has " + path.size() + " points");
                     
                 			byte[] pathImage = ImageUtils.loadPath(path, "640x256");
                 			FileUtils.saveFileV2("path_" + StringUtil.formatCoordE6(lat_start) + "_" + StringUtil.formatCoordE6(lng_start) + "_" + StringUtil.formatCoordE6(lat_end) + "_" + StringUtil.formatCoordE6(lng_end) + ".jpg", pathImage, lat_start, lng_start);
+                			
+                			//send route creation social notification
+                			String imageUrl = ConfigurationManager.SERVER_URL + "image?lat_start=" + lat_start + "&lng_start=" + lng_start + "&lat_end=" + lat_end + "&lng_end=" + lng_end;
+                			
+                			String routeType = StringUtils.split(type,"/")[0];
+                			
+                			Map<String, String> params = new ImmutableMap.Builder<String, String>().
+                		            put("username", username).
+                		    		put("routeType", routeType).
+                		    		put("lat", Double.toString(lat_start)).
+                		    		put("lng", Double.toString(lng_start)).
+                		    		put("imageUrl", imageUrl).build();  
+                			
+                			NotificationUtils.createRouteCreationNotificationTask(params);
                 		}
                 	} catch (Exception e) {
                 		logger.log(Level.SEVERE, e.getMessage(), e);

@@ -102,7 +102,7 @@ public class TwitterUtils {
         }
     }
 
-    protected static void sendImageMessage(String showImageUrl, String imageUrl, String username, double latitude, double longitude) {
+    protected static void sendImageMessage(String flex, String imageUrl, String username, Double latitude, Double longitude, int type) {
     	String message = null;
     	try {
             String userMask;
@@ -112,20 +112,37 @@ public class TwitterUtils {
             } else {
                 userMask = UrlUtils.createUsernameMask(username);
             }
-
+            
             ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
-            message = String.format(rb.getString("Social.tw.screenshot"), userMask, showImageUrl);
+            if (type == Commons.SCREENSHOT) {
+            	message = String.format(rb.getString("Social.tw.screenshot"), userMask, flex);
+            } else if (type == Commons.ROUTE) {
+            	//TODO move to resource bundle
+            	message = userMask + " has created new " + flex + " route using #LandmarkManager"; 
+            }
 
             StatusUpdate update = new StatusUpdate(message);
-            update.setDisplayCoordinates(true);
-            update.setLocation(new GeoLocation(latitude, longitude));
+            if (latitude != null && longitude != null) {
+            	update.setDisplayCoordinates(true);
+            	update.setLocation(new GeoLocation(latitude, longitude));
+            }
+            
+            InputStream is = null;
             try {
-            	InputStream is  = new URL(imageUrl + "?thumbnail=false").openStream();
+            	if (type == Commons.SCREENSHOT) {
+            		is  = new URL(imageUrl + "?thumbnail=false").openStream();
+            	} else if (type == Commons.ROUTE) {
+            		is  = new URL(imageUrl + "&thumbnail=false").openStream();
+            	}
             	if (is != null) {
-            		update.media("screenshot.jpg", is);
+            		update.media("image.jpg", is);
             	}
             } catch (Exception e) {
-            	logger.log(Level.SEVERE, "Failed to load screenshot.", e);
+            	logger.log(Level.SEVERE, "Failed to load image " + imageUrl, e);
+            } finally {
+            	if (is != null) {
+            		is.close();
+            	}
             }
             Status s = getTwitter(null, null).updateStatus(update);
             logger.log(Level.INFO, "Sent twitter update id: {0}", s.getId());

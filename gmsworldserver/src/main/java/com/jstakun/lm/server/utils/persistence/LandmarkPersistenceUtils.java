@@ -17,6 +17,7 @@ import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.HttpUtils;
+import net.gmsworld.server.utils.ImageUtils;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.UrlUtils;
@@ -30,6 +31,7 @@ import org.json.JSONObject;
 import com.google.common.collect.ImmutableMap;
 import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.social.NotificationUtils;
+import com.jstakun.lm.server.utils.FileUtils;
 import com.jstakun.lm.server.utils.memcache.CacheAction;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
@@ -973,6 +975,17 @@ public class LandmarkPersistenceUtils {
     }
     
     public static void notifyOnLandmarkCreation(Landmark l, String userAgent) {
+    	//
+    	try {
+	    	//save map image thumbnail
+	    	byte[] thumbnail = ImageUtils.loadImage(l.getLatitude(), l.getLongitude(), "128x128", 9); 
+	    	if (thumbnail != null && thumbnail.length > 0) {
+	    		FileUtils.saveFileV2("landmark_" + StringUtil.formatCoordE6(l.getLatitude()) + "_" + StringUtil.formatCoordE6(l.getLongitude()) + ".jpg", thumbnail, l.getLatitude(), l.getLongitude());
+	    	}
+	    } catch (Exception e) {
+	    	logger.log(Level.SEVERE, e.getMessage(), e);
+	    }
+    	
     	//social notifications
     
     	String landmarkUrl = ConfigurationManager.SERVER_URL + "showLandmark/" + l.getId();

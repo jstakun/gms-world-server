@@ -40,6 +40,8 @@ public class NotificationTaskServlet extends HttpServlet {
             	NotificationUtils.sendUserProfileNotification(request.getParameterMap());
             } else if (!HttpUtils.isEmptyAny(request, "url", "name", "service")) { 
             	NotificationUtils.sendCheckinNotification(request.getParameterMap());         	
+            } else if (!HttpUtils.isEmptyAny(request, "routeType", "username", "imageUrl")) { 
+            	NotificationUtils.sendRouteCreationNotification(request.getParameterMap());         	
             } else {
             	String params = "";
             	for (Enumeration<String> iter=request.getParameterNames();iter.hasMoreElements(); ) {

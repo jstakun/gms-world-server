@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.utils.HttpUtils;
-import net.gmsworld.server.utils.ImageUtils;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
 
@@ -25,7 +24,6 @@ import org.json.JSONObject;
 import com.google.gdata.util.common.util.Base64;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.persistence.Landmark;
-import com.jstakun.lm.server.utils.FileUtils;
 import com.jstakun.lm.server.utils.MailUtils;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
@@ -95,13 +93,6 @@ public class NotificationsServlet extends HttpServlet {
                 			LandmarkPersistenceUtils.persistLandmark(l);
 
                 			if (l.getId() > 0) {	
-                				try {
-                        	    	//save map image thumbnail
-                        	    	byte[] thumbnail = ImageUtils.loadImage(l.getLatitude(), l.getLongitude(), "128x128", 9); 
-                        	    	FileUtils.saveFileV2("landmark_" + StringUtil.formatCoordE6(l.getLatitude()) + "_" + StringUtil.formatCoordE6(l.getLongitude()) + ".jpg", thumbnail, l.getLatitude(), l.getLongitude());
-                        	    } catch (Exception e) {
-                        	    	logger.log(Level.SEVERE, e.getMessage(), e);
-                        	    }
                 				LandmarkPersistenceUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"));
                 			} 
                 		}

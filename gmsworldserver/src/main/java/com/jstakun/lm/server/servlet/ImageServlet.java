@@ -51,23 +51,23 @@ public class ImageServlet extends HttpServlet {
 	protected void process(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		final String key = request.getParameter("key");
 		String imageUrl = null;
+		boolean thumbnail = true;
+		if (StringUtils.equals(request.getParameter("thumbnail"), "false")) {
+			thumbnail = false;
+		}
 		if (StringUtils.isNotEmpty(key)) {
-			boolean thumbnail = true;
-			if (StringUtils.equals(request.getParameter("thumbnail"), "false")) {
-				thumbnail = false;
-			}
 			Screenshot s = FileUtils.getScreenshot(key, thumbnail);
 			if (s != null) {
 				imageUrl = s.getUrl();
 				response.sendRedirect(imageUrl);
 			} 
-		} else {
+		} else if (StringUtils.isNotEmpty(request.getParameter("lat")) && StringUtils.isNotEmpty(request.getParameter("lng"))) {
 			try {
 				final double lat = Double.valueOf(request.getParameter("lat")).doubleValue();
 				final double lng = Double.valueOf(request.getParameter("lng")).doubleValue();
 				try {
 					String image = "landmark_" + StringUtil.formatCoordE6(lat) + "_" + StringUtil.formatCoordE6(lng) + ".jpg";
-					imageUrl = FileUtils.getImageUrlV2(image, true);
+					imageUrl = FileUtils.getImageUrlV2(image, thumbnail);
 					logger.log(Level.INFO, "Loading image " + image + " from cache.");
 				} catch (Exception e) {
 					logger.log(Level.SEVERE, e.getMessage());
@@ -77,7 +77,22 @@ public class ImageServlet extends HttpServlet {
 			} catch (Exception e) {
 				logger.log(Level.SEVERE, e.getMessage());
 			}
-		} 
+		} else if (StringUtils.isNotEmpty(request.getParameter("lat_start")) && StringUtils.isNotEmpty(request.getParameter("lng_start")) &&
+				   StringUtils.isNotEmpty(request.getParameter("lat_end")) && StringUtils.isNotEmpty(request.getParameter("lng_end"))) {
+			final double lat_start = Double.valueOf(request.getParameter("lat_start")).doubleValue();
+			final double lng_start = Double.valueOf(request.getParameter("lng_start")).doubleValue();
+			final double lat_end = Double.valueOf(request.getParameter("lat_end")).doubleValue();
+			final double lng_end = Double.valueOf(request.getParameter("lng_end")).doubleValue();
+			
+			try {
+				String image = "path_" + StringUtil.formatCoordE6(lat_start) + "_" + StringUtil.formatCoordE6(lng_start) + "_" + StringUtil.formatCoordE6(lat_end) + "_" + StringUtil.formatCoordE6(lng_end) + ".jpg";
+				imageUrl = FileUtils.getImageUrlV2(image, thumbnail);
+				logger.log(Level.INFO, "Loading image " + image + " from cache.");
+				response.sendRedirect(imageUrl);
+			} catch (Exception e) {
+				logger.log(Level.SEVERE, e.getMessage());
+			}	
+		}
 		
 		if (imageUrl == null) {
 			response.setContentType("image/png");
