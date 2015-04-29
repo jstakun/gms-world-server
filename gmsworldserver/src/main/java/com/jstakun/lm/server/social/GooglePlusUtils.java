@@ -108,7 +108,7 @@ public class GooglePlusUtils {
         	sendUrlMoment(plus, flex);
         } else if (type == Commons.ROUTE) {
         	String url = UrlUtils.getGoogleShortUrl(imageUrl);
-        	String message = userMask + " has created new " + flex + " route using Landmark Manager. <a href=\"" + url + "\">Check it out.</a>";
+        	String message = userMask + " has created new " + flex + " route using Landmark Manager: " + url;
         	sendMoment(plus, message, "Message from GMS World", imageUrl, -1, -1);
         }
     }

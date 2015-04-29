@@ -171,7 +171,7 @@ public class FacebookSocialUtils {
             	};
             } else if (type == Commons.ROUTE) {
             	params = new Parameter[]{
-            			Parameter.with("message", userMask + userMask + " has created new " + flex + " route using Landmark Manager"),
+            			Parameter.with("message", userMask + " has created new " + flex + " route using Landmark Manager"),
             			Parameter.with("name", "GMS World"),
             			Parameter.with("description", rb.getString("Social.fb.desc.screenshot")),
             			Parameter.with("link", ConfigurationManager.SERVER_URL),
