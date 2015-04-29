@@ -115,9 +115,21 @@ public class NotificationUtils {
 	
 	public static void createRouteCreationNotificationTask(Map<String, String> params) {
 		Map<String, String> newParams = new HashMap<String, String>(params);
+		//FacebookUtils
+		newParams.put("service", Commons.FACEBOOK);
+		createNotificationTask(newParams);
+		
 		//TwitterUtils
 		newParams.put("service", Commons.TWITTER);
-		createNotificationTask(newParams);
+        createNotificationTask(newParams);
+		
+        //GoogleBloggerUtils
+        newParams.put("service", Commons.GOOGLE_BLOGGER);
+        createNotificationTask(newParams);
+		
+        //GooglePlusUtils
+        newParams.put("service", Commons.GOOGLE_PLUS);
+        createNotificationTask(newParams);
 	}
 	
 	public static void createImageCreationNotificationTask(Map<String, String> params) {
@@ -154,13 +166,13 @@ public class NotificationUtils {
     		logger.log(Level.INFO, "Sending image creation notification to {0}...", service);
     	
     		if (StringUtils.equals(service, Commons.FACEBOOK)) {
-    			FacebookSocialUtils.sendImageMessage(imageUrl, showImageUrl, username);
+    			FacebookSocialUtils.sendImageMessage(imageUrl, showImageUrl, username, Commons.SCREENSHOT);
     		} else if (StringUtils.equals(service, Commons.TWITTER)) {
     			TwitterUtils.sendImageMessage(showImageUrl, imageUrl, username, lat, lng, Commons.SCREENSHOT);
     		} else if (StringUtils.equals(service, Commons.GOOGLE_BLOGGER)) {
-    			GoogleBloggerUtils.sendImageMessage(showImageUrl, username, imageUrl);
+    			GoogleBloggerUtils.sendImageMessage(showImageUrl, username, imageUrl, Commons.SCREENSHOT);
     		} else if (StringUtils.equals(service, Commons.GOOGLE_PLUS)) {
-    			GooglePlusUtils.sendImageMessage(showImageUrl, username, imageUrl);
+    			GooglePlusUtils.sendImageMessage(showImageUrl, username, imageUrl, Commons.SCREENSHOT);
     		}
     	
     	} else {
@@ -290,20 +302,18 @@ public class NotificationUtils {
 		String service = params.get("service")[0];
     	String imageUrl = params.get("imageUrl")[0];
     	String routeType = params.get("routeType")[0];
-    	String user = params.get("username")[0];
+    	String username = params.get("username")[0];
     	Double lat = NumberUtils.getDouble(params.get("lat")[0], 0d);
     	Double lng = NumberUtils.getDouble(params.get("lng")[0], 0d);
     	
-    	//TODO implement
-    	
     	if (StringUtils.equals(service, Commons.FACEBOOK)) {
-			//FacebookSocialUtils.sendImageMessage(imageUrl, showImageUrl, username);
+			FacebookSocialUtils.sendImageMessage(imageUrl, routeType, username, Commons.ROUTE);
 		} else if (StringUtils.equals(service, Commons.TWITTER)) {
-			TwitterUtils.sendImageMessage(routeType, imageUrl, user, lat, lng, Commons.ROUTE);
+			TwitterUtils.sendImageMessage(routeType, imageUrl, username, lat, lng, Commons.ROUTE);
 	    } else if (StringUtils.equals(service, Commons.GOOGLE_BLOGGER)) {
-			//GoogleBloggerUtils.sendImageMessage(showImageUrl, username, imageUrl);
+			GoogleBloggerUtils.sendImageMessage(routeType, username, imageUrl, Commons.ROUTE);
 		} else if (StringUtils.equals(service, Commons.GOOGLE_PLUS)) {
-			//GooglePlusUtils.sendImageMessage(showImageUrl, username, imageUrl);
+			GooglePlusUtils.sendImageMessage(routeType, username, imageUrl, Commons.ROUTE);
 		}
 	}
 	

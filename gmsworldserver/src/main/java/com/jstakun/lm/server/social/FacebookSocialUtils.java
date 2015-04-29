@@ -155,21 +155,33 @@ public class FacebookSocialUtils {
         }
     }
     
-    protected static void sendImageMessage(String imageUrl, String showImageUrl, String username) {
+    protected static void sendImageMessage(String imageUrl, String flex, String username, int type) {
         if (imageUrl != null) {
             FacebookClient facebookClient = FacebookUtils.getFacebookClient(Commons.getProperty(Property.fb_page_token));
             ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
             String userMask = UrlUtils.createUsernameMask(username);
-            //logger.log(Level.INFO, "FB message link is: {0}", link);
-            Parameter[] params = new Parameter[]{
-                Parameter.with("message", String.format(rb.getString("Social.fb.message.screenshot"),userMask)),
-                Parameter.with("name", "GMS World"),
-                Parameter.with("description", rb.getString("Social.fb.desc.screenshot")),
-                Parameter.with("link", showImageUrl),
-                Parameter.with("picture", imageUrl)
-            };
+            Parameter[] params = null;
+            if (type == Commons.SCREENSHOT) {
+            	params = new Parameter[]{
+            			Parameter.with("message", String.format(rb.getString("Social.fb.message.screenshot"),userMask)),
+            			Parameter.with("name", "GMS World"),
+            			Parameter.with("description", rb.getString("Social.fb.desc.screenshot")),
+            			Parameter.with("link", flex),
+            			Parameter.with("picture", imageUrl)
+            	};
+            } else if (type == Commons.ROUTE) {
+            	params = new Parameter[]{
+            			Parameter.with("message", userMask + userMask + " has created new " + flex + " route using Landmark Manager"),
+            			Parameter.with("name", "GMS World"),
+            			Parameter.with("description", rb.getString("Social.fb.desc.screenshot")),
+            			Parameter.with("link", ConfigurationManager.SERVER_URL),
+            			Parameter.with("picture", imageUrl)
+            	};
+            }
 
-            sendMessage(facebookClient, Commons.getProperty(Property.FB_GMS_WORLD_FEED), params, false);
+            if (params != null) {
+            	sendMessage(facebookClient, Commons.getProperty(Property.FB_GMS_WORLD_FEED), params, false);
+            }
         } else {
             logger.log(Level.SEVERE, "Image url is null!");
         }
