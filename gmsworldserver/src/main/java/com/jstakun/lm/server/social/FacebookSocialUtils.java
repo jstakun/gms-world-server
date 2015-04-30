@@ -165,15 +165,15 @@ public class FacebookSocialUtils {
             	params = new Parameter[]{
             			Parameter.with("message", String.format(rb.getString("Social.fb.message.screenshot"),userMask)),
             			Parameter.with("name", "GMS World"),
-            			Parameter.with("description", rb.getString("Social.fb.desc.screenshot")),
+            			Parameter.with("description", rb.getString("Social.fb.desc.image")),
             			Parameter.with("link", flex),
             			Parameter.with("picture", imageUrl)
             	};
             } else if (type == Commons.ROUTE) {
             	params = new Parameter[]{
-            			Parameter.with("message", userMask + " has created new " + flex + " route using Landmark Manager"),
+            			Parameter.with("message", String.format(rb.getString("Social.fb.message.route"), userMask, flex)),
             			Parameter.with("name", "GMS World"),
-            			Parameter.with("description", rb.getString("Social.fb.desc.screenshot")),
+            			Parameter.with("description", rb.getString("Social.fb.desc.image")),
             			Parameter.with("link", ConfigurationManager.SERVER_URL),
             			Parameter.with("picture", imageUrl)
             	};

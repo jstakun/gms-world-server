@@ -59,7 +59,6 @@ public class ImageServlet extends HttpServlet {
 			Screenshot s = FileUtils.getScreenshot(key, thumbnail);
 			if (s != null) {
 				imageUrl = s.getUrl();
-				response.sendRedirect(imageUrl);
 			} 
 		} else if (StringUtils.isNotEmpty(request.getParameter("lat")) && StringUtils.isNotEmpty(request.getParameter("lng"))) {
 			try {
@@ -68,12 +67,10 @@ public class ImageServlet extends HttpServlet {
 				try {
 					String image = "landmark_" + StringUtil.formatCoordE6(lat) + "_" + StringUtil.formatCoordE6(lng) + ".jpg";
 					imageUrl = FileUtils.getImageUrlV2(image, thumbnail);
-					logger.log(Level.INFO, "Loading image " + image + " from cache.");
 				} catch (Exception e) {
 					logger.log(Level.SEVERE, e.getMessage());
 					imageUrl = ImageUtils.getGoogleMapsImageUrl(lat, lng, "128x128", 9, false);
 				}
-				response.sendRedirect(imageUrl);
 			} catch (Exception e) {
 				logger.log(Level.SEVERE, e.getMessage());
 			}
@@ -87,14 +84,16 @@ public class ImageServlet extends HttpServlet {
 			try {
 				String image = "path_" + StringUtil.formatCoordE6(lat_start) + "_" + StringUtil.formatCoordE6(lng_start) + "_" + StringUtil.formatCoordE6(lat_end) + "_" + StringUtil.formatCoordE6(lng_end) + ".jpg";
 				imageUrl = FileUtils.getImageUrlV2(image, thumbnail);
-				logger.log(Level.INFO, "Loading image " + image + " from cache.");
-				response.sendRedirect(imageUrl);
 			} catch (Exception e) {
 				logger.log(Level.SEVERE, e.getMessage());
 			}	
 		}
 		
-		if (imageUrl == null) {
+		if (imageUrl != null) {
+			logger.log(Level.INFO, "Loading image " + imageUrl);			
+            response.setContentType("image/jpg");
+			response.sendRedirect(imageUrl);
+		} else {
 			response.setContentType("image/png");
 			imageUrl = "/images/location.png";
 			request.getRequestDispatcher(imageUrl).include(request, response);

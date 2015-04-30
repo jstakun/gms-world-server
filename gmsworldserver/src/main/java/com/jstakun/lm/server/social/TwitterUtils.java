@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.utils.UrlUtils;
 
 import org.apache.commons.lang.StringUtils;
@@ -117,8 +118,7 @@ public class TwitterUtils {
             if (type == Commons.SCREENSHOT) {
             	message = String.format(rb.getString("Social.tw.screenshot"), userMask, flex);
             } else if (type == Commons.ROUTE) {
-            	//TODO move to resource bundle
-            	message = userMask + " has created new " + flex + " route using #LandmarkManager"; 
+            	message = String.format(rb.getString("Social.tw.route"), userMask, flex, ConfigurationManager.SERVER_URL); 
             }
 
             StatusUpdate update = new StatusUpdate(message);

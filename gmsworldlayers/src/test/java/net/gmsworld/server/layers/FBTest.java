@@ -15,28 +15,34 @@ import org.junit.Test;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 
 public class FBTest {
-
-	@Test
-	public void test() throws UnsupportedEncodingException {	
-		String token = Commons.FB_TEST_TOKEN;
-		double lat = 52.25;
-		double lng = 20.95;
-		
+	
+	static {
 		LayerHelperFactory.setCacheProvider(new MockCacheProvider());
 		LayerHelperFactory.setThreadProvider(new JvmThreadProvider());	
-		
-		List<String> friends = LayerHelperFactory.getFacebookUtils().getMyFriends(token);
-		System.out.println("Found " + friends.size() + " friends");
-		
-		/*List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getFriendsCheckinsToLandmarks(lat, lng, 1, 30, 1024, token, Locale.US);
-		System.out.println("Found " + landmarks.size() + " checkins");
-		
-		printLandmarks(landmarks);
+	}
 	
-	    landmarks =	LayerHelperFactory.getFacebookUtils().getFriendsPhotosToLandmark(lat, lng, 1, 30, 1024, token, Locale.US);
-	    System.out.println("Found " + landmarks.size() + " photos");
-	    
-	    printLandmarks(landmarks);*/
+	String token = Commons.FB_TEST_TOKEN;
+	double lat = 52.25;
+	double lng = 20.95;
+
+	@Test
+	public void testMyFriends() throws UnsupportedEncodingException {		
+    	List<String> friends = LayerHelperFactory.getFacebookUtils().getMyFriends(token);
+		System.out.println("Found " + friends.size() + " friends");
+	}
+	
+	@Test
+	public void testFriendsCheckins() throws UnsupportedEncodingException {
+		List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getFriendsCheckinsToLandmarks(lat, lng, 1, 30, 1024, token, Locale.US);
+		System.out.println("Found " + landmarks.size() + " checkins");		
+		printLandmarks(landmarks);
+	}
+	
+	@Test
+	public void testFriendsPhotos() throws UnsupportedEncodingException {
+		List<ExtendedLandmark> landmarks =	LayerHelperFactory.getFacebookUtils().getFriendsPhotosToLandmark(lat, lng, 1, 30, 1024, token, Locale.US);
+	    System.out.println("Found " + landmarks.size() + " photos");    
+	    printLandmarks(landmarks);
 	}
 	
 	private void printLandmarks(List<ExtendedLandmark> landmarks) {

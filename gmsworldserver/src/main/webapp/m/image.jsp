@@ -22,7 +22,7 @@
     	<article>
     	
 <%
-    		Screenshot screenshot = (Screenshot)request.getAttribute("screenshot");
+    			  Screenshot screenshot = (Screenshot)request.getAttribute("screenshot");
     	    	  String address = (String) request.getAttribute("address");
     	    	  
     	    	  if (screenshot != null) { 
@@ -45,7 +45,8 @@
                  <p>
                      <%=address != null ? "Geocode address: " + address + "<br/>" : ""%>
                      Latitude: <%=StringUtil.formatCoordE6(screenshot.getLatitude())%>, Longitude: <%=StringUtil.formatCoordE6(screenshot.getLongitude())%><br/>
-                     <div class="date"><span>Posted on <%=DateUtils.getFormattedDateTime(request.getLocale(), screenshot.getCreationDate())%> | by 
+                     <div class="date">
+                     	<span>Posted on <%=DateUtils.getFormattedDateTime(request.getLocale(), screenshot.getCreationDate())%> | by 
     				 <%
                      	if (screenshot.getUsername() != null) {
                      %>
@@ -55,7 +56,8 @@
     				 %>
                      	<%=UrlUtils.createUsernameMask(screenshot.getUsername())%>
     				 <% } %>
-                     </span></div>
+                     	</span>
+                     </div>
                  </p>
 <% } else { %>
                  <h3>Image not found</h3>

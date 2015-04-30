@@ -98,7 +98,7 @@ public class GoogleBloggerUtils {
         	String prefix = "<a href=\"" + ConfigurationManager.SERVER_URL + "\" "
                     + "imageanchor=\"1\" style=\"clear: left; cssfloat: left; float: left; margin-bottom: 1em; margin-right: 1em;\">"
                     + "<img border=\"0\" src=\"" + imageUrl + "\" ya=\"true\" /></a>"; 
-            message = prefix + userMask + " has created new " + flex + " route using Landmark Manager.";
+            message = String.format(rb.getString("Social.gl.server.route"), prefix + userMask, flex, ConfigurationManager.SERVER_URL);
             title = "GMS World route";
         }        
         

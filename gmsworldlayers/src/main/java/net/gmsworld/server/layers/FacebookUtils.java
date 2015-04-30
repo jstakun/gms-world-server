@@ -328,9 +328,7 @@ public class FacebookUtils extends LayerHelper {
 		Map<String, String> queries = new HashMap<String, String>();
 
         //TODO this will work until 30 APR 2015
-        //queries.put("checkins", "SELECT author_uid, target_id, timestamp FROM checkin WHERE author_uid IN (SELECT uid2 FROM friend WHERE uid1 = me()) ORDER BY timestamp DESC LIMIT " + limit);
-		//queries.put("places", "SELECT page_id, name, description, latitude, longitude, display_subtext, checkin_count FROM place WHERE page_id IN (select target_id from #checkins)");
-		queries.put("checkins", "SELECT author_uid, page_id, timestamp FROM location_post WHERE author_uid IN (SELECT uid2 FROM friend WHERE uid1 = me()) ORDER BY timestamp DESC");
+        queries.put("checkins", "SELECT author_uid, page_id, timestamp FROM location_post WHERE author_uid IN (SELECT uid2 FROM friend WHERE uid1 = me()) ORDER BY timestamp DESC");
 		queries.put("places", "SELECT page_id, name, description, latitude, longitude, display_subtext, checkin_count FROM place WHERE page_id IN (select page_id from #checkins)");
 		queries.put("users", "SELECT uid, name FROM user WHERE uid IN (select author_uid from #checkins)");
 
@@ -852,10 +850,11 @@ public class FacebookUtils extends LayerHelper {
         }
     }
 
-    public List<String> getMyFriends(String token) {
+    protected List<String> getMyFriends(String token) {
 
-    	List<String> friendIds = new ArrayList<String>();
-    	FacebookClient facebookClient = getFacebookClient(token, Version.VERSION_1_0);
+    	//TODO this will work until 30 APR 2015
+        List<String> friendIds = new ArrayList<String>();
+    	FacebookClient facebookClient = getFacebookClient(token, Version.VERSION_2_0);
     	List<User> myFriends = facebookClient.fetchConnection("me/friends", User.class).getData();
     	for (Iterator<User> friends = myFriends.iterator(); friends.hasNext();) {
     			User friend = friends.next();
