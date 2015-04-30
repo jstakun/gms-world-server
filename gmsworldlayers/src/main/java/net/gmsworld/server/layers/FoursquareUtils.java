@@ -26,7 +26,6 @@ import net.gmsworld.server.utils.JSONUtils;
 import net.gmsworld.server.utils.MathUtils;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.ThreadUtil;
-import net.gmsworld.server.utils.UrlUtils;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
@@ -661,7 +660,7 @@ public class FoursquareUtils extends LayerHelper {
 
             String photo = desc.remove("photo");
             if (photo != null) {
-                desc.put("photo", UrlUtils.getShortUrl(photo));
+                desc.put("photo", photo);//UrlUtils.getShortUrl(photo));
             }
 
             jsonObject.put("desc", desc);
@@ -752,7 +751,7 @@ public class FoursquareUtils extends LayerHelper {
 
             String photo = desc.remove("photo");
             if (photo != null) {
-                tokens.put("photo", UrlUtils.getShortUrl(photo));
+                tokens.put("photo", photo); //UrlUtils.getShortUrl(photo));
             }
             
             String numberOfReviews = desc.remove("numberOfReviews");
@@ -786,7 +785,7 @@ public class FoursquareUtils extends LayerHelper {
 
         Map<String, Thread> venueDetailsThreads = new ConcurrentHashMap<String, Thread>();
 
-        boolean bitlyFailed = false;
+        //boolean bitlyFailed = false;
 
         for (int i = 0; i < venueIds.size(); i++) {
 
@@ -802,7 +801,7 @@ public class FoursquareUtils extends LayerHelper {
                 //call foursquare
             	
                 Thread venueDetailsRetriever = threadProvider.newThread(new VenueDetailsRetriever(venueDetailsThreads, attrs,
-                        locale, urlPrefix.toString(), multiRequest, venueId, bitlyFailed));
+                        locale, urlPrefix.toString(), multiRequest, venueId, false));
 
                 venueDetailsThreads.put(multiRequest, venueDetailsRetriever);
 
@@ -875,7 +874,7 @@ public class FoursquareUtils extends LayerHelper {
         private Map<String, Thread> venueDetailsThreads;
         private Map<String, Map<String, String>> attrs;
         private String locale, urlPrefix, multiRequest, venueId;
-        private boolean bitlyFailed;
+        //private boolean bitlyFailed;
 
         public VenueDetailsRetriever(Map<String, Thread> venueDetailsThreads, Map<String, Map<String, String>> attrs,
                 String locale, String urlPrefix, String multiRequest, String venueId, boolean bitlyFailed) {
@@ -885,7 +884,7 @@ public class FoursquareUtils extends LayerHelper {
             this.urlPrefix = urlPrefix;
             this.multiRequest = multiRequest;
             this.venueId = venueId;
-            this.bitlyFailed = bitlyFailed;
+            //this.bitlyFailed = bitlyFailed;
         }
 
         public void run() {
@@ -951,14 +950,14 @@ public class FoursquareUtils extends LayerHelper {
                                                     	
                                                     String photo = newest.getString("prefix") + "100x100" + newest.getString("suffix");
                                                     	
-                                                    if (!bitlyFailed) {
+                                                    /*if (!bitlyFailed) {
                                                     	String shortUrl = UrlUtils.getShortUrl(photo);
                                                         if (StringUtils.equals(shortUrl, photo)) {
                                                         	bitlyFailed = true;
                                                         } else {
                                                         	photo = shortUrl;
                                                         }
-                                                     }
+                                                     }*/
                                                         
                                                      venueAttrs.put("caption", photo);
                                                      hasPhoto = true;

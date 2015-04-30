@@ -40,11 +40,11 @@ public class GoogleBloggerUtils {
         if (key != null && type == Commons.SERVER) {
         	ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
             Landmark landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
-        	if (landmark != null && token != null && secret != null) {
+        	if (landmark != null && token != null && secret != null && url != null) {
         		String message = null;
-        		if (url == null) {
-        			url = UrlUtils.getShortUrl(UrlUtils.getLandmarkUrl(landmark.getHash(), landmark.getId(), landmark.getCreationDate()));
-        		}
+        		//if (url == null) {
+        		//	url = UrlUtils.getShortUrl(UrlUtils.getLandmarkUrl(landmark.getHash(), landmark.getId(), landmark.getCreationDate()));
+        		//}
 
         		String username = landmark.getUsername();
         		String userMask = UrlUtils.createUsernameMask(username);
@@ -67,7 +67,7 @@ public class GoogleBloggerUtils {
                     createPost(getBlogger(), landmark.getName(), message);
                 }
         	} else {
-        		logger.log(Level.SEVERE, "Landmark or token is empty! Key: {0}, token: {1}, secret: {2}", new Object[]{key, token, secret});
+        		logger.log(Level.SEVERE, "Something is empty! Key: {0}, token: {1}, secret: {2}, url: {3}", new Object[]{key, token, secret, url});
         	}
         } else if (type == Commons.CHECKIN) { 
         	ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");

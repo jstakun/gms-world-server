@@ -18,7 +18,6 @@ import net.gmsworld.server.utils.JSONUtils;
 import net.gmsworld.server.utils.MathUtils;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.ThreadUtil;
-import net.gmsworld.server.utils.UrlUtils;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
@@ -88,7 +87,7 @@ public class FacebookUtils extends LayerHelper {
 
             int counter = 0;
 
-            boolean bitlyFailed = false;
+            //boolean bitlyFailed = false;
 
             logger.log(Level.INFO, "Found " + multiqueryResults.photos.size() + " photos.");
             
@@ -111,12 +110,12 @@ public class FacebookUtils extends LayerHelper {
                         Map<String, String> desc = new HashMap<String, String>();
 
                         String url = photo.link;
-                        if (!bitlyFailed) {
+                        /*if (!bitlyFailed) {
                             url = UrlUtils.getShortUrl(photo.link);
                             if (StringUtils.equals(photo.link, url)) {
                                 bitlyFailed = true;
                             }
-                        }
+                        }*/
 
                         jsonObject.put("url", url);
 
@@ -224,7 +223,7 @@ public class FacebookUtils extends LayerHelper {
 
             List<String> placeids = new ArrayList<String>();
             int counter = 0;
-            boolean bitlyFailed = false;
+            //boolean bitlyFailed = false;
             Map<String, Map<String, String>> pageDescs = new HashMap<String, Map<String, String>>();
             
             logger.log(Level.INFO, "Found " + multiqueryResults.photos.size() + " photos.");
@@ -244,12 +243,12 @@ public class FacebookUtils extends LayerHelper {
                         Map<String, String> tokens = new HashMap<String, String>();
 
                         String url = photo.link;
-                        if (!bitlyFailed) {
+                        /*if (!bitlyFailed) {
                             url = UrlUtils.getShortUrl(photo.link);
                             if (StringUtils.equals(photo.link, url)) {
                                 bitlyFailed = true;
                             }
-                        }
+                        }*/
 
                         JSONUtils.putOptValue(tokens, "caption", photo.caption, stringLength, false);
                         if (StringUtils.isEmpty(photo.caption)) {

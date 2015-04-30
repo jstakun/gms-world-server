@@ -24,6 +24,7 @@ import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.ImageUtils;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
+import net.gmsworld.server.utils.UrlUtils;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
@@ -95,7 +96,7 @@ public class RouteProviderServlet extends HttpServlet {
                 			
                 			//send route creation social notification
                 			String imageUrl = ConfigurationManager.SERVER_URL + "image?lat_start=" + lat_start + "&lng_start=" + lng_start + "&lat_end=" + lat_end + "&lng_end=" + lng_end;
-                			String showRouteUrl = ConfigurationManager.SERVER_URL + "showRoute/" + + lat_start + "/" + lng_start + "/" + lat_end + "/" + lng_end;
+                			String showRouteUrl = UrlUtils.getShortUrl(ConfigurationManager.SERVER_URL + "showRoute/" + + lat_start + "/" + lng_start + "/" + lat_end + "/" + lng_end);
                 			
                 			String routeType = StringUtils.split(type,"/")[0];
                 			
