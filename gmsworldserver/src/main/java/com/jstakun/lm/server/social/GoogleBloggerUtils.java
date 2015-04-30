@@ -80,7 +80,7 @@ public class GoogleBloggerUtils {
         
     }
 
-    protected static void sendImageMessage(String flex, String username, String imageUrl, int type) {
+    protected static void sendImageMessage(String showImageUrl, String username, String imageUrl, String flex, int type) {
     	ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
         String userMask = UrlUtils.createUsernameMask(username);
         if (StringUtils.isNotEmpty(username)) {
@@ -89,16 +89,16 @@ public class GoogleBloggerUtils {
         String message = null;
         String title = null;
         if (type == Commons.SCREENSHOT) {
-        	String prefix = "<a href=\"" + flex + "\" "
+        	String prefix = "<a href=\"" + showImageUrl + "\" "
                 + "imageanchor=\"1\" style=\"clear: left; cssfloat: left; float: left; margin-bottom: 1em; margin-right: 1em;\">"
                 + "<img border=\"0\" src=\"" + imageUrl + "\" ya=\"true\" /></a>"; 
-        	 message = String.format(rb.getString("Social.gl.server.screenshot"), prefix + userMask, flex);
+        	 message = String.format(rb.getString("Social.gl.server.screenshot"), prefix + userMask, showImageUrl);
         	 title = "GMS World screenshot";
         } else if (type == Commons.ROUTE) {
-        	String prefix = "<a href=\"" + ConfigurationManager.SERVER_URL + "\" "
+        	String prefix = "<a href=\"" + showImageUrl + "\" "
                     + "imageanchor=\"1\" style=\"clear: left; cssfloat: left; float: left; margin-bottom: 1em; margin-right: 1em;\">"
                     + "<img border=\"0\" src=\"" + imageUrl + "\" ya=\"true\" /></a>"; 
-            message = String.format(rb.getString("Social.gl.server.route"), prefix + userMask, flex, ConfigurationManager.SERVER_URL);
+            message = String.format(rb.getString("Social.gl.server.route"), prefix + userMask, flex, showImageUrl);
             title = "GMS World route";
         }        
         

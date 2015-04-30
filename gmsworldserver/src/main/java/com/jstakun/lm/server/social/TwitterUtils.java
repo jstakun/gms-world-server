@@ -8,7 +8,6 @@ import java.util.logging.Logger;
 
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
-import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.utils.UrlUtils;
 
 import org.apache.commons.lang.StringUtils;
@@ -103,7 +102,7 @@ public class TwitterUtils {
         }
     }
 
-    protected static void sendImageMessage(String flex, String imageUrl, String username, Double latitude, Double longitude, int type) {
+    protected static void sendImageMessage(String showImageUrl, String imageUrl, String username, Double latitude, Double longitude, String flex, int type) {
     	String message = null;
     	try {
             String userMask;
@@ -116,9 +115,9 @@ public class TwitterUtils {
             
             ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
             if (type == Commons.SCREENSHOT) {
-            	message = String.format(rb.getString("Social.tw.screenshot"), userMask, flex);
+            	message = String.format(rb.getString("Social.tw.screenshot"), userMask, showImageUrl);
             } else if (type == Commons.ROUTE) {
-            	message = String.format(rb.getString("Social.tw.route"), userMask, flex, ConfigurationManager.SERVER_URL); 
+            	message = String.format(rb.getString("Social.tw.route"), userMask, flex, showImageUrl); 
             }
 
             StatusUpdate update = new StatusUpdate(message);

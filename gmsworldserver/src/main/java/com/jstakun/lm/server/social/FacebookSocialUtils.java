@@ -155,7 +155,7 @@ public class FacebookSocialUtils {
         }
     }
     
-    protected static void sendImageMessage(String imageUrl, String flex, String username, int type) {
+    protected static void sendImageMessage(String imageUrl, String showImageUrl, String username, String flex, int type) {
         if (imageUrl != null) {
             FacebookClient facebookClient = FacebookUtils.getFacebookClient(Commons.getProperty(Property.fb_page_token));
             ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
@@ -166,7 +166,7 @@ public class FacebookSocialUtils {
             			Parameter.with("message", String.format(rb.getString("Social.fb.message.screenshot"),userMask)),
             			Parameter.with("name", "GMS World"),
             			Parameter.with("description", rb.getString("Social.fb.desc.image")),
-            			Parameter.with("link", flex),
+            			Parameter.with("link", showImageUrl),
             			Parameter.with("picture", imageUrl)
             	};
             } else if (type == Commons.ROUTE) {
@@ -174,7 +174,7 @@ public class FacebookSocialUtils {
             			Parameter.with("message", String.format(rb.getString("Social.fb.message.route"), userMask, flex)),
             			Parameter.with("name", "GMS World"),
             			Parameter.with("description", rb.getString("Social.fb.desc.image")),
-            			Parameter.with("link", ConfigurationManager.SERVER_URL),
+            			Parameter.with("link", showImageUrl),
             			Parameter.with("picture", imageUrl)
             	};
             }

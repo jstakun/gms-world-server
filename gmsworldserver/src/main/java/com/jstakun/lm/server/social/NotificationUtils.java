@@ -166,13 +166,13 @@ public class NotificationUtils {
     		logger.log(Level.INFO, "Sending image creation notification to {0}...", service);
     	
     		if (StringUtils.equals(service, Commons.FACEBOOK)) {
-    			FacebookSocialUtils.sendImageMessage(imageUrl, showImageUrl, username, Commons.SCREENSHOT);
+    			FacebookSocialUtils.sendImageMessage(imageUrl, showImageUrl, username, null, Commons.SCREENSHOT);
     		} else if (StringUtils.equals(service, Commons.TWITTER)) {
-    			TwitterUtils.sendImageMessage(showImageUrl, imageUrl, username, lat, lng, Commons.SCREENSHOT);
+    			TwitterUtils.sendImageMessage(showImageUrl, imageUrl, username, lat, lng, null, Commons.SCREENSHOT);
     		} else if (StringUtils.equals(service, Commons.GOOGLE_BLOGGER)) {
-    			GoogleBloggerUtils.sendImageMessage(showImageUrl, username, imageUrl, Commons.SCREENSHOT);
+    			GoogleBloggerUtils.sendImageMessage(showImageUrl, username, imageUrl, null, Commons.SCREENSHOT);
     		} else if (StringUtils.equals(service, Commons.GOOGLE_PLUS)) {
-    			GooglePlusUtils.sendImageMessage(showImageUrl, username, imageUrl, Commons.SCREENSHOT);
+    			GooglePlusUtils.sendImageMessage(showImageUrl, username, imageUrl, null, Commons.SCREENSHOT);
     		}
     	
     	} else {
@@ -303,17 +303,18 @@ public class NotificationUtils {
     	String imageUrl = params.get("imageUrl")[0];
     	String routeType = params.get("routeType")[0];
     	String username = params.get("username")[0];
+    	String routeUrl = params.get("showRouteUrl")[0];
     	Double lat = NumberUtils.getDouble(params.get("lat")[0], 0d);
     	Double lng = NumberUtils.getDouble(params.get("lng")[0], 0d);
     	
     	if (StringUtils.equals(service, Commons.FACEBOOK)) {
-			FacebookSocialUtils.sendImageMessage(imageUrl, routeType, username, Commons.ROUTE);
+			FacebookSocialUtils.sendImageMessage(imageUrl, routeUrl, username, routeType, Commons.ROUTE);
 		} else if (StringUtils.equals(service, Commons.TWITTER)) {
-			TwitterUtils.sendImageMessage(routeType, imageUrl, username, lat, lng, Commons.ROUTE);
+			TwitterUtils.sendImageMessage(routeUrl, imageUrl, username, lat, lng, routeType, Commons.ROUTE);
 	    } else if (StringUtils.equals(service, Commons.GOOGLE_BLOGGER)) {
-			GoogleBloggerUtils.sendImageMessage(routeType, username, imageUrl, Commons.ROUTE);
+			GoogleBloggerUtils.sendImageMessage(routeUrl, username, imageUrl, routeType, Commons.ROUTE);
 		} else if (StringUtils.equals(service, Commons.GOOGLE_PLUS)) {
-			GooglePlusUtils.sendImageMessage(routeType, username, imageUrl, Commons.ROUTE);
+			GooglePlusUtils.sendImageMessage(routeUrl, username, imageUrl, routeType, Commons.ROUTE);
 		}
 	}
 	

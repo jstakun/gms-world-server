@@ -151,6 +151,13 @@
             <from>^/showLocation/([0-9.-]+)/([0-9.-]+)$</from>
             <to>/showLocation.do?lat=$1&amp;lon=$2</to>
     </rule>
+    
+    <!-- showLocation rules -->
+    
+    <rule>
+            <from>^/showRoute/([0-9.-]+)/([0-9.-]+)/([0-9.-]+)/([0-9.-]+)$</from>
+            <to>/showRoute.do?lat_start=$1&amp;lng_start=$2&amp;lat_end=$3&amp;lng_end=$4</to>
+    </rule>
 
     <!-- download rules -->
 

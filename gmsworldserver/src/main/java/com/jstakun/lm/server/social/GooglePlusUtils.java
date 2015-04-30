@@ -98,18 +98,19 @@ public class GooglePlusUtils {
         }
     }
 
-    protected static void sendImageMessage(String flex, String username, String imageUrl, int type) {
+    protected static void sendImageMessage(String showImageUrl, String username, String imageUrl, String flex, int type) {
         String userMask = UrlUtils.createUsernameMask(username); 
         ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
         Plus plus = getPlus(null, null);
         if (type == Commons.SCREENSHOT) {
-        	String message = String.format(rb.getString("Social.gp.screenshot"), userMask , flex);
+        	String message = String.format(rb.getString("Social.gp.screenshot"), userMask , showImageUrl);
             sendMoment(plus, message, "Message from GMS World", imageUrl, -1, -1);
-        	sendUrlMoment(plus, flex);
+        	sendUrlMoment(plus, showImageUrl);
         } else if (type == Commons.ROUTE) {
         	String url = UrlUtils.getGoogleShortUrl(imageUrl);
         	String message = String.format(rb.getString("Social.gp.route"), userMask, flex, url);
         	sendMoment(plus, message, "Message from GMS World", imageUrl, -1, -1);
+        	sendUrlMoment(plus, showImageUrl);
         }
     }
 

@@ -69,19 +69,19 @@ public class ImageServlet extends HttpServlet {
 					imageUrl = FileUtils.getImageUrlV2(image, thumbnail);
 				} catch (Exception e) {
 					logger.log(Level.SEVERE, e.getMessage());
-					imageUrl = ImageUtils.getGoogleMapsImageUrl(lat, lng, "128x128", 9, false);
+					imageUrl = ImageUtils.getGoogleMapsImageUrl(lat, lng, "128x128", 9, thumbnail);
 				}
 			} catch (Exception e) {
 				logger.log(Level.SEVERE, e.getMessage());
 			}
 		} else if (StringUtils.isNotEmpty(request.getParameter("lat_start")) && StringUtils.isNotEmpty(request.getParameter("lng_start")) &&
 				   StringUtils.isNotEmpty(request.getParameter("lat_end")) && StringUtils.isNotEmpty(request.getParameter("lng_end"))) {
-			final double lat_start = Double.valueOf(request.getParameter("lat_start")).doubleValue();
-			final double lng_start = Double.valueOf(request.getParameter("lng_start")).doubleValue();
-			final double lat_end = Double.valueOf(request.getParameter("lat_end")).doubleValue();
-			final double lng_end = Double.valueOf(request.getParameter("lng_end")).doubleValue();
-			
 			try {
+				final double lat_start = Double.valueOf(request.getParameter("lat_start")).doubleValue();
+				final double lng_start = Double.valueOf(request.getParameter("lng_start")).doubleValue();
+				final double lat_end = Double.valueOf(request.getParameter("lat_end")).doubleValue();
+				final double lng_end = Double.valueOf(request.getParameter("lng_end")).doubleValue();
+			
 				String image = "path_" + StringUtil.formatCoordE6(lat_start) + "_" + StringUtil.formatCoordE6(lng_start) + "_" + StringUtil.formatCoordE6(lat_end) + "_" + StringUtil.formatCoordE6(lng_end) + ".jpg";
 				imageUrl = FileUtils.getImageUrlV2(image, thumbnail);
 			} catch (Exception e) {

@@ -95,6 +95,7 @@ public class RouteProviderServlet extends HttpServlet {
                 			
                 			//send route creation social notification
                 			String imageUrl = ConfigurationManager.SERVER_URL + "image?lat_start=" + lat_start + "&lng_start=" + lng_start + "&lat_end=" + lat_end + "&lng_end=" + lng_end;
+                			String showRouteUrl = ConfigurationManager.SERVER_URL + "showRoute/" + + lat_start + "/" + lng_start + "/" + lat_end + "/" + lng_end;
                 			
                 			String routeType = StringUtils.split(type,"/")[0];
                 			
@@ -103,6 +104,7 @@ public class RouteProviderServlet extends HttpServlet {
                 		    		put("routeType", routeType).
                 		    		put("lat", Double.toString(lat_start)).
                 		    		put("lng", Double.toString(lng_start)).
+                		    		put("showRouteUrl", showRouteUrl).
                 		    		put("imageUrl", imageUrl).build();  
                 			
                 			NotificationUtils.createRouteCreationNotificationTask(params);
