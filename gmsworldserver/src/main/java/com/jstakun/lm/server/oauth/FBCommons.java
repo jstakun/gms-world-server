@@ -30,11 +30,12 @@ public final class FBCommons {
     
 	private static final String outf = "yyyyMMdd";
     private static final String redirect_uri = ConfigurationManager.SSL_SERVER_URL + "fbauth";
-    private static final String SCOPE = "publish_stream,offline_access,user_birthday,email,friends_status,user_status,friends_photos,user_photos"; //manage_pages
- 
+    private static final String SCOPE = "email,publish_actions,user_tagged_places,user_posts,user_photos"; //user permission
+    //private static final String SCOPE = "manage_pages,publish_pages,publish_actions"; //server permissions
+    
     protected static String getLoginRedirectURL() {
         //display=touch
-        return "https://graph.facebook.com/oauth/authorize?client_id=" + Commons.getProperty(Property.fb_client_id) + "&display=wap&redirect_uri=" + redirect_uri + "&scope=" + SCOPE;
+        return "https://graph.facebook.com/oauth/authorize?client_id=" + Commons.getProperty(Property.fb_client_id) + "&display=touch&redirect_uri=" + redirect_uri + "&scope=" + SCOPE;
 
     }
 

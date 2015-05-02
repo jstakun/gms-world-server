@@ -5,6 +5,8 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang.StringUtils;
+
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.config.ConfigurationManager;
@@ -30,29 +32,25 @@ public class FacebookSocialUtils {
         try {          
         	boolean hasPermission = false;
         	if (verifyPermission) {
-        		//check if user has given messaging permission            
         		try {
         			JsonObject permissions = facebookClient.fetchObject("me/permissions", JsonObject.class);
         			JsonArray data = permissions.getJsonArray("data");
-        			JsonObject d = data.getJsonObject(0);
-        			if (d.optInt("publish_stream", 0) == 1) {
-        				logger.log(Level.INFO, "User has granted publish permission");
-        				hasPermission = true;
-        			} else {
-        				logger.log(Level.INFO, permissions.toString());
-        			}	
+        			for (int i=0;i<data.length();i++) {
+        				JsonObject p = data.getJsonObject(i);
+        				if (StringUtils.equals(p.getString("permission"), "publish_actions") && 
+        						StringUtils.equals(p.getString("status"), "granted")) {
+        					hasPermission = true;
+        					break;
+        				}	
+        			} 
+        			if (!hasPermission) {
+        				logger.log(Level.WARNING, "Access token has no publish_actions permission: " + permissions.toString());	
+        			}
         		} catch (Exception e) {
         			logger.log(Level.SEVERE, "FacebookUtils.sendMessage() exception", e);
         		}
         	}
         	
-        	//remove
-        	//logger.log(Level.INFO, "Sending message with params:");
-        	//for (Parameter param : params) {
-        	//	logger.log(Level.INFO, param.name + "=" + param.value);
-        	//}
-        	//
-            
         	if (!verifyPermission || hasPermission) {
         		FacebookType publishMessageResponse = (FacebookType) facebookClient.publish(connection, FacebookType.class, params);
         		String id = publishMessageResponse.getId();
@@ -114,7 +112,6 @@ public class FacebookSocialUtils {
         }
     }
 
-    //login with manage_pages permission
     protected static void sendMessageToPageFeed(String key, String url, String user, String name, String imageUrl, int type) {
         final String[] images = {"blogeo_j.png", "blogeo_a.png", "poi_j.png", "poi_a.png"};
         ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
@@ -151,7 +148,7 @@ public class FacebookSocialUtils {
         
         if (params != null) {
         	FacebookClient facebookClient = FacebookUtils.getFacebookClient(Commons.getProperty(Property.fb_page_token));
-            sendMessage(facebookClient, Commons.getProperty(Property.FB_GMS_WORLD_FEED), params, false);
+        	sendMessage(facebookClient, Commons.getProperty(Property.FB_GMS_WORLD_FEED), params, false);
         }
     }
     

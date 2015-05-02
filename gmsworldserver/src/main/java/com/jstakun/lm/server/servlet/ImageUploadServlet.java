@@ -108,17 +108,27 @@ public class ImageUploadServlet extends HttpServlet {
                         			
                         			CacheUtil.put(cacheKey, "1", CacheType.FAST);
                         			
-                        			//TODO load image from imageUrl and check if it is black
-                        			
-                        			Map<String, String> params = new ImmutableMap.Builder<String, String>().
-                        					put("showImageUrl", showImageUrl).
-                        					put("imageUrl", imageUrl).
-                        					put("lat", Double.toString(lat)).
-                        					put("lng", Double.toString(lng)).
-                        					put("username", StringUtils.isNotEmpty(username) ? username : "").build();
-                        			NotificationUtils.createImageCreationNotificationTask(params);
-	                        	
-                        			output = "File saved with key " + key;
+                        			//load image from imageUrl and check if it is black
+                        			//sometimes uploaded image is black
+                        			try {
+                        				byte[] uploadedImage = ImageUtils.loadImage(imageUrl);
+                        				if (ImageUtils.isBlackImage(uploadedImage)) {
+                        					logger.log(Level.SEVERE, "Uploaded image " + key + " is black: " + imageUrl);
+                        					output = "Uploaded image is black!";
+                        				} else {  		
+                        					Map<String, String> params = new ImmutableMap.Builder<String, String>().
+                        							put("showImageUrl", showImageUrl).
+                        							put("imageUrl", imageUrl).
+                        							put("lat", Double.toString(lat)).
+                        							put("lng", Double.toString(lng)).
+                        							put("username", StringUtils.isNotEmpty(username) ? username : "").build();
+                        					NotificationUtils.createImageCreationNotificationTask(params);
+                        					output = "File saved with key " + key;
+                        				}	
+                        			} catch (Exception e) {
+                        				logger.log(Level.SEVERE, "ImageUploadServlet.processRequest() exception", e);
+                        				output = "Image upload failed!";
+                        			}
                         		} else {
                         			output = "Key is empty!";
                         			logger.log(Level.SEVERE, "Key is empty!");
