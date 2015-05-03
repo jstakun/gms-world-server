@@ -25,7 +25,7 @@ import com.jstakun.lm.server.utils.TokenUtil;
  */
 public final class LnCommons {
     private static final String CALLBACK_URI = ConfigurationManager.SSL_SERVER_URL + "lnauth";
-    private static final String SCOPE = "r_basicprofile%20r_emailaddress%20r_contactinfo%20rw_nus";
+    private static final String SCOPE = "r_basicprofile%20r_emailaddress%20w_share";
     private static final String AUTHORIZE_URL = "https://www.linkedin.com/uas/oauth2/authorization?response_type=code&client_id=%s" +
                                 "&scope=%s&state=%s&redirect_uri=%s";
     private static final Logger logger = Logger.getLogger(LnCommons.class.getName());

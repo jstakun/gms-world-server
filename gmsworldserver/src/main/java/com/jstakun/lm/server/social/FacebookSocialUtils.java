@@ -147,14 +147,14 @@ public class FacebookSocialUtils {
         }
         
         if (params != null) {
-        	FacebookClient facebookClient = FacebookUtils.getFacebookClient(Commons.getProperty(Property.fb_page_token));
+        	FacebookClient facebookClient = FacebookUtils.getFacebookClient(com.jstakun.lm.server.config.ConfigurationManager.getParam(com.jstakun.lm.server.config.ConfigurationManager.GMS_WORLD_PAGE_TOKEN, null));
         	sendMessage(facebookClient, Commons.getProperty(Property.FB_GMS_WORLD_FEED), params, false);
         }
     }
     
     protected static void sendImageMessage(String imageUrl, String showImageUrl, String username, String flex, int type) {
         if (imageUrl != null) {
-            FacebookClient facebookClient = FacebookUtils.getFacebookClient(Commons.getProperty(Property.fb_page_token));
+            FacebookClient facebookClient = FacebookUtils.getFacebookClient(com.jstakun.lm.server.config.ConfigurationManager.getParam(com.jstakun.lm.server.config.ConfigurationManager.GMS_WORLD_PAGE_TOKEN, null));
             ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
             String userMask = UrlUtils.createUsernameMask(username);
             Parameter[] params = null;

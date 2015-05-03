@@ -54,7 +54,7 @@ public class FacebookUtils extends LayerHelper {
         queries.put("places", "SELECT page_id, name, description, latitude, longitude, display_subtext, checkin_count FROM place WHERE page_id IN (select place_id from #photos)");
         queries.put("users", "SELECT uid, name FROM user WHERE uid IN (select owner from #photos)");
 
-        FacebookClient facebookClient = getFacebookClient(token, Version.VERSION_2_0);
+        FacebookClient facebookClient = getFacebookClient(token);
 
         FBMultiQueryResults multiqueryResults = facebookClient.executeFqlMultiquery(queries, FBMultiQueryResults.class);
 
