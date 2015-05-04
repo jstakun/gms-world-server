@@ -501,7 +501,7 @@ public class LayersProviderServlet extends HttpServlet {
             	if (HttpUtils.isEmptyAny(request,"lat","lng","token") && HttpUtils.isEmptyAny(request,"latitude","longitude","token")) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 } else {
-                	String token = URLDecoder.decode(request.getParameter("token"), "UTF-8");
+                	//String token = URLDecoder.decode(request.getParameter("token"), "UTF-8");
                 	//TODO fix
                 	List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
                 	if (outFormat.equals(Format.BIN)) {
@@ -516,15 +516,28 @@ public class LayersProviderServlet extends HttpServlet {
             	if (HttpUtils.isEmptyAny(request,"lat","lng","token") && HttpUtils.isEmptyAny(request,"latitude","longitude","token")) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                  } else {
-                	String token = URLDecoder.decode(request.getParameter("token"), "UTF-8");
+                	//String token = URLDecoder.decode(request.getParameter("token"), "UTF-8");
+                	List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
                 	if (outFormat.equals(Format.BIN)) {
-                    	List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getFriendsPhotosToLandmark(latitude, longitude, version, limit, stringLimit, token, l);
+                    	//List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getFriendsPhotosToLandmark(latitude, longitude, version, limit, stringLimit, token, l);
                     	LayerHelperFactory.getFacebookUtils().serialize(landmarks, response.getOutputStream(), version);
                     } else {
-                    	//outString = new JSONObject().put("ResultSet", landmarks).toString();
-                    	outString = LayerHelperFactory.getFacebookUtils().getFriendsPhotosToJSon(latitude, longitude, version, limit, stringLimit, token).toString();              
+                    	outString = new JSONObject().put("ResultSet", landmarks).toString();
+                    	//outString = LayerHelperFactory.getFacebookUtils().getFriendsPhotosToJSon(latitude, longitude, version, limit, stringLimit, token).toString();              
                     }
                  }
+            } else if (StringUtils.contains(uri, "fbTagged")) {
+            	if (HttpUtils.isEmptyAny(request,"lat","lng","token") && HttpUtils.isEmptyAny(request,"latitude","longitude","token")) {
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                } else {
+                	String token = URLDecoder.decode(request.getParameter("token"), "UTF-8");
+                	List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getUserTaggedPlaces(version, dealLimit, stringLimit, token, l);
+                	if (outFormat.equals(Format.BIN)) {
+                    	LayerHelperFactory.getFacebookUtils().serialize(landmarks, response.getOutputStream(), version);
+                    } else {
+                    	outString = new JSONObject().put("ResultSet", landmarks).toString();
+                    }
+                }
             } else if (StringUtils.contains(uri, "fsCheckins")) {
             	if (HttpUtils.isEmptyAny(request,"lat","lng","radius","token") && HttpUtils.isEmptyAny(request,"latitude","longitude","radius","token")) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);

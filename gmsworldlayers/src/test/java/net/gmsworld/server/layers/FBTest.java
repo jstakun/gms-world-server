@@ -31,24 +31,27 @@ public class FBTest {
 		System.out.println("Found " + friends.size() + " friends");
 	}
 	
-	@Test
 	public void testFriendsCheckins() throws UnsupportedEncodingException {
 		List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getFriendsCheckinsToLandmarks(lat, lng, 1, 30, 1024, token, Locale.US);
-		System.out.println("Found " + landmarks.size() + " checkins");		
-		printLandmarks(landmarks);
+		printLandmarks(landmarks, "checkins");
 	}
 	
-	@Test
 	public void testFriendsPhotos() throws UnsupportedEncodingException {
 		List<ExtendedLandmark> landmarks =	LayerHelperFactory.getFacebookUtils().getFriendsPhotosToLandmark(lat, lng, 1, 30, 1024, token, Locale.US);
-	    System.out.println("Found " + landmarks.size() + " photos");    
-	    printLandmarks(landmarks);
+	    printLandmarks(landmarks, "photos");
 	}
 	
-	private void printLandmarks(List<ExtendedLandmark> landmarks) {
-		for (ExtendedLandmark l : landmarks) {
+	private void printLandmarks(List<ExtendedLandmark> landmarks, String name) {
+		System.out.println("Found " + landmarks.size() + " " + name);    
+	    for (ExtendedLandmark l : landmarks) {
 			System.out.println(DateUtils.getFormattedDateTime(Locale.US, new Date(l.getCreationDate())) + " " + l.getName() + ": " + l.getLatitudeE6() + "," + l.getLongitudeE6());
 		}
 	}
 
+	@Test
+	public void testUserTaggedPlaces() throws UnsupportedEncodingException {	
+		List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getUserTaggedPlaces(1126, 30, 1024, token, Locale.UK);
+		printLandmarks(landmarks, "places");
+	}
+    
 }

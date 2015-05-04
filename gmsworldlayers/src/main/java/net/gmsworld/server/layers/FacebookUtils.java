@@ -110,12 +110,12 @@ public class FacebookUtils extends LayerHelper {
                         Map<String, String> desc = new HashMap<String, String>();
 
                         String url = photo.link;
-                        /*if (!bitlyFailed) {
-                            url = UrlUtils.getShortUrl(photo.link);
-                            if (StringUtils.equals(photo.link, url)) {
-                                bitlyFailed = true;
-                            }
-                        }*/
+                        //if (!bitlyFailed) {
+                        //    url = UrlUtils.getShortUrl(photo.link);
+                        //    if (StringUtils.equals(photo.link, url)) {
+                        //        bitlyFailed = true;
+                        //    }
+                        //}
 
                         jsonObject.put("url", url);
 
@@ -243,12 +243,12 @@ public class FacebookUtils extends LayerHelper {
                         Map<String, String> tokens = new HashMap<String, String>();
 
                         String url = photo.link;
-                        /*if (!bitlyFailed) {
-                            url = UrlUtils.getShortUrl(photo.link);
-                            if (StringUtils.equals(photo.link, url)) {
-                                bitlyFailed = true;
-                            }
-                        }*/
+                        //if (!bitlyFailed) {
+                        //    url = UrlUtils.getShortUrl(photo.link);
+                        //    if (StringUtils.equals(photo.link, url)) {
+                        //        bitlyFailed = true;
+                        //    }
+                        //}
 
                         JSONUtils.putOptValue(tokens, "caption", photo.caption, stringLength, false);
                         if (StringUtils.isEmpty(photo.caption)) {
@@ -721,12 +721,11 @@ public class FacebookUtils extends LayerHelper {
         return json;
     }
     
-    private static List<ExtendedLandmark> createCustomLandmarkFacebookList(JsonArray data, Map<String, Map<String, String>> pageDescs, Locale locale) throws JsonException, JSONException {
+    private static List<ExtendedLandmark> createCustomLandmarkFacebookList(List<JsonObject> data, Map<String, Map<String, String>> pageDescs, Locale locale) throws JsonException {
     	List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
 
-        for (int i = 0; i < data.length(); i++) {
-            JsonObject place = (JsonObject) data.get(i);
-            JsonObject location = place.getJsonObject("location");
+        for (JsonObject place : data) {
+        	JsonObject location = place.getJsonObject("location");
             if (location.has("latitude") && location.has("longitude")) {
 
                 double lat;
@@ -813,6 +812,8 @@ public class FacebookUtils extends LayerHelper {
      		    landmark.setDescription(desc);		   
              
      		    landmarks.add(landmark);
+            } else {
+            	logger.log(Level.INFO, "Following object returned: " + place);
             }
         }
 
@@ -854,10 +855,9 @@ public class FacebookUtils extends LayerHelper {
     	List<String> friendIds = new ArrayList<String>();
     	FacebookClient facebookClient = getFacebookClient(token);
     	List<User> myFriends = facebookClient.fetchConnection("me/friends", User.class).getData();
-    	for (Iterator<User> friends = myFriends.iterator(); friends.hasNext();) {
-    			User friend = friends.next();
-    			friendIds.add(friend.getId());
-    			System.out.println(friend.getId() + ": " + friend.getName());
+    	for (User friend : myFriends) {
+    		friendIds.add(friend.getId());
+    		System.out.println(friend.getId() + ": " + friend.getName());
     	}
 
     	return friendIds;
@@ -884,21 +884,20 @@ public class FacebookUtils extends LayerHelper {
                 placesSearch = facebookClient.fetchObject("search", JsonObject.class, Parameter.with("type", "place"), Parameter.with("center", latitude + "," + longitude), Parameter.with("distance", dist), Parameter.with("limit", limit));
             }
 
-            JsonArray data = placesSearch.getJsonArray("data");
-            
+            JsonArray data = placesSearch.getJsonArray("data");           
             int dataSize = data.length();
-
-            List<String> pages = new ArrayList<String>();
+            List<String> pages = new ArrayList<String>(dataSize);
+            List<JsonObject> places = new ArrayList<JsonObject>(dataSize);
+            
             for (int i = 0; i < dataSize; i++) {
                 JsonObject place = (JsonObject) data.get(i);
                 pages.add(place.getString("id"));
+                places.add(place);
             }
 
             Map<String, Map<String, String>> pageDescs = new HashMap<String, Map<String, String>>();
-
             readFacebookPlacesDetails(facebookClient, pages, pageDescs, stringLength);
-
-            landmarks = createCustomLandmarkFacebookList(data, pageDescs, locale);
+            landmarks = createCustomLandmarkFacebookList(places, pageDescs, locale);
 
             logger.log(Level.INFO, "No of FB places {0}", dataSize);
 
@@ -924,6 +923,43 @@ public class FacebookUtils extends LayerHelper {
     
     public String getLayerName() {
     	return Commons.FACEBOOK_LAYER;
+    }
+    
+    public List<ExtendedLandmark> getUserTaggedPlaces(int version, int limit, int stringLength, String token, Locale locale) throws UnsupportedEncodingException {
+    	//TODO use limit
+    	String key = getCacheKey(getClass(), "processRequest", 0, 0, null, 0, version, limit, stringLength, token, null);
+        List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)cacheProvider.getObject(key);
+        if (landmarks == null) {
+        	FacebookClient facebookClient = getFacebookClient(token);
+        	List<JsonObject> placesSearch = facebookClient.fetchConnection("me/tagged_places", JsonObject.class).getData();
+        	int dataSize = placesSearch.size();
+
+        	List<String> pages = new ArrayList<String>(dataSize);
+        	List<JsonObject> places = new ArrayList<JsonObject>(dataSize);
+        	for (JsonObject tagged : placesSearch) {
+        		JsonObject place = tagged.getJsonObject("place");
+        		String placeid = place.getString("id");
+        		if (!pages.contains(placeid)) {
+        			pages.add(placeid);
+        			places.add(place);
+        		}
+        	}
+
+        	Map<String, Map<String, String>> pageDescs = new HashMap<String, Map<String, String>>();     
+        	readFacebookPlacesDetails(facebookClient, pages, pageDescs, stringLength);
+        	landmarks = createCustomLandmarkFacebookList(places, pageDescs, locale);
+
+        	logger.log(Level.INFO, "No of FB places {0}", dataSize);
+
+        	if (!landmarks.isEmpty()) {
+        		cacheProvider.put(key, landmarks);
+        		logger.log(Level.INFO, "Adding FB landmark list to cache with key {0}", key);
+        	}
+        } else {
+        	logger.log(Level.INFO, "Reading FB landmark list from cache with key {0}", key);
+        }
+        logger.log(Level.INFO, "Found {0} landmarks", landmarks.size()); 
+        return landmarks;
     }
     
     private static class VenueDetailsRetriever implements Runnable {

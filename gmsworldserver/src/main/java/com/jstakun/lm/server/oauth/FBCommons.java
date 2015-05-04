@@ -30,7 +30,7 @@ public final class FBCommons {
     
 	private static final String outf = "yyyyMMdd";
     private static final String redirect_uri = ConfigurationManager.SSL_SERVER_URL + "fbauth";
-    private static final String SCOPE = "email,publish_actions,user_tagged_places,user_posts,user_photos"; //user permission
+    private static final String SCOPE = "email,publish_actions,user_tagged_places"; //,user_posts,user_photos"; //user permission
     //private static final String SCOPE = "manage_pages,publish_pages,publish_actions"; //server permissions
     
     protected static String getLoginRedirectURL() {
