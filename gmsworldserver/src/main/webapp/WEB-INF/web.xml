@@ -471,6 +471,7 @@
   <url-pattern>/services/fbPhotos,/s/fbPhotos</url-pattern>
   <url-pattern>/services/fsRecommended,/s/fsRecommended</url-pattern>
   <url-pattern>/services/fsCheckins,/s/fsCheckins</url-pattern>
+  <url-pattern>/s/fbTagged</url-pattern>
   <url-pattern>/s/twFriends</url-pattern>
  </servlet-mapping>
  <servlet-mapping>

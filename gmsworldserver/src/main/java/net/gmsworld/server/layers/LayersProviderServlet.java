@@ -502,7 +502,6 @@ public class LayersProviderServlet extends HttpServlet {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 } else {
                 	//String token = URLDecoder.decode(request.getParameter("token"), "UTF-8");
-                	//TODO fix
                 	List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
                 	if (outFormat.equals(Format.BIN)) {
                     	//List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getFriendsCheckinsToLandmarks(latitude, longitude, version, limit, stringLimit, token, l);
