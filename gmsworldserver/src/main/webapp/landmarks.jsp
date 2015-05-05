@@ -103,9 +103,11 @@
         		document.getElementsByTagName('head')[0].appendChild(script);
           }
 
+          var contentString = <%= landmarkDesc %>;
+          
           var infowindow = new google.maps.InfoWindow(
           {
-                content: <%= landmarkDesc %>
+                content: contentString
           });
           
           var flagmarker = new google.maps.Marker({
@@ -116,7 +118,7 @@
   	  	  });
 
           google.maps.event.addListener(flagmarker, 'click', function() {
-              infowindow.open(map, flagmarker);
+                infowindow.open(map, flagmarker);
           });
           
           var mcOptions = {gridSize: 50, maxZoom: 18};
@@ -130,21 +132,32 @@
           			var coords = results.features[i].geometry.coordinates;
           			var latLng = new google.maps.LatLng(coords[1],coords[0]);
           			var url = results.features[i].properties.url;
+          			var desc = results.features[i].properties.desc;
           			if (url == null || ismobile) {
 						url = results.features[i].properties.mobile_url
                   	}
-          			var marker = new google.maps.Marker({
+          			if (desc != null) {
+                        desc += '<br/><a href="' + url + '" target="_blank">Go to web page</a>'; 
+                  	}var marker = new google.maps.Marker({
            				position: latLng,
             			map: map,
             			title: results.features[i].properties.name,
             			icon: image,
-            			url: url 
-          			});
+            			url: url, 
+            			desc: desc
+          			});         			
+          			var infowindow = new google.maps.InfoWindow({
+          		        content: desc
+          		    });
           			google.maps.event.addListener(marker, 'click', function() {
-              			if (this.url != null) {
+          				if (this.desc != null) {
+                        	infowindow.open(map, this);
+                        } else if (this.url != null) {
     						window.open(this.url);	
           				}
-	  	  			});
+          			});
+          			//google.maps.event.addListener(marker, 'mouseover', function() {
+          			//});	
           			markers.push(marker);	
         	}
           	if (markers.length > 0) {  
@@ -170,7 +183,7 @@
 				mc.repaint();
 				//window.alert("Loaded " + marker_counter + " landmarks!");
 				$("#status").css({"background-color": "#fff", "border" : "2px solid #fff", "border-radius": "3px", "text-align": "center", "box-shadow" : "0 2px 6px rgba(0,0,0,.3)"});
-                $("#status").html(marker_counter + " landmarks were loaded on the map!");
+                $("#status").html(marker_counter + " landmarks was loaded to the map!");
 				$("#status").center().show().delay(3000).queue(function(n) {
 					  $(this).hide(); n();
 				});
@@ -209,9 +222,8 @@
     	  controlUI.appendChild(controlText);
 
     	  // Setup the click event listeners: simply set the map to
-    	  // Chicago
     	  google.maps.event.addDomListener(controlUI, 'click', function() {
-    	    map.setCenter(center)
+    	   	 map.setCenter(center)
     	  });
       }    	      
 

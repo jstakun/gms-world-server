@@ -166,7 +166,13 @@ public abstract class LayerHelper {
     				f.setProperty("url", StringUtils.replace(landmark.getUrl(), "touch", "www")); 
     			} else if (StringUtils.equals(layer, Commons.HOTELS_LAYER)) {
     				f.setProperty("url", StringUtils.replace(landmark.getUrl(), "&Mobile=1", "")); 
-    			} 
+    				//<img src=\"star_blue\" alt=\"*\"/> <img src=\"star_blue\" alt=\"*\"/> 
+    				//<img src=\"star_blue\" alt=\"*\"/> <img src=\"star_blue\" alt=\"*\"/> 
+    				//<br/>Price: <font color=\"green\">841.98 NOK</font><br/>Address: Lieng 11, Kolbotn, Oppegard, Norway
+    				//<br/>Creation date: 1 year ago,<br/>Users rating: <b>6.87</b>, <img src=\"star_4\" alt=\"****\"/>, 33 reviews
+    				f.setProperty("desc", StringUtils.replace(landmark.getDescription(), "star_blue", "/images/star_blue.png"));
+    				//TODO replace from star_0 to star_5
+        		} 
     			f.setProperty("mobile_url", landmark.getUrl());
     			featureCollection.add(f);
     		}
