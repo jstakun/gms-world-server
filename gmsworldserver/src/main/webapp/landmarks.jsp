@@ -107,11 +107,6 @@
 
           var contentString = <%= landmarkDesc %>;
           
-          var infowindow = new google.maps.InfoWindow(
-          {
-                content: contentString
-          });
-          
           var flagmarker = new google.maps.Marker({
   				position: mapcenter,
   				map: map,
@@ -119,9 +114,13 @@
   				title: <%= landmarkName %>,
   	  	  });
 
-          google.maps.event.addListener(flagmarker, 'click', function() {
-                infowindow.open(map, flagmarker);
+          google.maps.event.addListener(flagmarker, 'mouseover', function() {
+        	    infowindow.setContent(contentString);
+              	infowindow.open(map, flagmarker);
           });
+          google.maps.event.addListener(flagmarker, 'mouseout', function() {
+				infowindow.close(); 
+    	  });
 
           var mcOptions = {gridSize: 50, maxZoom: 18};
           var markers = [flagmarker]; 
@@ -140,7 +139,7 @@
 						url = results.features[i].properties.mobile_url
                   	}
           			if (desc != null) {
-                        desc = '<b>' + name + '</b><br/><br/>' + desc + '<br/><a href="' + url + '" target="_blank">Go to web page</a>'; 
+                        desc = '<strong>' + name + '</strong><br/>' + desc; 
                   	}
                   	var marker = new google.maps.Marker({
            				position: latLng,
@@ -150,17 +149,20 @@
             			url: url, 
             			desc: desc
           			});  
-                  	google.maps.event.addListener(marker, 'click', function() {
+                  	google.maps.event.addListener(marker, 'mouseover', function() {
           				if (this.desc != null) {
-              				//alert(this.desc);
               				infowindow.setContent(this.desc);
                         	infowindow.open(map, this);
-                        } else if (this.url != null) {
+                        } 
+          			});	
+          			google.maps.event.addListener(marker, 'mouseout', function() {
+          				infowindow.close(); 
+              		});
+          			google.maps.event.addListener(marker, 'click', function() {
+          				if (this.url != null) {
     						window.open(this.url);	
           				}
-          			});
-          			//google.maps.event.addListener(marker, 'mouseover', function() {
-          			//});	
+              		});
           			markers.push(marker);	
         	}
           	if (markers.length > 0) {  
