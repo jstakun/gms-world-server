@@ -1,6 +1,7 @@
 package net.gmsworld.server.layers;
 
 import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -44,12 +45,12 @@ public class FBTest {
 	private void printLandmarks(List<ExtendedLandmark> landmarks, String name) {
 		System.out.println("Found " + landmarks.size() + " " + name);    
 	    for (ExtendedLandmark l : landmarks) {
-			System.out.println(DateUtils.getFormattedDateTime(Locale.US, new Date(l.getCreationDate())) + " " + l.getName() + ": " + l.getLatitudeE6() + "," + l.getLongitudeE6());
+			System.out.println(DateUtils.getFormattedDateTime(Locale.US, new Date(l.getCreationDate())) + " " + l.getName() + ": " + l.getLatitudeE6() + "," + l.getLongitudeE6() + "\n" + l.getDescription());
 		}
 	}
 
 	@Test
-	public void testUserTaggedPlaces() throws UnsupportedEncodingException {	
+	public void testUserTaggedPlaces() throws UnsupportedEncodingException, ParseException {	
 		List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getUserTaggedPlaces(1126, 30, 1024, token, Locale.UK);
 		printLandmarks(landmarks, "places");
 	}

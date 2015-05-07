@@ -1,8 +1,11 @@
 package net.gmsworld.server.layers;
 
 import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -48,7 +51,7 @@ public class FacebookUtils extends LayerHelper {
 	private static FBMultiQueryResults getFriendsPhotos(String token) {
 		Map<String, String> queries = new HashMap<String, String>();
 
-        //TODO this will work only until 30 APR 2015
+        //this worked until 30 APR 2015
         queries.put("photos", "SELECT object_id, caption, aid, owner, link, created, place_id, src_small FROM photo WHERE aid IN "
                 + "(SELECT aid FROM album WHERE owner IN (SELECT uid2 FROM friend WHERE uid1=me())) ORDER BY created DESC");
         queries.put("places", "SELECT page_id, name, description, latitude, longitude, display_subtext, checkin_count FROM place WHERE page_id IN (select place_id from #photos)");
@@ -326,7 +329,7 @@ public class FacebookUtils extends LayerHelper {
 	private static FBMultiQueryResults getFriendsCheckins(String token, int limit) {
 		Map<String, String> queries = new HashMap<String, String>();
 
-        //TODO this will work only until 30 APR 2015
+        //this worked until 30 APR 2015
         queries.put("checkins", "SELECT author_uid, page_id, timestamp FROM location_post WHERE author_uid IN (SELECT uid2 FROM friend WHERE uid1 = me()) ORDER BY timestamp DESC");
 		queries.put("places", "SELECT page_id, name, description, latitude, longitude, display_subtext, checkin_count FROM place WHERE page_id IN (select page_id from #checkins)");
 		queries.put("users", "SELECT uid, name FROM user WHERE uid IN (select author_uid from #checkins)");
@@ -925,30 +928,44 @@ public class FacebookUtils extends LayerHelper {
     	return Commons.FACEBOOK_LAYER;
     }
     
-    public List<ExtendedLandmark> getUserTaggedPlaces(int version, int limit, int stringLength, String token, Locale locale) throws UnsupportedEncodingException {
-    	//TODO use limit
+    public List<ExtendedLandmark> getUserTaggedPlaces(int version, int limit, int stringLength, String token, Locale locale) throws UnsupportedEncodingException, ParseException {
     	String key = getCacheKey(getClass(), "processRequest", 0, 0, null, 0, version, limit, stringLength, token, null);
         List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)cacheProvider.getObject(key);
         if (landmarks == null) {
         	FacebookClient facebookClient = getFacebookClient(token);
         	List<JsonObject> placesSearch = facebookClient.fetchConnection("me/tagged_places", JsonObject.class).getData();
         	int dataSize = placesSearch.size();
-
+        	PrettyTime prettyTime = new PrettyTime(locale);
+        	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        	Map<String, Map<String, String>> pageDescs = new HashMap<String, Map<String, String>>();     
         	List<String> pages = new ArrayList<String>(dataSize);
         	List<JsonObject> places = new ArrayList<JsonObject>(dataSize);
-        	for (JsonObject tagged : placesSearch) {
+        	ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource", locale);
+            for (JsonObject tagged : placesSearch) {
         		JsonObject place = tagged.getJsonObject("place");
         		String placeid = place.getString("id");
         		if (!pages.contains(placeid)) {
         			pages.add(placeid);
         			places.add(place);
         		}
+        		Map<String, String> pageDesc = new HashMap<String, String>();
+        		Date d = sdf.parse(tagged.getString("created_time"));//2015-05-05T06:20:42+0000
+        		String checkins = String.format(rb.getString("Landmark.tagged"), prettyTime.format(d));
+        		pageDesc.put("checkins", checkins);  
+        		pageDescs.put(placeid, pageDesc);
         	}
 
-        	Map<String, Map<String, String>> pageDescs = new HashMap<String, Map<String, String>>();     
         	readFacebookPlacesDetails(facebookClient, pages, pageDescs, stringLength);
         	landmarks = createCustomLandmarkFacebookList(places, pageDescs, locale);
+        	
+        	for (ExtendedLandmark landmark : landmarks) {
+        		landmark.setHasCheckinsOrPhotos(true);
+        	}
 
+        	if (landmarks.size() > limit) {
+        		landmarks = landmarks.subList(0, limit);
+        	}
+        	
         	logger.log(Level.INFO, "No of FB places {0}", dataSize);
 
         	if (!landmarks.isEmpty()) {

@@ -3,12 +3,15 @@ package net.gmsworld.server.layers;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.HttpUtils;
+import net.gmsworld.server.utils.StringUtil;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
@@ -16,6 +19,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
@@ -258,6 +262,12 @@ public class CloudmadeUtils extends GeocodeHelper {
                     				l.setEmail(email);
                     			}
                     			LandmarkPersistenceUtils.persistLandmark(l);
+                    			try {
+                    	    		List<ExtendedLandmark> landmarks = LayerHelperFactory.getHotelsCombinedUtils().processBinaryRequest(l.getLatitude(), l.getLongitude(), null, 15, 1024, 300, StringUtil.getStringLengthLimit("l"), "en", null, Locale.US, false);
+                    	    		LayerHelperFactory.getHotelsCombinedUtils().cacheGeoJson(landmarks, l.getLatitude(), l.getLongitude(), Commons.HOTELS_LAYER);                          
+                    	    	} catch (Exception e) {
+                    		    	logger.log(Level.SEVERE, e.getMessage(), e);
+                    		    }
                             }
                         } catch (Exception ex) {
                             logger.log(Level.SEVERE, ex.getMessage(), ex);
