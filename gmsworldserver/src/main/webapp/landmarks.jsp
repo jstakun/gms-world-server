@@ -139,7 +139,10 @@
 						url = results.features[i].properties.mobile_url
                   	}
           			if (desc != null) {
-                        desc = '<strong>' + name + '</strong><br/>' + desc; 
+                        desc =  '<span style=\"font-family:Cursive;font-size:14px;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;\">' + 
+                                '<strong>' + name + '</strong><br/>' + desc + 
+                                '</span>';
+                             
                   	}
                   	var marker = new google.maps.Marker({
            				position: latLng,
