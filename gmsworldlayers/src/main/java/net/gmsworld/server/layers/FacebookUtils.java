@@ -800,7 +800,10 @@ public class FacebookUtils extends LayerHelper {
                 if (StringUtils.isNotEmpty(val)) {
                     address.setField(AddressInfo.PHONE_NUMBER, val);
                 }
-                ExtendedLandmark landmark = LandmarkFactory.getLandmark(name, null, qc, Commons.FACEBOOK_LAYER, address, -1, null);
+                
+                long creationDate = NumberUtils.getLong(pageDesc.remove("creation_date"), -1);
+                
+                ExtendedLandmark landmark = LandmarkFactory.getLandmark(name, null, qc, Commons.FACEBOOK_LAYER, address, creationDate, null);
      		    landmark.setUrl(url);
      		    String thumbnail = pageDesc.remove("icon");
                 if (thumbnail != null) {
@@ -920,12 +923,12 @@ public class FacebookUtils extends LayerHelper {
     	return Commons.FACEBOOK_LAYER;
     }
     
-    public List<ExtendedLandmark> getUserTaggedPlaces(int version, int limit, int stringLength, String token, Locale locale) throws UnsupportedEncodingException, ParseException {
-    	String key = getCacheKey(getClass(), "processRequest", 0, 0, null, 0, version, limit, stringLength, token, null);
+    public List<ExtendedLandmark> getMyTaggedPlaces(int version, int limit, int stringLength, String token, Locale locale) throws UnsupportedEncodingException, ParseException {
+    	String key = getCacheKey(getClass(), "getMyTaggedPlaces", 0, 0, null, 0, version, limit, stringLength, token, null);
         List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)cacheProvider.getObject(key);
         if (landmarks == null) {
         	FacebookClient facebookClient = getFacebookClient(token);
-        	List<JsonObject> placesSearch = facebookClient.fetchConnection("me/tagged_places", JsonObject.class).getData();
+        	List<JsonObject> placesSearch = facebookClient.fetchConnection("me/tagged_places", JsonObject.class, Parameter.with("limit", limit * 3), Parameter.with("fields", "place,created_time")).getData();
         	int dataSize = placesSearch.size();
         	PrettyTime prettyTime = new PrettyTime(locale);
         	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -933,18 +936,20 @@ public class FacebookUtils extends LayerHelper {
         	List<String> pages = new ArrayList<String>(dataSize);
         	List<JsonObject> places = new ArrayList<JsonObject>(dataSize);
         	ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource", locale);
-            for (JsonObject tagged : placesSearch) {
+            logger.log(Level.INFO, "Found " + dataSize + " tagged places.");
+        	for (JsonObject tagged : placesSearch) {
         		JsonObject place = tagged.getJsonObject("place");
         		String placeid = place.getString("id");
         		if (!pages.contains(placeid)) {
         			pages.add(placeid);
         			places.add(place);
+        			Map<String, String> pageDesc = new HashMap<String, String>();
+        			Date d = sdf.parse(tagged.getString("created_time"));//2015-05-05T06:20:42+0000
+        			String checkins = String.format(rb.getString("Landmark.tagged"), prettyTime.format(d));
+        			pageDesc.put("checkins", checkins);  
+        			pageDesc.put("creation_date", Long.toString(d.getTime()));
+        			pageDescs.put(placeid, pageDesc);
         		}
-        		Map<String, String> pageDesc = new HashMap<String, String>();
-        		Date d = sdf.parse(tagged.getString("created_time"));//2015-05-05T06:20:42+0000
-        		String checkins = String.format(rb.getString("Landmark.tagged"), prettyTime.format(d));
-        		pageDesc.put("checkins", checkins);  
-        		pageDescs.put(placeid, pageDesc);
         	}
 
         	readFacebookPlacesDetails(facebookClient, pages, pageDescs, stringLength);
@@ -958,7 +963,7 @@ public class FacebookUtils extends LayerHelper {
         		landmarks = landmarks.subList(0, limit);
         	}
         	
-        	logger.log(Level.INFO, "No of FB places {0}", dataSize);
+        	logger.log(Level.INFO, "No of unique FB tagged places {0}", landmarks.size());
 
         	if (!landmarks.isEmpty()) {
         		cacheProvider.put(key, landmarks);
@@ -970,6 +975,67 @@ public class FacebookUtils extends LayerHelper {
         logger.log(Level.INFO, "Found {0} landmarks", landmarks.size()); 
         return landmarks;
     }
+    
+    public List<ExtendedLandmark> getMyPlaces(int version, int limit, int stringLength, String token, Locale locale) throws UnsupportedEncodingException, ParseException {
+    	String key = getCacheKey(getClass(), "getMyPlaces", 0, 0, null, 0, version, limit, stringLength, token, null);
+        List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)cacheProvider.getObject(key);
+        if (landmarks == null) {
+        	FacebookClient facebookClient = getFacebookClient(token);
+        	List<JsonObject> placesSearch = facebookClient.fetchConnection("me/posts", JsonObject.class, Parameter.with("with", "location"), Parameter.with("limit", "300"), Parameter.with("fields", "place,from,created_time")).getData();
+        	int dataSize = placesSearch.size();
+        	PrettyTime prettyTime = new PrettyTime(locale);
+        	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        	Map<String, Map<String, String>> pageDescs = new HashMap<String, Map<String, String>>();     
+        	List<String> pages = new ArrayList<String>(dataSize);
+        	List<JsonObject> places = new ArrayList<JsonObject>(dataSize);
+        	ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource", locale);
+        	logger.log(Level.INFO, "Found " + dataSize + " places.");
+        	for (JsonObject tagged : placesSearch) {
+        		JsonObject place = tagged.getJsonObject("place");
+        		String placeid = place.getString("id");
+        		if (!pages.contains(placeid)) {
+        			pages.add(placeid);
+        			places.add(place);
+        			JsonObject from = tagged.getJsonObject("from");
+            		Map<String, String> pageDesc = new HashMap<String, String>();
+            		Date d = sdf.parse(tagged.getString("created_time"));//2015-05-05T06:20:42+0000
+            		String checkins = String.format(rb.getString("Landmark.checkinUser"), from.getString("name"), prettyTime.format(d));
+            		pageDesc.put("checkins", checkins);  
+            		pageDesc.put("creation_date", Long.toString(d.getTime()));
+            		pageDescs.put(placeid, pageDesc);
+        		}
+        	}
+
+        	readFacebookPlacesDetails(facebookClient, pages, pageDescs, stringLength);
+        	landmarks = createCustomLandmarkFacebookList(places, pageDescs, locale);
+        	
+        	for (ExtendedLandmark landmark : landmarks) {
+        		landmark.setHasCheckinsOrPhotos(true);
+        	}
+
+        	if (landmarks.size() > limit) {
+        		landmarks = landmarks.subList(0, limit);
+        	}
+        	
+        	logger.log(Level.INFO, "No of unique FB places {0}", landmarks.size());
+
+        	if (!landmarks.isEmpty()) {
+        		cacheProvider.put(key, landmarks);
+        		logger.log(Level.INFO, "Adding FB landmark list to cache with key {0}", key);
+        	}
+        } else {
+        	logger.log(Level.INFO, "Reading FB landmark list from cache with key {0}", key);
+        }
+        logger.log(Level.INFO, "Found {0} landmarks", landmarks.size()); 
+        return landmarks;
+
+    } 
+    
+    public List<ExtendedLandmark> getMyPhotos(int version, int limit, int stringLength, String token, Locale locale) throws UnsupportedEncodingException, ParseException {
+    	//TODO must be implemented
+    	return null;
+    } 
+    
     
     private static class VenueDetailsRetriever implements Runnable {
 
