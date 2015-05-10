@@ -4,7 +4,6 @@ import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -48,10 +47,10 @@ public class FacebookUtils extends LayerHelper {
 
 	private static final String FBPLACES_PREFIX = "http://touch.facebook.com/profile.php?id=";
 	
-	private static FBMultiQueryResults getFriendsPhotos(String token) {
+	//this worked until 30 APR 2015
+    /*private static FBMultiQueryResults getFriendsPhotos(String token) {
 		Map<String, String> queries = new HashMap<String, String>();
 
-        //this worked until 30 APR 2015
         queries.put("photos", "SELECT object_id, caption, aid, owner, link, created, place_id, src_small FROM photo WHERE aid IN "
                 + "(SELECT aid FROM album WHERE owner IN (SELECT uid2 FROM friend WHERE uid1=me())) ORDER BY created DESC");
         queries.put("places", "SELECT page_id, name, description, latitude, longitude, display_subtext, checkin_count FROM place WHERE page_id IN (select place_id from #photos)");
@@ -329,7 +328,6 @@ public class FacebookUtils extends LayerHelper {
 	private static FBMultiQueryResults getFriendsCheckins(String token, int limit) {
 		Map<String, String> queries = new HashMap<String, String>();
 
-        //this worked until 30 APR 2015
         queries.put("checkins", "SELECT author_uid, page_id, timestamp FROM location_post WHERE author_uid IN (SELECT uid2 FROM friend WHERE uid1 = me()) ORDER BY timestamp DESC");
 		queries.put("places", "SELECT page_id, name, description, latitude, longitude, display_subtext, checkin_count FROM place WHERE page_id IN (select page_id from #checkins)");
 		queries.put("users", "SELECT uid, name FROM user WHERE uid IN (select author_uid from #checkins)");
@@ -339,9 +337,7 @@ public class FacebookUtils extends LayerHelper {
         
         return multiqueryResults;
 	}
-	
-    
-	
+		
 	public List<ExtendedLandmark> getFriendsCheckinsToLandmarks(double lat, double lng, int version, int limit, int stringLength, String token, Locale locale) throws UnsupportedEncodingException {
 
         String key = getCacheKey(FacebookUtils.class, "getFriendsCheckinsToLandmarks", 0, 0, null, 0, version, limit, stringLength, token, null);
@@ -587,7 +583,7 @@ public class FacebookUtils extends LayerHelper {
         }
 
         return jsonString;
-    }
+    }*/
 
     @Override
 	public JSONObject processRequest(double latitude, double longitude, String query, int distance, int version, int limit, int stringLength, String fbtoken, String flexString2) throws JsonException, JSONException, UnsupportedEncodingException {
@@ -918,10 +914,6 @@ public class FacebookUtils extends LayerHelper {
     
     public static FacebookClient getFacebookClient(String token) {
     	return new DefaultFacebookClient(token, Version.VERSION_2_0);
-    }
-    
-    private static FacebookClient getFacebookClient(String token, Version version) {
-    	return new DefaultFacebookClient(token, version);
     }
     
     public String getLayerName() {

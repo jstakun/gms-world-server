@@ -32,7 +32,7 @@ public class FBTest {
 		System.out.println("Found " + friends.size() + " friends");
 	}
 	
-	public void testFriendsCheckins() throws UnsupportedEncodingException {
+	/*public void testFriendsCheckins() throws UnsupportedEncodingException {
 		List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getFriendsCheckinsToLandmarks(lat, lng, 1, 30, 1024, token, Locale.US);
 		printLandmarks(landmarks, "checkins");
 	}
@@ -40,7 +40,7 @@ public class FBTest {
 	public void testFriendsPhotos() throws UnsupportedEncodingException {
 		List<ExtendedLandmark> landmarks =	LayerHelperFactory.getFacebookUtils().getFriendsPhotosToLandmark(lat, lng, 1, 30, 1024, token, Locale.US);
 	    printLandmarks(landmarks, "photos");
-	}
+	}*/
 	
 	private void printLandmarks(List<ExtendedLandmark> landmarks, String name) {
 		System.out.println("Found " + landmarks.size() + " " + name);    
