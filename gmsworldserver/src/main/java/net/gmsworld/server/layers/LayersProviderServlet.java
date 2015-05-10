@@ -501,14 +501,12 @@ public class LayersProviderServlet extends HttpServlet {
             	if (HttpUtils.isEmptyAny(request,"lat","lng","token") && HttpUtils.isEmptyAny(request,"latitude","longitude","token")) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 } else {
-                	//String token = URLDecoder.decode(request.getParameter("token"), "UTF-8");
-                	List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
-                	if (outFormat.equals(Format.BIN)) {
-                    	//List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getFriendsCheckinsToLandmarks(latitude, longitude, version, limit, stringLimit, token, l);
+                	String token = URLDecoder.decode(request.getParameter("token"), "UTF-8");
+                  	List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getMyPlaces(version, dealLimit, stringLimit, token, l);
+                    if (outFormat.equals(Format.BIN)) {
                     	LayerHelperFactory.getFacebookUtils().serialize(landmarks, response.getOutputStream(), version);
                     } else {
                     	outString = new JSONObject().put("ResultSet", landmarks).toString();
-                    	//outString = LayerHelperFactory.getFacebookUtils().getFriendsCheckinsToJSon(latitude, longitude, version, limit, stringLimit, token).toString();
                     }
                 }
             } else if (StringUtils.contains(uri, "fbPhotos")) {
@@ -530,7 +528,7 @@ public class LayersProviderServlet extends HttpServlet {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 } else {
                 	String token = URLDecoder.decode(request.getParameter("token"), "UTF-8");
-                	List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getUserTaggedPlaces(version, dealLimit, stringLimit, token, l);
+                	List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getMyTaggedPlaces(version, dealLimit, stringLimit, token, l);
                 	if (outFormat.equals(Format.BIN)) {
                     	LayerHelperFactory.getFacebookUtils().serialize(landmarks, response.getOutputStream(), version);
                     } else {
