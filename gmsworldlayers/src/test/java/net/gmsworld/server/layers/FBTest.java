@@ -22,7 +22,7 @@ public class FBTest {
 		LayerHelperFactory.setThreadProvider(new JvmThreadProvider());	
 	}
 	
-	String token = Commons.FB_TEST_TOKEN;
+	String token = Commons.FB_TEST_TOKEN_LIMITED; //Commons.FB_TEST_TOKEN_FULL;
 	double lat = 52.25;
 	double lng = 20.95;
 	int limit = 93;
