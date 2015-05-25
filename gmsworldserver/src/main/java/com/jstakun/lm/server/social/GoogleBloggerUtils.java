@@ -22,10 +22,8 @@ import com.google.api.services.blogger.Blogger;
 import com.google.api.services.blogger.model.Blog;
 import com.google.api.services.blogger.model.BlogList;
 import com.google.api.services.blogger.model.Post;
-import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
-import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 
 /**
  *
@@ -36,17 +34,12 @@ public class GoogleBloggerUtils {
     private static final Logger logger = Logger.getLogger(GoogleBloggerUtils.class.getName());
     private static final String CACHE_KEY = "BloggerUsageLimitsMarker";
     
-    protected static void sendMessage(String key, String url, String token, String secret, String user, String name, String imageUrl, int type) {
+    protected static void sendMessage(String key, String url, String token, String secret, String username, String name, String imageUrl, String layer, int type) {
         if (key != null && type == Commons.SERVER) {
         	ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
-            Landmark landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
-        	if (landmark != null && token != null && secret != null && url != null) {
+            if (token != null && secret != null && url != null) {
         		String message = null;
-        		//if (url == null) {
-        		//	url = UrlUtils.getShortUrl(UrlUtils.getLandmarkUrl(landmark.getHash(), landmark.getId(), landmark.getCreationDate()));
-        		//}
-
-        		String username = landmark.getUsername();
+        		
         		String userMask = UrlUtils.createUsernameMask(username);
         		if (username != null) {
         			userMask = "<a href=\"" + ConfigurationManager.SERVER_URL + "showUser/" + username + "\">" + userMask + "</a>";
@@ -57,23 +50,23 @@ public class GoogleBloggerUtils {
                         + "imageanchor=\"1\" style=\"clear: left; cssfloat: left; float: left; margin-bottom: 1em; margin-right: 1em;\">"
                         + "<img border=\"0\" src=\"" + imageUrl + "\" ya=\"true\" /></a>"; 
         		}
-        		if (landmark.isSocial()) { 
+        		if (StringUtils.equals(layer, Commons.SOCIAL)) { 
                     message = String.format(rb.getString("Social.gl.server.blogeo"), prefix + userMask, url);
         		} else {
-                    message = String.format(rb.getString("Social.gl.server.landmark"), prefix + userMask, landmark.getName(), url);
+                    message = String.format(rb.getString("Social.gl.server.landmark"), prefix + userMask, name, url);
         		}  
         		
         		if (message != null) {
-                    createPost(getBlogger(), landmark.getName(), message);
+                    createPost(getBlogger(), name, message);
                 }
         	} else {
         		logger.log(Level.SEVERE, "Something is empty! Key: {0}, token: {1}, secret: {2}, url: {3}", new Object[]{key, token, secret, url});
         	}
         } else if (type == Commons.CHECKIN) { 
         	ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
-            String message = String.format(rb.getString("Social.gl.message.checkin"), user, url, name);
+            String message = String.format(rb.getString("Social.gl.message.checkin"), username, url, name);
         	if (message != null) { 
-                createPost(getBlogger(), String.format(rb.getString("Social.gl.title.checkin"), user, name), message);
+                createPost(getBlogger(), String.format(rb.getString("Social.gl.title.checkin"), username, name), message);
             }
         }
         

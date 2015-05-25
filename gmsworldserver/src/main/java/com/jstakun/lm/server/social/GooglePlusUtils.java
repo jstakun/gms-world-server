@@ -26,8 +26,6 @@ import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.api.services.plus.Plus;
 import com.google.api.services.plus.model.ItemScope;
 import com.google.api.services.plus.model.Moment;
-import com.jstakun.lm.server.persistence.Landmark;
-import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 
 /**
  *
@@ -38,27 +36,21 @@ public class GooglePlusUtils {
     private static final Logger logger = Logger.getLogger(GooglePlusUtils.class.getName());
     private static final Random random = new Random();
 
-    protected static void sendMessage(String accessToken, String refreshToken, String key, String url, String user, String name, int type) {
+    protected static void sendMessage(String accessToken, String refreshToken, String key, String url, String user, String name, Double lat, Double lng, int type) {
         if (accessToken != null || refreshToken != null) {
             
-        	Landmark landmark = null; 
-        	if (key != null) {
-        		landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
-        	}
-        	
         	final String[] images = {"blogeo_j.png", "blogeo_a.png", "poi_j.png", "poi_a.png"};
         	int imageId = NumberUtils.normalizeNumber(random.nextInt(4), 0, 3);
 
             String message = null;
             ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
-            if (type == Commons.SERVER && landmark != null) {
-                String username = landmark.getUsername();
-                String userMask = UrlUtils.createUsernameMask(username);
-                message = String.format(rb.getString("Social.gl.server"), userMask, landmark.getName(), url);
+            if (type == Commons.SERVER) {
+                
+                message = String.format(rb.getString("Social.gl.server"), user, name, url);
             } else if (type == Commons.BLOGEO) {
                 message = String.format(rb.getString("Social.gl.message.blogeo"), url);
-            } else if (type == Commons.LANDMARK && landmark != null) {
-                message = String.format(rb.getString("Social.gl.message.landmark"), landmark.getName(), url);
+            } else if (type == Commons.LANDMARK) {
+                message = String.format(rb.getString("Social.gl.message.landmark"), user, url);
             } else if (type == Commons.MY_POS) {
             	message = String.format(rb.getString("Social.gl.message.mypos"), url);
             } else if (type == Commons.LOGIN) {
@@ -68,13 +60,7 @@ public class GooglePlusUtils {
             }
 
             if (message != null) {
-            	double lat = -1, lng = -1;
-                if (landmark != null) {
-                	lat = landmark.getLatitude();
-                	lng = landmark.getLongitude();
-                }
-                
-                String token = accessToken;
+            	String token = accessToken;
                 if (token == null) {
                 	//logger.log(Level.INFO, "RefreshToken: " + refreshToken);
                 	Map<String, String> refresh =  requestAccessToken(refreshToken);
@@ -104,12 +90,12 @@ public class GooglePlusUtils {
         Plus plus = getPlus(null, null);
         if (type == Commons.SCREENSHOT) {
         	String message = String.format(rb.getString("Social.gp.screenshot"), userMask , showImageUrl);
-            sendMoment(plus, message, "Message from GMS World", imageUrl, -1, -1);
+            sendMoment(plus, message, "Message from GMS World", imageUrl, null, null);
         	sendUrlMoment(plus, showImageUrl);
         } else if (type == Commons.ROUTE) {
         	String url = UrlUtils.getGoogleShortUrl(imageUrl);
         	String message = String.format(rb.getString("Social.gp.route"), userMask, flex, url);
-        	sendMoment(plus, message, "Message from GMS World", imageUrl, -1, -1);
+        	sendMoment(plus, message, "Message from GMS World", imageUrl, null, null);
         	sendUrlMoment(plus, showImageUrl);
         }
     }
@@ -150,7 +136,7 @@ public class GooglePlusUtils {
         }
     }
 
-    private static void sendMoment(Plus plus, String name, String desc, String image, double lat, double lng) {
+    private static void sendMoment(Plus plus, String name, String desc, String image, Double lat, Double lng) {
         try {
             Moment moment = new Moment();
         	moment.setType("http://schema.org/AddAction");
@@ -160,10 +146,10 @@ public class GooglePlusUtils {
             itemScope.setName(name);
             itemScope.setDescription(desc);
             itemScope.setImage(image);
-            if (lat != -1) {
+            if (lat != null) {
                 itemScope.setLatitude(lat);
             }
-            if (lng != -1) {
+            if (lng != null) {
                 itemScope.setLongitude(lng);
             }
             moment.setObject(itemScope);

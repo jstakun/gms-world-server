@@ -95,7 +95,7 @@ public class UrlUtils {
                 } else if (user.endsWith("@ln")) {
                     username = "LinkedIn User";
                 } else if (user.endsWith("@gl")) {
-                    username = "Google Blogger User";
+                    username = "Google User";
                 } else if (user.endsWith("@gg")) {
                     username = "Google+ User";
                 } else if (user.endsWith("@fs")) {

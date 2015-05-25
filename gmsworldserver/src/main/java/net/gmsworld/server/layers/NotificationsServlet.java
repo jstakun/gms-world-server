@@ -86,14 +86,15 @@ public class NotificationsServlet extends HttpServlet {
                             	}
                             }	
                             l.setUsername(u);
-                			int useCount = NumberUtils.getInt(request.getHeader("X-GMS-UseCount"), 1);
+                            String socialIds = request.getParameter("socialIds");
+                            int useCount = NumberUtils.getInt(request.getHeader("X-GMS-UseCount"), 1);
                 			l.setFlex("{useCount:"+useCount+"}");
             				l.setDescription(GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(l.getLatitude(), l.getLongitude())); 
             				l.setLayer(Commons.MY_POS_CODE);
                 			LandmarkPersistenceUtils.persistLandmark(l);
 
                 			if (l.getId() > 0) {	
-                				LandmarkPersistenceUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"));
+                				LandmarkPersistenceUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), socialIds);
                 			} 
                 		}
                 	} catch (Exception e) {

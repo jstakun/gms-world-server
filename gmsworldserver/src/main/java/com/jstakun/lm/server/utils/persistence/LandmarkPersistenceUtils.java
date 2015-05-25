@@ -109,9 +109,7 @@ public class LandmarkPersistenceUtils {
     	l.setId(NumberUtils.getInt(persistResponse.get("id"),-1));
     	l.setHash(persistResponse.get("hash"));
     }
-    
-    
-    
+      
     /*public static List<Landmark> selectAllLandmarks() {
     	List<Landmark> results = new ArrayList<Landmark>();
         PersistenceManager pm = PMF.get().getPersistenceManager();
@@ -977,7 +975,7 @@ public class LandmarkPersistenceUtils {
         return isSimilarToNewest;
     }
     
-    public static void notifyOnLandmarkCreation(Landmark l, String userAgent) {
+    public static void notifyOnLandmarkCreation(Landmark l, String userAgent, String socialIds) {
     	//
     	try {
 	    	//save map image thumbnail
@@ -1036,8 +1034,14 @@ public class LandmarkPersistenceUtils {
     		put("title", title).
     		put("userUrl", userUrl).
     		put("username", l.getUsername()).
+    		put("name", l.getName()).
     		put("body", body).
+    		put("latitude", Double.toString(l.getLatitude())).
+    		put("longitude", Double.toString(l.getLongitude())).
+    		put("layer", l.getLayer()).
+    		put("socialIds", socialIds != null ? socialIds : l.getUsername()).
     		put("imageUrl", imageUrl).build();  
+    	
     
     	NotificationUtils.createLadmarkCreationNotificationTask(params);
     	

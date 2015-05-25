@@ -5,8 +5,6 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.lang.StringUtils;
-
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.config.ConfigurationManager;
@@ -14,8 +12,8 @@ import net.gmsworld.server.layers.FacebookUtils;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.UrlUtils;
 
-import com.jstakun.lm.server.persistence.Landmark;
-import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
+import org.apache.commons.lang.StringUtils;
+
 import com.restfb.FacebookClient;
 import com.restfb.Parameter;
 import com.restfb.exception.FacebookException;
@@ -118,24 +116,18 @@ public class FacebookSocialUtils {
         Parameter params[] = null;
         
         if (type == Commons.SERVER) {
-        	Landmark landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
-        	if (landmark != null) {
         		//message, picture, link, name, caption, description, source, place, tags
-        		String userMask = UrlUtils.createUsernameMask(landmark.getUsername());
-        		if (imageUrl == null) {
-        			int imageId = NumberUtils.normalizeNumber(random.nextInt(4), 0, 3);
-        		    imageUrl = ConfigurationManager.SERVER_URL + "images/" + images[imageId];
-        		}
-                params = new Parameter[]{
-                        Parameter.with("message", String.format(rb.getString("Social.fb.message.server"), userMask)),
-                        Parameter.with("name", landmark.getName()),
-                        Parameter.with("description", rb.getString("Social.fb.desc.server")),
-                        Parameter.with("link", url),
-                        Parameter.with("picture", imageUrl)
-                };
-        	} else {
-        		logger.log(Level.SEVERE, "Landmark with key {0} is empty!", key);
-        	}
+           if (imageUrl == null) {
+        		int imageId = NumberUtils.normalizeNumber(random.nextInt(4), 0, 3);
+        		imageUrl = ConfigurationManager.SERVER_URL + "images/" + images[imageId];
+           }
+           params = new Parameter[]{
+                   Parameter.with("message", String.format(rb.getString("Social.fb.message.server"), user)),
+                   Parameter.with("name", name),
+                   Parameter.with("description", rb.getString("Social.fb.desc.server")),
+                   Parameter.with("link", url),
+                   Parameter.with("picture", imageUrl)
+           };      	
         } else if (type == Commons.CHECKIN) {
         	params = new Parameter[]{
                     Parameter.with("message", String.format(rb.getString("Social.fb.message.checkin"), user, name)),

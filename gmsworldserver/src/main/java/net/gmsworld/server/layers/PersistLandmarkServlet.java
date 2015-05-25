@@ -75,6 +75,9 @@ public class PersistLandmarkServlet extends HttpServlet {
                 } 
                 
                 String layer = StringUtil.getStringParam(request.getParameter("layer"), Commons.LM_SERVER_LAYER);
+                if (layer.equals(Commons.MY_POSITION_LAYER)) {
+                	layer = Commons.MY_POS_CODE;
+                }
                 logger.log(Level.INFO, "Creating new landmark in layer: " + layer);
                 if (layer.equals(Commons.MY_POS_CODE)) {
                     l.setDescription(GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(l.getLatitude(), l.getLongitude()));
@@ -90,6 +93,8 @@ public class PersistLandmarkServlet extends HttpServlet {
                 	}
                 }	
                 l.setUsername(u);
+                
+                String socialIds = request.getParameter("socialIds");
                 
                 boolean anonymous = StringUtil.getStringParam(request.getParameter("anonymous"), "1").equals("0");
                 if (!anonymous) {
@@ -119,7 +124,7 @@ public class PersistLandmarkServlet extends HttpServlet {
                     	logger.log(Level.INFO, "Removed from cache layer list {0}: {1}", new Object[]{layerKey, CacheUtil.remove(layerKey)});           
                 	    
                     	//send notification to social networks
-                    	LandmarkPersistenceUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"));
+                    	LandmarkPersistenceUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), socialIds);
                 	} 
                 }
             }

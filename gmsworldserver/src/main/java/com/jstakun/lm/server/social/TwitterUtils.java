@@ -19,9 +19,6 @@ import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 
-import com.jstakun.lm.server.persistence.Landmark;
-import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
-
 public class TwitterUtils {
 	
 	private static final Logger logger = Logger.getLogger(TwitterUtils.class.getName());
@@ -39,29 +36,16 @@ public class TwitterUtils {
         return twitter;
     }
 	
-	protected static void sendMessage(String key, String url, String token, String secret, String user, String name, String imageUrl, int type) {
+	protected static void sendMessage(String key, String url, String token, String secret, String user, String name, String imageUrl, Double latitude, Double longitude, int type) {
 		String message = null;
 		try {
-        	    Landmark landmark = null; 
-        	    
-        	    if (key != null) {
-        	    	landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
-                }
-            
         	    ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
-                if (type == Commons.SERVER && landmark != null) {
-                    String username = landmark.getUsername();
-                    String userMask;
-                    if (StringUtils.endsWith(username, "@tw")) {
-                        userMask = "@" + username.substring(0, username.length() - 3);
-                    } else {
-                        userMask = UrlUtils.createUsernameMask(username);
-                    }
-                    message = String.format(rb.getString("Social.tw.server"), userMask, landmark.getName(), url);
-                } else if (type == Commons.BLOGEO && landmark != null) {
-                    message = String.format(rb.getString("Social.tw.status"), "new geo message to #GMSWorldBlogeo", landmark.getName(), url);
-                } else if (type == Commons.LANDMARK && landmark != null) {
-                    message = String.format(rb.getString("Social.tw.status"), "new point of interest to #GMSWorld", landmark.getName(), url);
+                if (type == Commons.SERVER) {
+                    message = String.format(rb.getString("Social.tw.server"), user, name, url);
+                } else if (type == Commons.BLOGEO) {
+                    message = String.format(rb.getString("Social.tw.status"), "new geo message to #GMSWorldBlogeo", name, url);
+                } else if (type == Commons.LANDMARK) {
+                    message = String.format(rb.getString("Social.tw.status"), "new point of interest to #GMSWorld", name, url);
                 } else if (type == Commons.MY_POS) {
                     message = String.format(rb.getString("Social.tw.myloc"),  url);
                 } else if (type == Commons.LOGIN) {
@@ -76,9 +60,9 @@ public class TwitterUtils {
                 		message = String.format(rb.getString("Social.tw.short"), url);
                 	}
                 	StatusUpdate update = new StatusUpdate(message);
-                    if (landmark != null) {
+                    if (latitude != null && longitude != null) {
                     	update.setDisplayCoordinates(true);
-                        update.setLocation(new GeoLocation(landmark.getLatitude(), landmark.getLongitude()));
+                        update.setLocation(new GeoLocation(latitude, longitude));
                         if (imageUrl != null) {
                         	try {
                             	InputStream is  = new URL(imageUrl).openStream();
