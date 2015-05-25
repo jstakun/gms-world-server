@@ -66,7 +66,8 @@ public class UrlUtils {
                         url = "http://www.linkedin.com/x/profile/" + Commons.getProperty(Property.LN_API_KEY) + "/" + id;
                     }
                 } else if (user.endsWith("@gl")) {
-                    url = "http://www.blogger.com/feeds/" + id + "/posts/default";
+                	url = "https://plus.google.com/" + id;
+                	//url = "http://www.blogger.com/feeds/" + id + "/posts/default";
                 } else if (user.endsWith("@gg")) {
                     //url = "http://profiles.google.com/" + id;
                     url = "https://plus.google.com/" + id;

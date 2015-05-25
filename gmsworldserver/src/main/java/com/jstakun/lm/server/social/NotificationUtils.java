@@ -196,6 +196,8 @@ public class NotificationUtils {
     	Double longitude = Double.parseDouble(params.get("longitude")[0]);
     	String layer = params.get("layer")[0];
     	
+    	//TODO use socialIds
+    	
     	logger.log(Level.INFO, "Sending landmark creation notification to service {0}...", service);
     	
     	if (StringUtils.equals(service, Commons.FACEBOOK)) {
