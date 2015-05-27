@@ -221,7 +221,7 @@ public class NotificationUtils {
     	String userMask = null;
         if (StringUtils.equals(service, Commons.FACEBOOK)) {
     		if (socialIdsMap.containsKey(Commons.FACEBOOK)) {
-                userMask = UrlUtils.createUsernameMask(socialIdsMap.get(Commons.FACEBOOK));
+                userMask = UrlUtils.createUsernameMask(socialIdsMap.get(Commons.FACEBOOK) + "@" + Commons.FACEBOOK);
             } else {
                 userMask = UrlUtils.createUsernameMask(user);
             }
