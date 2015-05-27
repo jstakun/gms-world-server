@@ -75,9 +75,6 @@ public class PersistLandmarkServlet extends HttpServlet {
                 } 
                 
                 String layer = StringUtil.getStringParam(request.getParameter("layer"), Commons.LM_SERVER_LAYER);
-                if (layer.equals(Commons.MY_POSITION_LAYER)) {
-                	layer = Commons.MY_POS_CODE;
-                }
                 logger.log(Level.INFO, "Creating new landmark in layer: " + layer);
                 if (layer.equals(Commons.MY_POS_CODE)) {
                     l.setDescription(GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(l.getLatitude(), l.getLongitude()));

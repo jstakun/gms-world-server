@@ -79,7 +79,7 @@ public class NotificationUtils {
         createNotificationTask(newParams);
 		
         //GoogleBloggerUtils
-        newParams.put("service", Commons.GOOGLE_BLOGGER);
+        newParams.put("service", Commons.GOOGLE);
         createNotificationTask(newParams);
 		
         //GooglePlusUtils
@@ -101,7 +101,7 @@ public class NotificationUtils {
         createNotificationTask(newParams);
 		
         //GoogleBloggerUtils
-        newParams.put("service", Commons.GOOGLE_BLOGGER);
+        newParams.put("service", Commons.GOOGLE);
         createNotificationTask(newParams);
 		
         //GooglePlusUtils
@@ -124,7 +124,7 @@ public class NotificationUtils {
         createNotificationTask(newParams);
 		
         //GoogleBloggerUtils
-        newParams.put("service", Commons.GOOGLE_BLOGGER);
+        newParams.put("service", Commons.GOOGLE);
         createNotificationTask(newParams);
 		
         //GooglePlusUtils
@@ -145,7 +145,7 @@ public class NotificationUtils {
         createNotificationTask(newParams);
 		
         //GoogleBloggerUtils
-        newParams.put("service", Commons.GOOGLE_BLOGGER);
+        newParams.put("service", Commons.GOOGLE);
         createNotificationTask(newParams);
 		
         //GooglePlusUtils
@@ -169,7 +169,7 @@ public class NotificationUtils {
     			FacebookSocialUtils.sendImageMessage(imageUrl, showImageUrl, username, null, Commons.SCREENSHOT);
     		} else if (StringUtils.equals(service, Commons.TWITTER)) {
     			TwitterUtils.sendImageMessage(showImageUrl, imageUrl, username, lat, lng, null, Commons.SCREENSHOT);
-    		} else if (StringUtils.equals(service, Commons.GOOGLE_BLOGGER)) {
+    		} else if (StringUtils.equals(service, Commons.GOOGLE)) {
     			GoogleBloggerUtils.sendImageMessage(showImageUrl, username, imageUrl, null, Commons.SCREENSHOT);
     		} else if (StringUtils.equals(service, Commons.GOOGLE_PLUS)) {
     			GooglePlusUtils.sendImageMessage(showImageUrl, username, imageUrl, null, Commons.SCREENSHOT);
@@ -188,7 +188,7 @@ public class NotificationUtils {
     	String title = params.get("title")[0];
     	String body = params.get("body")[0];   
     	String userUrl = params.get("userUrl")[0];
-    	String username = params.get("username")[0];
+    	String user = params.get("username")[0];
     	String imageUrl = params.get("imageUrl")[0];
     	String socialIds = params.get("socialIds")[0];
     	String name = params.get("name")[0];
@@ -196,32 +196,66 @@ public class NotificationUtils {
     	Double longitude = Double.parseDouble(params.get("longitude")[0]);
     	String layer = params.get("layer")[0];
     	
-    	//TODO use socialIds
+    	Map<String, String> socialIdsMap = new HashMap<String, String>();
+    	if (socialIds != null) {
+    		String[] ids = StringUtils.split(socialIds, ",");
+    		for (int i=0;i<ids.length;i++) {
+    			String[] id = StringUtils.split(ids[i], "@");
+    			if (id.length == 2) {
+    				socialIdsMap.put(id[1], id[0]);
+    			} else if (id.length == 1) {
+    				socialIdsMap.put(Commons.GMS_WORLD, id[0]);
+    			}
+    		}
+    	} else {
+    		String[] id = StringUtils.split(user, "@");
+			if (id.length == 2) {
+				socialIdsMap.put(id[1], id[0]);
+			} else if (id.length == 1) {
+				socialIdsMap.put(Commons.GMS_WORLD, id[0]);
+			}
+    	}
     	
     	logger.log(Level.INFO, "Sending landmark creation notification to service {0}...", service);
     	
-    	if (StringUtils.equals(service, Commons.FACEBOOK)) {
-    		String userMask = UrlUtils.createUsernameMask(username);
+    	String userMask = null;
+        if (StringUtils.equals(service, Commons.FACEBOOK)) {
+    		if (socialIdsMap.containsKey(Commons.FACEBOOK)) {
+                userMask = UrlUtils.createUsernameMask(socialIdsMap.get(Commons.FACEBOOK));
+            } else {
+                userMask = UrlUtils.createUsernameMask(user);
+            }
+            logger.log(Level.INFO, "Using user mask " + userMask);
     		FacebookSocialUtils.sendMessageToPageFeed(key, landmarkUrl, userMask, name, imageUrl, Commons.SERVER);
     	} else if (StringUtils.equals(service, Commons.TWITTER)) {
-    		String userMask = null;
-            if (StringUtils.endsWith(username, "@tw")) {
-                userMask = "@" + username.substring(0, username.length() - 3);
+    	    if (socialIdsMap.containsKey(Commons.TWITTER)) {
+                userMask = "@" + socialIdsMap.get(Commons.TWITTER);
             } else {
-                userMask = UrlUtils.createUsernameMask(username);
+                userMask = UrlUtils.createUsernameMask(user);
             }
+    	    logger.log(Level.INFO, "Using user mask " + userMask);
     		TwitterUtils.sendMessage(key, landmarkUrl, Commons.getProperty(Property.TW_TOKEN), Commons.getProperty(Property.TW_SECRET), userMask, name, imageUrl, latitude, longitude, Commons.SERVER);
-    	} else if (StringUtils.equals(service, Commons.GOOGLE_BLOGGER)) {
-    		GoogleBloggerUtils.sendMessage(key, landmarkUrl, Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), username, name, imageUrl, layer, Commons.SERVER);
+    	} else if (StringUtils.equals(service, Commons.GOOGLE)) {
+    		if (socialIdsMap.containsKey(Commons.GOOGLE)) {
+    			userMask = socialIdsMap.get(Commons.GOOGLE) + "@" + Commons.GOOGLE;
+    		} else if (socialIdsMap.containsKey(Commons.GOOGLE_PLUS)) {
+    			userMask = socialIdsMap.get(Commons.GOOGLE_PLUS) + "@" + Commons.GOOGLE_PLUS;
+    		} else {
+    			userMask = user;
+    		}
+    		logger.log(Level.INFO, "Using user mask " + userMask);
+    		GoogleBloggerUtils.sendMessage(key, landmarkUrl, Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), userMask, name, imageUrl, layer, Commons.SERVER);
     	} else if (StringUtils.equals(service, Commons.GOOGLE_PLUS)) {
-    		String userMask = UrlUtils.createUsernameMask(username);
+    		userMask = UrlUtils.createUsernameMask(user);
+    		logger.log(Level.INFO, "Using user mask " + userMask);
     		GooglePlusUtils.sendMessage(Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), key, landmarkUrl, userMask, name, latitude, longitude, Commons.SERVER);
     	} else if (StringUtils.equals(service, Commons.MAIL)) {
     		MailUtils.sendLandmarkCreationNotification(title, body);
     		//send landmark creation notification email to user
     		if (StringUtils.isNotEmpty(email)) {
-    			String userMask = UrlUtils.createUsernameMask(username);
-    			MailUtils.sendLandmarkNotification(email, userUrl, userMask, landmarkUrl, key, context);
+    			userMask = UrlUtils.createUsernameMask(user);
+    			logger.log(Level.INFO, "Using user mask " + userMask);
+        		MailUtils.sendLandmarkNotification(email, userUrl, userMask, landmarkUrl, key, context);
     		}			
     	}
 	}
@@ -306,7 +340,7 @@ public class NotificationUtils {
     		FacebookSocialUtils.sendMessageToPageFeed(null, url, user, name, null, Commons.CHECKIN);
     	} else if (StringUtils.equals(service, Commons.TWITTER)) {
     		TwitterUtils.sendMessage(null, url, Commons.getProperty(Property.TW_TOKEN), Commons.getProperty(Property.TW_SECRET), user, name, null, null, null, Commons.CHECKIN);
-    	} else if (StringUtils.equals(service, Commons.GOOGLE_BLOGGER)) {
+    	} else if (StringUtils.equals(service, Commons.GOOGLE)) {
     		GoogleBloggerUtils.sendMessage(null, url, Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), user, name, null, null, Commons.CHECKIN);
     	} else if (StringUtils.equals(service, Commons.GOOGLE_PLUS)) {
     		GooglePlusUtils.sendMessage(Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), null, url, user, name, null, null, Commons.CHECKIN);
@@ -326,7 +360,7 @@ public class NotificationUtils {
 			FacebookSocialUtils.sendImageMessage(imageUrl, routeUrl, username, routeType, Commons.ROUTE);
 		} else if (StringUtils.equals(service, Commons.TWITTER)) {
 			TwitterUtils.sendImageMessage(routeUrl, imageUrl, username, lat, lng, routeType, Commons.ROUTE);
-	    } else if (StringUtils.equals(service, Commons.GOOGLE_BLOGGER)) {
+	    } else if (StringUtils.equals(service, Commons.GOOGLE)) {
 			GoogleBloggerUtils.sendImageMessage(routeUrl, username, imageUrl, routeType, Commons.ROUTE);
 		} else if (StringUtils.equals(service, Commons.GOOGLE_PLUS)) {
 			GooglePlusUtils.sendImageMessage(routeUrl, username, imageUrl, routeType, Commons.ROUTE);

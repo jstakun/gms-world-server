@@ -69,8 +69,8 @@ public class UrlUtils {
                 	url = "https://plus.google.com/" + id;
                 	//url = "http://www.blogger.com/feeds/" + id + "/posts/default";
                 } else if (user.endsWith("@gg")) {
-                    //url = "http://profiles.google.com/" + id;
                     url = "https://plus.google.com/" + id;
+                    //url = "http://profiles.google.com/" + id;
                 } else if (user.endsWith("@fs")) {
                     url = "http://foursquare.com/user/" + id;
                 } else if (user.endsWith("@gw")) {

@@ -81,7 +81,7 @@ public final class SocialCheckinServlet extends HttpServlet {
     		} else {
     			//response.sendError(HttpServletResponse.SC_BAD_REQUEST);
     		}   
-    	} else if (StringUtils.equals(service, Commons.GOOGLE_BLOGGER) || StringUtils.equals(service, Commons.GOOGLE_PLUS)) {
+    	} else if (StringUtils.equals(service, Commons.GOOGLE) || StringUtils.equals(service, Commons.GOOGLE_PLUS)) {
     		String reference = request.getParameter("reference");
     		if (StringUtils.isNotEmpty(reference)) {
     			//int responseCode = GoogleBloggerUtils.checkin(reference);

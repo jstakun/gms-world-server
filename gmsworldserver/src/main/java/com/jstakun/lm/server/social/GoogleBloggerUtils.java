@@ -41,9 +41,14 @@ public class GoogleBloggerUtils {
         		String message = null;
         		
         		String userMask = UrlUtils.createUsernameMask(username);
+        		String profileUrl = UrlUtils.createUserProfileUrl(username);
         		if (username != null) {
-        			userMask = "<a href=\"" + ConfigurationManager.SERVER_URL + "showUser/" + username + "\">" + userMask + "</a>";
+        			if (StringUtils.equals(profileUrl, "#")) {
+            			profileUrl = ConfigurationManager.SERVER_URL + "showUser/" + username;
+            		}
+        			userMask = "<a href=\"" + profileUrl + "\">" + userMask + "</a>";
         		}
+        		
                 String prefix = "";
         		if (imageUrl != null) {
         			prefix = "<a href=\"" + imageUrl + "\" "

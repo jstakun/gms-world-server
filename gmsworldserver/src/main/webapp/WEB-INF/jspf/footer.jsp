@@ -18,25 +18,25 @@
             <h3>Updates</h3>
 
             <ul class="subscribe-stuff">
-                <li><a title="Blog" href="http://blog.gms-world.net" rel="nofollow">
+                <li><a title="Blog" href="http://blog.gms-world.net" rel="nofollow" target="_blank">
                         <img alt="Blog" title="Blog" src="/images/blogger.png" /></a>
                 </li>
-                <li><a title="Facebook" href="http://www.facebook.com/pages/GMS-World/165436696841663" rel="nofollow">
+                <li><a title="Facebook" href="http://www.facebook.com/pages/GMS-World/165436696841663" rel="nofollow" target="_blank">
                         <img alt="Facebook" title="Facebook" src="/images/social_facebook.png" /></a>
                 </li>
-                <li><a title="Twitter" href="http://twitter.com/geolocationms" rel="nofollow">
+                <li><a title="Twitter" href="http://twitter.com/geolocationms" rel="nofollow" target="_blank">
                         <img alt="Twitter" title="Twitter" src="/images/social_twitter.png" /></a>
                 </li>
-                <li><a title="Google+" href="https://plus.google.com/117623384724994541747" rel="nofollow">
+                <li><a title="Google+" href="https://plus.google.com/117623384724994541747" rel="nofollow" target="_blank">
                         <img alt="Google+" title="Google+" src="/images/google_plus.png" /></a>
                 </li>
             </ul>
 
             <p>Stay up to date. Subscribe via
-                <a href="http://blog.gms-world.net">Blog</a>,
-                <a href="http://www.facebook.com/pages/GeoLocation-Mobile-Solutions/165436696841663">Facebook</a>,
-                <a href="http://twitter.com/geolocationms">Twitter</a> or 
-                <a href="https://plus.google.com/117623384724994541747" rel="publisher">Google+</a>
+                <a href="http://blog.gms-world.net" target="_blank">Blog</a>,
+                <a href="http://www.facebook.com/pages/GMS-World/165436696841663" target="_blank">Facebook</a>,
+                <a href="http://twitter.com/geolocationms" target="_blank">Twitter</a> or 
+                <a href="https://plus.google.com/117623384724994541747" rel="publisher" target="_blank">Google+</a>
             </p>
 
         </div>
