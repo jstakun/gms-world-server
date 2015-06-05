@@ -14,6 +14,7 @@
         <appengine.gsc.client.version>0.4.1</appengine.gsc.client.version>
         <blogger.version>v3-rev47-1.20.0</blogger.version>
         <plus.version>v1-rev217-1.20.0</plus.version>
+        <plusDomains.version>v1-rev121-1.20.0</plusDomains.version>
         <shortener.version>v1-rev40-1.20.0</shortener.version>
         <google.http.client.version>1.20.0</google.http.client.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -97,6 +98,11 @@
         	<artifactId>google-api-services-plus</artifactId>
         	<version>${plus.version}</version>
         </dependency>
+        <dependency>
+			<groupId>com.google.apis</groupId>
+			<artifactId>google-api-services-plusDomains</artifactId>
+			<version>${plusDomains.version}</version>
+		</dependency>
         <dependency>
 			<groupId>com.google.apis</groupId>
 			<artifactId>google-api-services-urlshortener</artifactId>
