@@ -226,7 +226,7 @@ public class NotificationUtils {
                 userMask = UrlUtils.createUsernameMask(user);
             }
             logger.log(Level.INFO, "Using user mask " + userMask);
-    		FacebookSocialUtils.sendMessageToPageFeed(key, landmarkUrl, userMask, name, imageUrl, Commons.SERVER);
+    		FacebookSocialUtils.sendMessageToPageFeed(key, landmarkUrl, userMask, name, imageUrl, Commons.SERVER, null);
     	} else if (StringUtils.equals(service, Commons.TWITTER)) {
     	    if (socialIdsMap.containsKey(Commons.TWITTER)) {
                 userMask = "@" + socialIdsMap.get(Commons.TWITTER);
@@ -337,7 +337,7 @@ public class NotificationUtils {
     	String name = params.get("name")[0];
     	
     	if (StringUtils.equals(service, Commons.FACEBOOK)) {
-    		FacebookSocialUtils.sendMessageToPageFeed(null, url, user, name, null, Commons.CHECKIN);
+    		FacebookSocialUtils.sendMessageToPageFeed(null, url, user, name, null, Commons.CHECKIN, null);
     	} else if (StringUtils.equals(service, Commons.TWITTER)) {
     		TwitterUtils.sendMessage(null, url, Commons.getProperty(Property.TW_TOKEN), Commons.getProperty(Property.TW_SECRET), user, name, null, null, null, Commons.CHECKIN);
     	} else if (StringUtils.equals(service, Commons.GOOGLE)) {

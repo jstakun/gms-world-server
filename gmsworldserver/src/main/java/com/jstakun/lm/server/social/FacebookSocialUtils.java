@@ -110,7 +110,7 @@ public class FacebookSocialUtils {
         }
     }
 
-    protected static void sendMessageToPageFeed(String key, String url, String user, String name, String imageUrl, int type) {
+    protected static void sendMessageToPageFeed(String key, String url, String user, String name, String imageUrl, int type, String token) {
         final String[] images = {"blogeo_j.png", "blogeo_a.png", "poi_j.png", "poi_a.png"};
         ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
         Parameter params[] = null;
@@ -138,8 +138,11 @@ public class FacebookSocialUtils {
             };   
         }
         
-        if (params != null) {
-        	FacebookClient facebookClient = FacebookUtils.getFacebookClient(com.jstakun.lm.server.config.ConfigurationManager.getParam(com.jstakun.lm.server.config.ConfigurationManager.GMS_WORLD_PAGE_TOKEN, null));
+        if (params != null) {      	
+        	if (token == null) {
+        		token = com.jstakun.lm.server.config.ConfigurationManager.getParam(com.jstakun.lm.server.config.ConfigurationManager.GMS_WORLD_PAGE_TOKEN, null);
+        	}
+        	FacebookClient facebookClient = FacebookUtils.getFacebookClient(token);
         	sendMessage(facebookClient, Commons.getProperty(Property.FB_GMS_WORLD_FEED), params, false);
         }
     }

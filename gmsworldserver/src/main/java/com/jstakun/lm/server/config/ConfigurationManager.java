@@ -41,12 +41,16 @@ public final class ConfigurationManager {
 
     public static String getParam(String key, String defaultValue)
     {
-        refreshConfig();
-        if (configuration.containsKey(key)) {
-            return (String)configuration.get(key);
-        } else {
-            return defaultValue;
-        }
+    	try {
+    		refreshConfig();
+    		if (configuration.containsKey(key)) {
+    			return (String)configuration.get(key);
+    		} else {
+    			return defaultValue;
+    		}
+    	} catch (Exception e) {
+    		return defaultValue;
+    	}
     }    
     
     public static Map<String, String> getConfiguration() {
