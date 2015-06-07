@@ -191,7 +191,7 @@
 				mc.repaint();
 				//window.alert("Loaded " + marker_counter + " landmarks!");
 				$("#status").css({"background-color": "#fff", "border" : "2px solid #fff", "border-radius": "3px", "text-align": "center", "box-shadow" : "0 2px 6px rgba(0,0,0,.3)"});
-                $("#status").html(marker_counter + " landmarks was loaded to the map!");
+                $("#status").html(marker_counter + " landmarks were loaded to the map!");
 				$("#status").center().show().delay(3000).queue(function(n) {
 					  $(this).hide(); n();
 				});

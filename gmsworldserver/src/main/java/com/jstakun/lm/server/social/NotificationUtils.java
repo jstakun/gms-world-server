@@ -170,7 +170,7 @@ public class NotificationUtils {
     		} else if (StringUtils.equals(service, Commons.TWITTER)) {
     			TwitterUtils.sendImageMessage(showImageUrl, imageUrl, username, lat, lng, null, Commons.SCREENSHOT);
     		} else if (StringUtils.equals(service, Commons.GOOGLE)) {
-    			GoogleBloggerUtils.sendImageMessage(showImageUrl, username, imageUrl, null, Commons.SCREENSHOT);
+    			GoogleBloggerUtils.sendImageMessage(showImageUrl, username, imageUrl, null, lat, lng, Commons.SCREENSHOT);
     		} else if (StringUtils.equals(service, Commons.GOOGLE_PLUS)) {
     			GooglePlusUtils.sendImageMessage(showImageUrl, username, imageUrl, null, Commons.SCREENSHOT);
     		}
@@ -244,7 +244,7 @@ public class NotificationUtils {
     			userMask = user;
     		}
     		logger.log(Level.INFO, "Using user mask " + userMask);
-    		GoogleBloggerUtils.sendMessage(key, landmarkUrl, Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), userMask, name, imageUrl, layer, Commons.SERVER);
+    		GoogleBloggerUtils.sendMessage(key, landmarkUrl, Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), userMask, name, imageUrl, layer, latitude, longitude, Commons.SERVER);
     	} else if (StringUtils.equals(service, Commons.GOOGLE_PLUS)) {
     		userMask = UrlUtils.createUsernameMask(user);
     		logger.log(Level.INFO, "Using user mask " + userMask);
@@ -341,7 +341,7 @@ public class NotificationUtils {
     	} else if (StringUtils.equals(service, Commons.TWITTER)) {
     		TwitterUtils.sendMessage(null, url, Commons.getProperty(Property.TW_TOKEN), Commons.getProperty(Property.TW_SECRET), user, name, null, null, null, Commons.CHECKIN);
     	} else if (StringUtils.equals(service, Commons.GOOGLE)) {
-    		GoogleBloggerUtils.sendMessage(null, url, Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), user, name, null, null, Commons.CHECKIN);
+    		GoogleBloggerUtils.sendMessage(null, url, Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), user, name, null, null, null, null, Commons.CHECKIN);
     	} else if (StringUtils.equals(service, Commons.GOOGLE_PLUS)) {
     		GooglePlusUtils.sendMessage(Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), null, url, user, name, null, null, Commons.CHECKIN);
     	}
@@ -361,7 +361,7 @@ public class NotificationUtils {
 		} else if (StringUtils.equals(service, Commons.TWITTER)) {
 			TwitterUtils.sendImageMessage(routeUrl, imageUrl, username, lat, lng, routeType, Commons.ROUTE);
 	    } else if (StringUtils.equals(service, Commons.GOOGLE)) {
-			GoogleBloggerUtils.sendImageMessage(routeUrl, username, imageUrl, routeType, Commons.ROUTE);
+			GoogleBloggerUtils.sendImageMessage(routeUrl, username, imageUrl, routeType, lat, lng, Commons.ROUTE);
 		} else if (StringUtils.equals(service, Commons.GOOGLE_PLUS)) {
 			GooglePlusUtils.sendImageMessage(routeUrl, username, imageUrl, routeType, Commons.ROUTE);
 		}
