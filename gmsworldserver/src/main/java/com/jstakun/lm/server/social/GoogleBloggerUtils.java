@@ -125,9 +125,6 @@ public class GoogleBloggerUtils {
                 		location.setLng(lng);
                 		post.setLocation(location);
                 	}
-                	//post.setSelfLink(arg0);
-                	//post.setTitleLink(arg0);
-                	//post.setAuthor(arg0);
                 	Post postResp = blogger.posts().insert(blog.getId(), post).execute();
                 	logger.log(Level.INFO, "Successfully created post: {0} at blog {1}", new Object[]{postResp.getId(), blog.getId()});
                 } else {

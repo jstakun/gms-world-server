@@ -3,7 +3,6 @@ package net.gmsworld.server.layers;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -39,8 +38,6 @@ import com.google.api.services.youtube.model.Video;
 import com.google.api.services.youtube.model.VideoListResponse;
 import com.google.api.services.youtube.model.VideoSnippet;
 import com.google.api.services.youtube.model.VideoStatistics;
-import com.google.gdata.client.youtube.YouTubeQuery;
-import com.google.gdata.client.youtube.YouTubeService;
 import com.google.gdata.data.Person;
 import com.google.gdata.data.extensions.Rating;
 import com.google.gdata.data.geo.impl.GeoRssWhere;
@@ -63,10 +60,10 @@ import com.openlapi.QualifiedCoordinates;
  */
 public class YoutubeUtils extends LayerHelper {
 
-    private static final String YOUTUBE_GDATA_SERVER = "http://gdata.youtube.com";
-    private static final String VIDEOS_FEED = YOUTUBE_GDATA_SERVER + "/feeds/api/videos";
+    //private static final String YOUTUBE_GDATA_SERVER = "http://gdata.youtube.com";
+    //private static final String VIDEOS_FEED = YOUTUBE_GDATA_SERVER + "/feeds/api/videos";
     
-    private static VideoFeed getVideoFeed(double latitude, double longitude, String query, int radius, int limit) throws MalformedURLException, IOException, ServiceException {
+    /*private static VideoFeed getVideoFeed(double latitude, double longitude, String query, int radius, int limit) throws MalformedURLException, IOException, ServiceException {
         YouTubeService ytservice = new YouTubeService("GMS World", Commons.getProperty(Property.YOUTUBE_API_KEY));
 
         YouTubeQuery vquery = new YouTubeQuery(new URL(VIDEOS_FEED));
@@ -93,7 +90,7 @@ public class YoutubeUtils extends LayerHelper {
         vquery.setMaxResults(l);
 
         return ytservice.query(vquery, VideoFeed.class);
-    }
+    }*/
     
     private static YouTube getYouTube() {
     	HttpTransport httpTransport = new NetHttpTransport();
@@ -219,11 +216,13 @@ public class YoutubeUtils extends LayerHelper {
     		String thumbnail = snippet.getThumbnails().getDefault().getUrl();
     		
     		QualifiedCoordinates qc = null;
-    		GeoPoint location = video.getRecordingDetails().getLocation();
-    		if (location != null) {
-    			qc = new QualifiedCoordinates(location.getLatitude(), location.getLongitude(), 0f, 0f, 0f);
-    		} else {
-    			qc = new QualifiedCoordinates(lat, lng, 0f, 0f, 0f);
+    		if (video.getRecordingDetails() != null) {
+    			GeoPoint location = video.getRecordingDetails().getLocation();
+    			if (location != null) {
+    				qc = new QualifiedCoordinates(location.getLatitude(), location.getLongitude(), 0f, 0f, 0f);
+    			} else {
+    				qc = new QualifiedCoordinates(lat, lng, 0f, 0f, 0f);
+    			}
     		}
     		ExtendedLandmark landmark = LandmarkFactory.getLandmark(title, null, qc, Commons.YOUTUBE_LAYER, new AddressInfo(), creationDate, null);
         	landmark.setUrl(url);
@@ -258,7 +257,7 @@ public class YoutubeUtils extends LayerHelper {
 
     }
     
-    private static List<ExtendedLandmark> createCustomLandmarkVideoList(List<VideoEntry> vel, int version, int stringLimit, Locale locale) {
+    /*private static List<ExtendedLandmark> createCustomLandmarkVideoList(List<VideoEntry> vel, int version, int stringLimit, Locale locale) {
     	List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
     	
     	logger.info("Found " + vel.size() + " video entries...");
@@ -338,10 +337,9 @@ public class YoutubeUtils extends LayerHelper {
             	landmarks.add(landmark);
             }
             
-        }    
-    	
+        }       	
     	return landmarks;
-    }
+    }*/
 
     private static JSONObject createCustomJSonVideoList(List<VideoEntry> vel, int version, int stringLimit) throws JSONException, UnsupportedEncodingException {
         ArrayList<Map<String, Object>> jsonArray = new ArrayList<Map<String, Object>>();

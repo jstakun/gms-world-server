@@ -83,8 +83,8 @@ public class NotificationUtils {
         createNotificationTask(newParams);
 		
         //GooglePlusUtils
-        newParams.put("service", Commons.GOOGLE_PLUS);
-        createNotificationTask(newParams);
+        //newParams.put("service", Commons.GOOGLE_PLUS);
+        //createNotificationTask(newParams);
        
 	}
 	
@@ -105,8 +105,8 @@ public class NotificationUtils {
         createNotificationTask(newParams);
 		
         //GooglePlusUtils
-        newParams.put("service", Commons.GOOGLE_PLUS);
-        createNotificationTask(newParams);
+        //newParams.put("service", Commons.GOOGLE_PLUS);
+        //createNotificationTask(newParams);
         
         //email
         newParams.put("service", Commons.MAIL);
@@ -128,8 +128,8 @@ public class NotificationUtils {
         createNotificationTask(newParams);
 		
         //GooglePlusUtils
-        newParams.put("service", Commons.GOOGLE_PLUS);
-        createNotificationTask(newParams);
+        //newParams.put("service", Commons.GOOGLE_PLUS);
+        //createNotificationTask(newParams);
 	}
 	
 	public static void createImageCreationNotificationTask(Map<String, String> params) {
@@ -149,8 +149,8 @@ public class NotificationUtils {
         createNotificationTask(newParams);
 		
         //GooglePlusUtils
-        newParams.put("service", Commons.GOOGLE_PLUS);
-        createNotificationTask(newParams);
+        //newParams.put("service", Commons.GOOGLE_PLUS);
+        //createNotificationTask(newParams);
 	}
 	
 	public static void sendImageCreationNotification(Map<String, String[]> params) {
