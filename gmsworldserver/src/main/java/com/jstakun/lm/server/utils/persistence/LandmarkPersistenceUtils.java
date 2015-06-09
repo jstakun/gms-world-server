@@ -1039,6 +1039,7 @@ public class LandmarkPersistenceUtils {
     		put("latitude", Double.toString(l.getLatitude())).
     		put("longitude", Double.toString(l.getLongitude())).
     		put("layer", l.getLayer()).
+    		put("desc", l.getDescription()).
     		put("socialIds", socialIds != null ? socialIds : l.getUsername()).
     		put("imageUrl", imageUrl).build();  
     	

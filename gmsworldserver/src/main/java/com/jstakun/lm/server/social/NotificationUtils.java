@@ -194,6 +194,7 @@ public class NotificationUtils {
     	String name = params.get("name")[0];
     	Double latitude = Double.parseDouble(params.get("latitude")[0]);
     	Double longitude = Double.parseDouble(params.get("longitude")[0]);
+    	String desc = params.get("desc")[0];
     	String layer = params.get("layer")[0];
     	
     	Map<String, String> socialIdsMap = new HashMap<String, String>();
@@ -244,7 +245,7 @@ public class NotificationUtils {
     			userMask = user;
     		}
     		logger.log(Level.INFO, "Using user mask " + userMask);
-    		GoogleBloggerUtils.sendMessage(key, landmarkUrl, Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), userMask, name, imageUrl, layer, latitude, longitude, Commons.SERVER);
+    		GoogleBloggerUtils.sendMessage(key, landmarkUrl, Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), userMask, name, imageUrl, layer, latitude, longitude, desc, Commons.SERVER);
     	} else if (StringUtils.equals(service, Commons.GOOGLE_PLUS)) {
     		userMask = UrlUtils.createUsernameMask(user);
     		logger.log(Level.INFO, "Using user mask " + userMask);
@@ -341,7 +342,7 @@ public class NotificationUtils {
     	} else if (StringUtils.equals(service, Commons.TWITTER)) {
     		TwitterUtils.sendMessage(null, url, Commons.getProperty(Property.TW_TOKEN), Commons.getProperty(Property.TW_SECRET), user, name, null, null, null, Commons.CHECKIN);
     	} else if (StringUtils.equals(service, Commons.GOOGLE)) {
-    		GoogleBloggerUtils.sendMessage(null, url, Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), user, name, null, null, null, null, Commons.CHECKIN);
+    		GoogleBloggerUtils.sendMessage(null, url, Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), user, name, null, null, null, null, null, Commons.CHECKIN);
     	} else if (StringUtils.equals(service, Commons.GOOGLE_PLUS)) {
     		GooglePlusUtils.sendMessage(Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), null, url, user, name, null, null, Commons.CHECKIN);
     	}

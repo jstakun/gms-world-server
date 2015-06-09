@@ -34,7 +34,7 @@ public class GoogleBloggerUtils {
     private static final Logger logger = Logger.getLogger(GoogleBloggerUtils.class.getName());
     private static final String CACHE_KEY = "BloggerUsageLimitsMarker";
     
-    protected static void sendMessage(String key, String url, String token, String secret, String username, String name, String imageUrl, String layer, Double lat, Double lng, int type) {
+    protected static void sendMessage(String key, String url, String token, String secret, String username, String name, String imageUrl, String layer, Double lat, Double lng, String desc, int type) {
         if (key != null && type == Commons.SERVER) {
         	ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
             if (token != null && secret != null && url != null) {
@@ -62,7 +62,11 @@ public class GoogleBloggerUtils {
         		}  
         		
         		if (message != null) {
-                    createPost(getBlogger(), name, message, lat, lng);
+        			String lname = name;
+        			if (StringUtils.equals(name, Commons.MY_POSITION_LAYER) && StringUtils.isNotEmpty(desc)) {
+            			lname = desc;
+            		}
+                    createPost(getBlogger(), name, message, lat, lng, lname);
                 }
         	} else {
         		logger.log(Level.SEVERE, "Something is empty! Key: {0}, token: {1}, secret: {2}, url: {3}", new Object[]{key, token, secret, url});
@@ -71,7 +75,7 @@ public class GoogleBloggerUtils {
         	ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
             String message = String.format(rb.getString("Social.gl.message.checkin"), username, url, name);
         	if (message != null) { 
-                createPost(getBlogger(), String.format(rb.getString("Social.gl.title.checkin"), username, name), message, lat, lng);
+                createPost(getBlogger(), String.format(rb.getString("Social.gl.title.checkin"), username, name), message, lat, lng, name);
             }
         }
         
@@ -101,11 +105,11 @@ public class GoogleBloggerUtils {
         }        
         
         if (message != null && title != null) {
-        	createPost(getBlogger(), title, message, lat, lng);
+        	createPost(getBlogger(), title, message, lat, lng, "Image Location");
         }
     }
 
-    private static void createPost(Blogger blogger, String title, String content, Double lat, Double lng) {
+    private static void createPost(Blogger blogger, String title, String content, Double lat, Double lng, String lname) {
         try {
             BlogList blogList = blogger.blogs().listByUser("self").execute();
             List<Blog> blogs = blogList.getItems();
@@ -123,6 +127,7 @@ public class GoogleBloggerUtils {
                 		Post.Location location = new Post.Location();
                 		location.setLat(lat);
                 		location.setLng(lng);
+                		location.setName(lname); 
                 		post.setLocation(location);
                 	}
                 	Post postResp = blogger.posts().insert(blog.getId(), post).execute();
