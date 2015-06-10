@@ -134,11 +134,11 @@ public class MailUtils {
         }
     }
     
-    public static void sendLandmarkNotification(String toA, String userUrl, String nick, String landmarkUrl, String key, ServletContext context) {
+    public static void sendLandmarkNotification(String toA, String userUrl, String nick, String landmarkUrl, ServletContext context) {
         InputStream is = null;
         try {
             is = context.getResourceAsStream("/WEB-INF/emails/landmark.html");
-            String message = String.format(IOUtils.toString(is), userUrl, nick, landmarkUrl, key);
+            String message = String.format(IOUtils.toString(is), userUrl, nick, landmarkUrl, landmarkUrl);
             sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "Message from GMS World", message, "text/html");
             //remove after tests
             //sendMail(SUPPORT_MAIL, ADMIN_NICK, ADMIN_MAIL, ADMIN_NICK, "Copy of message to " + toA, message, "text/html");

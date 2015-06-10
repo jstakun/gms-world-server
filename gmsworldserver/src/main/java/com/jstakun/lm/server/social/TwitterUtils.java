@@ -36,7 +36,7 @@ public class TwitterUtils {
         return twitter;
     }
 	
-	protected static void sendMessage(String key, String url, String token, String secret, String user, String name, String imageUrl, Double latitude, Double longitude, int type) {
+	protected static void sendMessage(String url, String token, String secret, String user, String name, String imageUrl, Double latitude, Double longitude, int type) {
 		String message = null;
 		try {
         	    ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
@@ -81,8 +81,7 @@ public class TwitterUtils {
             if (message != null) {
             	logger.log(Level.SEVERE, "Failed to send status: {0}", message);
             }
-        	logger.log(Level.SEVERE, ex.getMessage(), ex);
-            
+        	logger.log(Level.SEVERE, ex.getMessage(), ex);    
         }
     }
 

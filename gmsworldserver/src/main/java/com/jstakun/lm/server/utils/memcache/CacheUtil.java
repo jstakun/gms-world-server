@@ -79,7 +79,11 @@ public class CacheUtil {
 	}
 	
 	public static boolean containsKey(String key) {
-		return getCache().containsKey(key);
+		if (cache == null) {
+			return false;
+		} else {
+			return getCache().containsKey(key);
+		}
 	}
 
 	public static boolean remove(String key) {

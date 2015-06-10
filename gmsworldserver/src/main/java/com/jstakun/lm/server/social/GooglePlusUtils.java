@@ -36,7 +36,7 @@ public class GooglePlusUtils {
     private static final Logger logger = Logger.getLogger(GooglePlusUtils.class.getName());
     private static final Random random = new Random();
 
-    protected static void sendMessage(String accessToken, String refreshToken, String key, String url, String user, String name, Double lat, Double lng, int type) {
+    protected static void sendMessage(String accessToken, String refreshToken, String url, String user, String name, Double lat, Double lng, int type) {
         if (accessToken != null || refreshToken != null) {
             
         	final String[] images = {"blogeo_j.png", "blogeo_a.png", "poi_j.png", "poi_a.png"};

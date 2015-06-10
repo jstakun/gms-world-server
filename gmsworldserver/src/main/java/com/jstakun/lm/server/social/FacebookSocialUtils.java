@@ -110,7 +110,7 @@ public class FacebookSocialUtils {
         }
     }
 
-    protected static void sendMessageToPageFeed(String key, String url, String user, String name, String imageUrl, int type, String token) {
+    protected static void sendMessageToPageFeed(String url, String user, String name, String imageUrl, int type, String token) {
         final String[] images = {"blogeo_j.png", "blogeo_a.png", "poi_j.png", "poi_a.png"};
         ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
         Parameter params[] = null;

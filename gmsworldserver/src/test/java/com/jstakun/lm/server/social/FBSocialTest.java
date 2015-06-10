@@ -9,7 +9,7 @@ public class FBSocialTest {
 
 	@Test
 	public void test() {
-		FacebookSocialUtils.sendMessageToPageFeed(null, ConfigurationManager.SERVER_URL, "test", "GMS World Test Message", null, Commons.CHECKIN, Commons.FB_GMS_WORLD_PAGE_TOKEN);
+		FacebookSocialUtils.sendMessageToPageFeed(ConfigurationManager.SERVER_URL, "test", "GMS World Test Message", null, Commons.CHECKIN, Commons.FB_GMS_WORLD_PAGE_TOKEN);
 	}
 
 }
