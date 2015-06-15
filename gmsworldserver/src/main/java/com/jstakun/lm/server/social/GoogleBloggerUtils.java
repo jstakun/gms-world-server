@@ -135,10 +135,6 @@ public class GoogleBloggerUtils {
                 		location.setName(lname); 
                 		post.setLocation(location);
                 	}
-                	Post.Author author = new Post.Author();
-                	author.setDisplayName("GMS World");
-                	author.setUrl("https://plus.google.com/117623384724994541747");
-                	post.setAuthor(author);
                 	Post postResp = blogger.posts().insert(blog.getId(), post).setFields("id").execute();
                 	logger.log(Level.INFO, "Successfully created post: {0} at blog {1}", new Object[]{postResp.getId(), blog.getId()});
                 } else {
