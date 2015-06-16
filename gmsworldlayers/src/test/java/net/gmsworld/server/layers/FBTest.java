@@ -22,7 +22,7 @@ public class FBTest {
 		LayerHelperFactory.setThreadProvider(new JvmThreadProvider());	
 	}
 	
-	String token = Commons.FB_TEST_TOKEN_LIMITED; //Commons.FB_TEST_TOKEN_FULL;
+	String token = Commons.FB_TEST_TOKEN_FULL;
 	double lat = 52.25;
 	double lng = 20.95;
 	int limit = 93;
@@ -49,7 +49,7 @@ public class FBTest {
 		if (landmarks != null) {
 			System.out.println("Found " + landmarks.size() + " " + name);    
 			for (ExtendedLandmark l : landmarks) {
-				System.out.println(DateUtils.getFormattedDateTime(Locale.US, new Date(l.getCreationDate())) + " " + l.getName() + ": " + l.getLatitudeE6() + "," + l.getLongitudeE6() + "\n" + l.getDescription());
+				System.out.println(DateUtils.getFormattedDateTime(Locale.US, new Date(l.getCreationDate())) + " " + l.getName() + ": " + l.getLatitudeE6() + "," + l.getLongitudeE6() + "\nDescription: " + l.getDescription() + "\nThumbnail: " + l.getThumbnail());
 			}
 		}
 	}
@@ -57,6 +57,12 @@ public class FBTest {
 	@Test
 	public void testUserTaggedPlaces() throws UnsupportedEncodingException, ParseException {	
 		List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getMyTaggedPlaces(1126, limit, 1024, token, Locale.UK);
+		printLandmarks(landmarks, "places");
+	}
+	
+	@Test
+	public void testPlaces() throws Exception {	
+		List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().processBinaryRequest(lat, lng, null, 10, 1126, 30, 1024, null, null, Locale.UK, false);
 		printLandmarks(landmarks, "places");
 	}
     

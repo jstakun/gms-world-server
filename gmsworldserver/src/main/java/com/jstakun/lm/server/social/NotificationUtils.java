@@ -336,15 +336,28 @@ public class NotificationUtils {
     	String url = params.get("url")[0];
     	String user = params.get("user")[0];
     	String name = params.get("name")[0];
+    	String imageUrl = null;
+    	if (params.containsKey("imageUrl")) {
+    		imageUrl = params.get("imageUrl")[0];
+    	}
+    	
+    	Double latitude = null;
+    	if (params.containsKey("lat")) {
+    		Double.parseDouble(params.get("lat")[0]);
+    	}
+    	Double longitude = null;
+    	if (params.containsKey("lng")) {
+    		Double.parseDouble(params.get("lng")[0]);
+    	}
     	
     	if (StringUtils.equals(service, Commons.FACEBOOK)) {
-    		FacebookSocialUtils.sendMessageToPageFeed(url, user, name, null, Commons.CHECKIN, null);
+    		FacebookSocialUtils.sendMessageToPageFeed(url, user, name, imageUrl, Commons.CHECKIN, null);
     	} else if (StringUtils.equals(service, Commons.TWITTER)) {
-    		TwitterUtils.sendMessage(url, Commons.getProperty(Property.TW_TOKEN), Commons.getProperty(Property.TW_SECRET), user, name, null, null, null, Commons.CHECKIN);
+    		TwitterUtils.sendMessage(url, Commons.getProperty(Property.TW_TOKEN), Commons.getProperty(Property.TW_SECRET), user, name, imageUrl, latitude, longitude, Commons.CHECKIN);
     	} else if (StringUtils.equals(service, Commons.GOOGLE)) {
-    		GoogleBloggerUtils.sendMessage(url, Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), user, name, null, null, null, null, null, Commons.CHECKIN);
+    		GoogleBloggerUtils.sendMessage(url, Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), user, name, imageUrl, null, latitude, longitude, null,  Commons.CHECKIN);
     	} else if (StringUtils.equals(service, Commons.GOOGLE_PLUS)) {
-    		GooglePlusUtils.sendMessage(Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), url, user, name, null, null, Commons.CHECKIN);
+    		GooglePlusUtils.sendMessage(Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), url, user, name, latitude, longitude, Commons.CHECKIN);
     	}
 	}
 	

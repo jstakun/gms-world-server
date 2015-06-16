@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package net.gmsworld.server.layers;
 
 import com.restfb.Facebook;
@@ -13,12 +8,12 @@ import com.restfb.Facebook;
  */
 public class FBPlaceDetails {
 
-    //page_id, pic_small, website, phone, description
+    //page_id, pic, website, phone, description
 
     @Facebook("page_id")
     String objectId;
-    @Facebook("pic_small")
-    String picSmall;
+    @Facebook("pic")
+    String pic;
     @Facebook("website")
     String website;
     @Facebook("phone")

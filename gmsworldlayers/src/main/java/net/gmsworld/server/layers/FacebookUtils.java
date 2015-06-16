@@ -885,14 +885,14 @@ public class FacebookUtils extends LayerHelper {
             } else {
                 placesSearch = facebookClient.fetchObject("search", JsonObject.class, Parameter.with("type", "place"), Parameter.with("center", latitude + "," + longitude), Parameter.with("distance", dist), Parameter.with("limit", limit));
             }
-
+  
             JsonArray data = placesSearch.getJsonArray("data");           
             int dataSize = data.length();
             List<String> pages = new ArrayList<String>(dataSize);
             List<JsonObject> places = new ArrayList<JsonObject>(dataSize);
             
             for (int i = 0; i < dataSize; i++) {
-                JsonObject place = (JsonObject) data.get(i);
+                JsonObject place = data.getJsonObject(i);
                 pages.add(place.getString("id"));
                 places.add(place);
             }
@@ -1059,15 +1059,13 @@ public class FacebookUtils extends LayerHelper {
 
                 List<FBPlaceDetails> queryResults = new ArrayList<FBPlaceDetails>();
 
-                String query = "SELECT page_id, pic_small, website, phone, description FROM page WHERE page_id IN (" + pageIds + ")";
+                String query = "SELECT page_id, pic, website, phone, description FROM page WHERE page_id IN (" + pageIds + ")";
 
                 queryResults.addAll(facebookClient.executeFqlQuery(query, FBPlaceDetails.class));
 
-                for (Iterator<FBPlaceDetails> iter = queryResults.iterator(); iter.hasNext();) {
-
-                    FBPlaceDetails pageDetails = iter.next();
-
-                    HashMap<String, String> details = new HashMap<String, String>();
+                for (FBPlaceDetails pageDetails : queryResults) {
+                	
+                	HashMap<String, String> details = new HashMap<String, String>();
 
                     JSONUtils.putOptValue(details, "description", pageDetails.desc, stringLength, true);
                     if (details.containsKey("description")) {
@@ -1083,8 +1081,8 @@ public class FacebookUtils extends LayerHelper {
                         details.put("homepage", pageDetails.website);
                     }
 
-                    if (StringUtils.isNotEmpty(pageDetails.picSmall)) {
-                            details.put("icon", pageDetails.picSmall);
+                    if (StringUtils.isNotEmpty(pageDetails.pic)) {
+                        details.put("icon", pageDetails.pic);
                     }
 
                     if (!details.isEmpty()) {
@@ -1092,6 +1090,7 @@ public class FacebookUtils extends LayerHelper {
                     		pageDescs.get(pageDetails.objectId).putAll(details);
                     	} else {
                     		//System.out.println("Creating new desc");
+                    		pageDescs.put(pageDetails.objectId, details);
                     	}
                     }
                 }

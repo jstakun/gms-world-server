@@ -48,15 +48,22 @@ public final class SocialCheckinServlet extends HttpServlet {
     			String accessToken = request.getParameter("accessToken");
     			String venueId = request.getParameter("venueId");
     			String name = request.getParameter("name");
+    			String lat = request.getParameter("lat");
+    			String lng = request.getParameter("lng");
     			int responseCode = FoursquareUtils.checkin(accessToken, venueId, name);
     			if (responseCode != HttpServletResponse.SC_OK) {
     				//response.sendError(responseCode);
     				logger.log(Level.SEVERE, "Received following http response code: {0}", responseCode);
     			} else {
+    				//TODO put imageUrl 
     				Map<String, String> params = new ImmutableMap.Builder<String, String>().
-                            put("user", "Foursquare User").
-                            put("name", name).
-                            put("url", UrlUtils.getShortUrl("http://foursquare.com/venue/" + venueId)).build();  
+                        put("user", "Foursquare User").
+                        put("name", name).
+                        put("url", UrlUtils.getShortUrl("http://foursquare.com/venue/" + venueId)).build();  
+    				if (StringUtils.isNotEmpty(lat) && StringUtils.isNotEmpty(lng)) {
+    					params.put("lat", lat);
+    					params.put("lng", lng);
+    				}
     				NotificationUtils.createSocialCheckinNotificationTask(params);
     			}
     		} else {
@@ -67,15 +74,22 @@ public final class SocialCheckinServlet extends HttpServlet {
     			String accessToken = request.getParameter("accessToken");
     			String venueId = request.getParameter("venueId");
     			String name = request.getParameter("name");
+    			String lat = request.getParameter("lat");
+    			String lng = request.getParameter("lng");
     			
     			int responseCode = FacebookSocialUtils.checkin(accessToken, venueId, name);
     			if (responseCode != HttpServletResponse.SC_OK) {
     				response.sendError(responseCode);
     			} else {
+    				//TODO put imageUrl 
     				Map<String, String> params = new ImmutableMap.Builder<String, String>().
-    						put("user", "Facebook User").
-    						put("name", name).
-                    		put("url", UrlUtils.getShortUrl("http://facebook.com/profile.php?id=" + venueId)).build();  
+    					put("user", "Facebook User").
+    					put("name", name).
+                    	put("url", UrlUtils.getShortUrl("http://facebook.com/profile.php?id=" + venueId)).build();  
+    				if (StringUtils.isNotEmpty(lat) && StringUtils.isNotEmpty(lng)) {
+    					params.put("lat", lat);
+    					params.put("lng", lng);
+    				}
     				NotificationUtils.createSocialCheckinNotificationTask(params);
     			}
     		} else {
@@ -83,28 +97,31 @@ public final class SocialCheckinServlet extends HttpServlet {
     		}   
     	} else if (StringUtils.equals(service, Commons.GOOGLE) || StringUtils.equals(service, Commons.GOOGLE_PLUS)) {
     		String reference = request.getParameter("reference");
-    		if (StringUtils.isNotEmpty(reference)) {
-    			//int responseCode = GoogleBloggerUtils.checkin(reference);
-    			//if (responseCode != HttpServletResponse.SC_OK) {
-    			//	response.sendError(responseCode);
-    			//} else {
-    				try {
-    					String placeJson = GooglePlacesUtils.getPlaceDetails(reference, "en");
-    					ExtendedLandmark landmark = GooglePlacesUtils.processLandmark(placeJson, 128, Locale.US);
-    				    if (landmark != null) {
+    		String lat = request.getParameter("lat");
+			String lng = request.getParameter("lng");
+			
+			if (StringUtils.isNotEmpty(reference)) {
+    			try {
+    				String placeJson = GooglePlacesUtils.getPlaceDetails(reference, "en");
+    				ExtendedLandmark landmark = GooglePlacesUtils.processLandmark(placeJson, 128, Locale.US);
+    				if (landmark != null) {
     					   String url = landmark.getUrl();
     					   if (StringUtils.isNotEmpty(url)) {
-    						   Map<String, String> params = new ImmutableMap.Builder<String, String>().
-    								   put("user", "Google User").
-    								   put("name", landmark.getName()).
-    								   put("url", UrlUtils.getGoogleShortUrl(url)).build();  
-    						   NotificationUtils.createSocialCheckinNotificationTask(params);
+    						    //TODO put imageUrl 
+    		    				Map<String, String> params = new ImmutableMap.Builder<String, String>().
+    								put("user", "Google User").
+    								put("name", landmark.getName()).
+    								put("url", UrlUtils.getGoogleShortUrl(url)).build();  
+    						    if (StringUtils.isNotEmpty(lat) && StringUtils.isNotEmpty(lng)) {
+    		    					params.put("lat", lat);
+    		    					params.put("lng", lng);
+    		    				}
+    		    				NotificationUtils.createSocialCheckinNotificationTask(params);
     					   }
-    				    }   
-    				} catch (Exception e) {
+    				}   
+    			} catch (Exception e) {
     					logger.log(Level.SEVERE, "SocialCheckinServlet.processRequest() exception", e);
-    				}
-    			//}
+    			}
     		} else {
     			response.sendError(HttpServletResponse.SC_BAD_REQUEST);
     		} 
