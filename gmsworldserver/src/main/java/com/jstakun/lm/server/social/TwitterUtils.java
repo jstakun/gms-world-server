@@ -56,7 +56,7 @@ public class TwitterUtils {
 
                 if (message != null) {
                 	//message length must be < 140
-                    if (message.length() > 140 && url != null) {
+                    if (message.length() > 130 && url != null) {
                 		message = String.format(rb.getString("Social.tw.short"), url);
                 	}
                 	StatusUpdate update = new StatusUpdate(message);
@@ -66,8 +66,10 @@ public class TwitterUtils {
                         if (imageUrl != null) {
                         	try {
                             	InputStream is  = new URL(imageUrl).openStream();
-                            	if (is != null) {
-                            		update.media("landmark.jpg", is);
+                            	if (is != null && imageUrl.endsWith("png")) {
+                            		update.media("checkin.png", is);
+                            	} else  if (is != null) {
+                                	update.media("landmark.jpg", is);
                             	}
                             } catch (Exception e) {
                             	logger.log(Level.SEVERE, "Failed to load landmark.", e);
