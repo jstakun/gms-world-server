@@ -17,6 +17,7 @@ import com.google.common.collect.ImmutableMap;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 
 import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.layers.GooglePlacesUtils;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.UrlUtils;
@@ -59,11 +60,10 @@ public final class SocialCheckinServlet extends HttpServlet {
     				Map<String, String> params = new ImmutableMap.Builder<String, String>().
                         put("user", "Foursquare User").
                         put("name", name).
-                        put("url", UrlUtils.getShortUrl("http://foursquare.com/venue/" + venueId)).build();  
-    				if (StringUtils.isNotEmpty(lat) && StringUtils.isNotEmpty(lng)) {
-    					params.put("lat", lat);
-    					params.put("lng", lng);
-    				}
+                        put("url", UrlUtils.getShortUrl("http://foursquare.com/venue/" + venueId)).
+                        put("lat", lat != null ? lat : "").
+    					put("lng", lng != null ? lng : "").
+    					put("imageUrl", ConfigurationManager.SERVER_URL + "images/fs_checkin.png").build();
     				NotificationUtils.createSocialCheckinNotificationTask(params);
     			}
     		} else {
@@ -81,15 +81,13 @@ public final class SocialCheckinServlet extends HttpServlet {
     			if (responseCode != HttpServletResponse.SC_OK) {
     				response.sendError(responseCode);
     			} else {
-    				//TODO put imageUrl 
     				Map<String, String> params = new ImmutableMap.Builder<String, String>().
     					put("user", "Facebook User").
     					put("name", name).
-                    	put("url", UrlUtils.getShortUrl("http://facebook.com/profile.php?id=" + venueId)).build();  
-    				if (StringUtils.isNotEmpty(lat) && StringUtils.isNotEmpty(lng)) {
-    					params.put("lat", lat);
-    					params.put("lng", lng);
-    				}
+                    	put("url", UrlUtils.getShortUrl("http://facebook.com/profile.php?id=" + venueId)).
+                    	put("lat", lat != null ? lat : "").
+    					put("lng", lng != null ? lng : "").
+    					put("imageUrl", ConfigurationManager.SERVER_URL + "images/fb_checkin.jpg").build();
     				NotificationUtils.createSocialCheckinNotificationTask(params);
     			}
     		} else {
@@ -111,11 +109,10 @@ public final class SocialCheckinServlet extends HttpServlet {
     		    				Map<String, String> params = new ImmutableMap.Builder<String, String>().
     								put("user", "Google User").
     								put("name", landmark.getName()).
-    								put("url", UrlUtils.getGoogleShortUrl(url)).build();  
-    						    if (StringUtils.isNotEmpty(lat) && StringUtils.isNotEmpty(lng)) {
-    		    					params.put("lat", lat);
-    		    					params.put("lng", lng);
-    		    				}
+    								put("url", UrlUtils.getGoogleShortUrl(url)). 
+    								put("lat", lat != null ? lat : "").
+    		    					put("lng", lng != null ? lng : "").
+    		    					put("imageUrl", ConfigurationManager.SERVER_URL + "images/checkin.png").build();
     		    				NotificationUtils.createSocialCheckinNotificationTask(params);
     					   }
     				}   

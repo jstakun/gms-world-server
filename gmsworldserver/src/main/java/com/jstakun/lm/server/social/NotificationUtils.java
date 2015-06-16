@@ -336,18 +336,19 @@ public class NotificationUtils {
     	String url = params.get("url")[0];
     	String user = params.get("user")[0];
     	String name = params.get("name")[0];
-    	String imageUrl = null;
-    	if (params.containsKey("imageUrl")) {
-    		imageUrl = params.get("imageUrl")[0];
-    	}
+    	String imageUrl = params.get("imageUrl")[0];
     	
     	Double latitude = null;
-    	if (params.containsKey("lat")) {
-    		Double.parseDouble(params.get("lat")[0]);
-    	}
     	Double longitude = null;
-    	if (params.containsKey("lng")) {
-    		Double.parseDouble(params.get("lng")[0]);
+    	try {
+    		if (params.containsKey("lat")) {
+    			latitude = Double.parseDouble(params.get("lat")[0]);
+    		}
+    		if (params.containsKey("lng")) {
+    			longitude = Double.parseDouble(params.get("lng")[0]);
+    		}
+    	} catch (Exception e) {
+    		
     	}
     	
     	if (StringUtils.equals(service, Commons.FACEBOOK)) {

@@ -111,15 +111,15 @@ public class FacebookSocialUtils {
     }
 
     protected static void sendMessageToPageFeed(String url, String user, String name, String imageUrl, int type, String token) {
-        final String[] images = {"blogeo_j.png", "blogeo_a.png", "poi_j.png", "poi_a.png"};
         ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
         Parameter params[] = null;
         
         if (type == Commons.SERVER) {
         		//message, picture, link, name, caption, description, source, place, tags
            if (imageUrl == null) {
-        		int imageId = NumberUtils.normalizeNumber(random.nextInt(4), 0, 3);
-        		imageUrl = ConfigurationManager.SERVER_URL + "images/" + images[imageId];
+        	   final String[] images = {"blogeo_j.png", "blogeo_a.png", "poi_j.png", "poi_a.png"};
+               int imageId = NumberUtils.normalizeNumber(random.nextInt(4), 0, 3);
+        	   imageUrl = ConfigurationManager.SERVER_URL + "images/" + images[imageId];
            }
            params = new Parameter[]{
                    Parameter.with("message", String.format(rb.getString("Social.fb.message.server"), user)),
@@ -134,7 +134,7 @@ public class FacebookSocialUtils {
                     Parameter.with("name", name),
                     Parameter.with("description", rb.getString("Social.fb.desc.checkin")),
                     Parameter.with("link", url),
-                    Parameter.with("picture", ConfigurationManager.SERVER_URL + "images/checkin.png")
+                    Parameter.with("picture", imageUrl)
             };   
         }
         
