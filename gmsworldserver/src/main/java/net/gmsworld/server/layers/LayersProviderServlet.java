@@ -162,20 +162,18 @@ public class LayersProviderServlet extends HttpServlet {
                 if (HttpUtils.isEmptyAny(request, "lat", "lng", "radius") && HttpUtils.isEmptyAny(request, "latitude", "longitude", "radius")) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 } else {
-                    if (LayerHelperFactory.getYelpUtils().hasNeighborhoods(latitude, longitude)) {
-                        radius = NumberUtils.getRadius(request.getParameter("radius"), 1000, 40000);
-                        int deals = NumberUtils.getInt(request.getHeader("X-GMS-AppId"), 0);
-                        String hasDeals = "false";
-                        if (deals == 1) {
-                            hasDeals = "true";
-                        }
-                        if (outFormat.equals(Format.BIN)) {
-                        	List<ExtendedLandmark> landmarks = LayerHelperFactory.getYelpUtils().processBinaryRequest(latitude, longitude, null, radius * 1000, version, limit, stringLimit, hasDeals, language, l, true);
-                    		LayerHelperFactory.getYelpUtils().serialize(landmarks, response.getOutputStream(), version);
-                    		LayerHelperFactory.getYelpUtils().cacheGeoJson(landmarks, latitude, longitude, Commons.YELP_LAYER);
-                    	} else {
-                    		outString = LayerHelperFactory.getYelpUtils().processRequest(latitude, longitude, null, radius * 1000, version, limit, stringLimit, hasDeals, language).toString();
-                    	}
+                    radius = NumberUtils.getRadius(request.getParameter("radius"), 1000, 40000);
+                    int deals = NumberUtils.getInt(request.getHeader("X-GMS-AppId"), 0);
+                    String hasDeals = "false";
+                    if (deals == 1) {
+                        hasDeals = "true";
+                    }
+                    if (outFormat.equals(Format.BIN)) {
+                        List<ExtendedLandmark> landmarks = LayerHelperFactory.getYelpUtils().processBinaryRequest(latitude, longitude, null, radius * 1000, version, limit, stringLimit, hasDeals, language, l, true);
+                    	LayerHelperFactory.getYelpUtils().serialize(landmarks, response.getOutputStream(), version);
+                    	LayerHelperFactory.getYelpUtils().cacheGeoJson(landmarks, latitude, longitude, Commons.YELP_LAYER);
+                    } else {
+                    	outString = LayerHelperFactory.getYelpUtils().processRequest(latitude, longitude, null, radius * 1000, version, limit, stringLimit, hasDeals, language).toString();
                     }
                 }
             } else if (StringUtils.contains(uri, "googlePlacesProvider")) {
