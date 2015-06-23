@@ -37,6 +37,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <style>
       html, body, #map-canvas { margin: 0; padding: 0; height: 100%; }
     </style>

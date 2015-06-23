@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package net.gmsworld.server.layers;
 
 import java.io.IOException;
@@ -541,6 +537,8 @@ public class YelpUtils extends LayerHelper {
 		JSONObject error = root.optJSONObject("error");
 		if (error != null && StringUtils.equals(error.optString("id"), "EXCEEDED_REQS")) {
 			cacheProvider.put(CACHE_KEY, "1");
+		} else if (error != null && StringUtils.equals(error.optString("id"), "UNAVAILABLE_FOR_LOCATION")) {
+			//TODO handle error
 		}
 		logger.log(Level.SEVERE, "Received Yelp error response {0}", root);
 	}
