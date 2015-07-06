@@ -5,7 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="utf-8"%>
-<%@ page import="com.jstakun.lm.server.personalization.ReCaptchaUtils" %>
+<%@ page import="net.gmsworld.server.config.Commons" %>
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html"%>
 <%@ taglib uri="http://struts.apache.org/tags-bean" prefix="bean"%>
 
@@ -17,14 +17,14 @@
         <title>Landmark Manager User Registration</title>
         <%@ include file="/WEB-INF/jspf/head.jspf" %>
         <script type="text/javascript">
-<!-- //
-function ClearPassword(){
-    document.userForm.password.value = "";
-    document.userForm.repassword.value = "";
-}
-// -->
-</script>
-
+			<!-- //
+				function ClearPassword(){
+   					 document.userForm.password.value = "";
+    			 	document.userForm.repassword.value = "";
+			}
+			// -->
+		</script>
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script> 
     </head>
 
     <body onLoad="ClearPassword()">
@@ -76,7 +76,7 @@ function ClearPassword(){
                             <html:text property="lastname"/>
                         </p>
                         <p>
-  							<%= ReCaptchaUtils.getRecaptchaHtml() %>
+  							<div class="g-recaptcha" data-sitekey="<%= Commons.RECAPTCHA_PUBLIC_KEY %>"></div>
                         </p>
                         <p class="no-border">
                             <html:submit styleClass="button"/>

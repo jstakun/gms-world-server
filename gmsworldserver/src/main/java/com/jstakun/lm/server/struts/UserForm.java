@@ -1,18 +1,23 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.lm.server.struts;
 
-import com.jstakun.lm.server.personalization.ReCaptchaUtils;
-import com.jstakun.lm.server.utils.MailUtils;
-import com.jstakun.lm.server.utils.persistence.UserPersistenceUtils;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.servlet.http.HttpServletRequest;
+
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.utils.HttpUtils;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.validator.DynaValidatorForm;
 import org.apache.struts.action.ActionMessage;
+import org.apache.struts.validator.DynaValidatorForm;
+import org.json.JSONObject;
+
+import com.jstakun.lm.server.utils.MailUtils;
+import com.jstakun.lm.server.utils.persistence.UserPersistenceUtils;
 
 /**
  *
@@ -24,6 +29,7 @@ public class UserForm extends DynaValidatorForm {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private Logger logger = Logger.getLogger(UserForm.class.getName());
 
 	@Override
     public void reset(ActionMapping mapping, HttpServletRequest request) {
@@ -70,18 +76,22 @@ public class UserForm extends DynaValidatorForm {
             errors.add("userForm", new ActionMessage("errors.email"));
         }
 
-        //Captcha verification
-        String challenge = request.getParameter("recaptcha_challenge_field");
-        String uresponse = request.getParameter("recaptcha_response_field");
-
-        if (challenge == null || uresponse == null) {
-            errors.add("userForm", new ActionMessage("errors.captcha"));
-        } else {
-            String remoteAddr = request.getRemoteAddr();
-            if (!ReCaptchaUtils.checkAnswer(remoteAddr, challenge, uresponse)) {
-                errors.add("userForm", new ActionMessage("errors.captcha"));
-            }
-        }
+        //Re-Captcha verification
+        String uresponse = request.getParameter("g-recaptcha-response");
+        String remoteAddr = request.getRemoteAddr();
+        String urlParams = "secret=" + Commons.RECAPTCHA_PRIVATE_KEY +"&response=" + uresponse + "&remoteip=" + remoteAddr;
+        
+        try {
+ 			String response = HttpUtils.processFileRequest(new URL("https://www.google.com/recaptcha/api/siteverify"), "POST", null, urlParams);
+ 			JSONObject json = new JSONObject(response);
+ 			if (!json.getBoolean("success") == true) {
+ 				logger.log(Level.SEVERE, "Server error", response);
+ 				errors.add("userForm", new ActionMessage("errors.captcha"));
+ 			}
+ 	    } catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage(), e);
+			errors.add("userForm", new ActionMessage("errors.captcha"));
+		}
 
         return errors;
     }
