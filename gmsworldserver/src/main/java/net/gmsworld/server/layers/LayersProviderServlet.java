@@ -57,7 +57,6 @@ public class LayersProviderServlet extends HttpServlet {
             throws ServletException, IOException {
         String formatParam = StringUtil.getStringParam(request.getParameter("format"), "json");
         Format outFormat = null;
-        //ObjectOutputStream outObj = null;
         PrintWriter outPrinter = null;
         String outString = null;
         int version = NumberUtils.getVersion(request.getParameter("version"), 1);

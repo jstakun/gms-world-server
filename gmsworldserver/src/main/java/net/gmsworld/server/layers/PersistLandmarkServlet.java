@@ -65,7 +65,10 @@ public class PersistLandmarkServlet extends HttpServlet {
                 l.setLongitude(GeocodeUtils.getLongitude(request.getParameter("longitude")));
                 l.setAltitude(NumberUtils.getDouble(request.getParameter("altitude"), 0.0));
                 l.setName(request.getParameter("name"));
-                l.setDescription(request.getParameter("description"));
+                String desc = request.getParameter("description");
+                if (StringUtils.isNotEmpty(desc)) {
+                	l.setDescription(desc);
+                }
 
                 String validityStr = request.getParameter("validityDate");
                 if (StringUtils.isNotEmpty(validityStr)) {
@@ -136,7 +139,7 @@ public class PersistLandmarkServlet extends HttpServlet {
                 response.setHeader("hash", l.getHash());
             }
             response.setStatus(HttpServletResponse.SC_OK);
-            out.print("Landmark created.");
+            out.print("Landmark " + l.getId() + " created.");
             out.close();
         }
     }

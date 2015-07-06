@@ -39,7 +39,6 @@ import com.jstakun.lm.server.utils.persistence.UserPersistenceUtils;
 public class ServicesAuthorizationFilter implements Filter {
 
     private static final boolean debug = true;
-    //private static final String BASIC_REALM = "Basic realm=\"Login Users\"";
     private static final Logger logger = Logger.getLogger(ServicesAuthorizationFilter.class.getName());
     private FilterConfig filterConfig = null;
 
@@ -104,9 +103,7 @@ public class ServicesAuthorizationFilter implements Filter {
             	} else if (StringUtils.contains(httpRequest.getRequestURI(), "crashReport")) {
             		auth = true; //TODO temporary solution, will be removed
             	}
-            }
-            
-            
+            }        
 
             if (auth) {
                 chain.doFilter(request, response);
