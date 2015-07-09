@@ -8,6 +8,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.Deflater;
@@ -15,7 +16,6 @@ import java.util.zip.DeflaterOutputStream;
 
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.utils.StringUtil;
-import net.gmsworld.server.utils.ThreadProvider;
 import net.gmsworld.server.utils.memcache.CacheProvider;
 
 import org.apache.commons.lang.StringEscapeUtils;
@@ -37,10 +37,10 @@ import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 public abstract class LayerHelper {
 
     protected static final Logger logger = Logger.getLogger(LayerHelper.class.getName());
-    protected ThreadProvider threadProvider = null;
+    protected ThreadFactory threadProvider = null;
     protected CacheProvider cacheProvider = null;
 	
-	protected void setThreadProvider(ThreadProvider threadProvider){
+	protected void setThreadProvider(ThreadFactory threadProvider){
 		this.threadProvider = threadProvider;
 	}
 	

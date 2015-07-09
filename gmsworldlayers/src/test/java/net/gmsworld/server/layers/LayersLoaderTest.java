@@ -24,7 +24,7 @@ public class LayersLoaderTest {
 		
 		List<String> layers = Arrays.asList(new String[]{Commons.FACEBOOK_LAYER, Commons.FOURSQUARE_LAYER, Commons.HOTELS_LAYER});
 		
-		LayersLoader loader = new LayersLoader(layers);
+		LayersLoader loader = new LayersLoader(new JvmThreadProvider(), layers);
 		
 		List<List<ExtendedLandmark>> results = loader.loadLayers(52.25, 20.95, null, 10, 1130, limit, 1024, null, null, Locale.US, true);
 	

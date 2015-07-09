@@ -12,15 +12,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.WordUtils;
-
-import com.jstakun.gms.android.landmarks.ExtendedLandmark;
-import com.jstakun.lm.server.persistence.Landmark;
-import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
-
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.StringUtil;
+
+import com.google.appengine.api.ThreadManager;
+import com.jstakun.lm.server.persistence.Landmark;
+import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 
 /**
  * Servlet implementation class BrowserLandmarkServlet
@@ -53,7 +51,7 @@ public class BrowserLandmarkServlet extends HttpServlet {
 	
 	private void processRequest(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			if (HttpUtils.isEmptyAny(request, "latitude", "longitude") || HttpUtils.isEmptyAny(request, "lat", "lng")) {
+			if (HttpUtils.isEmptyAny(request, "latitude", "longitude") && HttpUtils.isEmptyAny(request, "lat", "lng")) {
 				response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 			} else {
 				double latitude;
@@ -80,7 +78,7 @@ public class BrowserLandmarkServlet extends HttpServlet {
     			if (l.getId() > 0) {
     				//LandmarkPersistenceUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), null);
     				List<String> layers = Arrays.asList(new String[]{Commons.FACEBOOK_LAYER, Commons.FOURSQUARE_LAYER, Commons.HOTELS_LAYER});	
-    				LayersLoader loader = new LayersLoader(layers);
+    				LayersLoader loader = new LayersLoader(ThreadManager.currentRequestThreadFactory() , layers);
     				loader.loadLayers(l.getLatitude(), l.getLongitude(), null, 20, 1132, 30, StringUtil.getStringLengthLimit("l"), "en", null, Locale.US, false);
     				response.sendRedirect("/showLandmark/" + l.getId());
     			} else {

@@ -1,9 +1,10 @@
 package net.gmsworld.server.layers;
 
+import java.util.concurrent.ThreadFactory;
+
 import org.apache.commons.lang.StringUtils;
 
 import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.utils.ThreadProvider;
 import net.gmsworld.server.utils.memcache.CacheProvider;
 
 /**
@@ -14,7 +15,7 @@ public class LayerHelperFactory {
 	
 	private static CacheProvider cacheProvider;
 	
-	private static ThreadProvider threadProvider;
+	private static ThreadFactory threadProvider;
 	
 	private static final CouponsUtils couponsUtils = new CouponsUtils();
 
@@ -72,7 +73,7 @@ public class LayerHelperFactory {
     	cacheProvider = cp;
     }
     
-    public static void setThreadProvider(ThreadProvider tp) {
+    public static void setThreadProvider(ThreadFactory tp) {
     	threadProvider = tp;
     }
     

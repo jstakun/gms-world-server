@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,16 +15,18 @@ import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 public class LayersLoader {
 	
 	private List<String> layers = new ArrayList<String>();
+	private ThreadFactory factory;
 	private static final Logger logger = Logger.getLogger(LayersLoader.class.getName());
 	
-	public LayersLoader(List<String> layers) {
+	public LayersLoader(ThreadFactory factory, List<String> layers) {
 		this.layers = layers;
+		this.factory = factory;
 	}
 
 	public List<List<ExtendedLandmark>> loadLayers(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flex, String flex2, Locale locale, boolean useCache) {
 		int l = layers.size();
         List<List<ExtendedLandmark>> results = new ArrayList<List<ExtendedLandmark>>();
-        TaskExecutorUtils<List<ExtendedLandmark>> executor = new TaskExecutorUtils<List<ExtendedLandmark>>(l, results);
+        TaskExecutorUtils<List<ExtendedLandmark>> executor = new TaskExecutorUtils<List<ExtendedLandmark>>(l, factory, results);
         
         for (String layerName : layers) {
         	executor.submit(new LayerLoaderTask(layerName, lat, lng, query, radius, version, limit, stringLimit, flex, flex2, locale, useCache));

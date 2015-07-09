@@ -1,9 +1,9 @@
 package com.jstakun.lm.server.utils;
 
+import java.util.concurrent.ThreadFactory;
 import com.google.appengine.api.ThreadManager;
-import net.gmsworld.server.utils.ThreadProvider;
 
-public final class GoogleThreadProvider implements ThreadProvider {
+public final class GoogleThreadProvider implements ThreadFactory {
 
 	@Override
 	public Thread newThread(Runnable r) {

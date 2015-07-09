@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,9 +22,9 @@ public class TaskExecutorUtils<T> {
 	private ExecutorCompletionService<T> completionService;
 	private List<T> results;
 	
-	public TaskExecutorUtils(int count, List<T> results) {
+	public TaskExecutorUtils(int count, ThreadFactory factory, List<T> results) {
 		this.count = count;
-		this.pool = Executors.newFixedThreadPool(count);
+		this.pool = Executors.newFixedThreadPool(count, factory);
 		this.completionService = new ExecutorCompletionService<T>(pool);
 		this.results = results;
 	}
