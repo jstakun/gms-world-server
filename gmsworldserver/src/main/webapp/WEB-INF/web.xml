@@ -177,6 +177,10 @@
   <servlet-class>net.gmsworld.server.layers.PersistLandmarkServlet</servlet-class>
  </servlet>
  <servlet>
+  <servlet-name>BrowserLandmarkServlet</servlet-name>
+  <servlet-class>net.gmsworld.server.layers.BrowserLandmarkServlet</servlet-class>
+ </servlet>
+ <servlet>
   <servlet-name>action</servlet-name>
   <servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
   <init-param>
@@ -529,6 +533,10 @@
  <servlet-mapping>
    <servlet-name>GeoJsonProviderServlet</servlet-name>
    <url-pattern>/geoJsonProvider</url-pattern>
+ </servlet-mapping>
+ <servlet-mapping>
+    <servlet-name>BrowserLandmarkServlet</servlet-name>
+    <url-pattern>/browserLandmark</url-pattern>
  </servlet-mapping>
  <!--servlet-mapping>
   <servlet-name>appstats</servlet-name>

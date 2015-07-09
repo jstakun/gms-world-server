@@ -1,5 +1,8 @@
 package net.gmsworld.server.layers;
 
+import org.apache.commons.lang.StringUtils;
+
+import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.utils.ThreadProvider;
 import net.gmsworld.server.utils.memcache.CacheProvider;
 
@@ -285,6 +288,63 @@ public class LayerHelperFactory {
     public static HotwireUtils getHotwireUtils() {
     	hotwireUtils.setCacheProvider(cacheProvider);
     	return hotwireUtils;
+    }
+    
+    public static LayerHelper getByName(String name) {
+    	if (StringUtils.equals(name, Commons.COUPONS_LAYER)) {
+    		return getCouponsUtils();
+    	} else if (StringUtils.equals(name, Commons.MC_ATM_LAYER)) {
+    		return getMcOpenApiUtils();
+    	} else if (StringUtils.equals(name, Commons.FACEBOOK_LAYER)) {
+    		return getFacebookUtils();
+    	} else if (StringUtils.equals(name, Commons.FLICKR_LAYER)) {
+    		return getFlickrUtils();
+    	} else if (StringUtils.equals(name, Commons.FOURSQUARE_LAYER)) {
+    		return getFoursquareUtils();
+    	} else if (StringUtils.equals(name, Commons.FOURSQUARE_MERCHANT_LAYER)) {
+            return getFoursquareMerchantUtils();
+    	} else if (StringUtils.equals(name, Commons.GOOGLE_PLACES_LAYER)) {
+    		return  getGooglePlacesUtils();
+    	} else if (StringUtils.equals(name, Commons.GROUPON_LAYER)) {
+        	return getGrouponUtils();
+    	} else if (StringUtils.equals(name, Commons.HOTWIRE_LAYER)) {
+    		return getHotwireUtils();
+    	} else if (StringUtils.equals(name, Commons.MEETUP_LAYER)) {
+    		return getMeetupUtils();
+    	} else if (StringUtils.equals(name, Commons.PICASA_LAYER)) {
+        	return getPicasaUtils();
+    	} else if (StringUtils.equals(name, Commons.TWITTER_LAYER)) {
+        	return getTwitterUtils();
+    	} else if (StringUtils.equals(name, Commons.YELP_LAYER)) {
+        	return getYelpUtils();
+    	} else if (StringUtils.equals(name, Commons.YOUTUBE_LAYER)) {
+        	return getYoutubeUtils();
+    	} else if (StringUtils.equals(name, Commons.LM_SERVER_LAYER)) {
+            return getGmsUtils();
+    	} else if (StringUtils.equals(name, Commons.EVENTFUL_LAYER)) {
+            return getEventfulUtils();
+    	} else if (StringUtils.equals(name, Commons.OSM_ATM_LAYER) || StringUtils.equals(name, Commons.OSM_PARKING_LAYER)) {
+            return getOsmXapiUtils();
+    	} else if (StringUtils.equals(name, Commons.WIKIPEDIA_LAYER)) {
+            return getGeonamesUtils();
+    	} else if (StringUtils.equals(name, Commons.LASTFM_LAYER)) {
+            return getLastfmUtils();
+    	} else if (StringUtils.equals(name, Commons.WEBCAM_LAYER)) {
+            return getWebcamUtils();
+    	} else if (StringUtils.equals(name, Commons.PANORAMIO_LAYER)) {
+            return getPanoramioUtils();
+    	} else if (StringUtils.equals(name, Commons.EXPEDIA_LAYER)) {
+            return getExpediaUtils();
+    	} else if (StringUtils.equals(name, Commons.HOTELS_LAYER)) {
+            return getHotelsCombinedUtils();
+    	} else if (StringUtils.equals(name, Commons.INSTAGRAM_LAYER)) {
+            return getInstagramUtils();
+    	} else if (StringUtils.equals(name, Commons.FREEBASE_LAYER)) {
+            return getFreebaseUtils();
+    	} else {
+    		return null;
+    	}
+    
     }
 
 }

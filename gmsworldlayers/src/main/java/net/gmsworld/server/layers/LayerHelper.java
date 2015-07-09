@@ -40,11 +40,11 @@ public abstract class LayerHelper {
     protected ThreadProvider threadProvider = null;
     protected CacheProvider cacheProvider = null;
 	
-	public void setThreadProvider(ThreadProvider threadProvider){
+	protected void setThreadProvider(ThreadProvider threadProvider){
 		this.threadProvider = threadProvider;
 	}
 	
-	public void setCacheProvider(CacheProvider cacheProvider) {
+	protected void setCacheProvider(CacheProvider cacheProvider) {
 		this.cacheProvider = cacheProvider;
 	}
     
@@ -54,7 +54,7 @@ public abstract class LayerHelper {
 
     protected abstract List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale, boolean useCache) throws Exception;
     
-    public void serialize(List<ExtendedLandmark> landmarks, OutputStream out, int version) {
+    protected void serialize(List<ExtendedLandmark> landmarks, OutputStream out, int version) {
     	ObjectOutputStream outObj = null;
     	DeflaterOutputStream compressor = null;
     	try {
@@ -202,16 +202,14 @@ public abstract class LayerHelper {
     	return null;
     }	
     
-    public String getGeoJson(double lat, double lng, String layer) {
+    /*protected String getGeoJson(double lat, double lng, String layer) {
     	if (cacheProvider != null) {
     		String key = "geojson_" + StringUtil.formatCoordE2(lat) + "_" + StringUtil.formatCoordE2(lng) + "_" + layer;
 			return cacheProvider.getString(key);
     	} else {
     		return null;
     	}
-    }
+    }*/
     
-    public String getLayerName() {
-    	return null;
-    }
+    protected abstract String getLayerName();
 }

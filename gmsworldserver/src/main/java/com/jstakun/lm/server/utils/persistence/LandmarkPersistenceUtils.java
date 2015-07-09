@@ -1046,9 +1046,10 @@ public class LandmarkPersistenceUtils {
     
     	NotificationUtils.createLadmarkCreationNotificationTask(params);
     	
+    	//TODO use layerloader
     	//for each landmark load hotels layer
     	try {
-    		List<ExtendedLandmark> landmarks = LayerHelperFactory.getHotelsCombinedUtils().processBinaryRequest(l.getLatitude(), l.getLongitude(), null, 15, 1024, 300, StringUtil.getStringLengthLimit("l"), "en", null, Locale.US, false);
+    		List<ExtendedLandmark> landmarks = LayerHelperFactory.getHotelsCombinedUtils().processBinaryRequest(l.getLatitude(), l.getLongitude(), null, 20, 1024, 300, StringUtil.getStringLengthLimit("l"), "en", null, Locale.US, false);
     		LayerHelperFactory.getHotelsCombinedUtils().cacheGeoJson(landmarks, l.getLatitude(), l.getLongitude(), Commons.HOTELS_LAYER);                          
     	} catch (Exception e) {
 	    	logger.log(Level.SEVERE, e.getMessage(), e);

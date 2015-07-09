@@ -11,9 +11,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ExecutorUtils<T> {
+public class TaskExecutorUtils<T> {
 
-	private static final Logger logger = Logger.getLogger(ExecutorUtils.class.getName());
+	private static final Logger logger = Logger.getLogger(TaskExecutorUtils.class.getName());
 	private static final long WAIT_LIMIT = 30 * 1000; //30 sec
 	
 	private int count = 0;
@@ -21,7 +21,7 @@ public class ExecutorUtils<T> {
 	private ExecutorCompletionService<T> completionService;
 	private List<T> results;
 	
-	public ExecutorUtils(int count, List<T> results) {
+	public TaskExecutorUtils(int count, List<T> results) {
 		this.count = count;
 		this.pool = Executors.newFixedThreadPool(count);
 		this.completionService = new ExecutorCompletionService<T>(pool);
@@ -53,4 +53,7 @@ public class ExecutorUtils<T> {
 		}
 		pool.shutdown();
 	}
+	
+	
+	
 }

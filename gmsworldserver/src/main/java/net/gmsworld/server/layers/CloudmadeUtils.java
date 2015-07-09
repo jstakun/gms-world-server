@@ -261,13 +261,16 @@ public class CloudmadeUtils extends GeocodeHelper {
                     			if (email != null) {
                     				l.setEmail(email);
                     			}
+                    			//TODO use layerloader
                     			LandmarkPersistenceUtils.persistLandmark(l);
-                    			try {
-                    	    		List<ExtendedLandmark> landmarks = LayerHelperFactory.getHotelsCombinedUtils().processBinaryRequest(l.getLatitude(), l.getLongitude(), null, 15, 1024, 300, StringUtil.getStringLengthLimit("l"), "en", null, Locale.US, false);
-                    	    		LayerHelperFactory.getHotelsCombinedUtils().cacheGeoJson(landmarks, l.getLatitude(), l.getLongitude(), Commons.HOTELS_LAYER);                          
-                    	    	} catch (Exception e) {
-                    		    	logger.log(Level.SEVERE, e.getMessage(), e);
-                    		    }
+                    			if (l.getId() > 0) {
+                    				try {
+                    					List<ExtendedLandmark> landmarks = LayerHelperFactory.getHotelsCombinedUtils().processBinaryRequest(l.getLatitude(), l.getLongitude(), null, 15, 1024, 300, StringUtil.getStringLengthLimit("l"), "en", null, Locale.US, false);
+                    					LayerHelperFactory.getHotelsCombinedUtils().cacheGeoJson(landmarks, l.getLatitude(), l.getLongitude(), Commons.HOTELS_LAYER);                          
+                    				} catch (Exception e) {
+                    					logger.log(Level.SEVERE, e.getMessage(), e);
+                    				}
+                    			}
                             }
                         } catch (Exception ex) {
                             logger.log(Level.SEVERE, ex.getMessage(), ex);

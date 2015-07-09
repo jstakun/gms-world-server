@@ -328,17 +328,6 @@ public class GooglePlacesUtils extends LayerHelper {
         	
         	logger.log(Level.INFO, "Processed " + count + " from " + l + " places"); 
         }
-        
-        /*ExecutorUtils<String> executor = new ExecutorUtils<String>(l, placeDetails);
-        
-        for (int i = 0; i < l; i++) {
-            JSONObject item = results.getJSONObject(i);
-            String placeid = item.getString("place_id");
-            VenueDetailsCallable venueDetails = new VenueDetailsCallable(placeid, language);
-            executor.submit(venueDetails);
-        }    
-        
-        executor.waitForResponses();*/
     }
     
     public static ExtendedLandmark processLandmark(String placeJson, int stringLimit, Locale locale) {
@@ -511,18 +500,4 @@ public class GooglePlacesUtils extends LayerHelper {
             }
         }
     }
-	
-	/*private static class VenueDetailsCallable implements Callable<String> {
-
-		private String placeid, language;
-        
-        public VenueDetailsCallable(String placeid, String language) {
-            this.placeid = placeid;
-            this.language = language;	
-		}
-		
-		public String call() throws Exception {
-			return getPlaceDetails(placeid, language);
-        }
-	}*/
 }
