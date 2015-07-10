@@ -27,6 +27,13 @@ public class BrowserLandmarkServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(BrowserLandmarkServlet.class.getName());
     
+	private static final List<String> layers = Arrays.asList(new String[]{Commons.FACEBOOK_LAYER, Commons.FOURSQUARE_LAYER, Commons.HOTELS_LAYER, 
+			Commons.YELP_LAYER, Commons.WIKIPEDIA_LAYER, Commons.EVENTFUL_LAYER,
+			Commons.FLICKR_LAYER, Commons.YOUTUBE_LAYER, Commons.FOURSQUARE_MERCHANT_LAYER,
+			Commons.GOOGLE_PLACES_LAYER, Commons.LASTFM_LAYER, Commons.TWITTER_LAYER,
+			Commons.INSTAGRAM_LAYER, Commons.MEETUP_LAYER, Commons.EXPEDIA_LAYER,
+			Commons.WEBCAM_LAYER, Commons.MC_ATM_LAYER, Commons.FREEBASE_LAYER, Commons.LM_SERVER_LAYER,
+			Commons.COUPONS_LAYER, Commons.GROUPON_LAYER,}); 
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -77,7 +84,6 @@ public class BrowserLandmarkServlet extends HttpServlet {
     			LandmarkPersistenceUtils.persistLandmark(l);
     			if (l.getId() > 0) {
     				//LandmarkPersistenceUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), null);
-    				List<String> layers = Arrays.asList(new String[]{Commons.FACEBOOK_LAYER, Commons.FOURSQUARE_LAYER, Commons.HOTELS_LAYER, Commons.YELP_LAYER});	
     				LayersLoader loader = new LayersLoader(ThreadManager.currentRequestThreadFactory() , layers);
     				loader.loadLayers(l.getLatitude(), l.getLongitude(), null, 20, 1132, 30, StringUtil.getStringLengthLimit("l"), null, null, Locale.US, false);
     				response.sendRedirect("/showLandmark/" + l.getId());
