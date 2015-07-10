@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.JSONUtils;
 import net.gmsworld.server.utils.MathUtils;
@@ -37,6 +38,9 @@ public class FoursquareMerchantUtils extends FoursquareUtils {
 		if (lat == 0d && lng == 0d) {
      		  throw new IllegalArgumentException("Latitude or longitude mustn't be zero!");
      	}
+		if (StringUtils.isEmpty(token)) {
+            token = Commons.getProperty(Property.FS_OAUTH_TOKEN);
+        }
   	    String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, categoryid, radius, version, limit, stringLimit, token, l.getLanguage());
         List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)cacheProvider.getObject(key);
         

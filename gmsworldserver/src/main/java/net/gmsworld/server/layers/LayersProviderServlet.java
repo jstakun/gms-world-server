@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
@@ -414,9 +413,6 @@ public class LayersProviderServlet extends HttpServlet {
                     String token = null;
                     if (StringUtils.isNotEmpty(request.getParameter("token"))) {
                         token = URLDecoder.decode(request.getParameter("token"), "UTF-8");
-                    }
-                    if (StringUtils.isEmpty(token)) {
-                        token = Commons.getProperty(Property.FS_OAUTH_TOKEN);
                     }
                     String categoryid = request.getParameter("categoryid");
 

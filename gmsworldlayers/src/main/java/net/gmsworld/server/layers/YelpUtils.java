@@ -349,9 +349,11 @@ public class YelpUtils extends LayerHelper {
     }
 
     @Override
-	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String hasDeals, String language, Locale locale, boolean useCache)
-			throws Exception {
-		int normalizedRadius = NumberUtils.normalizeNumber(radius, 1000, 40000);
+	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String hasDeals, String language, Locale locale, boolean useCache) throws Exception {
+		if (language == null) {
+			language = locale.getLanguage();
+		}
+    	int normalizedRadius = NumberUtils.normalizeNumber(radius, 1000, 40000);
         int normalizedLimit = NumberUtils.normalizeNumber(limit, 20, 100);
         String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, normalizedRadius, version, normalizedLimit, stringLimit, hasDeals, language);
 
@@ -361,7 +363,10 @@ public class YelpUtils extends LayerHelper {
             
         	if (!cacheProvider.containsKey(CACHE_KEY)) {
         		Map<Integer, Thread> venueDetailsThreads = new ConcurrentHashMap<Integer, Thread>();
-        		boolean isDeal = Boolean.parseBoolean(hasDeals);
+        		boolean isDeal = false;
+        		if (hasDeals != null) {
+        			isDeal = Boolean.parseBoolean(hasDeals);
+        		}
         		int offset = 0;
 
         		while (offset < normalizedLimit) {

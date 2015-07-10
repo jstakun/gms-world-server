@@ -322,6 +322,9 @@ public class CouponsUtils extends LayerHelper {
 
 	@Override
 	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String categoryid, String language, Locale locale, boolean useCache) throws Exception {
+		if (language == null) {
+			language = locale.getLanguage();
+		}
 		String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, limit, stringLimit, categoryid, language);
 		List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)cacheProvider.getObject(key);
         if (landmarks == null) {

@@ -60,38 +60,6 @@ import com.openlapi.QualifiedCoordinates;
  */
 public class YoutubeUtils extends LayerHelper {
 
-    //private static final String YOUTUBE_GDATA_SERVER = "http://gdata.youtube.com";
-    //private static final String VIDEOS_FEED = YOUTUBE_GDATA_SERVER + "/feeds/api/videos";
-    
-    /*private static VideoFeed getVideoFeed(double latitude, double longitude, String query, int radius, int limit) throws MalformedURLException, IOException, ServiceException {
-        YouTubeService ytservice = new YouTubeService("GMS World", Commons.getProperty(Property.YOUTUBE_API_KEY));
-
-        YouTubeQuery vquery = new YouTubeQuery(new URL(VIDEOS_FEED));
-
-        GeoRssWhere geo = new GeoRssWhere(latitude, longitude);
-        vquery.setLocation(geo);
-
-        int r = NumberUtils.normalizeNumber(radius, 1, 999);
-        
-        vquery.setLocationRadius(r + "km");
-        vquery.setRestrictLocation(true);
-        if (StringUtils.isNotEmpty(query)) {
-            vquery.setFullTextQuery(query);
-        }
-
-        //vquery.setPublishedMin(new DateTime(System.currentTimeMillis() - (1000 * 60 * 60 * 24 * 365))); //unsupported by youtube
-        //vquery.setOrderBy(YouTubeQuery.OrderBy.PUBLISHED);
-        vquery.setOrderBy(YouTubeQuery.OrderBy.VIEW_COUNT);
-
-        //vquery.setTime(YouTubeQuery.Time.THIS_MONTH);
-
-        int l = NumberUtils.normalizeNumber(limit, 1, 50);
-
-        vquery.setMaxResults(l);
-
-        return ytservice.query(vquery, VideoFeed.class);
-    }*/
-    
     private static YouTube getYouTube() {
     	HttpTransport httpTransport = new NetHttpTransport();
         JsonFactory jsonFactory = new JacksonFactory();
@@ -455,17 +423,6 @@ public class YoutubeUtils extends LayerHelper {
 		String key = getCacheKey(getClass(), "processBinaryRequest", latitude, longitude, query, radius, version, limit, stringLimit, flexString, flexString2);
 		List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)cacheProvider.getObject(key);
         if (landmarks == null) {
-        	
-        	
-        	/*VideoFeed videoFeed = getVideoFeed(latitude, longitude, query, radius, limit);
-        	if (!videoFeed.getEntries().isEmpty()) {
-        		landmarks = createCustomLandmarkVideoList(videoFeed.getEntries(), version, stringLimit, locale);
-                cacheProvider.put(key, landmarks);
-                logger.log(Level.INFO, "Adding YT landmark list to cache with key {0}", key);
-            } else {
-            	landmarks = new ArrayList<ExtendedLandmark>();
-            }*/
-        	
         	List<Video> videos = getVideosV3(latitude, longitude, query, radius, limit);
         	if (!videos.isEmpty()) {
         		landmarks = createCustomVideoV3LandmarkList(videos, stringLimit, locale, latitude, longitude); 

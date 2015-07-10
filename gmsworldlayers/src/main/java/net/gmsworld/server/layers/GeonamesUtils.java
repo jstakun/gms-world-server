@@ -109,6 +109,9 @@ public class GeonamesUtils extends LayerHelper {
 
 	@Override
 	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String lang, String flexString2, Locale locale, boolean useCache) throws Exception {
+		if (lang == null) {
+			lang = locale.getLanguage();
+		}
 		int r = NumberUtils.normalizeNumber(radius, 1, 20);
         String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, r, version, limit, stringLimit, lang, flexString2);
         List<ExtendedLandmark> output = (List<ExtendedLandmark>)cacheProvider.getObject(key);

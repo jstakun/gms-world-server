@@ -77,7 +77,7 @@ public class BrowserLandmarkServlet extends HttpServlet {
     			LandmarkPersistenceUtils.persistLandmark(l);
     			if (l.getId() > 0) {
     				//LandmarkPersistenceUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), null);
-    				List<String> layers = Arrays.asList(new String[]{Commons.FACEBOOK_LAYER, Commons.FOURSQUARE_LAYER, Commons.HOTELS_LAYER});	
+    				List<String> layers = Arrays.asList(new String[]{Commons.FACEBOOK_LAYER, Commons.FOURSQUARE_LAYER, Commons.HOTELS_LAYER, Commons.YELP_LAYER});	
     				LayersLoader loader = new LayersLoader(ThreadManager.currentRequestThreadFactory() , layers);
     				loader.loadLayers(l.getLatitude(), l.getLongitude(), null, 20, 1132, 30, StringUtil.getStringLengthLimit("l"), null, null, Locale.US, false);
     				response.sendRedirect("/showLandmark/" + l.getId());

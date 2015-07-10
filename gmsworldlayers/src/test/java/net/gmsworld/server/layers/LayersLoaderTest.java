@@ -22,11 +22,21 @@ public class LayersLoaderTest {
 		LayerHelperFactory.setCacheProvider(new MockCacheProvider());
 		LayerHelperFactory.setThreadProvider(new JvmThreadProvider());	
 		
-		List<String> layers = Arrays.asList(new String[]{Commons.FACEBOOK_LAYER, Commons.FOURSQUARE_LAYER, Commons.HOTELS_LAYER});
+		List<String> layers = Arrays.asList(new String[]{Commons.FACEBOOK_LAYER, Commons.FOURSQUARE_LAYER, Commons.HOTELS_LAYER, 
+				Commons.YELP_LAYER, Commons.WIKIPEDIA_LAYER, Commons.EVENTFUL_LAYER,
+				Commons.FLICKR_LAYER, Commons.YOUTUBE_LAYER, Commons.FOURSQUARE_MERCHANT_LAYER,
+				Commons.GOOGLE_PLACES_LAYER, Commons.LASTFM_LAYER, Commons.TWITTER_LAYER,
+				Commons.INSTAGRAM_LAYER, Commons.MEETUP_LAYER, Commons.EXPEDIA_LAYER,
+				Commons.WEBCAM_LAYER, Commons.MC_ATM_LAYER, Commons.FREEBASE_LAYER, Commons.LM_SERVER_LAYER,
+				Commons.COUPONS_LAYER, Commons.GROUPON_LAYER,}); 
+		        //Commons.PANORAMIO_LAYER, Commons.PICASA_LAYER, Commons.OSM_PARKING_LAYER, Commons.OSM_ATM_LAYER
+		System.out.println("Testing " + layers.size() + " layers");
 		
 		LayersLoader loader = new LayersLoader(new JvmThreadProvider(), layers);
 		
-		List<List<ExtendedLandmark>> results = loader.loadLayers(52.25, 20.95, null, 10, 1130, limit, 1024, null, null, Locale.US, true);
+		//52.25, 20.95
+		//40.71, -74.01
+		List<List<ExtendedLandmark>> results = loader.loadLayers(40.71, -74.01, null, 10, 1130, limit, 1024, null, null, Locale.US, true);
 	
 	    for (List<ExtendedLandmark> landmarks : results) {
 	    	System.out.print("Found " + landmarks.size() + " landmarks");
