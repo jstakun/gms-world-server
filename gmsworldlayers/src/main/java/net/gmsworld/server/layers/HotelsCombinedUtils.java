@@ -253,7 +253,10 @@ public class HotelsCombinedUtils extends LayerHelper {
 	
 	@Override
 	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String language, String flexString2, Locale locale, boolean useCache) throws Exception {
-	    String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, limit, stringLimit, language, null);
+	    if (language == null) {
+	    	language = locale.getLanguage();
+	    }
+		String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, limit, stringLimit, language, null);
         List<ExtendedLandmark> landmarks = null;
         
         if (useCache) {

@@ -867,14 +867,17 @@ public class FacebookUtils extends LayerHelper {
     
     @Override
 	public List<ExtendedLandmark> processBinaryRequest(double latitude, double longitude, String query, int distance, int version, int limit, int stringLength, String fbtoken, String flexString2, Locale locale, boolean useCache) throws Exception {
-		int dist = NumberUtils.normalizeNumber(distance, 1000, 50000);
+		if (distance < 1000) {
+			distance = distance * 1000;
+		}
+    	int dist = NumberUtils.normalizeNumber(distance, 1000, 50000);
 
         String key = getCacheKey(getClass(), "processRequest", latitude, longitude, query, dist, version, limit, stringLength, fbtoken, flexString2);
 
         List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)cacheProvider.getObject(key);
         if (landmarks == null) {
             String token = fbtoken;
-        	if (!StringUtils.isNotEmpty(token)) {
+        	if (StringUtils.isEmpty(token)) {
                token = Commons.getProperty(Property.fb_app_token);
             }
         	FacebookClient facebookClient = getFacebookClient(token);

@@ -32,6 +32,8 @@ public class LayersLoaderTest {
 	    	System.out.print("Found " + landmarks.size() + " landmarks");
 	    	if (! landmarks.isEmpty()) {
 	    		System.out.println(" in layer " + landmarks.get(0).getLayer());
+	    	} else {
+	    		System.out.println("");
 	    	}
 	    }
 	}
