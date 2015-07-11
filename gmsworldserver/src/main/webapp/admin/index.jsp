@@ -23,8 +23,14 @@
     <h4>
       <a href="createLayer.jsp">Create Layer</a>
     </h4>
-     <h4>
+    <h4>
       <a href="populate.jsp">Refresh configuration</a>
+    </h4>
+    <h4>
+      <a href="/admin/browserLandmark?latitude=52.25&longitude=20.95">Create landmark in Warsaw/Poland</a>
+    </h4>
+    <h4>
+      <a href="/admin/browserLandmark?latitude=40.71&longitude=-74.01">Create landmark in New York/US</a>
     </h4>
     <h4>
       Available tasks:

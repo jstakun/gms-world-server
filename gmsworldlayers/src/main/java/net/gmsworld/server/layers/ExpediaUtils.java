@@ -48,7 +48,7 @@ public class ExpediaUtils extends LayerHelper {
 		    //String sig = String.format("%032x", new BigInteger(1, md.digest()));
 			
 			URL expediaUrl = new URL(
-					"http://dev.api.ean.com/ean-services/rs/hotel/v3/list?json"
+					"http://api.ean.com/ean-services/rs/hotel/v3/list?"
 							+ "&apiKey=" + Commons.getProperty(Property.EXPEDIA_KEY)
 							//+ "&sig=" + sig
 							+ "&cid=55505" //+ "&cid=00001"
@@ -57,7 +57,8 @@ public class ExpediaUtils extends LayerHelper {
 							+ "&searchRadius=" + r
 							+ "&sort=OVERALL_VALUE" // QUALITY_REVERSE,PRICE,PRICE_AVERAGE,PRICE_REVERSE
 							+ "&searchRadiusUnit=KM" 
-							+ "&locale=" + lang);
+							+ "&locale=" + lang
+							+ "&_type=json");
 
 			//System.out.println(expediaUrl.toString());
 
@@ -175,7 +176,7 @@ public class ExpediaUtils extends LayerHelper {
 	@Override
 	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String lang, String flexString2, Locale locale, boolean useCache) throws Exception {
 		if (lang == null) {
-			lang = locale.getLanguage();
+			lang = locale.toString();
 		}
 		int r = NumberUtils.normalizeNumber(radius, 2, 80);
 		String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, r, version, limit, stringLimit, lang, flexString2);
@@ -188,7 +189,7 @@ public class ExpediaUtils extends LayerHelper {
 		    //String sig = String.format("%032x", new BigInteger(1, md.digest()));
 			
 			URL expediaUrl = new URL(
-					"http://dev.api.ean.com/ean-services/rs/hotel/v3/list?json"
+					"http://api.ean.com/ean-services/rs/hotel/v3/list?json"
 							+ "&apiKey=" + Commons.getProperty(Property.EXPEDIA_KEY) 
 							//+ "&sig=" + sig
 							+ "&cid=55505" //+ "&cid=00001"
@@ -197,7 +198,8 @@ public class ExpediaUtils extends LayerHelper {
 							+ "&searchRadius=" + r
 							+ "&sort=OVERALL_VALUE" // QUALITY_REVERSE,PRICE,PRICE_AVERAGE,PRICE_REVERSE
 							+ "&searchRadiusUnit=KM" 
-							+ "&locale=" + lang);
+							+ "&locale=" + lang
+							+ "&_type=json");
 
 			//System.out.println(expediaUrl.toString());
 

@@ -85,7 +85,7 @@ public class BrowserLandmarkServlet extends HttpServlet {
     			if (l.getId() > 0) {
     				//LandmarkPersistenceUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), null);
     				LayersLoader loader = new LayersLoader(ThreadManager.currentRequestThreadFactory() , layers);
-    				loader.loadLayers(l.getLatitude(), l.getLongitude(), null, 20, 1132, 30, StringUtil.getStringLengthLimit("l"), null, null, Locale.US, false);
+    				loader.loadLayers(l.getLatitude(), l.getLongitude(), null, 20, 1132, 30, StringUtil.getStringLengthLimit("l"), null, null, Locale.US, true);
     				response.sendRedirect("/showLandmark/" + l.getId());
     			} else {
     				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
