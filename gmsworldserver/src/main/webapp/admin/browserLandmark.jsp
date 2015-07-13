@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="robots" content="noindex,nofollow" />
-<title>Create GMS World landmark from web browser</title>
+<title>Please wait for landmark creation and layer loading...</title>
 <style type="text/css">
 .loader {
 	position: fixed;
@@ -29,16 +29,19 @@ $(window).load(function() {
 (function() {
   var flickerAPI = "/admin/browserLandmark?callback=landmark_callback";
   $.getJSON( flickerAPI, {
-    latitude: "<%= request.getParameter("latitude") %>",
-    longitude: "<%= request.getParameter("longitude") %>"
+    	latitude: "<%= request.getParameter("latitude") %>",
+    	longitude: "<%= request.getParameter("longitude") %>"
   })
   .done(function( data ) {
-    console.log("data: " + data.id);
-    window.location.href = '/showLandmark/' + data.id;
+		$( 'div' ).remove();  
+		$( 'body' ).append("Redirecting to <a href=\"/showLandmark/" + data.id + "\">landmark page</a>...<br/>" +
+				           "Click on the link if you are not redirected automatically.");
+    	console.log("created landmark: " + data.id);
+    	window.location.href = '/showLandmark/' + data.id;
   })
   .error(function(jqXHR, textStatus, errorThrown){ /* assign handler */
-    console.log("error: " + errorThrown);
-    alert("Internal Error Occurred!");
+    	console.log("error: " + errorThrown);
+    	alert("Internal Error Occurred!");
   });
 })();
 </script>
