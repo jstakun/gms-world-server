@@ -145,11 +145,18 @@
             <to>/getHeatMap.do</to>
     </rule>
     
-     <!-- showLocation rules -->
+    <!-- showLocation rules -->
     
     <rule>
             <from>^/showLocation/([0-9.-]+)/([0-9.-]+)$</from>
             <to>/showLocation.do?lat=$1&amp;lon=$2</to>
+    </rule>
+    
+    <!-- browserLandmark rules -->
+    
+    <rule>
+            <from>^/admin/newLandmark/([0-9.-]+)/([0-9.-]+)$</from>
+            <to>/admin/browserLandmark.jsp?latitude=$1&amp;longitude=$2</to>
     </rule>
     
     <!-- showLocation rules -->

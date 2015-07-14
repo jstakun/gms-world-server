@@ -27,15 +27,15 @@ $(window).load(function() {
 <div class="loader"></div>
 <script>
 (function() {
-  var flickerAPI = "/admin/browserLandmark?callback=landmark_callback";
-  $.getJSON( flickerAPI, {
+  var gmsAPI = "/admin/browserLandmark?callback=landmark_callback";
+  $.getJSON( gmsAPI, {
     	latitude: "<%= request.getParameter("latitude") %>",
     	longitude: "<%= request.getParameter("longitude") %>"
   })
   .done(function( data ) {
 		$( 'div' ).remove();  
 		$( 'body' ).append("Redirecting to <a href=\"/showLandmark/" + data.id + "\">landmark page</a>...<br/>" +
-				           "Click on the link if you are not redirected automatically.");
+				           "If you won't be redirected automatically click the link above.");
     	console.log("created landmark: " + data.id);
     	window.location.href = '/showLandmark/' + data.id;
   })
