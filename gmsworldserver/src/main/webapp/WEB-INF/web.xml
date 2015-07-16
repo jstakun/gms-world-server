@@ -536,7 +536,7 @@
  </servlet-mapping>
  <servlet-mapping>
     <servlet-name>BrowserLandmarkServlet</servlet-name>
-    <url-pattern>/admin/browserLandmark,/services/browserLandmark</url-pattern>
+    <url-pattern>/services/browserLandmark</url-pattern>
  </servlet-mapping>
  <!--servlet-mapping>
   <servlet-name>appstats</servlet-name>

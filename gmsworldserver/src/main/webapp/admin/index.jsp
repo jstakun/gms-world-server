@@ -27,12 +27,6 @@
       <a href="populate.jsp">Refresh configuration</a>
     </h4>
     <h4>
-      <a href="/admin/newLandmark/52.25/20.95">Create landmark in Warsaw/Poland</a>
-    </h4>
-    <h4>
-      <a href="/admin/newLandmark/40.71/-74.01">Create landmark in New York/US</a>
-    </h4>
-    <h4>
       Available tasks:
     </h4>
     <h4>

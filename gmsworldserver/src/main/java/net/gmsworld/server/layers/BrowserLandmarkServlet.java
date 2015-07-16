@@ -81,7 +81,7 @@ public class BrowserLandmarkServlet extends HttpServlet {
     			l.setLayer(Commons.MY_POSITION_LAYER);
     			l.setUsername(Commons.getProperty(Commons.Property.MYPOS_USER));
     			
-    			/*LandmarkPersistenceUtils.persistLandmark(l);
+    			LandmarkPersistenceUtils.persistLandmark(l);
     			if (l.getId() > 0) {
     				LandmarkPersistenceUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), null);
     				LayersLoader loader = new LayersLoader(ThreadManager.currentRequestThreadFactory() , layers);
@@ -91,10 +91,10 @@ public class BrowserLandmarkServlet extends HttpServlet {
     				response.getWriter().close();
     			} else {
     				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-    			}*/
-    			response.setContentType("text/javascript;charset=UTF-8");
-				response.getWriter().println("{\"id\": 44306}");
-				response.getWriter().close();
+    			}
+    			//response.setContentType("text/javascript;charset=UTF-8");
+				//response.getWriter().println("{\"id\": 44306}");
+				//response.getWriter().close();
 			}
 		} catch (Exception e) {
 	    	logger.log(Level.SEVERE, e.getMessage(), e);
