@@ -60,7 +60,6 @@ public class LayersLoader {
 			this.version = version;
 		}
 		
-		@Override
 		public List<ExtendedLandmark> call() throws Exception {
 			logger.log(Level.INFO, "Loading landmarks in layer {0}", layer);
 			List<ExtendedLandmark> landmarks = null;
@@ -75,12 +74,8 @@ public class LayersLoader {
 				if (landmarks != null) {
 					logger.log(Level.INFO, "Loaded {0} landmarks in layer {1}", new Object[]{landmarks.size(), layer});	
 				}
-			}
-			
+			}	
 			return landmarks;
-		}
-		
+		}	
 	}
-	 
-	
 }
