@@ -19,3 +19,4 @@ test-output
 *~
 /eclipse-launch-profiles
 /datanucleus.log
+/.tern-project

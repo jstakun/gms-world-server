@@ -9,13 +9,14 @@
 var token = "<%= request.getHeader("X-GMS-Token") != null ? request.getHeader("X-GMS-Token") : request.getParameter("gmstoken")  %>";
 
 function getLocation() {
+	var x = document.getElementById("status");
     if (token == "null") {
-    	document.getElementById("status").innerHTML = "Token is required to proceed with your request!";
+    	x.innerHTML = "Token is required to proceed with your request!";
     } else if (navigator.geolocation) {
-    	document.getElementById("status").innerHTML = "Reading your geolocation...";
-        navigator.geolocation.getCurrentPosition(showPosition, errorCallback);
+    	x.innerHTML = "Please wait. I'm reading now your geolocation...";
+        navigator.geolocation.getCurrentPosition(showPosition, errorCallback, {maximumAge: 60000, timeout: 30000});
     } else { 
-    	document.getElementById("status").innerHTML = "Geolocation is not supported by this browser!";
+    	x.innerHTML = "Geolocation is not supported by this browser!";
     }
 }
 
@@ -25,8 +26,22 @@ function showPosition(position) {
 }
 
 function errorCallback(error) {
-	document.getElementById("status").innerHTML = "Failed to read your location!";
-	console.log("Error: " + error)
+	var x = document.getElementById("status");
+	console.log("Error: " + error);
+	switch(error.code) {
+    	case error.PERMISSION_DENIED:
+        	x.innerHTML = "User denied the request for geolocation!"
+        	break;
+    	case error.POSITION_UNAVAILABLE:
+        	x.innerHTML = "Location information is unavailable!"
+        	break;
+    	case error.TIMEOUT:
+        	x.innerHTML = "The request to get user location timed out!"
+        	break;
+    	case error.UNKNOWN_ERROR:
+        	x.innerHTML = "An unknown error occurred!"
+        	break;
+	}
 }
 </script>
 </head>
