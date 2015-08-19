@@ -19,6 +19,7 @@ public final class ConfigurationManager {
     private static Map<String, String> configuration = new HashMap<String, String>();
     public static final String CONFIG = "config";
     public static final String GMS_WORLD_PAGE_TOKEN = "gmsWorldPageToken";
+    public static final String GMS_WORLD_ACCESS_TOKEN = "gmsWorldAccessToken";
     
     public static void populateConfig()
     {

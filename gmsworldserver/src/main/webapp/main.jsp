@@ -1,9 +1,3 @@
-<%-- 
-    Document   : index
-    Created on : 2010-12-18, 14:22:27
-    Author     : jstakun
---%>
-
 <%@page contentType="text/html" pageEncoding="utf-8"%>
 <%@page import="com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils,
          com.jstakun.lm.server.persistence.Landmark,
@@ -56,12 +50,18 @@
                     
                     <div class="post">
                         <p>
-                         Find out where <a href="/heatMap">GMS World</a> is most popular.<br/>
-                         <a href="/heatMap"><img src="/images/heatmap_2.jpg" alt="GMS World Heat Map" title="Click to see GMS World Heat Map" height="250" width="500" class="float-left"/></a><br/><br/>
-                    </p>
+                         	Find out where <a href="/heatMap">GMS World</a> is most popular.<br/>
+                         	<a href="/heatMap"><img src="/images/heatmap_2.jpg" alt="GMS World Heat Map" title="Click to see GMS World Heat Map" height="250" width="500" class="float-left"/></a><br/><br/>
+                    	</p>
                     </div>
 
-                    <h3>Latest Landmarks</h3>
+                    <div class="post">
+                    	<p>
+                    		<a href="/myposLandmark.jsp?generatetoken=true">Share your location</a> and discover landmarks nearby.<br/>
+                            <a href="/myposLandmark.jsp?generatetoken=true"><img src="/images/LM_banner_512x250.jpg" alt="GMS World Baner" title="Click to share you location" height="250" width="512" class="float-left"/></a><br/><br/>                     	
+                    	</p>
+                    </div>
+                    <h3>Newest Landmarks</h3>
 
                     <%
                     	List<Landmark> landmarkList = (List<Landmark>) request.getAttribute("newestLandmarkList");
