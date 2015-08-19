@@ -66,6 +66,7 @@ public class LayersTest {
 	   //data.add(new Object[]{LayerHelperFactory.getFacebookUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getGmsUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getYoutubeUtils()});
+	   //data.add(new Object[]{LayerHelperFactory.getTwitterUtils()});
 	   
 	   System.out.println("Found " + data.size() + " layers.");
 	   
@@ -119,8 +120,9 @@ public class LayersTest {
 			assertEquals("Layer " + layer.getLayerName() + " is empty!", landmarks.isEmpty(), false);
 			
 			for (ExtendedLandmark landmark : landmarks) {
-				//System.out.println(landmark.getName() + " :-> " + landmark.getDescription() + "---\n");
+				System.out.println(landmark.getName() + " :-> " + landmark.getDescription() + "---\n");
 				//System.out.println(landmark.getThumbnail());
+				//System.out.println(landmark.getUrl());
 			}
 			
 			String key = layer.cacheGeoJson(landmarks, lat, lng, layer.getLayerName());

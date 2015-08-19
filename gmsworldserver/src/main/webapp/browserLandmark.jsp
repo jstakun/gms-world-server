@@ -24,7 +24,9 @@ $(window).load(function() {
 </script>
 </head>
 <body>
-<div class="loader"></div>
+<div class="loader">
+<p>Please wait. I'm loading landmarks around your current location...</p>
+</div>
 <script>
 <!-- TODO call .ajax() -->
 (function() {
@@ -42,14 +44,14 @@ $(window).load(function() {
     }})
   	.done(function( data ) {
   	   		$( 'div' ).remove();   
-  	  		$( 'body' ).append("Redirecting to <a href=\"/showLandmark/" + data.id + "\">landmark page</a>...<br/>" +
-  	  				           "If you won't be redirected automatically click the link above.");
+  	  		$( 'body' ).append("<p>Redirecting to <a href=\"/showLandmark/" + data.id + "\">landmark page</a>...<br/>" +
+  	  				           "If you won't be redirected automatically click the link above.</p>");
   	    	console.log("Created landmark: " + data.id);
   	    	window.location.href = '/showLandmark/' + data.id;
   	})
   	.error(function(jqXHR, textStatus, errorThrown){ /* assign handler */
   		    $( 'div' ).remove();   
-	  		$( 'body' ).append("Error occured: " + errorThrown);
+	  		$( 'body' ).append("<p>Error occured: " + errorThrown + "</p>");
 	  		console.log("Error occured: " + errorThrown);
   	    	alert("Error occured!");
   	});

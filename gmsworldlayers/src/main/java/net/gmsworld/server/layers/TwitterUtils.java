@@ -144,7 +144,7 @@ public class TwitterUtils extends LayerHelper {
                 String name = user.getScreenName();
                 String thumbnail = user.getBiggerProfileImageURL();
                 
-                String url = "http://twitter.com/" + name;
+                String url = "http://twitter.com/" + name + "/status/" + tweet.getId();
                 
                 Map<String, String> tokens = new HashMap<String, String>();
                 String text = autolink.autoLink(tweet.getText());
