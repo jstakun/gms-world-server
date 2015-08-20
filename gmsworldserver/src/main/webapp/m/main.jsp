@@ -27,12 +27,15 @@
     	
     	<h3>Welcome to GMS World</h3>
         Discover interesting places anywhere with <a href="/download.jsp"><b>Landmark Manager</b></a>.
-        Find out where <a href="/heatMap">GMS World</a> is most popular.<br/>
+        Find out where <a href="/heatMap">GMS World</a> is most popular.<br/>       
+        </article>
         
+        <article class="underline">
+        <a href="/myposLandmark.jsp?generatetoken=true">Share your location</a> and discover landmarks nearby.<br/>
         </article>
         
         <article>
-        <h3>Latest Landmarks</h3>
+        <h3>Newest Landmarks</h3>
         </article>
         <%
         	List<Landmark> landmarkList = (List<Landmark>) request.getAttribute("newestLandmarkList");

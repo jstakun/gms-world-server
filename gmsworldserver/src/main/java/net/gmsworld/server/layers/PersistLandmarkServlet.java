@@ -19,6 +19,7 @@ import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
 
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONObject;
 
 import com.google.gdata.util.common.util.Base64;
 import com.jstakun.lm.server.persistence.Landmark;
@@ -112,8 +113,20 @@ public class PersistLandmarkServlet extends HttpServlet {
                 //check if this landmark has the same name and location as newest (last saved) landmark
                 boolean isSimilarToNewest = LandmarkPersistenceUtils.isSimilarToNewest(l);
             	if (!isSimilarToNewest) {
-            		int useCount = NumberUtils.getInt(request.getHeader("X-GMS-UseCount"), 1);
-            		l.setFlex("{useCount:"+useCount+"}");
+            		int useCount = NumberUtils.getInt(request.getHeader(Commons.USE_COUNT_HEADER), 1);
+            		int appId = NumberUtils.getInt(request.getHeader(Commons.APP_HEADER), -1);
+            		int version = NumberUtils.getInt(request.getHeader(Commons.APP_VERSION_HEADER), -1);
+            		
+            		JSONObject flex = new JSONObject();
+            		flex.append("useCount", useCount);
+            		if (appId > -1) {
+            			flex.append("appId", appId);
+            		}
+            		if (version > 0) {
+            			flex.append("version", version);
+            		}
+            		l.setFlex(flex.toString());
+            		
                 	LandmarkPersistenceUtils.persistLandmark(l);
 
                 	if (l.getId() > 0) {	
@@ -144,7 +157,6 @@ public class PersistLandmarkServlet extends HttpServlet {
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /** 
      * Handles the HTTP <code>GET</code> method.
      * @param request servlet request
