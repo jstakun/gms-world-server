@@ -5,26 +5,29 @@
    String token = request.getHeader("X-GMS-Token") != null ? request.getHeader("X-GMS-Token") : request.getParameter("gmstoken");
 %>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="robots" content="noindex,nofollow" />
-<title>Please wait for landmark creation and layer loading...</title>
-<style type="text/css">
-.loader {
-	position: fixed;
-	left: 0px;
-	top: 0px;
-	width: 100%;
-	height: 100%;
-	z-index: 9999;
-	background: url('/images/loading_spinner.gif') 50% 50% no-repeat rgb(249,249,249);
-}
-</style>
-<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
-<script type="text/javascript">
-$(window).load(function() {
-	$("loader").fadeOut("slow");
-})
-</script>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="robots" content="noindex,nofollow" />
+	<meta HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE"/>
+	<meta HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE"/>
+	<meta HTTP-EQUIV="EXPIRES" CONTENT="0"/>
+	<title>Please wait for landmark creation and layer loading...</title>
+	<style type="text/css">
+	.loader {
+		position: fixed;
+		left: 0px;
+		top: 0px;
+		width: 100%;
+		height: 100%;
+		z-index: 9999;
+		background: url('/images/loading_spinner.gif') 50% 50% no-repeat rgb(249,249,249);
+	}
+	</style>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript">
+	$(window).load(function() {
+		$("loader").fadeOut("slow");
+	})
+	</script>
 </head>
 <body>
 <div class="loader">
@@ -49,7 +52,8 @@ $(window).load(function() {
   	  		$( 'body' ).append("<p>Redirecting to <a href=\"/showLandmark/" + data.id + "\">landmark page</a>...<br/>" +
   	  				           "If you won't be redirected automatically click the link above.</p>");
   	    	console.log("Created landmark: " + data.id);
-  	    	window.location.href = '/showLandmark/' + data.id;
+  	    	//window.location.href = '/showLandmark/' + data.id;
+  	    	window.location.replace('/showLandmark/' + data.id);
   	})
   	.error(function(jqXHR, textStatus, errorThrown){ /* assign handler */
   		    $( 'div' ).remove();   

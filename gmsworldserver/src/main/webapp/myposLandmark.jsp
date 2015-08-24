@@ -12,6 +12,9 @@
 %>
 <head>
  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+ <meta HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE"/>
+ <meta HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE"/>
+ <meta HTTP-EQUIV="EXPIRES" CONTENT="0"/>
  <title>Create landmark based on your location</title>
  <script>
  var token = "<%= token %>";
@@ -30,7 +33,8 @@
 
  function showPosition(position) {
 	document.getElementById("status").innerHTML = "Redirecting to landmark page...";
-	window.location.href = "/newLandmark/" + position.coords.latitude + "/" + position.coords.longitude + "/" + token; 	
+	//window.location.href = "/newLandmark/" + position.coords.latitude + "/" + position.coords.longitude + "/" + token; 	
+	window.location.replace("/newLandmark/" + position.coords.latitude + "/" + position.coords.longitude + "/" + token);
  }
 
  function errorCallback(error) {

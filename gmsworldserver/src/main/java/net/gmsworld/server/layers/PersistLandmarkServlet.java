@@ -118,12 +118,12 @@ public class PersistLandmarkServlet extends HttpServlet {
             		int version = NumberUtils.getInt(request.getHeader(Commons.APP_VERSION_HEADER), -1);
             		
             		JSONObject flex = new JSONObject();
-            		flex.append("useCount", useCount);
+            		flex.put("useCount", useCount);
             		if (appId > -1) {
-            			flex.append("appId", appId);
+            			flex.put("appId", appId);
             		}
             		if (version > 0) {
-            			flex.append("version", version);
+            			flex.put("version", version);
             		}
             		l.setFlex(flex.toString());
             		

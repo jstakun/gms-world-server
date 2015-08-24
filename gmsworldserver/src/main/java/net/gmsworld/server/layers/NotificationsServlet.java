@@ -57,12 +57,12 @@ public class NotificationsServlet extends HttpServlet {
         response.setContentType("text/json;charset=UTF-8");
         PrintWriter out = response.getWriter();
         try {
-            if (HttpUtils.isEmptyAny(request, "type", "appId")) {
+            if (HttpUtils.isEmptyAny(request, "type")) {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             } else {
                 String type = request.getParameter("type");
-                String appId = request.getParameter("appId");
-                JSONObject reply = new JSONObject();
+                int appId = NumberUtils.getInt(request.getHeader(Commons.APP_HEADER), -1);
+        		JSONObject reply = new JSONObject();
                 
                 String latStr = request.getParameter("lat");
                 String lngStr = request.getParameter("lng");
@@ -87,9 +87,21 @@ public class NotificationsServlet extends HttpServlet {
                             }	
                             l.setUsername(u);
                             String socialIds = request.getParameter("socialIds");
-                            int useCount = NumberUtils.getInt(request.getHeader("X-GMS-UseCount"), 1);
-                			l.setFlex("{useCount:"+useCount+"}");
-            				l.setDescription(GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(l.getLatitude(), l.getLongitude())); 
+                            
+                            int useCount = NumberUtils.getInt(request.getHeader(Commons.USE_COUNT_HEADER), 1);
+                    		int version = NumberUtils.getInt(request.getHeader(Commons.APP_VERSION_HEADER), -1);
+                    		
+                    		JSONObject flex = new JSONObject();
+                    		flex.put("useCount", useCount);
+                    		if (appId > -1) {
+                    			flex.put("appId", appId);
+                    		}
+                    		if (version > 0) {
+                    			flex.put("version", version);
+                    		}
+                    		l.setFlex(flex.toString());
+            				
+                			l.setDescription(GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(l.getLatitude(), l.getLongitude())); 
             				l.setLayer(Commons.MY_POS_CODE);
                 			LandmarkPersistenceUtils.persistLandmark(l);
 
@@ -107,11 +119,11 @@ public class NotificationsServlet extends HttpServlet {
                 if (StringUtils.equals(type, "v")) {
                     //check for version
                     reply.put("type", type);
-                    if (StringUtils.equalsIgnoreCase(appId,"0")) {
+                    if (appId == 0) {
                         //LM
                         String version = ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.LM_VERSION, "0");
                         reply.put("value", version);
-                    } else if (StringUtils.equalsIgnoreCase(appId,"1")) {
+                    } else if (appId  == 1) {
                         //DA
                         String version = ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.DA_VERSION, "0");
                         reply.put("value", version);
