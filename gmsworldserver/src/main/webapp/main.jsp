@@ -7,6 +7,7 @@
          net.gmsworld.server.utils.DateUtils,
          com.jstakun.lm.server.utils.HtmlUtils,
          com.jstakun.lm.server.utils.memcache.CacheUtil,
+         com.jstakun.lm.server.config.ConfigurationManager,
          java.util.List"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <!-- content-outer -->
@@ -57,8 +58,8 @@
 
                     <div class="post">
                     	<p>
-                    		<a href="/myposLandmark.jsp?generatetoken=true">Share your location</a> and discover landmarks nearby.<br/>
-                            <a href="/myposLandmark.jsp?generatetoken=true"><img src="/images/LM_banner_512x250.jpg" alt="GMS World Baner" title="Click to share you location" height="250" width="512" class="float-left"/></a><br/><br/>                     	
+                    		<a href="/createBrowserLandmark">Share your location</a> and discover landmarks nearby.<br/>
+                            <a href="createBrowserLandmark"><img src="/images/LM_banner_512x250.jpg" alt="GMS World Baner" title="Click to share you location" height="250" width="512" class="float-left"/></a><br/><br/>                     	
                     	</p>
                     </div>
                     <h3>Newest Landmarks</h3>
@@ -75,7 +76,7 @@
                             <h4><a href="<%=response.encodeURL("/showLandmark/" + landmark.getId())%>"><%=landmark.getName()%></a></h4>
                             Posted <%=prettyTime.format(landmark.getCreationDate())%> on <%=DateUtils.getFormattedDateTime(request.getLocale(), landmark.getCreationDate())%>
                             by <a href="<%=landmark.isSocial() ? response.encodeURL("/blogeo/" + landmark.getUsername()) : response.encodeURL("/showUser/" + landmark.getUsername())%>"><%=UrlUtils.createUsernameMask(landmark.getUsername())%></a> | 
-                            Filed in layer <a href="/showLayer/<%= landmark.getLayer() %>"><%= LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer())%></a>
+                            Filed in layer <a href="/showLayer/<%= landmark.getLayer() %>"><%= LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer())%></a> using <a href="https://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui" target="_blank"><%= ConfigurationManager.getAppName(landmark.getAppId()) %></a>
                             <%= HtmlUtils.getStatusImage(landmark.getUseCount())%><br/>
                         </p>
                     </div>

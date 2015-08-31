@@ -20,6 +20,8 @@ public final class ConfigurationManager {
     public static final String CONFIG = "config";
     public static final String GMS_WORLD_PAGE_TOKEN = "gmsWorldPageToken";
     public static final String GMS_WORLD_ACCESS_TOKEN = "gmsWorldAccessToken";
+    public static final int LM_ID = 0;
+    public static final int DA_ID = 1;
     
     public static void populateConfig()
     {
@@ -57,4 +59,15 @@ public final class ConfigurationManager {
     public static Map<String, String> getConfiguration() {
     	return Collections.unmodifiableMap(configuration);
     }
+    
+    public static String getAppName(int appId) {
+    	if (appId == LM_ID) {
+    		return "Landmark Manager";
+    	} else if (appId == DA_ID) {
+    		return "Deals Anywhere";
+    	} else {
+    		return "Unknown application";
+    	}
+    }
+    
 }

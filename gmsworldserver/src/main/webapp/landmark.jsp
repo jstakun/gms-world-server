@@ -14,6 +14,7 @@
         java.util.List,
         com.jstakun.lm.server.utils.HtmlUtils,
         net.gmsworld.server.utils.StringUtil,
+        com.jstakun.lm.server.config.ConfigurationManager,
         com.jstakun.lm.server.utils.memcache.CacheUtil" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <!-- content-outer -->
@@ -82,7 +83,7 @@
                             <%=request.getAttribute("address") != null ? "<br/>Geocode address: " + request.getAttribute("address") : ""%><br/>
                             Latitude: <%=StringUtil.formatCoordE6(landmark.getLatitude())%>, Longitude: <%=StringUtil.formatCoordE6(landmark.getLongitude())%><br/>
                             Posted on <%=DateUtils.getFormattedDateTime(request.getLocale(), landmark.getCreationDate())%> by <a href="<%=landmark.isSocial() ? response.encodeURL("/blogeo/" + landmark.getUsername()) : response.encodeURL("/showUser/" + landmark.getUsername())%>"><%=UrlUtils.createUsernameMask(landmark.getUsername())%></a> 
-                            | Created in layer <a href="/showLayer/<%=landmark.getLayer()%>"><%=LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer())%></a>
+                            | Created in layer <a href="/showLayer/<%=landmark.getLayer()%>"><%=LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer())%></a> using <a href="https://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui" target="_blank"><%= ConfigurationManager.getAppName(landmark.getAppId()) %></a>
                             <%= HtmlUtils.getStatusImage(landmark.getUseCount())%>
                           </p>
                    

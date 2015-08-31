@@ -16,25 +16,25 @@
             <a href="/about.jsp">Learn more...</a>
         </p>
         <p>
-            <a href="http://appengine.google.com">
+            <a href="http://appengine.google.com" target="_blank">
             	<img src="http://code.google.com/appengine/images/appengine-noborder-120x30.gif" alt="Powered by Google App Engine" title="Powered by Google App Engine"/>
             </a>
         </p>
         
         <p>
-            <a href="http://www.openshift.com">
+            <a href="http://www.openshift.com" target="_blank">
             	<img src="/images/openshift.png" alt="Powered by OpenShift" title="Powered by OpenShift"/>
             </a>
         </p>
         
         <p>
-            <a href="https://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui">
+            <a href="https://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui" target="_blank">
   				<img alt="Get it on Google Play" title="Get it on Google Play" src="/images/en_generic_rgb_wo_60.png" />
 			</a>
         </p>
        
         <p>
-            <a href="http://www.amazon.com/gp/product/B004X2NR7O/ref=mas_pm_Landmark_Manager">
+            <a href="http://www.amazon.com/gp/product/B004X2NR7O/ref=mas_pm_Landmark_Manager" target="_blank">
             	<img alt="Get it on Amazon AppStore" title="Get it on Amazon AppStore" src="/images/amazon-apps-store.png"/>
             </a>	
         </p>

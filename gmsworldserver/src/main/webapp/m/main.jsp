@@ -31,7 +31,7 @@
         </article>
         
         <article class="underline">
-        <a href="/myposLandmark.jsp?generatetoken=true">Share your location</a> and discover landmarks nearby.<br/>
+        <a href="/createBrowserLandmark">Share your location</a> and discover landmarks nearby.<br/>
         </article>
         
         <article>

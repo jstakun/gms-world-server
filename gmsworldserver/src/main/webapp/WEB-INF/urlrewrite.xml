@@ -164,6 +164,11 @@
             <to>/browserLandmark.jsp?latitude=$1&amp;longitude=$2&amp;gmstoken=$3</to>
     </rule>
     
+    <rule>
+            <from>^/createBrowserLandmark</from>
+            <to>/myposLandmark.jsp?generatetoken=true</to>
+    </rule>
+    
     <!-- showLocation rules -->
     
     <rule>

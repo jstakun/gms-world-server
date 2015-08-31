@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 
 import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
 
 import com.jstakun.lm.server.utils.persistence.ServiceLogPersistenceUtils;
@@ -56,16 +57,8 @@ public class LogFilter implements Filter {
         	HttpServletRequest httpRequest = (HttpServletRequest) request;
             
         	String username = StringUtil.getUsername(request.getAttribute("username"), httpRequest.getHeader("username"));
-            String appId = httpRequest.getHeader(Commons.APP_HEADER);
-            int appIdVal = -1;
-            if (StringUtils.isNumeric(appId)) {
-                try {
-                   appIdVal = Integer.parseInt(appId);
-                } catch (Exception e) {
-                   appIdVal = -1;
-                }
-            }
- 
+            int appIdVal = NumberUtils.getInt(httpRequest.getHeader(Commons.APP_HEADER), -1);
+    		
             if (StringUtils.isNotEmpty(username)){
                 ServiceLogPersistenceUtils.persistServiceLog(username, httpRequest.getRequestURI(), true, appIdVal);
             } else {

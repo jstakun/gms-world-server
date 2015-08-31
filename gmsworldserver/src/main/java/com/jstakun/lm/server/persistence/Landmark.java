@@ -160,16 +160,15 @@ public class Landmark implements Serializable {
     }
     
     public int getUseCount() {
-    	try {
-    		if (flex != null) {
-    			JSONObject details = new JSONObject(flex);
-    			return details.getInt("useCount");
-    		} else {
-    			return 0;
-    		}
-    	} catch (Exception e) {
-    		return -1;
-    	}
+    	return getFlex("useCount");
+    }
+    
+    public int getAppId() {
+    	return getFlex("appId");
+    }
+    
+    public int getVersion() {
+    	return getFlex("version");
     }
     
     public boolean compare(Landmark l) {
@@ -181,5 +180,18 @@ public class Landmark implements Serializable {
     
     public boolean isSocial() {
     	return StringUtils.equals(getLayer(), Commons.SOCIAL);
+    }
+    
+    private int getFlex(String name) {
+    	try {
+    		if (flex != null) {
+    			JSONObject details = new JSONObject(flex);
+    			return details.getInt(name);
+    		} else {
+    			return -1;
+    		}
+    	} catch (Exception e) {
+    		return -1;
+    	}
     }
 }
