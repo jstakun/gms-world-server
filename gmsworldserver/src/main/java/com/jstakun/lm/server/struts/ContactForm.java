@@ -1,17 +1,22 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.lm.server.struts;
 
-import com.jstakun.lm.server.utils.MailUtils;
-import javax.servlet.http.HttpServletRequest;
-import org.apache.commons.lang.StringUtils;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import com.jstakun.lm.server.utils.MailUtils;
+
+import javax.servlet.http.HttpServletRequest;
+
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.utils.HttpUtils;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.validator.DynaValidatorForm;
+import org.json.JSONObject;
 
 /**
  *
@@ -23,7 +28,8 @@ public class ContactForm extends DynaValidatorForm {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
+	private Logger logger = Logger.getLogger(UserForm.class.getName());
+	
 	/**
      * This is the action called from the Struts framework.
      * @param mapping The ActionMapping used to select this instance.
@@ -37,8 +43,25 @@ public class ContactForm extends DynaValidatorForm {
             errors.add("contactForm", new ActionMessage("errors.email"));
         }
         if (StringUtils.isEmpty((String) get("message"))) {
-            errors.add("contactForm", new ActionMessage("errors.login"));
+            errors.add("contactForm", new ActionMessage("errors.required", "Message"));
         }
+        
+        //Re-Captcha verification
+        String uresponse = request.getParameter("g-recaptcha-response");
+        String remoteAddr = request.getRemoteAddr();
+        String urlParams = "secret=" + Commons.RECAPTCHA_PRIVATE_KEY +"&response=" + uresponse + "&remoteip=" + remoteAddr;
+        
+        try {
+ 			String response = HttpUtils.processFileRequest(new URL("https://www.google.com/recaptcha/api/siteverify"), "POST", null, urlParams);
+ 			JSONObject json = new JSONObject(response);
+ 			if (!json.getBoolean("success") == true) {
+ 				logger.log(Level.SEVERE, "Server error", response);
+ 				errors.add("userForm", new ActionMessage("errors.captcha"));
+ 			}
+ 	    } catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage(), e);
+			errors.add("userForm", new ActionMessage("errors.captcha"));
+		}
 
         return errors;
     }

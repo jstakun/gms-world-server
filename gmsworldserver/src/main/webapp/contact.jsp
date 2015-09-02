@@ -5,6 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="utf-8"%>
+<%@ page import="net.gmsworld.server.config.Commons" %>
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html"%>
 <%@ taglib uri="http://struts.apache.org/tags-bean" prefix="bean"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -13,6 +14,7 @@
 
     <head>
         <title>Contact Page</title>
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
         <%@ include file="/WEB-INF/jspf/head.jspf" %>
     </head>
 
@@ -69,11 +71,16 @@
                             <label for="email">Your Email Address</label><br />
                             <html:text property="email" size="32" tabindex="3" />*
                         </p>
-
+                        
                         <p>
                             <label for="message">Your Message</label><br />
                             <html:textarea property="message" rows="10" cols="48" tabindex="4"></html:textarea>*
                         </p>
+                        
+                        <p>
+  							<div class="g-recaptcha" data-sitekey="<%= Commons.RECAPTCHA_PUBLIC_KEY %>"></div>
+                        </p>
+                        
                         <p class="no-border">
                             <html:submit value="Submit"  styleClass="button" tabindex="5" />
                             <html:reset value="Reset"  styleClass="button" tabindex="6" />
