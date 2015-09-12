@@ -11,6 +11,7 @@
          com.jstakun.lm.server.utils.HtmlUtils,
          org.ocpsoft.prettytime.PrettyTime,
          net.gmsworld.server.utils.UrlUtils,
+         org.apache.commons.lang.StringUtils,
          net.gmsworld.server.utils.DateUtils,java.util.List"%>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -41,21 +42,25 @@
                     </jsp:include>
 
                     <%
-                    	String month = "";
-                                                    if (request.getAttribute("month") != null) {
-                                                        month = (String) request.getAttribute("month");
-                                                    }
+                    	String month = (String)request.getAttribute("month");
+                        if (month == null) {
+                             month = "";
+                        }
                     %>
                     <h3>Archives <%=month%></h3>
                     <ul class="archive">
                         <%
                         	if (request.getAttribute("landmarkList") != null) {
-                                                                List<Landmark> landmarkList = (List<Landmark>) request.getAttribute("landmarkList");
-                                                                PrettyTime prettyTime = new PrettyTime(request.getLocale());
-                                                                for (Landmark landmark : landmarkList) {
+                              List<Landmark> landmarkList = (List<Landmark>) request.getAttribute("landmarkList");
+                              PrettyTime prettyTime = new PrettyTime(request.getLocale());
+                              for (Landmark landmark : landmarkList) {
+                            	  String name = landmark.getDescription();
+                            	  if (StringUtils.isEmpty(name)) {
+                            		  name = landmark.getName();
+                            	  }
                         %>
                         <li>
-                            <div class="post-title"><a href="<%=response.encodeURL("/showLandmark/" + landmark.getId())%>"><%=landmark.getName()%></a></div>
+                            <div class="post-title"><a href="<%=response.encodeURL("/showLandmark/" + landmark.getId())%>"><%= name %></a></div>
                             <div class="post-details">
                             	Posted <%=prettyTime.format(landmark.getCreationDate())%> on <%=DateUtils.getFormattedDateTime(request.getLocale(), landmark.getCreationDate())%> by <a href="<%=landmark.isSocial() ? response.encodeURL("/blogeo/" + landmark.getUsername()) : response.encodeURL("/showUser/" + landmark.getUsername())%>"><%=UrlUtils.createUsernameMask(landmark.getUsername())%></a> | 
                             	Filed in layer <a href="/showLayer/<%= landmark.getLayer() %>"><%= LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer()) %></a>  
