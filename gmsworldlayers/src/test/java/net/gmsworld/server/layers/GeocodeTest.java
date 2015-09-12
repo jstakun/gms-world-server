@@ -1,8 +1,10 @@
 package net.gmsworld.server.layers;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import net.gmsworld.server.utils.memcache.MockCacheProvider;
 import net.gmsworld.server.utils.persistence.GeocodeCache;
 import net.gmsworld.server.utils.persistence.GeocodeCachePersistenceUtils;
 import net.gmsworld.server.utils.persistence.Landmark;
@@ -13,7 +15,7 @@ import org.junit.Test;
 public class GeocodeTest {
 
 	@Test
-	public void test() {
+	public void test() throws IOException {
 		String address = "UK, London, 64 Baker Street";
 		Locale locale = Locale.UK;
 		String email = null;
@@ -43,7 +45,10 @@ public class GeocodeTest {
     	}
         if (landmark != null) {
         	System.out.println("Landmark: " + landmark.getLatitude() + "," + landmark.getLongitude());
-		} else {
+        	GeocodeHelperFactory.setCacheProvider(new MockCacheProvider());
+        	String geocode = GeocodeHelperFactory.getMapQuestUtils().processReverseGeocode(landmark.getLatitude(),landmark.getLongitude());
+        	System.out.println("Landmark geocode: " + geocode);
+        } else {
 			System.out.println("Landmark == null");
 		}
         
@@ -52,6 +57,8 @@ public class GeocodeTest {
         
         //resp = GeocodeHelperFactory.getMapQuestUtils().processGeocode(address, email, false);
         //System.out.println("MapQuest: " + resp);
+        
+       
 	}
 
 }

@@ -120,23 +120,29 @@ public class MapQuestUtils extends GeocodeHelper {
                 		
                 		AddressInfo addressInfo = new AddressInfo();
                 		
-                		if (location.has("street")) {
-                			addressInfo.setField(AddressInfo.STREET, location.getString("street"));
+                		String temp = location.optString("street");
+                		if (StringUtils.isNotEmpty(temp)) {
+                			addressInfo.setField(AddressInfo.STREET, temp);
                 		}
-                		if (location.has("adminArea5")) {
-                			addressInfo.setField(AddressInfo.CITY, location.getString("adminArea5"));
+                		temp = location.optString("adminArea5");
+                		if (StringUtils.isNotEmpty(temp)) {
+                			addressInfo.setField(AddressInfo.CITY, temp);
                 		}
-                		if (location.has("adminArea4")) {
-                			addressInfo.setField(AddressInfo.COUNTY, location.getString("adminArea4"));
+                		temp = location.optString("adminArea4");
+                		if (StringUtils.isNotEmpty(temp)) {
+                			addressInfo.setField(AddressInfo.COUNTY, temp);
                 		}
-                		if (location.has("adminArea3")) {
-                			addressInfo.setField(AddressInfo.STATE, location.getString("adminArea3"));
+                		temp = location.optString("adminArea3");
+                		if (StringUtils.isNotEmpty(temp)) {
+                			addressInfo.setField(AddressInfo.STATE, temp);
                 		}
-                		if (location.has("adminArea1")) {
-                			addressInfo.setField(AddressInfo.COUNTRY, location.getString("adminArea1"));
+                		temp = location.optString("adminArea1");
+                		if (StringUtils.isNotEmpty(temp)) {
+                			addressInfo.setField(AddressInfo.COUNTRY, temp);
                 		}
-                		if (location.has("postalCode")) {
-                			addressInfo.setField(AddressInfo.POSTAL_CODE, location.getString("postalCode"));
+                		temp = location.optString("postalCode");
+                		if (StringUtils.isNotEmpty(temp)) {
+                			addressInfo.setField(AddressInfo.POSTAL_CODE, temp);
                 		}
                 		
                 		address = JSONUtils.formatAddress(addressInfo);
