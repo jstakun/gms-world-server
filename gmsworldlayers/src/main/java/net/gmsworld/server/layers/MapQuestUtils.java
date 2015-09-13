@@ -91,13 +91,13 @@ public class MapQuestUtils extends GeocodeHelper {
 	}
 
 	@Override
-	public String processReverseGeocode(double lat, double lng) throws IOException {
+	public AddressInfo processReverseGeocode(double lat, double lng) throws IOException {
 		String normLat = StringUtil.formatCoordE6(lat);
 		String normLng = StringUtil.formatCoordE6(lng);
 		String key = getClass().getName() + "_" + normLat + "_" + normLng;
-		String address = cacheProvider.getString(key);
+		AddressInfo addressInfo = (AddressInfo)cacheProvider.getObject(key);
 		
-		if (address == null) {
+		if (addressInfo == null) {
 			String urlString = "http://open.mapquestapi.com/geocoding/v1/reverse?key=" + Commons.getProperty(Property.MAPQUEST_APPKEY) + "&location=" + normLat + "," + normLng;
 			//System.out.println(urlString);
 			URL routeUrl = new URL(urlString);
@@ -117,8 +117,7 @@ public class MapQuestUtils extends GeocodeHelper {
                 		//adminArea3 	State name 	
                 		//adminArea1 	Country name 	
                 		//postalCode 	Postal code
-                		
-                		AddressInfo addressInfo = new AddressInfo();
+                		addressInfo = new AddressInfo();
                 		
                 		String temp = location.optString("street");
                 		if (StringUtils.isNotEmpty(temp)) {
@@ -145,7 +144,7 @@ public class MapQuestUtils extends GeocodeHelper {
                 			addressInfo.setField(AddressInfo.POSTAL_CODE, temp);
                 		}
                 		
-                		address = JSONUtils.formatAddress(addressInfo);
+                		addressInfo.setField(AddressInfo.EXTENSION, JSONUtils.formatAddress(addressInfo));
                 		
                 		if (location.has("geocodeQuality")) {
                 			logger.log(Level.INFO, "Found reverse geocode with quality {0}", location.getString("geocodeQuality"));
@@ -156,10 +155,10 @@ public class MapQuestUtils extends GeocodeHelper {
            	 	logger.log(Level.SEVERE, "Received following server response " + resp);
             }
 		} else {
-			logger.log(Level.INFO, "Reading MapQuest reverse geocode from cache with key {0}", address);
+			logger.log(Level.INFO, "Reading MapQuest reverse geocode from cache with key {0}", addressInfo.getField(AddressInfo.EXTENSION));
 		}
 		
-		return address;
+		return addressInfo;
 	}
 
 	@Override

@@ -21,10 +21,9 @@ import org.json.JSONObject;
 
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.lm.server.persistence.Landmark;
-import com.jstakun.lm.server.utils.memcache.CacheUtil;
-import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 import com.jstakun.lm.server.utils.persistence.GeocodeCachePersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
+import com.openlapi.AddressInfo;
 
 /**
  *
@@ -39,8 +38,8 @@ public class CloudmadeUtils extends GeocodeHelper {
 
     protected JSONObject getRoute(double lat_start, double lng_start, double lat_end, double lng_end, String type, String username) throws Exception {
     	String key = getRouteKey(CloudmadeUtils.class, lat_start, lng_start, lat_end, lng_end, type, username);		
-        String output = CacheUtil.getString(key);     
-        String token = CacheUtil.getString(Commons.getProperty(Property.CLOUDMADE_TOKEN_KEY) + "_" + username);
+        String output = cacheProvider.getString(key);     
+        String token = cacheProvider.getString(Commons.getProperty(Property.CLOUDMADE_TOKEN_KEY) + "_" + username);
         JSONObject json = null; 
         
         if (output == null) {
@@ -56,7 +55,7 @@ public class CloudmadeUtils extends GeocodeHelper {
                 String resp = HttpUtils.processFileRequest(routeUrl, "GET", null, null);
                 if (resp != null) {
                     json = new JSONObject(resp);
-                    CacheUtil.put(key, output, CacheType.NORMAL);
+                    cacheProvider.put(key, output);
                     logger.log(Level.INFO, "Adding route to cache with key {0}", key);
                 }
             }
@@ -77,7 +76,8 @@ public class CloudmadeUtils extends GeocodeHelper {
     	return "http://beta.geocoding.cloudmade.com/v3/" + Commons.getProperty(Property.CLOUDMADE_APIKEY) + "/api/geo.location.search.2?format=json&source=OSM&enc=UTF-8&limit=1&q=" + coords + "&token=" + token;
     }*/
     
-    private static String processReverseGeocodeV2(String resp, String key) throws JSONException {
+    private static AddressInfo processReverseGeocodeV2(String resp, String key) throws JSONException {
+    	AddressInfo addressInfo = new AddressInfo();
     	String address = "";
     	JSONObject json = new JSONObject(resp);
 
@@ -89,16 +89,19 @@ public class CloudmadeUtils extends GeocodeHelper {
 
             if (location.has("country")) {
                 String country = location.getString("country");
+                addressInfo.setField(AddressInfo.COUNTRY, country); 
                 address += country + ", ";
             }
             if (location.has("city")) {
                 String city = location.getString("city");
+                addressInfo.setField(AddressInfo.CITY, city); 
                 if (StringUtils.isNotEmpty(city)) {
                     address += city + ", ";
                 }
             }
             if (properties.has("addr:street")) {
                 String street = properties.getString("addr:street");
+                addressInfo.setField(AddressInfo.STREET, street); 
                 if (StringUtils.isNotEmpty(street)) {
                     address += street + " ";
                 }
@@ -109,13 +112,13 @@ public class CloudmadeUtils extends GeocodeHelper {
                     address += house;
                 }
             }
-
-            CacheUtil.put(key, address, CacheType.NORMAL);
-            logger.log(Level.INFO, "Adding geocode to cache with key {0}", key);
         } else {
             logger.log(Level.WARNING, "Received following response from Cloudmade: {0}", json.toString());
         }
-        return address;
+        
+        addressInfo.setField(AddressInfo.EXTENSION, address); 
+        
+        return addressInfo;
     }
     
     /*private static String processReverseGeocodeV3(String resp, String key) throws JSONException {
@@ -194,12 +197,12 @@ public class CloudmadeUtils extends GeocodeHelper {
         return jsonResponse;
     }
     
-    protected String processReverseGeocode(double lat, double lng) throws Exception {
-        String key = CloudmadeUtils.class.getName() + "_" + lat + "_" + lng;
-        String address = CacheUtil.getString(key);
+    protected AddressInfo processReverseGeocode(double lat, double lng) throws Exception {
+        String key = getClass().getName() + "_" + lat + "_" + lng;
+        AddressInfo address = (AddressInfo) cacheProvider.getObject(key);
 
         if (address == null) {
-            String token = CacheUtil.getString(Commons.getProperty(Property.CLOUDMADE_TOKEN_KEY));
+            String token = cacheProvider.getString(Commons.getProperty(Property.CLOUDMADE_TOKEN_KEY));
 
             if (token == null) {
                 URL url = new URL("http://auth.cloudmade.com/token/" + Commons.getProperty(Property.CLOUDMADE_APIKEY) + "?userid=" + Commons.getProperty(Property.CLOUDMADE_USERNAME));
@@ -207,8 +210,7 @@ public class CloudmadeUtils extends GeocodeHelper {
             }
 
             if (token != null) {
-                address = "";
-                CacheUtil.put(Commons.getProperty(Property.CLOUDMADE_TOKEN_KEY), token, CacheType.NORMAL);
+                cacheProvider.put(Commons.getProperty(Property.CLOUDMADE_TOKEN_KEY), token);
                 //String geocodeString = getReverseGeocodeUrlV3(lat, lng, token);
                 String geocodeString = getReverseGeocodeUrlV2(lat, lng, token);
                 URL geocodeUrl = new URL(geocodeString);
@@ -222,12 +224,18 @@ public class CloudmadeUtils extends GeocodeHelper {
         } else {
             logger.log(Level.INFO, "Reading Cloudmade geocode from cache with key {0}", address);
         }
+        
+        if (address != null) {
+        	cacheProvider.put(key, address);
+        	logger.log(Level.INFO, "Adding geocode to cache with key {0}", key);
+        }       
+        
         return address;
     }
 
     public JSONObject processGeocode(String location, String email, boolean persistAsLandmark) {
 
-        String token = CacheUtil.getString(Commons.getProperty(Property.CLOUDMADE_TOKEN_KEY));
+        String token = cacheProvider.getString(Commons.getProperty(Property.CLOUDMADE_TOKEN_KEY));
         JSONObject jsonResponse = null;
 
         try {
@@ -237,7 +245,7 @@ public class CloudmadeUtils extends GeocodeHelper {
             }
 
             if (token != null) {
-                CacheUtil.put(Commons.getProperty(Property.CLOUDMADE_TOKEN_KEY), token, CacheType.NORMAL);
+                cacheProvider.put(Commons.getProperty(Property.CLOUDMADE_TOKEN_KEY), token);
                 String geocodeString = getGeocodeUrlV2(location, token);
                 URL geocodeUrl = new URL(geocodeString);
                 String resp = HttpUtils.processFileRequest(geocodeUrl, "GET", null, null);

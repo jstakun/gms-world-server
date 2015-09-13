@@ -26,6 +26,7 @@ import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
+import com.openlapi.AddressInfo;
 
 /**
  *
@@ -80,9 +81,11 @@ public class PersistLandmarkServlet extends HttpServlet {
                 
                 String layer = StringUtil.getStringParam(request.getParameter("layer"), Commons.LM_SERVER_LAYER);
                 logger.log(Level.INFO, "Creating new landmark in layer: " + layer);
+                AddressInfo addressInfo = GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(l.getLatitude(), l.getLongitude());
+    			
                 if (layer.equals(Commons.MY_POS_CODE)) {
-                    l.setDescription(GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(l.getLatitude(), l.getLongitude()));
-                }
+                	l.setDescription(addressInfo.getField(AddressInfo.EXTENSION)); 
+    			}
                 l.setLayer(layer);
                
                 String u = StringUtil.getUsername(request.getAttribute("username"),request.getParameter("username"));
@@ -126,6 +129,8 @@ public class PersistLandmarkServlet extends HttpServlet {
             			flex.put("version", version);
             		}
             		l.setFlex(flex.toString());
+            		
+            		//TODO add city & country from addressInfo
             		
                 	LandmarkPersistenceUtils.persistLandmark(l);
 

@@ -7,6 +7,8 @@ import java.util.logging.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
+import com.openlapi.AddressInfo;
+
 import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.memcache.CacheProvider;
 
@@ -18,7 +20,7 @@ public abstract class GeocodeHelper {
 	
 	protected abstract JSONObject processGeocode(String addressIn, String email, boolean persistAsLandmark) throws Exception;
 	
-	protected abstract String processReverseGeocode(double lat, double lng) throws Exception;
+	protected abstract AddressInfo processReverseGeocode(double lat, double lng) throws Exception;
 	
 	protected abstract JSONObject getRoute(double lat_start, double lng_start, double lat_end, double lng_end, String type, String username) throws Exception;
 

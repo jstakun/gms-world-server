@@ -14,6 +14,8 @@ import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.openlapi.AddressInfo;
+
 public class GoogleGeocodeUtils extends GeocodeHelper {
 
 	@Override
@@ -89,14 +91,15 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
 
 
 	@Override
-	protected String processReverseGeocode(double lat, double lng) {
+	protected AddressInfo processReverseGeocode(double lat, double lng) {
 		String coords = StringUtil.formatCoordE6(lat) + "," + StringUtil.formatCoordE6(lng);
-		String address = cacheProvider.getString("GRG_" + coords);
+		final String key = getClass().getName() + coords;
+		AddressInfo addressInfo = (AddressInfo) cacheProvider.getObject(key);
 
-        if (address == null) {
-            address = "";
+        if (addressInfo == null) {
+        	addressInfo = new AddressInfo();
             try {
-                URL geocodeUrl = new URL("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + coords + "&sensor=false");
+                URL geocodeUrl = new URL("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + coords);
                 String geocodeResponse = HttpUtils.processFileRequest(geocodeUrl);
                 if (geocodeResponse != null) {
                     JSONObject json = new JSONObject(geocodeResponse);
@@ -105,22 +108,41 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
                         JSONArray results = json.getJSONArray("results");
                         if (results.length() > 0) {
                             JSONObject item = results.getJSONObject(0);
-                            address = item.getString("formatted_address");
+                            addressInfo.setField(AddressInfo.EXTENSION, item.getString("formatted_address"));
+                            
+                            JSONArray address_components = item.getJSONArray("address_components");
+                            for (int i = 0;i < address_components.length(); i++) {
+                            	JSONObject address_component = address_components.getJSONObject(i);
+                            	JSONArray types = address_component.getJSONArray("types");
+                            	for (int j=0;j<types.length();j++) {
+                            		String type = types.getString(j);
+                            		if (StringUtils.equals(type, "country")) {
+                            			addressInfo.setField(AddressInfo.COUNTRY, address_component.getString("long_name"));
+                            		} else if (StringUtils.equals(type, "locality")) {
+                            			addressInfo.setField(AddressInfo.CITY, address_component.getString("long_name"));
+                            		} else if (StringUtils.equals(type, "route")) {
+                            			addressInfo.setField(AddressInfo.STREET, address_component.getString("long_name"));
+                            		} //else if (StringUtils.equals(type, "street_address")) {
+                            		//} 
+                            	}
+                            }
                         }
+                    } else {
+                    	logger.log(Level.WARNING, "Received following Google reverse geocode response: " + status);
                     }
                 }
             } catch (Exception ex) {
                 logger.log(Level.SEVERE, ex.getMessage(), ex);
             }
 
-            if (StringUtils.isNotEmpty(address)) {
-            	cacheProvider.put("GRG_" + coords, address);
+            if (StringUtils.isNotEmpty(addressInfo.getField(AddressInfo.EXTENSION))) {
+            	cacheProvider.put(key, addressInfo);
             }
         } else {
-            logger.log(Level.INFO, "Reading GRG geocode from cache with key {0}", address);
+            logger.log(Level.INFO, "Reading GRG geocode from cache with key {0}", addressInfo.getField(AddressInfo.EXTENSION));
         }
 
-        return address;
+        return addressInfo;
 	}
 
 	@Override

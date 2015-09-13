@@ -16,6 +16,7 @@ import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.StringUtil;
 
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
+import com.openlapi.AddressInfo;
 
 import eu.bitwalker.useragentutils.OperatingSystem;
 
@@ -52,7 +53,7 @@ public class ShowLocationAction extends org.apache.struts.action.Action {
                 double lon = Double.parseDouble(request.getParameter("lon"));
                 request.setAttribute("lat", StringUtil.formatCoordE6(lat));
                 request.setAttribute("lon", StringUtil.formatCoordE6(lon));
-                String address = GeocodeHelperFactory.getMapQuestUtils().processReverseGeocode(lat, lon);
+                String address = GeocodeHelperFactory.getMapQuestUtils().processReverseGeocode(lat, lon).getField(AddressInfo.EXTENSION);
                 if (StringUtils.isNotEmpty(address)) {
                     request.setAttribute("address", address);
                 }

@@ -12,6 +12,8 @@ import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;
 
 import org.junit.Test;
 
+import com.openlapi.AddressInfo;
+
 public class GeocodeTest {
 
 	@Test
@@ -46,7 +48,7 @@ public class GeocodeTest {
         if (landmark != null) {
         	System.out.println("Landmark: " + landmark.getLatitude() + "," + landmark.getLongitude());
         	GeocodeHelperFactory.setCacheProvider(new MockCacheProvider());
-        	String geocode = GeocodeHelperFactory.getMapQuestUtils().processReverseGeocode(landmark.getLatitude(),landmark.getLongitude());
+        	String geocode = GeocodeHelperFactory.getMapQuestUtils().processReverseGeocode(landmark.getLatitude(),landmark.getLongitude()).getField(AddressInfo.EXTENSION);
         	System.out.println("Landmark geocode: " + geocode);
         } else {
 			System.out.println("Landmark == null");

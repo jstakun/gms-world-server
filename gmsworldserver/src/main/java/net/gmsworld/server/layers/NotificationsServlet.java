@@ -27,6 +27,7 @@ import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.MailUtils;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
+import com.openlapi.AddressInfo;
 
 /**
  *
@@ -101,9 +102,13 @@ public class NotificationsServlet extends HttpServlet {
                     		}
                     		l.setFlex(flex.toString());
             				
-                			l.setDescription(GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(l.getLatitude(), l.getLongitude())); 
+                    		AddressInfo addressInfo = GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(l.getLatitude(), l.getLongitude());
+                			l.setDescription(addressInfo.getField(AddressInfo.EXTENSION)); 
             				l.setLayer(Commons.MY_POS_CODE);
-                			LandmarkPersistenceUtils.persistLandmark(l);
+                			
+            				//TODO add city & country from addressInfo
+                    		
+            				LandmarkPersistenceUtils.persistLandmark(l);
 
                 			if (l.getId() > 0) {	
                 				LandmarkPersistenceUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), socialIds);
