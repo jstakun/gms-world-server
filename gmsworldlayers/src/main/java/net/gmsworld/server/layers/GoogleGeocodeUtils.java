@@ -99,7 +99,7 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
         if (addressInfo == null) {
         	addressInfo = new AddressInfo();
             try {
-                URL geocodeUrl = new URL("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + coords);
+                URL geocodeUrl = new URL("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + coords + "&language=en");
                 String geocodeResponse = HttpUtils.processFileRequest(geocodeUrl);
                 if (geocodeResponse != null) {
                     JSONObject json = new JSONObject(geocodeResponse);
@@ -117,7 +117,7 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
                             	for (int j=0;j<types.length();j++) {
                             		String type = types.getString(j);
                             		if (StringUtils.equals(type, "country")) {
-                            			addressInfo.setField(AddressInfo.COUNTRY, address_component.getString("long_name"));
+                            			addressInfo.setField(AddressInfo.COUNTRY, address_component.getString("short_name")); //long_name
                             		} else if (StringUtils.equals(type, "locality")) {
                             			addressInfo.setField(AddressInfo.CITY, address_component.getString("long_name"));
                             		} else if (StringUtils.equals(type, "route")) {
