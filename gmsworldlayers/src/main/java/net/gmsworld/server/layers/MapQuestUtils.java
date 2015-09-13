@@ -138,6 +138,7 @@ public class MapQuestUtils extends GeocodeHelper {
                 		temp = location.optString("adminArea1");
                 		if (StringUtils.isNotEmpty(temp)) {
                 			addressInfo.setField(AddressInfo.COUNTRY, temp);
+                			addressInfo.setField(AddressInfo.COUNTRY_CODE, temp);
                 		}
                 		temp = location.optString("postalCode");
                 		if (StringUtils.isNotEmpty(temp)) {

@@ -102,7 +102,7 @@ public class NotificationsServlet extends HttpServlet {
                     		if (version > 0) {
                     			flex.put("version", version);
                     		}
-                    		flex.putOpt("country", addressInfo.getField(AddressInfo.COUNTRY));
+                    		flex.putOpt("country", addressInfo.getField(AddressInfo.COUNTRY_CODE));
                     		flex.putOpt("city", addressInfo.getField(AddressInfo.CITY));
                     		l.setFlex(flex.toString());
             				

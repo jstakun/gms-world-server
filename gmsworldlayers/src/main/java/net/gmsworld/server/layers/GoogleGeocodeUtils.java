@@ -117,7 +117,8 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
                             	for (int j=0;j<types.length();j++) {
                             		String type = types.getString(j);
                             		if (StringUtils.equals(type, "country")) {
-                            			addressInfo.setField(AddressInfo.COUNTRY, address_component.getString("short_name")); //long_name
+                            			addressInfo.setField(AddressInfo.COUNTRY_CODE, address_component.getString("short_name"));
+                            			addressInfo.setField(AddressInfo.COUNTRY, address_component.getString("long_name"));
                             		} else if (StringUtils.equals(type, "locality")) {
                             			addressInfo.setField(AddressInfo.CITY, address_component.getString("long_name"));
                             		} else if (StringUtils.equals(type, "route")) {
