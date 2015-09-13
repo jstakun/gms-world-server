@@ -92,6 +92,8 @@ public class NotificationsServlet extends HttpServlet {
                             int useCount = NumberUtils.getInt(request.getHeader(Commons.USE_COUNT_HEADER), 1);
                     		int version = NumberUtils.getInt(request.getHeader(Commons.APP_VERSION_HEADER), -1);
                     		
+                    		AddressInfo addressInfo = GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(l.getLatitude(), l.getLongitude());
+                			
                     		JSONObject flex = new JSONObject();
                     		flex.put("useCount", useCount);
                     		if (appId > -1) {
@@ -100,10 +102,11 @@ public class NotificationsServlet extends HttpServlet {
                     		if (version > 0) {
                     			flex.put("version", version);
                     		}
+                    		flex.putOpt("country", addressInfo.getField(AddressInfo.COUNTRY));
+                    		flex.putOpt("city", addressInfo.getField(AddressInfo.CITY));
                     		l.setFlex(flex.toString());
             				
-                    		AddressInfo addressInfo = GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(l.getLatitude(), l.getLongitude());
-                			l.setDescription(addressInfo.getField(AddressInfo.EXTENSION)); 
+                    		l.setDescription(addressInfo.getField(AddressInfo.EXTENSION)); 
             				l.setLayer(Commons.MY_POS_CODE);
                 			
             				//TODO add city & country from addressInfo

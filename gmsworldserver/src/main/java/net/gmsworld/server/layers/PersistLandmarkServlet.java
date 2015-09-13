@@ -128,11 +128,11 @@ public class PersistLandmarkServlet extends HttpServlet {
             		if (version > 0) {
             			flex.put("version", version);
             		}
+            		flex.putOpt("country", addressInfo.getField(AddressInfo.COUNTRY));
+            		flex.putOpt("city", addressInfo.getField(AddressInfo.CITY));
             		l.setFlex(flex.toString());
             		
-            		//TODO add city & country from addressInfo
-            		
-                	LandmarkPersistenceUtils.persistLandmark(l);
+            		LandmarkPersistenceUtils.persistLandmark(l);
 
                 	if (l.getId() > 0) {	
                     	//After adding landmark remove from cache layer list for the location
