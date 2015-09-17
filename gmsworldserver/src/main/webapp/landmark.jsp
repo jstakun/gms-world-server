@@ -80,11 +80,8 @@
                         <%
                         	}
                         %>
-                            <%=request.getAttribute("address") != null ? "<br/>Geocode address: " + request.getAttribute("address") : ""%><br/>
-                            Latitude: <%=StringUtil.formatCoordE6(landmark.getLatitude())%>, Longitude: <%=StringUtil.formatCoordE6(landmark.getLongitude())%><br/>
-                            Posted on <%=DateUtils.getFormattedDateTime(request.getLocale(), landmark.getCreationDate())%> by <a href="<%=landmark.isSocial() ? response.encodeURL("/blogeo/" + landmark.getUsername()) : response.encodeURL("/showUser/" + landmark.getUsername())%>"><%=UrlUtils.createUsernameMask(landmark.getUsername())%></a> 
-                            | Created in layer <a href="/showLayer/<%=landmark.getLayer()%>"><%=LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer())%></a> using <a href="https://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui" target="_blank"><%= ConfigurationManager.getAppName(landmark.getAppId()) %></a>
-                            <%= HtmlUtils.getStatusImage(landmark.getUseCount())%>
+                            <br/>Latitude: <%=StringUtil.formatCoordE6(landmark.getLatitude())%>, Longitude: <%=StringUtil.formatCoordE6(landmark.getLongitude())%><br/>
+                            <%= HtmlUtils.getLandmarkDesc(landmark, request.getLocale()) %>
                           </p>
                    
                         <%

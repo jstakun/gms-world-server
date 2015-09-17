@@ -8,6 +8,7 @@
          com.jstakun.lm.server.utils.HtmlUtils,
          com.jstakun.lm.server.utils.memcache.CacheUtil,
          com.jstakun.lm.server.config.ConfigurationManager,
+         org.apache.commons.lang.StringUtils,
          java.util.List"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <!-- content-outer -->
@@ -66,22 +67,19 @@
 
                     <%
                     	List<Landmark> landmarkList = (List<Landmark>) request.getAttribute("newestLandmarkList");
-                                                                if (landmarkList != null) { 
-                                                                	PrettyTime prettyTime = new PrettyTime(request.getLocale());
-                                                                	for (Landmark landmark : landmarkList) {
+                        if (landmarkList != null) { 
+                             PrettyTime prettyTime = new PrettyTime(request.getLocale());
+                             for (Landmark landmark : landmarkList) {
                     %>
                     <div class="post">
                         <p>
                             <a href="<%=response.encodeURL("/showLandmark/" + landmark.getId())%>"><img src="/image?lat=<%=landmark.getLatitude()%>&lng=<%=landmark.getLongitude()%>" alt="Landmark on Google Map" title="See landmark on the map" height="128" width="128" class="float-left"/></a>
                             <h4><a href="<%=response.encodeURL("/showLandmark/" + landmark.getId())%>"><%=landmark.getName()%></a></h4>
-                            Posted <%=prettyTime.format(landmark.getCreationDate())%> on <%=DateUtils.getFormattedDateTime(request.getLocale(), landmark.getCreationDate())%>
-                            by <a href="<%=landmark.isSocial() ? response.encodeURL("/blogeo/" + landmark.getUsername()) : response.encodeURL("/showUser/" + landmark.getUsername())%>"><%=UrlUtils.createUsernameMask(landmark.getUsername())%></a> | 
-                            Filed in layer <a href="/showLayer/<%= landmark.getLayer() %>"><%= LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer())%></a> using <a href="https://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui" target="_blank"><%= ConfigurationManager.getAppName(landmark.getAppId()) %></a>
-                            <%= HtmlUtils.getStatusImage(landmark.getUseCount())%><br/>
+                            <%= HtmlUtils.getLandmarkDesc(landmark, request.getLocale()) %>
                         </p>
                     </div>
                     <%
-                        	}
+                        	 }
                         }
                     %>
                     <%@ include file="/WEB-INF/jspf/ad_medium_baner.jspf" %>

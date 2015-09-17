@@ -81,10 +81,10 @@ public class ShowLandmarkAction extends Action {
                     
             	    if (landmark != null) {
                         request.setAttribute("landmark", landmark);
-                        String address = GeocodeHelperFactory.getMapQuestUtils().processReverseGeocode(landmark.getLatitude(),landmark.getLongitude()).getField(AddressInfo.EXTENSION);
-                        if (StringUtils.isNotEmpty(address)) {
-                            request.setAttribute("address", address);
-                        }
+                        //String address = GeocodeHelperFactory.getMapQuestUtils().processReverseGeocode(landmark.getLatitude(),landmark.getLongitude()).getField(AddressInfo.EXTENSION);
+                        //if (StringUtils.isNotEmpty(address)) {
+                        //   request.setAttribute("address", address);
+                        //}
 
                         //List<Comment> comments = CommentPersistenceUtils.selectCommentsByLandmark(key);
                         CacheAction commentsCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			

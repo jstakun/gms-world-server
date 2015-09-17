@@ -5,6 +5,7 @@
          org.ocpsoft.prettytime.PrettyTime,
          net.gmsworld.server.utils.UrlUtils,
          net.gmsworld.server.utils.DateUtils,
+         com.jstakun.lm.server.utils.HtmlUtils,
          com.jstakun.lm.server.utils.memcache.CacheUtil,
          java.util.List"%>
 <!DOCTYPE html>
@@ -39,21 +40,19 @@
         </article>
         <%
         	List<Landmark> landmarkList = (List<Landmark>) request.getAttribute("newestLandmarkList");
-                            if (landmarkList != null) {
-                            	PrettyTime prettyTime = new PrettyTime(request.getLocale());
-                            	for (Landmark landmark : landmarkList) {
+            if (landmarkList != null) {
+                 for (Landmark landmark : landmarkList) {
         %>
         <article class="underline">
 			<h4><a href="<%=response.encodeURL("/showLandmark/" + landmark.getId())%>"><%=landmark.getName()%></a></h4>
             <a href="<%=response.encodeURL("/showLandmark/" + landmark.getId())%>"><img src="/image?lat=<%=landmark.getLatitude()%>&lng=<%=landmark.getLongitude()%>" alt="Landmark on Google Map" /></a>                           
 			<p>
-			Created in layer <a href="/showLayer/<%=landmark.getLayer()%>"><%=LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer())%></a>
-            <div class="date"><span>Posted <%=prettyTime.format(landmark.getCreationDate())%> on <%=DateUtils.getFormattedDateTime(request.getLocale(), landmark.getCreationDate())%> | by <a href="/showUser/<%=landmark.getUsername()%>"><%=UrlUtils.createUsernameMask(landmark.getUsername())%></a></span></div>
-            </p>
+				<%= HtmlUtils.getLandmarkDesc(landmark, request.getLocale()) %>
+			</p>
         </article>        
         <%
             	}
-            }
+           }
         %>
     	<br/><br/>
     	<%@ include file="/WEB-INF/jspf/ad_small_baner.jspf" %>

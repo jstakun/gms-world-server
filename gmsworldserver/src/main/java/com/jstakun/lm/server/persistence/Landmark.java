@@ -160,15 +160,23 @@ public class Landmark implements Serializable {
     }
     
     public int getUseCount() {
-    	return getFlex("useCount");
+    	return getIntFlex("useCount");
     }
     
     public int getAppId() {
-    	return getFlex("appId");
+    	return getIntFlex("appId");
     }
     
     public int getVersion() {
-    	return getFlex("version");
+    	return getIntFlex("version");
+    }
+    
+    public String getCountryCode() {
+    	return getStringFlex("cc");
+    }
+    
+    public String getCity() {
+    	return getStringFlex("city");
     }
     
     public boolean compare(Landmark l) {
@@ -182,7 +190,7 @@ public class Landmark implements Serializable {
     	return StringUtils.equals(getLayer(), Commons.SOCIAL);
     }
     
-    private int getFlex(String name) {
+    private int getIntFlex(String name) {
     	try {
     		if (flex != null) {
     			JSONObject details = new JSONObject(flex);
@@ -192,6 +200,19 @@ public class Landmark implements Serializable {
     		}
     	} catch (Exception e) {
     		return -1;
+    	}
+    }
+    
+    private String getStringFlex(String name) {
+    	try {
+    		if (flex != null) {
+    			JSONObject details = new JSONObject(flex);
+    			return details.optString(name);
+    		} else {
+    			return null;
+    		}
+    	} catch (Exception e) {
+    		return null;
     	}
     }
 }

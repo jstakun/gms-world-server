@@ -116,22 +116,7 @@ public class PersistLandmarkServlet extends HttpServlet {
                 //check if this landmark has the same name and location as newest (last saved) landmark
                 boolean isSimilarToNewest = LandmarkPersistenceUtils.isSimilarToNewest(l);
             	if (!isSimilarToNewest) {
-            		int useCount = NumberUtils.getInt(request.getHeader(Commons.USE_COUNT_HEADER), 1);
-            		int appId = NumberUtils.getInt(request.getHeader(Commons.APP_HEADER), -1);
-            		int version = NumberUtils.getInt(request.getHeader(Commons.APP_VERSION_HEADER), -1);
-            		
-            		JSONObject flex = new JSONObject();
-            		flex.put("useCount", useCount);
-            		if (appId > -1) {
-            			flex.put("appId", appId);
-            		}
-            		if (version > 0) {
-            			flex.put("version", version);
-            		}
-            		flex.putOpt("country", addressInfo.getField(AddressInfo.COUNTRY_CODE));
-            		flex.putOpt("city", addressInfo.getField(AddressInfo.CITY));
-            		l.setFlex(flex.toString());
-            		
+            		LandmarkPersistenceUtils.setFlex(l, addressInfo, request);          		
             		LandmarkPersistenceUtils.persistLandmark(l);
 
                 	if (l.getId() > 0) {	

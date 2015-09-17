@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.servlet.http.HttpServletRequest;
+
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.config.ConfigurationManager;
@@ -38,6 +40,7 @@ import com.jstakun.lm.server.utils.FileUtils;
 import com.jstakun.lm.server.utils.memcache.CacheAction;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
+import com.openlapi.AddressInfo;
 
 /**
  *
@@ -1046,7 +1049,7 @@ public class LandmarkPersistenceUtils {
     
     	NotificationUtils.createLadmarkCreationNotificationTask(params);
     	
-    	//TODO use layerloader
+    	//TODO use layerloader 
     	//for each landmark load hotels layer
     	try {
     		List<ExtendedLandmark> landmarks = LayerHelperFactory.getHotelsCombinedUtils().processBinaryRequest(l.getLatitude(), l.getLongitude(), null, 20, 1024, 300, StringUtil.getStringLengthLimit("l"), "en", null, Locale.US, false);
@@ -1055,5 +1058,23 @@ public class LandmarkPersistenceUtils {
 	    	logger.log(Level.SEVERE, e.getMessage(), e);
 	    }
     	//
+    }
+    
+    public static void setFlex(Landmark l, AddressInfo addressInfo, HttpServletRequest request) {
+    	int useCount = NumberUtils.getInt(request.getHeader(Commons.USE_COUNT_HEADER), 1);
+		int appId = NumberUtils.getInt(request.getHeader(Commons.APP_HEADER), -1);
+		int version = NumberUtils.getInt(request.getHeader(Commons.APP_VERSION_HEADER), -1);
+    	
+    	JSONObject flex = new JSONObject();
+		flex.put("useCount", useCount);
+		if (appId > -1) {
+			flex.put("appId", appId);
+		}
+		if (version > 0) {
+			flex.put("version", version);
+		}
+		flex.putOpt("cc", addressInfo.getField(AddressInfo.COUNTRY_CODE));
+		flex.putOpt("city", addressInfo.getField(AddressInfo.CITY));
+		l.setFlex(flex.toString());
     }
 }

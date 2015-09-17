@@ -89,28 +89,12 @@ public class NotificationsServlet extends HttpServlet {
                             l.setUsername(u);
                             String socialIds = request.getParameter("socialIds");
                             
-                            int useCount = NumberUtils.getInt(request.getHeader(Commons.USE_COUNT_HEADER), 1);
-                    		int version = NumberUtils.getInt(request.getHeader(Commons.APP_VERSION_HEADER), -1);
-                    		
-                    		AddressInfo addressInfo = GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(l.getLatitude(), l.getLongitude());
+                            AddressInfo addressInfo = GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(l.getLatitude(), l.getLongitude());
                 			
-                    		JSONObject flex = new JSONObject();
-                    		flex.put("useCount", useCount);
-                    		if (appId > -1) {
-                    			flex.put("appId", appId);
-                    		}
-                    		if (version > 0) {
-                    			flex.put("version", version);
-                    		}
-                    		flex.putOpt("country", addressInfo.getField(AddressInfo.COUNTRY_CODE));
-                    		flex.putOpt("city", addressInfo.getField(AddressInfo.CITY));
-                    		l.setFlex(flex.toString());
-            				
+                    		LandmarkPersistenceUtils.setFlex(l, addressInfo, request);
                     		l.setDescription(addressInfo.getField(AddressInfo.EXTENSION)); 
             				l.setLayer(Commons.MY_POS_CODE);
                 			
-            				//TODO add city & country from addressInfo
-                    		
             				LandmarkPersistenceUtils.persistLandmark(l);
 
                 			if (l.getId() > 0) {	

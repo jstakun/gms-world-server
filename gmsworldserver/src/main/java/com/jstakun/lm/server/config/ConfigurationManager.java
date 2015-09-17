@@ -22,7 +22,9 @@ public final class ConfigurationManager {
     public static final String GMS_WORLD_ACCESS_TOKEN = "gmsWorldAccessToken";
     public static final int LM_ID = 0;
     public static final int DA_ID = 1;
-    
+    public static final String LM_GOOGLE_PLAY_URL = "https://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui";
+    public static String BOOKING_URL = "http://www.booking.com/city/%s/%s.html?aid=864525";
+	
     public static void populateConfig()
     {
          List<Config> params = ConfigPersistenceUtils.selectAllConfigParams();
