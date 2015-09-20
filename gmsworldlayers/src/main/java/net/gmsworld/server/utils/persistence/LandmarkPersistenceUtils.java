@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package net.gmsworld.server.utils.persistence;
 
 import java.lang.reflect.InvocationTargetException;
@@ -38,7 +34,7 @@ public class LandmarkPersistenceUtils {
     private static final Logger logger = Logger.getLogger(LandmarkPersistenceUtils.class.getName());
     
     
-    public static Map<String, String> persistLandmark(String name, String description, double latitude, double longitude, double altitude, String username, Date validityDate, String layer, String email) {
+    public static Map<String, String> persistLandmark(String name, String description, double latitude, double longitude, double altitude, String username, Date validityDate, String layer, String email, String flex) {
 
         Map<String, String> response = new HashMap<String, String>();
     	
@@ -49,11 +45,14 @@ public class LandmarkPersistenceUtils {
         	if (validityDate != null) {
         		params +=	"&validityDate=" + validityDate.getTime();
         	}	
-        	if (description != null) {
+        	if (StringUtils.isNotEmpty(description)) {
         		params += "&description=" + URLEncoder.encode(description, "UTF-8"); 
         	}
-        	if (email != null) {
+        	if (StringUtils.isNotEmpty(email)) {
         		params += "&email=" + email;
+        	}
+        	if (StringUtils.isNotEmpty(flex)) {
+        		params += "&flex=" + URLEncoder.encode(flex, "UTF-8");
         	}
         	//logger.log(Level.INFO, "Calling: " + landmarksUrl);
         	String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));

@@ -1,5 +1,6 @@
 package net.gmsworld.server.layers;
 
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.logging.Level;
@@ -23,7 +24,7 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
         JSONObject jsonResponse = new JSONObject();
         try {
             logger.log(Level.INFO, "Calling Google geocode: {0}", addressIn);
-            URL geocodeUrl = new URL("http://maps.googleapis.com/maps/api/geocode/json?address=" + URLEncoder.encode(addressIn, "UTF-8") + "&sensor=false");
+            URL geocodeUrl = new URL("http://maps.googleapis.com/maps/api/geocode/json?address=" + URLEncoder.encode(addressIn, "UTF-8"));
             String geocodeResponse = HttpUtils.processFileRequest(geocodeUrl);
             if (geocodeResponse != null) {
                 JSONObject json = new JSONObject(geocodeResponse);
@@ -54,7 +55,27 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
 
                            if (persistAsLandmark) {
                            //if (ConfigurationManager.getParam(ConfigurationManager.SAVE_GEOCODE_AS_LANDMARK, ConfigurationManager.OFF).equals(ConfigurationManager.ON)) {
-                        	   LandmarkPersistenceUtils.persistLandmark(address, "", lat, lng, 0.0, "geocode", null, Commons.GEOCODES_LAYER, email);
+                        	   JSONArray address_components = item.getJSONArray("address_components");
+                               String cc = null, city = null;
+                        	   for (int i = 0;i < address_components.length(); i++) {
+                               		JSONObject address_component = address_components.getJSONObject(i);
+                               		JSONArray types = address_component.getJSONArray("types");
+                               		for (int j=0;j<types.length();j++) {
+                               			String type = types.getString(j);
+                               			if (StringUtils.equals(type, "country")) {
+                               				cc = address_component.getString("short_name");
+                               			} else if (StringUtils.equals(type, "locality")) {
+                               				city = address_component.getString("long_name");
+                               			} 
+                               		}
+                               }
+                        	   
+                        	   String flex = "";
+                        	   if (StringUtils.isNotEmpty(cc) && StringUtils.isNotEmpty(city)) {
+                        		   flex = "{\"cc\":\"" + cc + "\", \"country\":\"" + city + "\"}";
+                        	   }
+                        	   
+                        	   LandmarkPersistenceUtils.persistLandmark(address, "", lat, lng, 0.0, "geocode", null, Commons.GEOCODES_LAYER, email, flex);
                            }
                         } catch (Exception ex) {
                                logger.log(Level.SEVERE, ex.getMessage(), ex);
@@ -98,40 +119,10 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
 
         if (addressInfo == null) {
         	addressInfo = new AddressInfo();
-            try {
+            
+        	try {
                 URL geocodeUrl = new URL("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + coords + "&language=en");
-                String geocodeResponse = HttpUtils.processFileRequest(geocodeUrl);
-                if (geocodeResponse != null) {
-                    JSONObject json = new JSONObject(geocodeResponse);
-                    String status = json.getString("status");
-                    if (status.equals("OK")) {
-                        JSONArray results = json.getJSONArray("results");
-                        if (results.length() > 0) {
-                            JSONObject item = results.getJSONObject(0);
-                            addressInfo.setField(AddressInfo.EXTENSION, item.getString("formatted_address"));
-                            
-                            JSONArray address_components = item.getJSONArray("address_components");
-                            for (int i = 0;i < address_components.length(); i++) {
-                            	JSONObject address_component = address_components.getJSONObject(i);
-                            	JSONArray types = address_component.getJSONArray("types");
-                            	for (int j=0;j<types.length();j++) {
-                            		String type = types.getString(j);
-                            		if (StringUtils.equals(type, "country")) {
-                            			addressInfo.setField(AddressInfo.COUNTRY_CODE, address_component.getString("short_name"));
-                            			addressInfo.setField(AddressInfo.COUNTRY, address_component.getString("long_name"));
-                            		} else if (StringUtils.equals(type, "locality")) {
-                            			addressInfo.setField(AddressInfo.CITY, address_component.getString("long_name"));
-                            		} else if (StringUtils.equals(type, "route")) {
-                            			addressInfo.setField(AddressInfo.STREET, address_component.getString("long_name"));
-                            		} //else if (StringUtils.equals(type, "street_address")) {
-                            		//} 
-                            	}
-                            }
-                        }
-                    } else {
-                    	logger.log(Level.WARNING, "Received following Google reverse geocode response: " + status);
-                    }
-                }
+                addressInfo = getAddressInfo(geocodeUrl);
             } catch (Exception ex) {
                 logger.log(Level.SEVERE, ex.getMessage(), ex);
             }
@@ -149,6 +140,43 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
 	@Override
 	protected JSONObject getRoute(double lat_start, double lng_start, double lat_end, double lng_end, String type, String username) throws Exception {
 		throw new Exception("Service not implemented");
+	}
+	
+	private AddressInfo getAddressInfo(URL geocodeUrl) throws IOException {
+		AddressInfo addressInfo = new AddressInfo();
+		String geocodeResponse = HttpUtils.processFileRequest(geocodeUrl);
+        if (geocodeResponse != null) {
+            JSONObject json = new JSONObject(geocodeResponse);
+            String status = json.getString("status");
+            if (status.equals("OK")) {
+                JSONArray results = json.getJSONArray("results");
+                if (results.length() > 0) {
+                    JSONObject item = results.getJSONObject(0);
+                    addressInfo.setField(AddressInfo.EXTENSION, item.getString("formatted_address"));
+                    
+                    JSONArray address_components = item.getJSONArray("address_components");
+                    for (int i = 0;i < address_components.length(); i++) {
+                    	JSONObject address_component = address_components.getJSONObject(i);
+                    	JSONArray types = address_component.getJSONArray("types");
+                    	for (int j=0;j<types.length();j++) {
+                    		String type = types.getString(j);
+                    		if (StringUtils.equals(type, "country")) {
+                    			addressInfo.setField(AddressInfo.COUNTRY_CODE, address_component.getString("short_name"));
+                    			addressInfo.setField(AddressInfo.COUNTRY, address_component.getString("long_name"));
+                    		} else if (StringUtils.equals(type, "locality")) {
+                    			addressInfo.setField(AddressInfo.CITY, address_component.getString("long_name"));
+                    		} else if (StringUtils.equals(type, "route")) {
+                    			addressInfo.setField(AddressInfo.STREET, address_component.getString("long_name"));
+                    		} //else if (StringUtils.equals(type, "street_address")) {
+                    		//} 
+                    	}
+                    }
+                }
+            } else {
+            	logger.log(Level.WARNING, "Received following Google reverse geocode response: " + status);
+            }
+        }
+        return addressInfo;
 	}
 
 }
