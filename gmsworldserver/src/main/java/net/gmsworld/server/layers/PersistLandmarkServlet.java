@@ -83,7 +83,10 @@ public class PersistLandmarkServlet extends HttpServlet {
                 AddressInfo addressInfo = GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(l.getLatitude(), l.getLongitude());
     			
                 if (layer.equals(Commons.MY_POS_CODE)) {
-                	l.setDescription(addressInfo.getField(AddressInfo.EXTENSION)); 
+                	String address = addressInfo.getField(AddressInfo.EXTENSION);
+                	if (StringUtils.isNotEmpty(address)) {
+                		l.setDescription(address);
+                	}
     			}
                 l.setLayer(layer);
                
