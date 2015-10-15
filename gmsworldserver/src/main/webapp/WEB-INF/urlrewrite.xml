@@ -169,6 +169,11 @@
             <to>/myposLandmark.jsp?generatetoken=true</to>
     </rule>
     
+    <rule>
+            <from>^/selectBrowserLandmark</from>
+            <to>/selectLandmark.jsp?generatetoken=true</to>
+    </rule>
+    
     <!-- showLocation rules -->
     
     <rule>

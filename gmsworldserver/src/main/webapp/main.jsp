@@ -59,7 +59,7 @@
 
                     <div class="post">
                     	<p>
-                    		<a href="/createBrowserLandmark">Share your location</a> and discover landmarks nearby.<br/>
+                    		<a href="/createBrowserLandmark">Share your location</a> or <a href="/selectBrowserLandmark">select location on the map<a/> and discover landmarks nearby.<br/>
                             <a href="createBrowserLandmark"><img src="/images/LM_banner_512x250.jpg" alt="GMS World Baner" title="Click to share you location" height="250" width="512" class="float-left"/></a><br/><br/>                     	
                     	</p>
                     </div>

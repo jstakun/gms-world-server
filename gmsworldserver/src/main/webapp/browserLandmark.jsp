@@ -31,7 +31,7 @@
 </head>
 <body>
 <div class="loader">
-<p>&nbsp;Please wait. I'm loading landmarks nearby your current location...</p>
+<p>&nbsp;Please wait. I'm loading landmarks nearby selected location...</p>
 </div>
 <script>
 (function() {
