@@ -32,7 +32,7 @@
         </article>
         
         <article class="underline">
-        <a href="/createBrowserLandmark">Share your location</a> and discover landmarks nearby.<br/>
+        	<a href="/createBrowserLandmark">Share your location</a> or <a href="/selectBrowserLandmark">select location on the map<a/> and discover landmarks nearby.<br/>
         </article>
         
         <article>
