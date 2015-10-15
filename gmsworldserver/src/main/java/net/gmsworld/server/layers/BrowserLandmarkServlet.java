@@ -19,6 +19,7 @@ import net.gmsworld.server.utils.StringUtil;
 import com.google.appengine.api.ThreadManager;
 import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
+import com.openlapi.AddressInfo;
 
 /**
  * Servlet implementation class BrowserLandmarkServlet
@@ -80,6 +81,10 @@ public class BrowserLandmarkServlet extends HttpServlet {
                 l.setName(Commons.MY_POSITION_LAYER);
     			l.setLayer(Commons.MY_POSITION_LAYER);
     			l.setUsername(Commons.getProperty(Commons.Property.MYPOS_USER));
+    			
+    			AddressInfo addressInfo = GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(l.getLatitude(), l.getLongitude());
+    			LandmarkPersistenceUtils.setFlex(l, addressInfo, request);
+        		l.setDescription(addressInfo.getField(AddressInfo.EXTENSION)); 
     			
     			LandmarkPersistenceUtils.persistLandmark(l);
     			if (l.getId() > 0) {

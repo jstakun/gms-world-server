@@ -46,6 +46,7 @@
     beforeSend: function( xhr ) {
         xhr.setRequestHeader("X-GMS-Token", "<%= token  %>");
         xhr.setRequestHeader("X-GMS-Scope", "lm");
+        xhr.setRequestHeader("X-GMS-AppId", "10");
     }})
   	.done(function( data ) {
   	   		$( 'div' ).remove();   

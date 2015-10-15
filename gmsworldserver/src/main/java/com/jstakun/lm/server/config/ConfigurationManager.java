@@ -22,6 +22,7 @@ public final class ConfigurationManager {
     public static final String GMS_WORLD_ACCESS_TOKEN = "gmsWorldAccessToken";
     public static final int LM_ID = 0;
     public static final int DA_ID = 1;
+    public static final int BROWSER_ID = 10;
     public static final String LM_GOOGLE_PLAY_URL = "https://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui";
     public static String BOOKING_URL = "http://www.booking.com/city/%s/%s.html?aid=864525";
 	
@@ -67,7 +68,9 @@ public final class ConfigurationManager {
     		return "Landmark Manager";
     	} else if (appId == DA_ID) {
     		return "Deals Anywhere";
-    	} else {
+    	} else if (appId == BROWSER_ID) {
+    		return "Web Browser";
+    	} else {	
     		return "Unknown application";
     	}
     }
