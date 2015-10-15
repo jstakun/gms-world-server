@@ -81,7 +81,7 @@
            	  	controlText.style.lineHeight = '32px';
            	  	controlText.style.paddingLeft = '4px';
            	  	controlText.style.paddingRight = '4px';
-           	  	controlText.innerHTML = 'Select location on the map for landmark discovery';
+           	  	controlText.innerHTML = 'Click location on the map';
            	  	controlUI.appendChild(controlText);
              }  
         </script>
