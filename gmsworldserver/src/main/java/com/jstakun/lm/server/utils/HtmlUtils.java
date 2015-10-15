@@ -78,7 +78,7 @@ public class HtmlUtils {
 			desc = description + "<br/>";
 		}
 		desc += "Posted " + prettyTime.format(landmark.getCreationDate()) + " on " + DateUtils.getFormattedDateTime(locale, landmark.getCreationDate()) + " by <a href=\"" + userUrl + "\">" + UrlUtils.createUsernameMask(landmark.getUsername()) + "</a>&nbsp;" + 
-        "| Created in layer <a href=\"" + layerUrl + "\">" + LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer()) + "</a> using <a href=\"" + ConfigurationManager.LM_GOOGLE_PLAY_URL + "\" target=\"_blank\">" +  ConfigurationManager.getAppName(landmark.getAppId()) + "</a>";
+        "| Created in layer <a href=\"" + layerUrl + "\">" + LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer()) + "</a> using <a href=\"" + ConfigurationManager.getAppUrl(landmark.getAppId()) + "\" target=\"_blank\">" +  ConfigurationManager.getAppName(landmark.getAppId()) + "</a>";
         if (StringUtils.isNotEmpty(landmark.getCountryCode()) && StringUtils.isNotEmpty(landmark.getCity())) {
             String bookingUrl = String.format(ConfigurationManager.BOOKING_URL, landmark.getCountryCode().toLowerCase(Locale.US), landmark.getCity().toLowerCase(Locale.US));
         	desc += "<br/><b><a href=\"" + bookingUrl + "\">Book hotel room nearby!</a></b>";	
