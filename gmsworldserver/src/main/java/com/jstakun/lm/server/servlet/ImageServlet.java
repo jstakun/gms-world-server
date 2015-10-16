@@ -68,11 +68,11 @@ public class ImageServlet extends HttpServlet {
 					String image = "landmark_" + StringUtil.formatCoordE6(lat) + "_" + StringUtil.formatCoordE6(lng) + ".jpg";
 					imageUrl = FileUtils.getImageUrlV2(image, thumbnail);
 				} catch (Exception e) {
-					logger.log(Level.SEVERE, e.getMessage());
+					logger.log(Level.SEVERE, e.getMessage(), e);
 					imageUrl = ImageUtils.getGoogleMapsImageUrl(lat, lng, "128x128", 9, thumbnail);
 				}
 			} catch (Exception e) {
-				logger.log(Level.SEVERE, e.getMessage());
+				logger.log(Level.SEVERE, e.getMessage(), e);
 			}
 		} else if (StringUtils.isNotEmpty(request.getParameter("lat_start")) && StringUtils.isNotEmpty(request.getParameter("lng_start")) &&
 				   StringUtils.isNotEmpty(request.getParameter("lat_end")) && StringUtils.isNotEmpty(request.getParameter("lng_end"))) {
@@ -85,7 +85,7 @@ public class ImageServlet extends HttpServlet {
 				String image = "path_" + StringUtil.formatCoordE6(lat_start) + "_" + StringUtil.formatCoordE6(lng_start) + "_" + StringUtil.formatCoordE6(lat_end) + "_" + StringUtil.formatCoordE6(lng_end) + ".jpg";
 				imageUrl = FileUtils.getImageUrlV2(image, thumbnail);
 			} catch (Exception e) {
-				logger.log(Level.SEVERE, e.getMessage());
+				logger.log(Level.SEVERE, e.getMessage(), e);
 			}	
 		}
 		

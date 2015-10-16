@@ -54,6 +54,7 @@ public class LayersTest {
 		   }
 	   }
 	   
+	   //data.add(new Object[]{LayerHelperFactory.getGrouponUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getCouponsUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getFoursquareMerchantUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getPicasaUtils()});
@@ -87,6 +88,7 @@ public class LayersTest {
 			//double lat = 40.71;
 			//double lng = -74.01;
 			//String bbox = "-74.06,40.66,-74.01,40.71";//"-75.01,39.71,-73.01,41.71";
+			
 			List<ExtendedLandmark> landmarks = null;
 			if (StringUtils.equals(layer.getLayerName(), Commons.OSM_ATM_LAYER) || StringUtils.equals(layer.getLayerName(), Commons.OSM_ATM_LAYER)) {
 				landmarks = layer.processBinaryRequest(lat, lng, null, 10000, 1115, limit, 1024, "atm", bbox, Locale.US, true);
