@@ -66,31 +66,16 @@
       var infowindow = new google.maps.InfoWindow();       			
 
       var layers = [
-          {"name": "<%= Commons.FOURSQUARE_LAYER %>", "icon" : "foursquare.png"},
-          {"name": "<%= Commons.FACEBOOK_LAYER %>", "icon" : "facebook.png"},
-          {"name": "<%= Commons.YELP_LAYER %>", "icon" : "yelp.png"},
-          {"name": "<%= Commons.GOOGLE_PLACES_LAYER %>", "icon" : "google_plus.png"},
-          {"name": "<%= Commons.COUPONS_LAYER %>", "icon" : "dollar.png"},         
-          {"name": "<%= Commons.GROUPON_LAYER %>", "icon" : "marker.png"},  
-          {"name": "<%= Commons.MC_ATM_LAYER %>", "icon" : "mastercard.png"}, 
-          {"name": "<%= Commons.FLICKR_LAYER %>", "icon" : "flickr.png"},     
-          {"name": "<%= Commons.LM_SERVER_LAYER %>", "icon" : "gmsworld.png"},     
-          {"name": "<%= Commons.PICASA_LAYER %>", "icon" : "picasa.png"},     
-          {"name": "<%= Commons.MEETUP_LAYER %>", "icon" : "meetup.png"},     
-          {"name": "<%= Commons.YOUTUBE_LAYER %>", "icon" : "youtube.png"},     
-          {"name": "<%= Commons.EVENTFUL_LAYER %>", "icon" : "event.png"},     
-          {"name": "<%= Commons.OSM_ATM_LAYER %>", "icon" : "credit_cards.png"},     
-          {"name": "<%= Commons.OSM_PARKING_LAYER %>", "icon" : "parking.png"},      
-          {"name": "<%= Commons.GEOCODES_LAYER %>", "icon" : "wikipedia.png"},  
-          {"name": "<%= Commons.LASTFM_LAYER %>", "icon" : "lastfm.png"},  
-          {"name": "<%= Commons.WEBCAM_LAYER %>", "icon" : "webcam.png"},
-          {"name": "<%= Commons.PANORAMIO_LAYER %>", "icon" : "panoramio.png"},
-          {"name": "<%= Commons.FOURSQUARE_MERCHANT_LAYER %>", "icon" : "gift.png"},   
-          {"name": "<%= Commons.EXPEDIA_LAYER %>", "icon" : "expedia.png"},         
-          {"name": "<%= Commons.HOTELS_LAYER %>", "icon" : "hotel.png"},         
-          {"name": "<%= Commons.TWITTER_LAYER %>", "icon" : "twitter.png"},
-          {"name": "<%= Commons.INSTAGRAM_LAYER %>", "icon" : "instagram.png"},
-          {"name": "<%= Commons.FREEBASE_LAYER %>", "icon" : "freebase.png"},                
+          
+<%
+     String enabled = request.getParameter("enabled");
+     String disabled = request.getParameter("disabled");
+     for (String layer : Commons.getLayers()) {
+%>
+{"name": "<%= layer %>", "icon" : "<%= com.jstakun.lm.server.config.ConfigurationManager.getLayerIcon(layer) %>", "enabled" : "<%= (StringUtils.containsIgnoreCase(enabled, layer) || (disabled != null && !StringUtils.containsIgnoreCase(disabled, layer)) || (disabled == null && enabled == null)) %>"},
+<%     
+     }
+%>          
       ];
 
       function initialize() {
@@ -147,12 +132,13 @@
                   	}
                   	var marker = new google.maps.Marker({
            				position: latLng,
-            			map: map,
             			title: name,
+            			map: map,
             			icon: image,
             			url: url, 
             			desc: desc
-          			});  
+          			}); 
+
                   	google.maps.event.addListener(marker, 'mouseover', function() {
           				if (this.desc != null) {
               				infowindow.setContent(this.desc);
@@ -167,7 +153,8 @@
     						window.open(this.url);	
           				}
               		});
-          			markers.push(marker);	
+
+              		markers.push(marker);	
         	}
           	if (markers.length > 0) {  
                     marker_counter += markers.length;
@@ -179,7 +166,7 @@
            if (results.properties != null) {
           		var layer = results.properties.layer;
     	  		for (var i = 0; i < layers.length; i++) {
-          			 if (layer == layers[i].name) {
+          			 if (layer == layers[i].name && layers[i].enabled == "true") {
                     		var image = '/images/layers/' + layers[i].icon; 
           	  				loadMarkers(results, image, <%= isMobile %>);
           	  				break;
