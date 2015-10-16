@@ -55,6 +55,8 @@
     <script>
       var mapcenter = new google.maps.LatLng(<%= latitude %>, <%= longitude %>);
 
+      var hotelsOnly = "true"; 
+
       var map;
 
       var mc;
@@ -169,6 +171,9 @@
           			 if (layer == layers[i].name && layers[i].enabled == "true") {
                     		var image = '/images/layers/' + layers[i].icon; 
           	  				loadMarkers(results, image, <%= isMobile %>);
+                            if (layer != "Hotels") {
+								hotelsOnly = "false";
+                            }
           	  				break;
           			 }	   
            		} 
@@ -189,7 +194,7 @@
 		        var centerControl = new mapCenterControl(centerControlDiv, map, mapcenter);
 		        map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(centerControlDiv);
 
-		        if (window.location.href.indexOf("?enabled=Hotels") == -1) {
+		        if (window.location.href.indexOf("?enabled=Hotels") == -1 && hotelsOnly == "false") {
 					var hotelControlDiv = document.createElement('div');
 		        	hotelControlDiv.index = 2;
 		        	var centerControl = new hotelsLinkControl(hotelControlDiv, map, mapcenter);

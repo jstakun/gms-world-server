@@ -7,6 +7,7 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +19,7 @@ import net.gmsworld.server.utils.StringUtil;
 
 import com.google.appengine.api.ThreadManager;
 import com.jstakun.lm.server.persistence.Landmark;
+import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 import com.openlapi.AddressInfo;
 
@@ -41,6 +43,12 @@ public class BrowserLandmarkServlet extends HttpServlet {
      */
     public BrowserLandmarkServlet() {
         super();
+    }
+    
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        GeocodeHelperFactory.setCacheProvider(new GoogleCacheProvider());
     }
 
 	/**
