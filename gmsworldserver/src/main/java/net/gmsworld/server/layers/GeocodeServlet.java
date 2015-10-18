@@ -1,6 +1,9 @@
 package net.gmsworld.server.layers;
 
 import com.google.gdata.util.common.util.Base64;
+import com.jstakun.lm.server.config.ConfigurationManager;
+
+import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.utils.CryptoTools;
 
 import java.io.IOException;
@@ -54,7 +57,12 @@ public class GeocodeServlet extends HttpServlet {
  
                 String jsonResp = "{}";
                 
-                jsonResp = GeocodeUtils.processRequest(address, email, request.getLocale(), false);
+                String appId = request.getHeader(Commons.APP_HEADER);
+                if (appId == null) {
+                	appId = Integer.toString(ConfigurationManager.BROWSER_ID);
+                }
+                
+                jsonResp = GeocodeUtils.processRequest(address, email, request.getLocale(), appId, false);
 
                 out.print(jsonResp);
             } else {

@@ -175,8 +175,8 @@ public class SearchUtils extends LayerHelper {
 				if (layer.equals(Commons.COUPONS_LAYER)) {
 					json = LayerHelperFactory.getCouponsUtils().processRequest(latitude, longitude, query, radius, 4, dealLimit, stringLimit, "", language);
 				} else if (layer.equals(Commons.LOCAL_LAYER)) {
-					String placeGeocode = GeocodeUtils.processRequest(query, null, locale, true);
-					if (!GeocodeUtils.geocodeEquals(placeGeocode, GeocodeUtils.processRequest(null, null, locale, true))) {
+					String placeGeocode = GeocodeUtils.processRequest(query, null, locale, null, true);
+					if (!GeocodeUtils.geocodeEquals(placeGeocode, GeocodeUtils.processRequest(null, null, locale, null, true))) {
 						json = GeocodeUtils.geocodeToJSonObject(query, placeGeocode);
 						logger.log(Level.INFO, "Geocode service found this place.");
 					} else {
@@ -246,8 +246,8 @@ public class SearchUtils extends LayerHelper {
 				if (layer.equals(Commons.COUPONS_LAYER)) {
 					landmarks = LayerHelperFactory.getCouponsUtils().processBinaryRequest(latitude, longitude, query, radius, 4, dealLimit, stringLimit, "", language, locale, true);
 				} else if (layer.equals(Commons.LOCAL_LAYER)) {
-					String placeGeocode = GeocodeUtils.processRequest(query, null, locale, true);
-					if (!GeocodeUtils.geocodeEquals(placeGeocode, GeocodeUtils.processRequest(null, null, locale, true))) {
+					String placeGeocode = GeocodeUtils.processRequest(query, null, locale, null, true);
+					if (!GeocodeUtils.geocodeEquals(placeGeocode, GeocodeUtils.processRequest(null, null, locale, null, true))) {
 						ExtendedLandmark landmark = GeocodeUtils.geocodeToLandmark(query, placeGeocode, locale);
 						if (landmark != null) {
 							landmarks = new ArrayList<ExtendedLandmark>();

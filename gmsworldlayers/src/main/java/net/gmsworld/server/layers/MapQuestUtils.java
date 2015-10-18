@@ -27,7 +27,7 @@ public class MapQuestUtils extends GeocodeHelper {
 	private static final char[] delim = new char[]{',',' '};
 	
 	@Override
-	public JSONObject processGeocode(String location, String email, boolean persistAsLandmark) {
+	public JSONObject processGeocode(String location, String email, String appId, boolean persistAsLandmark) {
 		JSONObject jsonResponse = null;
 
         try {
@@ -55,11 +55,15 @@ public class MapQuestUtils extends GeocodeHelper {
         					//if (ConfigurationManager.getParam(ConfigurationManager.SAVE_GEOCODE_AS_LANDMARK, ConfigurationManager.OFF).equals(ConfigurationManager.ON)) {
         					if (persistAsLandmark) {
         						String name = WordUtils.capitalize(location, delim);
-        						String flex = "";
-                         	    if (StringUtils.isNotEmpty(cc) && StringUtils.isNotEmpty(city)) {
-                         	    	flex = "{\"cc\":\"" + cc + "\", \"country\":\"" + city + "\"}";
-                         	    }
-                         	    LandmarkPersistenceUtils.persistLandmark(name, "", lat, lng, 0.0, "geocode", null, Commons.GEOCODES_LAYER, email, flex);
+        						JSONObject flex = new JSONObject();
+                         	   	if (StringUtils.isNotEmpty(cc) && StringUtils.isNotEmpty(city)) {
+                         	   		flex.put("cc", cc);
+                         	   		flex.put("city", city);
+                         	   	}
+                         	   	if (appId != null) {
+                         	   		flex.put("appId", appId);
+                         	   	}
+                         	    LandmarkPersistenceUtils.persistLandmark(name, "", lat, lng, 0.0, "geocode", null, Commons.GEOCODES_LAYER, email, flex.toString());
         					}
         					//}
         				} catch (Exception ex) {

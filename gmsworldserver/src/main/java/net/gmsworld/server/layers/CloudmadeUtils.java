@@ -233,7 +233,7 @@ public class CloudmadeUtils extends GeocodeHelper {
         return address;
     }
 
-    public JSONObject processGeocode(String location, String email, boolean persistAsLandmark) {
+    public JSONObject processGeocode(String location, String email, String appId, boolean persistAsLandmark) {
 
         String token = cacheProvider.getString(Commons.getProperty(Property.CLOUDMADE_TOKEN_KEY));
         JSONObject jsonResponse = null;

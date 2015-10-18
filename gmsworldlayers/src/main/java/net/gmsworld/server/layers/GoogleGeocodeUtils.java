@@ -3,9 +3,11 @@ package net.gmsworld.server.layers;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.Normalizer;
 import java.util.logging.Level;
 
 import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.persistence.GeocodeCachePersistenceUtils;
@@ -20,11 +22,11 @@ import com.openlapi.AddressInfo;
 public class GoogleGeocodeUtils extends GeocodeHelper {
 
 	@Override
-	protected JSONObject processGeocode(String addressIn, String email, boolean persistAsLandmark) {
+	protected JSONObject processGeocode(String addressIn, String email, String appId, boolean persistAsLandmark) {
         JSONObject jsonResponse = new JSONObject();
         try {
             logger.log(Level.INFO, "Calling Google geocode: {0}", addressIn);
-            URL geocodeUrl = new URL("http://maps.googleapis.com/maps/api/geocode/json?address=" + URLEncoder.encode(addressIn, "UTF-8"));
+            URL geocodeUrl = new URL("http://maps.googleapis.com/maps/api/geocode/json?address=" + URLEncoder.encode(addressIn, "UTF-8") + "&key=" + Commons.getProperty(Property.GOOGLE_API_KEY));
             String geocodeResponse = HttpUtils.processFileRequest(geocodeUrl);
             if (geocodeResponse != null) {
                 JSONObject json = new JSONObject(geocodeResponse);
@@ -70,12 +72,16 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
                                		}
                                }
                         	   
-                        	   String flex = "";
+                        	   JSONObject flex = new JSONObject();
                         	   if (StringUtils.isNotEmpty(cc) && StringUtils.isNotEmpty(city)) {
-                        		   flex = "{\"cc\":\"" + cc + "\", \"country\":\"" + city + "\"}";
+                        		   flex.put("cc", cc);
+                        		   flex.put("city", city);
+                        	   }
+                        	   if (appId != null) {
+                        		   flex.put("appId", appId);
                         	   }
                         	   
-                        	   LandmarkPersistenceUtils.persistLandmark(address, "", lat, lng, 0.0, "geocode", null, Commons.GEOCODES_LAYER, email, flex);
+                        	   LandmarkPersistenceUtils.persistLandmark(address, "", lat, lng, 0.0, "geocode", null, Commons.GEOCODES_LAYER, email, flex.toString());
                            }
                         } catch (Exception ex) {
                                logger.log(Level.SEVERE, ex.getMessage(), ex);
@@ -121,7 +127,7 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
         	addressInfo = new AddressInfo();
             
         	try {
-                URL geocodeUrl = new URL("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + coords + "&language=en");
+                URL geocodeUrl = new URL("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + coords + "&language=en&key=" + Commons.getProperty(Property.GOOGLE_API_KEY));
                 addressInfo = getAddressInfo(geocodeUrl);
             } catch (Exception ex) {
                 logger.log(Level.SEVERE, ex.getMessage(), ex);
@@ -164,7 +170,10 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
                     			addressInfo.setField(AddressInfo.COUNTRY_CODE, address_component.getString("short_name"));
                     			addressInfo.setField(AddressInfo.COUNTRY, address_component.getString("long_name"));
                     		} else if (StringUtils.equals(type, "locality")) {
-                    			addressInfo.setField(AddressInfo.CITY, address_component.getString("long_name"));
+                    			String text = address_component.getString("long_name");
+                    			String decomposed = Normalizer.normalize(text, Normalizer.Form.NFD);
+                    		    String removed = decomposed.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+                    		    addressInfo.setField(AddressInfo.CITY, removed);
                     		} else if (StringUtils.equals(type, "route")) {
                     			addressInfo.setField(AddressInfo.STREET, address_component.getString("long_name"));
                     		} //else if (StringUtils.equals(type, "street_address")) {

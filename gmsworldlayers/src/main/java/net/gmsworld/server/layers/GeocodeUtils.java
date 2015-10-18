@@ -194,7 +194,7 @@ public class GeocodeUtils {
         return isNA;
     }
 
-    public static String processRequest(String address, String email, Locale locale, boolean appendCountry) {
+    public static String processRequest(String address, String email, Locale locale, String appId, boolean appendCountry) {
         GeocodeCache gc = null;
         String jsonResp = "{}";
         String addr = "";
@@ -239,11 +239,11 @@ public class GeocodeUtils {
                 if (landmark != null) {
                     jsonResp = processLandmark(landmark);
                 } else {
-                    JSONObject resp = GeocodeHelperFactory.getGoogleGeocodeUtils().processGeocode(addr, email, true);
+                    JSONObject resp = GeocodeHelperFactory.getGoogleGeocodeUtils().processGeocode(addr, email, appId, true);
                     try {
                         if (resp.getString("status").equals("Error")) {
                             logger.log(Level.INFO, "Search geocode response {0}", resp.toString());
-                            resp = GeocodeHelperFactory.getMapQuestUtils().processGeocode(addr, email, true);
+                            resp = GeocodeHelperFactory.getMapQuestUtils().processGeocode(addr, email, appId, true);
                         }
                     } catch (Exception e) {
                         logger.log(Level.SEVERE, e.getMessage(), e);

@@ -22,7 +22,7 @@ public class GeocodeTest {
 		Locale locale = Locale.UK;
 		String email = null;
 		boolean appendCountry = false;
-		String response = GeocodeUtils.processRequest(address, email, locale, appendCountry);
+		String response = GeocodeUtils.processRequest(address, email, locale, "10", appendCountry);
 		System.out.println(response);
 		GeocodeCache gc = GeocodeCachePersistenceUtils.checkIfGeocodeExists(address);
 		if (gc != null) {
@@ -54,13 +54,8 @@ public class GeocodeTest {
 			System.out.println("Landmark == null");
 		}
         
-        //JSONObject resp = GeocodeHelperFactory.getGoogleGeocodeUtils().processGeocode(address, email, false);
-        //System.out.println("Google: " + resp);
-        
-        //resp = GeocodeHelperFactory.getMapQuestUtils().processGeocode(address, email, false);
-        //System.out.println("MapQuest: " + resp);
-        
-       
+        AddressInfo ai = GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(39.457651,-0.400439);
+        System.out.println(ai.getField(AddressInfo.CITY) + " " + ai.getField(AddressInfo.COUNTRY));
 	}
 
 }

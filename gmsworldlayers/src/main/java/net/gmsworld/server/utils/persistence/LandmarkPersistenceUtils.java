@@ -33,7 +33,6 @@ public class LandmarkPersistenceUtils {
 
     private static final Logger logger = Logger.getLogger(LandmarkPersistenceUtils.class.getName());
     
-    
     public static Map<String, String> persistLandmark(String name, String description, double latitude, double longitude, double altitude, String username, Date validityDate, String layer, String email, String flex) {
 
         Map<String, String> response = new HashMap<String, String>();
@@ -73,7 +72,7 @@ public class LandmarkPersistenceUtils {
         return response;
     }
 
-        public static Landmark selectLandmarkByHash(String hash) {
+    public static Landmark selectLandmarkByHash(String hash) {
         Landmark landmark = null;
     
         try {
