@@ -81,7 +81,7 @@ public class HtmlUtils {
         "| Created in layer <a href=\"" + layerUrl + "\">" + LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer()) + "</a> using <a href=\"" + ConfigurationManager.getAppUrl(landmark.getAppId()) + "\" target=\"_blank\">" +  ConfigurationManager.getAppName(landmark.getAppId()) + "</a>";
         if (StringUtils.isNotEmpty(landmark.getCountryCode()) && StringUtils.isNotEmpty(landmark.getCity())) {
             String bookingUrl = String.format(ConfigurationManager.BOOKING_URL, landmark.getCountryCode().toLowerCase(Locale.US), landmark.getCity().toLowerCase(Locale.US).replaceAll(" ", "-"));
-        	desc += "<br/><b><a href=\"" + bookingUrl + "\">Book hotel room nearby!</a></b>";	
+        	desc += "<br/><b><a href=\"" + bookingUrl + "\" target=\"_blank\">Book hotel room nearby!</a></b>";	
         }
         desc += HtmlUtils.getStatusImage(landmark.getUseCount());
 		

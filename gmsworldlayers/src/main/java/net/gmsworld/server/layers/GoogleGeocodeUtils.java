@@ -26,7 +26,7 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
         JSONObject jsonResponse = new JSONObject();
         try {
             logger.log(Level.INFO, "Calling Google geocode: {0}", addressIn);
-            URL geocodeUrl = new URL("http://maps.googleapis.com/maps/api/geocode/json?address=" + URLEncoder.encode(addressIn, "UTF-8") + "&key=" + Commons.getProperty(Property.GOOGLE_API_KEY));
+            URL geocodeUrl = new URL("https://maps.googleapis.com/maps/api/geocode/json?address=" + URLEncoder.encode(addressIn, "UTF-8") + "&key=" + Commons.getProperty(Property.GOOGLE_API_KEY));
             String geocodeResponse = HttpUtils.processFileRequest(geocodeUrl);
             if (geocodeResponse != null) {
                 JSONObject json = new JSONObject(geocodeResponse);
