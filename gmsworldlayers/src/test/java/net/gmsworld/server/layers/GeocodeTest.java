@@ -55,7 +55,22 @@ public class GeocodeTest {
 		}
         
         AddressInfo ai = GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(39.457651,-0.400439);
-        System.out.println(ai.getField(AddressInfo.CITY) + " " + ai.getField(AddressInfo.COUNTRY));
+        System.out.println("google 1: " + ai.getField(AddressInfo.CITY) + " " + ai.getField(AddressInfo.COUNTRY));
+        
+        ai = GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(51.107885, 17.038537);
+        System.out.println("google 2: " + ai.getField(AddressInfo.CITY) + " " + ai.getField(AddressInfo.COUNTRY));
+        
+        ai = GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(54.352025, 18.646638);
+        System.out.println("google 3: " + ai.getField(AddressInfo.CITY) + " " + ai.getField(AddressInfo.COUNTRY));
+        
+        ai = GeocodeHelperFactory.getMapQuestUtils().processReverseGeocode(39.457651,-0.400439);
+        System.out.println("mapquest 1: " + ai.getField(AddressInfo.CITY) + " " + ai.getField(AddressInfo.COUNTRY));
+        
+        ai = GeocodeHelperFactory.getMapQuestUtils().processReverseGeocode(51.107885, 17.038537);
+        System.out.println("mapquest 2: " + ai.getField(AddressInfo.CITY) + " " + ai.getField(AddressInfo.COUNTRY));
+        
+        ai = GeocodeHelperFactory.getMapQuestUtils().processReverseGeocode(54.352025, 18.646638);
+        System.out.println("mapquest 3: " + ai.getField(AddressInfo.CITY) + " " + ai.getField(AddressInfo.COUNTRY));   
 	}
 
 }

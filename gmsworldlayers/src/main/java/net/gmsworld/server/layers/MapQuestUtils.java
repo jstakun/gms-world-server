@@ -3,6 +3,7 @@ package net.gmsworld.server.layers;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -47,7 +48,13 @@ public class MapQuestUtils extends GeocodeHelper {
         				double lat = latLng.getDouble("lat");
         				double lng = latLng.getDouble("lng");
         				
-        				String city = locationJson.optString("adminArea5");
+        				String text = locationJson.optString("adminArea5");
+        				String city = null;
+        				if (text != null) {
+        					String decomposed = Normalizer.normalize(text, Normalizer.Form.NFD);
+        					city = decomposed.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");       		    
+        				}
+        				
                 		String cc = locationJson.optString("adminArea1");
                 		
         				try {
@@ -135,7 +142,9 @@ public class MapQuestUtils extends GeocodeHelper {
                 		}
                 		temp = location.optString("adminArea5");
                 		if (StringUtils.isNotEmpty(temp)) {
-                			addressInfo.setField(AddressInfo.CITY, temp);
+                			String decomposed = Normalizer.normalize(temp, Normalizer.Form.NFD);
+            				String city = decomposed.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");       		    
+            				addressInfo.setField(AddressInfo.CITY, city);
                 		}
                 		temp = location.optString("adminArea4");
                 		if (StringUtils.isNotEmpty(temp)) {
