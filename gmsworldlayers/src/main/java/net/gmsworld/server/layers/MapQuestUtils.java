@@ -27,7 +27,7 @@ public class MapQuestUtils extends GeocodeHelper {
 	private static final char[] delim = new char[]{',',' '};
 	
 	@Override
-	public JSONObject processGeocode(String location, String email, String appId, boolean persistAsLandmark) {
+	public JSONObject processGeocode(String location, String email, int appId, boolean persistAsLandmark) {
 		JSONObject jsonResponse = null;
 
         try {
@@ -60,7 +60,7 @@ public class MapQuestUtils extends GeocodeHelper {
                          	   		flex.put("cc", cc);
                          	   		flex.put("city", city);
                          	   	}
-                         	   	if (appId != null) {
+                         	   	if (appId >= 0) {
                          	   		flex.put("appId", appId);
                          	   	}
                          	    LandmarkPersistenceUtils.persistLandmark(name, "", lat, lng, 0.0, "geocode", null, Commons.GEOCODES_LAYER, email, flex.toString());

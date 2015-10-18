@@ -1,11 +1,5 @@
 package net.gmsworld.server.layers;
 
-import com.google.gdata.util.common.util.Base64;
-import com.jstakun.lm.server.config.ConfigurationManager;
-
-import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.utils.CryptoTools;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.logging.Level;
@@ -16,7 +10,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.utils.CryptoTools;
+import net.gmsworld.server.utils.NumberUtils;
+
 import org.apache.commons.lang.StringUtils;
+
+import com.google.gdata.util.common.util.Base64;
 
 
 /**
@@ -55,14 +55,8 @@ public class GeocodeServlet extends HttpServlet {
                     }
                 }
  
-                String jsonResp = "{}";
-                
-                String appId = request.getHeader(Commons.APP_HEADER);
-                if (appId == null) {
-                	appId = Integer.toString(ConfigurationManager.BROWSER_ID);
-                }
-                
-                jsonResp = GeocodeUtils.processRequest(address, email, request.getLocale(), appId, false);
+                int appId = NumberUtils.getInt(request.getHeader(Commons.APP_HEADER), -1);
+                String jsonResp = GeocodeUtils.processRequest(address, email, request.getLocale(), appId, false);
 
                 out.print(jsonResp);
             } else {

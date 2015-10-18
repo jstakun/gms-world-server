@@ -24,9 +24,6 @@ public final class ConfigurationManager {
     public static final String CONFIG = "config";
     public static final String GMS_WORLD_PAGE_TOKEN = "gmsWorldPageToken";
     public static final String GMS_WORLD_ACCESS_TOKEN = "gmsWorldAccessToken";
-    public static final int LM_ID = 0;
-    public static final int DA_ID = 1;
-    public static final int BROWSER_ID = 10;
     private static final String LM_GOOGLE_PLAY_URL = "https://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui";
     private static final String DA_GOOGLE_PLAY_URL = "https://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui.deals";
     private static final String BROWSER_URL = "http://www.gms-world.net/selectBrowserLandmark";
@@ -70,11 +67,11 @@ public final class ConfigurationManager {
     }
     
     public static String getAppName(int appId) {
-    	if (appId == LM_ID) {
+    	if (appId == Commons.LM_ID) {
     		return "Landmark Manager";
-    	} else if (appId == DA_ID) {
+    	} else if (appId == Commons.DA_ID) {
     		return "Deals Anywhere";
-    	} else if (appId == BROWSER_ID) {
+    	} else if (appId == Commons.BROWSER_ID) {
     		return "Web Browser";
     	} else {	
     		return "Unknown application";
@@ -82,11 +79,11 @@ public final class ConfigurationManager {
     }
     
     public static String getAppUrl(int appId) {
-    	if (appId == LM_ID) {
+    	if (appId == Commons.LM_ID) {
     		return LM_GOOGLE_PLAY_URL;
-    	} else if (appId == DA_ID) {
+    	} else if (appId == Commons.DA_ID) {
     		return DA_GOOGLE_PLAY_URL;
-    	} else if (appId == BROWSER_ID) {
+    	} else if (appId == Commons.BROWSER_ID) {
     		return BROWSER_URL;
     	} else {	
     		return LM_GOOGLE_PLAY_URL;

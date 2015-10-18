@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.utils.JSONUtils;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.ThreadUtil;
@@ -46,28 +47,28 @@ public class SearchUtils extends LayerHelper {
         Map<String, JSONObject> jsonMap = new HashMap<String, JSONObject>();
     	
     	if (!isDeal && !geocode) {
-    		layers.put(Commons.FOURSQUARE_LAYER, threadProvider.newThread(new JSonSearchTask(lat, lng, query, null, language, Commons.FOURSQUARE_LAYER, radius, dealLimit, limit, stringLimit, locale, layers, jsonMap))); //
-    		layers.put(Commons.FACEBOOK_LAYER, threadProvider.newThread(new JSonSearchTask(lat, lng, query, ftoken, language, Commons.FACEBOOK_LAYER, radius, dealLimit, limit, stringLimit, locale, layers, jsonMap))); //
-    		layers.put(Commons.GOOGLE_PLACES_LAYER, threadProvider.newThread(new JSonSearchTask(lat, lng, query, null, language, Commons.GOOGLE_PLACES_LAYER, radius, dealLimit, limit, stringLimit, locale, layers, jsonMap))); //
-    		layers.put(Commons.LM_SERVER_LAYER, threadProvider.newThread(new JSonSearchTask(lat, lng, query, null, language, Commons.LM_SERVER_LAYER, radius, dealLimit, limit, stringLimit, locale, layers, jsonMap))); //
-    		layers.put(Commons.FLICKR_LAYER, threadProvider.newThread(new JSonSearchTask(lat, lng, query, null, language, Commons.FLICKR_LAYER, radius, dealLimit, limit, stringLimit, locale, layers, jsonMap))); //
-    		layers.put(Commons.EVENTFUL_LAYER, threadProvider.newThread(new JSonSearchTask(lat, lng, query, null, language, Commons.EVENTFUL_LAYER, radius, dealLimit, limit, stringLimit, locale, layers, jsonMap))); //
-    		layers.put(Commons.YELP_LAYER, threadProvider.newThread(new JSonSearchTask(lat, lng, query, null, language, Commons.YELP_LAYER, radius, dealLimit, limit, stringLimit, locale, layers, jsonMap))); //
+    		layers.put(Commons.FOURSQUARE_LAYER, threadProvider.newThread(new JSonSearchTask(lat, lng, query, null, language, Commons.FOURSQUARE_LAYER, radius, dealLimit, limit, stringLimit, locale, isDeal, layers, jsonMap))); //
+    		layers.put(Commons.FACEBOOK_LAYER, threadProvider.newThread(new JSonSearchTask(lat, lng, query, ftoken, language, Commons.FACEBOOK_LAYER, radius, dealLimit, limit, stringLimit, locale, isDeal, layers, jsonMap))); //
+    		layers.put(Commons.GOOGLE_PLACES_LAYER, threadProvider.newThread(new JSonSearchTask(lat, lng, query, null, language, Commons.GOOGLE_PLACES_LAYER, radius, dealLimit, limit, stringLimit, locale, isDeal, layers, jsonMap))); //
+    		layers.put(Commons.LM_SERVER_LAYER, threadProvider.newThread(new JSonSearchTask(lat, lng, query, null, language, Commons.LM_SERVER_LAYER, radius, dealLimit, limit, stringLimit, locale, isDeal, layers, jsonMap))); //
+    		layers.put(Commons.FLICKR_LAYER, threadProvider.newThread(new JSonSearchTask(lat, lng, query, null, language, Commons.FLICKR_LAYER, radius, dealLimit, limit, stringLimit, locale, isDeal, layers, jsonMap))); //
+    		layers.put(Commons.EVENTFUL_LAYER, threadProvider.newThread(new JSonSearchTask(lat, lng, query, null, language, Commons.EVENTFUL_LAYER, radius, dealLimit, limit, stringLimit, locale, isDeal, layers, jsonMap))); //
+    		layers.put(Commons.YELP_LAYER, threadProvider.newThread(new JSonSearchTask(lat, lng, query, null, language, Commons.YELP_LAYER, radius, dealLimit, limit, stringLimit, locale, isDeal, layers, jsonMap))); //
     		if (version > 1082) {
-    			layers.put(Commons.TWITTER_LAYER, threadProvider.newThread(new JSonSearchTask(lat, lng, query, null, language, Commons.TWITTER_LAYER, radius, dealLimit, limit, stringLimit, locale, layers, jsonMap))); //
+    			layers.put(Commons.TWITTER_LAYER, threadProvider.newThread(new JSonSearchTask(lat, lng, query, null, language, Commons.TWITTER_LAYER, radius, dealLimit, limit, stringLimit, locale, isDeal, layers, jsonMap))); //
     		}
-    		layers.put(Commons.MEETUP_LAYER, threadProvider.newThread(new JSonSearchTask(lat, lng, query, null, language, Commons.MEETUP_LAYER, radius, dealLimit, limit, stringLimit, locale, layers, jsonMap))); //
+    		layers.put(Commons.MEETUP_LAYER, threadProvider.newThread(new JSonSearchTask(lat, lng, query, null, language, Commons.MEETUP_LAYER, radius, dealLimit, limit, stringLimit, locale, isDeal, layers, jsonMap))); //
     		if (version >= 1094) {
-        		layers.put(Commons.FREEBASE_LAYER, threadProvider.newThread(new JSonSearchTask(lat, lng, query, null, language, Commons.FREEBASE_LAYER, radius, dealLimit, limit, stringLimit, locale, layers, jsonMap)));
+        		layers.put(Commons.FREEBASE_LAYER, threadProvider.newThread(new JSonSearchTask(lat, lng, query, null, language, Commons.FREEBASE_LAYER, radius, dealLimit, limit, stringLimit, locale, isDeal, layers, jsonMap)));
         	}
     	}
 
     	if (!geocode && GeocodeUtils.isNorthAmericaLocation(Double.toString(lat), Double.toString(lng))) {
-    		layers.put(Commons.COUPONS_LAYER, threadProvider.newThread(new JSonSearchTask(lat, lng, query, null, language, Commons.COUPONS_LAYER, radius, dealLimit, limit, stringLimit, locale, layers, jsonMap)));
-    		layers.put(Commons.GROUPON_LAYER, threadProvider.newThread(new JSonSearchTask(lat, lng, query, null, language, Commons.GROUPON_LAYER, radius, dealLimit, limit, stringLimit, locale, layers, jsonMap)));
+    		layers.put(Commons.COUPONS_LAYER, threadProvider.newThread(new JSonSearchTask(lat, lng, query, null, language, Commons.COUPONS_LAYER, radius, dealLimit, limit, stringLimit, locale, isDeal, layers, jsonMap)));
+    		layers.put(Commons.GROUPON_LAYER, threadProvider.newThread(new JSonSearchTask(lat, lng, query, null, language, Commons.GROUPON_LAYER, radius, dealLimit, limit, stringLimit, locale, isDeal, layers, jsonMap)));
     	}
 
-    	layers.put(Commons.LOCAL_LAYER, threadProvider.newThread(new JSonSearchTask(lat, lng, query, null, language, Commons.LOCAL_LAYER, radius, dealLimit, limit, stringLimit, locale, layers, jsonMap)));
+    	layers.put(Commons.LOCAL_LAYER, threadProvider.newThread(new JSonSearchTask(lat, lng, query, null, language, Commons.LOCAL_LAYER, radius, dealLimit, limit, stringLimit, locale, isDeal, layers, jsonMap)));
    
     	logger.log(Level.INFO, "Found {0} landmarks", counter);        
         
@@ -106,28 +107,28 @@ public class SearchUtils extends LayerHelper {
         List<ExtendedLandmark> foundLandmarks = new ArrayList<ExtendedLandmark>();
         
         if (!isDeal && !geocode) {
-        	layers.put(Commons.FOURSQUARE_LAYER, threadProvider.newThread(new SerialSearchTask(lat, lng, query, null, language, Commons.FOURSQUARE_LAYER, radius, dealLimit, limit, stringLimit, locale, layers, foundLandmarks))); //
-        	layers.put(Commons.FACEBOOK_LAYER, threadProvider.newThread(new SerialSearchTask(lat, lng, query, ftoken, language, Commons.FACEBOOK_LAYER, radius, dealLimit, limit, stringLimit, locale, layers, foundLandmarks))); //
-        	layers.put(Commons.GOOGLE_PLACES_LAYER, threadProvider.newThread(new SerialSearchTask(lat, lng, query, null, language, Commons.GOOGLE_PLACES_LAYER, radius, dealLimit, limit, stringLimit, locale, layers, foundLandmarks))); //
-        	layers.put(Commons.LM_SERVER_LAYER, threadProvider.newThread(new SerialSearchTask(lat, lng, query, null, language, Commons.LM_SERVER_LAYER, radius, dealLimit, limit, stringLimit, locale, layers, foundLandmarks))); //
-        	layers.put(Commons.FLICKR_LAYER, threadProvider.newThread(new SerialSearchTask(lat, lng, query, null, language, Commons.FLICKR_LAYER, radius, dealLimit, limit, stringLimit, locale, layers, foundLandmarks))); //
-        	layers.put(Commons.EVENTFUL_LAYER, threadProvider.newThread(new SerialSearchTask(lat, lng, query, null, language, Commons.EVENTFUL_LAYER, radius, dealLimit, limit, stringLimit, locale, layers, foundLandmarks))); //
-        	layers.put(Commons.YELP_LAYER, threadProvider.newThread(new SerialSearchTask(lat, lng, query, null, language, Commons.YELP_LAYER, radius, dealLimit, limit, stringLimit, locale, layers, foundLandmarks))); //
+        	layers.put(Commons.FOURSQUARE_LAYER, threadProvider.newThread(new SerialSearchTask(lat, lng, query, null, language, Commons.FOURSQUARE_LAYER, radius, dealLimit, limit, stringLimit, locale, isDeal, layers, foundLandmarks))); //
+        	layers.put(Commons.FACEBOOK_LAYER, threadProvider.newThread(new SerialSearchTask(lat, lng, query, ftoken, language, Commons.FACEBOOK_LAYER, radius, dealLimit, limit, stringLimit, locale, isDeal, layers, foundLandmarks))); //
+        	layers.put(Commons.GOOGLE_PLACES_LAYER, threadProvider.newThread(new SerialSearchTask(lat, lng, query, null, language, Commons.GOOGLE_PLACES_LAYER, radius, dealLimit, limit, stringLimit, locale, isDeal, layers, foundLandmarks))); //
+        	layers.put(Commons.LM_SERVER_LAYER, threadProvider.newThread(new SerialSearchTask(lat, lng, query, null, language, Commons.LM_SERVER_LAYER, radius, dealLimit, limit, stringLimit, locale, isDeal, layers, foundLandmarks))); //
+        	layers.put(Commons.FLICKR_LAYER, threadProvider.newThread(new SerialSearchTask(lat, lng, query, null, language, Commons.FLICKR_LAYER, radius, dealLimit, limit, stringLimit, locale, isDeal, layers, foundLandmarks))); //
+        	layers.put(Commons.EVENTFUL_LAYER, threadProvider.newThread(new SerialSearchTask(lat, lng, query, null, language, Commons.EVENTFUL_LAYER, radius, dealLimit, limit, stringLimit, locale, isDeal, layers, foundLandmarks))); //
+        	layers.put(Commons.YELP_LAYER, threadProvider.newThread(new SerialSearchTask(lat, lng, query, null, language, Commons.YELP_LAYER, radius, dealLimit, limit, stringLimit, locale, isDeal, layers, foundLandmarks))); //
         	if (version > 1082) {
-        		layers.put(Commons.TWITTER_LAYER, threadProvider.newThread(new SerialSearchTask(lat, lng, query, null, language, Commons.TWITTER_LAYER, radius, dealLimit, limit, stringLimit, locale, layers, foundLandmarks))); //
+        		layers.put(Commons.TWITTER_LAYER, threadProvider.newThread(new SerialSearchTask(lat, lng, query, null, language, Commons.TWITTER_LAYER, radius, dealLimit, limit, stringLimit, locale, isDeal, layers, foundLandmarks))); //
         	}
-        	layers.put(Commons.MEETUP_LAYER, threadProvider.newThread(new SerialSearchTask(lat, lng, query, null, language, Commons.MEETUP_LAYER, radius, dealLimit, limit, stringLimit, locale, layers, foundLandmarks))); //
+        	layers.put(Commons.MEETUP_LAYER, threadProvider.newThread(new SerialSearchTask(lat, lng, query, null, language, Commons.MEETUP_LAYER, radius, dealLimit, limit, stringLimit, locale, isDeal, layers, foundLandmarks))); //
         	if (version >= 1094) {
-        		layers.put(Commons.FREEBASE_LAYER, threadProvider.newThread(new SerialSearchTask(lat, lng, query, null, language, Commons.FREEBASE_LAYER, radius, dealLimit, limit, stringLimit, locale, layers, foundLandmarks)));
+        		layers.put(Commons.FREEBASE_LAYER, threadProvider.newThread(new SerialSearchTask(lat, lng, query, null, language, Commons.FREEBASE_LAYER, radius, dealLimit, limit, stringLimit, locale, isDeal, layers, foundLandmarks)));
         	}	
         }
 
         if (!geocode && GeocodeUtils.isNorthAmericaLocation(Double.toString(lat), Double.toString(lng))) {
-        	layers.put(Commons.COUPONS_LAYER, threadProvider.newThread(new SerialSearchTask(lat, lng, query, null, language, Commons.COUPONS_LAYER, radius, dealLimit, limit, stringLimit, locale, layers, foundLandmarks)));
-        	layers.put(Commons.GROUPON_LAYER, threadProvider.newThread(new SerialSearchTask(lat, lng, query, null, language, Commons.GROUPON_LAYER, radius, dealLimit, limit, stringLimit, locale, layers, foundLandmarks)));
+        	layers.put(Commons.COUPONS_LAYER, threadProvider.newThread(new SerialSearchTask(lat, lng, query, null, language, Commons.COUPONS_LAYER, radius, dealLimit, limit, stringLimit, locale, isDeal, layers, foundLandmarks)));
+        	layers.put(Commons.GROUPON_LAYER, threadProvider.newThread(new SerialSearchTask(lat, lng, query, null, language, Commons.GROUPON_LAYER, radius, dealLimit, limit, stringLimit, locale, isDeal, layers, foundLandmarks)));
         }
 
-        layers.put(Commons.LOCAL_LAYER, threadProvider.newThread(new SerialSearchTask(lat, lng, query, null, language, Commons.LOCAL_LAYER, radius, dealLimit, limit, stringLimit, locale, layers, foundLandmarks)));
+        layers.put(Commons.LOCAL_LAYER, threadProvider.newThread(new SerialSearchTask(lat, lng, query, null, language, Commons.LOCAL_LAYER, radius, dealLimit, limit, stringLimit, locale, isDeal, layers, foundLandmarks)));
         
         for (Iterator<String> iter = layers.keySet().iterator(); iter.hasNext();) {
             Thread t = layers.get(iter.next());
@@ -149,8 +150,9 @@ public class SearchUtils extends LayerHelper {
 	    private Locale locale;
 	    private Map<String, Thread> layers;      
 	    private Map<String, JSONObject> jsonMap;
+	    private boolean isDeal;
 	    
-		public JSonSearchTask(double latitude, double longitude, String query, String ftoken, String language, String layer, int radius, int dealLimit, int limit, int stringLimit, Locale locale, Map<String, Thread> layers, Map<String, JSONObject> jsonMap) {
+		public JSonSearchTask(double latitude, double longitude, String query, String ftoken, String language, String layer, int radius, int dealLimit, int limit, int stringLimit, Locale locale, boolean isDeal, Map<String, Thread> layers, Map<String, JSONObject> jsonMap) {
 			this.latitude = latitude;
 			this.longitude = longitude;
 			this.query = query;
@@ -164,6 +166,7 @@ public class SearchUtils extends LayerHelper {
 			this.locale = locale;
 			this.jsonMap = jsonMap;
 			this.layers = layers;
+			this.isDeal = isDeal;
 		}
 
 		public void run() {
@@ -175,8 +178,14 @@ public class SearchUtils extends LayerHelper {
 				if (layer.equals(Commons.COUPONS_LAYER)) {
 					json = LayerHelperFactory.getCouponsUtils().processRequest(latitude, longitude, query, radius, 4, dealLimit, stringLimit, "", language);
 				} else if (layer.equals(Commons.LOCAL_LAYER)) {
-					String placeGeocode = GeocodeUtils.processRequest(query, null, locale, null, true);
-					if (!GeocodeUtils.geocodeEquals(placeGeocode, GeocodeUtils.processRequest(null, null, locale, null, true))) {
+					int appId;
+					if (isDeal) {
+						appId = Commons.DA_ID;
+					} else {
+						appId = Commons.LM_ID;
+					}
+					String placeGeocode = GeocodeUtils.processRequest(query, null, locale, appId, true);
+					if (!GeocodeUtils.geocodeEquals(placeGeocode, GeocodeUtils.processRequest(null, null, locale, appId, true))) {
 						json = GeocodeUtils.geocodeToJSonObject(query, placeGeocode);
 						logger.log(Level.INFO, "Geocode service found this place.");
 					} else {
@@ -221,8 +230,9 @@ public class SearchUtils extends LayerHelper {
 	    private Locale locale;
 	    private Map<String, Thread> layers;     
 	    private List<ExtendedLandmark> foundLandmarks;
+	    private boolean isDeal;
 	    
-		public SerialSearchTask(double latitude, double longitude, String query, String ftoken, String language, String layer, int radius, int dealLimit, int limit, int stringLimit, Locale locale, Map<String, Thread> layers, List<ExtendedLandmark> foundLandmarks) {
+		public SerialSearchTask(double latitude, double longitude, String query, String ftoken, String language, String layer, int radius, int dealLimit, int limit, int stringLimit, Locale locale, boolean isDeal, Map<String, Thread> layers, List<ExtendedLandmark> foundLandmarks) {
 			this.latitude = latitude;
 			this.longitude = longitude;
 			this.query = query;
@@ -236,6 +246,7 @@ public class SearchUtils extends LayerHelper {
 			this.locale = locale;
 			this.layers = layers;
 			this.foundLandmarks = foundLandmarks;
+			this.isDeal = isDeal;
 		}
 
 		public void run() {
@@ -246,8 +257,14 @@ public class SearchUtils extends LayerHelper {
 				if (layer.equals(Commons.COUPONS_LAYER)) {
 					landmarks = LayerHelperFactory.getCouponsUtils().processBinaryRequest(latitude, longitude, query, radius, 4, dealLimit, stringLimit, "", language, locale, true);
 				} else if (layer.equals(Commons.LOCAL_LAYER)) {
-					String placeGeocode = GeocodeUtils.processRequest(query, null, locale, null, true);
-					if (!GeocodeUtils.geocodeEquals(placeGeocode, GeocodeUtils.processRequest(null, null, locale, null, true))) {
+					int appId;
+					if (isDeal) {
+						appId = Commons.DA_ID;
+					} else {
+						appId = Commons.LM_ID;
+					}
+					String placeGeocode = GeocodeUtils.processRequest(query, null, locale, appId, true);
+					if (!GeocodeUtils.geocodeEquals(placeGeocode, GeocodeUtils.processRequest(null, null, locale, appId, true))) {
 						ExtendedLandmark landmark = GeocodeUtils.geocodeToLandmark(query, placeGeocode, locale);
 						if (landmark != null) {
 							landmarks = new ArrayList<ExtendedLandmark>();

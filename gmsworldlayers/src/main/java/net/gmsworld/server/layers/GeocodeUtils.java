@@ -194,7 +194,7 @@ public class GeocodeUtils {
         return isNA;
     }
 
-    public static String processRequest(String address, String email, Locale locale, String appId, boolean appendCountry) {
+    public static String processRequest(String address, String email, Locale locale, int appId, boolean appendCountry) {
         GeocodeCache gc = null;
         String jsonResp = "{}";
         String addr = "";

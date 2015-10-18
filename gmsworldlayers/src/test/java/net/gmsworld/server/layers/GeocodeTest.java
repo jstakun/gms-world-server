@@ -22,7 +22,7 @@ public class GeocodeTest {
 		Locale locale = Locale.UK;
 		String email = null;
 		boolean appendCountry = false;
-		String response = GeocodeUtils.processRequest(address, email, locale, "10", appendCountry);
+		String response = GeocodeUtils.processRequest(address, email, locale, 10, appendCountry);
 		System.out.println(response);
 		GeocodeCache gc = GeocodeCachePersistenceUtils.checkIfGeocodeExists(address);
 		if (gc != null) {

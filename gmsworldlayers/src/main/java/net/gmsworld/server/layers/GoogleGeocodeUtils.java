@@ -22,7 +22,7 @@ import com.openlapi.AddressInfo;
 public class GoogleGeocodeUtils extends GeocodeHelper {
 
 	@Override
-	protected JSONObject processGeocode(String addressIn, String email, String appId, boolean persistAsLandmark) {
+	protected JSONObject processGeocode(String addressIn, String email, int appId, boolean persistAsLandmark) {
         JSONObject jsonResponse = new JSONObject();
         try {
             logger.log(Level.INFO, "Calling Google geocode: {0}", addressIn);
@@ -77,7 +77,7 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
                         		   flex.put("cc", cc);
                         		   flex.put("city", city);
                         	   }
-                        	   if (appId != null) {
+                        	   if (appId >= 0) {
                         		   flex.put("appId", appId);
                         	   }
                         	   
