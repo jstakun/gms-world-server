@@ -515,7 +515,10 @@ public class GrouponUtils extends LayerHelper {
                                         }
 
                                         addressInfo.setField(AddressInfo.CITY, location.getString("city"));
-                                        addressInfo.setField(AddressInfo.PHONE_NUMBER, location.getString("phoneNumber"));
+                                        String phone = location.optString("phoneNumber");
+                                        if (phone != null) {
+                                        	addressInfo.setField(AddressInfo.PHONE_NUMBER, phone);
+                                        }
                                         addressInfo.setField(AddressInfo.POSTAL_CODE, location.getString("postalCode"));
                                         addressInfo.setField(AddressInfo.STATE, location.getString("state"));
                                         

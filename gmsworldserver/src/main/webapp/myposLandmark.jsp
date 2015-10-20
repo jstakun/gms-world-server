@@ -54,6 +54,7 @@
         	x.innerHTML = "An unknown error occurred!"
         	break;
 	}
+	window.location.replace('/selectBrowserLandmark');
  }
  </script>
 </head>

@@ -215,7 +215,11 @@ public class YoutubeUtils extends LayerHelper {
         		} else {
         			tokens.put("Likes", "0");
         		}
-        		tokens.put("Dislikes", stats.getDislikeCount().toString()); //"\uD83D\uDD93"
+        		if (stats.getDislikeCount() != null) {
+        			tokens.put("Dislikes", stats.getDislikeCount().toString()); //"\uD83D\uDD93"
+        		} else {
+        			tokens.put("Dislikes", "0");
+        		}
         		//stats.getFavoriteCount();
         	}
         	
