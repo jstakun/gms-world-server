@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -64,7 +65,9 @@ public class PicasaUtils extends LayerHelper {
             Query myQuery = new Query(baseSearchUrl);
             myQuery.setStringCustomParameter("kind", "photo");
             myQuery.setStringCustomParameter("bbox", bbox); //west, south, east, north i.e. "50.0,20.0,53.0,23.0"
-            myQuery.setPublishedMin(new DateTime(System.currentTimeMillis() - (1000 * 60 * 60 * 24 * 365)));
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.YEAR, -1); 
+            myQuery.setPublishedMin(new DateTime(cal.getTime()));
             myQuery.setMaxResults(limit);
             if (StringUtils.isNotEmpty(query)) {
                 myQuery.setFullTextQuery(query);
@@ -185,13 +188,21 @@ public class PicasaUtils extends LayerHelper {
         }
 
         if ((dcoords[2] - dcoords[0]) < 0.1) {
-        	dcoords[2] += 0.05;
-        	dcoords[0] -= 0.05;
+        	if (dcoords[2] < 180.0) {
+        		dcoords[2] += 0.05;
+        	}
+        	if (dcoords[0] > -180.0) {
+        		dcoords[0] -= 0.05;
+        	}
         }
         
         if ((dcoords[3] - dcoords[1]) < 0.1) {
-        	dcoords[3] += 0.05;
-        	dcoords[1] -= 0.05;
+        	if (dcoords[3] < 90.0) {
+        		dcoords[3] += 0.05;
+        	}
+        	if (dcoords[1] > -90.0) {
+        		dcoords[1] -= 0.05;
+        	}
         }
         
         String normalizedBbox = MathUtils.normalizeE2(dcoords[0]) + "," +
@@ -210,7 +221,9 @@ public class PicasaUtils extends LayerHelper {
             Query myQuery = new Query(baseSearchUrl);
             myQuery.setStringCustomParameter("kind", "photo");
             myQuery.setStringCustomParameter("bbox", normalizedBbox); //west, south, east, north i.e. "50.0,20.0,53.0,23.0"
-            myQuery.setPublishedMin(new DateTime(System.currentTimeMillis() - (1000 * 60 * 60 * 24 * 365)));
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.YEAR, -1); 
+            myQuery.setPublishedMin(new DateTime(cal.getTime()));
             myQuery.setStringCustomParameter("thumbsize", "104u"); //32, 48, 64, 72, 104, 144, 150, 160
             myQuery.setMaxResults(limit);
             if (StringUtils.isNotEmpty(query)) {

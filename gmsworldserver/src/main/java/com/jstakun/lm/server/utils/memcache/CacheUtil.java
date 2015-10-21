@@ -27,7 +27,7 @@ public class CacheUtil {
 	private static Cache cache = null;
 	private static final Logger logger = Logger.getLogger(CacheUtil.class.getName());
 	private static final Expiration ONE_HOUR_EXPIRATION = Expiration.byDeltaSeconds(60 * 60);
-    private static final int TWO_HOURS = 3600 * 2;
+    //private static final int TWO_HOURS = 3600 * 2;
     private static final Expiration ONE_MINUTE_EXPIRATION = Expiration.byDeltaSeconds(60);
     private static final Expiration TEN_MINUTES_EXPIRATION = Expiration.byDeltaSeconds(10 * 60);
     private static final Expiration LONG_CACHE_EXPIRATION = Expiration.byDeltaMillis(4 * 60 * 60 * 1000);
@@ -37,8 +37,8 @@ public class CacheUtil {
 	private static Cache getCache() {
 		if (cache == null) {
 			try {
-				Map props = new HashMap();
-				props.put(GCacheFactory.EXPIRATION_DELTA, TWO_HOURS); 
+				Map<String, Integer> props = new HashMap<String, Integer>();
+				props.put(GCacheFactory.EXPIRATION_DELTA, LONG_CACHE_LIMIT); 
 				CacheFactory cacheFactory = CacheManager.getInstance().getCacheFactory();
 				cache = cacheFactory.createCache(props);
 				//cache.addListener(listener);
