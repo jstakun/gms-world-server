@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import net.gmsworld.server.config.Commons;
@@ -18,7 +17,7 @@ import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.JSONUtils;
 import net.gmsworld.server.utils.NumberUtils;
-import net.gmsworld.server.utils.ThreadUtil;
+import net.gmsworld.server.utils.ThreadManager;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
@@ -297,7 +296,7 @@ public class GooglePlacesUtils extends LayerHelper {
 
     private void processDetails(List<String> placeDetails, JSONArray results, int limit, String language) throws JSONException, MalformedURLException, IOException {
 
-        Map<String, Thread> venueDetailsThreads = new ConcurrentHashMap<String, Thread>();
+        ThreadManager threadManager = new ThreadManager(threadProvider);
         
         int l = limit;
         if (results.length() < l) {
@@ -317,12 +316,10 @@ public class GooglePlacesUtils extends LayerHelper {
         	for (int i = count; i < (count+batchSize); i++) {
         		JSONObject item = results.getJSONObject(i);
         		String place_id = item.getString("place_id");
-        		Thread venueDetailsRetriever = threadProvider.newThread(new VenueDetailsRetriever(venueDetailsThreads, placeDetails, place_id, language));
-        		venueDetailsThreads.put(place_id, venueDetailsRetriever);
-        		venueDetailsRetriever.start();
+        		threadManager.startThread(place_id, new VenueDetailsRetriever(threadManager.getThreads(), placeDetails, place_id, language));
         	}
 
-        	ThreadUtil.waitForLayers(venueDetailsThreads);
+        	threadManager.waitForThreads();
         	
         	count += batchSize;
         	

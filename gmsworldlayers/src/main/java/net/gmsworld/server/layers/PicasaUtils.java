@@ -172,12 +172,12 @@ public class PicasaUtils extends LayerHelper {
 
 	@Override
 	public List<ExtendedLandmark> processBinaryRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String bbox, String flexString2, Locale locale, boolean useCache) throws Exception {
-		double lat = 0d, lng = 0d;
+		double lat = latitude, lng = longitude;
         String[] coords = StringUtils.split(bbox, ",");
         //set new bbox
         
-        double[] dcoords = new double[]{0d, 0d, 0d, 0d};
-        if (coords.length == 4) {
+        double[] dcoords = new double[]{latitude, longitude, latitude, longitude};
+        if (coords != null && coords.length == 4) {
         	dcoords[0] = Double.parseDouble(coords[0]);
         	dcoords[1] = Double.parseDouble(coords[1]);
         	dcoords[2] = Double.parseDouble(coords[2]);
@@ -234,25 +234,30 @@ public class PicasaUtils extends LayerHelper {
             
             //System.out.println("Calling: " + myQuery.getFeedUrl().toExternalForm() + myQuery.getQueryUri());
             
-            AlbumFeed searchResultsFeed = myService.query(myQuery, AlbumFeed.class);
+            try {
+            	AlbumFeed searchResultsFeed = myService.query(myQuery, AlbumFeed.class);
+            	
+            	//System.out.println("Found: " +  searchResultsFeed.getTotalResults() + " " + 
+            	//		searchResultsFeed.getItemsPerPage() + " " + searchResultsFeed.getStartIndex());
             
-            //System.out.println("Found: " +  searchResultsFeed.getTotalResults() + " " + 
-            //		searchResultsFeed.getItemsPerPage() + " " + searchResultsFeed.getStartIndex());
+            	//photos-meta.jar
             
-            //photos-meta.jar
-            
-            //List<GphotoEntry> entries = searchResultsFeed.getEntries();
+            	//List<GphotoEntry> entries = searchResultsFeed.getEntries();
   
-            //List<PhotoEntry> photos = new ArrayList<PhotoEntry>(entries.size());
+            	//List<PhotoEntry> photos = new ArrayList<PhotoEntry>(entries.size());
             
-            logger.log(Level.INFO, "Found: " + searchResultsFeed.getTotalResults() + "-" + searchResultsFeed.getPhotoEntries().size() + " entries in normalized bbox: " + normalizedBbox);
+            	logger.log(Level.INFO, "Found: " + searchResultsFeed.getTotalResults() + "-" + searchResultsFeed.getPhotoEntries().size() + " entries in normalized bbox: " + normalizedBbox);
             
-            //for (GphotoEntry<PhotoEntry> entry : entries) {
-            //	PhotoEntry p = new PhotoEntry(entry);
-            //	photos.add(p);
-            //}
+            	//for (GphotoEntry<PhotoEntry> entry : entries) {
+            	//	PhotoEntry p = new PhotoEntry(entry);
+            	//	photos.add(p);
+            	//}
             
-            output = createLandmarksPicasaPhotoList(searchResultsFeed.getPhotoEntries(), stringLimit, locale);
+            	output = createLandmarksPicasaPhotoList(searchResultsFeed.getPhotoEntries(), stringLimit, locale);
+            } catch (Exception e ) {
+            	logger.log(Level.SEVERE, e.getMessage(), e);
+            	output = new ArrayList<ExtendedLandmark>();
+            }
             
             if (!output.isEmpty()) {
                 cacheProvider.put(key, output);

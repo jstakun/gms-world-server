@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import net.gmsworld.server.config.Commons;
@@ -19,7 +18,7 @@ import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.JSONUtils;
 import net.gmsworld.server.utils.MathUtils;
 import net.gmsworld.server.utils.NumberUtils;
-import net.gmsworld.server.utils.ThreadUtil;
+import net.gmsworld.server.utils.ThreadManager;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
@@ -827,8 +826,8 @@ public class FacebookUtils extends LayerHelper {
             //limited due to url fetch limit = 2048 characters
             int first = 0, last = 50;
 
-            Map<String, Thread> venueDetailsThreads = new ConcurrentHashMap<String, Thread>();
-
+            ThreadManager threadManager = new ThreadManager(threadProvider);
+            
             while (first < pages.size()) {
                 //System.out.println("sublist: " + first + " " + last);
                 if (last > pages.size()) {
@@ -837,18 +836,14 @@ public class FacebookUtils extends LayerHelper {
 
                 String pageIds = StringUtils.join(pages.subList(first, last), ",");
 
-                Thread venueDetailsRetriever = threadProvider.newThread(new VenueDetailsRetriever(venueDetailsThreads, pageDescs,
+                threadManager.startThread(pageIds, new VenueDetailsRetriever(threadManager.getThreads(), pageDescs,
                         facebookClient, pageIds, stringLength));
-
-                venueDetailsThreads.put(pageIds, venueDetailsRetriever);
-
-                venueDetailsRetriever.start();
 
                 first = last;
                 last += 50;
             }
 
-            ThreadUtil.waitForLayers(venueDetailsThreads);
+            threadManager.waitForThreads();
         }
     }
 

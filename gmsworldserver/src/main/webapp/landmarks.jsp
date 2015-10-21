@@ -70,13 +70,13 @@
       var layers = [
           
 <%
-     String enabled = request.getParameter("enabled");
-     String disabled = request.getParameter("disabled");
-     for (String layer : Commons.getLayers()) {
+      String enabled = request.getParameter("enabled");
+      String disabled = request.getParameter("disabled");
+      for (String layer : Commons.getLayers()) {
 %>
 {"name": "<%= layer %>", "icon" : "<%= com.jstakun.lm.server.config.ConfigurationManager.getLayerIcon(layer) %>", "enabled" : "<%= (StringUtils.containsIgnoreCase(enabled, layer) || (disabled != null && !StringUtils.containsIgnoreCase(disabled, layer)) || (disabled == null && enabled == null)) %>"},
 <%     
-     }
+      }
 %>          
       ];
 
@@ -89,7 +89,7 @@
 
           for (var i = 0; i < layers.length; i++) {
                 var script = document.createElement('script');
-        		script.src = '<%= ConfigurationManager.SERVER_URL %>/geoJsonProvider?lat=<%= latitude %>&lng=<%= longitude %>&layer=' + layers[i].name + '&callback=layers_callback'; 
+        		script.src = '<%= ConfigurationManager.SERVER_URL %>geoJsonProvider?lat=<%= latitude %>&lng=<%= longitude %>&layer=' + layers[i].name + '&callback=layers_callback'; 
         		document.getElementsByTagName('head')[0].appendChild(script);
           }
 
@@ -170,6 +170,7 @@
     	  		for (var i = 0; i < layers.length; i++) {
           			 if (layer == layers[i].name && layers[i].enabled == "true") {
                     		var image = '/images/layers/' + layers[i].icon; 
+                    		console.log("Received " + results.features.length + " landmarks from layer " + layer);
           	  				loadMarkers(results, image, <%= isMobile %>);
                             if (layer != "Hotels") {
 								hotelsOnly = "false";

@@ -103,7 +103,7 @@ public final class ConfigurationManager {
     	} else if (StringUtils.equals(layer, Commons.COUPONS_LAYER)) {
     		return "dollar.png";
     	} else if (StringUtils.equals(layer, Commons.GROUPON_LAYER)) {
-    		return "marker.png";
+    		return "dollar.png";
     	} else if (StringUtils.equals(layer, Commons.MC_ATM_LAYER)) {
     		return "mastercard.png";
     	} else if (StringUtils.equals(layer, Commons.FLICKR_LAYER)) {
@@ -111,7 +111,7 @@ public final class ConfigurationManager {
     	} else if (StringUtils.equals(layer, Commons.LM_SERVER_LAYER)) {
     		return "gmsworld.png";
     	} else if (StringUtils.equals(layer, Commons.PICASA_LAYER)) {
-    		return "picase.png";
+    		return "picasa.png";
     	} else if (StringUtils.equals(layer, Commons.MEETUP_LAYER)) {
     		return "meetup.png";
     	} else if (StringUtils.equals(layer, Commons.YOUTUBE_LAYER)) {

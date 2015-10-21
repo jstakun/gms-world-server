@@ -159,21 +159,25 @@ public class OsmXapiUtils extends LayerHelper {
 	@Override
 	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String amenity, String bbox, Locale locale, boolean useCache)	throws Exception {
 		this.amenity = amenity;
-        String key = getCacheKey(getClass(), "processBinaryRequest", 0, 0, query, radius, version, limit, stringLimit, amenity, bbox);
+        String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, limit, stringLimit, amenity, bbox);
 
 		List<ExtendedLandmark> output = (List<ExtendedLandmark>)cacheProvider.getObject(key);
 
         if (output == null) {
         	output = new ArrayList<ExtendedLandmark>();
-            OSMFile file = getAmenities(amenity.toLowerCase(), bbox);
-            if (file != null) {
-            	buildLandmarksList(output, file, limit, StringUtils.capitalize(amenity), locale);
-            	if (!output.isEmpty()) {
-            		cacheProvider.put(key, output);
-            		logger.log(Level.INFO, "Adding OSM landmark list to cache with key {0}", key);
+            if (amenity != null && bbox != null) {
+            	OSMFile file = getAmenities(amenity.toLowerCase(), bbox);
+            	if (file != null) {
+            		buildLandmarksList(output, file, limit, StringUtils.capitalize(amenity), locale);
+            		if (!output.isEmpty()) {
+            			cacheProvider.put(key, output);
+            			logger.log(Level.INFO, "Adding OSM landmark list to cache with key {0}", key);
+            		}
+            	} else {
+            		logger.log(Level.WARNING, "OSMFile is empty!");
             	}
             } else {
-            	logger.log(Level.WARNING, "OSMFile is empty!");
+            	logger.log(Level.WARNING, "Parameters can't be null! Amenity: " + amenity + " , bbox: " + bbox);
             }
         } else {
             logger.log(Level.INFO, "Reading OSM landmark list from cache with key {0}", key);

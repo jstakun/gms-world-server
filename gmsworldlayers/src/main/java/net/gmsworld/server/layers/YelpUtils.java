@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import net.gmsworld.server.config.Commons;
@@ -19,7 +18,7 @@ import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.JSONUtils;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
-import net.gmsworld.server.utils.ThreadUtil;
+import net.gmsworld.server.utils.ThreadManager;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
@@ -55,19 +54,17 @@ public class YelpUtils extends LayerHelper {
         	List<Object> venueArray = new ArrayList<Object>();
             
         	if (!cacheProvider.containsKey(CACHE_KEY)) {
-        		Map<Integer, Thread> venueDetailsThreads = new ConcurrentHashMap<Integer, Thread>();
-        		boolean isDeal = Boolean.parseBoolean(hasDeals);
+        		ThreadManager threadManager = new ThreadManager(threadProvider);
+                boolean isDeal = Boolean.parseBoolean(hasDeals);
         		int offset = 0;
 
         		while (offset < normalizedLimit) {
-        			Thread venueDetailsRetriever = threadProvider.newThread(new VenueDetailsRetriever(venueDetailsThreads, venueArray,
+        			threadManager.startThread(Integer.toString(offset), new VenueDetailsRetriever(threadManager.getThreads(), venueArray,
                         lat, lng, query, normalizedRadius, offset, isDeal, stringLimit, language, "json", null));
-        			venueDetailsThreads.put(offset, venueDetailsRetriever);
-        			venueDetailsRetriever.start();
         			offset += 20;
         		}
 
-        		ThreadUtil.waitForLayers(venueDetailsThreads);
+        		threadManager.waitForThreads();
             
         		if (venueArray.size() > normalizedLimit) {
         			venueArray = venueArray.subList(0, normalizedLimit);
@@ -328,19 +325,17 @@ public class YelpUtils extends LayerHelper {
     	
     	if (!cacheProvider.containsKey(CACHE_KEY)) {
         	
-    		Map<Integer, Thread> venueDetailsThreads = new ConcurrentHashMap<Integer, Thread>();
-    		int normalizedRadius = NumberUtils.normalizeNumber(radius, 1000, 40000);
+    		ThreadManager threadManager = new ThreadManager(threadProvider);
+            int normalizedRadius = NumberUtils.normalizeNumber(radius, 1000, 40000);
     		int offset = 0;
 
     		while (offset < limit) {
-    			Thread venueDetailsRetriever = threadProvider.newThread(new ReviewDetailsRetriever(venueDetailsThreads, reviewsArray,
+    			threadManager.startThread(Integer.toString(offset), new ReviewDetailsRetriever(threadManager.getThreads(), reviewsArray,
                     latitude, longitude, query, normalizedRadius, offset, hasDeals, language));
-    			venueDetailsThreads.put(offset, venueDetailsRetriever);
-    			venueDetailsRetriever.start();
     			offset += 20;
     		}
 
-    		ThreadUtil.waitForLayers(venueDetailsThreads);
+    		threadManager.waitForThreads();
     	} else {
         	logger.log(Level.WARNING, "Yelp Rate Limit Exceeded");
         }
@@ -362,22 +357,20 @@ public class YelpUtils extends LayerHelper {
         	landmarks = Collections.synchronizedList(new ArrayList<ExtendedLandmark>());
             
         	if (!cacheProvider.containsKey(CACHE_KEY)) {
-        		Map<Integer, Thread> venueDetailsThreads = new ConcurrentHashMap<Integer, Thread>();
-        		boolean isDeal = false;
+        		ThreadManager threadManager = new ThreadManager(threadProvider);
+                boolean isDeal = false;
         		if (hasDeals != null) {
         			isDeal = Boolean.parseBoolean(hasDeals);
         		}
         		int offset = 0;
 
         		while (offset < normalizedLimit) {
-        			Thread venueDetailsRetriever = threadProvider.newThread(new VenueDetailsRetriever(venueDetailsThreads, landmarks,
+        			threadManager.startThread(Integer.toString(offset), new VenueDetailsRetriever(threadManager.getThreads(), landmarks,
                         lat, lng, query, normalizedRadius, offset, isDeal, stringLimit, language, "bin", locale));
-        			venueDetailsThreads.put(offset, venueDetailsRetriever);
-        			venueDetailsRetriever.start();
         			offset += 20;
         		}
 
-        		ThreadUtil.waitForLayers(venueDetailsThreads);
+        		threadManager.waitForThreads();
             
         		if (landmarks.size() > normalizedLimit) {
         			landmarks = new ArrayList<ExtendedLandmark>(landmarks.subList(0, normalizedLimit));
@@ -554,14 +547,14 @@ public class YelpUtils extends LayerHelper {
 	
 	private class ReviewDetailsRetriever implements Runnable {
 
-        private Map<Integer, Thread> reviewDetailsThreads;
+        private Map<String, Thread> reviewDetailsThreads;
         private Map<String, Map<String, String>> reviewsArray;
         private double latitude, longitude;
         private String query, language;
         private int radius, offset;
         private boolean hasDeals;
 
-        public ReviewDetailsRetriever(Map<Integer, Thread> reviewDetailsThreads, Map<String, Map<String, String>> reviewsArray,
+        public ReviewDetailsRetriever(Map<String, Thread> reviewDetailsThreads, Map<String, Map<String, String>> reviewsArray,
                 double latitude, double longitude, String query, int radius, int offset, boolean hasDeals, String language) {
             this.reviewDetailsThreads = reviewDetailsThreads;
             this.reviewsArray = reviewsArray;
@@ -581,14 +574,14 @@ public class YelpUtils extends LayerHelper {
             } catch (Exception e) {
                 logger.log(Level.SEVERE, "ReviewDetailsRetriever.run exception:", e);
             } finally {
-                reviewDetailsThreads.remove(offset);
+                reviewDetailsThreads.remove(Integer.toString(offset));
             }
         }
     }
 
     private class VenueDetailsRetriever implements Runnable {
 
-        private Map<Integer, Thread> venueDetailsThreads;
+        private Map<String, Thread> venueDetailsThreads;
         private List<? extends Object> venueArray;
         private double latitude, longitude;
         private String query, language, format;
@@ -596,7 +589,7 @@ public class YelpUtils extends LayerHelper {
         private boolean hasDeals;
         private Locale locale;
 
-        public VenueDetailsRetriever(Map<Integer, Thread> venueDetailsThreads, List<? extends Object> venueArray,
+        public VenueDetailsRetriever(Map<String, Thread> venueDetailsThreads, List<? extends Object> venueArray,
                 double latitude, double longitude, String query, int radius,
                 int offset, boolean hasDeals, int stringLimit, String language, String format, Locale locale) {
             this.venueDetailsThreads = venueDetailsThreads;
@@ -624,7 +617,7 @@ public class YelpUtils extends LayerHelper {
             } catch (Exception e) {
                 logger.log(Level.SEVERE, "VenueDetailsRetriever.run exception:", e);
             } finally {
-                venueDetailsThreads.remove(offset);
+                venueDetailsThreads.remove(Integer.toString(offset));
             }
         }
     }

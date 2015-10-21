@@ -25,7 +25,7 @@ import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.JSONUtils;
 import net.gmsworld.server.utils.MathUtils;
 import net.gmsworld.server.utils.NumberUtils;
-import net.gmsworld.server.utils.ThreadUtil;
+import net.gmsworld.server.utils.ThreadManager;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
@@ -789,8 +789,8 @@ public class FoursquareUtils extends LayerHelper {
 
         Map<String, Map<String, String>> attrs = new HashMap<String, Map<String, String>>();
 
-        Map<String, Thread> venueDetailsThreads = new ConcurrentHashMap<String, Thread>();
-
+        ThreadManager threadManager = new ThreadManager(threadProvider);
+        
         //boolean bitlyFailed = false;
 
         for (int i = 0; i < venueIds.size(); i++) {
@@ -806,18 +806,14 @@ public class FoursquareUtils extends LayerHelper {
             if (i % 5 == 4 || i == (venueIds.size() - 1)) {
                 //call foursquare
             	
-                Thread venueDetailsRetriever = threadProvider.newThread(new VenueDetailsRetriever(venueDetailsThreads, attrs,
+                threadManager.startThread(multiRequest, new VenueDetailsRetriever(threadManager.getThreads(), attrs,
                         locale, urlPrefix.toString(), multiRequest, venueId, false));
-
-                venueDetailsThreads.put(multiRequest, venueDetailsRetriever);
-
-                venueDetailsRetriever.start();
 
                 multiRequest = "";
             }
         }
 
-        ThreadUtil.waitForLayers(venueDetailsThreads);
+        threadManager.waitForThreads();
 
         return attrs;
     }
