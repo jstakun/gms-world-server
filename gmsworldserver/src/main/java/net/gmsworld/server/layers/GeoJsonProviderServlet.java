@@ -1,6 +1,7 @@
 package net.gmsworld.server.layers;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -9,6 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.StringUtil;
 
@@ -52,11 +55,16 @@ public class GeoJsonProviderServlet extends HttpServlet {
 				response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 			} else {
 				response.setContentType("text/javascript;charset=UTF-8");
-				double lat = GeocodeUtils.getLatitude(request.getParameter("lat"));
-			    double lng = GeocodeUtils.getLongitude(request.getParameter("lng"));
-			    String layer = request.getParameter("layer");
-			    String key = "geojson_" + StringUtil.formatCoordE2(lat) + "_" + StringUtil.formatCoordE2(lng) + "_" + layer;
+				String lat = StringUtil.formatCoordE2(GeocodeUtils.getLatitude(request.getParameter("lat")));
+			    String lng =  StringUtil.formatCoordE2(GeocodeUtils.getLongitude(request.getParameter("lng")));
+			    String layer = request.getParameter("layer"); 
+			    String key = "geojson_" + lat + "_" + lng + "_" + layer;
 				json = CacheUtil.getString(key);
+				
+				if (! StringUtils.startsWith(json, "{")) {
+				    URL cacheUrl = new URL("http://cache-gmsworld.rhcloud.com/rest/cache/geojson/" + layer + "/" + lat + "/" + lng);
+					json = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, Commons.getProperty(Property.RH_GMS_USER));				
+				}
 			}	
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage(), e);

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,8 @@ import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 
 import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.memcache.CacheProvider;
 
@@ -188,8 +191,19 @@ public abstract class LayerHelper {
 
     	try {
     			String json = new ObjectMapper().writeValueAsString(featureCollection);
+    			String latStr = StringUtil.formatCoordE2(lat);
+    			String lngStr = StringUtil.formatCoordE2(lng);
+    			
+    			try {
+    				URL cacheUrl = new URL("http://cache-gmsworld.rhcloud.com/rest/cache/geojson/" + latStr + "/" + lngStr);
+    				String resp = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, "POST", null, json, "application/json", Commons.getProperty(Property.RH_GMS_USER));
+    				logger.log(Level.INFO, "Cache response: " + resp);
+    			} catch (Exception e) {
+    				logger.log(Level.SEVERE, e.getMessage(), e);
+    			}
+    			
     			if (cacheProvider != null) {
-    				String key = "geojson_" + StringUtil.formatCoordE2(lat) + "_" + StringUtil.formatCoordE2(lng) + "_" + layer;
+    				String key = "geojson_" + latStr + "_" + lngStr + "_" + layer;
     				logger.log(Level.INFO, "Saved geojson list to cache with key: " + key);
     				cacheProvider.put(key, json, 1);
     			    return key;

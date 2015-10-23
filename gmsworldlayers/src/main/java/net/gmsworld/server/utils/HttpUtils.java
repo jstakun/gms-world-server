@@ -29,30 +29,38 @@ public class HttpUtils {
     private static final Map<String, Integer> httpResponseStatuses = new HashMap<String, Integer>();
 
     public static String processFileRequestWithLocale(URL fileUrl, String locale) throws IOException {
-        return processFileRequest(fileUrl, false, null, null, "GET", locale, null, null);
+        return processFileRequest(fileUrl, false, null, null, "GET", locale, null, null, null);
     }
 
     public static String processFileRequestWithAuthn(URL fileUrl, String authn) throws IOException {
-        return processFileRequest(fileUrl, true, null, authn, "GET", null, null, null);
+        return processFileRequest(fileUrl, true, null, authn, "GET", null, null, null, null);
     }
     
     public static String processFileRequestWithBasicAuthn(URL fileUrl, String authn) throws IOException {
-        return processFileRequest(fileUrl, true, authn, null, "GET", null, null, null);
+        return processFileRequest(fileUrl, true, authn, null, "GET", null, null, null, null);
     }
 
     public static String processFileRequest(URL fileUrl) throws IOException {
-        return processFileRequest(fileUrl, false, null, null, "GET", null, null, null);
+        return processFileRequest(fileUrl, false, null, null, "GET", null, null, null, null);
     }
 
-    public static String processFileRequest(URL fileUrl, String method, String accept, String urlParams) throws IOException {
-        return processFileRequest(fileUrl, false, null, null, method, null, accept, urlParams);
+    public static String processFileRequest(URL fileUrl, String method, String accept, String content) throws IOException {
+        return processFileRequest(fileUrl, false, null, null, method, null, accept, content, null);
+    }
+    
+    public static String processFileRequest(URL fileUrl, String method, String accept, String content, String contentType) throws IOException {
+        return processFileRequest(fileUrl, false, null, null, method, null, accept, content, contentType);
     }
     
     public static String processFileRequestWithBasicAuthn(URL fileUrl, String method, String accept, String urlParams, String authn) throws IOException {
-        return processFileRequest(fileUrl, true, authn, null, method, null, accept, urlParams);
+        return processFileRequest(fileUrl, true, authn, null, method, null, accept, urlParams, null);
+    }
+    
+    public static String processFileRequestWithBasicAuthn(URL fileUrl, String method, String accept, String urlParams, String contentType, String authn) throws IOException {
+        return processFileRequest(fileUrl, true, authn, null, method, null, accept, urlParams, contentType);
     }
 
-    private static String processFileRequest(URL fileUrl, boolean authn, String userpassword, String authnOther, String method, String locale, String accept, String urlParams) throws IOException {
+    private static String processFileRequest(URL fileUrl, boolean authn, String userpassword, String authnOther, String method, String locale, String accept, String content, String contentType) throws IOException {
         InputStream is = null;
         String file = null;
 
@@ -80,14 +88,18 @@ public class HttpUtils {
                 conn.setRequestProperty("Accept", accept);
             }
 
-            if (urlParams != null) {
-                conn.setRequestProperty("Content-Length", Integer.toString(urlParams.getBytes().length));
+            if (content != null) {
+                conn.setRequestProperty("Content-Length", Integer.toString(content.getBytes().length));
                 //conn.setRequestProperty("Content-Language", "en-US");
-                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+                if (contentType != null) {
+                	conn.setRequestProperty("Content-Type", contentType);
+                } else {
+                	conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+                }
                 conn.setDoInput(true);
                 conn.setDoOutput(true);
                 //Send request
-                IOUtils.write(urlParams, conn.getOutputStream());
+                IOUtils.write(content, conn.getOutputStream());
             } else {
                 conn.connect();
             }
