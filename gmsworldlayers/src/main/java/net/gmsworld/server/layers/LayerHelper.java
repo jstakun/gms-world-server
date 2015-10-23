@@ -156,8 +156,7 @@ public abstract class LayerHelper {
     	FeatureCollection featureCollection = new FeatureCollection();
 		featureCollection.setProperty("layer", layer);
 		
-		if (!landmarks.isEmpty()) {
-    		
+		if (!landmarks.isEmpty()) {    		
 			for (ExtendedLandmark landmark : landmarks) {
     			Feature f = new Feature();
     			Point p = new Point();
@@ -194,12 +193,14 @@ public abstract class LayerHelper {
     			String latStr = StringUtil.formatCoordE2(lat);
     			String lngStr = StringUtil.formatCoordE2(lng);
     			
-    			try {
-    				URL cacheUrl = new URL("http://cache-gmsworld.rhcloud.com/rest/cache/geojson/" + latStr + "/" + lngStr);
-    				String resp = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, "POST", null, json, "application/json", Commons.getProperty(Property.RH_GMS_USER));
-    				logger.log(Level.INFO, "Cache response: " + resp);
-    			} catch (Exception e) {
-    				logger.log(Level.SEVERE, e.getMessage(), e);
+    			if (!landmarks.isEmpty() && StringUtils.isNotEmpty(json)) {
+    				try {
+    					URL cacheUrl = new URL("http://cache-gmsworld.rhcloud.com/rest/cache/geojson/" + latStr + "/" + lngStr);
+    					String resp = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, "POST", null, json, "application/json", Commons.getProperty(Property.RH_GMS_USER));
+    					logger.log(Level.INFO, "Cache response: " + resp);
+    				} catch (Exception e) {
+    					logger.log(Level.SEVERE, e.getMessage(), e);
+    				}
     			}
     			
     			if (cacheProvider != null) {
