@@ -7,6 +7,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ThreadFactory;
@@ -155,6 +156,7 @@ public abstract class LayerHelper {
 
     	FeatureCollection featureCollection = new FeatureCollection();
 		featureCollection.setProperty("layer", layer);
+		featureCollection.setProperty("creationDate", new Date());
 		
 		if (!landmarks.isEmpty()) {    		
 			for (ExtendedLandmark landmark : landmarks) {
