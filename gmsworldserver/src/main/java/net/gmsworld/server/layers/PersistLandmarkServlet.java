@@ -80,10 +80,10 @@ public class PersistLandmarkServlet extends HttpServlet {
                 
                 String layer = StringUtil.getStringParam(request.getParameter("layer"), Commons.LM_SERVER_LAYER);
                 logger.log(Level.INFO, "Creating new landmark in layer: " + layer);
-                AddressInfo addressInfo = GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(l.getLatitude(), l.getLongitude());
-    			
+                
                 if (layer.equals(Commons.MY_POS_CODE)) {
-                	String address = addressInfo.getField(AddressInfo.EXTENSION);
+                	AddressInfo addressInfo = GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(l.getLatitude(), l.getLongitude());
+                    String address = addressInfo.getField(AddressInfo.EXTENSION);
                 	if (StringUtils.isNotEmpty(address)) {
                 		l.setDescription(address);
                 	}
@@ -118,7 +118,7 @@ public class PersistLandmarkServlet extends HttpServlet {
                 //check if this landmark has the same name and location as newest (last saved) landmark
                 boolean isSimilarToNewest = LandmarkPersistenceUtils.isSimilarToNewest(l);
             	if (!isSimilarToNewest) {
-            		LandmarkPersistenceUtils.setFlex(l, addressInfo, request);          		
+            		LandmarkPersistenceUtils.setFlex(l, request);          		
             		LandmarkPersistenceUtils.persistLandmark(l);
 
                 	if (l.getId() > 0) {	

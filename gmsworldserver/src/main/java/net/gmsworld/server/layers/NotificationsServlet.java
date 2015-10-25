@@ -89,10 +89,8 @@ public class NotificationsServlet extends HttpServlet {
                             l.setUsername(u);
                             String socialIds = request.getParameter("socialIds");
                             
-                            AddressInfo addressInfo = GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(l.getLatitude(), l.getLongitude());
-                			
-                    		LandmarkPersistenceUtils.setFlex(l, addressInfo, request);
-                    		l.setDescription(addressInfo.getField(AddressInfo.EXTENSION)); 
+                            String desc = LandmarkPersistenceUtils.setFlex(l, request);
+                    		l.setDescription(desc); 
             				l.setLayer(Commons.MY_POS_CODE);
                 			
             				LandmarkPersistenceUtils.persistLandmark(l);

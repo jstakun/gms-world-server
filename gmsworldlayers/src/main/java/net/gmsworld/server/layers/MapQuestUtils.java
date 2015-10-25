@@ -118,7 +118,7 @@ public class MapQuestUtils extends GeocodeHelper {
 			String urlString = "http://open.mapquestapi.com/geocoding/v1/reverse?key=" + Commons.getProperty(Property.MAPQUEST_APPKEY) + "&location=" + normLat + "," + normLng;
 			//System.out.println(urlString);
 			URL routeUrl = new URL(urlString);
-            String resp = HttpUtils.processFileRequest(routeUrl, "GET", null, null);
+            String resp = HttpUtils.processFileRequestWithLocale(routeUrl, "en-us");
             if (StringUtils.startsWith(resp, "{")) {
                 JSONObject root = new JSONObject(resp);
                 JSONArray results = root.getJSONArray("results");

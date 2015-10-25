@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.config.ConfigurationManager;
+import net.gmsworld.server.layers.GeocodeHelperFactory;
 import net.gmsworld.server.layers.LayerHelperFactory;
 import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.HttpUtils;
@@ -1060,7 +1061,16 @@ public class LandmarkPersistenceUtils {
     	//
     }
     
-    public static void setFlex(Landmark l, AddressInfo addressInfo, HttpServletRequest request) {
+    public static String setFlex(Landmark l, HttpServletRequest request) {
+    	AddressInfo addressInfo = new AddressInfo();
+    	
+    	try {
+    		//addressInfo = GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(l.getLatitude(), l.getLongitude());
+			addressInfo = GeocodeHelperFactory.getMapQuestUtils().processReverseGeocode(l.getLatitude(), l.getLongitude());
+    	} catch (Exception e) {
+    		logger.log(Level.SEVERE, e.getMessage(), e);
+    	}
+    	
     	int useCount = NumberUtils.getInt(request.getHeader(Commons.USE_COUNT_HEADER), 1);
 		int appId = NumberUtils.getInt(request.getHeader(Commons.APP_HEADER), -1);
 		int version = NumberUtils.getInt(request.getHeader(Commons.APP_VERSION_HEADER), -1);
@@ -1076,5 +1086,7 @@ public class LandmarkPersistenceUtils {
 		flex.putOpt("cc", addressInfo.getField(AddressInfo.COUNTRY_CODE));
 		flex.putOpt("city", addressInfo.getField(AddressInfo.CITY));
 		l.setFlex(flex.toString());
+		
+		return addressInfo.getField(AddressInfo.EXTENSION);
     }
 }
