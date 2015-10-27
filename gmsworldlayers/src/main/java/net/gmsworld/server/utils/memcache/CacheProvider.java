@@ -11,4 +11,8 @@ public interface CacheProvider {
 	public Object getObject(String key);
 
 	public boolean containsKey(String key);
+	
+	public void putToSecondLevelCache(String key, String value);
+	
+	public String getFromSecondLevelCache(String key);
 }

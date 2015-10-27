@@ -36,5 +36,16 @@ public class GoogleCacheProvider implements CacheProvider {
 	public boolean containsKey(String key) {
 		return CacheUtil.containsKey(key);
 	}
+	
+	@Override
+	public void putToSecondLevelCache(String key, String value) {
+		//TODO not yet implemented
+	}
+	
+	@Override
+	public String getFromSecondLevelCache(String key) {
+		//TODO not yet implemented
+		return null;
+	}
 
 }

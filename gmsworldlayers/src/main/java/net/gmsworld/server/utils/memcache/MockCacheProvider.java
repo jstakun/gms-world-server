@@ -33,5 +33,12 @@ public class MockCacheProvider implements CacheProvider {
 	public boolean containsKey(String key) {
 		return cache.containsKey(key);
 	}
-
-}
+	
+    public void putToSecondLevelCache(String key, String value) {
+    	
+    }
+	
+	public String getFromSecondLevelCache(String key) {
+		return null;
+	}
+}	

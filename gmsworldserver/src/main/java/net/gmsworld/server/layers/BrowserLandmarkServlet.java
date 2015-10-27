@@ -20,7 +20,6 @@ import com.google.appengine.api.ThreadManager;
 import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
-import com.openlapi.AddressInfo;
 
 /**
  * Servlet implementation class BrowserLandmarkServlet
