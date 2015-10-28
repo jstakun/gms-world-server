@@ -140,6 +140,7 @@ public class LayersProviderServlet extends HttpServlet {
                         List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().processBinaryRequest(latitude, longitude, query, radius * 1000, version, limit, stringLimit, token, null, l, true);
                         LayerHelperFactory.getFacebookUtils().serialize(landmarks, response.getOutputStream(), version);
                         LayerHelperFactory.getFacebookUtils().cacheGeoJson(landmarks, latitude, longitude, Commons.FACEBOOK_LAYER);
+                        //new JSONObject().put("ResultSet", landmarks).toString();                    
                     } else {
                     	outString = LayerHelperFactory.getFacebookUtils().processRequest(latitude, longitude, query, radius * 1000, version, limit, stringLimit, token, null).toString();
                     }
