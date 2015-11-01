@@ -120,7 +120,10 @@ public class HttpUtils {
                 is = conn.getErrorStream();
                 logger.log(Level.SEVERE, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString()});   
             }
-            file = IOUtils.toString(is, "UTF-8");
+            
+            if (is != null) {
+            	file = IOUtils.toString(is, "UTF-8");
+            }
             
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
