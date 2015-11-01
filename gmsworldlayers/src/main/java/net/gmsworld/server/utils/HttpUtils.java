@@ -116,9 +116,11 @@ public class HttpUtils {
                 //while ((count = is.read(buf)) >= 0) {
                 //    file.append(new String(buf, 0, count));
                 //}
-            } else {
+            } else if (responseCode >= 400 ){
                 is = conn.getErrorStream();
                 logger.log(Level.SEVERE, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString()});   
+            } else {
+            	logger.log(Level.WARNING, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString()});   
             }
             
             if (is != null) {
