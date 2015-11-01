@@ -46,7 +46,10 @@ public class GeocodeServlet extends HttpServlet {
         	String address = request.getParameter("address");
         	
             if (StringUtils.isNotEmpty(address)) {
-                String email = request.getParameter("email");
+                
+            	logger.log(Level.INFO, "Searching for " + address);
+                
+            	String email = request.getParameter("email");
                 if (StringUtils.isNotEmpty(email)) {
                     try {
                         email = new String(CryptoTools.decrypt(Base64.decode(email.getBytes())));

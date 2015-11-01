@@ -91,6 +91,8 @@ public class Search2Servlet extends HttpServlet {
                 
                 locale = request.getLocale();
                 
+                logger.log(Level.INFO, "Searching for " + query);
+                
                 if (format.equals("json")) { 
                 	jsonResponse = LayerHelperFactory.getSearchUtils().processRequest(latitude, longitude, query, radius, version, limit, stringLimit, flexString, ftoken, locale);
                 } else {
