@@ -315,6 +315,10 @@
     <servlet-name>GeoJsonProviderServlet</servlet-name>
     <servlet-class>net.gmsworld.server.layers.GeoJsonProviderServlet</servlet-class>
   </servlet>
+  <servlet>
+    <servlet-name>HotelsBookingServlet</servlet-name>
+    <servlet-class>net.gmsworld.server.layers.HotelsBookingServlet</servlet-class>
+  </servlet>
   <servlet-mapping>
     <servlet-name>action</servlet-name>
     <url-pattern>*.do</url-pattern>
@@ -497,6 +501,10 @@
   <servlet-mapping>
     <servlet-name>BrowserLandmarkServlet</servlet-name>
     <url-pattern>/services/browserLandmark</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>HotelsBookingServlet</servlet-name>
+    <url-pattern>/bookingProvider</url-pattern>
   </servlet-mapping>
   <session-config>
     <session-timeout>30</session-timeout>
