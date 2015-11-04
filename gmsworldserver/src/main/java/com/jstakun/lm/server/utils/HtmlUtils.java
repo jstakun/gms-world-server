@@ -1,12 +1,16 @@
 package com.jstakun.lm.server.utils;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.gmsworld.server.utils.DateUtils;
+import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.UrlUtils;
 
@@ -21,6 +25,8 @@ import com.openlapi.QualifiedCoordinates;
 
 public class HtmlUtils {
 
+	private static final Logger logger =  Logger.getLogger(HtmlUtils.class.getName()); 
+	
 	public static String buildLandmarkDesc(Landmark landmark, Object address, Locale locale) {
 	    String desc = "'<span style=\"font-family:Cursive;font-size:14px;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;\">'+\n" +
 	            "'<img src=\"/images/flagblue.png\"/><br/>'+\n" +
@@ -79,9 +85,9 @@ public class HtmlUtils {
 		}
 		desc += "Posted " + prettyTime.format(landmark.getCreationDate()) + " on " + DateUtils.getFormattedDateTime(locale, landmark.getCreationDate()) + " by <a href=\"" + userUrl + "\">" + UrlUtils.createUsernameMask(landmark.getUsername()) + "</a>&nbsp;" + 
         "| Created in layer <a href=\"" + layerUrl + "\">" + LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer()) + "</a> using <a href=\"" + ConfigurationManager.getAppUrl(landmark.getAppId()) + "\" target=\"_blank\">" +  ConfigurationManager.getAppName(landmark.getAppId()) + "</a>";
-        if (StringUtils.isNotEmpty(landmark.getCountryCode()) && StringUtils.isNotEmpty(landmark.getCity())) {
-            String bookingUrl = String.format(ConfigurationManager.BOOKING_URL, landmark.getCountryCode().toLowerCase(Locale.US), landmark.getCity().toLowerCase(Locale.US).replaceAll(" ", "-"));
-        	desc += "<br/><b><a href=\"" + bookingUrl + "\" target=\"_blank\">Book hotel room nearby!</a></b>";	
+        String bookingUrl = getBookingUrl(landmark.getCountryCode(), landmark.getCity());
+		if (bookingUrl != null) {
+            desc += "<br/><b><a href=\"" + bookingUrl + "\" target=\"_blank\">Book hotel room nearby!</a></b>";	
         }
         desc += HtmlUtils.getStatusImage(landmark.getUseCount());
 		
@@ -142,6 +148,46 @@ public class HtmlUtils {
     		qc = default_locations.get(locale.toString());
     	}
     	return qc.getLatitude() + "," + qc.getLongitude();
+    }
+    
+    private static String getBookingUrl(String cc, String city) {
+    	String bookingUrl = null;
+    	if (StringUtils.isNotEmpty(cc) && StringUtils.isNotEmpty(city)) {
+    	
+    		String normalizedCity = city.toLowerCase(Locale.US).replaceAll(" ", "-");
+    		if (normalizedCity.equals("new-york-city")) {
+    			normalizedCity = "new-york";
+    		} else if (normalizedCity.endsWith("buenos-aires")) {
+    			normalizedCity = "buenos-aires";
+    		}
+    		bookingUrl = String.format(ConfigurationManager.BOOKING_URL, cc.toLowerCase(Locale.US), normalizedCity);
+    	
+    		/*try {
+    			HttpUtils.processFileRequest(new URL(bookingUrl));
+    	
+    			if (HttpUtils.getResponseCode(bookingUrl) == 404) {
+    				logger.log(Level.SEVERE, "Wrong url: " + bookingUrl);
+    			    bookingUrl = null;
+    			}
+    	
+    		} catch (Exception e) {
+    			logger.log(Level.SEVERE, e.getMessage(), e);
+    			bookingUrl = null;
+    		}*/
+    	
+    	}
+    	
+    	return bookingUrl;
+    }
+    
+    public static String getArchivesUrls() {
+    	String resp = "";
+    	for (int i=0;i<12;i++)
+    	{
+    	      resp += "<li><a href=\"/archive.do?month=" + DateUtils.getShortMonthYearString(i) + "\">" + DateUtils.getLongMonthYearString(i) + "</a></li>\n";
+    	}
+    	resp += "<li><a href=\"/archive.do?month=01-2014\">January 2014</a></li>\n";
+    	return resp;
     }
 }
 

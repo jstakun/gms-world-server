@@ -2,7 +2,7 @@
 <%@ page pageEncoding="utf-8" %>
 <%@ page import="com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils,
                  com.jstakun.lm.server.persistence.Landmark,
-                 net.gmsworld.server.utils.DateUtils,
+                 com.jstakun.lm.server.utils.HtmlUtils,
                  net.gmsworld.server.utils.UrlUtils,
                  org.apache.commons.lang.StringUtils,
          		java.util.List"%>
@@ -100,14 +100,7 @@
 
             <div class="footer-list">
                 <ul>
-<%
-   for (int i=0;i<12;i++)
-   {
-%>
-                    <li><a href="/archive.do?month=<%= DateUtils.getShortMonthYearString(i) %>"><%= DateUtils.getLongMonthYearString(i) %></a></li>
-<%
-   }
-%>        
+					<%= HtmlUtils.getArchivesUrls() %>        
                 </ul>
             </div>
 
