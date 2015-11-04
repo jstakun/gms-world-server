@@ -1089,4 +1089,12 @@ public class LandmarkPersistenceUtils {
 		
 		return addressInfo.getField(AddressInfo.EXTENSION);
     }
+    
+    public static void deleteLandmark(String key) {
+    	//TODO not yet implemented
+    }
+    
+    public static void updateLandmark(String key, Map<String, Object> update) {
+    	//TODO not yet implemented
+    }
 }

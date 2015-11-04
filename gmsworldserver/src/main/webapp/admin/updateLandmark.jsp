@@ -69,7 +69,16 @@
                 <html:optionsCollection property="layers"/>
             </html:select>
           </td>
-        </tr><tr>
+        </tr>
+        <tr>
+          <th>
+            Flex
+          </th>
+          <td width="50%">
+              <html:text property="flex"/>
+          </td>
+        </tr>
+        <tr>
           <th>
             &nbsp;
           </th>

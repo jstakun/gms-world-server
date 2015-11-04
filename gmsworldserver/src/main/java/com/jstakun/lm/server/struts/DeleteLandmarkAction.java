@@ -11,6 +11,8 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
+
 public class DeleteLandmarkAction extends Action {
     /**This is the main action called from the Struts framework.
      * @param mapping The ActionMapping used to select this instance.
@@ -26,8 +28,8 @@ public class DeleteLandmarkAction extends Action {
 
         if (request.getParameter("key") != null)
         {
-            //String key = (String)request.getParameter("key"); 
-            //TODO implement LandmarkPersistenceUtils.deleteLandmark(key);
+            String key = (String)request.getParameter("key"); 
+            LandmarkPersistenceUtils.deleteLandmark(key);
         }
 
         return mapping.findForward( "success");

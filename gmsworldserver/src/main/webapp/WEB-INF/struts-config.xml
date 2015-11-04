@@ -14,6 +14,7 @@
             <form-property name="validityDate" type="java.sql.Timestamp" initial="2200-01-01 00:00:00"/>
             <form-property name="layer" type="java.lang.String" initial="Public"/>
             <form-property name="layers" type="java.util.List"/>
+            <form-property name="flex" type="java.lang.String" initial="{}"/>
         </form-bean>
         <form-bean name="layerForm"
                    type="com.jstakun.lm.server.struts.LayerForm">

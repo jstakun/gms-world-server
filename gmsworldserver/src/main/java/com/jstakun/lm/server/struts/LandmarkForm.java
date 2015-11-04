@@ -40,6 +40,7 @@ public class LandmarkForm extends DynaActionForm {
             set("creationDate",new Timestamp(landmark.getCreationDate().getTime()));
             set("key",k);
             set("layer",landmark.getLayer());
+            set("flex", landmark.getFlex());
            
       }
       

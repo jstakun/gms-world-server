@@ -16,6 +16,8 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
 
+import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
+
 public class UpdateLandmarkAction extends Action {
     /**This is the main action called from the Struts framework.
      * @param mapping The ActionMapping used to select this instance.
@@ -41,8 +43,9 @@ public class UpdateLandmarkAction extends Action {
       update.put("createdBy",landmarkForm.get("createdBy"));
       update.put("validityDate",new Date(((Timestamp)landmarkForm.get("validityDate")).getTime()));
       update.put("layer",landmarkForm.get("layer"));
+      update.put("flex",landmarkForm.get("flex"));
       
-      //TODO LandmarkPersistenceUtils.updateLandmark((String)landmarkForm.get("key"), update);
+      LandmarkPersistenceUtils.updateLandmark((String)landmarkForm.get("key"), update);
   
       return mapping.findForward( "success");
     }

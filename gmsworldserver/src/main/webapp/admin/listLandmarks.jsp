@@ -1,18 +1,19 @@
 <%@ page contentType="text/html;charset=utf-8"%>
 <%@ page import="com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils,
-                 com.jstakun.lm.server.persistence.Landmark,net.gmsworld.server.utils.StringUtil,net.gmsworld.server.utils.DateUtils,
+                 com.jstakun.lm.server.persistence.Landmark,
+                 net.gmsworld.server.utils.StringUtil,
+                 net.gmsworld.server.utils.DateUtils,
                  java.util.List"%>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>List of Landmarks</title>
+<title>Landmarks list</title>
 </head>
   <body>
     <h2>
-      List of Landmarks
+      Landmarks list
     </h2>
-    <table cellspacing="2" cellpadding="3" border="1" align="center"
-           width="100%">
+    <table cellspacing="2" cellpadding="3" border="1" align="center" width="100%">
       <tr>
         <th>
           Key
