@@ -121,7 +121,7 @@
           mc = new MarkerClusterer(map, markers, mcOptions);              
 
           $("#status").css({"background-color": "#fff", "border" : "2px solid #fff", "border-radius": "3px", "text-align": "center", "box-shadow" : "0 2px 6px rgba(0,0,0,.3)"});
-          $("#status").html("Please wait from landmarks loading...");
+          $("#status").html("Please wait for landmarks loading...");
 		  $("#status").center().show().delay(10000).queue(function(n) {
 				  $(this).hide(); n();
 		  });  

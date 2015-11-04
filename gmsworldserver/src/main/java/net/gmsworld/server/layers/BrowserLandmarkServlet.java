@@ -1,8 +1,6 @@
 package net.gmsworld.server.layers;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,9 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.utils.HttpUtils;
-import net.gmsworld.server.utils.StringUtil;
 
-import com.google.appengine.api.ThreadManager;
 import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
