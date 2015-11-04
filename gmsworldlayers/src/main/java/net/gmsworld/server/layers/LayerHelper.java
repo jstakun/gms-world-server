@@ -184,7 +184,9 @@ public abstract class LayerHelper {
     					desc = StringUtils.replace(desc, "star_5", "/images/star_5.png");
     				}	
     				f.setProperty("desc", desc);
-        		} 
+        		} else if (StringUtils.equals(layer, Commons.PANORAMIO_LAYER)) {
+        			f.setProperty("url", StringUtils.replace(landmark.getUrl(), "/m/photo", "/photo")); 
+        		}
     			f.setProperty("mobile_url", landmark.getUrl());
     			featureCollection.add(f);
     		}
