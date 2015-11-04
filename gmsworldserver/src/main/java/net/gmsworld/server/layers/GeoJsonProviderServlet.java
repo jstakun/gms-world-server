@@ -2,6 +2,8 @@ package net.gmsworld.server.layers;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,6 +20,7 @@ import net.gmsworld.server.utils.StringUtil;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
+import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 
 /**
@@ -55,15 +58,26 @@ public class GeoJsonProviderServlet extends HttpServlet {
 				response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 			} else {
 				response.setContentType("text/javascript;charset=UTF-8");
-				String lat = StringUtil.formatCoordE2(GeocodeUtils.getLatitude(request.getParameter("lat")));
-			    String lng =  StringUtil.formatCoordE2(GeocodeUtils.getLongitude(request.getParameter("lng")));
+				double lat = GeocodeUtils.getLatitude(request.getParameter("lat"));
+			    double lng =  GeocodeUtils.getLongitude(request.getParameter("lng"));
 			    String layer = request.getParameter("layer"); 
-			    String key = "geojson_" + lat + "_" + lng + "_" + layer;
-				json = CacheUtil.getString(key);
-				
+			    json = LayerHelperFactory.getHotelsCombinedUtils().getGeoJson(lat, lng, layer);
+							
 				if (! StringUtils.startsWith(json, "{")) {
 				    URL cacheUrl = new URL("http://cache-gmsworld.rhcloud.com/rest/cache/geojson/" + layer + "/" + lat + "/" + lng);
 					json = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, Commons.getProperty(Property.RH_GMS_USER));				
+				}
+				
+				if (StringUtils.equals(layer, Commons.HOTELS_LAYER)) {
+					try {
+			    		List<ExtendedLandmark> landmarks = LayerHelperFactory.getHotelsCombinedUtils().processBinaryRequest(lat, lng, null, 20, 1024, 300, StringUtil.getStringLengthLimit("l"), "en", null, Locale.US, false);
+			    		String newkey = LayerHelperFactory.getHotelsCombinedUtils().cacheGeoJson(landmarks, lat, lng, Commons.HOTELS_LAYER);                          
+			    		if (newkey != null) {
+			    			json = CacheUtil.getString(newkey);
+			    		}
+					} catch (Exception e) {
+				    	logger.log(Level.SEVERE, e.getMessage(), e);
+				    }
 				}
 			}	
         } catch (Exception e) {

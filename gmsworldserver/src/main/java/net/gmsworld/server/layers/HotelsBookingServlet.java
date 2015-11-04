@@ -81,7 +81,7 @@ public class HotelsBookingServlet extends HttpServlet {
         	if (bookingUrl != null) {
         		response.sendRedirect(bookingUrl);
         	} else {
-        		response.sendRedirect("/showLandmark/" + key + "?enabled=Hotels");
+        		response.sendRedirect("/showLandmark/" + key + "?enabled=Hotels&fullScreenLandmarkMap=true");
         	}
         }
 	}

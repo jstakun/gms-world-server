@@ -143,12 +143,17 @@ public class ShowLandmarkAction extends Action {
             	return mapping.findForward("landmarks");
             } 
         } else if (landmark != null && StringUtils.isNotEmpty(request.getParameter("fullScreenLandmarkMap"))) {
+        	OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
         	request.setAttribute("lat", StringUtil.formatCoordE6(landmark.getLatitude()));
         	request.setAttribute("lng", StringUtil.formatCoordE6(landmark.getLongitude()));
         	request.setAttribute("landmarkDesc", HtmlUtils.buildLandmarkDesc(landmark, request.getAttribute("address"), request.getLocale()));
         	request.setAttribute("landmarkName", "'" + landmark.getName() + "'");
         	//return mapping.findForward("fullScreen");
-            return mapping.findForward("landmarks");
+        	if (os.isMobileDevice()) {
+                return mapping.findForward("landmarksMobile");
+            } else {
+            	return mapping.findForward("landmarks");
+            } 
         } else {
         	OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
             if (os.isMobileDevice()) {
