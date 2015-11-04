@@ -122,7 +122,7 @@
 
           $("#status").css({"background-color": "#fff", "border" : "2px solid #fff", "border-radius": "3px", "text-align": "center", "box-shadow" : "0 2px 6px rgba(0,0,0,.3)"});
           $("#status").html("Please wait for landmarks loading...");
-		  $("#status").center().show().delay(10000).queue(function(n) {
+		  $("#status").center().show().delay(5000).queue(function(n) {
 				  $(this).hide(); n();
 		  });  
       }
@@ -213,6 +213,12 @@
 		        	var centerControl = new hotelsLinkControl(hotelControlDiv, map, mapcenter);
 		        	map.controls[google.maps.ControlPosition.TOP_CENTER].push(hotelControlDiv);
 		        }	 
+			} else if ((layer_counter + excluded_layers) == layers.length && marker_counter == 1) {
+				$("#status").css({"background-color": "#fff", "border" : "2px solid #fff", "border-radius": "3px", "text-align": "center", "box-shadow" : "0 2px 6px rgba(0,0,0,.3)"});
+                $("#status").html("No landmarks available!");
+				$("#status").center().show().delay(3000).queue(function(n) {
+					  $(this).hide(); n();
+				});
 			}
       }
 
