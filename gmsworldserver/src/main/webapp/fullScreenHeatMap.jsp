@@ -58,8 +58,8 @@
 
                 var heatmap = new google.maps.visualization.HeatmapLayer({
                     data: pointArray,
-                    maxIntensity: 10,
-                    opacity: 0.8
+                    maxIntensity: 8,
+                    opacity: 0.6
                 });
 
                 heatmap.setMap(map);

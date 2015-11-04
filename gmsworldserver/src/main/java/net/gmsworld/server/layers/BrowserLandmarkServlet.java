@@ -86,17 +86,14 @@ public class BrowserLandmarkServlet extends HttpServlet {
     			LandmarkPersistenceUtils.persistLandmark(l);
     			if (l.getId() > 0) {
     				LandmarkPersistenceUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), null);
-    				LayersLoader loader = new LayersLoader(ThreadManager.currentRequestThreadFactory() , Arrays.asList(Commons.getLayers()));
-    				loader.loadLayers(l.getLatitude(), l.getLongitude(), null, 20, 1132, 30, StringUtil.getStringLengthLimit("l"), null, null, Locale.US, true);
+    				//LayersLoader loader = new LayersLoader(ThreadManager.currentRequestThreadFactory() , Arrays.asList(Commons.getLayers()));
+    				//loader.loadLayers(l.getLatitude(), l.getLongitude(), null, 20, 1132, 30, StringUtil.getStringLengthLimit("l"), null, null, Locale.US, true);
     				response.setContentType("text/javascript;charset=UTF-8");
     				response.getWriter().println("{\"id\": " + l.getId() +"}");
     				response.getWriter().close();
     			} else {
     				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     			}
-    			//response.setContentType("text/javascript;charset=UTF-8");
-				//response.getWriter().println("{\"id\": 44306}");
-				//response.getWriter().close();
 			}
 		} catch (Exception e) {
 	    	logger.log(Level.SEVERE, e.getMessage(), e);

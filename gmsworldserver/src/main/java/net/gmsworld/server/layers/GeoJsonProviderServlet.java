@@ -61,17 +61,24 @@ public class GeoJsonProviderServlet extends HttpServlet {
 				double lat = GeocodeUtils.getLatitude(request.getParameter("lat"));
 			    double lng =  GeocodeUtils.getLongitude(request.getParameter("lng"));
 			    String layer = request.getParameter("layer"); 
-			    json = LayerHelperFactory.getHotelsCombinedUtils().getGeoJson(lat, lng, layer);
-							
-				if (! StringUtils.startsWith(json, "{")) {
+			    LayerHelper layerHelper = LayerHelperFactory.getByName(layer);
+			    if (layerHelper != null) {
+			    	json = layerHelper.getGeoJson(lat, lng, layer);		
+			    }
+			    
+				if (!StringUtils.startsWith(json, "{")) {
 				    URL cacheUrl = new URL("http://cache-gmsworld.rhcloud.com/rest/cache/geojson/" + layer + "/" + lat + "/" + lng);
 					json = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, Commons.getProperty(Property.RH_GMS_USER));				
 				}
 				
-				if (StringUtils.equals(layer, Commons.HOTELS_LAYER)) {
+				if (!StringUtils.startsWith(json, "{")  && layerHelper != null) {
 					try {
-			    		List<ExtendedLandmark> landmarks = LayerHelperFactory.getHotelsCombinedUtils().processBinaryRequest(lat, lng, null, 20, 1024, 300, StringUtil.getStringLengthLimit("l"), "en", null, Locale.US, false);
-			    		String newkey = LayerHelperFactory.getHotelsCombinedUtils().cacheGeoJson(landmarks, lat, lng, Commons.HOTELS_LAYER);                          
+						int limit = 50;
+						if (layer.equals(Commons.HOTELS_LAYER)) {
+							limit = 350;
+						}
+			    		List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(lat, lng, null, 20, 1032, limit, StringUtil.getStringLengthLimit("l"), "en", null, Locale.US, true);
+			    		String newkey = layerHelper.cacheGeoJson(landmarks, lat, lng, layer);                          
 			    		if (newkey != null) {
 			    			json = CacheUtil.getString(newkey);
 			    		}
@@ -83,7 +90,7 @@ public class GeoJsonProviderServlet extends HttpServlet {
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
         } finally {
-        	if (! StringUtils.startsWith(json, "{")) {
+        	if (!StringUtils.startsWith(json, "{")) {
 				json = "{}";
 			} else {
 				try {
