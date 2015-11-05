@@ -35,8 +35,6 @@
                         Discover interesting places anywhere with <a href="/download.jsp"><b>Landmark Manager</b></a>.
                     </p>
                     
-                    </div>
-
                     <!-- AddThis Button BEGIN -->
 <p class="addthis_toolbox addthis_default_style ">
 <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
@@ -49,6 +47,21 @@
 <script type="text/javascript">var addthis_config = {"data_track_addressbar":true};</script>
 <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-514c9bf26802d421"></script>
 <!-- AddThis Button END -->
+                    </div>
+                    
+                    <div class="post">
+                        <p>
+                         	<a href="/hotelBrowserLandmark">Select location on the map<a/> and discover hotels around.<br/>
+                         	<a href="/hotelBrowserLandmark"><img src="/images/hotel.jpg" alt="Find hotel around selected location" title="Click to find hotel around selected location" height="250" width="500" class="float-left"/></a><br/><br/>
+                    	</p>
+                    </div>
+                    
+                    <div class="post">
+                    	<p>
+                    		<a href="/createBrowserLandmark">Share your location</a> or <a href="/selectBrowserLandmark">select location on the map<a/> and discover landmarks nearby.<br/>
+                            <a href="/createBrowserLandmark"><img src="/images/LM_banner_512x250.jpg" alt="GMS World Baner" title="Click to share you location" height="250" width="512" class="float-left"/></a><br/><br/>                     	
+                    	</p>
+                    </div>
                     
                     <div class="post">
                         <p>
@@ -56,13 +69,7 @@
                          	<a href="/heatMap"><img src="/images/heatmap_2.jpg" alt="GMS World Heat Map" title="Click to see GMS World Heat Map" height="250" width="500" class="float-left"/></a><br/><br/>
                     	</p>
                     </div>
-
-                    <div class="post">
-                    	<p>
-                    		<a href="/createBrowserLandmark">Share your location</a> or <a href="/selectBrowserLandmark">select location on the map<a/> and discover landmarks nearby.<br/>
-                            <a href="createBrowserLandmark"><img src="/images/LM_banner_512x250.jpg" alt="GMS World Baner" title="Click to share you location" height="250" width="512" class="float-left"/></a><br/><br/>                     	
-                    	</p>
-                    </div>
+                    
                     <h3>Newest Landmarks</h3>
 
                     <%

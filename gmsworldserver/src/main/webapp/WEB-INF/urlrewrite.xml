@@ -165,6 +165,11 @@
     </rule>
     
     <rule>
+            <from>^/hotelLandmark/([0-9.-]+)/([0-9.-]+)/([a-zA-Z0-9_-]+)$</from>
+            <to>/browserLandmark.jsp?latitude=$1&amp;longitude=$2&amp;gmstoken=$3&amp;enabled=Hotels</to>
+    </rule>
+    
+    <rule>
             <from>^/createBrowserLandmark</from>
             <to>/myposLandmark.jsp?generatetoken=true</to>
     </rule>
@@ -172,6 +177,11 @@
     <rule>
             <from>^/selectBrowserLandmark</from>
             <to>/selectLandmark.jsp?generatetoken=true</to>
+    </rule>
+    
+    <rule>
+            <from>^/hotelBrowserLandmark</from>
+            <to>/selectLandmark.jsp?generatetoken=true&amp;hotels=true</to>
     </rule>
     
     <!-- showLocation rules -->

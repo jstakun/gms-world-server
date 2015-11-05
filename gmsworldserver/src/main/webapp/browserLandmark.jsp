@@ -53,8 +53,7 @@
   	  		$( 'body' ).append("<p>Redirecting to <a href=\"/showLandmark/" + data.id + "\">landmark page</a>...<br/>" +
   	  				           "If you won't be redirected automatically click the link above.</p>");
   	    	console.log("Created landmark: " + data.id);
-  	    	//window.location.href = '/showLandmark/' + data.id;
-  	    	window.location.replace('/showLandmark/' + data.id);
+  	    	window.location.replace('/showLandmark/' + data.id <% if (request.getParameter("enabled") != null) { out.print("+ '?enabled=" + request.getParameter("enabled") + "'"); } %>);
   	})
   	.error(function(jqXHR, textStatus, errorThrown){ /* assign handler */
   		    $( 'div' ).remove();   

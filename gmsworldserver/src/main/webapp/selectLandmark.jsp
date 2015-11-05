@@ -10,6 +10,7 @@
   } else {	
 	  token = request.getHeader("X-GMS-Token") != null ? request.getHeader("X-GMS-Token") : request.getParameter("gmstoken");
   }	
+  boolean hotelsMode = StringUtils.equals(request.getParameter("hotels"),"true");
 %>
 <html>
 <head>
@@ -40,14 +41,27 @@
                 var latlngbounds = new google.maps.LatLngBounds();
 
                 google.maps.event.addListener(map, 'click', function (e) {
-                	 var message = "Do you want to discover landmarks around selected location?";
+                	 var message = "";
 
-                     var token = "<%= token %>";
-                	 
-                	 var r = confirm(message);
-                	 if (r == true) {
-                		 window.location.replace("/newLandmark/" +  e.latLng.lat() + "/" + e.latLng.lng() + "/" + token);
+                	 var token = "<%= token %>";
+
+                     var hotelsMode = <%= hotelsMode %>;
+
+                	 if (hotelsMode == true) {
+                		 message = "Do you want to find hotels around selected location?";
                 	 } else {
+                	 	 message = "Do you want to discover landmarks around selected location?";
+                	 }
+                	 
+                     var r = confirm(message);
+
+                	 if (r == true) {
+                    	 if (hotelsMode == true) {
+                    		 window.location.replace("/hotelLandmark/" +  e.latLng.lat() + "/" + e.latLng.lng() + "/" + token);   
+                         } else {
+                		 	 window.location.replace("/newLandmark/" +  e.latLng.lat() + "/" + e.latLng.lng() + "/" + token);
+                         }
+                     } else {
                 	     //                	 
                 	 } 
                 });
