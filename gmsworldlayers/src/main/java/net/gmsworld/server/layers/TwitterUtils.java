@@ -198,9 +198,9 @@ public class TwitterUtils extends LayerHelper {
 
 	@Override
 	public List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int distance, int version, int limit, int stringLimit, String lang, String flexString2, Locale locale, boolean useCache) throws Exception {
-		if (lang == null) {
-			lang = locale.getLanguage();
-		}
+		//if (lang == null) {
+		//	lang = locale.getLanguage();
+		//}
 		int radius = NumberUtils.normalizeNumber(distance, 1, 3);
 
         Query twquery;
