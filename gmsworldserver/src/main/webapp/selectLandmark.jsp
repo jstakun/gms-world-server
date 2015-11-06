@@ -15,7 +15,13 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Select location on the map</title>
+<% if (hotelsMode) { %>
+<meta name="keywords" content="hotels, accommodation, hotel deals, compare hotels, hotel reviews, hotel photos" />
+<title>Select location on the map and discover hotels around</title>
+<% } else { %>
+<title>Select location on the map and discover landmarks around</title>
+<% } %>
+
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
         <style type="text/css">
             html, body {width: 100%; height: 100%}
@@ -40,14 +46,16 @@
                 var infoWindow = new google.maps.InfoWindow();
                 var latlngbounds = new google.maps.LatLngBounds();
 
-                google.maps.event.addListener(map, 'click', function (e) {
+                var hotelsMode = <%= hotelsMode %>;
+
+           	    google.maps.event.addListener(map, 'click', function (e) {
                 	 var message = "";
 
                 	 var token = "<%= token %>";
 
-                     var hotelsMode = <%= hotelsMode %>;
-
-                	 if (hotelsMode == true) {
+                	 var hotelsMode = <%= hotelsMode %>;
+                	 
+                     if (hotelsMode == true) {
                 		 message = "Do you want to find hotels around selected location?";
                 	 } else {
                 	 	 message = "Do you want to discover landmarks around selected location?";
@@ -67,13 +75,13 @@
                 });
 
                 var centerControlDiv = document.createElement('div');
-		        var centerControl = new CenterControl(centerControlDiv, map, latlng);
+		        var centerControl = new CenterControl(centerControlDiv, map, latlng, hotelsMode);
 
 		        centerControlDiv.index = 1;
 		        map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv); 
              }
 
-        	 function CenterControl(controlDiv, map, center) {
+        	 function CenterControl(controlDiv, map, center, hotelsMode) {
 
            	  	// Set CSS for the control border
            	  	var controlUI = document.createElement('div');
@@ -95,7 +103,11 @@
            	  	controlText.style.lineHeight = '32px';
            	  	controlText.style.paddingLeft = '4px';
            	  	controlText.style.paddingRight = '4px';
-           	  	controlText.innerHTML = 'Click location on the map';
+           	  	if (hotelsMode == true) {
+           	  		controlText.innerHTML = 'Select location on the map and discover hotels around';
+        	    } else {
+        	    	controlText.innerHTML = 'Select location on the map and discover landmarks around';   
+             	}        	  	
            	  	controlUI.appendChild(controlText);
              }  
         </script>

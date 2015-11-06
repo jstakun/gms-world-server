@@ -73,16 +73,15 @@ public class HotelsBookingServlet extends HttpServlet {
         			    bookingUrl = null;
         			    
         			    //hotelscombined
-        			    /*bookingUrl = "https://www.hotelscombined.com/Place/" + city.replace(" ", "_") + ".htm?a_aid=31803";
+        			    bookingUrl = "https://www.hotelscombined.com/Place/" + city.replace(" ", "_") + ".htm?a_aid=31803";
         			    String resp = HttpUtils.processFileRequest(new URL(bookingUrl));
         			    
         			    responseCode = HttpUtils.getResponseCode(bookingUrl);
         			    
-        			    logger.log(Level.INFO, "Response code: " + responseCode + ", response: " + resp);
-        			    
-        			    if (responseCode == null || responseCode == 301) {
+        			    if (responseCode == null || responseCode == 301 || !resp.contains("Search hotels in " + city)) {
+        			    	logger.log(Level.WARNING, "Wrong url: " + bookingUrl);
         			    	bookingUrl = null;
-        			    }*/
+        			    }
         			}
         		} catch (Exception e) {
         			logger.log(Level.SEVERE, e.getMessage(), e);

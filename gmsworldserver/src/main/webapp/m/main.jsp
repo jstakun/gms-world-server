@@ -25,10 +25,16 @@
        
     <div class="content">
     	<article class="underline">
-    	
     	<h3>Welcome to GMS World</h3>
-        Discover interesting places anywhere with <a href="/download.jsp"><b>Landmark Manager</b></a>.
-        Find out where <a href="/heatMap">GMS World</a> is most popular.<br/>       
+    	</article>
+    	
+        <article class="underline">
+        	<a href="/hotelBrowserLandmark">Select location on the map<a/> and discover hotels around.<br/>
+        </article>
+        
+        <article class="underline">
+    		Discover interesting places anywhere with <a href="/download.jsp"><b>Landmark Manager</b></a>.
+        	Find out where <a href="/heatMap">GMS World</a> is most popular.<br/>       
         </article>
         
         <article class="underline">
