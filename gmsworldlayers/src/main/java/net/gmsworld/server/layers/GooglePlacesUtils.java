@@ -419,38 +419,24 @@ public class GooglePlacesUtils extends LayerHelper {
     }
 
 	@Override
-	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String language, String flexString2, Locale locale, boolean useCache) throws Exception {
+	public List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String language, String flexString2, Locale locale, boolean useCache) throws Exception {
 		if (language == null) {
 			language = locale.getLanguage();
 		}
 		int r = NumberUtils.normalizeNumber(radius, 1000, 50000);
 		int l = NumberUtils.normalizeNumber(limit, 1, QUOTA_LIMIT);
-        String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, r, version, l, stringLimit, language, flexString2);
-        List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)cacheProvider.getObject(key);
-        if (landmarks == null) {
-            List<String> placeDetails = new ArrayList<String>();
-            String queryStringSuffix = "&types=" + types + "&sensor=false&key=" + Commons.getProperty(Property.GOOGLE_API_KEY);
+        List<String> placeDetails = new ArrayList<String>();
+        String queryStringSuffix = "&types=" + types + "&sensor=false&key=" + Commons.getProperty(Property.GOOGLE_API_KEY);
 
-            String url = "location=" + lat + "," + lng + "&radius=" + r + "&language=" + language;
-            if (query != null) {
-                url += "&keyword=" + URLEncoder.encode(query, "UTF-8");
-            }
-            url += queryStringSuffix;
-
-            processRadarRequest(placeDetails, url, l, language);
-
-            landmarks = createLandmarkGooglePlacesList(placeDetails, stringLimit, locale);
-
-            if (!landmarks.isEmpty()) {
-                cacheProvider.put(key, landmarks);
-                logger.log(Level.INFO, "Adding GL landmark list to cache with key {0}", key);
-            }
-        } else {
-            logger.log(Level.INFO, "Reading GL landmark list from cache with key {0}", key);
+        String url = "location=" + lat + "," + lng + "&radius=" + r + "&language=" + language;
+        if (query != null) {
+           url += "&keyword=" + URLEncoder.encode(query, "UTF-8");
         }
-        logger.log(Level.INFO, "Found {0} landmarks", landmarks.size()); 
+        url += queryStringSuffix;
 
-        return landmarks;
+        processRadarRequest(placeDetails, url, l, language);
+
+        return createLandmarkGooglePlacesList(placeDetails, stringLimit, locale);        
 	}
 	
 	public static String getPlaceDetails(String placeid, String language) throws Exception {

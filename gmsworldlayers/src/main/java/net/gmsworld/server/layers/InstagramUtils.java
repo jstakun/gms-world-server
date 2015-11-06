@@ -28,26 +28,16 @@ import com.openlapi.QualifiedCoordinates;
 
 public class InstagramUtils extends LayerHelper {
 
-	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale, boolean useCache) throws MalformedURLException, IOException {
+	public List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale, boolean useCache) throws MalformedURLException, IOException {
 		int normalizedDistance = NumberUtils.normalizeNumber(radius, 1000, 5000);
 		int normalizedLimit = NumberUtils.normalizeNumber(limit, 30, 100);
-		String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, normalizedDistance, version, normalizedLimit, stringLimit, flexString, flexString2);
-		List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>) cacheProvider.getObject(key);
+		List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
 		
-		if (landmarks == null) {
-			landmarks = new ArrayList<ExtendedLandmark>();
-			if (lat != 0.0d && lng != 0.0d) {
-				String instagramUrl = "https://api.instagram.com/v1/media/search?lat=" + lat + "&lng=" + lng + "&distance=" + normalizedDistance + "&count=" + normalizedLimit + "&client_id=" + Commons.getProperty(Property.INSTAGRAM_CLIENT_ID);			
-				String instagramJson = HttpUtils.processFileRequest(new URL(instagramUrl));		
-				createCustomJsonInstagramList(landmarks, instagramJson, stringLimit, locale);		 	
-				if (!landmarks.isEmpty()) {
-					cacheProvider.put(key, landmarks);
-				}
-			}
-		} else {
-			logger.log(Level.INFO, "Reading INS landmark list from cache with key {0}", key); 
+		if (lat != 0.0d && lng != 0.0d) {
+			String instagramUrl = "https://api.instagram.com/v1/media/search?lat=" + lat + "&lng=" + lng + "&distance=" + normalizedDistance + "&count=" + normalizedLimit + "&client_id=" + Commons.getProperty(Property.INSTAGRAM_CLIENT_ID);			
+			String instagramJson = HttpUtils.processFileRequest(new URL(instagramUrl));		
+			createCustomJsonInstagramList(landmarks, instagramJson, stringLimit, locale);		 	
 		}
-		logger.log(Level.INFO, "Found {0} landmarks", landmarks.size()); 
 		
 		return landmarks;
    }

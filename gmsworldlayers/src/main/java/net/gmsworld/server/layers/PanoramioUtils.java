@@ -128,32 +128,11 @@ public class PanoramioUtils extends LayerHelper {
     }
 
 	@Override
-	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String bbox, String flexString2, Locale locale, boolean useCache) throws Exception {
-		String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, limit, stringLimit, bbox, flexString2);
-		List<ExtendedLandmark> output = (List<ExtendedLandmark>)cacheProvider.getObject(key);
-
-        if (output == null) {
-            URL panoramioUrl = new URL("http://www.panoramio.com/map/get_panoramas.php?order=popularity&"
+	public List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String bbox, String flexString2, Locale locale, boolean useCache) throws Exception {
+		URL panoramioUrl = new URL("http://www.panoramio.com/map/get_panoramas.php?order=popularity&"
                     + "set=full&from=0&to=" + limit + "&" + bbox + "&size=thumbnail&mapfilter=true");
-
-            //System.out.print("calling url: " + panoramioUrl.toString());
-
-            String panoramioResponse = HttpUtils.processFileRequest(panoramioUrl);
-
-            //System.out.print(panoramioResponse);
-
-
-            output = createLandmarkPanoramioList(panoramioResponse, stringLimit, locale);
-            if (!output.isEmpty()) {
-                cacheProvider.put(key, output);
-                logger.log(Level.INFO, "Adding PN landmark list to cache with key {0}", key);
-            }
-        } else {
-            logger.log(Level.INFO, "Reading PN landmark list from cache with key {0}", key);
-        }
-        logger.log(Level.INFO, "Found {0} landmarks", output.size()); 
-        
-        return output;
+		String panoramioResponse = HttpUtils.processFileRequest(panoramioUrl);
+        return createLandmarkPanoramioList(panoramioResponse, stringLimit, locale);    
 	}
 	
 	private static List<ExtendedLandmark> createLandmarkPanoramioList(String panoramioJson, int stringLimit, Locale locale) throws JSONException {

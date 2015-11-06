@@ -188,7 +188,7 @@ public class FoursquareUtils extends LayerHelper {
     }
     
     @Override
-	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String intent, String locale, Locale l, boolean useCache) throws Exception {
+	public List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String intent, String locale, Locale l, boolean useCache) throws Exception {
        	   if (lat == 0d && lng == 0d) {
        		  throw new IllegalArgumentException("Latitude or longitude mustn't be zero!");
        	   }
@@ -198,13 +198,11 @@ public class FoursquareUtils extends LayerHelper {
        	   if (intent == null) {
        		   intent = "checkin";
        	   }
-    	   String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, limit, stringLimit, intent, locale);
-           List<ExtendedLandmark> response = (List<ExtendedLandmark>) cacheProvider.getObject(key);
+    	   List<ExtendedLandmark> response = new ArrayList<ExtendedLandmark>();
            
-           if (response == null) {
-               FoursquareApi api = getFoursquareApi(null);
+           FoursquareApi api = getFoursquareApi(null);
                api.setUseCallback(false);
-               response = new ArrayList<ExtendedLandmark>();
+               
                //venues search
                
                //Result<VenuesSearchResult> result = api.venuesSearch(lat + "," + lng, (double) radius, null, null, query, limit, intent, null, null, null, null);
@@ -248,7 +246,7 @@ public class FoursquareUtils extends LayerHelper {
                    		}
                    }	
                } else {
-            	   handleError(result.getMeta(), key);
+            	   handleError(result.getMeta(), "loadLandmarks");
                }
                
                //venues trending
@@ -295,17 +293,8 @@ public class FoursquareUtils extends LayerHelper {
                    		}
                    }
                } else {
-            	   handleError(resultT.getMeta(), key);
+            	   handleError(resultT.getMeta(), "loadLandmarks");
                }
-
-               if (!response.isEmpty()) {
-                   logger.log(Level.INFO, "Adding fs search list to cache with key {0}", key);
-                   cacheProvider.put(key, response);
-               }
-           } else {
-               logger.log(Level.INFO, "Reading FS landmark list from cache with key {0}", key);
-           }
-           logger.log(Level.INFO, "Found {0} landmarks", response.size()); 
 
            return response;
    	}

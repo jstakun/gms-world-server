@@ -194,32 +194,17 @@ public class MeetupUtils extends LayerHelper {
     }
 
 	@Override
-	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale, boolean useCache) throws Exception {
-		String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, limit, stringLimit, flexString, flexString2);
-		List<ExtendedLandmark> output = (List<ExtendedLandmark>)cacheProvider.getObject(key);
-
-        if (output == null) {
-            String meetupUrl = "https://api.meetup.com/2/open_events?key=" + Commons.getProperty(Property.MEETUP_API_KEY) + "&lon=" + lng + "&lat="
+	public List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale, boolean useCache) throws Exception {
+        String meetupUrl = "https://api.meetup.com/2/open_events?key=" + Commons.getProperty(Property.MEETUP_API_KEY) + "&lon=" + lng + "&lat="
                     + lat + "&radius=" + radius + "&page=" + limit + "&order=time&text_format=plain";
             //order=time,distance,trending
-            if (StringUtils.isNotEmpty(query)) {
+        if (StringUtils.isNotEmpty(query)) {
                 meetupUrl += "&text=" + URLEncoder.encode(query, "UTF-8");
-            }
-
-            String meetupResponse = HttpUtils.processFileRequest(new URL(meetupUrl));
-
-            output = createCustomLandmarkMeetupList(meetupResponse, stringLimit, locale);
-
-            if (!output.isEmpty()) {
-                cacheProvider.put(key, output);
-                logger.log(Level.INFO, "Adding MTU landmark list to cache with key {0}", key);
-            }
-        } else {
-            logger.log(Level.INFO, "Reading MTU landmark list from cache with key {0}", key);
         }
-        logger.log(Level.INFO, "Found {0} landmarks", output.size()); 
 
-        return output;
+        String meetupResponse = HttpUtils.processFileRequest(new URL(meetupUrl));
+
+        return createCustomLandmarkMeetupList(meetupResponse, stringLimit, locale);
 	}
 	
 	public String getLayerName() {

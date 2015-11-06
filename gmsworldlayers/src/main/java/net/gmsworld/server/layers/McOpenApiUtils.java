@@ -188,25 +188,11 @@ public class McOpenApiUtils extends LayerHelper {
     }
 
 	@Override
-	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale, boolean useCache) throws Exception {
-		String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, limit, stringLimit, flexString, flexString2);
-		List<ExtendedLandmark> output = (List<ExtendedLandmark>)cacheProvider.getObject(key);
-
-        if (output == null) {
-            List<Atm> atms = new ArrayList<Atm>();
-            loadAtmCollection(lat, lng, radius, limit, atms, 0);
-            output = createLandmarksAtmList(atms, stringLimit, locale);
-            if (!output.isEmpty()) {
-                cacheProvider.put(key, output);
-                logger.log(Level.INFO, "Adding MC landmark list to cache with key {0}", key);
-            }
-        } else {
-            logger.log(Level.INFO, "Reading MC landmark list from cache with key {0}", key);
-        }
-        logger.log(Level.INFO, "Found {0} landmarks", output.size()); 
-
-        return output;
-	}
+	public List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale, boolean useCache) throws Exception {
+		List<Atm> atms = new ArrayList<Atm>();
+        loadAtmCollection(lat, lng, radius, limit, atms, 0);
+        return createLandmarksAtmList(atms, stringLimit, locale);
+    }
 	
 	private static List<ExtendedLandmark> createLandmarksAtmList(List<Atm> atms, int stringLimit, Locale locale) throws JSONException {
 		List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();

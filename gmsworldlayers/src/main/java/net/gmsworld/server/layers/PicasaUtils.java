@@ -171,9 +171,8 @@ public class PicasaUtils extends LayerHelper {
     }
 
 	@Override
-	public List<ExtendedLandmark> processBinaryRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String bbox, String flexString2, Locale locale, boolean useCache) throws Exception {
-		double lat = latitude, lng = longitude;
-        String[] coords = StringUtils.split(bbox, ",");
+	public List<ExtendedLandmark> loadLandmarks(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String bbox, String flexString2, Locale locale, boolean useCache) throws Exception {
+		String[] coords = StringUtils.split(bbox, ",");
         //set new bbox
         
         double[] dcoords = new double[]{latitude, longitude, latitude, longitude};
@@ -182,9 +181,6 @@ public class PicasaUtils extends LayerHelper {
         	dcoords[1] = Double.parseDouble(coords[1]);
         	dcoords[2] = Double.parseDouble(coords[2]);
         	dcoords[3] = Double.parseDouble(coords[3]);
-        	
-            lat = (dcoords[2] + dcoords[0]) / 2;
-            lng = (dcoords[3] + dcoords[1]) / 2;
         }
 
         if ((dcoords[2] - dcoords[0]) < 0.1) {
@@ -211,31 +207,28 @@ public class PicasaUtils extends LayerHelper {
         		MathUtils.normalizeE2(dcoords[3]);    
         //
         
-        String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, limit, stringLimit, normalizedBbox, flexString2);
+        List<ExtendedLandmark> output = new ArrayList<ExtendedLandmark>();
 
-        List<ExtendedLandmark> output = (List<ExtendedLandmark>)cacheProvider.getObject(key);
-
-        if (output == null) {
-            PicasawebService myService = new PicasawebService("GMS World");
-            URL baseSearchUrl = new URL("https://picasaweb.google.com/data/feed/api/all");
-            Query myQuery = new Query(baseSearchUrl);
-            myQuery.setStringCustomParameter("kind", "photo");
-            myQuery.setStringCustomParameter("bbox", normalizedBbox); //west, south, east, north i.e. "50.0,20.0,53.0,23.0"
-            Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.YEAR, -1); 
-            myQuery.setPublishedMin(new DateTime(cal.getTime()));
-            myQuery.setStringCustomParameter("thumbsize", "104u"); //32, 48, 64, 72, 104, 144, 150, 160
-            myQuery.setMaxResults(limit);
-            if (StringUtils.isNotEmpty(query)) {
+        PicasawebService myService = new PicasawebService("GMS World");
+        URL baseSearchUrl = new URL("https://picasaweb.google.com/data/feed/api/all");
+        Query myQuery = new Query(baseSearchUrl);
+        myQuery.setStringCustomParameter("kind", "photo");
+        myQuery.setStringCustomParameter("bbox", normalizedBbox); //west, south, east, north i.e. "50.0,20.0,53.0,23.0"
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.YEAR, -1); 
+        myQuery.setPublishedMin(new DateTime(cal.getTime()));
+        myQuery.setStringCustomParameter("thumbsize", "104u"); //32, 48, 64, 72, 104, 144, 150, 160
+        myQuery.setMaxResults(limit);
+        if (StringUtils.isNotEmpty(query)) {
                 myQuery.setFullTextQuery(query);
-            }
+        }
 
-            logger.log(Level.INFO, "Searching for pictures in " + normalizedBbox); 
+        logger.log(Level.INFO, "Searching for pictures in " + normalizedBbox); 
             
-            //System.out.println("Calling: " + myQuery.getFeedUrl().toExternalForm() + myQuery.getQueryUri());
+        //System.out.println("Calling: " + myQuery.getFeedUrl().toExternalForm() + myQuery.getQueryUri());
             
-            try {
-            	AlbumFeed searchResultsFeed = myService.query(myQuery, AlbumFeed.class);
+        try {
+            AlbumFeed searchResultsFeed = myService.query(myQuery, AlbumFeed.class);
             	
             	//System.out.println("Found: " +  searchResultsFeed.getTotalResults() + " " + 
             	//		searchResultsFeed.getItemsPerPage() + " " + searchResultsFeed.getStartIndex());
@@ -246,29 +239,19 @@ public class PicasaUtils extends LayerHelper {
   
             	//List<PhotoEntry> photos = new ArrayList<PhotoEntry>(entries.size());
             
-            	logger.log(Level.INFO, "Found: " + searchResultsFeed.getTotalResults() + "-" + searchResultsFeed.getPhotoEntries().size() + " entries in normalized bbox: " + normalizedBbox);
+            logger.log(Level.INFO, "Found: " + searchResultsFeed.getTotalResults() + "-" + searchResultsFeed.getPhotoEntries().size() + " entries in normalized bbox: " + normalizedBbox);
             
             	//for (GphotoEntry<PhotoEntry> entry : entries) {
             	//	PhotoEntry p = new PhotoEntry(entry);
             	//	photos.add(p);
             	//}
             
-            	output = createLandmarksPicasaPhotoList(searchResultsFeed.getPhotoEntries(), stringLimit, locale);
-            } catch (Exception e ) {
-            	logger.log(Level.SEVERE, e.getMessage(), e);
-            	output = new ArrayList<ExtendedLandmark>();
-            }
+            output = createLandmarksPicasaPhotoList(searchResultsFeed.getPhotoEntries(), stringLimit, locale);
+       } catch (Exception e ) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+       }
             
-            if (!output.isEmpty()) {
-                cacheProvider.put(key, output);
-                logger.log(Level.INFO, "Adding PC landmark list to cache with key {0}", key);
-            }
-        } else {
-            logger.log(Level.INFO, "Reading PC landmark list from cache with key {0}", key);
-        }
-        logger.log(Level.INFO, "Found {0} landmarks", output.size()); 
-        
-        return output;
+       return output;
 	}
 	
 	private static List<ExtendedLandmark> createLandmarksPicasaPhotoList(List<PhotoEntry> pel, int stringLimit, Locale locale) throws JSONException, ServiceException {

@@ -344,19 +344,16 @@ public class YelpUtils extends LayerHelper {
     }
 
     @Override
-	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String hasDeals, String language, Locale locale, boolean useCache) throws Exception {
+	public List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String hasDeals, String language, Locale locale, boolean useCache) throws Exception {
 		if (language == null) {
 			language = locale.getLanguage();
 		}
     	int normalizedRadius = NumberUtils.normalizeNumber(radius, 1000, 40000);
         int normalizedLimit = NumberUtils.normalizeNumber(limit, 20, 100);
-        String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, normalizedRadius, version, normalizedLimit, stringLimit, hasDeals, language);
-
-        List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)cacheProvider.getObject(key);
-        if (landmarks == null) {
-        	landmarks = Collections.synchronizedList(new ArrayList<ExtendedLandmark>());
+        
+        List<ExtendedLandmark> landmarks = Collections.synchronizedList(new ArrayList<ExtendedLandmark>());
             
-        	if (!cacheProvider.containsKey(CACHE_KEY)) {
+        if (!cacheProvider.containsKey(CACHE_KEY)) {
         		ThreadManager threadManager = new ThreadManager(threadProvider);
                 boolean isDeal = false;
         		if (hasDeals != null) {
@@ -375,19 +372,10 @@ public class YelpUtils extends LayerHelper {
         		if (landmarks.size() > normalizedLimit) {
         			landmarks = new ArrayList<ExtendedLandmark>(landmarks.subList(0, normalizedLimit));
         		}
-        	} else {
-        		logger.log(Level.WARNING, "Yelp Rate Limit Exceeded");
-        	}
-
-            if (!landmarks.isEmpty()) {
-                cacheProvider.put(key, landmarks);
-                logger.log(Level.INFO, "Adding YP landmark list to cache with key {0}", key);
-            }
         } else {
-            logger.log(Level.INFO, "Reading YP landmark list from cache with key {0}", key);
+        		logger.log(Level.WARNING, "Yelp Rate Limit Exceeded");
         }
-        logger.log(Level.INFO, "Returning " + landmarks.size() + " landmarks ...");
-        
+
         return landmarks;
 	}
 	

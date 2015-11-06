@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package net.gmsworld.server.layers;
 
 import java.io.IOException;
@@ -175,28 +171,15 @@ public class EventfulUtils extends LayerHelper {
     }
 
 	@Override
-	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flex, String flexString2, Locale locale, boolean useCache)	throws Exception {
-		String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, limit, stringLimit, flex, flexString2);
-		List<ExtendedLandmark> output = (List<ExtendedLandmark>)cacheProvider.getObject(key);
-        if (output == null) {
-            String eventfulUrl = "http://api.eventful.com/json/events/search?"
+	public List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flex, String flexString2, Locale locale, boolean useCache)	throws Exception {
+		String eventfulUrl = "http://api.eventful.com/json/events/search?"
                     + "location=" + lat + "," + lng + "&within=" + radius
                     + "&date=Future&units=km&format=json&page_size=" + limit + "&app_key=" + Commons.getProperty(Property.EVENTFUL_APP_KEY);
-            if (StringUtils.isNotEmpty(query)) {
+        if (StringUtils.isNotEmpty(query)) {
                 eventfulUrl += "&keywords=" + URLEncoder.encode(query, "UTF-8");
-            }
-
-            String eventfulJson = HttpUtils.processFileRequest(new URL(eventfulUrl));
-            output = createCustomLandmarkEventfulList(eventfulJson, version, stringLimit, locale);
-
-            if (!output.isEmpty()) {
-                cacheProvider.put(key, output);
-                logger.log(Level.INFO, "Adding EV landmark list to cache with key {0}", key);
-            }
         }
-        logger.log(Level.INFO, "Found {0} landmarks", output.size()); 
-        
-        return output;
+        String eventfulJson = HttpUtils.processFileRequest(new URL(eventfulUrl));
+        return createCustomLandmarkEventfulList(eventfulJson, version, stringLimit, locale);
 	}
 	
 	private static ExtendedLandmark createEventfulLandmark(JSONObject event, int stringLimit, Locale locale) throws JSONException {

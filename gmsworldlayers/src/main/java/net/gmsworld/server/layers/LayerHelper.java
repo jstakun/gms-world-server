@@ -55,7 +55,31 @@ public abstract class LayerHelper {
     	return null;
     }
 
-    protected abstract List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale, boolean useCache) throws Exception;
+    //protected abstract List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale, boolean useCache) throws Exception {  
+    
+    protected List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale, boolean useCache) throws Exception {
+    	String key = null;
+		List<ExtendedLandmark> landmarks = null;
+		if (useCache) {
+			key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, limit, stringLimit, flexString, flexString2);
+			landmarks = (List<ExtendedLandmark>)cacheProvider.getObject(key);
+		}
+        if (landmarks == null) {
+        	landmarks = loadLandmarks(lat, lng, query, radius, version, limit, stringLimit, flexString, flexString2, locale, useCache);
+        	if (useCache && !landmarks.isEmpty()) {
+                cacheProvider.put(key, landmarks);
+                logger.log(Level.INFO, "Adding {0} landmark list to cache with key {1}", new Object[]{getLayerName(), key});
+            }
+        } else {
+        	logger.log(Level.INFO, "Reading {0} landmark list from cache with key {1}", new Object[]{getLayerName(), key});
+        }
+           
+        logger.log(Level.INFO, "Found {0} landmarks", landmarks.size()); 
+    		
+    	return landmarks;
+    }
+    
+    protected abstract List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale, boolean useCache) throws Exception;
     
     protected void serialize(List<ExtendedLandmark> landmarks, OutputStream out, int version) {
     	ObjectOutputStream outObj = null;

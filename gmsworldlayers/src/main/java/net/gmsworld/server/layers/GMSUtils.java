@@ -158,36 +158,23 @@ public class GMSUtils extends LayerHelper {
     }
     
     @Override
-	public List<ExtendedLandmark> processBinaryRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String layer, String flexString2, Locale locale, boolean useCache) throws Exception {
+	public List<ExtendedLandmark> loadLandmarks(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String layer, String flexString2, Locale locale, boolean useCache) throws Exception {
 		if (layer == null) {
 			layer = Commons.LM_SERVER_LAYER;
 		}
     	this.layer = layer;
-    	String key = getCacheKey(getClass(), "processBinaryRequest", latitude, longitude, query, radius, version, limit, stringLimit, layer, flexString2);
-		List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)cacheProvider.getObject(key);
-        if (landmarks == null) {
-        	landmarks = new ArrayList<ExtendedLandmark>();
-        	List<Landmark> landmarkList = null;
+    	List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
+        List<Landmark> landmarkList = null;
         	
-        	if (StringUtils.isNotEmpty(query)) {
-        		landmarkList = LandmarkPersistenceUtils.selectLandmarkMatchingQuery(query, limit);
-        	} else {
-        		landmarkList = LandmarkPersistenceUtils.selectLandmarksByCoordsAndLayer(latitude, longitude, layer, limit, radius);
-        	}
-        	
-            if (!landmarkList.isEmpty()) {
-            	//Collection<Landmark> results = Collections2.filter(landmarkList, new QueryPredicate(query));      
-            	landmarks.addAll(Collections2.transform(landmarkList, new LandmarkTransformFunction(layer, locale)));
-            }
-
-            if (!landmarks.isEmpty()) {
-            	cacheProvider.put(key, landmarks);
-                logger.log(Level.INFO, "Adding GMS landmark list to cache with key {0}", key);
-            }
+        if (StringUtils.isNotEmpty(query)) {
+        	landmarkList = LandmarkPersistenceUtils.selectLandmarkMatchingQuery(query, limit);
         } else {
-            logger.log(Level.INFO, "Reading GMS landmark list from cache with key {0}", key);
+        	landmarkList = LandmarkPersistenceUtils.selectLandmarksByCoordsAndLayer(latitude, longitude, layer, limit, radius);
         }
-        logger.log(Level.INFO, "Returning " + landmarks.size() + " landmarks for layer " + layer + " ...");
+        	
+        if (!landmarkList.isEmpty()) {
+            landmarks.addAll(Collections2.transform(landmarkList, new LandmarkTransformFunction(layer, locale)));
+        }
 
         return landmarks;
 	}

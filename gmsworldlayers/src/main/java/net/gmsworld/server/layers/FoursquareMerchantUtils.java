@@ -34,33 +34,19 @@ import fi.foyt.foursquare.api.FoursquareApi;
 public class FoursquareMerchantUtils extends FoursquareUtils {
 	
 	@Override
-	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String token, String categoryid, Locale l, boolean useCache) throws MalformedURLException, IOException, JSONException {
+	public List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String token, String categoryid, Locale l, boolean useCache) throws MalformedURLException, IOException, JSONException {
 		if (lat == 0d && lng == 0d) {
      		  throw new IllegalArgumentException("Latitude or longitude mustn't be zero!");
      	}
 		if (StringUtils.isEmpty(token)) {
             token = Commons.getProperty(Property.FS_OAUTH_TOKEN);
         }
-  	    String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, categoryid, radius, version, limit, stringLimit, token, l.getLanguage());
-        List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)cacheProvider.getObject(key);
-        
-        if (landmarks == null) {
-            StringBuilder sb = new StringBuilder("https://api.foursquare.com/v2/specials/search?ll=").append(lat).
+  	    StringBuilder sb = new StringBuilder("https://api.foursquare.com/v2/specials/search?ll=").append(lat).
                     append(",").append(lng).append("&llAcc=").append(radius).append("&oauth_token=").
                     append(token).append("&limit=").append(limit).append("&v=").append(FoursquareApi.DEFAULT_VERSION);
-            URL url = new URL(sb.toString());
-            String resp = HttpUtils.processFileRequestWithLocale(url, l.getLanguage());
-            landmarks = createCustomLandmarksFoursquareMerchantList(resp, l.getLanguage(), categoryid, stringLimit, l);
-            if (!landmarks.isEmpty()) {
-                cacheProvider.put(key, landmarks);
-                logger.log(Level.INFO, "Adding FSM landmark list to cache with key {0}", key);
-            }
-        } else {
-            logger.log(Level.INFO, "Reading FSM landmark list from cache with key {0}", key);
-        }
-        logger.log(Level.INFO, "Found {0} landmarks", landmarks.size()); 
-
-        return landmarks;
+        URL url = new URL(sb.toString());
+        String resp = HttpUtils.processFileRequestWithLocale(url, l.getLanguage());
+        return createCustomLandmarksFoursquareMerchantList(resp, l.getLanguage(), categoryid, stringLimit, l);          
     }
 	
 	@Override

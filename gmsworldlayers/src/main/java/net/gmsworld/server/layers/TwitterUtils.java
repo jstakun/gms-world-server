@@ -197,45 +197,27 @@ public class TwitterUtils extends LayerHelper {
     }
 
 	@Override
-	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int distance, int version, int limit, int stringLimit, String lang, String flexString2, Locale locale, boolean useCache) throws Exception {
+	public List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int distance, int version, int limit, int stringLimit, String lang, String flexString2, Locale locale, boolean useCache) throws Exception {
 		if (lang == null) {
 			lang = locale.getLanguage();
 		}
 		int radius = NumberUtils.normalizeNumber(distance, 1, 3);
 
-        String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, limit, stringLimit, lang, flexString2);
-
-        List<ExtendedLandmark> reply = (List<ExtendedLandmark>) cacheProvider.getObject(key);
-        if (reply == null) {
-
-            Query twquery;
-            if (query != null) {
+        Query twquery;
+        if (query != null) {
                 twquery = new Query(query);
-            } else {
-                twquery = new Query();
-            }
-            twquery.setGeoCode(new GeoLocation(lat, lng), radius, Query.KILOMETERS);
-            twquery.setCount(limit);
-            twquery.setResultType(Query.RECENT); //POPULAR, MIXED, RECENT
-            //twquery.setLang(lang);
-            if (query != null) {
-            }
-
-            QueryResult results = getTwitter(null, null).search(twquery);
-            List<Status> tweets = results.getTweets();
-
-            reply = createCustomLandmarksList(tweets, null, locale, false);
-
-            if (!reply.isEmpty()) {
-                cacheProvider.put(key, reply);
-                logger.log(Level.INFO, "Adding TW landmark list to cache with key {0}", key);
-            }
         } else {
-            logger.log(Level.INFO, "Reading TW landmark list from cache with key {0}", key);
+                twquery = new Query();
         }
-        logger.log(Level.INFO, "Returning " + reply.size() + " landmarks ...");
+        twquery.setGeoCode(new GeoLocation(lat, lng), radius, Query.KILOMETERS);
+        twquery.setCount(limit);
+        twquery.setResultType(Query.RECENT); //POPULAR, MIXED, RECENT
+        //twquery.setLang(lang);
         
-        return reply;
+        QueryResult results = getTwitter(null, null).search(twquery);
+        List<Status> tweets = results.getTweets();
+
+        return createCustomLandmarksList(tweets, null, locale, false);
 	}
 	
 	public List<ExtendedLandmark> getFriendsStatuses(String token, String secret, Locale locale) throws TwitterException, UnsupportedEncodingException {

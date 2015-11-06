@@ -174,21 +174,19 @@ public class ExpediaUtils extends LayerHelper {
 	}
 
 	@Override
-	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String lang, String flexString2, Locale locale, boolean useCache) throws Exception {
+	public List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String lang, String flexString2, Locale locale, boolean useCache) throws Exception {
 		if (lang == null) {
 			lang = locale.toString();
 		}
 		int r = NumberUtils.normalizeNumber(radius, 2, 80);
-		String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, r, version, limit, stringLimit, lang, flexString2);
-		List<ExtendedLandmark> output = (List<ExtendedLandmark>)cacheProvider.getObject(key);
-		if (output == null) {
+		
 			//MessageDigest md = MessageDigest.getInstance("MD5");
 		    //long timeInSeconds = (System.currentTimeMillis() / 1000);
 		    //String input = Commons.getProperty(Property.EXPEDIA_KEY) + Commons.getProperty(Property.EXPEDIA_SECRET) + timeInSeconds;
 		    //md.update(input.getBytes());
 		    //String sig = String.format("%032x", new BigInteger(1, md.digest()));
 			
-			URL expediaUrl = new URL(
+		URL expediaUrl = new URL(
 					"http://api.ean.com/ean-services/rs/hotel/v3/list?json"
 							+ "&apiKey=" + Commons.getProperty(Property.EXPEDIA_KEY) 
 							//+ "&sig=" + sig
@@ -201,25 +199,9 @@ public class ExpediaUtils extends LayerHelper {
 							+ "&locale=" + lang
 							+ "&_type=json");
 
-			//System.out.println(expediaUrl.toString());
+		String expediaResponse = HttpUtils.processFileRequest(expediaUrl);
 
-			String expediaResponse = HttpUtils.processFileRequest(expediaUrl);
-
-			// System.out.println(expediaResponse);
-
-			output = createCustomLandmarkExpediaList(expediaResponse, stringLimit, lang, limit, locale);
-
-			if (!output.isEmpty()) {
-				cacheProvider.put(key, output);
-				logger.log(Level.INFO, "Adding EXP landmark list to cache with key {0}", key);
-			}
-
-		} else {
-			logger.log(Level.INFO, "Reading EXP landmark list from cache with key {0}", key);
-		}
-		logger.log(Level.INFO, "Found {0} landmarks", output.size()); 
-		
-		return output;
+		return createCustomLandmarkExpediaList(expediaResponse, stringLimit, lang, limit, locale);
 	}
 	
 	private static List<ExtendedLandmark> createCustomLandmarkExpediaList(String expediaJson, int stringLimit, String language, int limit, Locale locale) throws JSONException {

@@ -335,24 +335,11 @@ public class GrouponUtils extends LayerHelper {
     }
 
 	@Override
-	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int dealLimit, int stringLimit, String categoryid, String flexString2, Locale locale, boolean useCache) throws Exception {
-		String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, dealLimit, stringLimit, categoryid, flexString2);
-		List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)cacheProvider.getObject(key);
-        if (landmarks == null) {
-            URL grouponUrl = new URL("http://api.groupon.com/v2/deals.json?client_id=" + Commons.getProperty(Property.GROUPON_CLIENT_ID) + "&force_http_success=true&lat=" + lat + "&lng=" + lng + "&radius=" + radius + "&show=title,announcementTitle,division,dealUrl,tags,startAt,endAt,merchant,options,mediumImageUrl"); //smallImageUrl
-            String grouponResponse = HttpUtils.processFileRequest(grouponUrl);
-            landmarks = createCustomLandmarkGrouponList(grouponResponse, categoryid, dealLimit, query, stringLimit, locale);
-            if (!landmarks.isEmpty()) {
-                cacheProvider.put(key, landmarks);
-                logger.log(Level.INFO, "Adding GR landmark list to cache with key {0}", key);
-            }
-        } else {
-            logger.log(Level.INFO, "Reading GR landmark list from cache with key {0}", key);
-        }
-        logger.log(Level.INFO, "Found {0} landmarks", landmarks.size()); 
-
-        return landmarks;
-	}
+	public List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int radius, int version, int dealLimit, int stringLimit, String categoryid, String flexString2, Locale locale, boolean useCache) throws Exception {
+		URL grouponUrl = new URL("http://api.groupon.com/v2/deals.json?client_id=" + Commons.getProperty(Property.GROUPON_CLIENT_ID) + "&force_http_success=true&lat=" + lat + "&lng=" + lng + "&radius=" + radius + "&show=title,announcementTitle,division,dealUrl,tags,startAt,endAt,merchant,options,mediumImageUrl"); //smallImageUrl
+        String grouponResponse = HttpUtils.processFileRequest(grouponUrl);
+        return createCustomLandmarkGrouponList(grouponResponse, categoryid, dealLimit, query, stringLimit, locale);
+   }
 	
 	private static List<ExtendedLandmark> createCustomLandmarkGrouponList(String grouponJson, String categoryid, int limit, String query, int stringLimit, Locale locale) throws JSONException {
 		List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();

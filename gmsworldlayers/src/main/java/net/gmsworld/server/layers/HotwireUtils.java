@@ -122,7 +122,7 @@ public class HotwireUtils extends LayerHelper {
     }
 
 	@Override
-	protected List<ExtendedLandmark> processBinaryRequest(double lat, double lng,
+	protected List<ExtendedLandmark> loadLandmarks(double lat, double lng,
 			String query, int radius, int version, int limit, int stringLimit,
 			String flexString, String flexString2, Locale locale, boolean useCache)
 			throws Exception {

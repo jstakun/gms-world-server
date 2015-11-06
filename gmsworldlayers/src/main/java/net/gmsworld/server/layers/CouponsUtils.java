@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package net.gmsworld.server.layers;
 
 import org.json.JSONArray;
@@ -321,47 +317,33 @@ public class CouponsUtils extends LayerHelper {
     }
 
 	@Override
-	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String categoryid, String language, Locale locale, boolean useCache) throws Exception {
+	public List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String categoryid, String language, Locale locale, boolean useCache) throws Exception {
 		if (language == null) {
 			language = locale.getLanguage();
 		}
-		String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, limit, stringLimit, categoryid, language);
-		List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)cacheProvider.getObject(key);
-        if (landmarks == null) {
-            String url = "http://api.8coupons.com/v1/getdeals?key=" + Commons.getProperty(Property.COUPONS_KEY) + "&lat=" + lat + "&lon=" + lng + "&mileradius=" + radius + "&limit=" + limit + "&orderby=date"; //popular, radius, date
-            if (StringUtils.isNotEmpty(query)) {
-                url += "&search=" + URLEncoder.encode(query, "UTF-8");
-            }
-            if (StringUtils.isNotEmpty(categoryid)) {
-                url += "&categoryid=" + categoryid;
-            }
-            URL couponsUrl = new URL(url);
-            String couponsResponse = HttpUtils.processFileRequest(couponsUrl);
-            //System.out.println(couponsResponse);
-            if (StringUtils.isNotEmpty(couponsResponse)) {
-                Map<String, Map<String, String>> reviewsArray = new HashMap<String, Map<String, String>>();
-                try {
-                    reviewsArray = LayerHelperFactory.getYelpUtils().processReviewsRequest(lat, lng, query, radius * 1000, limit, true, language);
-                } catch (Exception e) {
-                    logger.log(Level.SEVERE, null, e);
-                }
-                
-                landmarks = createCustomLandmarksCouponsList(couponsResponse.trim(), reviewsArray, stringLimit, locale);
-                
-                if (!landmarks.isEmpty()) {
-                    cacheProvider.put(key, landmarks);
-                    logger.log(Level.INFO, "Adding COU landmark list to cache with key {0}", key);
-                }
-            } else {
-                //System.out.println("Coupons response is empty: " + couponsResponse);
-                landmarks = new ArrayList<ExtendedLandmark>();
-            }
-        } else {
-            logger.log(Level.INFO, "Reading COU landmark list from cache with key {0}", key);
+		List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();    
+		String url = "http://api.8coupons.com/v1/getdeals?key=" + Commons.getProperty(Property.COUPONS_KEY) + "&lat=" + lat + "&lon=" + lng + "&mileradius=" + radius + "&limit=" + limit + "&orderby=date"; //popular, radius, date
+            
+		if (StringUtils.isNotEmpty(query)) {
+            url += "&search=" + URLEncoder.encode(query, "UTF-8");
         }
-        logger.log(Level.INFO, "Found {0} landmarks", landmarks.size()); 
-		
-		return landmarks;
+        if (StringUtils.isNotEmpty(categoryid)) {
+            url += "&categoryid=" + categoryid;
+        }
+            
+        URL couponsUrl = new URL(url);
+        String couponsResponse = HttpUtils.processFileRequest(couponsUrl);
+        //System.out.println(couponsResponse);
+        if (StringUtils.isNotEmpty(couponsResponse)) {
+            Map<String, Map<String, String>> reviewsArray = new HashMap<String, Map<String, String>>();
+            try {
+                reviewsArray = LayerHelperFactory.getYelpUtils().processReviewsRequest(lat, lng, query, radius * 1000, limit, true, language);
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, e.getMessage(), e);
+            }               
+            landmarks = createCustomLandmarksCouponsList(couponsResponse.trim(), reviewsArray, stringLimit, locale);               
+        } 
+        return landmarks;
 	}
 	
 	public String getLayerName() {

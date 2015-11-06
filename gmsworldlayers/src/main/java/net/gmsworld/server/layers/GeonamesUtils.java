@@ -108,38 +108,24 @@ public class GeonamesUtils extends LayerHelper {
     }
 
 	@Override
-	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String lang, String flexString2, Locale locale, boolean useCache) throws Exception {
+	public List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String lang, String flexString2, Locale locale, boolean useCache) throws Exception {
 		if (lang == null) {
 			lang = locale.getLanguage();
 		}
 		int r = NumberUtils.normalizeNumber(radius, 1, 20);
-        String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, r, version, limit, stringLimit, lang, flexString2);
-        List<ExtendedLandmark> output = (List<ExtendedLandmark>)cacheProvider.getObject(key);
+        List<ExtendedLandmark> output = new ArrayList<ExtendedLandmark>();
 
-        if (output == null) {
+        URL geonamesUrl = new URL("http://api.geonames.org/findNearbyWikipediaJSON?lat=" + lat + "&lng=" + lng + "&maxRows=" + MAXROWS + "&radius=" + r + "&username=" + Commons.getProperty(Property.GEONAMES_USERNAME) + "&lang=" + lang);
 
-            URL geonamesUrl = new URL("http://api.geonames.org/findNearbyWikipediaJSON?lat=" + lat + "&lng=" + lng + "&maxRows=" + MAXROWS + "&radius=" + r + "&username=" + Commons.getProperty(Property.GEONAMES_USERNAME) + "&lang=" + lang);
-
-            String geonamesResponse = HttpUtils.processFileRequest(geonamesUrl);
+        String geonamesResponse = HttpUtils.processFileRequest(geonamesUrl);
             
-            if (StringUtils.startsWith(geonamesResponse, "{")) {
-            	//System.out.println("Response: " + geonamesResponse + " from " + geonamesUrl.toString());
-            	output =  createLandmarksGeonamesList(geonamesResponse, limit, stringLimit, locale);
-            } else {
-            	logger.log(Level.WARNING, "Received following response " + geonamesResponse);
-            	output = new ArrayList<ExtendedLandmark>();
-            }
-
-            if (!output.isEmpty()) {
-                cacheProvider.put(key, output);
-                logger.log(Level.INFO, "Adding GN landmark list to cache with key {0}", key);
-            }
-
+        if (StringUtils.startsWith(geonamesResponse, "{")) {
+            //System.out.println("Response: " + geonamesResponse + " from " + geonamesUrl.toString());
+            output =  createLandmarksGeonamesList(geonamesResponse, limit, stringLimit, locale);
         } else {
-            logger.log(Level.INFO, "Reading GN landmark list from cache with key {0}", key);
+            logger.log(Level.WARNING, "Received following response " + geonamesResponse);
+            	
         }
-        logger.log(Level.INFO, "Found {0} landmarks", output.size()); 
-
         return output;
 	}
 	

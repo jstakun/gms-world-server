@@ -101,30 +101,13 @@ public class WebcamUtils extends LayerHelper {
     }
 
 	@Override
-	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale, boolean useCache) throws Exception {
-		 String key = getCacheKey(getClass(), "processRequest", lat, lng, query, radius, version, limit, stringLimit, flexString, flexString2);
-		 List<ExtendedLandmark> output = (List<ExtendedLandmark>)cacheProvider.getObject(key);
-
-	     if (output == null) {
-	            URL webcamUrl = new URL("http://api.webcams.travel/rest?"
+	public List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale, boolean useCache) throws Exception {
+		URL webcamUrl = new URL("http://api.webcams.travel/rest?"
 	                    + "method=wct.webcams.list_nearby&devid=" + Commons.getProperty(Property.WEBCAM_API_KEY)
 	                    + "&lat=" + lat + "&lng=" + lng + "&radius=" + radius
 	                    + "&unit=km&format=json&per_page=" + limit);
-
-	            String webcamResponse = HttpUtils.processFileRequest(webcamUrl);
-
-	            output = createLandmarksWebcamList(webcamResponse, stringLimit, locale);
-	            if (!output.isEmpty()) {
-	                cacheProvider.put(key, output);
-	                logger.log(Level.INFO, "Adding WC landmark list to cache with key {0}", key);
-	            }
-
-	     } else {
-	        logger.log(Level.INFO, "Reading WC landmark list from cache with key {0}", key);
-	     }
-	     logger.log(Level.INFO, "Returning " + output.size() + " landmarks ...");
-
-	     return output;
+	    String webcamResponse = HttpUtils.processFileRequest(webcamUrl);
+	    return createLandmarksWebcamList(webcamResponse, stringLimit, locale);        
 	}
 	
 	private static List<ExtendedLandmark> createLandmarksWebcamList(String webcamJson, int stringLimit, Locale locale) throws JSONException {

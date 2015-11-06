@@ -74,7 +74,7 @@ public class SearchUtils extends LayerHelper {
     }
     
 	@Override
-	protected List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flex, String ftoken, Locale locale, boolean useCache) throws Exception {
+	protected List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flex, String ftoken, Locale locale, boolean useCache) throws Exception {
 		boolean isDeal = false;
 		boolean geocode = false;
         int dealLimit = 300;

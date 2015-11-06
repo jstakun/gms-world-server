@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package net.gmsworld.server.layers;
 
 import java.io.UnsupportedEncodingException;
@@ -192,28 +188,14 @@ public class FlickrUtils extends LayerHelper {
     }
 
 	@Override
-	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flex, String flexString2, Locale locale, boolean useCache) throws Exception {
+	public List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flex, String flexString2, Locale locale, boolean useCache) throws Exception {
 		int r = NumberUtils.normalizeNumber(radius, 1, 32);
-        String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, r, version, limit, stringLimit, flex, flexString2);
-        List<ExtendedLandmark> output = (List<ExtendedLandmark>) cacheProvider.getObject(key);
-        
-        if (output == null) {
-            SearchParameters sp = new SearchParameters();
-            sp.setLatitude(Double.toString(lat));
-            sp.setLongitude(Double.toString(lng));
-            sp.setRadius(r);
-            PhotoList<Photo> photoList = getPhotoList(sp, query, limit);
-            output = createLandmarksFlickrPhotoList(photoList,  stringLimit, locale);
-            if (!output.isEmpty()) {
-                cacheProvider.put(key, output);
-                logger.log(Level.INFO, "Adding FL landmark list to cache with key {0}", key);
-            }
-        } else {
-            logger.log(Level.INFO, "Reading FL landmark list from cache with key {0}", key);
-        }
-        logger.log(Level.INFO, "Found {0} landmarks", output.size()); 
-
-        return output;
+        SearchParameters sp = new SearchParameters();
+        sp.setLatitude(Double.toString(lat));
+        sp.setLongitude(Double.toString(lng));
+        sp.setRadius(r);
+        PhotoList<Photo> photoList = getPhotoList(sp, query, limit);
+        return createLandmarksFlickrPhotoList(photoList,  stringLimit, locale);          
 	}
 	
 	private static List<ExtendedLandmark> createLandmarksFlickrPhotoList(PhotoList<Photo> photos, int stringLimit, Locale locale) throws JSONException {

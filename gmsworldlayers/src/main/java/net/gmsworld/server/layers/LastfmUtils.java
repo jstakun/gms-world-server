@@ -291,27 +291,11 @@ public class LastfmUtils extends LayerHelper {
     }
 
 	@Override
-	public List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale, boolean useCache) throws Exception {
-		String key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, limit, stringLimit, flexString, flexString2);
-		List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)cacheProvider.getObject(key);
-        
-        if (landmarks == null) {
-            URL lastfmUrl = new URL("http://ws.audioscrobbler.com/2.0/?method=geo.getevents&lat=" + lat
+	public List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale, boolean useCache) throws Exception {
+		URL lastfmUrl = new URL("http://ws.audioscrobbler.com/2.0/?method=geo.getevents&lat=" + lat
                     + "&long=" + lng + "&distance=" + radius + "&limit=" + limit + "&format=json&api_key=" + Commons.getProperty(Property.LASTFM_API_KEY));
-            String lastfmResponse = HttpUtils.processFileRequest(lastfmUrl);
-
-            landmarks = createCustomLandmarkLastfmList(lastfmResponse, stringLimit, locale);
-
-            if (!landmarks.isEmpty()) {
-                cacheProvider.put(key, landmarks);
-                logger.log(Level.INFO, "Adding LFM landmark list to cache with key {0}", key);
-            }
-        } else {
-            logger.log(Level.INFO, "Reading LFM landmark list from cache with key {0}", key);
-        }
-        logger.log(Level.INFO, "Found {0} landmarks", landmarks.size()); 
-
-        return landmarks;
+        String lastfmResponse = HttpUtils.processFileRequest(lastfmUrl);
+        return createCustomLandmarkLastfmList(lastfmResponse, stringLimit, locale);           
 	}
 	
 	public String getLayerName() {

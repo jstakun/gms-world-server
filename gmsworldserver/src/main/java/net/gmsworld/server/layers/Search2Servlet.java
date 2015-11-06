@@ -96,7 +96,7 @@ public class Search2Servlet extends HttpServlet {
                 if (format.equals("json")) { 
                 	jsonResponse = LayerHelperFactory.getSearchUtils().processRequest(latitude, longitude, query, radius, version, limit, stringLimit, flexString, ftoken, locale);
                 } else {
-                	foundLandmarks = LayerHelperFactory.getSearchUtils().processBinaryRequest(latitude, longitude, query, radius, version, limit, stringLimit, flexString, ftoken, locale, true);
+                	foundLandmarks = LayerHelperFactory.getSearchUtils().processBinaryRequest(latitude, longitude, query, radius, version, limit, stringLimit, flexString, ftoken, locale, false);
                 }
             }
         } catch (Exception e) {
