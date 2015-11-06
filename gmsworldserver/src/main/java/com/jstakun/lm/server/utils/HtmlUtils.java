@@ -149,9 +149,10 @@ public class HtmlUtils {
     	String resp = "";
     	for (int i=0;i<12;i++)
     	{
-    	      resp += "<li><a href=\"/archive.do?month=" + DateUtils.getShortMonthYearString(i) + "\">" + DateUtils.getLongMonthYearString(i) + "</a></li>\n";
+    		String[] date = DateUtils.getShortMonthYearString(i).split("-");
+    	    resp += "<li><a href=\"/archive/" + date[1] + "/" + date[0] + "\">" + DateUtils.getLongMonthYearString(i) + "</a></li>\n";
     	}
-    	resp += "<li><a href=\"/archive.do?month=01-2014\">January 2014</a></li>\n";
+    	resp += "<li><a href=\"/archive/2014\">January 2014</a></li>\n";
     	return resp;
     }
 }

@@ -29,7 +29,7 @@
     	</article>
     	
         <article class="underline">
-        	<a href="/hotelBrowserLandmark">Select location on the map<a/> and discover hotels around.<br/>
+        	<a href="/hotels">Select location on the map<a/> and discover hotels around.<br/>
         </article>
         
         <article class="underline">
@@ -38,7 +38,7 @@
         </article>
         
         <article class="underline">
-        	<a href="/createBrowserLandmark">Share your location</a> or <a href="/selectBrowserLandmark">select location on the map<a/> and discover landmarks nearby.<br/>
+        	<a href="/share">Share your location</a> or <a href="/landmarks">select location on the map<a/> and discover landmarks nearby.<br/>
         </article>
         
         <article>

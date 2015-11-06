@@ -51,15 +51,15 @@
                     
                     <div class="post">
                         <p>
-                         	<a href="/hotelBrowserLandmark">Select location on the map<a/> and discover hotels around.<br/>
-                         	<a href="/hotelBrowserLandmark"><img src="/images/hotel.jpg" alt="Find hotel around selected location" title="Click to find hotel around selected location" height="250" width="500" class="float-left"/></a><br/><br/>
+                         	<a href="/hotels">Select location on the map<a/> and discover hotels around.<br/>
+                         	<a href="/hotels"><img src="/images/hotel.jpg" alt="Find hotel around selected location" title="Click to find hotel around selected location" height="250" width="500" class="float-left"/></a><br/><br/>
                     	</p>
                     </div>
                     
                     <div class="post">
                     	<p>
-                    		<a href="/createBrowserLandmark">Share your location</a> or <a href="/selectBrowserLandmark">select location on the map<a/> and discover landmarks nearby.<br/>
-                            <a href="/createBrowserLandmark"><img src="/images/LM_banner_512x250.jpg" alt="GMS World Baner" title="Click to share you location" height="250" width="512" class="float-left"/></a><br/><br/>                     	
+                    		<a href="/share">Share your location</a> or <a href="/landmarks">select location on the map<a/> and discover landmarks nearby.<br/>
+                            <a href="/share"><img src="/images/LM_banner_512x250.jpg" alt="GMS World Baner" title="Click to share you location" height="250" width="512" class="float-left"/></a><br/><br/>                     	
                     	</p>
                     </div>
                     

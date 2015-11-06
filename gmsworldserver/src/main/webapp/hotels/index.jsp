@@ -1,0 +1,1 @@
+<jsp:forward page="/selectLandmark.jsp?generatetoken=true&hotels=true"/>

@@ -15,6 +15,10 @@
  String layer = request.getParameter("layer");
 
  String month = request.getParameter("month");
+ String year = request.getParameter("year");
+ if (year != null) {
+	 month = month + "-" + year;
+ }
 
  String nav = "";
 

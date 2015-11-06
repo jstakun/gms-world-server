@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.NumberUtils;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -44,12 +45,16 @@ public class ShowArchiveAction extends org.apache.struts.action.Action {
             throws Exception {
 
         String month = request.getParameter("month");
+        String year = request.getParameter("year");
         int first = NumberUtils.getInt(request.getParameter("first"), 0);
         int next = -1;
         int prev = -1;
 
         String m = null;
         try {
+        	if (StringUtils.isNumeric(year) && StringUtils.isNumeric(month)) {
+        		month = month +"-" + year;
+        	}
             m = DateUtils.getLongMonthYearString(DateUtils.parseDate(df, month));
         } catch (Exception ex) {
             Date now = new Date();

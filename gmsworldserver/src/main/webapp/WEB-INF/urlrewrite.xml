@@ -169,7 +169,7 @@
             <to>/browserLandmark.jsp?latitude=$1&amp;longitude=$2&amp;gmstoken=$3&amp;enabled=Hotels</to>
     </rule>
     
-    <rule>
+    <!-- rule>
             <from>^/createBrowserLandmark</from>
             <to>/myposLandmark.jsp?generatetoken=true</to>
     </rule>
@@ -182,6 +182,11 @@
     <rule>
             <from>^/hotelBrowserLandmark</from>
             <to>/selectLandmark.jsp?generatetoken=true&amp;hotels=true</to>
+    </rule-->
+    
+    <rule>
+            <from>^/share</from>
+            <to>/myposLandmark.jsp?generatetoken=true</to>
     </rule>
     
     <!-- showLocation rules -->
@@ -208,6 +213,18 @@
             <to>/download/android/208/GMSClient3.apk</to>
     </rule>
 
+    <!-- archive -->
+    
+    <rule>
+            <from>^/archive/([0-9]+)/([0-9]+)$</from>
+            <to>/archive.do?year=$1&amp;month=$2</to>
+    </rule>
+    
+    <rule>
+            <from>^/archive/([0-9]+)$</from>
+            <to>/archive.do?year=$1&amp;month=01</to>
+    </rule>
+    
     <!-- -->
 
 </urlrewrite>
