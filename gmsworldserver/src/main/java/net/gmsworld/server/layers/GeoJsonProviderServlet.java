@@ -67,7 +67,9 @@ public class GeoJsonProviderServlet extends HttpServlet {
 			    }
 			    
 				if (!StringUtils.startsWith(json, "{")) {
-				    URL cacheUrl = new URL("http://cache-gmsworld.rhcloud.com/rest/cache/geojson/" + layer + "/" + lat + "/" + lng);
+					String latStr = StringUtil.formatCoordE2(lat);
+	    			String lngStr = StringUtil.formatCoordE2(lng);
+				    URL cacheUrl = new URL("http://cache-gmsworld.rhcloud.com/rest/cache/geojson/" + layer + "/" + latStr + "/" + lngStr);
 					json = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, Commons.getProperty(Property.RH_GMS_USER));				
 				}
 				

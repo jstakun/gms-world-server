@@ -256,13 +256,15 @@ public class HotelsCombinedUtils extends LayerHelper {
 	    if (language == null) {
 	    	language = locale.getLanguage();
 	    }
+	    List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
 		String hotelsUrl = HOTELS_PROVIDER_URL + "?lat=" + lat + "&lng=" + lng + "&radius=" + radius + "&limit=" + limit;			
         logger.log(Level.INFO, "Calling: " + hotelsUrl);
         	//String hotelsJson = HttpUtils.processFileRequest(new URL(hotelsUrl));	
         String hotelsJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER));
 		List<Hotel> hotels = jsonToHotelList(hotelsJson);
 		logger.log(Level.INFO, "Found " + hotels.size() + " hotels...");
-		return Lists.transform(hotels, new HotelToExtendedLandmarkFunction(language, locale));    
+		landmarks.addAll(Lists.transform(hotels, new HotelToExtendedLandmarkFunction(language, locale)));
+		return landmarks;
 	}
 	
 	public String getLayerName() {
