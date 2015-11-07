@@ -38,7 +38,22 @@
                     {
                     zoom: 7,
                     center: latlng,
-                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                    mapTypeId: google.maps.MapTypeId.ROADMAP,
+                    mapTypeControl: true,
+                    mapTypeControlOptions: {
+                      style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,     
+                      //style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+                      position: google.maps.ControlPosition.LEFT_BOTTOM,  
+                      //mapTypeIds: [
+                      //  google.maps.MapTypeId.ROADMAP,
+                      //  google.maps.MapTypeId.TERRAIN
+                      //]
+                    },   
+                    zoomControl: true,
+                	zoomControlOptions: {
+                    	position: google.maps.ControlPosition.RIGHT_BOTTOM
+                	},       
+                	streetViewControl: false,                                  
                 };
 
                 var map = new google.maps.Map(document.getElementById("map_canvas"),myOptions);
@@ -54,6 +69,9 @@
                 	 var token = "<%= token %>";
 
                 	 var hotelsMode = <%= hotelsMode %>;
+
+                	 //map.panTo(e.latLng);
+                	 //map.setCenter(e.latLng);
                 	 
                      if (hotelsMode == true) {
                 		 message = "Do you want to find hotels around selected location?";
@@ -104,9 +122,9 @@
            	  	controlText.style.paddingLeft = '4px';
            	  	controlText.style.paddingRight = '4px';
            	  	if (hotelsMode == true) {
-           	  		controlText.innerHTML = 'Select location on the map and discover hotels around';
+           	  		controlText.innerHTML = 'Select location on the map and discover hotels';
         	    } else {
-        	    	controlText.innerHTML = 'Select location on the map and discover landmarks around';   
+        	    	controlText.innerHTML = 'Select location on the map and discover landmarks';   
              	}        	  	
            	  	controlUI.appendChild(controlText);
              }  

@@ -154,7 +154,7 @@
           			}); 
 
                   	google.maps.event.addListener(marker, 'mouseover', function() {
-          				if (this.desc != null) {
+                  		if (this.desc != null) {
               				infowindow.setContent(this.desc);
                         	infowindow.open(map, this);
                         } 
@@ -163,6 +163,8 @@
           				infowindow.close(); 
               		});
           			google.maps.event.addListener(marker, 'click', function() {
+                        //map.setCenter(marker.getPosition());
+          				//map.panTo(marker.getPosition());
           				if (this.url != null) {
     						window.open(this.url);	
           				}
