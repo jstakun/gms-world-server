@@ -86,7 +86,22 @@
     	  map = new google.maps.Map(document.getElementById('map-canvas'), {
       			zoom: 12,
         		center: mapcenter,
-        		mapTypeId: google.maps.MapTypeId.ROADMAP //TERRAIN, SATELLITE, HYBRID
+        		mapTypeId: google.maps.MapTypeId.ROADMAP,  //TERRAIN, SATELLITE, HYBRID
+        		mapTypeControl: true,
+                mapTypeControlOptions: {
+                  	style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,     
+                  	position: google.maps.ControlPosition.LEFT_BOTTOM,  
+                  	//style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+                  	//mapTypeIds: [
+                  	//  google.maps.MapTypeId.ROADMAP,
+                  	//  google.maps.MapTypeId.TERRAIN
+                  	//]
+                },   
+                zoomControl: true,
+            	zoomControlOptions: {
+                	position: google.maps.ControlPosition.RIGHT_BOTTOM
+            	},       
+            	streetViewControl: false, 
           });
 
           for (var i = 0; i < layers.length; i++) {
