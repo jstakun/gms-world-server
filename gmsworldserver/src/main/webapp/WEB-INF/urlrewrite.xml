@@ -185,6 +185,16 @@
     </rule-->
     
     <rule>
+            <from>^/landmarks</from>
+            <to>/selectLandmark.jsp?generatetoken=true</to>
+    </rule>
+    
+    <rule>
+            <from>^/hotels</from>
+            <to>/selectLandmark.jsp?generatetoken=true&amp;hotels=true</to>
+    </rule>
+    
+    <rule>
             <from>^/share</from>
             <to>/myposLandmark.jsp?generatetoken=true</to>
     </rule>
