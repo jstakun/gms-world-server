@@ -41,6 +41,8 @@
 
    var hotelsMode = <%= hotelsMode %>;
 
+   var map;
+   
    var topcities = [
 		<%= HtmlUtils.getTopLocations() %>
    ];
@@ -70,7 +72,7 @@
                 	streetViewControl: false,                                  
        };
 
-       var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+       map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 
        var desc;
 
@@ -185,6 +187,9 @@
 	 }
 
 	 function showPosition(position) {
+		 console.log("Geolocation found!");
+		 var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+		 map.panTo(latlng);
 		 proceedWithSelectedLocation(position.coords.latitude, position.coords.longitude, null);   
      }
 
