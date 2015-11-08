@@ -84,11 +84,11 @@
     		    position: {lat: topcities[i].lat, lng: topcities[i].lng},
     		    map: map,
     		    title: topcities[i].name,
-    		    icon: '/images/flagblue.png',
+    		    icon: '/images/redstar.png',
     		    desc: desc
     		});   		
     	    google.maps.event.addListener(marker, 'click', function() {
-    	    	proceedWithSelectedLocation(marker.getPosition().lat(), marker.getPosition().lng());   
+    	    	proceedWithSelectedLocation(this.getPosition().lat(), this.getPosition().lng(), this.getTitle());   
      		});          
      		console.log("Added marker " + topcities[i].name + " to the map")
        }
@@ -97,7 +97,7 @@
        var latlngbounds = new google.maps.LatLngBounds();
 
        google.maps.event.addListener(map, 'click', function (e) {
-    	   proceedWithSelectedLocation(e.latLng.lat(), e.latLng.lng()); 
+    	   proceedWithSelectedLocation(e.latLng.lat(), e.latLng.lng(), null); 
        });
 
        var centerControlDiv = document.createElement('div');
@@ -130,6 +130,12 @@
 
 	   shareControlDiv.index = 2;
 	   map.controls[google.maps.ControlPosition.LEFT_CENTER].push(shareControlDiv);
+
+	   var topLocationsDiv = document.createElement('div');
+	   var topLocationsControl = new CenterControl(topLocationsDiv, map, latlng, '<img src=\'/images/redstar.png\' style=\'width:24px; height:24px; vertical-align: middle;\'><span style=\'line-height:24px;\'>&nbsp;Top locations</span>');
+
+	   topLocationsDiv.index = 3
+	   map.controls[google.maps.ControlPosition.RIGHT_TOP].push(topLocationsDiv);	   
    }
 
    function CenterControl(controlDiv, map, center, text) {
@@ -143,6 +149,7 @@
        controlUI.style.cursor = 'pointer';
        controlUI.style.marginTop = '10px';
        controlUI.style.marginLeft = '10px';
+       controlUI.style.marginRight = '10px';
        controlUI.style.marginBottom = '10px';
  	   controlUI.style.textAlign = 'center';
        controlUI.title = text;
@@ -177,7 +184,7 @@
 	 }
 
 	 function showPosition(position) {
-		 proceedWithSelectedLocation(position.coords.latitude, position.coords.longitude);   
+		 proceedWithSelectedLocation(position.coords.latitude, position.coords.longitude, null);   
      }
 
 	 function errorCallback(error) {
@@ -203,16 +210,19 @@
 		}
 	 } 
 
-	 function proceedWithSelectedLocation(lat, lng) {
+	 function proceedWithSelectedLocation(lat, lng, name) {
 		 var message = "";
 
          //map.panTo(e.latLng);
          //map.setCenter(e.latLng);
-         	 
+         if (name == null) {
+			  name = "selected location";
+         }
+         	  	 
          if (hotelsMode == true) {
-         	  message = "Do you want to find hotels around selected location?";
+              message = "Do you want to find hotels around " + name + "?";
          } else {
-         	  message = "Do you want to discover landmarks around selected location?";
+         	  message = "Do you want to discover landmarks around " + name + "?";
          }
          	 
          var r = confirm(message);
