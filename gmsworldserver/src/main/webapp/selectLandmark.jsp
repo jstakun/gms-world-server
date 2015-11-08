@@ -40,6 +40,10 @@
 
    var hotelsMode = <%= hotelsMode %>;
 
+   var topcities = [
+		<%= HtmlUtils.getTopLocations() %>
+   ];
+   
    function initialize()
    {
         var latlng = new google.maps.LatLng(<%= HtmlUtils.getLocaleCoords(request.getLocale()) %>);
@@ -65,8 +69,30 @@
                 	streetViewControl: false,                                  
        };
 
-       var map = new google.maps.Map(document.getElementById("map_canvas"),myOptions);
+       var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 
+       var desc;
+
+       if (hotelsMode == true) {
+           desc = 'Discover landmarks around this location';
+       } else {
+           desc = 'Discover hotels around this location';
+       } 
+       
+       for (var i = 0; i < topcities.length; i++) {
+    	   var marker = new google.maps.Marker({
+    		    position: {lat: topcities[i].lat, lng: topcities[i].lng},
+    		    map: map,
+    		    title: topcities[i].name,
+    		    icon: '/images/flagblue.png',
+    		    desc: desc
+    		});   		
+    	    google.maps.event.addListener(marker, 'click', function() {
+    	    	proceedWithSelectedLocation(marker.getPosition().lat(), marker.getPosition().lng());   
+     		});          
+     		console.log("Added marker " + topcities[i].name + " to the map")
+       }
+       
        var infoWindow = new google.maps.InfoWindow();
        var latlngbounds = new google.maps.LatLngBounds();
 

@@ -136,7 +136,7 @@
           mc = new MarkerClusterer(map, markers, mcOptions);              
 
           $("#status").css({"background-color": "#fff", "border" : "2px solid #fff", "border-radius": "3px", "text-align": "center", "box-shadow" : "0 2px 6px rgba(0,0,0,.3)"});
-          $("#status").html("<img src=\"/images/progress.gif\">&nbsp;Please wait for landmarks loading...");
+          $("#status").html("<img src=\'/images/progress.gif\' style=\'width:16px; height:16px; vertical-align: middle;'><span style='line-height:16px;'>&nbsp;Please wait for landmarks loading...</span>");
 		  $("#status").center().show(); //.delay(5000).queue(function(n) {
 				  //$(this).hide(); n();
 		  //});  
@@ -204,7 +204,7 @@
                             if (layer != "Hotels") {
 								hotelsOnly = "false";
                             }
-                            $("#status").hide();
+                            //$("#status").hide();
                             mc.repaint();
           			 }	   
            		} 
@@ -231,7 +231,7 @@
 		        if (window.location.href.indexOf("?enabled=Hotels") == -1 && hotelsOnly == "false") {
 					var hotelControlDiv = document.createElement('div');
 		        	hotelControlDiv.index = 2;
-		        	var centerControl = new CenterControl(hotelControlDiv, map, mapcenter, 'Discover hotels nearby');
+		        	var centerControl = new CenterControl(hotelControlDiv, map, mapcenter, '<img src=\'/images/hotel_search.png\' title=\'Discover hotels nearby\'/>');
 		        	map.controls[google.maps.ControlPosition.TOP_CENTER].push(hotelControlDiv);
 		        	google.maps.event.addDomListener(hotelControlDiv, 'click', function() { 
 		                window.location.href = window.location.href + '?enabled=Hotels';

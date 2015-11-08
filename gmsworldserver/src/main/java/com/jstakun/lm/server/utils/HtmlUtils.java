@@ -2,7 +2,9 @@ package com.jstakun.lm.server.utils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -14,6 +16,8 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.ocpsoft.prettytime.PrettyTime;
 
+import com.jstakun.gms.android.landmarks.ExtendedLandmark;
+import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils;
@@ -79,9 +83,9 @@ public class HtmlUtils {
 		}
 		desc += "Posted " + prettyTime.format(landmark.getCreationDate()) + " on " + DateUtils.getFormattedDateTime(locale, landmark.getCreationDate()) + " by <a href=\"" + userUrl + "\">" + UrlUtils.createUsernameMask(landmark.getUsername()) + "</a>&nbsp;" + 
         "| Created in layer <a href=\"" + layerUrl + "\">" + LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer()) + "</a> using <a href=\"" + ConfigurationManager.getAppUrl(landmark.getAppId()) + "\" target=\"_blank\">" +  ConfigurationManager.getAppName(landmark.getAppId()) + "</a>";
-        String bookingUrl = "/bookingProvider?key=" + landmark.getId();
+        String bookingUrl = "/bookingProvider/" + landmark.getId();
         if (StringUtils.isNotEmpty(landmark.getCity()) && StringUtils.isNotEmpty(landmark.getCountryCode())) {
-        	bookingUrl += "&cc=" + landmark.getCountryCode() + "&city=" + landmark.getCity();
+        	bookingUrl += "/" + landmark.getCountryCode().toLowerCase(Locale.US) + "/" + landmark.getCity();
         }
 		desc += "<br/><b><a href=\"" + bookingUrl + "\" target=\"_blank\">Book hotel room nearby!</a></b>" 
 			 + HtmlUtils.getStatusImage(landmark.getUseCount());
@@ -105,44 +109,59 @@ public class HtmlUtils {
 		return desc;
 	}
 	
-	private static final Map<String, QualifiedCoordinates> default_locations = new HashMap<String, QualifiedCoordinates>();
+	private static final Map<String, ExtendedLandmark> default_locations = new HashMap<String, ExtendedLandmark>();
     
 	static {
-		default_locations.put("en_US", new QualifiedCoordinates(34.052234, -118.243685, 0f, Float.NaN, Float.NaN)); //United States Los Angeles 34.052234,-118.243685
-		default_locations.put("fr", new QualifiedCoordinates(48.856918, 2.34121, 0f, Float.NaN, Float.NaN)); //France, Paris 48.856918, 2.34121 
-		default_locations.put("fr_FR", new QualifiedCoordinates(48.856918, 2.34121, 0f, Float.NaN, Float.NaN)); //France, Paris 48.856918, 2.34121 
-		default_locations.put("de", new QualifiedCoordinates(52.516071, 13.37698, 0f, Float.NaN, Float.NaN)); //Germany, Berlin 52.516071, 13.37698 
-		default_locations.put("de_DE", new QualifiedCoordinates(52.516071, 13.37698, 0f, Float.NaN, Float.NaN)); //Germany, Berlin 52.516071, 13.37698 
-		default_locations.put("it", new QualifiedCoordinates(41.901514, 12.460774, 0f, Float.NaN, Float.NaN)); //Italy, Rome 41.901514, 12.460774
-		default_locations.put("es", new QualifiedCoordinates(40.4203, -3.70577, 0f, Float.NaN, Float.NaN)); //Spain, Madrid 40.4203,-3.70577, 
-		default_locations.put("es_ES", new QualifiedCoordinates(40.4203, -3.70577, 0f, Float.NaN, Float.NaN)); //Spain, Madrid 40.4203,-3.70577, 
-		default_locations.put("ja", new QualifiedCoordinates(35.689488, 139.691706, 0f, Float.NaN, Float.NaN)); //Japan, Tokyo, 35.689488,139.691706 
-		default_locations.put("en_GB", new QualifiedCoordinates(51.506321, -0.12714, 0f, Float.NaN, Float.NaN)); //United Kingdom, London, 51.506321,-0.12714  
-		default_locations.put("hi", new QualifiedCoordinates(19.076191, 72.875877, 0f, Float.NaN, Float.NaN)); //India, Mumbai, 19.076191,72.875877 
-		default_locations.put("zh", new QualifiedCoordinates(39.90403, 116.407526, 0f, Float.NaN, Float.NaN)); //China, Beijing 39.90403, 116.407526
-		default_locations.put("pl", new QualifiedCoordinates(52.235352, 21.00939, 0f, Float.NaN, Float.NaN)); //Poland, Warsaw, 52.235352,21.00939
-		default_locations.put("en_CA", new QualifiedCoordinates(43.64856, -79.38533, 0f, Float.NaN, Float.NaN)); //Canada, Toronto, 43.64856,-79.38533
-		default_locations.put("pt_BR", new QualifiedCoordinates(-23.548943, -46.638818, 0f, Float.NaN, Float.NaN)); //Brazil, Sao Paolo -23.548943,-46.638818,     
-		default_locations.put("in", new QualifiedCoordinates(-6.17144, 106.82782, 0f, Float.NaN, Float.NaN)); //IDN Indonesia, Jakarta -6.17144, 106.82782
-		default_locations.put("th", new QualifiedCoordinates(13.75333, 100.504822, 0f, Float.NaN, Float.NaN)); //THA Thailand, Bangkok 13.75333, 100.504822
-		default_locations.put("ru", new QualifiedCoordinates(55.755786, 37.617633, 0f, Float.NaN, Float.NaN)); //RUS Russia, Moscow 55.755786, 37.617633
-		default_locations.put("es_MX", new QualifiedCoordinates(19.432608, -99.133208, 0f, Float.NaN, Float.NaN)); //MEX Mexico, Mexico City 19.432608, -99.133208
-		default_locations.put("ms", new QualifiedCoordinates(3.15248, 101.71727, 0f, Float.NaN, Float.NaN)); //MYS Malaysia, Kuala Lumpur 3.15248, 101.71727
-		default_locations.put("tr", new QualifiedCoordinates(41.00527, 28.97696, 0f, Float.NaN, Float.NaN)); //TUR Turkey, Istanbul 41.00527, 28.97696
-		default_locations.put("en_PH", new QualifiedCoordinates(14.5995124, 120.9842195, 0f, Float.NaN, Float.NaN)); //PHL Philippines, Manilia 14.5995124, 120.9842195
-		default_locations.put("nl", new QualifiedCoordinates(52.373119, 4.89319, 0f, Float.NaN, Float.NaN)); //NLD Netherlands, Amsterdam 52.373119, 4.89319
-		default_locations.put("ar_SA", new QualifiedCoordinates(24.64732, 46.714581, 0f, Float.NaN, Float.NaN)); //SAU Saudi Arabia, Riyadh 24.64732, 46.714581
-		default_locations.put("pt_PT", new QualifiedCoordinates(38.7252993, 9.1500364, 0f, Float.NaN, Float.NaN)); //PRT Portugal, Lisbon 38.7252993, 9.1500364
-		default_locations.put("ur", new QualifiedCoordinates(33.718151, 73.060547, 0f, Float.NaN, Float.NaN)); //PAK Pakistan, Islamabad 33.718151, 73.060547
-		default_locations.put("sv", new QualifiedCoordinates(59.32893, 18.06491, 0f, Float.NaN, Float.NaN)); //SWE Sweden, Stockholm 59.32893, 18.06491  	       	
+		//protected ExtendedLandmark(String name, String desc, QualifiedCoordinates qc, String layer, long creationDate)
+		default_locations.put("es_US", LandmarkFactory.getLandmark("United States, Los Angeles", "", new QualifiedCoordinates(34.052234, -118.243685, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //United States, Los Angeles 34.052234,-118.243685
+		default_locations.put("en_US", LandmarkFactory.getLandmark("United States, New York", "", new QualifiedCoordinates(40.69847, -73.951442, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //United States, New York 40.69847, -73.951442
+		default_locations.put("fr", LandmarkFactory.getLandmark("France, Paris", "", new QualifiedCoordinates(48.856918, 2.34121, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //France, Paris 48.856918, 2.34121 
+		default_locations.put("fr_FR", LandmarkFactory.getLandmark("France, Paris", "", new QualifiedCoordinates(48.856918, 2.34121, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //France, Paris 48.856918, 2.34121
+		default_locations.put("de", LandmarkFactory.getLandmark("Germany, Berlin", "", new QualifiedCoordinates(52.516071, 13.37698, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //Germany, Berlin 52.516071, 13.37698 
+		default_locations.put("de_DE", LandmarkFactory.getLandmark("Germany, Berlin", "", new QualifiedCoordinates(52.516071, 13.37698, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //Germany, Berlin 52.516071, 13.37698 
+		default_locations.put("en_GB", LandmarkFactory.getLandmark("United Kingdom, London", "", new QualifiedCoordinates(51.506321, -0.12714, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //United Kingdom, London, 51.506321,-0.12714  
+		default_locations.put("it", LandmarkFactory.getLandmark("Italy, Rome", "", new QualifiedCoordinates(41.901514, 12.460774, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //Italy, Rome 41.901514, 12.460774
+		default_locations.put("es", LandmarkFactory.getLandmark("Spain, Madrid", "", new QualifiedCoordinates(40.4203, -3.70577, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //Spain, Madrid 40.4203,-3.70577, 
+		default_locations.put("es_ES", LandmarkFactory.getLandmark("Spain, Madrid", "", new QualifiedCoordinates(40.4203, -3.70577, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //Spain, Madrid 40.4203,-3.70577, 
+		default_locations.put("ja", LandmarkFactory.getLandmark("Japan, Tokyo", "", new QualifiedCoordinates(35.689488, 139.691706, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //Japan, Tokyo, 35.689488,139.691706 
+		default_locations.put("hi", LandmarkFactory.getLandmark("India, Mumbai", "", new QualifiedCoordinates(19.076191, 72.875877, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //India, Mumbai, 19.076191,72.875877 
+		default_locations.put("zh", LandmarkFactory.getLandmark("China, Beijing", "", new QualifiedCoordinates(39.90403, 116.407526, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //China, Beijing 39.90403, 116.407526
+		default_locations.put("pl", LandmarkFactory.getLandmark("Poland, Warsaw", "", new QualifiedCoordinates(52.235352, 21.00939, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //Poland, Warsaw, 52.235352,21.00939
+		default_locations.put("en_CA", LandmarkFactory.getLandmark("Canada, Toronto", "", new QualifiedCoordinates(43.64856, -79.38533, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //Canada, Toronto, 43.64856,-79.38533
+		default_locations.put("pt_BR", LandmarkFactory.getLandmark("Brazil, Sao Paolo", "", new QualifiedCoordinates(-23.548943, -46.638818, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //Brazil, Sao Paolo -23.548943,-46.638818,     
+		default_locations.put("in", LandmarkFactory.getLandmark("Indonesia, Jakarta", "", new QualifiedCoordinates(-6.17144, 106.82782, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //IDN Indonesia, Jakarta -6.17144, 106.82782
+		default_locations.put("th", LandmarkFactory.getLandmark("Thailand, Bangkok", "", new QualifiedCoordinates(13.75333, 100.504822, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //THA Thailand, Bangkok 13.75333, 100.504822
+		default_locations.put("ru", LandmarkFactory.getLandmark("Russia, Moscow", "", new QualifiedCoordinates(55.755786, 37.617633, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //RUS Russia, Moscow 55.755786, 37.617633
+		default_locations.put("es_MX", LandmarkFactory.getLandmark("Mexico, Mexico City", "", new QualifiedCoordinates(19.432608, -99.133208, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //MEX Mexico, Mexico City 19.432608, -99.133208
+		default_locations.put("ms", LandmarkFactory.getLandmark("Malaysia, Kuala Lumpu", "", new QualifiedCoordinates(3.15248, 101.71727, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //MYS Malaysia, Kuala Lumpur 3.15248, 101.71727
+		default_locations.put("tr", LandmarkFactory.getLandmark("Turkey, Istanbul", "", new QualifiedCoordinates(41.00527, 28.97696, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //TUR Turkey, Istanbul 41.00527, 28.97696
+		default_locations.put("en_PH", LandmarkFactory.getLandmark("Philippines, Manilia", "", new QualifiedCoordinates(14.5995124, 120.9842195, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //PHL Philippines, Manilia 14.5995124, 120.9842195
+		default_locations.put("nl", LandmarkFactory.getLandmark("Netherlands, Amsterdam", "", new QualifiedCoordinates(52.373119, 4.89319, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //NLD Netherlands, Amsterdam 52.373119, 4.89319
+		default_locations.put("ar_SA", LandmarkFactory.getLandmark("Saudi Arabia, Riyadh", "", new QualifiedCoordinates(24.64732, 46.714581, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //SAU Saudi Arabia, Riyadh 24.64732, 46.714581
+		default_locations.put("pt_PT", LandmarkFactory.getLandmark("Portugal, Lisbon", "", new QualifiedCoordinates(38.7252993, -9.1500364, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //PRT Portugal, Lisbon 38.7252993, 9.1500364
+		default_locations.put("ur", LandmarkFactory.getLandmark("Pakistan, Islamabad", "", new QualifiedCoordinates(33.718151, 73.060547, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //PAK Pakistan, Islamabad 33.718151, 73.060547
+		default_locations.put("sv", LandmarkFactory.getLandmark("Sweden, Stockholm", "", new QualifiedCoordinates(59.32893, 18.06491, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //SWE Sweden, Stockholm 59.32893, 18.06491 	       	
 	} 
     
     public static String getLocaleCoords(Locale locale) {
-    	QualifiedCoordinates qc = default_locations.get("en_GB");
+    	ExtendedLandmark landmark = default_locations.get("en_GB");
     	if (locale != null && default_locations.containsKey(locale.toString())) {
-    		qc = default_locations.get(locale.toString());
+    		landmark = default_locations.get(locale.toString());
     	}
-    	return qc.getLatitude() + "," + qc.getLongitude();
+    	return landmark.getQualifiedCoordinates().getLatitude() + "," + landmark.getQualifiedCoordinates().getLongitude();
+    }
+    
+    public static String getTopLocations() {
+    	String resp = "";
+    	List<String> names = new ArrayList<String>();
+    	for (ExtendedLandmark landmark : default_locations.values()) {
+    		String name = landmark.getName();
+    		if (!names.contains(name)) {
+    			resp += "{\"name\": \"" + name + "\", \"lat\": " + landmark.getQualifiedCoordinates().getLatitude() + ", \"lng\": " + landmark.getQualifiedCoordinates().getLongitude() + "},\n";
+    		    names.add(name);
+    		}
+    	}
+    	return resp;
     }
     
     public static String getArchivesUrls() {
