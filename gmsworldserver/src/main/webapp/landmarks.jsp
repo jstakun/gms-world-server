@@ -222,14 +222,20 @@
 
 				var centerControlDiv = document.createElement('div');
 				centerControlDiv.index = 1;
-		        var centerControl = new mapCenterControl(centerControlDiv, map, mapcenter);
+		        var centerControl = new CenterControl(centerControlDiv, map, mapcenter, 'Center map');
 		        map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(centerControlDiv);
+		        google.maps.event.addDomListener(centerControlDiv, 'click', function() {
+		    	   	 map.setCenter(mapcenter)
+		    	});
 
 		        if (window.location.href.indexOf("?enabled=Hotels") == -1 && hotelsOnly == "false") {
 					var hotelControlDiv = document.createElement('div');
 		        	hotelControlDiv.index = 2;
-		        	var centerControl = new hotelsLinkControl(hotelControlDiv, map, mapcenter);
+		        	var centerControl = new CenterControl(hotelControlDiv, map, mapcenter, 'Discover hotels nearby');
 		        	map.controls[google.maps.ControlPosition.TOP_CENTER].push(hotelControlDiv);
+		        	google.maps.event.addDomListener(hotelControlDiv, 'click', function() { 
+		                window.location.href = window.location.href + '?enabled=Hotels';
+		       	    });
 		        }	 
 			} else if ((layer_counter + excluded_layers) == layers.length && marker_counter == 1) {
 				$("#status").css({"background-color": "#fff", "border" : "2px solid #fff", "border-radius": "3px", "text-align": "center", "box-shadow" : "0 2px 6px rgba(0,0,0,.3)"});
@@ -240,69 +246,34 @@
 			}
       }
 
-      function mapCenterControl(controlDiv, map, center) {
+      function CenterControl(controlDiv, map, center, text) {
 
-    	  // Set CSS for the control border
-    	  var controlUI = document.createElement('div');
-    	  controlUI.style.backgroundColor = '#fff';
-    	  controlUI.style.border = '2px solid #fff';
-    	  controlUI.style.borderRadius = '3px';
-    	  controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
-    	  controlUI.style.cursor = 'pointer';
-    	  controlUI.style.marginBottom = '18px';
-    	  controlUI.style.marginTop = '18px';
+          // Set CSS for the control border
+          var controlUI = document.createElement('div');
+          controlUI.style.backgroundColor = '#fff';
+          controlUI.style.border = '2px solid #fff';
+          controlUI.style.borderRadius = '3px';
+          controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+          controlUI.style.cursor = 'pointer';
+          controlUI.style.marginTop = '10px';
+          controlUI.style.marginLeft = '10px';
+          controlUI.style.marginBottom = '10px';
     	  controlUI.style.textAlign = 'center';
-    	  controlUI.title = 'Click to recenter the map';
-    	  controlDiv.appendChild(controlUI);
+          controlUI.title = text;
+          controlDiv.appendChild(controlUI);
 
-    	  // Set CSS for the control interior
-    	  var controlText = document.createElement('div');
-    	  controlText.style.color = 'rgb(25,25,25)';
-    	  controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
-    	  controlText.style.fontSize = '16px';
-    	  controlText.style.lineHeight = '32px';
-    	  controlText.style.paddingLeft = '4px';
-    	  controlText.style.paddingRight = '4px';
-    	  controlText.innerHTML = 'Center Map';
-    	  controlUI.appendChild(controlText);
-
-    	  // Setup the click event listeners: simply set the map to
-    	  google.maps.event.addDomListener(controlUI, 'click', function() {
-    	   	 map.setCenter(center)
-    	  });
-      }
-
-      function hotelsLinkControl(controlDiv, map, center) {
-
-    	  // Set CSS for the control border
-    	  var controlUI = document.createElement('div');
-    	  controlUI.style.backgroundColor = '#fff';
-    	  controlUI.style.border = '2px solid #fff';
-    	  controlUI.style.borderRadius = '3px';
-    	  controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
-    	  controlUI.style.cursor = 'pointer';
-    	  controlUI.style.marginBottom = '18px';
-    	  controlUI.style.marginTop = '18px';
-    	  controlUI.style.textAlign = 'center';
-    	  controlUI.title = 'Click to dicover hotels nearby';
-    	  controlDiv.appendChild(controlUI);
-
-    	  // Set CSS for the control interior
-    	  var controlText = document.createElement('div');
-    	  controlText.style.color = 'rgb(170,0,0)';
-    	  controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
-    	  controlText.style.fontSize = '16px';
-    	  controlText.style.lineHeight = '32px';
-    	  controlText.style.paddingLeft = '4px';
-    	  controlText.style.paddingRight = '4px';
-    	  controlText.innerHTML = 'Discover hotels nearby';
-    	  controlUI.appendChild(controlText);
-
-    	  // Setup the click event listeners: simply set the map to
-    	  google.maps.event.addDomListener(controlUI, 'click', function() { 
-             window.location.href = window.location.href + '?enabled=Hotels';
-    	  });
-      }
+          // Set CSS for the control interior
+          var controlText = document.createElement('div');
+          controlText.style.color = 'rgb(25,25,25)';
+          controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+          controlText.style.fontSize = '16px';
+          controlText.style.lineHeight = '32px';
+          controlText.style.paddingLeft = '4px';
+          controlText.style.paddingRight = '4px';
+          controlText.innerHTML = text;
+          controlUI.appendChild(controlText);
+      }  
+      
       google.maps.event.addDomListener(window, 'load', initialize);
     </script>
   </head>

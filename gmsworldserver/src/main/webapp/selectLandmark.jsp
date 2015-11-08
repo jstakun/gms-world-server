@@ -87,10 +87,18 @@
 	   map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
 
 	   var shareControlDiv = document.createElement('div');
-	   var shareControl = new CenterControl(shareControlDiv, map, latlng, 'Discover hotels around your location');
+
+	   var message
+	   if (hotelsMode == true) {
+			message = "<img src='/images/mypos.png' title='Discover hotels around your location'/>";
+	   } else {
+		    message = "<img src='/images/mypos.png' title='Discover landmarks around your location'/>";  
+	   }
+	   
+	   var shareControl = new CenterControl(shareControlDiv, map, latlng, message);
 
 	   google.maps.event.addDomListener(shareControlDiv, 'click', function() {
-		   showStatus("Please share your location");
+		   showStatus("If prompted, please share your location.");
 		   getLocation();
   	   });
 
@@ -107,10 +115,11 @@
        controlUI.style.borderRadius = '3px';
        controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
        controlUI.style.cursor = 'pointer';
-       controlUI.style.marginTop = '18px';
-       controlUI.style.marginLeft = '18px';
-       controlUI.style.textAlign = 'center';
-       //controlUI.title = 'title';
+       controlUI.style.marginTop = '10px';
+       controlUI.style.marginLeft = '10px';
+       controlUI.style.marginBottom = '10px';
+ 	   controlUI.style.textAlign = 'center';
+       controlUI.title = text;
        controlDiv.appendChild(controlUI);
 
        // Set CSS for the control interior
