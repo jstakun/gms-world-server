@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -36,19 +37,25 @@ public class WelcomeAction extends org.apache.struts.action.Action {
 		List<Landmark> landmarkList = (List<Landmark>)newestLandmarksAction.getObjectFromCache("newestLandmarks", CacheType.FAST);
         request.setAttribute("newestLandmarkList", landmarkList);   
         
-        //TODO handle different request urls
-        //http://m.gms-world.net
-        //http://www.gms-world.net
-		//http://hotels.gms-world.net
-        //http://landmarks.gms-world.net
+        //handle different request urls
+        //http://m.
+        //http://www.
+		//http://hotels.
+        //http://landmarks.
         
         logger.log(Level.INFO, "Received request to " + request.getRequestURL());
         
-		OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
-        if (os.isMobileDevice()) {
-            return mapping.findForward("mobile");
+        if (StringUtils.startsWith(request.getRequestURL().toString(), "http://hotels.")) {
+        	return mapping.findForward("hotels");
+        } else if (StringUtils.startsWith(request.getRequestURL().toString(), "http://landmarks.")) {
+        	return mapping.findForward("landmarks");
         } else {
-            return mapping.findForward("success");
+        	OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
+        	if (os.isMobileDevice()) {
+        		return mapping.findForward("mobile");
+        	} else {
+        		return mapping.findForward("success");
+        	}
         }
 	}
 }

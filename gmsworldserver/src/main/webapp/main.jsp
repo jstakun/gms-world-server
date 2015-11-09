@@ -51,7 +51,7 @@
                     
                     <div class="post">
                         <p>
-                         	<a href="/hotels">Select location on the map<a/> and discover hotels around.<br/>
+                         	<a href="/hotels">Select location on the map and discover hotels around<a/>.<br/>
                          	<a href="/hotels"><img src="/images/hotel.jpg" alt="Find hotel around selected location" title="Click to find hotel around selected location" height="250" width="500" class="float-left"/></a><br/><br/>
                     	</p>
                     </div>

@@ -29,7 +29,7 @@
     	</article>
     	
         <article class="underline">
-        	<a href="/hotels">Select location on the map<a/> and discover hotels around.<br/>
+        	<a href="/hotels">Select location on the map and discover hotels around<a/>.<br/>
         </article>
         
         <article class="underline">

@@ -150,6 +150,8 @@
          <action path="/welcome" type="com.jstakun.lm.server.struts.WelcomeAction">
             <forward name="success" path="/main.jsp"/>
             <forward name="mobile" path="/m/main.jsp"/>
+            <forward name="hotels" path="/selectLandmark.jsp?generatetoken=true&amp;hotels=true"/>
+            <forward name="landmarks" path="/selectLandmark.jsp?generatetoken=true"/>
         </action>
     </action-mappings>
     <controller locale="false"/>
