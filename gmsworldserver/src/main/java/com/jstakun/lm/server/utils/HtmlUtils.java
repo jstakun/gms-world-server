@@ -112,7 +112,6 @@ public class HtmlUtils {
 	private static final Map<String, ExtendedLandmark> default_locations = new HashMap<String, ExtendedLandmark>();
     
 	static {
-		//protected ExtendedLandmark(String name, String desc, QualifiedCoordinates qc, String layer, long creationDate)
 		default_locations.put("es_US", LandmarkFactory.getLandmark("United States, Los Angeles", "", new QualifiedCoordinates(34.052234, -118.243685, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //United States, Los Angeles 34.052234,-118.243685
 		default_locations.put("en_US", LandmarkFactory.getLandmark("United States, New York", "", new QualifiedCoordinates(40.69847, -73.951442, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //United States, New York 40.69847, -73.951442
 		default_locations.put("fr", LandmarkFactory.getLandmark("France, Paris", "", new QualifiedCoordinates(48.856918, 2.34121, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //France, Paris 48.856918, 2.34121 
@@ -123,9 +122,11 @@ public class HtmlUtils {
 		default_locations.put("it", LandmarkFactory.getLandmark("Italy, Rome", "", new QualifiedCoordinates(41.901514, 12.460774, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //Italy, Rome 41.901514, 12.460774
 		default_locations.put("es", LandmarkFactory.getLandmark("Spain, Madrid", "", new QualifiedCoordinates(40.4203, -3.70577, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //Spain, Madrid 40.4203,-3.70577, 
 		default_locations.put("es_ES", LandmarkFactory.getLandmark("Spain, Madrid", "", new QualifiedCoordinates(40.4203, -3.70577, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //Spain, Madrid 40.4203,-3.70577, 
+		default_locations.put("es_AR", LandmarkFactory.getLandmark("Buenos Aires, Argentina", "", new QualifiedCoordinates(-34.35, -58.22, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //Buenos Aires, Argentina -34.35, -58.22, 
 		default_locations.put("ja", LandmarkFactory.getLandmark("Japan, Tokyo", "", new QualifiedCoordinates(35.689488, 139.691706, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //Japan, Tokyo, 35.689488,139.691706 
 		default_locations.put("hi", LandmarkFactory.getLandmark("India, Mumbai", "", new QualifiedCoordinates(19.076191, 72.875877, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //India, Mumbai, 19.076191,72.875877 
 		default_locations.put("zh", LandmarkFactory.getLandmark("China, Beijing", "", new QualifiedCoordinates(39.90403, 116.407526, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //China, Beijing 39.90403, 116.407526
+		default_locations.put("zh_CN", LandmarkFactory.getLandmark("China, Shanghai", "", new QualifiedCoordinates(31.10403, 121.287526, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //China, Shanghai 31.10403, 121.287526
 		default_locations.put("pl", LandmarkFactory.getLandmark("Poland, Warsaw", "", new QualifiedCoordinates(52.235352, 21.00939, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //Poland, Warsaw, 52.235352,21.00939
 		default_locations.put("en_CA", LandmarkFactory.getLandmark("Canada, Toronto", "", new QualifiedCoordinates(43.64856, -79.38533, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //Canada, Toronto, 43.64856,-79.38533
 		default_locations.put("pt_BR", LandmarkFactory.getLandmark("Brazil, Sao Paolo", "", new QualifiedCoordinates(-23.548943, -46.638818, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //Brazil, Sao Paolo -23.548943,-46.638818,     
@@ -142,6 +143,25 @@ public class HtmlUtils {
 		default_locations.put("pt_PT", LandmarkFactory.getLandmark("Portugal, Lisbon", "", new QualifiedCoordinates(38.7252993, -9.1500364, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //PRT Portugal, Lisbon 38.7252993, 9.1500364
 		default_locations.put("ur", LandmarkFactory.getLandmark("Pakistan, Islamabad", "", new QualifiedCoordinates(33.718151, 73.060547, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //PAK Pakistan, Islamabad 33.718151, 73.060547
 		default_locations.put("sv", LandmarkFactory.getLandmark("Sweden, Stockholm", "", new QualifiedCoordinates(59.32893, 18.06491, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //SWE Sweden, Stockholm 59.32893, 18.06491 	       	
+		default_locations.put("cz", LandmarkFactory.getLandmark("Prague, Czech Republic", "", new QualifiedCoordinates(50.052893, 14.22491, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //CZE Prague, Czech Republic 50.52893, 14.26491 	       	
+		default_locations.put("vi", LandmarkFactory.getLandmark("Hanoi, Vietnam", "", new QualifiedCoordinates(21.05, 105.55, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //VIE Hanoi, Vietnam 21.05, 105.55    	
+		default_locations.put("ar_AE", LandmarkFactory.getLandmark("Dubai, United Arab Emirates", "", new QualifiedCoordinates(25.18, 55.20, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); //UAE Dubai, United Arab Emirates 25.18, 55.20    		    
+		default_locations.put("zh_SG", LandmarkFactory.getLandmark("Singapore", "", new QualifiedCoordinates(25.18, 55.20, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); 
+		default_locations.put("zh_HK", LandmarkFactory.getLandmark("Hong Kong, China", "", new QualifiedCoordinates(22.20, 114.11, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); 
+		default_locations.put("ko", LandmarkFactory.getLandmark("Seoul, South Korea", "", new QualifiedCoordinates(37.1, 126.58, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); 
+		default_locations.put("hu", LandmarkFactory.getLandmark("Budapest, Hungary", "", new QualifiedCoordinates(47.29, 19.05, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); 
+		default_locations.put("en_ZA", LandmarkFactory.getLandmark("Cape Town, South Africa", "", new QualifiedCoordinates(-33.55, 18.22, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); 
+		default_locations.put("en_AU", LandmarkFactory.getLandmark("Sydney, Australia", "", new QualifiedCoordinates(-34.0, 151.0, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); 
+		default_locations.put("ar_MA", LandmarkFactory.getLandmark("Marrakech, Morocco", "", new QualifiedCoordinates(-31.37, -8.1, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); 
+		default_locations.put("kh", LandmarkFactory.getLandmark("Siem Reap, Cambodia", "", new QualifiedCoordinates(13.22, 103.5, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); 	
+		default_locations.put("ca", LandmarkFactory.getLandmark("Barcelona, Spain", "", new QualifiedCoordinates(41.23, 2.09, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); 
+		
+		default_locations.put("it2", LandmarkFactory.getLandmark("Florence, Italy", "", new QualifiedCoordinates(43.767, 11.25, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); 
+		default_locations.put("ru2", LandmarkFactory.getLandmark("St. Petersburg, Russia", "", new QualifiedCoordinates(59.56, 30.18, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); 
+		default_locations.put("en2", LandmarkFactory.getLandmark("Chicago, Illinois", "", new QualifiedCoordinates(41.8781136, -87.6297982, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); 
+		default_locations.put("th2", LandmarkFactory.getLandmark("Chiang Mai, Thailand", "", new QualifiedCoordinates(18.796143, 98.979263, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); 
+		default_locations.put("en3", LandmarkFactory.getLandmark("San Francisco, California", "", new QualifiedCoordinates(37.773972, -122.431297, 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); 
+		
 	} 
     
     public static String getLocaleCoords(Locale locale) {
