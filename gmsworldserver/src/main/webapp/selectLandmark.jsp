@@ -77,9 +77,9 @@
        var desc;
 
        if (hotelsMode == true) {
-           desc = 'Discover landmarks around this location'; <!-- bean:message key="landmarks.marker.desc" /-->
+           desc = '<bean:message key="landmarks.marker.desc" />'; 
        } else {
-           desc = 'Discover hotels around this location'; <!-- bean:message key="hotels.marker.desc" /-->
+           desc = '<bean:message key="hotels.marker.desc" />'; 
        } 
        
        for (var i = 0; i < topcities.length; i++) {
@@ -107,9 +107,9 @@
 	   var centerControl;
 
 	   if (hotelsMode == true) {
-		   centerControl = new CenterControl(centerControlDiv, map, latlng, 'Select location on the map and discover hotels'); <!-- -->
+		   centerControl = new CenterControl(centerControlDiv, map, latlng, '<bean:message key="hotels.header" />');
 	   } else {
-		   centerControl = new CenterControl(centerControlDiv, map, latlng, 'Select location on the map and discover landmarks'); <!-- -->   
+		   centerControl = new CenterControl(centerControlDiv, map, latlng, '<bean:message key="landmarks.header" />');  
 	   }
 
 	   centerControlDiv.index = 1;
@@ -119,15 +119,15 @@
 
 	   var message
 	   if (hotelsMode == true) {
-			message = "<img src='/images/mypos.png' title='Discover hotels around your location'/>"; <!-- -->
+			message = "<img src='/images/mypos.png' title='<bean:message key="hotels.your.location" />'/>";
 	   } else {
-		    message = "<img src='/images/mypos.png' title='Discover landmarks around your location'/>";  <!-- --> 
+		    message = "<img src='/images/mypos.png' title='<bean:message key="landmarks.your.location" />'/>";
 	   }
 	   
 	   var shareControl = new CenterControl(shareControlDiv, map, latlng, message);
 
 	   google.maps.event.addDomListener(shareControlDiv, 'click', function() {
-		   showStatus("If prompted, please share your location."); <!-- -->
+		   showStatus("<bean:message key="landmarks.location.prompt" />");
 		   getLocation();
   	   });
 
@@ -135,7 +135,7 @@
 	   map.controls[google.maps.ControlPosition.LEFT_CENTER].push(shareControlDiv);
 
 	   var topLocationsDiv = document.createElement('div');
-	   var topLocationsControl = new CenterControl(topLocationsDiv, map, latlng, '<img src=\'/images/redstar.png\' style=\'width:24px; height:24px; vertical-align: middle;\'><span style=\'line-height:24px;\'>&nbsp;Top locations</span>'); <!-- -->
+	   var topLocationsControl = new CenterControl(topLocationsDiv, map, latlng, '<img src=\'/images/redstar.png\' style=\'width:24px; height:24px; vertical-align: middle;\'><span style=\'line-height:24px;\'>&nbsp;<bean:message key="hotels.top.destinations" /></span>');
 
 	   topLocationsDiv.index = 3
 	   map.controls[google.maps.ControlPosition.RIGHT_TOP].push(topLocationsDiv);	   
@@ -182,7 +182,8 @@
 	    	message = "Geolocation is not supported by this browser!";
 	    }
 	    if (message != null) {
-	    	showStatus(message);
+		    console.log(message);
+	    	showStatus('<bean:message key="landmarks.error" />');
 		}
 	 }
 
@@ -212,7 +213,8 @@
         		break;
 	 	}
 	 	if (message != null) {
-	 		showStatus(message);
+		 	log.console(message);
+	 		showStatus('<bean:message key="landmarks.error" />');
 		}
 	 } 
 
@@ -222,13 +224,13 @@
          //map.panTo(e.latLng);
          //map.setCenter(e.latLng);
          if (name == null) {
-			  name = "selected location"; <!-- -->
+			  name = "<bean:message key="landmarks.location" />";
          }
          	  	 
          if (hotelsMode == true) {
-              message = "Do you want to find hotels around " + name + "?"; <!-- -->
+              message = "<bean:message key="hotels.confirmation" /> " + name + "?"; 
          } else {
-         	  message = "Do you want to discover landmarks around " + name + "?"; <!-- -->
+         	  message = "<bean:message key="landmarks.confirmation" /> " + name + "?";
          }
          	 
          var r = confirm(message);

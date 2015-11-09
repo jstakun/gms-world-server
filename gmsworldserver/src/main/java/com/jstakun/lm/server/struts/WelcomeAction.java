@@ -36,6 +36,7 @@ public class WelcomeAction extends org.apache.struts.action.Action {
 		List<Landmark> landmarkList = (List<Landmark>)newestLandmarksAction.getObjectFromCache("newestLandmarks", CacheType.FAST);
         request.setAttribute("newestLandmarkList", landmarkList);   
         
+        //TODO handle different request urls
         //http://m.gms-world.net
         //http://www.gms-world.net
 		//http://hotels.gms-world.net
