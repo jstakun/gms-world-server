@@ -56,14 +56,17 @@ public class Processor {
 		    for (int i = 0; i < header.length; i++) {
 		    	System.out.print(header[i] + " ");
 		    	if (header[i] != null && header[i].startsWith("desc_")) {
-		    		 header[i] = null;
+		    		header[i] = null;
 		    	}
 		    	if (columnsToMap.contains(header[i])) {
-		           
+		    		header[i] = null; 
 		        }
 		    	if (header[i] != null && header[i].equals("class")) {
 		    		header[i] = "stars";
-		    	} 
+		    	}
+		    	if (header[i] != null && header[i].equals("id")) {
+		    		header[i] = "_id";
+		    	}
 		    }
 
 		    Hotel h;
@@ -80,8 +83,9 @@ public class Processor {
 		    		h.setHotel_url(h.getHotel_url() + "?aid=864525");
 		    		h.setPhoto_url(h.getPhoto_url().replace("max500", "max200"));
 		    		String jsonInString = mapper.writeValueAsString(h);
-					System.out.println(jsonInString);
-		    		//System.out.println(h);				
+					//System.out.println(jsonInString);
+		    		System.out.println(h);
+		    		//TODO load to db 
 		    	} catch (Exception e) {
 		    		errors++;
 		    		//System.err.println(e.getMessage());

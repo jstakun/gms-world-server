@@ -2,7 +2,7 @@ package net.gmsworld.server.etl;
 
 public class Hotel {
 	
-	private Long id;
+	private Long _id;
 	private String name;
 	private String address;
 	private String zip;
@@ -41,12 +41,12 @@ public class Hotel {
 	private Integer review_score;
 	private Integer review_nr;
 	
-	public Long getId() {
-		return id;
+	public Long get_id() {
+		return _id;
 	}
 	
-	public void setId(Long id) {
-		this.id = id;
+	public void set_id(Long id) {
+		this._id = id;
 	}
 	
 	public String getName() {
@@ -346,6 +346,6 @@ public class Hotel {
 	}
 	
 	public String toString() {
-		return getId() + ": " + getName();
+		return get_id() + ": " + getName();
 	}
 }
