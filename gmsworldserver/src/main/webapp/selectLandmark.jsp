@@ -18,9 +18,9 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <% if (hotelsMode) { %>
   <meta name="keywords" content="hotels, accommodation, hotel deals, compare hotels, hotel reviews, hotel photos" />
-  <title>Select location on the map and discover hotels around</title>
+  <title><bean:message key="hotels.header" /></title>
   <% } else { %>
-  <title>Select location on the map and discover landmarks around</title>
+  <title><bean:message key="landmarks.header" /></title>
   <% } %>
   <style type="text/css">
     html, body, #map_canvas { margin: 0; padding: 0; height: 100%; }
