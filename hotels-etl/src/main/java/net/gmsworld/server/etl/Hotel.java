@@ -348,4 +348,8 @@ public class Hotel {
 	public String toString() {
 		return get_id() + ": " + getName();
 	}
+	
+	public Double[] getLoc() {
+		return new Double[]{latitude, longitude};
+	}
 }

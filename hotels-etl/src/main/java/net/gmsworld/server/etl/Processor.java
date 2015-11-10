@@ -4,10 +4,15 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.utils.HttpUtils;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.supercsv.cellprocessor.Optional;
@@ -73,7 +78,8 @@ public class Processor {
 		    int count = 0;
 		    int errors = 0;
 		    ObjectMapper mapper = new ObjectMapper();
-    		while (true) {
+    		//for (int i=0;i<10;i++) {
+		    while (true) {
 		    	try {
 		    		h = beanReader.read(Hotel.class, header, processors);
 		    		if (h == null) {
@@ -82,10 +88,17 @@ public class Processor {
 		    		count++;
 		    		h.setHotel_url(h.getHotel_url() + "?aid=864525");
 		    		h.setPhoto_url(h.getPhoto_url().replace("max500", "max200"));
-		    		String jsonInString = mapper.writeValueAsString(h);
-					//System.out.println(jsonInString);
-		    		System.out.println(h);
-		    		//TODO load to db 
+		    		String json = mapper.writeValueAsString(h);
+					//System.out.println(json);
+		    		System.out.println("Uploading hotel " + h);
+		    		//load to db 		    		
+		    		try {
+    					URL cacheUrl = new URL("http://cache-gmsworld.rhcloud.com/camel/v1/cache/hotels");
+    					String resp = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, "POST", null, json, "application/json", Commons.getProperty(Property.RH_GMS_USER));
+    					System.out.println("Cache response: " + resp);
+    				} catch (Exception e) {
+    					e.printStackTrace();
+    				}
 		    	} catch (Exception e) {
 		    		errors++;
 		    		//System.err.println(e.getMessage());
