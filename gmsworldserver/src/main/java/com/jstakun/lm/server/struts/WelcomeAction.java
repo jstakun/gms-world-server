@@ -43,7 +43,7 @@ public class WelcomeAction extends org.apache.struts.action.Action {
 		//http://hotels.
         //http://landmarks.
         
-        logger.log(Level.INFO, "Received request to " + request.getRequestURL());
+        logger.log(Level.INFO, "Received request to " + request.getRequestURL() + " from locale " + request.getLocale().toString());
         
         if (StringUtils.startsWith(request.getRequestURL().toString(), "http://hotels.")) {
         	return mapping.findForward("hotels");
