@@ -344,4 +344,8 @@ public class Hotel {
 	public void setReview_nr(Integer review_nr) {
 		this.review_nr = review_nr;
 	}
+	
+	public String toString() {
+		return getId() + ": " + getName();
+	}
 }

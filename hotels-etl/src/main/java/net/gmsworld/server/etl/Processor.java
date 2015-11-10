@@ -4,9 +4,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Arrays;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.supercsv.cellprocessor.Optional;
 import org.supercsv.cellprocessor.ParseDouble;
 import org.supercsv.cellprocessor.ParseInt;
@@ -49,12 +52,15 @@ public class Processor {
 		    final String[] header = beanReader.getHeader(true);
 		    
 		    //filter columns
-		    //List<String> columnsToMap = Arrays.asList("name", "address", "id");
+		    List<String> columnsToMap = Arrays.asList("header_to_exclude");
 		    for (int i = 0; i < header.length; i++) {
 		    	System.out.print(header[i] + " ");
-		        //if (!columnsToMap.contains(header[i])) {
-		        //    header[i] = null;
-		        //}
+		    	if (header[i] != null && header[i].startsWith("desc_")) {
+		    		 header[i] = null;
+		    	}
+		    	if (columnsToMap.contains(header[i])) {
+		           
+		        }
 		    	if (header[i] != null && header[i].equals("class")) {
 		    		header[i] = "stars";
 		    	} 
@@ -63,15 +69,20 @@ public class Processor {
 		    Hotel h;
 		    int count = 0;
 		    int errors = 0;
-		    while (true) {
+		    ObjectMapper mapper = new ObjectMapper();
+    		while (true) {
 		    	try {
 		    		h = beanReader.read(Hotel.class, header, processors);
 		    		if (h == null) {
-		    			break;
-		    		} else {
-		    			count++;
-		    	    }	
-		    		System.out.println(h);
+						break;
+					}
+		    		count++;
+		    		h.setHotel_url(h.getHotel_url() + "?aid=864525");
+		    		h.setPhoto_url(h.getPhoto_url().replace("max500", "max200"));
+		    		String jsonInString = mapper.writeValueAsString(h);
+					System.out.println(jsonInString);
+		    		//System.out.println(h);
+					
 		    	} catch (Exception e) {
 		    		errors++;
 		    		//System.err.println(e.getMessage());
