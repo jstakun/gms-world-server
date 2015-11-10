@@ -81,8 +81,7 @@ public class Processor {
 		    		h.setPhoto_url(h.getPhoto_url().replace("max500", "max200"));
 		    		String jsonInString = mapper.writeValueAsString(h);
 					System.out.println(jsonInString);
-		    		//System.out.println(h);
-					
+		    		//System.out.println(h);				
 		    	} catch (Exception e) {
 		    		errors++;
 		    		//System.err.println(e.getMessage());
@@ -106,7 +105,7 @@ public class Processor {
 	private static final CellProcessor[] processors = new CellProcessor[] { 
             new ParseLong(), //id
             new NotNull(),   //name           
-            new NotNull(),   //address            
+            new Optional(),   //address            
             new Optional(),  //zip            
             new Optional(),  //city_hotel           
             new Optional(),  //cc1            
@@ -116,7 +115,7 @@ public class Processor {
             new Optional(new ParseDouble()), //minrate
             new Optional(new ParseDouble()), //maxrate
             new Optional(new ParseInt()),  //preffered
-            new ParseInt(), //nr_rooms
+            new Optional(new ParseInt()), //nr_rooms
             new ParseDouble(), //longitude 
             new ParseDouble(), //latitude
             new ParseInt(), //public_ranking         
