@@ -91,9 +91,9 @@ public class Processor {
 		    FeatureCollection featureCollection = new FeatureCollection();
 		    JuffrouBeanWrapper beanWrapper = new JuffrouBeanWrapper(BeanWrapperContext.create(HotelBean.class));
 		    
-		    //400000
-		    for (int i=0;i<100000;i++) {
-		    //while (true) {
+		    //max 400000, total 367885
+		    //for (int i=0;i<100000;i++) {
+		    while (true) {
 		    	try {
 		    		HotelBean h = beanReader.read(HotelBean.class, header, processors);
 		    		if (h == null) {
@@ -129,11 +129,7 @@ public class Processor {
 		    		//e.printStackTrace();
 		    	}		        
 		    }
-		    
-		    //if (errors > 0) {
-		    //	errors--; //remove end of file error
-		    //}
-		    
+		   
 		    if (batchSize > 0) {
     			saveBatchToDb(featureCollection);
     		}
