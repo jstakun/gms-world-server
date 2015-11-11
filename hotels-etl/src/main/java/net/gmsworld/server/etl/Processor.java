@@ -91,15 +91,15 @@ public class Processor {
 		    FeatureCollection featureCollection = new FeatureCollection();
 		    JuffrouBeanWrapper beanWrapper = new JuffrouBeanWrapper(BeanWrapperContext.create(HotelBean.class));
 		    
-		    //max 400000, total 367885
-		    //for (int i=0;i<100000;i++) {
-		    while (true) {
+		    //max 400000, total 368412
+		    for (int i=0;i<100000;i++) {
+		    //while (true) {
 		    	try {
+		    		count++;
 		    		HotelBean h = beanReader.read(HotelBean.class, header, processors);
 		    		if (h == null) {
 						break;
 					}
-		    		count++;
 		    		batchSize++;
 		    		h.setHotel_url(h.getHotel_url() + "?aid=864525");
 		    		h.setPhoto_url(h.getPhoto_url().replace("max500", "max200"));
