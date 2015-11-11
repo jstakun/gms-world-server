@@ -349,7 +349,7 @@ public class Hotel {
 		return get_id() + ": " + getName();
 	}
 	
-	public Double[] getLoc() {
-		return new Double[]{latitude, longitude};
-	}
+	//public Double[] getLoc() {
+	//	return new Double[]{longitude, latitude};
+	//}
 }

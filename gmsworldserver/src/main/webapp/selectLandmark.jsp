@@ -69,7 +69,7 @@
                 	zoomControlOptions: {
                     	position: google.maps.ControlPosition.RIGHT_BOTTOM
                 	},       
-                	streetViewControl: false,                                  
+                	//streetViewControl: false,                                  
        };
 
        map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);

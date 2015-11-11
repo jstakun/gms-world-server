@@ -101,7 +101,7 @@
             	zoomControlOptions: {
                 	position: google.maps.ControlPosition.RIGHT_BOTTOM
             	},       
-            	streetViewControl: false, 
+            	//streetViewControl: false, 
           });
 
           for (var i = 0; i < layers.length; i++) {
