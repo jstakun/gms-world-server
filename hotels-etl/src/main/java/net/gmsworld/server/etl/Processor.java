@@ -73,7 +73,7 @@ public class Processor {
 		    //filter columns
 		    List<String> columnsToMap = Arrays.asList("header_to_exclude");
 		    for (int i = 0; i < header.length; i++) {
-		    	System.out.print(header[i] + " ");
+		    	//System.out.print(header[i] + " ");
 		    	if (header[i] != null && header[i].startsWith("desc_")) {
 		    		header[i] = null;
 		    	}
@@ -91,7 +91,9 @@ public class Processor {
 		    FeatureCollection featureCollection = new FeatureCollection();
 		    JuffrouBeanWrapper beanWrapper = new JuffrouBeanWrapper(BeanWrapperContext.create(HotelBean.class));
 		    
-		    while (true) {
+		    //400000
+		    for (int i=0;i<100000;i++) {
+		    //while (true) {
 		    	try {
 		    		HotelBean h = beanReader.read(HotelBean.class, header, processors);
 		    		if (h == null) {
@@ -123,10 +125,14 @@ public class Processor {
 		    		
 		    	} catch (Exception e) {
 		    		errors++;
-		    		//System.err.println(e.getMessage());
-		    		e.printStackTrace();
+		    		System.err.println(e.getMessage());
+		    		//e.printStackTrace();
 		    	}		        
 		    }
+		    
+		    //if (errors > 0) {
+		    //	errors--; //remove end of file error
+		    //}
 		    
 		    if (batchSize > 0) {
     			saveBatchToDb(featureCollection);
@@ -202,7 +208,7 @@ public class Processor {
 		ObjectMapper mapper = new ObjectMapper();
 	    String json = mapper.writeValueAsString(featureCollection).replace("id", "_id");
 		
-	    System.out.println("Saving to db batch of " + featureCollection.getFeatures().size());
+	    System.out.println("Saving to db batch of " + featureCollection.getFeatures().size() + "...");
 		
 		//load to db 		    		
 	    try {
@@ -212,5 +218,6 @@ public class Processor {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	    System.out.println("Done.");
 	}
 }
