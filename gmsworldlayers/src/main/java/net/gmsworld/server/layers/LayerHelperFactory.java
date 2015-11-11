@@ -63,6 +63,8 @@ public class LayerHelperFactory {
 
     private static final HotelsCombinedUtils hotelsCombinedUtils = new HotelsCombinedUtils();
     
+    private static final HotelsBookingUtils hotelsBookingUtils = new HotelsBookingUtils();
+    
     private static final InstagramUtils instagramUtils = new InstagramUtils();
     
     private static final FreebaseUtils freebaseUtils = new FreebaseUtils();
@@ -247,6 +249,14 @@ public class LayerHelperFactory {
     public static HotelsCombinedUtils getHotelsCombinedUtils() {
     	hotelsCombinedUtils.setCacheProvider(cacheProvider);
     	return hotelsCombinedUtils;
+    }
+    
+    /**
+     * @return the hotelsBookingUtils
+     */
+    public static HotelsBookingUtils getHotelsBookingUtils() {
+    	hotelsBookingUtils.setCacheProvider(cacheProvider);
+    	return hotelsBookingUtils;
     }
     
     /**

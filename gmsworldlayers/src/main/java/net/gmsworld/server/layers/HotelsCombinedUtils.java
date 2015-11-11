@@ -177,10 +177,6 @@ public class HotelsCombinedUtils extends LayerHelper {
     	String url = "http://www.hotelscombined.com/Hotel/" + 
     	    hotel.getHotelFileName() + ".htm?a_aid=31803&languageCode=" + language + "&Mobile=1";
         landmark.setUrl(url);
-        if (hotel.getConsumerRating() > 0.0) {
-        	landmark.setRating(hotel.getConsumerRating());
-        }
-        landmark.setNumberOfReviews(hotel.getNumberOfReviews());
         
         landmark.setCategoryId(7);
         landmark.setSubCategoryId(129);

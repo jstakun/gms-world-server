@@ -1,8 +1,8 @@
-package net.gmsworld.server.etl;
+package net.gmsworld.server.utils.persistence;
 
-public class Hotel {
+public class HotelBean {
 	
-	private Long _id;
+	private Long id;
 	private String name;
 	private String address;
 	private String zip;
@@ -40,13 +40,18 @@ public class Hotel {
 	private Integer continent_id;
 	private Integer review_score;
 	private Integer review_nr;
+	private Long creationDate;
 	
-	public Long get_id() {
-		return _id;
+	public HotelBean() {
+		creationDate = System.currentTimeMillis();
 	}
 	
-	public void set_id(Long id) {
-		this._id = id;
+	public Long getId() {
+		return id;
+	}
+	
+	public void setId(Long id) {
+		this.id = id;
 	}
 	
 	public String getName() {
@@ -346,9 +351,12 @@ public class Hotel {
 	}
 	
 	public String toString() {
-		return get_id() + ": " + getName();
+		return getId() + ": " + getName();
 	}
 	
+	public Long getCreationDate() {
+		return creationDate;
+	}
 	//public Double[] getLoc() {
 	//	return new Double[]{longitude, latitude};
 	//}

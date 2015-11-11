@@ -34,7 +34,6 @@ import org.supercsv.io.ICsvBeanReader;
 import org.supercsv.prefs.CsvPreference;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 
 public class Processor {
 
@@ -80,20 +79,17 @@ public class Processor {
 		    	if (header[i] != null && header[i].equals("class")) {
 		    		header[i] = "stars";
 		    	}
-		    	if (header[i] != null && header[i].equals("id")) {
-		    		header[i] = "_id";
-		    	}
 		    }
 
 		    int count = 0;
 		    int errors = 0;
 		    FeatureCollection featureCollection = new FeatureCollection();
-		    JuffrouBeanWrapper beanWrapper = new JuffrouBeanWrapper(BeanWrapperContext.create(Hotel.class));
+		    JuffrouBeanWrapper beanWrapper = new JuffrouBeanWrapper(BeanWrapperContext.create(HotelBean.class));
 		    
-		    for (int i=0;i<10;i++) {
+		    for (int i=0;i<1000;i++) {
 		    //while (true) {
 		    	try {
-		    		Hotel h = beanReader.read(Hotel.class, header, processors);
+		    		HotelBean h = beanReader.read(HotelBean.class, header, processors);
 		    		if (h == null) {
 						break;
 					}
@@ -104,16 +100,15 @@ public class Processor {
 		    		Feature f = new Feature();
 	    			Point p = new Point();
 	    			p.setCoordinates(new LngLatAlt(h.getLongitude(), h.getLatitude()));
+	    			h.setLatitude(null);
+	    			h.setLongitude(null);
 	    			f.setGeometry(p);	    			
-		    		//f.setId(Long.toString(h.get_id()));
+		    		f.setId(Long.toString(h.getId()));
 		    		
 		    		Map<String, Object> properties = getBeanMap(h, beanWrapper);
 		    		f.setProperties(properties);
 		    		
 		    		featureCollection.add(f);
-		    		//String json = mapper.writeValueAsString(h);
-					//System.out.println(json);
-		    		//System.out.println(h);		    		
 		    	} catch (Exception e) {
 		    		errors++;
 		    		//System.err.println(e.getMessage());
@@ -122,17 +117,17 @@ public class Processor {
 		    }
 		    
 		    ObjectMapper mapper = new ObjectMapper();
-		    String json = mapper.writeValueAsString(featureCollection);
-			System.out.println("Generated json:\n" + json);
+		    String json = mapper.writeValueAsString(featureCollection).replace("id", "_id");
+			//System.out.println("Generated json:\n" + json);
     		
     		//load to db 		    		
-		    /*try {
+		    try {
 		    	URL cacheUrl = new URL("http://cache-gmsworld.rhcloud.com/camel/v1/cache/multi/hotels");
 				String resp = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, "POST", null, json, "application/json", Commons.getProperty(Property.RH_GMS_USER));
 				System.out.println("Cache response: " + resp);
 			} catch (Exception e) {
 				e.printStackTrace();
-			}*/
+			}
 		    
 		    System.out.println("Processed " + count + " records with " + errors + " errors.");
 
