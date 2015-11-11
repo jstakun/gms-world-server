@@ -55,7 +55,7 @@ public class HotelsBookingServlet extends HttpServlet {
         	String city = request.getParameter("city");
         	if (StringUtils.isNotEmpty(cc) && StringUtils.isNotEmpty(city)) {
         	
-        		String normalizedCity = city.toLowerCase(Locale.US).replaceAll(" ", "-");
+        		String normalizedCity = city.toLowerCase(Locale.US).replaceAll("_", "-");
         		if (normalizedCity.equals("new-york-city")) {
         			normalizedCity = "new-york";
         		} else if (normalizedCity.endsWith("buenos-aires")) {
@@ -73,7 +73,7 @@ public class HotelsBookingServlet extends HttpServlet {
         			    bookingUrl = null;
         			    
         			    //hotelscombined
-        			    bookingUrl = "https://www.hotelscombined.com/Place/" + city.replace(" ", "_") + ".htm?a_aid=31803";
+        			    bookingUrl = "https://www.hotelscombined.com/Place/" + city + ".htm?a_aid=31803";
         			    String resp = HttpUtils.processFileRequest(new URL(bookingUrl));
         			    
         			    responseCode = HttpUtils.getResponseCode(bookingUrl);
