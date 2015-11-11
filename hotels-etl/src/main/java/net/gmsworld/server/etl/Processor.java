@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Type;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -33,9 +34,12 @@ import org.supercsv.io.CsvBeanReader;
 import org.supercsv.io.ICsvBeanReader;
 import org.supercsv.prefs.CsvPreference;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Processor {
+	
+	private static final int BATCH_SIZE = 1000;
 
 	public static void main(String[] args) throws IOException {
 		if (args.length != 2) {
@@ -83,17 +87,18 @@ public class Processor {
 
 		    int count = 0;
 		    int errors = 0;
+		    int batchSize = 0;
 		    FeatureCollection featureCollection = new FeatureCollection();
 		    JuffrouBeanWrapper beanWrapper = new JuffrouBeanWrapper(BeanWrapperContext.create(HotelBean.class));
 		    
-		    for (int i=0;i<1000;i++) {
-		    //while (true) {
+		    while (true) {
 		    	try {
 		    		HotelBean h = beanReader.read(HotelBean.class, header, processors);
 		    		if (h == null) {
 						break;
 					}
 		    		count++;
+		    		batchSize++;
 		    		h.setHotel_url(h.getHotel_url() + "?aid=864525");
 		    		h.setPhoto_url(h.getPhoto_url().replace("max500", "max200"));
 		    		
@@ -109,6 +114,13 @@ public class Processor {
 		    		f.setProperties(properties);
 		    		
 		    		featureCollection.add(f);
+		    		
+		    		if (batchSize == BATCH_SIZE) {
+		    			saveBatchToDb(featureCollection);
+		    			featureCollection.setFeatures(new ArrayList<Feature>());
+		    			batchSize = 0;
+		    		}
+		    		
 		    	} catch (Exception e) {
 		    		errors++;
 		    		//System.err.println(e.getMessage());
@@ -116,18 +128,9 @@ public class Processor {
 		    	}		        
 		    }
 		    
-		    ObjectMapper mapper = new ObjectMapper();
-		    String json = mapper.writeValueAsString(featureCollection).replace("id", "_id");
-			//System.out.println("Generated json:\n" + json);
-    		
-    		//load to db 		    		
-		    try {
-		    	URL cacheUrl = new URL("http://cache-gmsworld.rhcloud.com/camel/v1/cache/multi/hotels");
-				String resp = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, "POST", null, json, "application/json", Commons.getProperty(Property.RH_GMS_USER));
-				System.out.println("Cache response: " + resp);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+		    if (batchSize > 0) {
+    			saveBatchToDb(featureCollection);
+    		}
 		    
 		    System.out.println("Processed " + count + " records with " + errors + " errors.");
 
@@ -193,5 +196,21 @@ public class Processor {
 	        beanMap.put(propertyName, beanWrapper.getValue(propertyName));
 		}
 	    return beanMap;
+	}
+	
+	private static void saveBatchToDb(FeatureCollection featureCollection) throws JsonProcessingException {
+		ObjectMapper mapper = new ObjectMapper();
+	    String json = mapper.writeValueAsString(featureCollection).replace("id", "_id");
+		
+	    System.out.println("Saving to db batch of " + featureCollection.getFeatures().size());
+		
+		//load to db 		    		
+	    try {
+	    	URL cacheUrl = new URL("http://cache-gmsworld.rhcloud.com/camel/v1/cache/multi/hotels");
+			String resp = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, "POST", null, json, "application/json", Commons.getProperty(Property.RH_GMS_USER));
+			System.out.println("Cache response: " + resp);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
