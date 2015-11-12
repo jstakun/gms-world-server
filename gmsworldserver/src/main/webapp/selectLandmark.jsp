@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="org.apache.commons.lang.StringUtils,
-                 com.jstakun.lm.server.utils.HtmlUtils" %>
+                 com.jstakun.lm.server.utils.HtmlUtils,
+                 net.gmsworld.server.config.Commons" %>
 <%@ taglib uri="http://struts.apache.org/tags-bean" prefix="bean"%>                 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%
@@ -23,9 +24,55 @@
   <title><bean:message key="landmarks.header" /></title>
   <% } %>
   <style type="text/css">
-    html, body, #map_canvas { margin: 0; padding: 0; height: 100%; }
+    html, body, #map_canvas { 
+    	margin: 0; 
+    	padding: 0; 
+    	height: 100%; 
+    }
+    
+    .controls {
+  		margin-top: 10px;
+  		border: 1px solid transparent;
+  		border-radius: 2px 0 0 2px;
+  		box-sizing: border-box;
+  		-moz-box-sizing: border-box;
+  		height: 32px;
+  		outline: none;
+  		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+	}
+
+	#pac-input {
+  		background-color: #fff;
+  		font-family: Roboto,Arial,sans-serif;
+  		font-size: 16px;
+  		font-weight: 300;
+  		margin-left: 12px;
+  		padding: 0 11px 0 13px;
+  		text-overflow: ellipsis;
+  		width: 300px;
+	}
+
+	#pac-input:focus {
+  		border-color: #4d90fe;
+	}
+
+	.pac-container {
+  		font-family: Roboto,Arial,sans-serif;
+	}
+
+	#type-selector {
+  		color: #fff;
+  		background-color: #4d90fe;
+  		padding: 5px 11px 0px 11px;
+	}
+
+	#type-selector label {
+  		font-family: Roboto,Arial,sans-serif;
+  		font-size: 16px;
+  		font-weight: 300;	
+	}  
   </style>
-  <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js">
+  <script src="https://maps.googleapis.com/maps/api/js?key=<%= Commons.getProperty(Commons.Property.GOOGLE_API_KEY) %>&libraries=places&callback=initialize" async defer>
   </script>
   <script src="/js/jquery.min.js"></script>
   <script type="text/javascript">
@@ -139,6 +186,28 @@
 
 	   topLocationsDiv.index = 3
 	   map.controls[google.maps.ControlPosition.RIGHT_TOP].push(topLocationsDiv);	   
+
+	   //search box
+	   var input = document.getElementById('pac-input');
+	   var searchBox = new google.maps.places.SearchBox(input);
+	   map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+	   map.addListener('bounds_changed', function() {
+	     	searchBox.setBounds(map.getBounds());
+	   });
+
+	   searchBox.addListener('places_changed', function() {
+		    var places = searchBox.getPlaces();
+
+		    if (places.length == 0) {
+		      return;
+		    }
+
+		    console.log('Selected place: ' + places[0].name + ' - ' + places[0].geometry.location);
+
+            map.setCenter(places[0].geometry.location);
+		    //proceedWithSelectedLocation(places[0].geometry.location.lat(), places[0].geometry.location.lng(), places[0].name);
+	   });	    	   
    }
 
    function CenterControl(controlDiv, map, center, text) {
@@ -147,7 +216,7 @@
        var controlUI = document.createElement('div');
        controlUI.style.backgroundColor = '#fff';
        controlUI.style.border = '2px solid #fff';
-       controlUI.style.borderRadius = '3px';
+       controlUI.style.borderRadius = '2px';
        controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
        controlUI.style.cursor = 'pointer';
        controlUI.style.marginTop = '10px';
@@ -254,10 +323,11 @@
 		});
 	}    
 
-   google.maps.event.addDomListener(window, 'load', initialize);
+    //google.maps.event.addDomListener(window, 'load', initialize);
   </script>
 </head>
 <body>
+    <input id="pac-input" class="controls" type="text" placeholder="Search">
 	<div id="map_canvas"></div>
     <div id="status" style="color:black;font-family:Roboto,Arial,sans-serif;font-size:16px;line-height:32px;padding-left:4px;padding-right:4px"></div>
 </body>
