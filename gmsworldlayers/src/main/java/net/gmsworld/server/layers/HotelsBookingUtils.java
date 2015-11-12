@@ -17,9 +17,6 @@ import net.gmsworld.server.utils.persistence.HotelBean;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.geojson.Feature;
-import org.geojson.FeatureCollection;
-import org.geojson.GeoJsonObject;
-import org.geojson.LngLatAlt;
 import org.geojson.Point;
 import org.json.JSONArray;
 
@@ -34,7 +31,7 @@ import com.openlapi.QualifiedCoordinates;
 
 public class HotelsBookingUtils extends LayerHelper {
 
-	private static final String HOTELS_PROVIDER_URL = "http://cache-gmsworld.rhcloud.com/camel/v1/cache/hotels/nearby/"; 
+	private static final String HOTELS_PROVIDER_URL = "http://hotels-gmsworldatoso.rhcloud.com/camel/v1/cache/hotels/nearby/"; 
 			
 	@Override
 	protected List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale, boolean useCache) throws Exception {

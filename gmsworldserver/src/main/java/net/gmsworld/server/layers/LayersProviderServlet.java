@@ -441,18 +441,17 @@ public class LayersProviderServlet extends HttpServlet {
                 if (HttpUtils.isEmptyAny(request, "latitudeMin", "longitudeMin")) { //, "latitudeMax", "longitudeMax")) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 } else {
-                    if (outFormat.equals(Format.BIN)) {
-                    	List<ExtendedLandmark> landmarks = LayerHelperFactory.getHotelsCombinedUtils().processBinaryRequest(latitudeMin, longitudeMin, null, radius, version, limit, stringLimit, language, null, l, false);
-                    	LayerHelperFactory.getHotelsCombinedUtils().serialize(landmarks, response.getOutputStream(), version);
-                    	LayerHelperFactory.getHotelsCombinedUtils().cacheGeoJson(landmarks, latitude, longitude, Commons.HOTELS_LAYER);                          
+                	List<ExtendedLandmark> landmarks = LayerHelperFactory.getHotelsBookingUtils().processBinaryRequest(latitudeMin, longitudeMin, null, radius, version, limit, stringLimit, language, null, l, false);
+                	if (outFormat.equals(Format.BIN)) {
+                    	LayerHelperFactory.getHotelsBookingUtils().serialize(landmarks, response.getOutputStream(), version);
+                    	LayerHelperFactory.getHotelsBookingUtils().cacheGeoJson(landmarks, latitude, longitude, Commons.HOTELS_LAYER);                          
                     } else {
-                		String flex2 = null;
-
-                        if (version <= 2) {
-                            flex2 = Double.toString(latitudeMax) + "_" + Double.toString(longitudeMax);
-                        }
-
-                		outString = LayerHelperFactory.getHotelsCombinedUtils().processRequest(latitudeMin, longitudeMin, null, radius, version, limit, stringLimit, language, flex2).toString();
+                		//String flex2 = null;
+                        //if (version <= 2) {
+                        //    flex2 = Double.toString(latitudeMax) + "_" + Double.toString(longitudeMax);
+                        //}
+                		//outString = LayerHelperFactory.getHotelsBookingUtils().processRequest(latitudeMin, longitudeMin, null, radius, version, limit, stringLimit, language, flex2).toString();
+                		outString = new JSONObject().put("ResultSet", landmarks).toString();
                     }
                 }
             } else if (StringUtils.contains(uri, "twitterProvider")) {
@@ -619,7 +618,6 @@ public class LayersProviderServlet extends HttpServlet {
         LayerHelperFactory.setThreadProvider(new GoogleThreadProvider());
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /** 
      * Handles the HTTP <code>GET</code> method.
      * @param request servlet request
@@ -653,5 +651,5 @@ public class LayersProviderServlet extends HttpServlet {
     @Override
     public String getServletInfo() {
         return "Layers provider servlet";
-    }// </editor-fold>
+    }
 }

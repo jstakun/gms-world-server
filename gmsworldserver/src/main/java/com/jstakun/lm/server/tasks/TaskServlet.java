@@ -79,6 +79,7 @@ public class TaskServlet extends HttpServlet {
                 } else if (action.equalsIgnoreCase("rhcloud")) {
                 	rhcloudHealthCheck("hotels", "http://hotels-gmsworld.rhcloud.com/snoop.jsp");
                 	rhcloudHealthCheck("landmarks", "http://landmarks-gmsworld.rhcloud.com/snoop.jsp");
+                	rhcloudHealthCheck("cache", "http://cache-gmsworld.rhcloud.com/snoop.jsp");
                 	logger.log(Level.INFO, "Done");
                 } else {
                     logger.log(Level.SEVERE, "Wrong parameter action: {0}", action);

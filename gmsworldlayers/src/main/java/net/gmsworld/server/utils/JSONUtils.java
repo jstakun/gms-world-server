@@ -255,10 +255,10 @@ public class JSONUtils {
     	
         String line = "";
     	if (address.getField(AddressInfo.CITY) != null) {
-            line += address.getField(AddressInfo.CITY) + ", ";
+            line += address.getField(AddressInfo.CITY);
         }
     	if (address.getField(AddressInfo.STATE) != null) {
-            line += address.getField(AddressInfo.STATE);
+            line += ", " + address.getField(AddressInfo.STATE);
             if (address.getField(AddressInfo.POSTAL_CODE) != null) {
                 line += " " + address.getField(AddressInfo.POSTAL_CODE);
             }

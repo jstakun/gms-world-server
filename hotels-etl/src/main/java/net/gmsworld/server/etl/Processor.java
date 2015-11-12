@@ -39,7 +39,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Processor {
 	
-	private static final int BATCH_SIZE = 1000;
+	private static final String HOTELS_PROVIDER_URL = "http://hotels-gmsworldatoso.rhcloud.com/camel/v1/cache/multi/hotels"; 
+	private static final int BATCH_SIZE = 2000;
+	private static final int TOTAL_SIZE = 100000; //max 400000, total 368412
+	private static final int FIRST = 300000;
 
 	public static void main(String[] args) throws IOException {
 		if (args.length != 2) {
@@ -91,8 +94,18 @@ public class Processor {
 		    FeatureCollection featureCollection = new FeatureCollection();
 		    JuffrouBeanWrapper beanWrapper = new JuffrouBeanWrapper(BeanWrapperContext.create(HotelBean.class));
 		    
-		    //max 400000, total 368412
-		    for (int i=0;i<100000;i++) {
+		    if (FIRST > 0) {
+		    	for (int i=0;i<FIRST;i++) {
+		    		try {
+		    			HotelBean h = beanReader.read(HotelBean.class, header, processors);
+		    		} catch (Exception e) {
+		    			
+		    		}
+		    	}
+		    }
+		    System.out.println("Skipped " + FIRST + " records.");
+		    
+		    for (int i=0;i<TOTAL_SIZE;i++) {
 		    //while (true) {
 		    	try {
 		    		count++;
@@ -121,6 +134,7 @@ public class Processor {
 		    			saveBatchToDb(featureCollection);
 		    			featureCollection.setFeatures(new ArrayList<Feature>());
 		    			batchSize = 0;
+		    			System.out.println("Processed " + count + " records ...");
 		    		}
 		    		
 		    	} catch (Exception e) {
@@ -208,7 +222,7 @@ public class Processor {
 		
 		//load to db 		    		
 	    try {
-	    	URL cacheUrl = new URL("http://cache-gmsworld.rhcloud.com/camel/v1/cache/multi/hotels");
+	    	URL cacheUrl = new URL(HOTELS_PROVIDER_URL);
 			String resp = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, "POST", null, json, "application/json", Commons.getProperty(Property.RH_GMS_USER));
 			System.out.println("Cache response: " + resp);
 		} catch (Exception e) {

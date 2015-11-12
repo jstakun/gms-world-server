@@ -246,10 +246,10 @@ public class LayerHelperFactory {
     /**
      * @return the hotelsCombinedUtils
      */
-    public static HotelsCombinedUtils getHotelsCombinedUtils() {
-    	hotelsCombinedUtils.setCacheProvider(cacheProvider);
-    	return hotelsCombinedUtils;
-    }
+    //public static HotelsCombinedUtils getHotelsCombinedUtils() {
+    //	hotelsCombinedUtils.setCacheProvider(cacheProvider);
+    //	return hotelsCombinedUtils;
+    //}
     
     /**
      * @return the hotelsBookingUtils
@@ -347,7 +347,7 @@ public class LayerHelperFactory {
     	} else if (StringUtils.equals(name, Commons.EXPEDIA_LAYER)) {
             return getExpediaUtils();
     	} else if (StringUtils.equals(name, Commons.HOTELS_LAYER)) {
-            return getHotelsCombinedUtils();
+            return getHotelsBookingUtils();
     	} else if (StringUtils.equals(name, Commons.INSTAGRAM_LAYER)) {
             return getInstagramUtils();
     	} else if (StringUtils.equals(name, Commons.FREEBASE_LAYER)) {
