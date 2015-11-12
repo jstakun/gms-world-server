@@ -36,7 +36,7 @@
   		border-radius: 2px 0 0 2px;
   		box-sizing: border-box;
   		-moz-box-sizing: border-box;
-  		height: 32px;
+  		height: 26px;
   		outline: none;
   		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 	}
@@ -232,7 +232,7 @@
        controlText.style.color = 'rgb(25,25,25)';
        controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
        controlText.style.fontSize = '16px';
-       controlText.style.lineHeight = '32px';
+       controlText.style.lineHeight = '24px';
        controlText.style.paddingLeft = '4px';
        controlText.style.paddingRight = '4px';
        controlText.innerHTML = text;
