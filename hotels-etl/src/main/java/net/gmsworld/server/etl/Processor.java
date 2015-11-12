@@ -42,7 +42,7 @@ public class Processor {
 	private static final String HOTELS_PROVIDER_URL = "http://hotels-gmsworldatoso.rhcloud.com/camel/v1/cache/multi/hotels"; 
 	private static final int BATCH_SIZE = 2000;
 	private static final int TOTAL_SIZE = 100000; //max 400000, total 368412
-	private static final int FIRST = 300000;
+	private static final int FIRST = 0;
 
 	public static void main(String[] args) throws IOException {
 		if (args.length != 2) {
@@ -207,8 +207,8 @@ public class Processor {
 	    Map<String, Object> beanMap = new HashMap<String, Object>();
 	    beanWrapper.setBean(bean);
 	    for(String propertyName : beanWrapper.getPropertyNames()) {
-	    	//Type type = beanWrapper.getType(propertyName);
-	    	//System.out.println("Setting " + type + ": " + beanWrapper.getValue(propertyName));
+	    	Type type = beanWrapper.getType(propertyName);
+	    	System.out.println("Setting " + type + " " + propertyName + ": " + beanWrapper.getValue(propertyName));
 	        beanMap.put(propertyName, beanWrapper.getValue(propertyName));
 		}
 	    return beanMap;

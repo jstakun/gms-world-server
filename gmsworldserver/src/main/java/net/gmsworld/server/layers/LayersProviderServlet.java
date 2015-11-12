@@ -441,7 +441,7 @@ public class LayersProviderServlet extends HttpServlet {
                 if (HttpUtils.isEmptyAny(request, "latitudeMin", "longitudeMin")) { //, "latitudeMax", "longitudeMax")) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 } else {
-                	List<ExtendedLandmark> landmarks = LayerHelperFactory.getHotelsBookingUtils().processBinaryRequest(latitudeMin, longitudeMin, null, radius, version, limit, stringLimit, language, null, l, false);
+                	List<ExtendedLandmark> landmarks = LayerHelperFactory.getHotelsBookingUtils().processBinaryRequest(latitudeMin, longitudeMin, null, radius * 1000, version, limit, stringLimit, language, null, l, false);
                 	if (outFormat.equals(Format.BIN)) {
                     	LayerHelperFactory.getHotelsBookingUtils().serialize(landmarks, response.getOutputStream(), version);
                     	LayerHelperFactory.getHotelsBookingUtils().cacheGeoJson(landmarks, latitude, longitude, Commons.HOTELS_LAYER);                          

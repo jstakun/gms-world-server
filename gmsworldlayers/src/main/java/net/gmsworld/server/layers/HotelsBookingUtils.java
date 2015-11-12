@@ -64,6 +64,10 @@ public class HotelsBookingUtils extends LayerHelper {
     				Point geometry = (Point)feature.getGeometry(); 
     				h.setLatitude(geometry.getCoordinates().getLatitude());
     				h.setLongitude(geometry.getCoordinates().getLongitude());
+    				if (h.getReview_nr() == 1 && h.getReview_score() == 1) {
+    					h.setReview_nr(null);
+    					h.setReview_score(null);
+    				}
     				hotels.add(h);
     			}
     		} catch (Exception e) {

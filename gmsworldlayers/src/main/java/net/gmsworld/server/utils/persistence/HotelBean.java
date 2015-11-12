@@ -357,7 +357,9 @@ public class HotelBean {
 	public Long getCreationDate() {
 		return creationDate;
 	}
-	//public Double[] getLoc() {
-	//	return new Double[]{longitude, latitude};
-	//}
+	
+	public void setCreationDate(Long creationDate) {
+		this.creationDate = creationDate;
+	}
+	
 }
