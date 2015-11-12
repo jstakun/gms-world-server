@@ -36,7 +36,7 @@
   		border-radius: 2px 0 0 2px;
   		box-sizing: border-box;
   		-moz-box-sizing: border-box;
-  		height: 26px;
+  		height: 28px;
   		outline: none;
   		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 	}
@@ -134,7 +134,7 @@
     		    position: {lat: topcities[i].lat, lng: topcities[i].lng},
     		    map: map,
     		    title: topcities[i].name,
-    		    icon: '/images/redstar.png',
+    		    icon: '/images/ok.png',
     		    desc: desc
     		});   		
     	    google.maps.event.addListener(marker, 'click', function() {
@@ -182,7 +182,7 @@
 	   map.controls[google.maps.ControlPosition.LEFT_CENTER].push(shareControlDiv);
 
 	   var topLocationsDiv = document.createElement('div');
-	   var topLocationsControl = new CenterControl(topLocationsDiv, map, latlng, '<img src=\'/images/redstar.png\' style=\'width:24px; height:24px; vertical-align: middle;\'><span style=\'line-height:24px;\'>&nbsp;<bean:message key="hotels.top.destinations" /></span>');
+	   var topLocationsControl = new CenterControl(topLocationsDiv, map, latlng, '<img src=\'/images/ok.png\' style=\'width:24px; height:24px; vertical-align: middle;\'><span style=\'line-height:24px;\'>&nbsp;<bean:message key="hotels.top.destinations" /></span>');
 
 	   topLocationsDiv.index = 3
 	   map.controls[google.maps.ControlPosition.RIGHT_TOP].push(topLocationsDiv);	   
@@ -232,7 +232,7 @@
        controlText.style.color = 'rgb(25,25,25)';
        controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
        controlText.style.fontSize = '16px';
-       controlText.style.lineHeight = '24px';
+       controlText.style.lineHeight = '26px';
        controlText.style.paddingLeft = '4px';
        controlText.style.paddingRight = '4px';
        controlText.innerHTML = text;
@@ -327,8 +327,8 @@
   </script>
 </head>
 <body>
-    <input id="pac-input" class="controls" type="text" placeholder="Search">
+    <input id="pac-input" class="controls" type="text" placeholder="<bean:message key="landmarks.search" />">
 	<div id="map_canvas"></div>
-    <div id="status" style="color:black;font-family:Roboto,Arial,sans-serif;font-size:16px;line-height:32px;padding-left:4px;padding-right:4px"></div>
+    <div id="status" style="color:black;font-family:Roboto,Arial,sans-serif;font-size:16px;line-height:28px;padding-left:4px;padding-right:4px"></div>
 </body>
 </html>
