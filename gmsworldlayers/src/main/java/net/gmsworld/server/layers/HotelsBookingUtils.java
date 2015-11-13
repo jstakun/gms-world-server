@@ -109,6 +109,9 @@ public class HotelsBookingUtils extends LayerHelper {
         if (hotel.getMinrate() > 0.0) {
             Deal deal = new Deal(hotel.getMinrate(), -1, -1, null, hotel.getCurrencycode());
             landmark.setDeal(deal);
+        } else if (hotel.getMaxrate() > 0.0) {
+        	Deal deal = new Deal(hotel.getMaxrate(), -1, -1, null, hotel.getCurrencycode());
+            landmark.setDeal(deal);	
         }
         tokens.put("star_rating", Double.toString(hotel.getStars()));
 

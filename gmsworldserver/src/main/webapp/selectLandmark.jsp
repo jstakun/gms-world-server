@@ -200,11 +200,16 @@
 		    var places = searchBox.getPlaces();
 
 		    if (places.length == 0) {
-		      return;
-		    }
+			    showStatus('<bean:message key="landmarks.notfound" />');
+		    	console.log('No matching place found!');
+		     	return;
+		    } else if (places.length > 1) {
+		    	console.log('Found ' + places.length + ' places. First one will be selected...');
+			}
 
 		    console.log('Selected place: ' + places[0].name + ' - ' + places[0].geometry.location);
 
+		    map.setZoom(10);
             map.setCenter(places[0].geometry.location);
 		    //proceedWithSelectedLocation(places[0].geometry.location.lat(), places[0].geometry.location.lng(), places[0].name);
 	   });	    	   
