@@ -72,8 +72,6 @@
   		font-weight: 300;	
 	}  
   </style>
-  <script src="https://maps.googleapis.com/maps/api/js?key=<%= Commons.getProperty(Commons.Property.GOOGLE_API_KEY) %>&libraries=places&callback=initialize" async defer>
-  </script>
   <script src="/js/jquery.min.js"></script>
   <script type="text/javascript">
     jQuery.fn.center = function () {
@@ -329,6 +327,9 @@
 	}    
 
     //google.maps.event.addDomListener(window, 'load', initialize);
+  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?libraries=places&callback=initialize" async defer> 
+    //key=
   </script>
 </head>
 <body>
