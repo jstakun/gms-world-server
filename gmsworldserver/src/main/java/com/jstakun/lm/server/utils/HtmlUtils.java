@@ -83,10 +83,11 @@ public class HtmlUtils {
 		}
 		desc += "Posted " + prettyTime.format(landmark.getCreationDate()) + " on " + DateUtils.getFormattedDateTime(locale, landmark.getCreationDate()) + " by <a href=\"" + userUrl + "\">" + UrlUtils.createUsernameMask(landmark.getUsername()) + "</a>&nbsp;" + 
         "| Created in layer <a href=\"" + layerUrl + "\">" + LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer()) + "</a> using <a href=\"" + ConfigurationManager.getAppUrl(landmark.getAppId()) + "\" target=\"_blank\">" +  ConfigurationManager.getAppName(landmark.getAppId()) + "</a>";
-        String bookingUrl = "/bookingProvider/" + landmark.getId();
-        if (StringUtils.isNotEmpty(landmark.getCity()) && StringUtils.isNotEmpty(landmark.getCountryCode())) {
-        	bookingUrl += "/" + landmark.getCountryCode().toLowerCase(Locale.US) + "/" + landmark.getCity().replace(' ', '_');
-        }
+		String bookingUrl = "/showLandmark/" + landmark.getId() + "?enabled=Hotels&fullScreenLandmarkMap=true";
+		//String bookingUrl = "/bookingProvider/" + landmark.getId();
+        //if (StringUtils.isNotEmpty(landmark.getCity()) && StringUtils.isNotEmpty(landmark.getCountryCode())) {
+        //	bookingUrl += "/" + landmark.getCountryCode().toLowerCase(Locale.US) + "/" + landmark.getCity().replace(' ', '_');
+        //}
 		desc += "<br/><b><a href=\"" + bookingUrl + "\" target=\"_blank\">Book hotel room nearby!</a></b>" 
 			 + HtmlUtils.getStatusImage(landmark.getUseCount());
 		
