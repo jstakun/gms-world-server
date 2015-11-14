@@ -150,6 +150,10 @@
           			if (url == null || ismobile) {
 						url = results.features[i].properties.mobile_url
                   	}
+                  	var icon = image;
+                  	if (results.features[i].properties.icon != null) {
+						icon = '/images/layers/' + results.features[i].properties.icon;
+                    }
           			if (desc != null) {
                         desc =  '<span style=\"font-family:Cursive;font-size:14px;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;\">' + 
                                 '<strong>' + name + '</strong><br/>' + desc + 
@@ -160,7 +164,7 @@
            				position: latLng,
             			title: name,
             			map: map,
-            			icon: image,
+            			icon: icon,
             			url: url, 
             			desc: desc
           			}); 

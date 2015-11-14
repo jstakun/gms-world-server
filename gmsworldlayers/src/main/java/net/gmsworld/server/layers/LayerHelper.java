@@ -196,16 +196,22 @@ public abstract class LayerHelper {
     				String desc = StringUtils.replace(landmark.getDescription(), "star_blue", "/images/star_blue.png");
     				if (desc.contains("star_0")) {
     					desc = StringUtils.replace(desc, "star_0", "/images/star_0.png");
-    				} else if (desc.contains("star_1")) {
+    					f.setProperty("icon", "star_0.png"); 
+        			} else if (desc.contains("star_1")) {
     					desc = StringUtils.replace(desc, "star_1", "/images/star_1.png");
+    					f.setProperty("icon", "star_1.png");
     				} else if (desc.contains("star_2")) {
     					desc = StringUtils.replace(desc, "star_2", "/images/star_2.png");
+    					f.setProperty("icon", "star_2.png");
     				} else if (desc.contains("star_3")) {
     					desc = StringUtils.replace(desc, "star_3", "/images/star_3.png");
+    					f.setProperty("icon", "star_3.png");
     				} else if (desc.contains("star_4")) {
     					desc = StringUtils.replace(desc, "star_4", "/images/star_4.png");
+    					f.setProperty("icon", "star_4.png");
     				} else if (desc.contains("star_5")) {
     					desc = StringUtils.replace(desc, "star_5", "/images/star_5.png");
+    					f.setProperty("icon", "star_5.png");
     				}	
     				desc += "<br/><a href=\"" + landmark.getUrl() + "\">Go to booking page</a>";
     				f.setProperty("desc", desc);
