@@ -34,9 +34,13 @@ public class HotelsBookingUtils extends LayerHelper {
 	private static final String HOTELS_PROVIDER_URL = "http://hotels-gmsworldatoso.rhcloud.com/camel/v1/cache/hotels/nearby/"; 
 			
 	@Override
-	protected List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale, boolean useCache) throws Exception {
+	protected List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int r, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale, boolean useCache) throws Exception {
+		int normalizedRadius = r;
+		if (r < 1000) {
+			normalizedRadius = r * 1000;
+		}	
 		List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
-		String hotelsUrl = HOTELS_PROVIDER_URL + lat + "/" + lng + "/" + radius + "/" + limit;			
+		String hotelsUrl = HOTELS_PROVIDER_URL + lat + "/" + lng + "/" + normalizedRadius + "/" + limit;			
         logger.log(Level.INFO, "Calling: " + hotelsUrl);
         String hotelsJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER));
 		List<HotelBean> hotels = jsonToHotelList(hotelsJson);
