@@ -57,7 +57,7 @@
   	})
   	.error(function(jqXHR, textStatus, errorThrown){ /* assign handler */
   		    $( 'div' ).remove();   
-	  		$( 'body' ).append("<p>Error occured: " + errorThrown + "</p>");
+	  		$( 'body' ).append("<p>Error occured: " + errorThrown + "</p><a href=\"#\" onclick=\"history.go(-1)\">Please try again.</>");
 	  		console.log("Error occured: " + errorThrown);
   	    	alert("Error occured!");
   	});
