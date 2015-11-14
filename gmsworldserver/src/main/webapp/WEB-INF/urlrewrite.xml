@@ -200,6 +200,11 @@
     </rule>
     
     <rule>
+            <from>^/hotels/([0-9.-]+)/([0-9.-]+)/([0-9.-]+)$</from>
+            <to>/selectLandmark.jsp?generatetoken=true&amp;hotels=true&amp;lat=$1&amp;lng=$2&amp;zoom=$3</to>
+    </rule>
+    
+    <rule>
             <from>^/hotels</from>
             <to>/selectLandmark.jsp?generatetoken=true&amp;hotels=true</to>
     </rule>

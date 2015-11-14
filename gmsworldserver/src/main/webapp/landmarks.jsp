@@ -242,7 +242,15 @@
 		        	google.maps.event.addDomListener(hotelControlDiv, 'click', function() { 
 		                window.location.href = window.location.href + '?enabled=Hotels';
 		       	    });
-		        }	 
+		        } else {
+		        	var hotelControlDiv = document.createElement('div');
+		        	hotelControlDiv.index = 2;
+		        	var centerControl = new CenterControl(hotelControlDiv, map, mapcenter, 'New search');
+		        	map.controls[google.maps.ControlPosition.TOP_CENTER].push(hotelControlDiv);
+		        	google.maps.event.addDomListener(hotelControlDiv, 'click', function() { 
+		                window.location.href = '/hotels/' + map.getCenter().lat() + '/' + map.getCenter().lng() + '/' + map.getZoom();
+		       	    }); 
+			    }	 
 			} else if ((layer_counter + excluded_layers) == layers.length && marker_counter == 1) {
 				$("#status").css({"background-color": "#fff", "border" : "2px solid #fff", "border-radius": "3px", "text-align": "center", "box-shadow" : "0 2px 6px rgba(0,0,0,.3)"});
                 $("#status").html("Oops. No landmarks available!");

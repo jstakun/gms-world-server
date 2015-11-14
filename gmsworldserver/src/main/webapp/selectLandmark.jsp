@@ -94,10 +94,17 @@
    
    function initialize()
    {
-        var latlng = new google.maps.LatLng(<%= HtmlUtils.getLocaleCoords(request.getLocale()) %>);
+<% if (request.getParameter("lat") != null && request.getParameter("lng") != null && request.getParameter("zoom") != null) { %>	   
+        var latlng = new google.maps.LatLng(<%= request.getParameter("lat") %>,<%= request.getParameter("lng") %>);
+        var zoom = <%= request.getParameter("zoom") %>;
+<% } else { %>
+		var latlng = new google.maps.LatLng(<%= HtmlUtils.getLocaleCoords(request.getLocale()) %>);
+		var zoom = 7;
+<% } %>
+        
         var myOptions =
         	{
-                    zoom: 7,
+                    zoom: zoom,
                     center: latlng,
                     mapTypeId: google.maps.MapTypeId.ROADMAP,
                     mapTypeControl: true,
