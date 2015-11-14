@@ -83,6 +83,7 @@ public class LandmarkPersistenceUtils {
         	//logger.log(Level.INFO, "Calling: " + landmarksUrl);
         	String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
         	if (StringUtils.startsWith(StringUtils.trim(landmarksJson), "{")) {
+        		logger.log(Level.INFO, "Received following response from server: " + landmarksJson);
         		JSONObject resp = new JSONObject(landmarksJson);
         		for (Iterator<String> iter = resp.keys(); iter.hasNext();) {
         			String key = iter.next();
