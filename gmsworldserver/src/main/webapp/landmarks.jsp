@@ -67,7 +67,7 @@
 
       var excluded_layers = 0;
 
-      var infowindow = new google.maps.InfoWindow();       			
+      var infowindow = new google.maps.InfoWindow();   
 
       var layers = [
           
@@ -123,13 +123,10 @@
   				title: <%= landmarkName %>,
   	  	  });
 
-          google.maps.event.addListener(flagmarker, 'mouseover', function() {
+          google.maps.event.addListener(flagmarker, 'click', function() {
         	    infowindow.setContent(contentString);
               	infowindow.open(map, flagmarker);
           });
-          google.maps.event.addListener(flagmarker, 'mouseout', function() {
-				infowindow.close(); 
-    	  });
 
           var mcOptions = {gridSize: 50, maxZoom: 18};
           var markers = [flagmarker]; 
@@ -168,19 +165,24 @@
             			desc: desc
           			}); 
 
-                  	google.maps.event.addListener(marker, 'mouseover', function() {
-                  		if (this.desc != null) {
-              				infowindow.setContent(this.desc);
-                        	infowindow.open(map, this);
-                        } 
-          			});	
-          			google.maps.event.addListener(marker, 'mouseout', function() {
-          				infowindow.close(); 
-              		});
+                  	//google.maps.event.addListener(marker, 'mouseover', function() {
+                  	//	if (this.desc != null) {
+              		//		infowindow.setContent(this.desc);
+                    //    	infowindow.open(map, this);
+                    //    } 
+          			//});	
+
+          			//google.maps.event.addListener(marker, 'mouseout', function() {
+          		    //		infowindow.close(); 
+              		//});
+              		
           			google.maps.event.addListener(marker, 'click', function() {
                         //map.setCenter(marker.getPosition());
           				//map.panTo(marker.getPosition());
-          				if (this.url != null) {
+          				if (this.desc != null) {
+          					infowindow.setContent(this.desc);
+                        	infowindow.open(map, this);
+          				} else if (this.url != null) {
     						window.open(this.url);	
           				}
               		});
