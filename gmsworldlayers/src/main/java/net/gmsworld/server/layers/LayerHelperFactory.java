@@ -246,15 +246,15 @@ public class LayerHelperFactory {
     /**
      * @return the hotelsBookingUtils
      */
-    //public static HotelsBookingUtils getHotelsBookingUtils() {
-    	//hotelsBookingUtils.setCacheProvider(cacheProvider);
-    	//return hotelsBookingUtils;
-    //}
-    
-    public static HotelsCombinedUtils getHotelsBookingUtils() {
-    	hotelsCombinedUtils.setCacheProvider(cacheProvider);
-    	return hotelsCombinedUtils;
+    public static HotelsBookingUtils getHotelsBookingUtils() {
+    	hotelsBookingUtils.setCacheProvider(cacheProvider);
+    	return hotelsBookingUtils;
     }
+    
+    //public static HotelsCombinedUtils getHotelsBookingUtils() {
+    //	hotelsCombinedUtils.setCacheProvider(cacheProvider);
+    //	return hotelsCombinedUtils;
+    //}
     
     /**
      * @return the instagramUtils

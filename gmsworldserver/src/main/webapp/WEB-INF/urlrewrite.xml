@@ -185,8 +185,18 @@
     </rule-->
     
     <rule>
+            <from>^/landmarks/([a-zA-Z0-9]+)$</from>
+            <to>/selectLandmark.jsp?gmstoken=$1</to>
+    </rule>
+    
+    <rule>
             <from>^/landmarks</from>
             <to>/selectLandmark.jsp?generatetoken=true</to>
+    </rule>
+    
+    <rule>
+            <from>^/hotels/([a-zA-Z0-9]+)$</from>
+            <to>/selectLandmark.jsp?gmstoken=$1&amp;hotels=true</to>
     </rule>
     
     <rule>
