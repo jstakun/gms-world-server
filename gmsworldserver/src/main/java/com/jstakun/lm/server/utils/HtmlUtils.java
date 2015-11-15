@@ -88,7 +88,7 @@ public class HtmlUtils {
         //if (StringUtils.isNotEmpty(landmark.getCity()) && StringUtils.isNotEmpty(landmark.getCountryCode())) {
         //	bookingUrl += "/" + landmark.getCountryCode().toLowerCase(Locale.US) + "/" + landmark.getCity().replace(' ', '_');
         //}
-		desc += "<br/><b><a href=\"" + bookingUrl + "\" target=\"_blank\">Book hotel room nearby!</a></b>" 
+		desc += "<br/><b><a href=\"" + bookingUrl + "\" target=\"_blank\">Discover hotels nearby!</a></b>" 
 			 + HtmlUtils.getStatusImage(landmark.getUseCount());
 		
 		return desc;
