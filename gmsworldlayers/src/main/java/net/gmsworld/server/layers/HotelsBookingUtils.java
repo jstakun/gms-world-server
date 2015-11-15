@@ -90,7 +90,18 @@ public class HotelsBookingUtils extends LayerHelper {
     	
     	address.setField(AddressInfo.STREET, hotel.getAddress());
     	address.setField(AddressInfo.CITY, hotel.getCity_hotel());
-    	address.setField(AddressInfo.COUNTRY, hotel.getCc1());
+    	/*for (Locale l : Locale.getAvailableLocales()) {
+    		if (StringUtils.equalsIgnoreCase(l.getCountry(), hotel.getCc1())) {
+    			address.setField(AddressInfo.COUNTRY, l.getDisplayCountry());
+    			break;
+    		}
+    	}*/
+    	Locale l = new Locale("", hotel.getCc1().toUpperCase(Locale.US));
+    	String country = l.getDisplayCountry();
+    	if (country == null) {
+    		country = hotel.getCc1();
+    	}
+    	address.setField(AddressInfo.COUNTRY, country);
     	address.setField(AddressInfo.POSTAL_CODE, hotel.getZip());
 
         long creationDate = hotel.getCreationDate();

@@ -6,6 +6,7 @@ import java.net.URLEncoder;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 
 import net.gmsworld.server.config.Commons;
@@ -156,8 +157,19 @@ public class MapQuestUtils extends GeocodeHelper {
                 		}
                 		temp = location.optString("adminArea1");
                 		if (StringUtils.isNotEmpty(temp)) {
-                			addressInfo.setField(AddressInfo.COUNTRY, temp);
-                			addressInfo.setField(AddressInfo.COUNTRY_CODE, temp);
+                			addressInfo.setField(AddressInfo.COUNTRY_CODE, temp); 
+                			/*for (Locale l : Locale.getAvailableLocales()) {
+                				if (StringUtils.equalsIgnoreCase(l.getCountry(), temp)) {
+                					addressInfo.setField(AddressInfo.COUNTRY,l.getDisplayCountry());
+                					break;
+                				}
+                			}*/
+                			Locale l = new Locale("", temp);
+                			String country = l.getDisplayCountry();
+                			if (country == null) {
+                				country = temp;
+                			}
+                			addressInfo.setField(AddressInfo.COUNTRY, country);
                 		}
                 		temp = location.optString("postalCode");
                 		if (StringUtils.isNotEmpty(temp)) {

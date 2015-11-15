@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.text.Normalizer;
 import java.text.Normalizer.Form;
+import java.util.Locale;
 
 import org.junit.Test;
 
@@ -28,6 +29,10 @@ public class StringNormalizerTest {
 		    System.out.println(text + " (" + asHex(text) + ") -> "
 		                + decomposed + " (" + asHex(decomposed) + ") -> "
 		                + removed + " (" + asHex(removed) + ")");
+		}
+		
+		for (Locale locale : Locale.getAvailableLocales()) {
+			  System.out.println(locale.getCountry() + ": " + locale.getDisplayCountry());
 		}
 	}
 	
