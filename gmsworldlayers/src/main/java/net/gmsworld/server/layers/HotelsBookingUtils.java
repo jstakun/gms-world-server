@@ -118,6 +118,10 @@ public class HotelsBookingUtils extends LayerHelper {
             landmark.setDeal(deal);	
         }
         tokens.put("star_rating", Double.toString(hotel.getStars()));
+        if (hotel.getNr_rooms() > 0) {
+        	tokens.put("no_rooms", Integer.toString(hotel.getNr_rooms()));
+        }
+        address.setField(AddressInfo.EXTENSION, Integer.toString(hotel.getNr_rooms()));
 
         if (hotel.getPhoto_url() != null) {
             landmark.setThumbnail(hotel.getPhoto_url());

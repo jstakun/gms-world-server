@@ -32,6 +32,7 @@ import org.json.JSONObject;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
+import com.openlapi.AddressInfo;
 
 /**
  *
@@ -55,8 +56,6 @@ public abstract class LayerHelper {
     	return null;
     }
 
-    //protected abstract List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale, boolean useCache) throws Exception {  
-    
     protected List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale, boolean useCache) throws Exception {
     	String key = null;
 		List<ExtendedLandmark> landmarks = null;
@@ -209,7 +208,17 @@ public abstract class LayerHelper {
     				}	
     				desc += "<br/><a href=\"" + landmark.getUrl() + "\" target=\"_blank\">Go to booking page...</a>";
     				f.setProperty("desc", desc);
-    				String icon = "star_" + StringUtils.countMatches(desc, "/images/star_blue.png") + ".png";
+    				int stars = StringUtils.countMatches(desc, "/images/star_blue.png");
+    				String icon = "star_" + stars + ".png";
+    				if (landmark.getAddressInfo().getField(AddressInfo.EXTENSION) != null)	{
+    					try {
+    						if (landmark.getAddressInfo().getField(AddressInfo.EXTENSION).equals("1")) {
+    							icon = stars + "stars_blue.png";
+    						}
+    					} catch (Exception e) {
+    						
+    					}
+    				} 
     				f.setProperty("icon", icon); 
         		} else if (StringUtils.equals(layer, Commons.PANORAMIO_LAYER)) {
         			f.setProperty("url", StringUtils.replace(landmark.getUrl(), "/m/photo", "/photo")); 

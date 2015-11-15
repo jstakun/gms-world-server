@@ -61,7 +61,7 @@ public class LayerHelperFactory {
 
     private static final ExpediaUtils expediaUtils = new ExpediaUtils();
 
-    private static final HotelsCombinedUtils hotelsCombinedUtils = new HotelsCombinedUtils();
+    //private static final HotelsCombinedUtils hotelsCombinedUtils = new HotelsCombinedUtils();
     
     private static final HotelsBookingUtils hotelsBookingUtils = new HotelsBookingUtils();
     

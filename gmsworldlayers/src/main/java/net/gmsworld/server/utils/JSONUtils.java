@@ -519,6 +519,8 @@ public class JSONUtils {
                 others.add(getLink(value, rb.getString("Landmark.menu")));
             } else if (key.equals("photo")) {
                 others.add(getLink(value, rb.getString("Landmark.photo")));
+            } else if (key.equals("no_rooms")) {
+            	others.add(String.format(rb.getString("Landmark.no_rooms"), value)); 
             } else {
                 others.add(key + ": " + value);
             }
