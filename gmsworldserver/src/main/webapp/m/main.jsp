@@ -29,16 +29,19 @@
     	</article>
     	
         <article class="underline">
-        	<a href="/hotels">Select location on the map and discover hotels around<a/>.<br/>
+        	<a href="/hotels">Select location on the map and discover hotels around</a>.<br/>
         </article>
         
         <article class="underline">
     		Discover interesting places anywhere with <a href="/download.jsp"><b>Landmark Manager</b></a>.
-        	Find out where <a href="/heatMap">GMS World</a> is most popular.<br/>       
+    	</article>
+    		
+    	<article class="underline">
+        	<a href="/share">Share your location</a> or <a href="/landmarks">select location on the map</a> and discover landmarks nearby.<br/>
         </article>
         
-        <article class="underline">
-        	<a href="/share">Share your location</a> or <a href="/landmarks">select location on the map<a/> and discover landmarks nearby.<br/>
+        <article class="underline">	
+        	Find out where <a href="/heatMap">GMS World</a> is most popular.<br/>       
         </article>
         
         <article>
