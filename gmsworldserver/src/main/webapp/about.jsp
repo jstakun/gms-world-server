@@ -41,7 +41,7 @@
                     </p>
                     <p>
                         <b>Landmark Manager</b> is mashup aggregating places from multiple providers including <b>Facebook</b>, <b>Twitter</b>, <b>Foursquare</b>, <b>Yelp</b>, <b>Google Places</b>, <b>Freebase</b>, <b>Wikipedia</b>, <b>Eventful</b>,
-                        <b>Last FM</b>, <b>YouTube</b>, <b>Flickr</b>, <b>Picasa</b>, <b>Foursquare Merchant</b>, <b>Panoramio</b>, <b>Groupon</b>, <b>8 Coupons</b>, <b>Expedia</b> , <b>Booking.com</b> and <b>Hotels Combined</b>.
+                        <b>Last FM</b>, <b>YouTube</b>, <b>Flickr</b>, <b>Picasa</b>, <b>Foursquare Merchant</b>, <b>Panoramio</b>, <b>Groupon</b>, <b>8 Coupons</b>, <b>Expedia</b>, <b>Booking.com</b> and <b>Hotels Combined</b>.
                         Automatically check-in at places you are visiting, find daily deals, book hotel, find parking, route or ATM and many more...<br/><br/>
 
 						Key features:<br/>

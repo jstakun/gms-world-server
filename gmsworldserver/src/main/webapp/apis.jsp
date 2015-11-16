@@ -45,6 +45,7 @@
                             <li><a href="http://developers.facebook.com/docs/reference/api/">Facebook Places</a></li>
                             <li><a href="http://developer.foursquare.com/">Foursquare</a></li>
                             <li><a href="http://code.google.com/maps/documentation/places/">Google Places</a></li>
+                            <li><a href="http://www.booking.com/affiliate-program/index.html">Booking.com</a></li>
                             <li><a href="http://www.hotelscombined.com/Affiliates.aspx">Hotels Combined</a></li>
                             <li><a href="http://developer.ean.com/">Expedia</a></li>
                             <li><a href="http://developer.mastercard.com">MasterCard</a></li>

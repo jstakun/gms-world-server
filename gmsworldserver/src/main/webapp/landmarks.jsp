@@ -228,7 +228,7 @@
 
 				var centerControlDiv = document.createElement('div');
 				centerControlDiv.index = 1;
-		        var centerControl = new CenterControl(centerControlDiv, map, mapcenter, 'Center map');
+		        var centerControl = new CenterControl(centerControlDiv, 'center', 'Center map');
 		        map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(centerControlDiv);
 		        google.maps.event.addDomListener(centerControlDiv, 'click', function() {
 		    	   	 map.setCenter(mapcenter)
@@ -237,19 +237,28 @@
 		        if (window.location.href.indexOf("?enabled=Hotels") == -1 && hotelsOnly == "false") {
 					var hotelControlDiv = document.createElement('div');
 		        	hotelControlDiv.index = 2;
-		        	var centerControl = new CenterControl(hotelControlDiv, map, mapcenter, '<img src=\'/images/hotel_search.png\' title=\'Discover hotels nearby\'/>');
+		        	var centerControl = new CenterControl(hotelControlDiv, 'center', '<img src=\'/images/hotel_search.png\' title=\'Discover hotels nearby\'/>');
 		        	map.controls[google.maps.ControlPosition.TOP_CENTER].push(hotelControlDiv);
 		        	google.maps.event.addDomListener(hotelControlDiv, 'click', function() { 
 		                window.location.href = window.location.href + '?enabled=Hotels';
 		       	    });
 		        } else {
+			        //new search button
 		        	var hotelControlDiv = document.createElement('div');
 		        	hotelControlDiv.index = 2;
-		        	var centerControl = new CenterControl(hotelControlDiv, map, mapcenter, 'New search');
+		        	var centerControl = new CenterControl(hotelControlDiv, 'center', 'New search');
 		        	map.controls[google.maps.ControlPosition.TOP_CENTER].push(hotelControlDiv);
 		        	google.maps.event.addDomListener(hotelControlDiv, 'click', function() { 
 		                window.location.href = '/hotels/' + map.getCenter().lat() + '/' + map.getCenter().lng() + '/' + map.getZoom();
 		       	    }); 
+
+		       	    //legend
+		        	var topLocationsDiv = document.createElement('div');
+		        	var text = '<img src=\'/images/layers/0stars_blue_32.png\' style=\'width:32px; height:32px; vertical-align: middle;\' title=\'Single room or apartment venue\'><span style=\'line-height:32px;\'>&nbsp;Single room or apartment venue</span><br/>' +
+			        		   '<img src=\'/images/layers/star_0_32.png\' style=\'width:32px; height:32px; vertical-align: middle;\'><span style=\'line-height:32px;\' title=\'Multiple rooms or apartments venue\'>&nbsp;Multiple rooms or apartments venue</span>';
+		        	var topLocationsControl = new CenterControl(topLocationsDiv, 'left', text);
+		     	    topLocationsDiv.index = 3
+		     	    map.controls[google.maps.ControlPosition.RIGHT_TOP].push(topLocationsDiv);	
 			    }	 
 			} else if ((layer_counter + excluded_layers) == layers.length && marker_counter == 1) {
 				$("#status").css({"background-color": "#fff", "border" : "2px solid #fff", "border-radius": "3px", "text-align": "center", "box-shadow" : "0 2px 6px rgba(0,0,0,.3)"});
@@ -260,7 +269,7 @@
 			}
       }
 
-      function CenterControl(controlDiv, map, center, text) {
+      function CenterControl(controlDiv, align, text) {
 
           // Set CSS for the control border
           var controlUI = document.createElement('div');
@@ -272,7 +281,8 @@
           controlUI.style.marginTop = '10px';
           controlUI.style.marginLeft = '10px';
           controlUI.style.marginBottom = '10px';
-    	  controlUI.style.textAlign = 'center';
+          controlUI.style.marginRight = '10px';
+          controlUI.style.textAlign = align; 
           controlUI.title = text;
           controlDiv.appendChild(controlUI);
 
