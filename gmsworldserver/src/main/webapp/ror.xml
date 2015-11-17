@@ -37,14 +37,6 @@
      <ror:resourceOf>sitemap</ror:resourceOf>
 </item>
 <item>
-     <link>http://www.gms-world.net/demo/run.jsp</link>
-     <title>GMS World - Landmark Manager Live Demo Page</title>
-     <description>Site Description Here</description>
-     <ror:updatePeriod></ror:updatePeriod>
-     <ror:sortOrder>1</ror:sortOrder>
-     <ror:resourceOf>sitemap</ror:resourceOf>
-</item>
-<item>
      <link>http://www.gms-world.net/about.jsp</link>
      <title>GMS World - About Us</title>
      <description>GMS World - discover interesting places nearby!</description>
