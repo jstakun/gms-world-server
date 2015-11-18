@@ -3,7 +3,6 @@
 <!--header -->
 <div id="header-wrap">
     <div id="header">
-
         <a name="top"></a>
 <% String mode = request.getParameter("mode") != null ? request.getParameter("mode") : "";
    String display = request.getParameter("display") != null ? request.getParameter("display") : "";
