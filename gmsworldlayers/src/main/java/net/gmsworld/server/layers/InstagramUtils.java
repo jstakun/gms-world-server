@@ -72,9 +72,6 @@ public class InstagramUtils extends LayerHelper {
             			   name = caption.getString("text");
             		   }         		   
             		   
-            		   JSONObject comments = media.getJSONObject("comments");
-            		   int reviews = comments.getInt("count");
-            		   
             		   //desc
             		   Map <String, String> tokens = new HashMap<String, String>();
             		   JSONObject user = media.getJSONObject("user");
@@ -87,17 +84,22 @@ public class InstagramUtils extends LayerHelper {
             			   tokens.put("artist", username);
             		   }
             		   
-            		   JSONObject likes = media.getJSONObject("likes");
-            		   int count = likes.getInt("count");
+            		   JSONObject comments = media.getJSONObject("comments");
+            		   int reviews = comments.getInt("count");
+            		   if (reviews > 0) {
+            			   tokens.put("Comments", Integer.toString(reviews));
+            		   }
             		   
+            		   JSONObject likes = media.getJSONObject("likes");
+            		   int count = likes.getInt("count");           		   
             		   if (count > 0) {
-            			   tokens.put("likes", Integer.toString(count));
+            			   tokens.put("Likes", Integer.toString(count));
             		   }
             		   
             		   ExtendedLandmark landmark = LandmarkFactory.getLandmark(name, null, qc, Commons.INSTAGRAM_LAYER, new AddressInfo(), creationDate, null);
             		   landmark.setUrl(url);
             		   landmark.setThumbnail(icon);
-            		   landmark.setNumberOfReviews(reviews);
+            		   landmark.setNumberOfReviews(reviews + count);
             		   String desc = JSONUtils.buildLandmarkDesc(landmark, tokens, locale);
             		   landmark.setDescription(desc);		   
                     		   

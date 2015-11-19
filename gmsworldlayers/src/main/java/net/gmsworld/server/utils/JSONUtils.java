@@ -491,14 +491,50 @@ public class JSONUtils {
         if (StringUtils.isNotEmpty(start_date)) {
             result.add(start_date);
         }
-
-        //other
-
+       
         if (!otherNamed.isEmpty()) {
             result.add(StringUtils.join(otherNamed, ",<br/>"));
         }
         
         List<String> others = new ArrayList<String>();
+        
+        //Views, Likes, Dislikes, Comments
+        //TODO translate
+        String stats = tokens.remove("Views");
+        if (stats != null) {
+        	if (stats.equals("1")) {
+        		others.add(stats + " view"); 
+        	} else {
+        		others.add(stats + " views");
+        	}
+        }
+        stats = tokens.remove("Likes");
+        if (stats != null) {
+        	if (stats.equals("1")) {
+        		others.add("<font color=\"green\">" + stats + " like</font>");
+        	} else {
+        		others.add("<font color=\"green\">" + stats + " likes</font>");
+        	}
+        }
+        stats = tokens.remove("Dislikes");
+        if (stats != null) {
+        	if (stats.equals("1")) {
+        		others.add("<font color=\"red\">" + stats + " dislike</font>");
+        	} else {
+        		others.add("<font color=\"red\">" + stats + " dislikes</font>");
+        	}
+        }
+        stats = tokens.remove("Comments");
+        if (stats != null) {
+        	if (stats.equals("1")) {
+        		others.add(stats + " comment");
+        	} else {
+        		others.add(stats + " comments");
+        	}
+        }
+        
+        //other
+        
         for (Iterator<Map.Entry<String, String>> i = tokens.entrySet().iterator(); i.hasNext();) {
             Map.Entry<String, String> entry = i.next();
             String key = entry.getKey();

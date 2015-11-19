@@ -25,6 +25,7 @@ import net.gmsworld.server.utils.ImageUtils;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.UrlUtils;
+import net.gmsworld.server.utils.memcache.CacheProvider;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
@@ -42,11 +43,13 @@ public class RouteProviderServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(RouteProviderServlet.class.getName());
     private static final int LIMIT = 64;
+    private CacheProvider cacheProvider = null;
 	
 	@Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        GeocodeHelperFactory.setCacheProvider(new GoogleCacheProvider());
+        cacheProvider = new GoogleCacheProvider();
+        GeocodeHelperFactory.setCacheProvider(cacheProvider);
     }
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -92,7 +95,8 @@ public class RouteProviderServlet extends HttpServlet {
                 			logger.log(Level.INFO, "Path has " + path.size() + " points");
                     
                 			byte[] pathImage = ImageUtils.loadPath(path, "640x256");
-                			FileUtils.saveFileV2("path_" + StringUtil.formatCoordE6(lat_start) + "_" + StringUtil.formatCoordE6(lng_start) + "_" + StringUtil.formatCoordE6(lat_end) + "_" + StringUtil.formatCoordE6(lng_end) + ".jpg", pathImage, lat_start, lng_start);
+                			String pathKey = "path_" + StringUtil.formatCoordE6(lat_start) + "_" + StringUtil.formatCoordE6(lng_start) + "_" + StringUtil.formatCoordE6(lat_end) + "_" + StringUtil.formatCoordE6(lng_end);
+                			FileUtils.saveFileV2(pathKey + ".jpg", pathImage, lat_start, lng_start);
                 			
                 			//send route creation social notification
                 			String imageUrl = ConfigurationManager.SERVER_URL + "image?lat_start=" + lat_start + "&lng_start=" + lng_start + "&lat_end=" + lat_end + "&lng_end=" + lng_end;
@@ -109,6 +113,10 @@ public class RouteProviderServlet extends HttpServlet {
                 		    		put("imageUrl", imageUrl).build();  
                 			
                 			NotificationUtils.createRouteCreationNotificationTask(params);
+                			
+                			if (cacheProvider != null) {
+                				cacheProvider.putToSecondLevelCache(pathKey, output.toString());
+                			}
                 		}
                 	} catch (Exception e) {
                 		logger.log(Level.SEVERE, e.getMessage(), e);

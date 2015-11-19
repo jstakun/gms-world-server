@@ -207,22 +207,29 @@ public class YoutubeUtils extends LayerHelper {
         	}   	
         	
         	VideoStatistics stats = video.getStatistics();
+        	int likes = 0;
+        	int dislikes = 0;
         	if (stats != null) {
-        		tokens.put("Views", stats.getViewCount().toString());
+        		int views = stats.getViewCount().intValue();
+        		if (views > 0) {
+        			tokens.put("Views", Integer.toString(views));
+        		}
         		//stats.getCommentCount();
         		if (stats.getLikeCount() != null) {
-        			tokens.put("Likes", stats.getLikeCount().toString()); //"\uD83D\uDC4D"
-        		} else {
-        			tokens.put("Likes", "0");
-        		}
+        			likes = stats.getLikeCount().intValue(); //"\uD83D\uDC4D"
+        		} 
         		if (stats.getDislikeCount() != null) {
-        			tokens.put("Dislikes", stats.getDislikeCount().toString()); //"\uD83D\uDD93"
-        		} else {
-        			tokens.put("Dislikes", "0");
-        		}
+        			dislikes = stats.getDislikeCount().intValue(); //"\uD83D\uDD93"
+        		} 
         		//stats.getFavoriteCount();
         	}
         	
+        	if (likes > 0 || dislikes > 0) {
+        		tokens.put("Likes", Integer.toString(likes));
+        		tokens.put("Dislikes", Integer.toString(dislikes));
+        	}
+        	
+        	landmark.setNumberOfReviews(likes + dislikes);
         	String description = JSONUtils.buildLandmarkDesc(landmark, tokens, locale);
         	landmark.setDescription(description);
         	

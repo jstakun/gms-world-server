@@ -234,13 +234,14 @@ public abstract class LayerHelper {
     			String lngStr = StringUtil.formatCoordE2(lng);
     			
     			if (!landmarks.isEmpty() && StringUtils.isNotEmpty(json)) {
-    				try {
+    				cacheProvider.putToSecondLevelCache("geojson/" + latStr + "/" + lngStr, json);
+    				/*try {
     					URL cacheUrl = new URL("http://cache-gmsworld.rhcloud.com/rest/cache/geojson/" + latStr + "/" + lngStr);
     					String resp = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, "POST", null, json, "application/json", Commons.getProperty(Property.RH_GMS_USER));
     					logger.log(Level.INFO, "Cache response: " + resp);
     				} catch (Exception e) {
     					logger.log(Level.SEVERE, e.getMessage(), e);
-    				}
+    				}*/
     			}
     			
     			if (cacheProvider != null) {
