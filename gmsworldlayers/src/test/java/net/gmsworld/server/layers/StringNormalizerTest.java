@@ -1,7 +1,5 @@
 package net.gmsworld.server.layers;
 
-import static org.junit.Assert.*;
-
 import java.text.Normalizer;
 import java.text.Normalizer.Form;
 import java.util.Locale;

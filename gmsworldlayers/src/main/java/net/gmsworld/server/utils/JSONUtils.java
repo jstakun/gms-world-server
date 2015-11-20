@@ -2,6 +2,7 @@ package net.gmsworld.server.utils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -442,13 +443,53 @@ public class JSONUtils {
         	ratingStr = String.format(rb.getString("Landmark.userRating"), nf.format(r), ratingStr);
         }
         
+        
+        List<String> stats = new ArrayList<String>();
+        
+        String tmp = tokens.remove("Views");
+        if (tmp != null) {
+        	int views = NumberUtils.getInt(tmp, 0);
+        	if (views > 0) {
+        		MessageFormat fmt = new MessageFormat(String.format(rb.getString("Landmark.views"), views), locale);
+            	stats.add(fmt.format(new Object[] {views}));
+            }
+        }
+        
         int reviews = landmark.getNumberOfReviews();
-        if (reviews == 1) {
-        	ratingStr += rb.getString("Landmark.numberOfReviews_single");
-        } else if (reviews > 1 && reviews < 5) {
-        	ratingStr += String.format(rb.getString("Landmark.numberOfReviews_2_4"), reviews); 
-        } else if (reviews > 4) {
-        	ratingStr += String.format(rb.getString("Landmark.numberOfReviews_multiple"), reviews);
+        if (reviews > 0) {
+        	MessageFormat fmt = new MessageFormat(String.format(rb.getString("Landmark.numberOfReviews"), reviews), locale);
+        	stats.add(fmt.format(new Object[] {reviews}));
+        }
+        
+        tmp = tokens.remove("Likes");
+        if (tmp != null) {
+        	int views = NumberUtils.getInt(tmp, 0);
+        	if (views > 0) {
+        		MessageFormat fmt = new MessageFormat(String.format(rb.getString("Landmark.likes"), views), locale);
+            	stats.add(fmt.format(new Object[] {views}));
+            }     	
+        }
+        
+        tmp = tokens.remove("Dislikes");
+        if (tmp != null) {
+        	int views = NumberUtils.getInt(tmp, 0);
+        	if (views > 0) {
+        		MessageFormat fmt = new MessageFormat(String.format(rb.getString("Landmark.dislikes"), views), locale);
+            	stats.add(fmt.format(new Object[] {views}));
+            }  
+        }
+        
+        tmp = tokens.remove("Comments");
+        if (tmp != null) {
+        	int views = NumberUtils.getInt(tmp, 0);
+        	if (views > 0) {
+        		MessageFormat fmt = new MessageFormat(String.format(rb.getString("Landmark.comments"), views), locale);
+            	stats.add(fmt.format(new Object[] {views}));
+            }  
+        }
+             
+        if (!stats.isEmpty()) {
+        	ratingStr += StringUtils.join(stats, ", ");
         }
         
         if (StringUtils.isNotEmpty(ratingStr)) {
@@ -496,42 +537,7 @@ public class JSONUtils {
             result.add(StringUtils.join(otherNamed, ",<br/>"));
         }
         
-        List<String> others = new ArrayList<String>();
-        
-        //Views, Likes, Dislikes, Comments
-        //TODO translate
-        String stats = tokens.remove("Views");
-        if (stats != null) {
-        	if (stats.equals("1")) {
-        		others.add(stats + " view"); 
-        	} else {
-        		others.add(stats + " views");
-        	}
-        }
-        stats = tokens.remove("Likes");
-        if (stats != null) {
-        	if (stats.equals("1")) {
-        		others.add("<font color=\"green\">" + stats + " like</font>");
-        	} else {
-        		others.add("<font color=\"green\">" + stats + " likes</font>");
-        	}
-        }
-        stats = tokens.remove("Dislikes");
-        if (stats != null) {
-        	if (stats.equals("1")) {
-        		others.add("<font color=\"red\">" + stats + " dislike</font>");
-        	} else {
-        		others.add("<font color=\"red\">" + stats + " dislikes</font>");
-        	}
-        }
-        stats = tokens.remove("Comments");
-        if (stats != null) {
-        	if (stats.equals("1")) {
-        		others.add(stats + " comment");
-        	} else {
-        		others.add(stats + " comments");
-        	}
-        }
+        List<String> others = new ArrayList<String>();      
         
         //other
         

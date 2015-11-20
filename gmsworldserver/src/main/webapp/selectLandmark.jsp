@@ -1,17 +1,10 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="org.apache.commons.lang.StringUtils,
                  com.jstakun.lm.server.utils.HtmlUtils,
                  net.gmsworld.server.config.Commons" %>
 <%@ taglib uri="http://struts.apache.org/tags-bean" prefix="bean"%>                 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%
-  String token = null;
-  if (StringUtils.equals(request.getParameter("generatetoken"),"true")) {
-	  token = com.jstakun.lm.server.config.ConfigurationManager.getParam(com.jstakun.lm.server.config.ConfigurationManager.GMS_WORLD_ACCESS_TOKEN, null);  
-  } else {	
-	  token = request.getHeader("X-GMS-Token") != null ? request.getHeader("X-GMS-Token") : request.getParameter("gmstoken");
-  }	
   boolean hotelsMode = StringUtils.equals(request.getParameter("hotels"),"true");
 %>
 <html>
@@ -82,8 +75,6 @@
     }
   </script>
   <script type="text/javascript">
-   var token = "<%= token %>";
-
    var hotelsMode = <%= hotelsMode %>;
 
    var map;
@@ -252,9 +243,7 @@
    function getLocation() {
 		//var x = document.getElementById("status");
 		var message;
-	    if (token == "null") {
-	    	message = "Token is required to proceed with your request!";
-	    } else if (navigator.geolocation) {
+	    if (navigator.geolocation) {
 	    	console.log("Please wait. I'm reading now your geolocation...");
 	        navigator.geolocation.getCurrentPosition(showPosition, errorCallback, {maximumAge: 60000, timeout: 30000});
 	    } else { 
@@ -316,9 +305,9 @@
 
          if (r == true) {
               if (hotelsMode == true) {
-             	 window.location.replace("/hotelLandmark/" +  lat + "/" + lng + "/" + token);   
+             	 window.location.replace("/hotelLandmark/" +  lat + "/" + lng);   
               } else {
-         		 window.location.replace("/newLandmark/" +  lat + "/" + lng + "/" + token);
+         		 window.location.replace("/newLandmark/" +  lat + "/" + lng);
               }
          } else {
          	     //                	 

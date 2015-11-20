@@ -1,8 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="org.apache.commons.lang.StringUtils" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html>
 <%
-   String token = request.getHeader("X-GMS-Token") != null ? request.getHeader("X-GMS-Token") : request.getParameter("gmstoken");
+ String token = null;
+ if (StringUtils.equals(request.getParameter("generatetoken"),"true")) {
+	  token = com.jstakun.lm.server.config.ConfigurationManager.getParam(com.jstakun.lm.server.config.ConfigurationManager.GMS_WORLD_ACCESS_TOKEN, null);  
+ } else {	
+	  token = request.getHeader("X-GMS-Token") != null ? request.getHeader("X-GMS-Token") : request.getParameter("gmstoken");
+ }	
+ boolean hotelsMode = StringUtils.equals(request.getParameter("enabled"), "Hotels");
 %>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -10,7 +17,7 @@
 	<meta HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE"/>
 	<meta HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE"/>
 	<meta HTTP-EQUIV="EXPIRES" CONTENT="0"/>
-	<title>Please wait for landmark creation and layer loading...</title>
+	<title>Please wait for <%= hotelsMode ? "hotel" : "landmark" %> creation and layer loading...</title>
 	<style type="text/css">
 	.loader {
 		position: fixed;
@@ -31,7 +38,7 @@
 </head>
 <body>
 <div class="loader">
-<p>&nbsp;Please wait. I'm loading landmarks nearby selected location...</p>
+<p>&nbsp;Please wait. I'm loading <%= hotelsMode ? "hotels" : "landmarks" %> nearby selected location...</p>
 </div>
 <script>
 (function() {

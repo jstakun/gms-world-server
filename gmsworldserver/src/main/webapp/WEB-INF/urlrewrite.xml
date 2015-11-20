@@ -156,62 +156,37 @@
     
     <rule>
             <from>^/services/newLandmark/([0-9.-]+)/([0-9.-]+)$</from>
-            <to>/browserLandmark.jsp?latitude=$1&amp;longitude=$2</to>
+            <to>/browserLandmark.jsp?latitude=$1&amp;longitude=$2&amp;generatetoken=true</to>
     </rule>
     
     <rule>
-            <from>^/newLandmark/([0-9.-]+)/([0-9.-]+)/([a-zA-Z0-9_-]+)$</from>
-            <to>/browserLandmark.jsp?latitude=$1&amp;longitude=$2&amp;gmstoken=$3</to>
+            <from>^/newLandmark/([0-9.-]+)/([0-9.-]+)$</from>
+            <to>/browserLandmark.jsp?latitude=$1&amp;longitude=$2&amp;generatetoken=true</to>
     </rule>
     
     <rule>
-            <from>^/hotelLandmark/([0-9.-]+)/([0-9.-]+)/([a-zA-Z0-9_-]+)$</from>
-            <to>/browserLandmark.jsp?latitude=$1&amp;longitude=$2&amp;gmstoken=$3&amp;enabled=Hotels</to>
-    </rule>
-    
-    <!-- rule>
-            <from>^/createBrowserLandmark</from>
-            <to>/myposLandmark.jsp?generatetoken=true</to>
-    </rule>
-    
-    <rule>
-            <from>^/selectBrowserLandmark</from>
-            <to>/selectLandmark.jsp?generatetoken=true</to>
-    </rule>
-    
-    <rule>
-            <from>^/hotelBrowserLandmark</from>
-            <to>/selectLandmark.jsp?generatetoken=true&amp;hotels=true</to>
-    </rule-->
-    
-    <rule>
-            <from>^/landmarks/([a-zA-Z0-9]+)$</from>
-            <to>/selectLandmark.jsp?gmstoken=$1</to>
+            <from>^/hotelLandmark/([0-9.-]+)/([0-9.-]+)$</from>
+            <to>/browserLandmark.jsp?latitude=$1&amp;longitude=$2&amp;enabled=Hotels&amp;generatetoken=true</to>
     </rule>
     
     <rule>
             <from>^/landmarks</from>
-            <to>/selectLandmark.jsp?generatetoken=true</to>
-    </rule>
-    
-    <rule>
-            <from>^/hotels/([a-zA-Z0-9]+)$</from>
-            <to>/selectLandmark.jsp?gmstoken=$1&amp;hotels=true</to>
+            <to>/selectLandmark.jsp</to>
     </rule>
     
     <rule>
             <from>^/hotels/([0-9.-]+)/([0-9.-]+)/([0-9.-]+)$</from>
-            <to>/selectLandmark.jsp?generatetoken=true&amp;hotels=true&amp;lat=$1&amp;lng=$2&amp;zoom=$3</to>
+            <to>/selectLandmark.jsp?hotels=true&amp;lat=$1&amp;lng=$2&amp;zoom=$3</to>
     </rule>
     
     <rule>
             <from>^/hotels</from>
-            <to>/selectLandmark.jsp?generatetoken=true&amp;hotels=true</to>
+            <to>/selectLandmark.jsp?hotels=true</to>
     </rule>
     
     <rule>
             <from>^/share</from>
-            <to>/myposLandmark.jsp?generatetoken=true</to>
+            <to>/myposLandmark.jsp</to>
     </rule>
     
     <!-- showLocation rules -->
@@ -252,7 +227,7 @@
     
     <!-- hotel booking -->
     
-    <rule>
+    <!-- rule>
             <from>^/bookingProvider/([0-9.-]+)/([a-zA-Z]+)/([a-zA-Z0-9_-]+)$</from>
             <to>/bookingProvider?key=$1&amp;cc=$2&amp;city=$3</to>
     </rule>
@@ -260,7 +235,7 @@
     <rule>
             <from>^/bookingProvider/([0-9.-]+)$</from>
             <to>/bookingProvider?key=$1</to>
-    </rule>
+    </rule-->
     
     <!-- -->
 

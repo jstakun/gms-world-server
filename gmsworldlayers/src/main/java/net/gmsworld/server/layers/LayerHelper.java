@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,8 +16,6 @@ import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 
 import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.config.Commons.Property;
-import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.memcache.CacheProvider;
 

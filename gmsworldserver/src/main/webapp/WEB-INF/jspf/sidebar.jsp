@@ -50,10 +50,11 @@
 
         <h3>Sidebar Menu</h3>
         <ul>
+            <li><a href="/hotels">Hotels</a></li>
+            <li><a href="/landmarks">Landmarks</a></li>
             <li><a href="/index.jsp">Home</a></li>
             <li><a href="/download.jsp">Download</a></li>
             <li><a href="/register.jsp">Register</a></li>
-            <li><a href="/demo/run.jsp">Online Demo</a></li>
             <li><a href="http://blog.gms-world.net">Blog</a></li>
             <li><a href="/archive.do">Archives</a></li>
             <li><a href="/about.jsp">About</a></li>

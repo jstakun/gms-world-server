@@ -29,7 +29,11 @@
     	</article>
     	
         <article class="underline">
-        	<a href="/hotels">Select location on the map and discover hotels around</a>.<br/>
+        	<a href="/hotels">Select location on the map and discover hotels around</a>.
+        </article>
+        
+        <article class="underline">
+        	Don't know where to go? <a href="<%= HtmlUtils.getRandomUrl() %>">Let us choose for you!</a>
         </article>
         
         <article class="underline">
@@ -37,11 +41,11 @@
     	</article>
     		
     	<article class="underline">
-        	<a href="/share">Share your location</a> or <a href="/landmarks">select location on the map</a> and discover landmarks nearby.<br/>
+        	<a href="/share">Share your location</a> or <a href="/landmarks">select location on the map</a> and discover landmarks nearby.
         </article>
         
         <article class="underline">	
-        	Find out where <a href="/heatMap">GMS World</a> is most popular.<br/>       
+        	Find out where <a href="/heatMap">GMS World</a> is most popular.     
         </article>
         
         <article>
