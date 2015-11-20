@@ -26,7 +26,7 @@ public final class ConfigurationManager {
     public static final String GMS_WORLD_ACCESS_TOKEN = "gmsWorldAccessToken";
     private static final String LM_GOOGLE_PLAY_URL = "https://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui";
     private static final String DA_GOOGLE_PLAY_URL = "https://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui.deals";
-    private static final String BROWSER_URL = "http://www.gms-world.net/selectBrowserLandmark";
+    private static final String BROWSER_URL = "http://www.gms-world.net/landmarks";
     public static String BOOKING_URL = "http://www.booking.com/city/%s/%s.html?aid=864525";
 	
     public static void populateConfig()

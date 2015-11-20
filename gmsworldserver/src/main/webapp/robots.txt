@@ -16,3 +16,4 @@ Disallow: /images/
 Disallow: /css/
 Disallow: /download/
 Disallow: /demo/lib/
+Disallow: /hotelLandmark/
