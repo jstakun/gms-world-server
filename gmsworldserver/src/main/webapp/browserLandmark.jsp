@@ -10,6 +10,12 @@
 	  token = request.getHeader("X-GMS-Token") != null ? request.getHeader("X-GMS-Token") : request.getParameter("gmstoken");
  }	
  boolean hotelsMode = StringUtils.equals(request.getParameter("enabled"), "Hotels");
+ String enabled = request.getParameter("enabled");
+ if (enabled != null) {
+	 enabled = "?enabled=" + enabled; 
+ } else {
+	 enabled = "";
+ }
 %>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -57,10 +63,10 @@
     }})
   	.done(function( data ) {
   	   		$( 'div' ).remove();   
-  	  		$( 'body' ).append("<p>Redirecting to <a href=\"/showLandmark/" + data.id + "\">landmark page</a>...<br/>" +
+  	  		$( 'body' ).append("<p>Redirecting to <a href=\"/showLandmark/" + data.id + "<%= enabled %>\">selected location page</a>...<br/>" +
   	  				           "If you won't be redirected automatically click the link above.</p>");
   	    	console.log("Created landmark: " + data.id);
-  	    	window.location.replace('/showLandmark/' + data.id <% if (request.getParameter("enabled") != null) { out.print("+ '?enabled=" + request.getParameter("enabled") + "'"); } %>);
+  	    	window.location.replace('/showLandmark/' + data.id + '<%= enabled %>');
   	})
   	.error(function(jqXHR, textStatus, errorThrown){ /* assign handler */
   		    $( 'div' ).remove();   
