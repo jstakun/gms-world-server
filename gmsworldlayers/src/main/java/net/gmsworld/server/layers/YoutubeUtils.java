@@ -186,7 +186,7 @@ public class YoutubeUtils extends LayerHelper {
     		QualifiedCoordinates qc = null;
     		if (video.getRecordingDetails() != null) {
     			GeoPoint location = video.getRecordingDetails().getLocation();
-    			if (location != null) {
+    			if (location != null && location.getLatitude() != null && location.getLongitude() != null) {
     				qc = new QualifiedCoordinates(location.getLatitude(), location.getLongitude(), 0f, 0f, 0f);
     			} else {
     				qc = new QualifiedCoordinates(lat, lng, 0f, 0f, 0f);

@@ -231,19 +231,13 @@ public abstract class LayerHelper {
     			String lngStr = StringUtil.formatCoordE2(lng);
     			
     			if (!landmarks.isEmpty() && StringUtils.isNotEmpty(json)) {
+    				logger.log(Level.INFO, "Saved geojson list to second level cache");
     				cacheProvider.putToSecondLevelCache("geojson/" + latStr + "/" + lngStr, json);
-    				/*try {
-    					URL cacheUrl = new URL("http://cache-gmsworld.rhcloud.com/rest/cache/geojson/" + latStr + "/" + lngStr);
-    					String resp = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, "POST", null, json, "application/json", Commons.getProperty(Property.RH_GMS_USER));
-    					logger.log(Level.INFO, "Cache response: " + resp);
-    				} catch (Exception e) {
-    					logger.log(Level.SEVERE, e.getMessage(), e);
-    				}*/
     			}
     			
     			if (cacheProvider != null) {
     				String key = "geojson_" + latStr + "_" + lngStr + "_" + layer;
-    				logger.log(Level.INFO, "Saved geojson list to cache with key: " + key);
+    				logger.log(Level.INFO, "Saved geojson list to local in-memory cache with key: " + key);
     				cacheProvider.put(key, json, 1);
     			    return key;
     			}
