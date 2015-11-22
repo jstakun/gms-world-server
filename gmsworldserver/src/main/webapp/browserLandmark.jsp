@@ -35,7 +35,7 @@
 		background: url('/images/loading_spinner.gif') 50% 50% no-repeat rgb(249,249,249);
 	}
 	</style>
-	<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="/js/jquery.min.js"></script>
 	<script type="text/javascript">
 	$(window).load(function() {
 		$("loader").fadeOut("slow");
