@@ -48,6 +48,10 @@ public abstract class LayerHelper {
 	protected void setCacheProvider(CacheProvider cacheProvider) {
 		this.cacheProvider = cacheProvider;
 	}
+	
+	public CacheProvider getCacheProvider() {
+		return cacheProvider;
+	}
     
     protected JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2) throws Exception {
     	return null;
@@ -161,7 +165,7 @@ public abstract class LayerHelper {
         return StringUtils.join(params, "_");
     }
     
-    public String cacheGeoJson(List<ExtendedLandmark> landmarks, double lat, double lng, String layer) {
+    protected String cacheGeoJson(List<ExtendedLandmark> landmarks, double lat, double lng, String layer, String language) {
     	
     	/*{
   			"type": "Feature",
@@ -236,7 +240,7 @@ public abstract class LayerHelper {
     			}
     			
     			if (cacheProvider != null) {
-    				String key = "geojson_" + latStr + "_" + lngStr + "_" + layer;
+    				String key = "geojson_" + latStr + "_" + lngStr + "_" + layer + "_" + language;
     				logger.log(Level.INFO, "Saved geojson list to local in-memory cache with key: " + key);
     				cacheProvider.put(key, json, 1);
     			    return key;
@@ -248,9 +252,9 @@ public abstract class LayerHelper {
     	return null;
     }	
     
-    protected String getGeoJson(double lat, double lng, String layer) {
+    protected String getGeoJson(double lat, double lng, String layer, String language) {
     	if (cacheProvider != null) {
-    		String key = "geojson_" + StringUtil.formatCoordE2(lat) + "_" + StringUtil.formatCoordE2(lng) + "_" + layer;
+    		String key = "geojson_" + StringUtil.formatCoordE2(lat) + "_" + StringUtil.formatCoordE2(lng) + "_" + layer + "_" + language;
 			return cacheProvider.getString(key);
     	} else {
     		return null;

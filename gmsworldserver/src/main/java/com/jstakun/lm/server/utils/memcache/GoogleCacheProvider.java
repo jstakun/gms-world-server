@@ -50,7 +50,7 @@ public class GoogleCacheProvider implements CacheProvider {
 	public void putToSecondLevelCache(String key, String value) {
 		try {
 			URL cacheUrl = new URL("http://cache-gmsworld.rhcloud.com/rest/cache/" + key);
-			String resp = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, "POST", null, value, "application/json", Commons.getProperty(Property.RH_GMS_USER));
+			String resp = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, "POST", null, value, "application/json; charset=utf-8", Commons.getProperty(Property.RH_GMS_USER));
 			logger.log(Level.INFO, "Cache response: " + resp);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);

@@ -17,6 +17,7 @@ import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.memcache.CacheProvider;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
@@ -68,18 +69,18 @@ public class GeoJsonProviderServlet extends HttpServlet {
 				double lat = GeocodeUtils.getLatitude(request.getParameter("lat"));
 			    double lng =  GeocodeUtils.getLongitude(request.getParameter("lng"));
 			    String layer = request.getParameter("layer"); 
-			    LayerHelper layerHelper = LayerHelperFactory.getByName(layer);
+			    Locale locale = request.getLocale();
+				String language = StringUtil.getLanguage(locale.getLanguage(), "en", 2);
+				LayerHelper layerHelper = LayerHelperFactory.getByName(layer);
 			    if (layerHelper != null) {
-			    	json = layerHelper.getGeoJson(lat, lng, layer);		
+			    	json = layerHelper.getGeoJson(lat, lng, layer, language);		
 			    }
 			    
 				if (!StringUtils.startsWith(json, "{")) {
 					String latStr = StringUtil.formatCoordE2(lat);
 	    			String lngStr = StringUtil.formatCoordE2(lng);
 				    json = cacheProvider.getFromSecondLevelCache("geojson/" + layer + "/" + latStr + "/" + lngStr);
-	    			//URL cacheUrl = new URL("http://cache-gmsworld.rhcloud.com/rest/cache/geojson/" + layer + "/" + latStr + "/" + lngStr);
-					//json = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, Commons.getProperty(Property.RH_GMS_USER));				
-				}
+	    		}
 				
 				if (!StringUtils.startsWith(json, "{")  && layerHelper != null) {
 					try {
@@ -87,8 +88,8 @@ public class GeoJsonProviderServlet extends HttpServlet {
 						if (layer.equals(Commons.HOTELS_LAYER)) {
 							limit = 350;
 						}
-			    		List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(lat, lng, null, 20, 1032, limit, StringUtil.getStringLengthLimit("l"), "en", null, Locale.US, true);
-			    		String newkey = layerHelper.cacheGeoJson(landmarks, lat, lng, layer);                          
+						List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(lat, lng, null, 20, 1032, limit, StringUtil.getStringLengthLimit("l"), language, null, locale, true);
+			    		String newkey = layerHelper.cacheGeoJson(landmarks, lat, lng, layer, language);                          
 			    		if (newkey != null) {
 			    			json = CacheUtil.getString(newkey);
 			    		}

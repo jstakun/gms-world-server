@@ -48,7 +48,7 @@ public class LayersTest {
 		//lat = 52.25;
 		//lng = 20.95;
 		//bbox = "20.96,52.24,20.97,52.25"; //"51.25,19.95,53.25,21.95";
-		locale = new Locale("pl","PL");
+		locale = new Locale("pl",""); //"PL");
 		//new york test
 		lat = 40.71;
 		lng = -74.01;
@@ -158,7 +158,7 @@ public class LayersTest {
 				//System.out.println(landmark.getUrl());
 			}
 			
-			String key = layer.cacheGeoJson(landmarks, lat, lng, layer.getLayerName());
+			String key = layer.cacheGeoJson(landmarks, lat, lng, layer.getLayerName(), locale.getLanguage());
 			System.out.println(cacheProvider.getString(key));
 		} catch (Exception e) {
 			e.printStackTrace();

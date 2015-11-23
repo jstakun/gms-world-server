@@ -121,7 +121,6 @@ public class HotelsBookingUtils extends LayerHelper {
         
         Map<String, String> tokens = new HashMap<String, String>();
         
-        //TODO calculate price in USD (call exchange rate service)
         if (hotel.getMinrate() > 0.0) {
             Deal deal = new Deal(hotel.getMinrate(), -1, -1, null, hotel.getCurrencycode());
             landmark.setDeal(deal);

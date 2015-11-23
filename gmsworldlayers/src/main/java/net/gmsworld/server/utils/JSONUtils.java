@@ -2,8 +2,6 @@ package net.gmsworld.server.utils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
@@ -21,7 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.layers.LayerHelperFactory;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
@@ -167,47 +165,59 @@ public class JSONUtils {
         }
     }
     
-    private static void formatCurrency(Deal deal, Locale locale) {
-    	
-    	Currency currency = Currency.getInstance(locale);
-    	
-    	String tocc = currency.getCurrencyCode();
+    private static void formatCurrency(Deal deal, String language, String country, String layer) {
     	
     	String fromcc = deal.getCurrencyCode();
+    	String tocc = null;
+    	if (StringUtils.isEmpty(country)) {
+			country = language;
+		}
+		
+    	try {
+    		Locale locale = new Locale(language, country);
+    		Currency currency = Currency.getInstance(locale);
+    		tocc = currency.getCurrencyCode();
+    	} catch (Exception e) {
+    		logger.log(Level.SEVERE, e.getMessage() + ": " + country + "," + language);
+    	}
     	
-    	if (tocc != null && fromcc != null && !StringUtils.equals(tocc, fromcc)) {
-    		
-    		//TODO check cache
+    	if (tocc != null && fromcc != null && !StringUtils.equals(tocc, fromcc) && fromcc.length() == 3) {
     		
     		String currencyUrl = "http://api.fixer.io/latest?base=" + fromcc;
-			String resp = null;
+    		String resp = LayerHelperFactory.getByName(layer).getCacheProvider().getString(currencyUrl);
 			
-			try {
-				resp = HttpUtils.processFileRequest(new URL(currencyUrl));
-			} catch (Exception e) {
-				logger.log(Level.SEVERE, e.getMessage(), e);
-			}
-			
+			if (resp == null) {
+				try {
+					logger.log(Level.INFO, "Calling " + currencyUrl + "...");
+					resp = HttpUtils.processFileRequest(new URL(currencyUrl));
+					if (StringUtils.startsWith(resp, "{")) {
+				    	LayerHelperFactory.getByName(layer).getCacheProvider().put(currencyUrl, resp);
+				    }
+				} catch (Exception e) {
+					logger.log(Level.SEVERE, e.getMessage(), e);
+				}
+			}	
+				
 			if (StringUtils.startsWith(resp, "{")) {
 				JSONObject root = new JSONObject(resp);
 				if (root.has("error")) {
 					logger.log(Level.WARNING, "Currency " + fromcc + " response error: " + root.getString("error"));
 				} else {
-					//TODO cache root
 					JSONObject rates = root.getJSONObject("rates");
 					if (rates.has(tocc)) {
 						double toccrate = rates.getDouble(tocc);
 						deal.setCurrencyCode(tocc);
 						deal.setPrice(deal.getPrice() * toccrate);
-						logger.log(Level.INFO, "Changed currency from " + fromcc + " to " + tocc);
+						//logger.log(Level.INFO, "Changed currency from " + fromcc + " to " + tocc);
 					}
 				}
 			} else {
 				logger.log(Level.WARNING, currencyUrl + " received following response from the server: " + resp);
 			}
 			
-    	}
-    	
+    	} //else {
+    		//logger.log(Level.WARNING, "Skipping currency exchange from " + fromcc + " to " + tocc);
+    	//}  	
     }
     
     private static String formatDeal(Deal deal, Locale locale, ResourceBundle rb) {
@@ -371,7 +381,7 @@ public class JSONUtils {
         
         //System.out.println("P: " + deal.getPrice() + ", D: " + deal.getDiscount() + ", S: " + deal.getSave());
         if (landmark.containsDeal()) {
-        	formatCurrency(landmark.getDeal(), locale);
+        	formatCurrency(landmark.getDeal(), locale.getLanguage(), locale.getCountry(), landmark.getLayer());
             String priceFormatted = formatDeal(landmark.getDeal(), locale, rb);
             if (StringUtils.isNotEmpty(priceFormatted)) {
                 result.add(priceFormatted);
