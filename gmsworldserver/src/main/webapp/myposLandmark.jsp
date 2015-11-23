@@ -19,7 +19,7 @@
  }
 
  function showPosition(position) {
-	document.getElementById("status").innerHTML = "Redirecting to landmark page...";
+	document.getElementById("status").innerHTML = "Redirecting to landmarks page...";
 	//window.location.href = "/newLandmark/" + position.coords.latitude + "/" + position.coords.longitude; 	
 	window.location.replace("/newLandmark/" + position.coords.latitude + "/" + position.coords.longitude);
  }

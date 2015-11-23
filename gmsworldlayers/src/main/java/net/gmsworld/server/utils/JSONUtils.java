@@ -2,11 +2,15 @@ package net.gmsworld.server.utils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Currency;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -17,6 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
@@ -160,6 +165,49 @@ public class JSONUtils {
         } else {
             return "<a href=\"http://" + url + "\">" + name + "</a>";
         }
+    }
+    
+    private static void formatCurrency(Deal deal, Locale locale) {
+    	
+    	Currency currency = Currency.getInstance(locale);
+    	
+    	String tocc = currency.getCurrencyCode();
+    	
+    	String fromcc = deal.getCurrencyCode();
+    	
+    	if (tocc != null && fromcc != null && !StringUtils.equals(tocc, fromcc)) {
+    		
+    		//TODO check cache
+    		
+    		String currencyUrl = "http://api.fixer.io/latest?base=" + fromcc;
+			String resp = null;
+			
+			try {
+				resp = HttpUtils.processFileRequest(new URL(currencyUrl));
+			} catch (Exception e) {
+				logger.log(Level.SEVERE, e.getMessage(), e);
+			}
+			
+			if (StringUtils.startsWith(resp, "{")) {
+				JSONObject root = new JSONObject(resp);
+				if (root.has("error")) {
+					logger.log(Level.WARNING, "Currency " + fromcc + " response error: " + root.getString("error"));
+				} else {
+					//TODO cache root
+					JSONObject rates = root.getJSONObject("rates");
+					if (rates.has(tocc)) {
+						double toccrate = rates.getDouble(tocc);
+						deal.setCurrencyCode(tocc);
+						deal.setPrice(deal.getPrice() * toccrate);
+						logger.log(Level.INFO, "Changed currency from " + fromcc + " to " + tocc);
+					}
+				}
+			} else {
+				logger.log(Level.WARNING, currencyUrl + " received following response from the server: " + resp);
+			}
+			
+    	}
+    	
     }
     
     private static String formatDeal(Deal deal, Locale locale, ResourceBundle rb) {
@@ -323,6 +371,7 @@ public class JSONUtils {
         
         //System.out.println("P: " + deal.getPrice() + ", D: " + deal.getDiscount() + ", S: " + deal.getSave());
         if (landmark.containsDeal()) {
+        	formatCurrency(landmark.getDeal(), locale);
             String priceFormatted = formatDeal(landmark.getDeal(), locale, rb);
             if (StringUtils.isNotEmpty(priceFormatted)) {
                 result.add(priceFormatted);

@@ -2,6 +2,7 @@ package net.gmsworld.server.layers;
 
 import java.text.Normalizer;
 import java.text.Normalizer.Form;
+import java.util.Currency;
 import java.util.Locale;
 
 import org.junit.Test;
@@ -29,8 +30,16 @@ public class StringNormalizerTest {
 		                + removed + " (" + asHex(removed) + ")");
 		}
 		
+		System.out.println("\nLocales:\n");
+		
 		for (Locale locale : Locale.getAvailableLocales()) {
-			  System.out.println(locale.getCountry() + ": " + locale.getDisplayCountry());
+			System.out.println(locale.getCountry() + ": " + locale.getDisplayCountry());
+		}
+		
+		System.out.println("\nCurrencies:\n");
+		
+		for (Currency currency : Currency.getAvailableCurrencies()) {
+			System.out.println(currency.getCurrencyCode() + ": " + currency.getDisplayName());
 		}
 	}
 	

@@ -120,7 +120,8 @@ public class HotelsBookingUtils extends LayerHelper {
         landmark.setSubCategoryId(129);
         
         Map<String, String> tokens = new HashMap<String, String>();
-        tokens.put("maxRating", "10");
+        
+        //TODO calculate price in USD (call exchange rate service)
         if (hotel.getMinrate() > 0.0) {
             Deal deal = new Deal(hotel.getMinrate(), -1, -1, null, hotel.getCurrencycode());
             landmark.setDeal(deal);
@@ -128,7 +129,10 @@ public class HotelsBookingUtils extends LayerHelper {
         	Deal deal = new Deal(hotel.getMaxrate(), -1, -1, null, hotel.getCurrencycode());
             landmark.setDeal(deal);	
         }
+        
+        tokens.put("maxRating", "10");
         tokens.put("star_rating", Double.toString(hotel.getStars()));
+        
         if (hotel.getNr_rooms() > 0) {
         	tokens.put("no_rooms", Integer.toString(hotel.getNr_rooms()));
         }
