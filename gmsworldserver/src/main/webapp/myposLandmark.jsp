@@ -6,21 +6,20 @@
  <meta HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE"/>
  <meta HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE"/>
  <meta HTTP-EQUIV="EXPIRES" CONTENT="0"/>
- <title>Create landmark based on your location</title>
+ <title>Create landmark based on your location</title> <!-- //translate -->
  <script>
  function getLocation() {
 	var x = document.getElementById("status");
     if (navigator.geolocation) {
-    	x.innerHTML = "Please wait. I'm reading now your geolocation...";
+    	x.innerHTML = "Please wait. I'm reading now your geolocation..."; //translate
         navigator.geolocation.getCurrentPosition(showPosition, errorCallback, {maximumAge: 60000, timeout: 30000});
     } else { 
-    	x.innerHTML = "Geolocation is not supported by this browser!";
+    	x.innerHTML = "Geolocation is not supported by this browser!"; //translate
     }
  }
 
  function showPosition(position) {
-	document.getElementById("status").innerHTML = "Redirecting to landmarks page...";
-	//window.location.href = "/newLandmark/" + position.coords.latitude + "/" + position.coords.longitude; 	
+	document.getElementById("status").innerHTML = "Redirecting to landmarks page..."; //translate
 	window.location.replace("/newLandmark/" + position.coords.latitude + "/" + position.coords.longitude);
  }
 
@@ -29,16 +28,16 @@
 	console.log("Error: " + error);
 	switch(error.code) {
     	case error.PERMISSION_DENIED:
-        	x.innerHTML = "User denied the request for geolocation!"
+        	x.innerHTML = "User denied the request for geolocation!"; //translate
         	break;
     	case error.POSITION_UNAVAILABLE:
-        	x.innerHTML = "Location information is unavailable!"
+        	x.innerHTML = "Location information is unavailable!"; //translate
         	break;
     	case error.TIMEOUT:
-        	x.innerHTML = "The request to get user location timed out!"
+        	x.innerHTML = "The request to get user location timed out!"; //translate
         	break;
     	case error.UNKNOWN_ERROR:
-        	x.innerHTML = "An unknown error occurred!"
+        	x.innerHTML = "An unknown error occurred!"; //translate
         	break;
 	}
 	window.location.replace('/landmarks');

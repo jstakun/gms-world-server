@@ -72,13 +72,15 @@ public class GeoJsonProviderServlet extends HttpServlet {
 				String language = StringUtil.getLanguage(locale.getLanguage(), "en", 2);
 				LayerHelper layerHelper = LayerHelperFactory.getByName(layer);
 			    if (layerHelper != null) {
+			    	logger.log(Level.INFO, "Saerching geojson document in local in-memory cache...");
 			    	json = layerHelper.getGeoJson(lat, lng, layer, language);		
 			    }
 			    
 				if (!StringUtils.startsWith(json, "{")) {
 					String latStr = StringUtil.formatCoordE2(lat);
 	    			String lngStr = StringUtil.formatCoordE2(lng);
-	    			json = cacheProvider.getFromSecondLevelCache("geojson/" + layer + "/" + latStr + "/" + lngStr + "/" + language);
+	    			logger.log(Level.INFO, "Saerching geojson document in remote document cache...");
+			    	json = cacheProvider.getFromSecondLevelCache("geojson/" + layer + "/" + latStr + "/" + lngStr + "/" + language);
 	    		}
 				
 				if (!StringUtils.startsWith(json, "{")  && layerHelper != null) {
@@ -90,7 +92,8 @@ public class GeoJsonProviderServlet extends HttpServlet {
 						List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(lat, lng, null, 20, 1032, limit, StringUtil.getStringLengthLimit("l"), language, null, locale, true);
 			    		String newkey = layerHelper.cacheGeoJson(landmarks, lat, lng, layer, locale);                          
 			    		if (newkey != null) {
-			    			json = CacheUtil.getString(newkey);
+			    			logger.log(Level.INFO, "Saerching geojson document in in-memory document cache...");
+					    	json = CacheUtil.getString(newkey);
 			    		}
 					} catch (Exception e) {
 				    	logger.log(Level.SEVERE, e.getMessage(), e);

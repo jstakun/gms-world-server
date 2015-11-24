@@ -24,7 +24,7 @@
 	} else {
 		landmarkDesc = "'<span style=\"font-family:Cursive;font-size:14px;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;\">'+\n" +
                        "'<img src=\"/images/flagblue.png\"/><br/>' +\n" +
-                       "'This is map center location: " + StringUtil.formatCoordE6(latitude) + "," + StringUtil.formatCoordE6(longitude) + "'";
+                       "'This is map center location: " + StringUtil.formatCoordE6(latitude) + "," + StringUtil.formatCoordE6(longitude) + "'"; //translate
  
 	}
 	String landmarkName = null;
@@ -38,7 +38,8 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <style>
+    <title>Discover landmarks on the map</title> <!-- //translate -->
+	<style>
       html, body, #map-canvas { margin: 0; padding: 0; height: 100%; }
     </style>
     <script src="/js/jquery.min.js"></script>
@@ -134,7 +135,7 @@
           mc = new MarkerClusterer(map, markers, mcOptions);              
 
           $("#status").css({"background-color": "#fff", "border" : "2px solid #fff", "border-radius": "3px", "text-align": "center", "box-shadow" : "0 2px 6px rgba(0,0,0,.3)"});
-          $("#status").html("<img src=\'/images/progress.gif\' style=\'width:16px; height:16px; vertical-align: middle;'><span style='line-height:16px;'>&nbsp;Please wait for landmarks loading...</span>");
+          $("#status").html("<img src=\'/images/progress.gif\' style=\'width:16px; height:16px; vertical-align: middle;'><span style='line-height:16px;'>&nbsp;Please wait for landmarks loading...</span>"); //translate
 		  $("#status").center().show(); //.delay(5000).queue(function(n) {
 				  //$(this).hide(); n();
 		  //});  
@@ -229,7 +230,7 @@
 				mc.repaint();
 
 				$("#status").css({"background-color": "#fff", "border" : "2px solid #fff", "border-radius": "3px", "text-align": "center", "box-shadow" : "0 2px 6px rgba(0,0,0,.3)"});
-                $("#status").html(marker_counter + " landmarks were loaded to the map!");
+                $("#status").html(marker_counter + " landmarks were loaded to the map!"); //translate
 				$("#status").center().show().delay(3000).queue(function(n) {
 					  $(this).hide(); n();
 				});
@@ -245,7 +246,7 @@
 		        if (window.location.href.indexOf("?enabled=Hotels") == -1 && hotelsOnly == "false") {
 					var hotelControlDiv = document.createElement('div');
 		        	hotelControlDiv.index = 2;
-		        	var centerControl = new CenterControl(hotelControlDiv, 'center', '<img src=\'/images/hotel_search.png\' title=\'Discover hotels nearby\'/>');
+		        	var centerControl = new CenterControl(hotelControlDiv, 'center', '<img src=\'/images/hotel_search.png\' title=\'Discover hotels nearby\'/>'); //translate
 		        	map.controls[google.maps.ControlPosition.TOP_CENTER].push(hotelControlDiv);
 		        	google.maps.event.addDomListener(hotelControlDiv, 'click', function() { 
 		                window.location.href = window.location.href + '?enabled=Hotels';
@@ -254,7 +255,7 @@
 			        //new search button
 		        	var hotelControlDiv = document.createElement('div');
 		        	hotelControlDiv.index = 2;
-		        	var centerControl = new CenterControl(hotelControlDiv, 'center', 'New search');
+		        	var centerControl = new CenterControl(hotelControlDiv, 'center', 'New search'); //translate
 		        	map.controls[google.maps.ControlPosition.TOP_CENTER].push(hotelControlDiv);
 		        	google.maps.event.addDomListener(hotelControlDiv, 'click', function() { 
 		                window.location.href = '/hotels/' + map.getCenter().lat() + '/' + map.getCenter().lng() + '/' + map.getZoom();
@@ -263,14 +264,14 @@
 		       	    //legend
 		        	var topLocationsDiv = document.createElement('div');
 		        	var text = '<img src=\'/images/layers/0stars_blue_32.png\' style=\'width:32px; height:32px; vertical-align: middle;\' title=\'Single room or apartment venue\'><span style=\'line-height:32px;\'>&nbsp;Single room or apartment venue</span><br/>' +
-			        		   '<img src=\'/images/layers/star_0_32.png\' style=\'width:32px; height:32px; vertical-align: middle;\'><span style=\'line-height:32px;\' title=\'Multiple rooms or apartments venue\'>&nbsp;Multiple rooms or apartments venue</span>';
+			        		   '<img src=\'/images/layers/star_0_32.png\' style=\'width:32px; height:32px; vertical-align: middle;\'><span style=\'line-height:32px;\' title=\'Multiple rooms or apartments venue\'>&nbsp;Multiple rooms or apartments venue</span>'; //translate
 		        	var topLocationsControl = new CenterControl(topLocationsDiv, 'left', text);
 		     	    topLocationsDiv.index = 3
 		     	    map.controls[google.maps.ControlPosition.RIGHT_TOP].push(topLocationsDiv);	
 			    }	 
 			} else if ((layer_counter + excluded_layers) == layers.length && marker_counter == 1) {
 				$("#status").css({"background-color": "#fff", "border" : "2px solid #fff", "border-radius": "3px", "text-align": "center", "box-shadow" : "0 2px 6px rgba(0,0,0,.3)"});
-                $("#status").html("Oops. No landmarks available!");
+                $("#status").html("Oops. No landmarks available!"); //translate
 				$("#status").center().show().delay(3000).queue(function(n) {
 					  $(this).hide(); n();
 				});
