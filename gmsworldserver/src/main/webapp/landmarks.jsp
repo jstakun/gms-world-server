@@ -51,6 +51,7 @@
     }
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?libraries=visualization"></script>
+    <script src="/js/marker.js"></script>
     <script src="/js/markerclusterer.js"></script>
     <script>
       var mapcenter = new google.maps.LatLng(<%= latitude %>, <%= longitude %>);
@@ -147,24 +148,31 @@
           			var url = results.features[i].properties.url;
           			var desc = results.features[i].properties.desc;
                     var name = results.features[i].properties.name;
+                    var price = results.features[i].properties.price;
+
           			if (url == null || ismobile) {
 						url = results.features[i].properties.mobile_url
                   	}
+
                   	var icon = image;
                   	if (results.features[i].properties.icon != null) {
 						icon = '/images/layers/' + results.features[i].properties.icon;
                     }
+
           			if (desc != null) {
                         desc =  '<span style=\"font-family:Cursive;font-size:14px;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;\">' + 
                                 '<strong>' + name + '</strong><br/>' + desc + 
                                 '</span>';
                              
                   	}
-                  	var marker = new google.maps.Marker({
+                  	 
+                  	//google.maps.Marker
+                  	var marker = new Marker({
            				position: latLng,
             			title: name,
             			map: map,
             			icon: icon,
+            			text: price,
             			url: url, 
             			desc: desc
           			}); 

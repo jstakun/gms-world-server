@@ -181,6 +181,7 @@ public abstract class LayerHelper {
     	FeatureCollection featureCollection = new FeatureCollection();
 		featureCollection.setProperty("layer", layer);
 		featureCollection.setProperty("creationDate", new Date());
+		featureCollection.setProperty("language", language);
 		
 		if (!landmarks.isEmpty()) {    		
 			for (ExtendedLandmark landmark : landmarks) {
@@ -221,6 +222,9 @@ public abstract class LayerHelper {
     					}
     				} 
     				f.setProperty("icon", icon); 
+    				if (landmark.containsDeal()) {
+    					f.setProperty("price", StringUtil.formatCoordE0(landmark.getDeal().getPrice()) + " " + landmark.getDeal().getCurrencyCode());
+    				}
         		} else if (StringUtils.equals(layer, Commons.PANORAMIO_LAYER)) {
         			f.setProperty("url", StringUtils.replace(landmark.getUrl(), "/m/photo", "/photo")); 
         		}
