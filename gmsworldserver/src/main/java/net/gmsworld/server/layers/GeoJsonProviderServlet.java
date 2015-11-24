@@ -17,7 +17,6 @@ import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.memcache.CacheProvider;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
@@ -79,7 +78,7 @@ public class GeoJsonProviderServlet extends HttpServlet {
 				if (!StringUtils.startsWith(json, "{")) {
 					String latStr = StringUtil.formatCoordE2(lat);
 	    			String lngStr = StringUtil.formatCoordE2(lng);
-				    json = cacheProvider.getFromSecondLevelCache("geojson/" + layer + "/" + latStr + "/" + lngStr);
+	    			json = cacheProvider.getFromSecondLevelCache("geojson/" + layer + "/" + latStr + "/" + lngStr + "/" + language);
 	    		}
 				
 				if (!StringUtils.startsWith(json, "{")  && layerHelper != null) {
@@ -89,7 +88,7 @@ public class GeoJsonProviderServlet extends HttpServlet {
 							limit = 350;
 						}
 						List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(lat, lng, null, 20, 1032, limit, StringUtil.getStringLengthLimit("l"), language, null, locale, true);
-			    		String newkey = layerHelper.cacheGeoJson(landmarks, lat, lng, layer, language);                          
+			    		String newkey = layerHelper.cacheGeoJson(landmarks, lat, lng, layer, locale);                          
 			    		if (newkey != null) {
 			    			json = CacheUtil.getString(newkey);
 			    		}

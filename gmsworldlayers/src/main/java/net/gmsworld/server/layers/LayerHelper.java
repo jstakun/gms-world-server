@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -165,7 +166,7 @@ public abstract class LayerHelper {
         return StringUtils.join(params, "_");
     }
     
-    protected String cacheGeoJson(List<ExtendedLandmark> landmarks, double lat, double lng, String layer, String language) {
+    protected String cacheGeoJson(List<ExtendedLandmark> landmarks, double lat, double lng, String layer, Locale locale) {
     	
     	/*{
   			"type": "Feature",
@@ -181,9 +182,10 @@ public abstract class LayerHelper {
     	FeatureCollection featureCollection = new FeatureCollection();
 		featureCollection.setProperty("layer", layer);
 		featureCollection.setProperty("creationDate", new Date());
-		featureCollection.setProperty("language", language);
+		featureCollection.setProperty("language", locale.getLanguage());
 		
 		if (!landmarks.isEmpty()) {    		
+			ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource", locale);
 			for (ExtendedLandmark landmark : landmarks) {
     			Feature f = new Feature();
     			Point p = new Point();
@@ -208,7 +210,7 @@ public abstract class LayerHelper {
     				} else if (desc.contains("star_5")) {
     					desc = StringUtils.replace(desc, "star_5", "/images/star_5.png");
     				}	
-    				desc += "<br/><a href=\"" + landmark.getUrl() + "\" target=\"_blank\">Go to booking page...</a>";
+    				desc += "<br/><a href=\"" + landmark.getUrl() + "\" target=\"_blank\">" + rb.getString("hotels.booking") + "</a>";
     				f.setProperty("desc", desc);
     				int stars = StringUtils.countMatches(desc, "/images/star_blue.png");
     				String icon = "star_" + stars + ".png";
@@ -244,7 +246,7 @@ public abstract class LayerHelper {
     			}
     			
     			if (cacheProvider != null) {
-    				String key = "geojson_" + latStr + "_" + lngStr + "_" + layer + "_" + language;
+    				String key = "geojson_" + latStr + "_" + lngStr + "_" + layer + "_" + locale.getLanguage();
     				logger.log(Level.INFO, "Saved geojson list to local in-memory cache with key: " + key);
     				cacheProvider.put(key, json, 1);
     			    return key;
