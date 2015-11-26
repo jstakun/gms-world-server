@@ -72,7 +72,7 @@ public class GeoJsonProviderServlet extends HttpServlet {
 				String language = StringUtil.getLanguage(locale.getLanguage(), "en", 2);
 				LayerHelper layerHelper = LayerHelperFactory.getByName(layer);
 			    if (layerHelper != null) {
-			    	logger.log(Level.INFO, "Saerching geojson document in local in-memory cache...");
+			    	logger.log(Level.INFO, "Searching geojson document in local in-memory cache...");
 			    	json = layerHelper.getGeoJson(lat, lng, layer, language);		
 			    }
 			    

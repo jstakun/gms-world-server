@@ -41,13 +41,12 @@ public class TwitterUtils {
 		try {
         	    ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
                 if (type == Commons.SERVER) {
-                    message = String.format(rb.getString("Social.tw.server"), user, name, url);
-                } else if (type == Commons.BLOGEO) {
-                    //message = String.format(rb.getString("Social.tw.status"), "new geo message to #GMSWorldBlogeo", name, url);
+                    //message = String.format(rb.getString("Social.tw.server"), user, name, url);
                 	message = String.format(rb.getString("Social.tw.status.short"), url);
+                } else if (type == Commons.BLOGEO) {
+                    message = String.format(rb.getString("Social.tw.status"), "new geo message to #GMSWorldBlogeo", name, url);              	
                 } else if (type == Commons.LANDMARK) {
-                	message = String.format(rb.getString("Social.tw.status.short"), url); 
-                	//message = String.format(rb.getString("Social.tw.status"), "new point of interest to #GMSWorld", name, url);
+                	message = String.format(rb.getString("Social.tw.status"), "new point of interest to #GMSWorld", name, url); 
                 } else if (type == Commons.MY_POS) {
                     message = String.format(rb.getString("Social.tw.myloc"),  url);
                 } else if (type == Commons.LOGIN) {
@@ -59,7 +58,8 @@ public class TwitterUtils {
                 if (message != null) {
                 	//message length must be < 140
                     if (message.length() > 130 && url != null) {
-                		message = String.format(rb.getString("Social.tw.short"), url);
+                    	//Social.tw.short
+                		message = String.format(rb.getString("Social.tw.status.short"), url);
                 	}
                 	StatusUpdate update = new StatusUpdate(message);
                     if (latitude != null && longitude != null) {

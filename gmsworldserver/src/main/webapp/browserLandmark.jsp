@@ -25,7 +25,7 @@
 	<meta HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE"/>
 	<meta HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE"/>
 	<meta HTTP-EQUIV="EXPIRES" CONTENT="0"/>
-	<title>Please wait for <%= hotelsMode ? "hotel" : "landmark" %> creation and layer loading...</title> <!-- //translate -->
+	<title>Please wait for landmark creation and <%= hotelsMode ? "hotels" : "layers" %> loading...</title> <!-- //translate -->
 	<style type="text/css">
 	.loader {
 		position: fixed;
