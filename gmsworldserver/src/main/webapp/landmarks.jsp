@@ -4,6 +4,7 @@
                 net.gmsworld.server.config.Commons,
                 net.gmsworld.server.utils.StringUtil,
                 net.gmsworld.server.config.ConfigurationManager"%>
+<%@ taglib uri="http://struts.apache.org/tags-bean" prefix="bean"%>                                
 <%
     double latitude;
     if (request.getAttribute("lat") != null) {
@@ -11,34 +12,47 @@
     } else {
     	latitude = NumberUtils.getDouble(request.getParameter("lat"), 52.23);
     }
+    
     double longitude;
     if (request.getAttribute("lng") != null) {
 		longitude = NumberUtils.getDouble(request.getAttribute("lng").toString(), 21.02);
     } else {
     	longitude = NumberUtils.getDouble(request.getParameter("lng"), 21.02);
     }
-	boolean isMobile = StringUtils.equals(request.getParameter("mobile"), "true");
-	String landmarkDesc = null;
+	
+    boolean isMobile = StringUtils.equals(request.getParameter("mobile"), "true");
+	
+    String landmarkDesc = null;
 	if (request.getAttribute("landmarkDesc") != null) {
 		landmarkDesc = request.getAttribute("landmarkDesc").toString();
 	} else {
 		landmarkDesc = "'<span style=\"font-family:Cursive;font-size:14px;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;\">'+\n" +
                        "'<img src=\"/images/flagblue.png\"/><br/>' +\n" +
-                       "'This is map center location: " + StringUtil.formatCoordE6(latitude) + "," + StringUtil.formatCoordE6(longitude) + "'"; //translate
- 
+                       "'" + StringUtil.formatCoordE6(latitude) + "," + StringUtil.formatCoordE6(longitude) + "'"; 
 	}
+	
 	String landmarkName = null;
 	if (request.getAttribute("landmarkName") != null) {
 		landmarkName = request.getAttribute("landmarkName").toString();
 	} else {	
-		landmarkName = "'Map center location: " + StringUtil.formatCoordE6(latitude) + "," + StringUtil.formatCoordE6(longitude) + "'";
+		landmarkName = "'" + StringUtil.formatCoordE6(latitude) + "," + StringUtil.formatCoordE6(longitude) + "'";
 	}
+	
+	String enabled = request.getParameter("enabled");
+    
+	String disabled = request.getParameter("disabled");
+    
+	boolean hotelsMode = StringUtils.equals(enabled, "Hotels");
 %>
 <!DOCTYPE html>
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Discover landmarks on the map</title> <!-- //translate -->
+    <% if (hotelsMode) { %>
+    <title><bean:message key="hotels.discover" /></title>
+  	<% } else { %>
+  	<title><bean:message key="landmarks.discover" /></title>
+  	<% } %>
 	<style>
       html, body, #map-canvas { margin: 0; padding: 0; height: 100%; }
     </style>
@@ -74,8 +88,6 @@
       var layers = [
           
 <%
-      String enabled = request.getParameter("enabled");
-      String disabled = request.getParameter("disabled");
       for (String layer : Commons.getLayers()) {
 %>
 {"name": "<%= layer %>", "icon" : "<%= com.jstakun.lm.server.config.ConfigurationManager.getLayerIcon(layer) %>", "enabled" : "<%= (StringUtils.containsIgnoreCase(enabled, layer) || (disabled != null && !StringUtils.containsIgnoreCase(disabled, layer)) || (disabled == null && enabled == null)) %>"},
@@ -132,10 +144,16 @@
 
           var mcOptions = {gridSize: 50, maxZoom: 18};
           var markers = [flagmarker]; 
-          mc = new MarkerClusterer(map, markers, mcOptions);              
+          mc = new MarkerClusterer(map, markers, mcOptions);       
+
+          <% if (hotelsMode) { %>
+          var message = '<bean:message key="hotels.wait" />';
+          <% } else { %>
+          var message = '<bean:message key="landmarks.wait" />';
+          <% } %>
 
           $("#status").css({"background-color": "#fff", "border" : "2px solid #fff", "border-radius": "3px", "text-align": "center", "box-shadow" : "0 2px 6px rgba(0,0,0,.3)"});
-          $("#status").html("<img src=\'/images/progress.gif\' style=\'width:16px; height:16px; vertical-align: middle;'><span style='line-height:16px;'>&nbsp;Please wait for landmarks loading...</span>"); //translate
+          $("#status").html("<img src=\'/images/progress.gif\' style=\'width:16px; height:16px; vertical-align: middle;'><span style='line-height:16px;'>&nbsp;" + message + "</span>");
 		  $("#status").center().show(); //.delay(5000).queue(function(n) {
 				  //$(this).hide(); n();
 		  //});  
@@ -161,10 +179,8 @@
                     }
 
           			if (desc != null) {
-                        desc =  '<span style=\"font-family:Cursive;font-size:14px;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;\">' + 
-                                '<strong>' + name + '</strong><br/>' + desc + 
-                                '</span>';
-                             
+                        desc = '<span style=\"font-family:Cursive;font-size:14px;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;\">' + 
+                               '<strong>' + name + '</strong><br/>' + desc + '</span>';
                   	}
                   	 
                   	//google.maps.Marker
@@ -229,15 +245,21 @@
 		   if ((layer_counter + excluded_layers) == layers.length && marker_counter > 1) {
 				mc.repaint();
 
+				<% if (hotelsMode) { %>
+		        var message = '<bean:message key="hotels.loaded" />';
+		        <% } else { %>
+		        var message = '<bean:message key="landmarks.loaded" />';
+		        <% } %>
+				
 				$("#status").css({"background-color": "#fff", "border" : "2px solid #fff", "border-radius": "3px", "text-align": "center", "box-shadow" : "0 2px 6px rgba(0,0,0,.3)"});
-                $("#status").html(marker_counter + " landmarks were loaded to the map!"); //translate
+                $("#status").html(marker_counter + " " + message);
 				$("#status").center().show().delay(3000).queue(function(n) {
 					  $(this).hide(); n();
 				});
 
 				var centerControlDiv = document.createElement('div');
 				centerControlDiv.index = 1;
-		        var centerControl = new CenterControl(centerControlDiv, 'center', 'Center map');
+		        var centerControl = new CenterControl(centerControlDiv, 'center', '<bean:message key="landmarks.center.map" />');
 		        map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(centerControlDiv);
 		        google.maps.event.addDomListener(centerControlDiv, 'click', function() {
 		    	   	 map.setCenter(mapcenter)
@@ -246,7 +268,7 @@
 		        if (window.location.href.indexOf("?enabled=Hotels") == -1 && hotelsOnly == "false") {
 					var hotelControlDiv = document.createElement('div');
 		        	hotelControlDiv.index = 2;
-		        	var centerControl = new CenterControl(hotelControlDiv, 'center', '<img src=\'/images/hotel_search.png\' title=\'Discover hotels nearby\'/>'); //translate
+		        	var centerControl = new CenterControl(hotelControlDiv, 'center', '<img src=\'/images/hotel_search.png\' title=\'<bean:message key="hotels.discover.nearby" />\'/>'); 
 		        	map.controls[google.maps.ControlPosition.TOP_CENTER].push(hotelControlDiv);
 		        	google.maps.event.addDomListener(hotelControlDiv, 'click', function() { 
 		                window.location.href = window.location.href + '?enabled=Hotels';
@@ -255,7 +277,7 @@
 			        //new search button
 		        	var hotelControlDiv = document.createElement('div');
 		        	hotelControlDiv.index = 2;
-		        	var centerControl = new CenterControl(hotelControlDiv, 'center', 'New search'); //translate
+		        	var centerControl = new CenterControl(hotelControlDiv, 'center', '<bean:message key="landmarks.new.search" />'); 
 		        	map.controls[google.maps.ControlPosition.TOP_CENTER].push(hotelControlDiv);
 		        	google.maps.event.addDomListener(hotelControlDiv, 'click', function() { 
 		                window.location.href = '/hotels/' + map.getCenter().lat() + '/' + map.getCenter().lng() + '/' + map.getZoom();
@@ -263,15 +285,20 @@
 
 		       	    //legend
 		        	var topLocationsDiv = document.createElement('div');
-		        	var text = '<img src=\'/images/layers/0stars_blue_32.png\' style=\'width:32px; height:32px; vertical-align: middle;\' title=\'Single room or apartment venue\'><span style=\'line-height:32px;\'>&nbsp;Single room or apartment venue</span><br/>' +
-			        		   '<img src=\'/images/layers/star_0_32.png\' style=\'width:32px; height:32px; vertical-align: middle;\'><span style=\'line-height:32px;\' title=\'Multiple rooms or apartments venue\'>&nbsp;Multiple rooms or apartments venue</span>'; //translate
+		        	var text = '<img src=\'/images/layers/0stars_blue_32.png\' style=\'width:32px; height:32px; vertical-align: middle;\' title=\'Single room or apartment venue\'><span style=\'line-height:32px;\'>&nbsp;<bean:message key="hotels.single.venue" /></span><br/>' +
+			        		   '<img src=\'/images/layers/star_0_32.png\' style=\'width:32px; height:32px; vertical-align: middle;\'><span style=\'line-height:32px;\' title=\'Multiple rooms or apartments venue\'>&nbsp;<bean:message key="hotels.multiple.venue" /></span>'; 
 		        	var topLocationsControl = new CenterControl(topLocationsDiv, 'left', text);
 		     	    topLocationsDiv.index = 3
 		     	    map.controls[google.maps.ControlPosition.RIGHT_TOP].push(topLocationsDiv);	
 			    }	 
 			} else if ((layer_counter + excluded_layers) == layers.length && marker_counter == 1) {
+				<% if (hotelsMode) { %>
+		        var message = '<bean:message key="hotels.none" />';
+		        <% } else { %>
+		        var message = '<bean:message key="landmarks.none" />';
+		        <% } %>
 				$("#status").css({"background-color": "#fff", "border" : "2px solid #fff", "border-radius": "3px", "text-align": "center", "box-shadow" : "0 2px 6px rgba(0,0,0,.3)"});
-                $("#status").html("Oops. No landmarks available!"); //translate
+                $("#status").html("Oops. No landmarks available!");
 				$("#status").center().show().delay(3000).queue(function(n) {
 					  $(this).hide(); n();
 				});

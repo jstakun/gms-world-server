@@ -16,6 +16,8 @@
  } else {
 	 enabled = "";
  }
+ String latitude = request.getParameter("latitude");
+ String longitude = request.getParameter("longitude");
 %>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -53,8 +55,8 @@
   	dataType: "json",
   	url: gmsAPI,
   	data: {
-  	    	latitude: "<%= request.getParameter("latitude") %>",
-  	    	longitude: "<%= request.getParameter("longitude") %>"
+  	    	latitude: "<%= latitude %>",
+  	    	longitude: "<%= longitude %>"
   	},
     beforeSend: function( xhr ) {
         xhr.setRequestHeader("X-GMS-Token", "<%= token  %>");
@@ -71,7 +73,7 @@
   	.error(function(jqXHR, textStatus, errorThrown){ /* assign handler */
   		    $( 'div' ).remove();   
   		    var errorMessage = "Error occured: " + errorThrown + "!"; //translate
-	  		$( 'body' ).append("<p>" + errorMessage + "<br/><a href=\"#\" onclick=\"history.go(-1)\">Please try again.</a></p>"); //translate
+	  		$( 'body' ).append("<p>" + errorMessage + "<br/><a href=\"<%= hotelsMode ? "/hotels" : "/landmarks" %>\">Please try again.</a></p>"); //translate
 	  		console.log(errorMessage);
   	    	alert(errorMessage);
   	});
