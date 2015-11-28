@@ -86,8 +86,12 @@ public class HtmlUtils {
 		keys = default_locations.keySet().toArray();
 	} 
 
-	public static String buildLandmarkDesc(Landmark landmark, Object address, Locale locale) {
-	    String desc = "'<span style=\"font-family:Cursive;font-size:14px;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;\">'+\n" +
+	public static String buildLandmarkDesc(Landmark landmark, Object address, Locale locale, boolean isMobile) {
+	    int fontSize = 16;
+	    if (isMobile) {
+	    	fontSize = 24;
+	    }
+		String desc = "'<span style=\"font-family:Roboto,Arial,sans-serif;font-size:" + fontSize + "px;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;\">'+\n" +
 	            "'<img src=\"/images/flagblue.png\"/><br/>'+\n" +
 	            "'Name: " + StringEscapeUtils.escapeJavaScript(landmark.getName()) + ",<br/>'+\n";
 	    String landmarkDesc = landmark.getDescription();

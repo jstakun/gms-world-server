@@ -43,6 +43,11 @@
 	String disabled = request.getParameter("disabled");
     
 	boolean hotelsMode = StringUtils.equals(enabled, "Hotels");
+
+	String fontSize = "16px";
+	if (isMobile) {
+    	fontSize = "24px";
+	}
 %>
 <!DOCTYPE html>
 <html>
@@ -71,7 +76,7 @@
     <script>
       var mapcenter = new google.maps.LatLng(<%= latitude %>, <%= longitude %>);
 
-      var hotelsOnly = "true"; 
+      var hotelsOnly = true; 
 
       var map;
 
@@ -152,11 +157,10 @@
           var message = '<bean:message key="landmarks.wait" />';
           <% } %>
 
+          //scale
           $("#status").css({"background-color": "#fff", "border" : "2px solid #fff", "border-radius": "3px", "text-align": "center", "box-shadow" : "0 2px 6px rgba(0,0,0,.3)"});
-          $("#status").html("<img src=\'/images/progress.gif\' style=\'width:16px; height:16px; vertical-align: middle;'><span style='line-height:16px;'>&nbsp;" + message + "</span>");
-		  $("#status").center().show(); //.delay(5000).queue(function(n) {
-				  //$(this).hide(); n();
-		  //});  
+          $("#status").html("<img src=\'/images/progress.gif\' style=\'width:16px; height:16px; vertical-align: middle;'><span style='line-height:<%=fontSize%>;'>&nbsp;" + message + "</span>");
+		  $("#status").center().show();
       }
 
       function loadMarkers(results, image, ismobile) {
@@ -178,12 +182,12 @@
 						icon = '/images/layers/' + results.features[i].properties.icon;
                     }
 
-          			if (desc != null) {
-                        desc = '<span style=\"font-family:Cursive;font-size:14px;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;\">' + 
+          			if (desc != null) { 
+                        desc = '<span style=\"font-family:Roboto,Arial,sans-serif;font-size:<%=fontSize%>;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;\">' + 
                                '<strong>' + name + '</strong><br/>' + desc + '</span>';
                   	}
                   	 
-                  	//google.maps.Marker
+                  	//my Marker
                   	var marker = new Marker({
            				position: latLng,
             			title: name,
@@ -191,7 +195,8 @@
             			icon: icon,
             			text: price,
             			url: url, 
-            			desc: desc
+            			desc: desc,
+            			mobile: <%= isMobile %>,
           			}); 
 
                   	//google.maps.event.addListener(marker, 'mouseover', function() {
@@ -233,7 +238,7 @@
                     		console.log("Received " + results.features.length + " landmarks from layer " + layer);
           	  				loadMarkers(results, image, <%= isMobile %>);
                             if (layer != "Hotels") {
-								hotelsOnly = "false";
+								hotelsOnly = false;
                             }
                             //$("#status").hide();
                             mc.repaint();
@@ -265,7 +270,7 @@
 		    	   	 map.setCenter(mapcenter)
 		    	});
 
-		        if (window.location.href.indexOf("?enabled=Hotels") == -1 && hotelsOnly == "false") {
+		        if (window.location.href.indexOf("?enabled=Hotels") == -1 && hotelsOnly == false) {
 					var hotelControlDiv = document.createElement('div');
 		        	hotelControlDiv.index = 2;
 		        	var centerControl = new CenterControl(hotelControlDiv, 'center', '<img src=\'/images/hotel_search.png\' title=\'<bean:message key="hotels.discover.nearby" />\'/>'); 
@@ -284,7 +289,7 @@
 		       	    }); 
 
 		       	    //legend
-		        	var topLocationsDiv = document.createElement('div');
+		        	var topLocationsDiv = document.createElement('div'); //scale
 		        	var text = '<img src=\'/images/layers/0stars_blue_32.png\' style=\'width:32px; height:32px; vertical-align: middle;\' title=\'Single room or apartment venue\'><span style=\'line-height:32px;\'>&nbsp;<bean:message key="hotels.single.venue" /></span><br/>' +
 			        		   '<img src=\'/images/layers/star_0_32.png\' style=\'width:32px; height:32px; vertical-align: middle;\'><span style=\'line-height:32px;\' title=\'Multiple rooms or apartments venue\'>&nbsp;<bean:message key="hotels.multiple.venue" /></span>'; 
 		        	var topLocationsControl = new CenterControl(topLocationsDiv, 'left', text);
@@ -326,8 +331,8 @@
           var controlText = document.createElement('div');
           controlText.style.color = 'rgb(25,25,25)';
           controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
-          controlText.style.fontSize = '16px';
-          controlText.style.lineHeight = '32px';
+          controlText.style.fontSize = '<%=fontSize%>';
+          controlText.style.lineHeight = '32px'; //scale
           controlText.style.paddingLeft = '4px';
           controlText.style.paddingRight = '4px';
           controlText.innerHTML = text;
@@ -338,7 +343,7 @@
     </script>
   </head>
   <body>
-    <div id="map-canvas"></div>
-    <div id="status" style="color:black;font-family:Roboto,Arial,sans-serif;font-size:16px;line-height:32px;padding-left:4px;padding-right:4px"></div>
+    <div id="map-canvas"></div>                                             <!--         scale           -->
+    <div id="status" style="color:black;font-family:Roboto,Arial,sans-serif;font-size:<%=fontSize%>;line-height:32px;padding-left:4px;padding-right:4px"></div>
   </body>
 </html>

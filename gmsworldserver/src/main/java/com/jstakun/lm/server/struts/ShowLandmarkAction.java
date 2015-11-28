@@ -133,23 +133,25 @@ public class ShowLandmarkAction extends Action {
         
         if (landmark != null && System.currentTimeMillis() - landmark.getCreationDate().getTime() < CacheUtil.LONG_CACHE_LIMIT) {
         	OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
+        	boolean isMobile = os.isMobileDevice();
         	request.setAttribute("lat", StringUtil.formatCoordE6(landmark.getLatitude()));
         	request.setAttribute("lng", StringUtil.formatCoordE6(landmark.getLongitude()));
-        	request.setAttribute("landmarkDesc", HtmlUtils.buildLandmarkDesc(landmark, request.getAttribute("address"), request.getLocale()));
+        	request.setAttribute("landmarkDesc", HtmlUtils.buildLandmarkDesc(landmark, request.getAttribute("address"), request.getLocale(), isMobile));
         	request.setAttribute("landmarkName", "'" + landmark.getName() + "'");
-        	if (os.isMobileDevice()) {
+        	if (isMobile) {
                 return mapping.findForward("landmarksMobile");
             } else {
             	return mapping.findForward("landmarks");
             } 
         } else if (landmark != null && StringUtils.isNotEmpty(request.getParameter("fullScreenLandmarkMap"))) {
         	OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
+        	boolean isMobile = os.isMobileDevice();
         	request.setAttribute("lat", StringUtil.formatCoordE6(landmark.getLatitude()));
         	request.setAttribute("lng", StringUtil.formatCoordE6(landmark.getLongitude()));
-        	request.setAttribute("landmarkDesc", HtmlUtils.buildLandmarkDesc(landmark, request.getAttribute("address"), request.getLocale()));
+        	request.setAttribute("landmarkDesc", HtmlUtils.buildLandmarkDesc(landmark, request.getAttribute("address"), request.getLocale(), isMobile));
         	request.setAttribute("landmarkName", "'" + landmark.getName() + "'");
         	//return mapping.findForward("fullScreen");
-        	if (os.isMobileDevice()) {
+        	if (isMobile) {
                 return mapping.findForward("landmarksMobile");
             } else {
             	return mapping.findForward("landmarks");

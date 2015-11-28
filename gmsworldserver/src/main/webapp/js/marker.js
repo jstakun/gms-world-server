@@ -4,9 +4,9 @@ var
 			url: '/images/layers/0stars_blue.png',
 			size: { x: 48, y: 48 }
 		},
-		shadow: {
+		mobile: {
 			url: '/images/layers/0stars_blue.png',
-			size: { x: 48, y: 48 }
+			size: { x: 72, y: 72 }
 		}
 	};
 	
@@ -18,7 +18,8 @@ var Marker = function(options){
 		this.MarkerLabel = new MarkerLabel({
 			map: this.map,
 			marker: this,
-			text: options.text
+			text: options.text,
+			mobile: options.mobile
 		});
 		this.MarkerLabel.bindTo('position', this, 'position');
 	}
@@ -32,7 +33,7 @@ Marker.prototype = $.extend(new google.maps.Marker(), {
 	}
 });
 
-// Our custom marker label overlay
+//marker label overlay
 var MarkerLabel = function(options) {
 
 	var self = this;
@@ -41,9 +42,13 @@ var MarkerLabel = function(options) {
 	
 	this.span = document.createElement('span');
 	
-	this.span.style.cssText = 'position: relative; left: -50%; top: -65px; ' + 
-	                     'white-space: nowrap; border: 2px solid black; ' +
-	                     'padding: 2px; background-color: white; color:green; font-weight: bold;';
+	var size = 'top: -73px;font-size: 16px;'
+	if (options.mobile == true) {
+		size = 'top: -81px;font-size: 24px;'
+	}
+	
+	this.span.style.cssText = 'position: relative; left: -50%; white-space: nowrap; border: 2px solid black;' +
+	                     'padding: 2px; background-color: white; color:green; font-weight: bold; font-family:Roboto,Arial,sans-serif;' + size;
 
 	// Create the label container
 	this.div = document.createElement('div');
@@ -83,10 +88,15 @@ MarkerLabel.prototype = $.extend(new google.maps.OverlayView(), {
 			projection = this.getProjection(),
 		    position = projection.fromLatLngToDivPixel(this.get('position'));
 			
-		    this.div.style.left = position.x + 'px';
-			this.div.style.top = position.y + 'px';
-			this.div.style.display = 'block';
+		
+		if (this.get('mobile') == true) {
+			markerSize = marker.mobile.size;
+		} 
+		
+		this.div.style.left = position.x + 'px';
+		this.div.style.top = position.y + 'px';
+		this.div.style.display = 'block';
 			
-			this.span.innerHTML = text;
+		this.span.innerHTML = text;
 	}
 });
