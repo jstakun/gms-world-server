@@ -45,47 +45,54 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
                         
                         double lat = location.getDouble("lat");
                         double lng = location.getDouble("lng");
+                        
+                        if (Math.abs(lat - 39.78373) < 0.0001 && Math.abs(lng - -100.445882) < 0.0001) {
+                        	jsonResponse.put("status", "Error");
+                            jsonResponse.put("message", "No matching place found");
+                            logger.log(Level.WARNING, "Selected location is too inaccurate");
+                        } else {
 
-                        //jsonResponse = "{\"status\":\"OK\",\"lat\":\"" + lat + "\",\"lng\":\"" + lng + "\",\"type\":\"g\"}";
-                        jsonResponse.put("status", "OK");
-                        jsonResponse.put("lat", lat);
-                        jsonResponse.put("lng", lng);
-                        jsonResponse.put("type", "g");
+                        	//jsonResponse = "{\"status\":\"OK\",\"lat\":\"" + lat + "\",\"lng\":\"" + lng + "\",\"type\":\"g\"}";
+                        	jsonResponse.put("status", "OK");
+                        	jsonResponse.put("lat", lat);
+                        	jsonResponse.put("lng", lng);
+                        	jsonResponse.put("type", "g");
 
-                        try {
-                           GeocodeCachePersistenceUtils.persistGeocode(addressIn, 0, null, lat, lng);
+                        	try {
+                        		GeocodeCachePersistenceUtils.persistGeocode(addressIn, 0, null, lat, lng);
 
-                           if (persistAsLandmark) {
-                           //if (ConfigurationManager.getParam(ConfigurationManager.SAVE_GEOCODE_AS_LANDMARK, ConfigurationManager.OFF).equals(ConfigurationManager.ON)) {
-                        	   JSONArray address_components = item.getJSONArray("address_components");
-                               String cc = null, city = null;
-                        	   for (int i = 0;i < address_components.length(); i++) {
-                               		JSONObject address_component = address_components.getJSONObject(i);
-                               		JSONArray types = address_component.getJSONArray("types");
-                               		for (int j=0;j<types.length();j++) {
-                               			String type = types.getString(j);
-                               			if (StringUtils.equals(type, "country")) {
-                               				cc = address_component.getString("short_name");
-                               			} else if (StringUtils.equals(type, "locality")) {
+                        		if (persistAsLandmark) {
+                        			//if (ConfigurationManager.getParam(ConfigurationManager.SAVE_GEOCODE_AS_LANDMARK, ConfigurationManager.OFF).equals(ConfigurationManager.ON)) {
+                        			JSONArray address_components = item.getJSONArray("address_components");
+                        			String cc = null, city = null;
+                        			for (int i = 0;i < address_components.length(); i++) {
+                        				JSONObject address_component = address_components.getJSONObject(i);
+                        				JSONArray types = address_component.getJSONArray("types");
+                        				for (int j=0;j<types.length();j++) {
+                        					String type = types.getString(j);
+                        					if (StringUtils.equals(type, "country")) {
+                               					cc = address_component.getString("short_name");
+                        					} else if (StringUtils.equals(type, "locality")) {
                                				city = address_component.getString("long_name");
-                               			} 
-                               		}
-                               }
+                        					} 
+                        				}
+                        			}
                         	   
-                        	   JSONObject flex = new JSONObject();
-                        	   if (StringUtils.isNotEmpty(cc) && StringUtils.isNotEmpty(city)) {
-                        		   flex.put("cc", cc);
-                        		   flex.put("city", city);
-                        	   }
-                        	   if (appId >= 0) {
-                        		   flex.put("appId", appId);
-                        	   }
+                        			JSONObject flex = new JSONObject();
+                        			if (StringUtils.isNotEmpty(cc) && StringUtils.isNotEmpty(city)) {
+                        				flex.put("cc", cc);
+                        				flex.put("city", city);
+                        			}
+                        			if (appId >= 0) {
+                        				flex.put("appId", appId);
+                        			}
                         	   
-                        	   LandmarkPersistenceUtils.persistLandmark(address, "", lat, lng, 0.0, "geocode", null, Commons.GEOCODES_LAYER, email, flex.toString());
-                           }
-                        } catch (Exception ex) {
-                               logger.log(Level.SEVERE, ex.getMessage(), ex);
-                        }
+                        			LandmarkPersistenceUtils.persistLandmark(address, "", lat, lng, 0.0, "geocode", null, Commons.GEOCODES_LAYER, email, flex.toString());
+                        		}
+                        	} catch (Exception ex) {
+                                logger.log(Level.SEVERE, ex.getMessage(), ex);
+                        	}
+                        } 
                     } else {
                         jsonResponse.put("status", "Error");
                         jsonResponse.put("message", "No matching place found");

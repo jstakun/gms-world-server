@@ -30,7 +30,7 @@ public class MapQuestUtils extends GeocodeHelper {
 	
 	@Override
 	public JSONObject processGeocode(String location, String email, int appId, boolean persistAsLandmark) {
-		JSONObject jsonResponse = null;
+		JSONObject jsonResponse = new JSONObject();
 
         try {
         	String urlString = "http://open.mapquestapi.com/geocoding/v1/address?key=" + Commons.getProperty(Property.MAPQUEST_APPKEY) + "&location=" + URLEncoder.encode(location, "UTF-8");
@@ -49,40 +49,45 @@ public class MapQuestUtils extends GeocodeHelper {
         				double lat = latLng.getDouble("lat");
         				double lng = latLng.getDouble("lng");
         				
-        				String text = locationJson.optString("adminArea5");
-        				String city = null;
-        				if (text != null) {
-        					String decomposed = Normalizer.normalize(text, Normalizer.Form.NFD);
-        					city = decomposed.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");       		    
-        				}
-        				
-                		String cc = locationJson.optString("adminArea1");
-                		
-        				try {
-        					GeocodeCachePersistenceUtils.persistGeocode(location, 0, "", lat, lng);
-        					//if (ConfigurationManager.getParam(ConfigurationManager.SAVE_GEOCODE_AS_LANDMARK, ConfigurationManager.OFF).equals(ConfigurationManager.ON)) {
-        					if (persistAsLandmark) {
-        						String name = WordUtils.capitalize(location, delim);
-        						JSONObject flex = new JSONObject();
-                         	   	if (StringUtils.isNotEmpty(cc) && StringUtils.isNotEmpty(city)) {
-                         	   		flex.put("cc", cc);
-                         	   		flex.put("city", city);
-                         	   	}
-                         	   	if (appId >= 0) {
-                         	   		flex.put("appId", appId);
-                         	   	}
-                         	    LandmarkPersistenceUtils.persistLandmark(name, "", lat, lng, 0.0, "geocode", null, Commons.GEOCODES_LAYER, email, flex.toString());
+        				if (Math.abs(lat - 39.78373) < 0.0001 && Math.abs(lng - -100.445882) < 0.0001) {
+                        	jsonResponse.put("status", "Error");
+                            jsonResponse.put("message", "No matching place found");
+                            logger.log(Level.WARNING, "Selected location is too inaccurate");
+                        } else {
+                        	String text = locationJson.optString("adminArea5");
+        					String city = null;
+        					if (text != null) {
+        						String decomposed = Normalizer.normalize(text, Normalizer.Form.NFD);
+        						city = decomposed.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");       		    
         					}
-        					//}
-        				} catch (Exception ex) {
-        					logger.log(Level.SEVERE, ex.getMessage(), ex);
-        				}
+        				
+                			String cc = locationJson.optString("adminArea1");
+                		
+        					try {
+        						GeocodeCachePersistenceUtils.persistGeocode(location, 0, "", lat, lng);
+        						//if (ConfigurationManager.getParam(ConfigurationManager.SAVE_GEOCODE_AS_LANDMARK, ConfigurationManager.OFF).equals(ConfigurationManager.ON)) {
+        						if (persistAsLandmark) {
+        							String name = WordUtils.capitalize(location, delim);
+        							JSONObject flex = new JSONObject();
+                         	   		if (StringUtils.isNotEmpty(cc) && StringUtils.isNotEmpty(city)) {
+                         	   			flex.put("cc", cc);
+                         	   			flex.put("city", city);
+                         	   		}
+                         	   		if (appId >= 0) {
+                         	   			flex.put("appId", appId);
+                         	   		}
+                         	   		LandmarkPersistenceUtils.persistLandmark(name, "", lat, lng, 0.0, "geocode", null, Commons.GEOCODES_LAYER, email, flex.toString());
+        						}
+        						//}
+        					} catch (Exception ex) {
+        						logger.log(Level.SEVERE, ex.getMessage(), ex);
+        					}
                 	
-        				jsonResponse = new JSONObject();
-        				jsonResponse.put("status", "OK");
-        	            jsonResponse.put("lat", lat);
-        	            jsonResponse.put("lng", lng);
-        	            jsonResponse.put("type", "m");
+        					jsonResponse.put("status", "OK");
+        	            	jsonResponse.put("lat", lat);
+        	            	jsonResponse.put("lng", lng);
+        	            	jsonResponse.put("type", "m");
+                        }
         			}
         		}
         	} else {
@@ -91,18 +96,16 @@ public class MapQuestUtils extends GeocodeHelper {
         } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.getMessage(), ex);
             try {
-            	jsonResponse = new JSONObject().
-                                put("status", "Error").
-                                put("message", "Internal server error");
+            	jsonResponse.put("status", "Error");
+            	jsonResponse.put("message", "Internal server error");
             } catch (Exception e) {
                 logger.log(Level.SEVERE, e.getMessage(), e);
             }
         }
         
-        if (jsonResponse == null) {
-        	jsonResponse = new JSONObject().
-                    put("status", "Error").
-                    put("message", "No geocode found");
+        if (jsonResponse.opt("status") == null) {
+        	jsonResponse.put("status", "Error");
+        	jsonResponse.put("message", "No geocode found");
         }
         
         return jsonResponse;

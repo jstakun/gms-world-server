@@ -18,7 +18,7 @@ public class GeocodeTest {
 
 	@Test
 	public void test() throws IOException {
-		String address = "UK, London, 64 Baker Street";
+		String address = "Nigeria, Onishtatioa"; //"UK, London, 64 Baker Street";
 		Locale locale = Locale.UK;
 		String email = null;
 		boolean appendCountry = false;

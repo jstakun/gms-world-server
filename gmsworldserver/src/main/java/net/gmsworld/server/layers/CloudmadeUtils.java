@@ -250,25 +250,31 @@ public class CloudmadeUtils extends GeocodeHelper {
                     if (jsonResponse.has("lat") && jsonResponse.has("lng")) {
                     	double lat = jsonResponse.getDouble("lat");
                 		double lng = jsonResponse.getDouble("lng");
-                    	
-                    	try {
-                    		GeocodeCachePersistenceUtils.persistGeocode(location, 0, "", lat, lng);
+                		
+                		if (Math.abs(lat - 39.78373) < 0.0001 && Math.abs(lng - -100.445882) < 0.0001) {
+                        	jsonResponse.put("status", "Error");
+                            jsonResponse.put("message", "No matching place found");
+                            logger.log(Level.WARNING, "Selected location is too inaccurate");
+                        } else {
+                        	try {
+                    			GeocodeCachePersistenceUtils.persistGeocode(location, 0, "", lat, lng);
 
-                    		if (persistAsLandmark) {
-                    		//if (com.jstakun.lm.server.config.ConfigurationManager.getParam(ConfigurationManager.SAVE_GEOCODE_AS_LANDMARK, ConfigurationManager.OFF).equals(ConfigurationManager.ON)) {
-                                Landmark l = new Landmark();
-                    			l.setLatitude(lat);
-                    			l.setLongitude(lng);
-                                l.setName(WordUtils.capitalize(location, delim));
-                    			l.setLayer(Commons.GEOCODES_LAYER);
-                    			l.setUsername("geocode");
-                    			if (email != null) {
-                    				l.setEmail(email);
-                    			}
-                    			LandmarkPersistenceUtils.persistLandmark(l);
-                            }
-                        } catch (Exception ex) {
-                            logger.log(Level.SEVERE, ex.getMessage(), ex);
+                    			if (persistAsLandmark) {
+                    			//if (com.jstakun.lm.server.config.ConfigurationManager.getParam(ConfigurationManager.SAVE_GEOCODE_AS_LANDMARK, ConfigurationManager.OFF).equals(ConfigurationManager.ON)) {
+                    				Landmark l = new Landmark();
+                    				l.setLatitude(lat);
+                    				l.setLongitude(lng);
+                                	l.setName(WordUtils.capitalize(location, delim));
+                    				l.setLayer(Commons.GEOCODES_LAYER);
+                    				l.setUsername("geocode");
+                    				if (email != null) {
+                    					l.setEmail(email);
+                    				}
+                    				LandmarkPersistenceUtils.persistLandmark(l);
+                            	}
+                        	} catch (Exception ex) {
+                        		logger.log(Level.SEVERE, ex.getMessage(), ex);
+                        	}
                         }
                     }
                 }
@@ -277,9 +283,8 @@ public class CloudmadeUtils extends GeocodeHelper {
             logger.log(Level.SEVERE, ex.getMessage(), ex);
             //jsonResponse = "{\"status\":\"Error\",\"message\":\"Internal server error\"}";
             try {
-            	jsonResponse = new JSONObject().
-                                put("status", "Error").
-                                put("message", "Internal server error");
+            	jsonResponse.put("status", "Error");
+                jsonResponse.put("message", "Internal server error");
             } catch (Exception e) {
                 logger.log(Level.SEVERE, e.getMessage(), e);
             }
