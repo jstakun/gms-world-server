@@ -283,7 +283,7 @@
 		        	var hotelControlDiv = document.createElement('div');
 		        	hotelControlDiv.index = 2;
 		        	var centerControl = new CenterControl(hotelControlDiv, 'center', '<bean:message key="landmarks.new.search" />'); 
-		        	map.controls[google.maps.ControlPosition.TOP_CENTER].push(hotelControlDiv);
+		        	map.controls[google.maps.ControlPosition.TOP_LEFT].push(hotelControlDiv);
 		        	google.maps.event.addDomListener(hotelControlDiv, 'click', function() { 
 		                window.location.href = '/hotels/' + map.getCenter().lat() + '/' + map.getCenter().lng() + '/' + map.getZoom();
 		       	    }); 
