@@ -8,13 +8,18 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
+import java.util.ResourceBundle;
 
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.layers.LayerHelper;
+import net.gmsworld.server.layers.LayerHelperFactory;
 import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.UrlUtils;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONObject;
 import org.ocpsoft.prettytime.PrettyTime;
 
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
@@ -133,6 +138,20 @@ public class HtmlUtils {
 	
 	public static String getLandmarkDesc(Landmark landmark, Locale locale) throws UnsupportedEncodingException {
 		PrettyTime prettyTime = new PrettyTime(locale);
+		ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource", locale);
+		
+		LayerHelper layerHelper = LayerHelperFactory.getByName(Commons.HOTELS_LAYER);
+		String json = layerHelper.getGeoJson(landmark.getLatitude(), landmark.getLongitude(), Commons.HOTELS_LAYER, locale.getLanguage());	
+		String hotelsText = rb.getString("hotels.discover.nearby");
+		
+		if (StringUtils.startsWith(json, "{")) {
+			JSONObject layerJson = new JSONObject(json);
+			int layerSize = layerJson.getJSONArray("features").length();
+			if (layerSize > 0) {
+				hotelsText = String.format(rb.getString("hotels.discover.nearby.2"), layerSize);
+			}
+		}
+		
 		String userUrl = null;		
 		if (landmark.isSocial()) {
 			userUrl = URLEncoder.encode("/blogeo/" + landmark.getUsername(), "UTF-8");
@@ -140,6 +159,7 @@ public class HtmlUtils {
 			userUrl = URLEncoder.encode("/showUser/" + landmark.getUsername(), "UTF-8");
 		}
 		String layerUrl = "/showLayer/" + landmark.getLayer();
+		String bookingUrl = "/showLandmark/" + landmark.getId() + "?enabled=Hotels&fullScreenLandmarkMap=true";
 		
 		String desc = "";
 		String description = landmark.getDescription();
@@ -147,14 +167,8 @@ public class HtmlUtils {
 			desc = description + "<br/>";
 		}
 		desc += "Posted " + prettyTime.format(landmark.getCreationDate()) + " on " + DateUtils.getFormattedDateTime(locale, landmark.getCreationDate()) + " by <a href=\"" + userUrl + "\">" + UrlUtils.createUsernameMask(landmark.getUsername()) + "</a>&nbsp;" + 
-        "| Created in layer <a href=\"" + layerUrl + "\">" + LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer()) + "</a> using <a href=\"" + ConfigurationManager.getAppUrl(landmark.getAppId()) + "\" target=\"_blank\">" +  ConfigurationManager.getAppName(landmark.getAppId()) + "</a>";
-		String bookingUrl = "/showLandmark/" + landmark.getId() + "?enabled=Hotels&fullScreenLandmarkMap=true";
-		//String bookingUrl = "/bookingProvider/" + landmark.getId();
-        //if (StringUtils.isNotEmpty(landmark.getCity()) && StringUtils.isNotEmpty(landmark.getCountryCode())) {
-        //	bookingUrl += "/" + landmark.getCountryCode().toLowerCase(Locale.US) + "/" + landmark.getCity().replace(' ', '_');
-        //}
-		desc += "<br/><b><a href=\"" + bookingUrl + "\" target=\"_blank\">Discover hotels nearby!</a></b>" 
-			 + HtmlUtils.getStatusImage(landmark.getUseCount());
+        "| Created in layer <a href=\"" + layerUrl + "\">" + LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer()) + "</a> using <a href=\"" + ConfigurationManager.getAppUrl(landmark.getAppId()) + "\" target=\"_blank\">" +  ConfigurationManager.getAppName(landmark.getAppId()) + "</a>" +
+		"<br/><b><a href=\"" + bookingUrl + "\" target=\"_blank\">" + hotelsText + "</a></b>" + HtmlUtils.getStatusImage(landmark.getUseCount());
 		
 		return desc;
 	}

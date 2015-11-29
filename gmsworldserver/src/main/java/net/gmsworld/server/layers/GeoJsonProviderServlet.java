@@ -87,7 +87,7 @@ public class GeoJsonProviderServlet extends HttpServlet {
 					try {
 						int limit = 50;
 						if (layer.equals(Commons.HOTELS_LAYER)) {
-							limit = 350;
+							limit = 500;
 						}
 						List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(lat, lng, null, 20, 1032, limit, StringUtil.getStringLengthLimit("l"), language, null, locale, true);
 			    		String newkey = layerHelper.cacheGeoJson(landmarks, lat, lng, layer, locale);                          

@@ -258,7 +258,7 @@ public abstract class LayerHelper {
     	return null;
     }	
     
-    protected String getGeoJson(double lat, double lng, String layer, String language) {
+    public String getGeoJson(double lat, double lng, String layer, String language) {
     	if (cacheProvider != null) {
     		String key = "geojson_" + StringUtil.formatCoordE2(lat) + "_" + StringUtil.formatCoordE2(lng) + "_" + layer + "_" + language;
 			return cacheProvider.getString(key);
