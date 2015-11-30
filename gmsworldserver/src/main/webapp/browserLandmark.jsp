@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="org.apache.commons.lang.StringUtils" %>
+<%@ taglib uri="http://struts.apache.org/tags-bean" prefix="bean"%>                 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <%
@@ -25,7 +26,11 @@
 	<meta HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE"/>
 	<meta HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE"/>
 	<meta HTTP-EQUIV="EXPIRES" CONTENT="0"/>
-	<title>Please wait for landmark creation and <%= hotelsMode ? "hotels" : "layers" %> loading...</title> <!-- //translate -->
+<% if (hotelsMode) { %>	
+	<title><bean:message key="hotels.wait" /></title>
+<% } else { %>
+    <title><bean:message key="landmarks.wait" /></title>
+<% } %>
 	<style type="text/css">
 	.loader {
 		position: fixed;
@@ -45,39 +50,44 @@
 	</script>
 </head>
 <body>
-<div class="loader">
-<p>&nbsp;Please wait. I'm loading <%= hotelsMode ? "hotels" : "landmarks" %> nearby selected location...</p> <!-- //translate -->
-</div>
-<script>
-(function() {
-  var gmsAPI = "/services/browserLandmark?callback=landmark_callback";
-  $.ajax({
-  	dataType: "json",
-  	url: gmsAPI,
-  	data: {
-  	    	latitude: "<%= latitude %>",
-  	    	longitude: "<%= longitude %>"
-  	},
-    beforeSend: function( xhr ) {
-        xhr.setRequestHeader("X-GMS-Token", "<%= token  %>");
-        xhr.setRequestHeader("X-GMS-Scope", "lm");
-        xhr.setRequestHeader("X-GMS-AppId", "10");
-    }})
-  	.done(function( data ) {
+ <div class="loader">
+	<% if (hotelsMode) { %>	
+	<p>&nbsp;<bean:message key="hotels.wait" /></p> 
+	<% } else { %>
+    <p>&nbsp;<bean:message key="landmarks.wait" /></p>
+	<% } %>
+ </div>
+ <script>
+	(function() {
+   		var gmsAPI = "/services/browserLandmark?callback=landmark_callback";
+   		$.ajax({
+  			dataType: "json",
+  			url: gmsAPI,
+  			data: {
+  	    		latitude: "<%= latitude %>",
+  	    		longitude: "<%= longitude %>"
+  			},
+    		beforeSend: function( xhr ) {
+        		xhr.setRequestHeader("X-GMS-Token", "<%= token  %>");
+        		xhr.setRequestHeader("X-GMS-Scope", "lm");
+        		xhr.setRequestHeader("X-GMS-AppId", "10");
+    		}})
+  		.done(function( data ) {
+  	  		var link = "/showLandmark/" + data.id + "<%= enabled %>";
+  	  		var message = '<bean:message key="landmarks.redirect.prefix"/>' + link + '<bean:message key="landmarks.redirect.suffix"/>';
   	   		$( 'div' ).remove();   
-  	  		$( 'body' ).append("<p>Redirecting to <a href=\"/showLandmark/" + data.id + "<%= enabled %>\">selected location page</a>...<br/>" +
-  	  				           "If you won't be redirected automatically click the link above.</p>"); //translate
+  	  		$( 'body' ).append(message); 
   	    	console.log("Created landmark: " + data.id);
-  	    	window.location.replace('/showLandmark/' + data.id + '<%= enabled %>');
-  	})
-  	.error(function(jqXHR, textStatus, errorThrown){ /* assign handler */
+  	    	window.location.replace(link);
+  		})
+  		.error(function(jqXHR, textStatus, errorThrown){ /* assign handler */
   		    $( 'div' ).remove();   
-  		    var errorMessage = "Error occured: " + errorThrown + "!"; //translate
-	  		$( 'body' ).append("<p>" + errorMessage + "<br/><a href=\"<%= hotelsMode ? "/hotels" : "/landmarks" %>\">Please try again.</a></p>"); //translate
+  		    var errorMessage = "<bean:message key="errors.occured"/>: " + errorThrown + "!"; //translate
+	  		$( 'body' ).append("<p>" + errorMessage + "<br/><a href=\"<%= hotelsMode ? "/hotels" : "/landmarks" %>\"><bean:message key="landmarks.try.again"/></a></p>"); 
 	  		console.log(errorMessage);
   	    	alert(errorMessage);
-  	});
-})();
-</script>
-</body>
+  		});
+	})();
+  </script>
+ </body>
 </html>
