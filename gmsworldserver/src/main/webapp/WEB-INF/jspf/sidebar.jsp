@@ -78,15 +78,14 @@
 %>
         </ul>
         <h3 id="vistors">Visitors</h3>
-        
+        <p id="clustrmaps-widget">      	
+        </p> 
         <script type="text/javascript">var _clustrmaps = {'url' : 'http://www.gms-world.net', 'user' : 1119080, 'server' : '2', 'id' : 'clustrmaps-widget', 'version' : 1, 'date' : '2013-11-11', 'lang' : 'en', 'corners' : 'square' };
              (function (){ var s = document.createElement('script'); s.type = 'text/javascript'; s.async = true; s.src = 'http://www2.clustrmaps.com/counter/map.js'; var x = document.getElementsByTagName('script')[0]; x.parentNode.insertBefore(s, x);})();
         </script>
         <noscript>
-              <a href="http://www2.clustrmaps.com/user/a1f111368"><img src="http://www2.clustrmaps.com/stats/maps-no_clusters/www.gms-world.net-thumb.jpg" alt="Locations of visitors to this page" /></a>
+             <a href="http://www2.clustrmaps.com/user/a1f111368"><img src="http://www2.clustrmaps.com/stats/maps-no_clusters/www.gms-world.net-thumb.jpg" alt="Locations of visitors to this page" /></a>
         </noscript>
-        
     </div>
-
     <!-- /sidebar -->
 </div>
