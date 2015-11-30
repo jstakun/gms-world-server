@@ -10,7 +10,7 @@ import org.junit.Test;
 public class StringNormalizerTest {
 
 	@Test
-	public void test() {
+	public void test() throws Exception {
 		//String original = "aáeéiíoóöőuúüű AÁEÉIÍOÓÖŐUÚÜŰ";
 		String original = "ążźćółęńś ĄŻŹĆÓŁĘŃŚ";
 		for (int i = 0; i < original.length(); i++) {

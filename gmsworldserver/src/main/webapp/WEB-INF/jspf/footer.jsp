@@ -123,8 +123,9 @@
         <a href="/index.jsp">Home</a> |
         <strong><a href="#top">Back to Top</a></strong>
     </p>
+    
     <a name="bottom"></a>
-    <!-- /footer-bottom-->
+   
 </div>
 
 

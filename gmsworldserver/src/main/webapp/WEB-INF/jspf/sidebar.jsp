@@ -79,28 +79,13 @@
         </ul>
         <h3 id="vistors">Visitors</h3>
         
-        <p id="clustrmaps-widget">      	
-         	<!-- a href="http://www2.clustrmaps.com/counter/maps.php?url=http://www.gms-world.net" id="clustrMapsLink">
-         		<img src="http://www2.clustrmaps.com/counter/index2.php?url=http://www.gms-world.net" style="border:0px;" alt="Locations of visitors to GMS World page" title="Locations of visitors to GMS World page" id="clustrMapsImg" />
-			</a>
-			<script type="text/javascript">
-				function cantload() {
-					img = document.getElementById("clustrMapsImg");
-					img.onerror = null;
-					img.src = "http://clustrmaps.com/images/clustrmaps-back-soon.jpg";
-					document.getElementById("clustrMapsLink").href = "http://clustrmaps.com";
-				}
-				img = document.getElementById("clustrMapsImg");
-				img.onerror = cantload;
-			</script -->
-			
-        </p> 
-            <script type="text/javascript">var _clustrmaps = {'url' : 'http://www.gms-world.net', 'user' : 1119080, 'server' : '2', 'id' : 'clustrmaps-widget', 'version' : 1, 'date' : '2013-11-11', 'lang' : 'en', 'corners' : 'square' };
+        <script type="text/javascript">var _clustrmaps = {'url' : 'http://www.gms-world.net', 'user' : 1119080, 'server' : '2', 'id' : 'clustrmaps-widget', 'version' : 1, 'date' : '2013-11-11', 'lang' : 'en', 'corners' : 'square' };
              (function (){ var s = document.createElement('script'); s.type = 'text/javascript'; s.async = true; s.src = 'http://www2.clustrmaps.com/counter/map.js'; var x = document.getElementsByTagName('script')[0]; x.parentNode.insertBefore(s, x);})();
-            </script>
-            <noscript>
+        </script>
+        <noscript>
               <a href="http://www2.clustrmaps.com/user/a1f111368"><img src="http://www2.clustrmaps.com/stats/maps-no_clusters/www.gms-world.net-thumb.jpg" alt="Locations of visitors to this page" /></a>
-            </noscript>
+        </noscript>
+        
     </div>
 
     <!-- /sidebar -->
