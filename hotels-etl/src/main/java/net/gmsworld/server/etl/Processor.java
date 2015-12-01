@@ -20,10 +20,12 @@ import net.gmsworld.server.utils.HttpUtils;
 import net.sf.juffrou.reflect.BeanWrapperContext;
 import net.sf.juffrou.reflect.JuffrouBeanWrapper;
 
+import org.apache.commons.lang.StringUtils;
 import org.geojson.Feature;
 import org.geojson.FeatureCollection;
 import org.geojson.LngLatAlt;
 import org.geojson.Point;
+import org.json.JSONArray;
 import org.supercsv.cellprocessor.Optional;
 import org.supercsv.cellprocessor.ParseDouble;
 import org.supercsv.cellprocessor.ParseInt;
@@ -34,15 +36,20 @@ import org.supercsv.io.CsvBeanReader;
 import org.supercsv.io.ICsvBeanReader;
 import org.supercsv.prefs.CsvPreference;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Processor {
 	
-	private static final String HOTELS_PROVIDER_URL = "http://hotels-gmsworldatoso.rhcloud.com/camel/v1/cache/multi/hotels"; 
-	private static final int BATCH_SIZE = 2000;
-	private static final int TOTAL_SIZE = 100000; //max 400000, total 368412
+	private static final String HOTELS_POST_URL = "http://hotels-gmsworldatoso.rhcloud.com/camel/v1/cache/multi/hotels"; 
+	private static final String HOTELS_GET_URL = "http://hotels-gmsworldatoso.rhcloud.com/camel/v1/cache/hotels/_id/"; 
+	private static final int BATCH_SIZE = 10; //2000;
+	private static final int TOTAL_SIZE = 10; //400000; //max 400000, total 368412
 	private static final int FIRST = 0;
+	private static URL cachePostUrl;
+	private static ObjectMapper mapper = new ObjectMapper();
 
 	public static void main(String[] args) throws IOException {
 		if (args.length != 2) {
@@ -55,6 +62,7 @@ public class Processor {
 		
 		try {
 			Reader reader = null; 
+			cachePostUrl = new URL(HOTELS_POST_URL);
 			
 			if (args[0].equals("zip")) {
 				zf = new ZipFile(args[1]);
@@ -113,25 +121,30 @@ public class Processor {
 		    		if (h == null) {
 						break;
 					}
-		    		batchSize++;
 		    		h.setHotel_url(h.getHotel_url() + "?aid=864525");
 		    		h.setPhoto_url(h.getPhoto_url().replace("max500", "max200"));
 		    		
 		    		Feature f = new Feature();
 	    			Point p = new Point();
-	    			p.setCoordinates(new LngLatAlt(h.getLongitude(), h.getLatitude()));
+	    			LngLatAlt coords = new LngLatAlt(h.getLongitude(), h.getLatitude());
+	    			p.setCoordinates(coords);
 	    			h.setLatitude(null);
 	    			h.setLongitude(null);
 	    			f.setGeometry(p);	    			
 		    		f.setId(Long.toString(h.getId()));
-		    		
 		    		Map<String, Object> properties = getBeanMap(h, beanWrapper);
-		    		f.setProperties(properties);
 		    		
-		    		featureCollection.add(f);
-		    		
+		    		//compare with current version
+		    		boolean equal = compareHotelBean(properties, beanWrapper, coords);
+		    			    		
+	    			if (!equal) {	
+	    				batchSize++;
+	    				f.setProperties(properties);
+	    				featureCollection.add(f);
+	    			}
+	    			
 		    		if (batchSize == BATCH_SIZE) {
-		    			saveBatchToDb(featureCollection);
+		    			//TODO uncomment saveBatchToDb(featureCollection);
 		    			featureCollection.setFeatures(new ArrayList<Feature>());
 		    			batchSize = 0;
 		    			System.out.println("Processed " + count + " records ...");
@@ -207,27 +220,69 @@ public class Processor {
 	    Map<String, Object> beanMap = new HashMap<String, Object>();
 	    beanWrapper.setBean(bean);
 	    for(String propertyName : beanWrapper.getPropertyNames()) {
-	    	Type type = beanWrapper.getType(propertyName);
-	    	System.out.println("Setting " + type + " " + propertyName + ": " + beanWrapper.getValue(propertyName));
+	    	//Type type = beanWrapper.getType(propertyName);
+	    	//System.out.println("Setting " + type + " " + propertyName + ": " + beanWrapper.getValue(propertyName));
 	        beanMap.put(propertyName, beanWrapper.getValue(propertyName));
 		}
 	    return beanMap;
 	}
 	
 	private static void saveBatchToDb(FeatureCollection featureCollection) throws JsonProcessingException {
-		ObjectMapper mapper = new ObjectMapper();
-	    String json = mapper.writeValueAsString(featureCollection).replace("id", "_id");
-		
-	    System.out.println("Saving to db batch of " + featureCollection.getFeatures().size() + "...");
+		System.out.println("Saving to db batch of " + featureCollection.getFeatures().size() + "...");
 		
 		//load to db 		    		
 	    try {
-	    	URL cacheUrl = new URL(HOTELS_PROVIDER_URL);
-			String resp = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, "POST", null, json, "application/json", Commons.getProperty(Property.RH_GMS_USER));
+	    	String json = mapper.writeValueAsString(featureCollection).replace("id", "_id");
+	    	String resp = HttpUtils.processFileRequestWithBasicAuthn(cachePostUrl, "POST", null, json, "application/json", Commons.getProperty(Property.RH_GMS_USER));
 			System.out.println("Cache response: " + resp);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	    System.out.println("Done.");
+	}
+	
+	private static HotelBean jsonToHotelBean(Long id) throws JsonParseException, JsonMappingException, IOException {
+		URL cacheGetUrl = new URL(HOTELS_GET_URL + id);
+		String resp = HttpUtils.processFileRequestWithBasicAuthn(cacheGetUrl, "GET", null, null, "application/json", Commons.getProperty(Property.RH_GMS_USER));
+		if (StringUtils.startsWith(resp, "[")) {
+			JSONArray root = new JSONArray(resp);
+			if (root.length() > 0) {
+				String json = root.getJSONObject(0).getJSONObject("properties").toString();
+				return mapper.readValue(json.replace("_id", "id"), HotelBean.class);
+			} else {
+				//System.out.println("Received following server response for id " + id + ": " + resp);
+				return null;
+			}
+		} else {
+			//System.out.println("Received following server response for id " + id + ": " + resp);
+			return null;
+		}
+	}
+	
+	private static boolean compareHotelBean(Map<String, Object> properties, JuffrouBeanWrapper beanWrapper, LngLatAlt coords) throws JsonParseException, JsonMappingException, IOException {
+		Long id = (Long)properties.get("id");
+		HotelBean old = jsonToHotelBean(id);
+		boolean equal = true;
+		if (old != null) {
+			Map<String, Object> oldproperties = getBeanMap(old, beanWrapper);
+			for (String key : properties.keySet()) {
+				//System.out.println("Comparing: " + key);
+				if (!key.equals("creationDate") && oldproperties.containsKey(key)) {
+					Object oldval = oldproperties.get(key);
+					Object val = properties.get(key);
+					if (val != null && oldval != null &&  !val.equals(oldval)) {
+						equal = false;
+						System.out.println("Object: " + id + " -> " + key + " new: " + val + ", old: " + oldval);
+					} 
+				} else if (!key.equals("creationDate")) {
+					System.out.println("Missing property " + key);
+					equal = false;
+				}
+			}
+		} else {
+			System.out.println("Hotel " + id + ": " + properties.get("name") + " not found at " + coords);
+			equal = false;
+		}
+		return equal;
 	}
 }
