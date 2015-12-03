@@ -15,6 +15,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.HttpUtils;
 import net.sf.juffrou.reflect.BeanWrapperContext;
@@ -43,10 +44,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Processor {
 	
-	private static final String HOTELS_POST_URL = "http://hotels-gmsworldatoso.rhcloud.com/camel/v1/cache/multi/hotels"; 
-	private static final String HOTELS_GET_URL = "http://hotels-gmsworldatoso.rhcloud.com/camel/v1/cache/hotels/_id/"; 
-	private static final int BATCH_SIZE = 10; //2000;
-	private static final int TOTAL_SIZE = 10; //400000; //max 400000, total 368412
+	private static final String HOTELS_POST_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/cache/multi/hotels"; 
+	//private static final String HOTELS_POST_URL = "http://cache-gmsworld.rhcloud.com/camel/v1/cache/multi/test"; 
+	private static final String HOTELS_GET_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/cache/hotels/_id/"; 
+	private static final int BATCH_SIZE = 2000;
+	private static final int TOTAL_SIZE = 400000; //max 400000, total 368412
 	private static final int FIRST = 0;
 	private static URL cachePostUrl;
 	private static ObjectMapper mapper = new ObjectMapper();
@@ -135,7 +137,7 @@ public class Processor {
 		    		Map<String, Object> properties = getBeanMap(h, beanWrapper);
 		    		
 		    		//compare with current version
-		    		boolean equal = compareHotelBean(properties, beanWrapper, coords);
+		    		boolean equal = false; //TODO uncomment compareHotelBean(properties, beanWrapper, coords);
 		    			    		
 	    			if (!equal) {	
 	    				batchSize++;
@@ -158,7 +160,7 @@ public class Processor {
 		    }
 		   
 		    if (batchSize > 0) {
-    			saveBatchToDb(featureCollection);
+		    	//TODO uncomment saveBatchToDb(featureCollection);
     		}
 		    
 		    System.out.println("Processed " + count + " records with " + errors + " errors.");
