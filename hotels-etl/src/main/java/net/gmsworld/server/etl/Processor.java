@@ -47,9 +47,9 @@ public class Processor {
 	private static final String HOTELS_POST_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/cache/multi/hotels"; 
 	//private static final String HOTELS_POST_URL = "http://cache-gmsworld.rhcloud.com/camel/v1/cache/multi/test"; 
 	private static final String HOTELS_GET_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/cache/hotels/_id/"; 
-	private static final int BATCH_SIZE = 2000;
-	private static final int TOTAL_SIZE = 400000; //max 400000, total 368412
-	private static final int FIRST = 0;
+	private static final int BATCH_SIZE = 2000; 
+	private static final int TOTAL_SIZE = 100000; //max 400000, total 368412
+	private static final int FIRST = 100000;
 	private static URL cachePostUrl;
 	private static ObjectMapper mapper = new ObjectMapper();
 
@@ -137,16 +137,19 @@ public class Processor {
 		    		Map<String, Object> properties = getBeanMap(h, beanWrapper);
 		    		
 		    		//compare with current version
-		    		boolean equal = false; //TODO uncomment compareHotelBean(properties, beanWrapper, coords);
+		    		boolean equal = false; //TODO uncomment to check diff compareHotelBean(properties, beanWrapper, count);
 		    			    		
 	    			if (!equal) {	
+	    				System.out.println(count + ". Hotel " + h.getId() + " added to batch.");
 	    				batchSize++;
 	    				f.setProperties(properties);
 	    				featureCollection.add(f);
+	    			} else {
+	    				System.out.println(count + ". Hotel " + h.getId() + " has not changed.");
 	    			}
 	    			
 		    		if (batchSize == BATCH_SIZE) {
-		    			//TODO uncomment saveBatchToDb(featureCollection);
+		    			saveBatchToDb(featureCollection);
 		    			featureCollection.setFeatures(new ArrayList<Feature>());
 		    			batchSize = 0;
 		    			System.out.println("Processed " + count + " records ...");
@@ -160,7 +163,7 @@ public class Processor {
 		    }
 		   
 		    if (batchSize > 0) {
-		    	//TODO uncomment saveBatchToDb(featureCollection);
+		    	saveBatchToDb(featureCollection);
     		}
 		    
 		    System.out.println("Processed " + count + " records with " + errors + " errors.");
@@ -261,7 +264,7 @@ public class Processor {
 		}
 	}
 	
-	private static boolean compareHotelBean(Map<String, Object> properties, JuffrouBeanWrapper beanWrapper, LngLatAlt coords) throws JsonParseException, JsonMappingException, IOException {
+	private static boolean compareHotelBean(Map<String, Object> properties, JuffrouBeanWrapper beanWrapper, int count) throws JsonParseException, JsonMappingException, IOException {
 		Long id = (Long)properties.get("id");
 		HotelBean old = jsonToHotelBean(id);
 		boolean equal = true;
@@ -282,7 +285,7 @@ public class Processor {
 				}
 			}
 		} else {
-			System.out.println("Hotel " + id + ": " + properties.get("name") + " not found at " + coords);
+			System.out.println(count + ". Hotel " + id + ": " + properties.get("name") + " not found.");
 			equal = false;
 		}
 		return equal;
