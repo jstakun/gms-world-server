@@ -22,7 +22,7 @@
 %>
         <div  id="nav">
             <ul>
-                <li<%= current.equals("hotels") ? " id=\"current\"" : "" %>><a href="/hotels">Hotels</a></li>
+                <li<%= current.equals("hotels") ? " id=\"current\"" : "" %>><a href="http://www.hotelsonmap.net">Hotels</a></li>
                 <li<%= current.equals("landmarks") ? " id=\"current\"" : "" %>><a href="/landmarks">Landmarks</a></li>
                 <li<%= current.equals("home") ? " id=\"current\"" : "" %>><a href="/index.jsp">Home</a></li>
                 <li<%= current.equals("download") ? " id=\"current\"" : "" %>><a href="/download.jsp">Download</a></li>
