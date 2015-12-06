@@ -76,7 +76,7 @@ public class LayersTest {
 	   //data.add(new Object[]{LayerHelperFactory.getFoursquareMerchantUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getExpediaUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getYelpUtils()});
-	   data.add(new Object[]{LayerHelperFactory.getMcOpenApiUtils()});
+	   //data.add(new Object[]{LayerHelperFactory.getMcOpenApiUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getGooglePlacesUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getFoursquareUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getGeonamesUtils()});

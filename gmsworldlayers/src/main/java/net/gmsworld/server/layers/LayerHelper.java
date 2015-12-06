@@ -183,8 +183,8 @@ public abstract class LayerHelper {
 		featureCollection.setProperty("layer", layer);
 		featureCollection.setProperty("creationDate", new Date());
 		featureCollection.setProperty("language", locale.getLanguage());
-		
 		if (!landmarks.isEmpty()) {    		
+			//Map<String, Integer> tags = new HashMap<String, Integer>();
 			ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource", locale);
 			for (ExtendedLandmark landmark : landmarks) {
     			Feature f = new Feature();
@@ -232,7 +232,35 @@ public abstract class LayerHelper {
         		}
     			f.setProperty("mobile_url", landmark.getUrl());
     			featureCollection.add(f);
+    			
+    			//calculate tags
+    			/*if (landmark.getDescription() != null) {
+    				String[] words = landmark.getDescription().split("[\\W]");
+    			    for (int i=0;i<words.length;i++) {
+    			    	String tag = words[i].toLowerCase(locale);	
+                        if (tags.containsKey(tag)) {
+                        	tags.put(tag, tags.get(tag) + 1);
+                        } else {
+                        	tags.put(tag, 1);
+                        }
+    			    }
+    			}*/
     		}
+			
+			//remove unpopular tags
+			/*int min = (int)(landmarks.size() * 0.5);
+			List<String> toRemove = new ArrayList<String>();
+			for (Map.Entry<String, Integer> entry : tags.entrySet()) {
+				if (entry.getValue() < min) {
+					toRemove.add(entry.getKey());
+				}
+			}
+			for (String tr : toRemove) {
+				tags.remove(tr);
+			}
+			
+			//save tokens to tags array
+			featureCollection.setProperty("tags", tags);*/
 		}	
 
     	try {
