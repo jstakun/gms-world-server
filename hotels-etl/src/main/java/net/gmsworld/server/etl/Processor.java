@@ -49,7 +49,7 @@ public class Processor {
 	private static final String HOTELS_GET_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/cache/hotels/_id/"; 
 	private static final int BATCH_SIZE = 2000; 
 	private static final int TOTAL_SIZE = 100000; //max 400000, total 368412
-	private static final int FIRST = 100000;
+	private static final int FIRST = 0;
 	private static URL cachePostUrl;
 	private static ObjectMapper mapper = new ObjectMapper();
 
