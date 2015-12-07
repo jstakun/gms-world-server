@@ -31,7 +31,7 @@ public class GeoJsonProviderServlet extends HttpServlet {
 	private static final Logger logger = Logger.getLogger(GeoJsonProviderServlet.class.getName());
 	private static final long serialVersionUID = 1L;
 	private CacheProvider cacheProvider = null;
-	private static final int HOTELS_LIMIT = 500;
+	private static final int HOTELS_LIMIT = 750;
 	   
     /**
      * @see HttpServlet#HttpServlet()
