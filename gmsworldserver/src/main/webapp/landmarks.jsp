@@ -182,9 +182,21 @@
 						icon = '/images/layers/' + results.features[i].properties.icon;
                     }
 
-          			if (desc != null) { 
-                        desc = '<span style=\"font-family:Roboto,Arial,sans-serif;font-size:<%=fontSize%>;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;\">' + 
-                               '<strong>' + name + '</strong><br/>' + desc + '</span>';
+                    var thumbnail = results.features[i].properties.thumbnail;
+                  	
+                    var descr;
+
+                    if (desc != null) {                              
+                     	descr = '<span style=\"font-family:Roboto,Arial,sans-serif;font-size:<%=fontSize%>;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;\">' + 
+                                '<strong>' + name + '</strong>';
+
+                    	if (thumbnail != null) {
+							descr += '<br/><a href=\"' + url + '\" target=\"_blank\">' +
+							         '<img src=\"' + thumbnail +  ' \" style=\"margin: 4px 0px\" title=\"<bean:message key="hotels.booking"/>\"/>' + 
+							         '</a>' 
+                    	}       
+
+                        descr += '<br/>' + desc + '</span>';
                   	}
                   	 
                   	//my Marker
@@ -195,7 +207,7 @@
             			icon: icon,
             			text: price,
             			url: url, 
-            			desc: desc,
+            			desc: descr,
             			mobile: <%= isMobile %>,
           			}); 
 

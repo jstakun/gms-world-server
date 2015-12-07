@@ -227,6 +227,10 @@ public abstract class LayerHelper {
     				if (landmark.containsDeal()) {
     					f.setProperty("price", StringUtil.formatCoordE0(landmark.getDeal().getPrice()) + " " + landmark.getDeal().getCurrencyCode());
     				}
+    				String thumbnail = landmark.getThumbnail(); 
+    				if (thumbnail != null) {
+    					f.setProperty("thumbnail", thumbnail);
+    				}
         		} else if (StringUtils.equals(layer, Commons.PANORAMIO_LAYER)) {
         			f.setProperty("url", StringUtils.replace(landmark.getUrl(), "/m/photo", "/photo")); 
         		}
