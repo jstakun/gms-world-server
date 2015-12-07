@@ -185,23 +185,28 @@ public class JSONUtils {
     		
     		String currencyUrl = "http://api.fixer.io/latest?base=" + fromcc;
     		String resp = LayerHelperFactory.getByName(layer).getCacheProvider().getString(currencyUrl);
-			
+			boolean fromCache = false;
+    		
 			if (resp == null) {
 				try {
 					logger.log(Level.INFO, "Calling " + currencyUrl + "...");
-					resp = HttpUtils.processFileRequest(new URL(currencyUrl));
+					resp = HttpUtils.processFileRequest(new URL(currencyUrl));				
 					if (StringUtils.startsWith(resp, "{")) {
 				    	LayerHelperFactory.getByName(layer).getCacheProvider().put(currencyUrl, resp);
-				    }
+				    } 
 				} catch (Exception e) {
 					logger.log(Level.SEVERE, e.getMessage(), e);
 				}
-			}	
+			} else {
+				fromCache = true;
+			}
 				
 			if (StringUtils.startsWith(resp, "{")) {
 				JSONObject root = new JSONObject(resp);
 				if (root.has("error")) {
-					logger.log(Level.WARNING, "Currency " + fromcc + " response error: " + root.getString("error"));
+					if (!fromCache) {
+						logger.log(Level.WARNING, "Currency " + fromcc + " response error: " + root.getString("error"));
+					}
 				} else {
 					JSONObject rates = root.getJSONObject("rates");
 					if (rates.has(tocc)) {
@@ -211,13 +216,10 @@ public class JSONUtils {
 						//logger.log(Level.INFO, "Changed currency from " + fromcc + " to " + tocc);
 					}
 				}
-			} else {
+			} else if (!fromCache) {
 				logger.log(Level.WARNING, currencyUrl + " received following response from the server: " + resp);
 			}
-			
-    	} //else {
-    		//logger.log(Level.WARNING, "Skipping currency exchange from " + fromcc + " to " + tocc);
-    	//}  	
+    	}  	
     }
     
     private static String formatDeal(Deal deal, Locale locale, ResourceBundle rb) {

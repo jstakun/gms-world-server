@@ -1,5 +1,7 @@
 package net.gmsworld.server.layers;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,6 +15,7 @@ import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.JSONUtils;
+import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.persistence.HotelBean;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -33,7 +36,9 @@ import com.openlapi.QualifiedCoordinates;
 public class HotelsBookingUtils extends LayerHelper {
 
 	private static final String HOTELS_PROVIDER_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/cache/hotels/nearby/"; 
-			
+	
+	private static final String HOTELS_COUNTER_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/count/hotels/nearby/";
+	
 	@Override
 	protected List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int r, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale, boolean useCache) throws Exception {
 		int normalizedRadius = r;
@@ -42,7 +47,7 @@ public class HotelsBookingUtils extends LayerHelper {
 		}	
 		List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
 		String hotelsUrl = HOTELS_PROVIDER_URL + lat + "/" + lng + "/" + normalizedRadius + "/" + limit;			
-        logger.log(Level.INFO, "Calling: " + hotelsUrl);
+        //logger.log(Level.INFO, "Calling: " + hotelsUrl);
         String hotelsJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER));
 		List<HotelBean> hotels = jsonToHotelList(hotelsJson);
 		logger.log(Level.INFO, "Found " + hotels.size() + " hotels...");
@@ -148,6 +153,16 @@ public class HotelsBookingUtils extends LayerHelper {
         return landmark;
     }
 
+	
+	public static int countNearbyHotels(double lat, double lng, int r) throws MalformedURLException, IOException {
+		int normalizedRadius = r;
+		if (r < 1000) {
+			normalizedRadius = r * 1000;
+		}	
+		String hotelsUrl = HOTELS_COUNTER_URL + lat + "/" + lng + "/" + normalizedRadius;			
+        String hotelsCount = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER));
+		return NumberUtils.getInt(hotelsCount, -1);
+	}
 
 	private class HotelToExtendedLandmarkFunction implements Function<HotelBean, ExtendedLandmark> {
 
