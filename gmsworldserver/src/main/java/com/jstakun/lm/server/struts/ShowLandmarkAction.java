@@ -136,7 +136,7 @@ public class ShowLandmarkAction extends Action {
         	boolean isMobile = os.isMobileDevice();
         	request.setAttribute("lat", StringUtil.formatCoordE6(landmark.getLatitude()));
         	request.setAttribute("lng", StringUtil.formatCoordE6(landmark.getLongitude()));
-        	request.setAttribute("landmarkDesc", HtmlUtils.buildLandmarkDesc(landmark, request.getAttribute("address"), request.getLocale(), isMobile));
+        	request.setAttribute("landmarkDesc", HtmlUtils.buildLandmarkDescV2(landmark, request.getAttribute("address"), request.getLocale(), isMobile));
         	request.setAttribute("landmarkName", "'" + landmark.getName() + "'");
         	if (isMobile) {
                 return mapping.findForward("landmarksMobile");
@@ -148,7 +148,7 @@ public class ShowLandmarkAction extends Action {
         	boolean isMobile = os.isMobileDevice();
         	request.setAttribute("lat", StringUtil.formatCoordE6(landmark.getLatitude()));
         	request.setAttribute("lng", StringUtil.formatCoordE6(landmark.getLongitude()));
-        	request.setAttribute("landmarkDesc", HtmlUtils.buildLandmarkDesc(landmark, request.getAttribute("address"), request.getLocale(), isMobile));
+        	request.setAttribute("landmarkDesc", HtmlUtils.buildLandmarkDescV2(landmark, request.getAttribute("address"), request.getLocale(), isMobile));
         	request.setAttribute("landmarkName", "'" + landmark.getName() + "'");
         	//return mapping.findForward("fullScreen");
         	if (isMobile) {

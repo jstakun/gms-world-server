@@ -138,13 +138,14 @@
           var flagmarker = new google.maps.Marker({
   				position: mapcenter,
   				map: map,
+  				desc: contentString,
   				icon: '/images/flagblue.png',
   				title: <%= landmarkName %>,
   	  	  });
 
           google.maps.event.addListener(flagmarker, 'click', function() {
-        	    infowindow.setContent(contentString);
-              	infowindow.open(map, flagmarker);
+        	    infowindow.setContent(this.desc);
+              	infowindow.open(map, this);
           });
 
           var mcOptions = {gridSize: 50, maxZoom: 18};
@@ -269,7 +270,7 @@
 		        <% } %>
 				
 				$("#status").css({"background-color": "#fff", "border" : "2px solid #fff", "border-radius": "3px", "text-align": "center", "box-shadow" : "0 2px 6px rgba(0,0,0,.3)"});
-                $("#status").html(marker_counter + " " + message);
+                $("#status").html((marker_counter-1) + " " + message);
 				$("#status").center().show().delay(3000).queue(function(n) {
 					  $(this).hide(); n();
 				});

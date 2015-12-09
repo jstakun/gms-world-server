@@ -91,14 +91,14 @@ public class HtmlUtils {
 		keys = default_locations.keySet().toArray();
 	} 
 
-	public static String buildLandmarkDesc(Landmark landmark, Object address, Locale locale, boolean isMobile) {
+	public static String buildLandmarkDescV2(Landmark landmark, Object address, Locale locale, boolean isMobile) {
 	    int fontSize = 16;
 	    if (isMobile) {
 	    	fontSize = 24;
 	    }
 		String desc = "'<span style=\"font-family:Roboto,Arial,sans-serif;font-size:" + fontSize + "px;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;\">'+\n" +
-	            "'<img src=\"/images/flagblue.png\"/><br/>'+\n" +
-	            "'Name: " + StringEscapeUtils.escapeJavaScript(landmark.getName()) + ",<br/>'+\n";
+	            "'<strong>" + StringEscapeUtils.escapeJavaScript(landmark.getName()) + "</strong><br/>'+\n" +
+		        "'<img src=\"https://maps.googleapis.com/maps/api/streetview?size=200x150&location=" + landmark.getLatitude() + "," + landmark.getLongitude() + "\" style=\"margin: 4px 0px\" title=\"Location street view image\"/><br/>'\n";
 	    String landmarkDesc = landmark.getDescription();
 	    if (StringUtils.isNotEmpty(landmarkDesc)) {
 	           desc += "'Description: " + StringEscapeUtils.escapeJavaScript(landmarkDesc) + ",<br/>'+\n";

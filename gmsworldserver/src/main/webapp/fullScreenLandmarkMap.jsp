@@ -47,7 +47,7 @@
                 var image = '/images/flagblue.png';
                 var map = new google.maps.Map(document.getElementById("map_canvas"),myOptions);
 
-                var contentString = <%= HtmlUtils.buildLandmarkDesc(landmark, request.getAttribute("address"), request.getLocale(), false) %>;
+                var contentString = <%= HtmlUtils.buildLandmarkDescV2(landmark, request.getAttribute("address"), request.getLocale(), false) %>;
 
                 var infowindow = new google.maps.InfoWindow(
                 {
