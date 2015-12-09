@@ -90,6 +90,8 @@
 
       var infowindow = new google.maps.InfoWindow();   
 
+      var markers = []; 
+    	
       var layers = [
           
 <%
@@ -149,7 +151,7 @@
           });
 
           var mcOptions = {gridSize: 50, maxZoom: 18};
-          var markers = [flagmarker]; 
+          markers.push(flagmarker); 
           mc = new MarkerClusterer(map, markers, mcOptions);       
 
           <% if (hotelsMode) { %>
@@ -165,43 +167,42 @@
       }
 
       function loadMarkers(results, image, ismobile) {
-    	  	var markers = []; 
-          	for (var i = 0; i < results.features.length; i++) {
-          			var coords = results.features[i].geometry.coordinates;
-          			var latLng = new google.maps.LatLng(coords[1],coords[0]);
-          			var url = results.features[i].properties.url;
-          			var desc = results.features[i].properties.desc;
-                    var name = results.features[i].properties.name;
-                    var price = results.features[i].properties.price;
+    	  for (var i = 0; i < results.features.length; i++) {
+          		var coords = results.features[i].geometry.coordinates;
+          		var latLng = new google.maps.LatLng(coords[1],coords[0]);
+          		var url = results.features[i].properties.url;
+          		var desc = results.features[i].properties.desc;
+                var name = results.features[i].properties.name;
+                var price = results.features[i].properties.price;
 
-          			if (url == null || ismobile) {
-						url = results.features[i].properties.mobile_url
-                  	}
+          		if (url == null || ismobile) {
+					url = results.features[i].properties.mobile_url
+                }
 
-                  	var icon = image;
-                  	if (results.features[i].properties.icon != null) {
-						icon = '/images/layers/' + results.features[i].properties.icon;
-                    }
+                var icon = image;
+                if (results.features[i].properties.icon != null) {
+					icon = '/images/layers/' + results.features[i].properties.icon;
+                }
 
-                    var thumbnail = results.features[i].properties.thumbnail;
+                var thumbnail = results.features[i].properties.thumbnail;
                   	
-                    var descr;
+                var descr;
 
-                    if (desc != null) {                              
-                     	descr = '<span style=\"font-family:Roboto,Arial,sans-serif;font-size:<%=fontSize%>;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;\">' + 
+                if (desc != null) {                              
+                     descr = '<span style=\"font-family:Roboto,Arial,sans-serif;font-size:<%=fontSize%>;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;\">' + 
                                 '<strong>' + name + '</strong>';
 
-                    	if (thumbnail != null) {
+                     if (thumbnail != null) {
 							descr += '<br/><a href=\"' + url + '\" target=\"_blank\">' +
 							         '<img src=\"' + thumbnail +  ' \" style=\"margin: 4px 0px\" title=\"<bean:message key="hotels.booking"/>\"/>' + 
 							         '</a>' 
-                    	}       
+                     }       
 
-                        descr += '<br/>' + desc + '</span>';
-                  	}
+                     descr += '<br/>' + desc + '</span>';
+                }
                   	 
-                  	//my Marker
-                  	var marker = new Marker({
+                //my Marker
+                var marker = new Marker({
            				position: latLng,
             			title: name,
             			map: map,
@@ -210,20 +211,9 @@
             			url: url, 
             			desc: descr,
             			mobile: <%= isMobile %>,
-          			}); 
+          		}); 
 
-                  	//google.maps.event.addListener(marker, 'mouseover', function() {
-                  	//	if (this.desc != null) {
-              		//		infowindow.setContent(this.desc);
-                    //    	infowindow.open(map, this);
-                    //    } 
-          			//});	
-
-          			//google.maps.event.addListener(marker, 'mouseout', function() {
-          		    //		infowindow.close(); 
-              		//});
-              		
-          			google.maps.event.addListener(marker, 'click', function() {
+                google.maps.event.addListener(marker, 'click', function() {
                         //map.setCenter(marker.getPosition());
           				//map.panTo(marker.getPosition());
           				if (this.desc != null) {
@@ -232,13 +222,14 @@
           				} else if (this.url != null) {
     						window.open(this.url);	
           				}
-              		});
+              	});
 
-              		markers.push(marker);	
+              	markers.push(marker);	
         	}
-          	if (markers.length > 0) {  
-                    marker_counter += markers.length;
-  				    mc.addMarkers(markers, true);
+      	
+          	if (results.features.length > 0) {  
+                marker_counter += results.features.length;
+  				mc.addMarkers(markers, true);
 	  		}
       }
 
@@ -277,7 +268,7 @@
 
 				var centerControlDiv = document.createElement('div');
 				centerControlDiv.index = 1;
-		        var centerControl = new CenterControl(centerControlDiv, 'center', '<bean:message key="landmarks.center.map" />');
+		        var centerControl = new CenterControl(centerControlDiv, 'center', '<bean:message key="landmarks.center.map" />', '<bean:message key="landmarks.center.map" />');
 		        map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(centerControlDiv);
 		        google.maps.event.addDomListener(centerControlDiv, 'click', function() {
 		    	   	 map.setCenter(mapcenter)
@@ -286,7 +277,7 @@
 		        if (window.location.href.indexOf("?enabled=Hotels") == -1 && hotelsOnly == false) {
 					var hotelControlDiv = document.createElement('div');
 		        	hotelControlDiv.index = 2;
-		        	var centerControl = new CenterControl(hotelControlDiv, 'center', '<img src=\'/images/hotel_search.png\' title=\'<bean:message key="hotels.discover.nearby" />\'/>'); 
+		        	var centerControl = new CenterControl(hotelControlDiv, 'center', '<img src=\'/images/hotel_search.png\' title=\'<bean:message key="hotels.discover.nearby" />\'/>', '<bean:message key="hotels.discover.nearby" />'); 
 		        	map.controls[google.maps.ControlPosition.TOP_CENTER].push(hotelControlDiv);
 		        	google.maps.event.addDomListener(hotelControlDiv, 'click', function() { 
 		                window.location.href = window.location.href + '?enabled=Hotels';
@@ -295,7 +286,7 @@
 			        //new search button
 		        	var hotelControlDiv = document.createElement('div');
 		        	hotelControlDiv.index = 2;
-		        	var centerControl = new CenterControl(hotelControlDiv, 'center', '<bean:message key="landmarks.new.search" />'); 
+		        	var centerControl = new CenterControl(hotelControlDiv, 'center', '<bean:message key="landmarks.new.search" />', '<bean:message key="landmarks.new.search" />'); 
 		        	map.controls[google.maps.ControlPosition.TOP_LEFT].push(hotelControlDiv);
 		        	google.maps.event.addDomListener(hotelControlDiv, 'click', function() { 
 		                window.location.href = '/hotels/' + map.getCenter().lat() + '/' + map.getCenter().lng() + '/' + map.getZoom();
@@ -305,9 +296,25 @@
 		        	var topLocationsDiv = document.createElement('div'); //scale
 		        	var text = '<img src=\'/images/layers/0stars_blue_32.png\' style=\'width:32px; height:32px; vertical-align: middle;\' title=\'Single room or apartment venue\'><span style=\'line-height:32px;\'>&nbsp;<bean:message key="hotels.single.venue" /></span><br/>' +
 			        		   '<img src=\'/images/layers/star_0_32.png\' style=\'width:32px; height:32px; vertical-align: middle;\'><span style=\'line-height:32px;\' title=\'Multiple rooms or apartments venue\'>&nbsp;<bean:message key="hotels.multiple.venue" /></span>'; 
-		        	var topLocationsControl = new CenterControl(topLocationsDiv, 'left', text);
+		        	var topLocationsControl = new CenterControl(topLocationsDiv, 'left', text, '');
 		     	    topLocationsDiv.index = 3
 		     	    map.controls[google.maps.ControlPosition.RIGHT_TOP].push(topLocationsDiv);	
+		     	     
+		     	    //wip filters
+		     	    var filtersDiv = document.createElement('div');
+		     	    var text = '<span style=\"font-family:Roboto,Arial,sans-serif;font-size:<%=fontSize%>;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;\">' + 
+			     	           '<b>Star rating</b><br/>' + //translate
+			     	           '<input type=\"checkbox\" id=\"5s\" checked=\"checked\" onclick=\"filter(5,\'s\')\"/>&nbsp;&nbsp;<img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><br/>' +
+		     	               '<input type=\"checkbox\" id=\"4s\" checked=\"checked\" onclick=\"filter(4,\'s\')\"/>&nbsp;&nbsp;<img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><br/>' +
+		     	               '<input type=\"checkbox\" id=\"3s\" checked=\"checked\" onclick=\"filter(3,\'s\')\"/>&nbsp;&nbsp;<img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><br/>' +
+		     	               '<input type=\"checkbox\" id=\"2s\" checked=\"checked\" onclick=\"filter(2,\'s\')\"/>&nbsp;&nbsp;<img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><br/>' +
+		     	               '<input type=\"checkbox\" id=\"1s\" checked=\"checked\" onclick=\"filter(1,\'s\')\"/>&nbsp;&nbsp;<img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><br/>' +
+		     	               '<input type=\"checkbox\" id=\"0s\" checked=\"checked\" onclick=\"filter(0,\'s\')\"/>&nbsp;&nbsp;<img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><br/>' +
+		     	               '</span>' 
+		     	    var filtersControl = new CenterControl(filtersDiv, 'center', text, '');
+		     	    filtersDiv.index = 4
+		     	    map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(filtersDiv);
+		     	    //	     	    
 			    }	 
 			} else if ((layer_counter + excluded_layers) == layers.length && marker_counter == 1) {
 				<% if (hotelsMode) { %>
@@ -323,7 +330,7 @@
 			}
       }
 
-      function CenterControl(controlDiv, align, text) {
+      function CenterControl(controlDiv, align, text, title) {
 
           // Set CSS for the control border
           var controlUI = document.createElement('div');
@@ -337,7 +344,7 @@
           controlUI.style.marginBottom = '10px';
           controlUI.style.marginRight = '10px';
           controlUI.style.textAlign = align; 
-          controlUI.title = text;
+          controlUI.title = title;
           controlDiv.appendChild(controlUI);
 
           // Set CSS for the control interior
@@ -353,6 +360,16 @@
       }  
       
       google.maps.event.addDomListener(window, 'load', initialize);
+
+      function filter(id, type) {
+		  var status = document.getElementById(id + type).checked;
+          alert(id + type + ' status ' + status);
+          //for each marker check if icon contains number and enable or disable
+          //s.indexOf(id) > -1
+          //for (var i = 0; i < markers.length; i++) {
+           	   //markers[i].setMap(map);
+          //}       	          
+	  }
     </script>
   </head>
   <body>

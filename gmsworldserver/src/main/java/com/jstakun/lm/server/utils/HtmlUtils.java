@@ -97,8 +97,8 @@ public class HtmlUtils {
 	    	fontSize = 24;
 	    }
 		String desc = "'<span style=\"font-family:Roboto,Arial,sans-serif;font-size:" + fontSize + "px;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;\">'+\n" +
-	            "'<strong>" + StringEscapeUtils.escapeJavaScript(landmark.getName()) + "</strong><br/>'+\n" +
-		        "'<img src=\"https://maps.googleapis.com/maps/api/streetview?size=200x150&location=" + landmark.getLatitude() + "," + landmark.getLongitude() + "\" style=\"margin: 4px 0px\" title=\"Location street view image\"/><br/>'\n";
+	            "'<b>" + StringEscapeUtils.escapeJavaScript(landmark.getName()) + "</b><br/>'+\n" +
+		        "'<img src=\"https://maps.googleapis.com/maps/api/streetview?size=200x150&location=" + landmark.getLatitude() + "," + landmark.getLongitude() + "\" style=\"margin: 4px 0px\" title=\"Location street view image\"/><br/>'+\n";
 	    String landmarkDesc = landmark.getDescription();
 	    if (StringUtils.isNotEmpty(landmarkDesc)) {
 	           desc += "'Description: " + StringEscapeUtils.escapeJavaScript(landmarkDesc) + ",<br/>'+\n";
