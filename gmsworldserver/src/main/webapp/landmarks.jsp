@@ -180,23 +180,24 @@
                 }
 
                 var icon = image;
-                if (results.features[i].properties.icon != null) {
-					icon = '/images/layers/' + results.features[i].properties.icon;
-                }
-
                 var stars = 0;
-                //TODO execute only for hotels layer
-                if (icon.indexOf('5') > -1) {
-					stars = 5;
-			    } else if (icon.indexOf('4') > -1) {
-					stars = 4;
-			    } else if (icon.indexOf('3') > -1) {
-					stars = 3;
-			    } else if (icon.indexOf('2') > -1) {
-					stars = 2;
-			    } else if (icon.indexOf('1') > -1) {
-					stars = 1;
-			    } 
+
+                //only for hotels layer
+                if (results.features[i].properties.icon != null) {
+                    icon = results.features[i].properties.icon;
+                    if (icon.indexOf('5') > -1) {
+         				stars = 5;
+         			} else if (icon.indexOf('4') > -1) {
+         				stars = 4;
+         			} else if (icon.indexOf('3') > -1) {
+         				stars = 3;
+         			} else if (icon.indexOf('2') > -1) {
+         				stars = 2;
+         			} else if (icon.indexOf('1') > -1) {
+         				stars = 1;
+         			}     
+					icon = '/images/layers/' + icon;
+                }
 
                 var thumbnail = results.features[i].properties.thumbnail;
                   	
@@ -377,25 +378,24 @@
       google.maps.event.addDomListener(window, 'load', initialize);
 
       function filter(id, type) {
-		  var status = document.getElementById(id + type).checked;
-          var modified = 0; 
-          //for each marker check if icon contains number and enable or disable
-          
-          //TODO load markers into single array
+		  var checked = document.getElementById(id + type).checked;
+          var markersToChange = [];
+
           for (var i = 0; i < markers.length; i++) {
                var marker = markers[i];
-               if (marker.stars == id) {
-                   if (status == true) {
-            	   		mc.addMarker(marker);
-                   } else  {
-            	   		mc.removeMarker(marker);       	   
-               	   }
-                   modified++;
+               if (type == 's' && marker.stars == id) {
+            	   markersToChange.push(marker);
                }    
           }   
-          console.log(modified + ' markers changed.');
-          if (modified > 0) {
-          	   mc.redraw();      
+          
+          console.log(markersToChange.length + ' markers changed.');
+          if (markersToChange.length > 0) {
+        	  if (checked) {
+				  mc.addMarkers(markersToChange);		
+              } else {
+				  mc.removeMarkers(markersToChange);
+              }
+          	  mc.redraw();      
       	  }	          
 	  }
     </script>
