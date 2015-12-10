@@ -181,45 +181,50 @@ public class JSONUtils {
     		logger.log(Level.SEVERE, e.getMessage() + ": " + country + "," + language);
     	}
     	
-    	if (tocc != null && fromcc != null && !StringUtils.equals(tocc, fromcc) && fromcc.length() == 3) {
-    		
-    		String currencyUrl = "http://api.fixer.io/latest?base=" + fromcc;
-    		String resp = LayerHelperFactory.getByName(layer).getCacheProvider().getString(currencyUrl);
-			boolean fromCache = false;
-    		
-			if (resp == null) {
-				try {
-					logger.log(Level.INFO, "Calling " + currencyUrl + "...");
-					resp = HttpUtils.processFileRequest(new URL(currencyUrl));				
-					if (StringUtils.startsWith(resp, "{")) {
-				    	LayerHelperFactory.getByName(layer).getCacheProvider().put(currencyUrl, resp);
-				    } 
-				} catch (Exception e) {
-					logger.log(Level.SEVERE, e.getMessage(), e);
-				}
-			} else {
-				fromCache = true;
-			}
-				
-			if (StringUtils.startsWith(resp, "{")) {
-				JSONObject root = new JSONObject(resp);
-				if (root.has("error")) {
-					if (!fromCache) {
-						logger.log(Level.WARNING, "Currency " + fromcc + " response error: " + root.getString("error"));
-					}
-				} else {
-					JSONObject rates = root.getJSONObject("rates");
-					if (rates.has(tocc)) {
-						double toccrate = rates.getDouble(tocc);
-						deal.setCurrencyCode(tocc);
-						deal.setPrice(deal.getPrice() * toccrate);
-						//logger.log(Level.INFO, "Changed currency from " + fromcc + " to " + tocc);
-					}
-				}
-			} else if (!fromCache) {
-				logger.log(Level.WARNING, currencyUrl + " received following response from the server: " + resp);
+    	if (tocc != null && fromcc != null && !StringUtils.equals(tocc, fromcc) && fromcc.length() == 3) {  		
+    		double toccrate = getExchangeRate(fromcc, tocc);
+			if (toccrate > 0) {
+				deal.setCurrencyCode(tocc);
+				deal.setPrice(deal.getPrice() * toccrate);
 			}
     	}  	
+    }
+    
+    public static double getExchangeRate(String fromcc, String tocc) {
+    	String currencyUrl = "http://api.fixer.io/latest?base=" + fromcc;
+		String resp = LayerHelperFactory.getByName(Commons.HOTELS_LAYER).getCacheProvider().getString(currencyUrl);
+		boolean fromCache = false;
+		
+		if (resp == null) {
+			try {
+				logger.log(Level.INFO, "Calling " + currencyUrl + "...");
+				resp = HttpUtils.processFileRequest(new URL(currencyUrl));				
+				if (StringUtils.startsWith(resp, "{")) {
+			    	LayerHelperFactory.getByName(Commons.HOTELS_LAYER).getCacheProvider().put(currencyUrl, resp);
+			    } 
+			} catch (Exception e) {
+				logger.log(Level.SEVERE, e.getMessage(), e);
+			}
+		} else {
+			fromCache = true;
+		}
+			
+		if (StringUtils.startsWith(resp, "{")) {
+			JSONObject root = new JSONObject(resp);
+			if (root.has("error")) {
+				if (!fromCache) {
+					logger.log(Level.WARNING, "Currency " + fromcc + " response error: " + root.getString("error"));
+				}
+			} else {
+				JSONObject rates = root.getJSONObject("rates");
+				if (rates.has(tocc)) {
+					return rates.getDouble(tocc);
+				}
+			}
+		} else if (!fromCache) {
+			logger.log(Level.WARNING, currencyUrl + " received following response from the server: " + resp);
+		}
+		return -1d;
     }
     
     private static String formatDeal(Deal deal, Locale locale, ResourceBundle rb) {

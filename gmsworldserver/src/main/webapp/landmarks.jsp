@@ -316,17 +316,24 @@
 		     	    topLocationsDiv.index = 3
 		     	    map.controls[google.maps.ControlPosition.RIGHT_TOP].push(topLocationsDiv);	
 		     	     
-		     	    //wip filters
+		     	    //filters
 		     	    var filtersDiv = document.createElement('div');
+		     	    //TODO change to table
 		     	    var text = '<span style=\"font-family:Roboto,Arial,sans-serif;font-size:<%=fontSize%>;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;\">' + 
-			     	           '<b>Star rating</b><br/>' + //translate
+			     	           '<b><bean:message key="hotels.starrating" /></b><br/>' + //translate
 			     	           '<input type=\"checkbox\" id=\"5s\" checked=\"checked\" onclick=\"filter(5,\'s\')\"/>&nbsp;&nbsp;<img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><br/>' +
 		     	               '<input type=\"checkbox\" id=\"4s\" checked=\"checked\" onclick=\"filter(4,\'s\')\"/>&nbsp;&nbsp;<img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><br/>' +
 		     	               '<input type=\"checkbox\" id=\"3s\" checked=\"checked\" onclick=\"filter(3,\'s\')\"/>&nbsp;&nbsp;<img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><br/>' +
 		     	               '<input type=\"checkbox\" id=\"2s\" checked=\"checked\" onclick=\"filter(2,\'s\')\"/>&nbsp;&nbsp;<img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><br/>' +
 		     	               '<input type=\"checkbox\" id=\"1s\" checked=\"checked\" onclick=\"filter(1,\'s\')\"/>&nbsp;&nbsp;<img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><br/>' +
-		     	               '<input type=\"checkbox\" id=\"0s\" checked=\"checked\" onclick=\"filter(0,\'s\')\"/>&nbsp;&nbsp;<img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><br/>' +
-		     	               '</span>' 
+		     	               '<input type=\"checkbox\" id=\"0s\" checked=\"checked\" onclick=\"filter(0,\'s\')\"/>&nbsp;&nbsp;<img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><br/>';
+		     	               //'<b><bean:message key="hotels.price" /></b><br/>' + //translate 
+                               //'<input type=\"checkbox\" id=\"1p\" checked=\"checked\" onclick=\"filter(1,\'p\')\"/>&nbsp;&nbsp;0 EUR - 50 EUR<br/>' + 
+                               //'<input type=\"checkbox\" id=\"2p\" checked=\"checked\" onclick=\"filter(2,\'p\')\"/>&nbsp;&nbsp;50 EUR - 100 EUR<br/>' +
+                               //'<input type=\"checkbox\" id=\"3p\" checked=\"checked\" onclick=\"filter(3,\'p\')\"/>&nbsp;&nbsp;100 EUR - 150 EUR<br/>' +
+                               //'<input type=\"checkbox\" id=\"4p\" checked=\"checked\" onclick=\"filter(4,\'p\')\"/>&nbsp;&nbsp;150 EUR - 200 EUR<br/>' +
+                               //'<input type=\"checkbox\" id=\"5p\" checked=\"checked\" onclick=\"filter(5,\'p\')\"/>&nbsp;&nbsp;200 EUR + <br/>'; 
+		     	               //'</span>' 
 		     	    var filtersControl = new CenterControl(filtersDiv, 'center', text, '');
 		     	    filtersDiv.index = 4
 		     	    map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(filtersDiv);

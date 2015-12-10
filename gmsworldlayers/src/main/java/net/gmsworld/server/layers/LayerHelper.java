@@ -17,6 +17,7 @@ import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 
 import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.utils.JSONUtils;
 import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.memcache.CacheProvider;
 
@@ -183,6 +184,7 @@ public abstract class LayerHelper {
 		featureCollection.setProperty("layer", layer);
 		featureCollection.setProperty("creationDate", new Date());
 		featureCollection.setProperty("language", locale.getLanguage());
+		String dealsCurrencyCode = null;
 		if (!landmarks.isEmpty()) {    		
 			//Map<String, Integer> tags = new HashMap<String, Integer>();
 			ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource", locale);
@@ -215,7 +217,8 @@ public abstract class LayerHelper {
     				int stars = StringUtils.countMatches(desc, "/images/star_blue.png");
     				String icon = "star_" + stars + ".png";
     				if (landmark.getAddressInfo().getField(AddressInfo.EXTENSION) != null)	{
-    					try {
+    					//single room venue
+        				try {
     						if (landmark.getAddressInfo().getField(AddressInfo.EXTENSION).equals("1")) {
     							icon = stars + "stars_blue.png";
     						}
@@ -226,6 +229,7 @@ public abstract class LayerHelper {
     				f.setProperty("icon", icon); 
     				if (landmark.containsDeal()) {
     					f.setProperty("price", StringUtil.formatCoordE0(landmark.getDeal().getPrice()) + " " + landmark.getDeal().getCurrencyCode());
+    				    dealsCurrencyCode = landmark.getDeal().getCurrencyCode();
     				}
     				String thumbnail = landmark.getThumbnail(); 
     				if (thumbnail != null) {
@@ -236,35 +240,14 @@ public abstract class LayerHelper {
         		}
     			f.setProperty("mobile_url", landmark.getUrl());
     			featureCollection.add(f);
-    			
-    			//calculate tags
-    			/*if (landmark.getDescription() != null) {
-    				String[] words = landmark.getDescription().split("[\\W]");
-    			    for (int i=0;i<words.length;i++) {
-    			    	String tag = words[i].toLowerCase(locale);	
-                        if (tags.containsKey(tag)) {
-                        	tags.put(tag, tags.get(tag) + 1);
-                        } else {
-                        	tags.put(tag, 1);
-                        }
-    			    }
-    			}*/
     		}
-			
-			//remove unpopular tags
-			/*int min = (int)(landmarks.size() * 0.5);
-			List<String> toRemove = new ArrayList<String>();
-			for (Map.Entry<String, Integer> entry : tags.entrySet()) {
-				if (entry.getValue() < min) {
-					toRemove.add(entry.getKey());
+			if (dealsCurrencyCode != null && !dealsCurrencyCode.equals("EUR")) {
+				double exchangeRate = JSONUtils.getExchangeRate("EUR", dealsCurrencyCode);
+				if (exchangeRate > 0) {
+					featureCollection.setProperty("eurexchangerate", exchangeRate);
+					featureCollection.setProperty("currencycode", dealsCurrencyCode);
 				}
 			}
-			for (String tr : toRemove) {
-				tags.remove(tr);
-			}
-			
-			//save tokens to tags array
-			featureCollection.setProperty("tags", tags);*/
 		}	
 
     	try {
