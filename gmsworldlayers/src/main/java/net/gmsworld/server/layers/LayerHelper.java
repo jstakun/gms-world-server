@@ -228,7 +228,7 @@ public abstract class LayerHelper {
     				} 
     				f.setProperty("icon", icon); 
     				if (landmark.containsDeal()) {
-    					f.setProperty("price", StringUtil.formatCoordE0(landmark.getDeal().getPrice()) + " " + landmark.getDeal().getCurrencyCode());
+    					f.setProperty("price", StringUtil.formatCoordE0(landmark.getDeal().getPrice()));
     				    dealsCurrencyCode = landmark.getDeal().getCurrencyCode();
     				}
     				String thumbnail = landmark.getThumbnail(); 
@@ -241,11 +241,12 @@ public abstract class LayerHelper {
     			f.setProperty("mobile_url", landmark.getUrl());
     			featureCollection.add(f);
     		}
+			
+			featureCollection.setProperty("currencycode", dealsCurrencyCode);
 			if (dealsCurrencyCode != null && !dealsCurrencyCode.equals("EUR")) {
 				double exchangeRate = JSONUtils.getExchangeRate("EUR", dealsCurrencyCode);
 				if (exchangeRate > 0) {
-					featureCollection.setProperty("eurexchangerate", exchangeRate);
-					featureCollection.setProperty("currencycode", dealsCurrencyCode);
+					featureCollection.setProperty("eurexchangerate", exchangeRate);					
 				}
 			}
 		}	

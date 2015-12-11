@@ -74,26 +74,18 @@
     <script src="/js/marker.js"></script>
     <script src="/js/markerclusterer.js"></script>
     <script>
-      var mapcenter = new google.maps.LatLng(<%= latitude %>, <%= longitude %>);
-
-      var hotelsOnly = true; 
-
-      var map;
-
-      var mc;
-
-      var layer_counter = 0;
-
-      var marker_counter = 1;
-
-      var excluded_layers = 0;
-
-      var infowindow = new google.maps.InfoWindow();   
-
-      var markers = []; 
-    	
-      var layers = [
-          
+      var map,
+          mc,
+          currencycode,
+          eurexchangerate,
+          mapcenter = new google.maps.LatLng(<%= latitude %>, <%= longitude %>),
+          hotelsOnly = true,
+          layer_counter = 0,
+ 		  marker_counter = 1,
+		  excluded_layers = 0,
+		  infowindow = new google.maps.InfoWindow(),   
+		  markers = [],
+	      layers = [
 <%
       for (String layer : Commons.getLayers()) {
 %>
@@ -101,7 +93,7 @@
 <%     
       }
 %>          
-      ];
+      	   ];
 
       function initialize() {
     	  map = new google.maps.Map(document.getElementById('map-canvas'), {
@@ -167,6 +159,9 @@
       }
 
       function loadMarkers(results, image, ismobile) {
+          currencycode = results.properties.currencycode;
+          eurexchangerate = results.properties.eurexchangerate;
+          
     	  for (var i = 0; i < results.features.length; i++) {
           		var coords = results.features[i].geometry.coordinates;
           		var latLng = new google.maps.LatLng(coords[1],coords[0]);
@@ -218,15 +213,16 @@
                   	 
                 //my Marker
                 var marker = new Marker({
-           				position: latLng,
-            			title: name,
-            			map: map,
-            			icon: icon,
-            			text: price,
-            			url: url, 
-            			desc: descr,
-            			stars: stars,
-            			mobile: <%= isMobile %>,
+           			 position: latLng,
+            		 title: name,
+            		 map: map,
+            		 icon: icon,
+            		 price: price,
+            		 cc: currencycode,
+            		 url: url, 
+            		 desc: descr,
+            		 stars: stars,
+            		 mobile: <%= isMobile %>,
           		}); 
 
                 google.maps.event.addListener(marker, 'click', function() {
@@ -326,14 +322,16 @@
 		     	               '<tr><td><input type=\"checkbox\" id=\"3s\" checked=\"checked\" onclick=\"filter(3,\'s\')\"/></td><td><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><td/><tr/>' +
 		     	               '<tr><td><input type=\"checkbox\" id=\"2s\" checked=\"checked\" onclick=\"filter(2,\'s\')\"/></td><td><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><td/><tr/>' +
 		     	               '<tr><td><input type=\"checkbox\" id=\"1s\" checked=\"checked\" onclick=\"filter(1,\'s\')\"/></td><td><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><td/><tr/>' +
-		     	               '<tr><td><input type=\"checkbox\" id=\"0s\" checked=\"checked\" onclick=\"filter(0,\'s\')\"/></td><td><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><td/><tr/>' +
-		     	               '<tr><td colspan=\"2\"><b><bean:message key="hotels.price" /></b</td></tr>' + 
-                               '<tr><td><input type=\"checkbox\" id=\"1p\" checked=\"checked\" onclick=\"filter(1,\'p\')\"/></td><td>0 EUR - 50 EUR<td/><tr/>' + 
-                               '<tr><td><input type=\"checkbox\" id=\"2p\" checked=\"checked\" onclick=\"filter(2,\'p\')\"/></td><td>50 EUR - 100 EUR<td/><tr/>' +
-                               '<tr><td><input type=\"checkbox\" id=\"3p\" checked=\"checked\" onclick=\"filter(3,\'p\')\"/></td><td>100 EUR - 150 EUR<td/><tr/>' +
-                               '<tr><td><input type=\"checkbox\" id=\"4p\" checked=\"checked\" onclick=\"filter(4,\'p\')\"/></td><td>150 EUR - 200 EUR<td/><tr/>' +
-                               '<tr><td><input type=\"checkbox\" id=\"5p\" checked=\"checked\" onclick=\"filter(5,\'p\')\"/></td><td>200 EUR + <td/><tr/>'; 
-		     	               '</table>' 
+		     	               '<tr><td><input type=\"checkbox\" id=\"0s\" checked=\"checked\" onclick=\"filter(0,\'s\')\"/></td><td><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><td/><tr/>';
+                    if (eurexchangerate) { //TODO convert EURO to local currency
+                    	text += '<tr><td colspan=\"2\"><b><bean:message key="hotels.price" /></b</td></tr>' + 
+                                '<tr><td><input type=\"checkbox\" id=\"1p\" checked=\"checked\" onclick=\"filter(1,\'p\')\"/></td><td>0 EUR - 50 EUR<td/><tr/>' + 
+                                '<tr><td><input type=\"checkbox\" id=\"2p\" checked=\"checked\" onclick=\"filter(2,\'p\')\"/></td><td>50 EUR - 100 EUR<td/><tr/>' +
+                                '<tr><td><input type=\"checkbox\" id=\"3p\" checked=\"checked\" onclick=\"filter(3,\'p\')\"/></td><td>100 EUR - 150 EUR<td/><tr/>' +
+                                '<tr><td><input type=\"checkbox\" id=\"4p\" checked=\"checked\" onclick=\"filter(4,\'p\')\"/></td><td>150 EUR - 200 EUR<td/><tr/>' +
+                                '<tr><td><input type=\"checkbox\" id=\"5p\" checked=\"checked\" onclick=\"filter(5,\'p\')\"/></td><td>200 EUR + <td/><tr/>'; 
+                    }
+           		    text += '</table>'; 
 		     	    var filtersControl = new CenterControl(filtersDiv, 'center', text, '');
 		     	    filtersDiv.index = 4
 		     	    map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(filtersDiv);
@@ -392,7 +390,20 @@
                var marker = markers[i];
                if (type == 's' && marker.stars == id) {
             	   markersToChange.push(marker);
-               } //TODO process type p, 1-5   
+               } else if (type == 'p') {
+                   var eurrate = (marker.price / eurexchangerate); 
+                   if (id == 1 && eurrate < 50) {  
+                	   markersToChange.push(marker); 
+                   } else if (id == 2 && eurrate >= 50 && eurrate < 100) {  
+                	   markersToChange.push(marker); 
+                   } else if (id == 3 && eurrate >= 100 && eurrate < 150) {  
+                	   markersToChange.push(marker); 
+                   } else if (id == 4 && eurrate >= 150 && eurrate < 200) {  
+                	   markersToChange.push(marker); 
+                   } else if (id == 5 && eurrate >= 200) {  
+                	   markersToChange.push(marker); 
+                   }    
+               }
           }   
           
           console.log(markersToChange.length + ' markers changed.');

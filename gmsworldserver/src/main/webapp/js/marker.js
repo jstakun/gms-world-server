@@ -14,11 +14,11 @@ var Marker = function(options){
 
 	google.maps.Marker.apply(this, arguments);
 
-	if (options.text) {
+	if (options.price && options.cc) {
 		this.MarkerLabel = new MarkerLabel({
 			map: this.map,
 			marker: this,
-			text: options.text,
+			text: options.price + ' ' + options.cc,
 			mobile: options.mobile
 		});
 		this.MarkerLabel.bindTo('position', this, 'position');
