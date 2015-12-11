@@ -78,6 +78,7 @@
           mc,
           currencycode,
           eurexchangerate,
+          flagmarker,
           mapcenter = new google.maps.LatLng(<%= latitude %>, <%= longitude %>),
           hotelsOnly = true,
           layer_counter = 0,
@@ -129,7 +130,7 @@
 
           var contentString = <%= landmarkDesc %>;
           
-          var flagmarker = new google.maps.Marker({
+          flagmarker = new google.maps.Marker({
   				position: mapcenter,
   				map: map,
   				desc: contentString,
@@ -317,19 +318,20 @@
 		     	    //TODO change to table
 		     	    var text = '<table style=\"width:100%;border-spacing: 0px;padding: 0px;font-family:Roboto,Arial,sans-serif;font-size:<%=fontSize%>;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;\">' + 
                                '<tr><td colspan=\"2\"><b><bean:message key="hotels.starrating" /></b></td></tr>' + 
-			     	           '<tr><td><input type=\"checkbox\" id=\"5s\" checked=\"checked\" onclick=\"filter(5,\'s\')\"/></td><td><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><td/><tr/>' +
-		     	               '<tr><td><input type=\"checkbox\" id=\"4s\" checked=\"checked\" onclick=\"filter(4,\'s\')\"/></td><td><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><td/><tr/>' +
-		     	               '<tr><td><input type=\"checkbox\" id=\"3s\" checked=\"checked\" onclick=\"filter(3,\'s\')\"/></td><td><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><td/><tr/>' +
-		     	               '<tr><td><input type=\"checkbox\" id=\"2s\" checked=\"checked\" onclick=\"filter(2,\'s\')\"/></td><td><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><td/><tr/>' +
-		     	               '<tr><td><input type=\"checkbox\" id=\"1s\" checked=\"checked\" onclick=\"filter(1,\'s\')\"/></td><td><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><td/><tr/>' +
-		     	               '<tr><td><input type=\"checkbox\" id=\"0s\" checked=\"checked\" onclick=\"filter(0,\'s\')\"/></td><td><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><td/><tr/>';
-                    if (eurexchangerate) { //TODO convert EURO to local currency
+			     	           '<tr><td><input type=\"checkbox\" id=\"5s\" checked=\"checked\" onclick=\"filter()\"/></td><td><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><td/><tr/>' +
+		     	               '<tr><td><input type=\"checkbox\" id=\"4s\" checked=\"checked\" onclick=\"filter()\"/></td><td><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><td/><tr/>' +
+		     	               '<tr><td><input type=\"checkbox\" id=\"3s\" checked=\"checked\" onclick=\"filter()\"/></td><td><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><td/><tr/>' +
+		     	               '<tr><td><input type=\"checkbox\" id=\"2s\" checked=\"checked\" onclick=\"filter()\"/></td><td><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><td/><tr/>' +
+		     	               '<tr><td><input type=\"checkbox\" id=\"1s\" checked=\"checked\" onclick=\"filter()\"/></td><td><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><td/><tr/>' +
+		     	               '<tr><td><input type=\"checkbox\" id=\"0s\" checked=\"checked\" onclick=\"filter()\"/></td><td><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><td/><tr/>';
+                    if (eurexchangerate) {
+                        var value = parseInt(eurexchangerate*50, 10);
                     	text += '<tr><td colspan=\"2\"><b><bean:message key="hotels.price" /></b</td></tr>' + 
-                                '<tr><td><input type=\"checkbox\" id=\"1p\" checked=\"checked\" onclick=\"filter(1,\'p\')\"/></td><td>0 EUR - 50 EUR<td/><tr/>' + 
-                                '<tr><td><input type=\"checkbox\" id=\"2p\" checked=\"checked\" onclick=\"filter(2,\'p\')\"/></td><td>50 EUR - 100 EUR<td/><tr/>' +
-                                '<tr><td><input type=\"checkbox\" id=\"3p\" checked=\"checked\" onclick=\"filter(3,\'p\')\"/></td><td>100 EUR - 150 EUR<td/><tr/>' +
-                                '<tr><td><input type=\"checkbox\" id=\"4p\" checked=\"checked\" onclick=\"filter(4,\'p\')\"/></td><td>150 EUR - 200 EUR<td/><tr/>' +
-                                '<tr><td><input type=\"checkbox\" id=\"5p\" checked=\"checked\" onclick=\"filter(5,\'p\')\"/></td><td>200 EUR + <td/><tr/>'; 
+                                '<tr><td><input type=\"checkbox\" id=\"1p\" checked=\"checked\" onclick=\"filter()\"/></td><td>0 ' + currencycode + ' - ' + value + ' ' + currencycode + '<td/><tr/>' + 
+                                '<tr><td><input type=\"checkbox\" id=\"2p\" checked=\"checked\" onclick=\"filter()\"/></td><td>' + value + ' ' + currencycode + ' - ' + (value*2) + ' ' + currencycode + '<td/><tr/>' +
+                                '<tr><td><input type=\"checkbox\" id=\"3p\" checked=\"checked\" onclick=\"filter()\"/></td><td>' + (value*2) + ' ' + currencycode + ' - ' + (value*3) + ' ' + currencycode + '<td/><tr/>' +
+                                '<tr><td><input type=\"checkbox\" id=\"4p\" checked=\"checked\" onclick=\"filter()\"/></td><td>' + (value*3) + ' ' + currencycode + ' - ' + (value*4) + ' ' + currencycode + '<td/><tr/>' +
+                                '<tr><td><input type=\"checkbox\" id=\"5p\" checked=\"checked\" onclick=\"filter()\"/></td><td>' + (value*4) + ' ' + currencycode + ' + <td/><tr/>'; 
                     }
            		    text += '</table>'; 
 		     	    var filtersControl = new CenterControl(filtersDiv, 'center', text, '');
@@ -388,6 +390,7 @@
 
           for (var i = 0; i < markers.length; i++) {
                var marker = markers[i];
+
                if (type == 's' && marker.stars == id) {
             	   markersToChange.push(marker);
                } else if (type == 'p') {
@@ -405,7 +408,7 @@
                    }    
                }
           }   
-          
+
           console.log(markersToChange.length + ' markers changed.');
           if (markersToChange.length > 0) {
         	  if (checked) {
@@ -414,8 +417,75 @@
 				  mc.removeMarkers(markersToChange);
               }
           	  mc.redraw();      
-      	  }	          
+      	  }
+
+          //TODO translate
+          var message =  "There are " + (mc.getTotalMarkers()-2) + " hotels meeting you criteria!"; 
+          
+          $("#status").css({"background-color": "#fff", "border" : "2px solid #fff", "border-radius": "3px", "text-align": "center", "box-shadow" : "0 2px 6px rgba(0,0,0,.3)"});
+          $("#status").html(message);
+		  $("#status").center().show().delay(3000).queue(function(n) {
+				  $(this).hide(); n();
+		  });     
 	  }
+
+      function filter() {
+    	  var markersToAdd = [];
+
+          for (var i = 0; i < markers.length; i++) {
+               var marker = markers[i];
+                
+               var eurrate = (marker.price / eurexchangerate);
+               var stars = 0;
+               if (marker.stars > 0) {
+				   stars = marker.stars;
+               }  
+               var checkedStars = document.getElementById(stars + 's').checked; 
+
+               var checkedPrice = false; 
+               if (eurrate < 50) {  
+            	   checkedPrice = document.getElementById('1p').checked;
+               } else if (eurrate >= 50 && eurrate < 100) {  
+            	   checkedPrice = document.getElementById('2p').checked;
+               } else if (eurrate >= 100 && eurrate < 150) {  
+            	   checkedPrice = document.getElementById('3p').checked;
+               } else if (eurrate >= 150 && eurrate < 200) {  
+            	   checkedPrice = document.getElementById('4p').checked;
+               } else if (eurrate >= 200) {  
+            	   checkedPrice = document.getElementById('5p').checked; 
+               }    
+
+               if (checkedStars && checkedPrice) {
+            	   markersToAdd.push(marker);		
+               }               
+          }     
+
+          console.log(markersToAdd.length + ' markers changed.');
+          var modified = false;
+          if (mc.getTotalMarkers() > 0) { 
+          	   mc.removeMarkers(markers);
+          	   markersToAdd.push(flagmarker);
+          	   modified = true;
+          }
+    	  if (markersToAdd.length > 0) {
+        	   mc.addMarkers(markersToAdd);
+        	   modified = true;
+          }
+          if (modified) {
+    	  	   mc.redraw();   
+      	  }   
+      	  
+          //TODO translate
+          var message =  "There are " + (mc.getTotalMarkers()-2) + " hotels meeting you criteria!"; 
+          
+          $("#status").css({"background-color": "#fff", "border" : "2px solid #fff", "border-radius": "3px", "text-align": "center", "box-shadow" : "0 2px 6px rgba(0,0,0,.3)"});
+          $("#status").html(message);
+		  $("#status").center().show().delay(3000).queue(function(n) {
+				  $(this).hide(); n();
+		  });     
+          
+
+      }
     </script>
   </head>
   <body>
