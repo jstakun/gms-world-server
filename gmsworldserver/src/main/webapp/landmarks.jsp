@@ -315,7 +315,7 @@
 		     	     
 		     	    //filters
 		     	    var filtersDiv = document.createElement('div');
-		     	    //TODO change to table
+
 		     	    var text = '<table style=\"width:100%;border-spacing: 0px;padding: 0px;font-family:Roboto,Arial,sans-serif;font-size:<%=fontSize%>;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;\">' + 
                                '<tr><td colspan=\"2\"><b><bean:message key="hotels.starrating" /></b></td></tr>' + 
 			     	           '<tr><td><input type=\"checkbox\" id=\"5s\" checked=\"checked\" onclick=\"filter()\"/></td><td><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><td/><tr/>' +
@@ -382,53 +382,6 @@
           controlUI.appendChild(controlText);
       }  
       
-      google.maps.event.addDomListener(window, 'load', initialize);
-
-      function filter(id, type) {
-		  var checked = document.getElementById(id + type).checked;
-          var markersToChange = [];
-
-          for (var i = 0; i < markers.length; i++) {
-               var marker = markers[i];
-
-               if (type == 's' && marker.stars == id) {
-            	   markersToChange.push(marker);
-               } else if (type == 'p') {
-                   var eurrate = (marker.price / eurexchangerate); 
-                   if (id == 1 && eurrate < 50) {  
-                	   markersToChange.push(marker); 
-                   } else if (id == 2 && eurrate >= 50 && eurrate < 100) {  
-                	   markersToChange.push(marker); 
-                   } else if (id == 3 && eurrate >= 100 && eurrate < 150) {  
-                	   markersToChange.push(marker); 
-                   } else if (id == 4 && eurrate >= 150 && eurrate < 200) {  
-                	   markersToChange.push(marker); 
-                   } else if (id == 5 && eurrate >= 200) {  
-                	   markersToChange.push(marker); 
-                   }    
-               }
-          }   
-
-          console.log(markersToChange.length + ' markers changed.');
-          if (markersToChange.length > 0) {
-        	  if (checked) {
-				  mc.addMarkers(markersToChange);		
-              } else {
-				  mc.removeMarkers(markersToChange);
-              }
-          	  mc.redraw();      
-      	  }
-
-          //TODO translate
-          var message =  "There are " + (mc.getTotalMarkers()-2) + " hotels meeting you criteria!"; 
-          
-          $("#status").css({"background-color": "#fff", "border" : "2px solid #fff", "border-radius": "3px", "text-align": "center", "box-shadow" : "0 2px 6px rgba(0,0,0,.3)"});
-          $("#status").html(message);
-		  $("#status").center().show().delay(3000).queue(function(n) {
-				  $(this).hide(); n();
-		  });     
-	  }
-
       function filter() {
     	  var markersToAdd = [];
 
@@ -475,17 +428,16 @@
     	  	   mc.redraw();   
       	  }   
       	  
-          //TODO translate
-          var message =  "There are " + (mc.getTotalMarkers()-2) + " hotels meeting you criteria!"; 
+          var message =  (mc.getTotalMarkers()-2) + ' <bean:message key="hotels.discover" />'; 
           
           $("#status").css({"background-color": "#fff", "border" : "2px solid #fff", "border-radius": "3px", "text-align": "center", "box-shadow" : "0 2px 6px rgba(0,0,0,.3)"});
           $("#status").html(message);
 		  $("#status").center().show().delay(3000).queue(function(n) {
 				  $(this).hide(); n();
 		  });     
-          
-
       }
+
+      google.maps.event.addDomListener(window, 'load', initialize);
     </script>
   </head>
   <body>
