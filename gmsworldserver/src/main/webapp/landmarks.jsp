@@ -144,7 +144,7 @@
           });
 
           var mcOptions = {gridSize: 50, maxZoom: 18};
-          markers.push(flagmarker); 
+          //markers.push(flagmarker); //keep always on top
           mc = new MarkerClusterer(map, markers, mcOptions);       
 
           <% if (hotelsMode) { %>
@@ -388,25 +388,28 @@
           for (var i = 0; i < markers.length; i++) {
                var marker = markers[i];
                 
-               var eurrate = (marker.price / eurexchangerate);
                var stars = 0;
                if (marker.stars > 0) {
 				   stars = marker.stars;
                }  
                var checkedStars = document.getElementById(stars + 's').checked; 
 
-               var checkedPrice = false; 
-               if (eurrate < 50) {  
-            	   checkedPrice = document.getElementById('1p').checked;
-               } else if (eurrate >= 50 && eurrate < 100) {  
-            	   checkedPrice = document.getElementById('2p').checked;
-               } else if (eurrate >= 100 && eurrate < 150) {  
-            	   checkedPrice = document.getElementById('3p').checked;
-               } else if (eurrate >= 150 && eurrate < 200) {  
-            	   checkedPrice = document.getElementById('4p').checked;
-               } else if (eurrate >= 200) {  
-            	   checkedPrice = document.getElementById('5p').checked; 
-               }    
+               var checkedPrice = true; 
+
+               if (eurexchangerate && marker.price) {
+               		var eurrate = (marker.price / eurexchangerate);
+               		if (eurrate < 50) {  
+            	   		checkedPrice = document.getElementById('1p').checked;
+               		} else if (eurrate >= 50 && eurrate < 100) {  
+            	   		checkedPrice = document.getElementById('2p').checked;
+               		} else if (eurrate >= 100 && eurrate < 150) {  
+            	   		checkedPrice = document.getElementById('3p').checked;
+               		} else if (eurrate >= 150 && eurrate < 200) {  
+            	   		checkedPrice = document.getElementById('4p').checked;
+              	 	} else if (eurrate >= 200) {  
+            	   		checkedPrice = document.getElementById('5p').checked; 
+               		}    
+               }
 
                if (checkedStars && checkedPrice) {
             	   markersToAdd.push(marker);		
@@ -417,7 +420,6 @@
           var modified = false;
           if (mc.getTotalMarkers() > 0) { 
           	   mc.removeMarkers(markers);
-          	   markersToAdd.push(flagmarker);
           	   modified = true;
           }
     	  if (markersToAdd.length > 0) {
@@ -427,8 +429,8 @@
           if (modified) {
     	  	   mc.redraw();   
       	  }   
-      	  
-          var message =  (mc.getTotalMarkers()-2) + ' <bean:message key="hotels.discover" />'; 
+
+      	  var message =  mc.getTotalMarkers() + ' <bean:message key="hotels.filtered" />'; 
           
           $("#status").css({"background-color": "#fff", "border" : "2px solid #fff", "border-radius": "3px", "text-align": "center", "box-shadow" : "0 2px 6px rgba(0,0,0,.3)"});
           $("#status").html(message);
