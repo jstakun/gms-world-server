@@ -7,8 +7,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
@@ -242,16 +244,59 @@ public abstract class LayerHelper {
     			featureCollection.add(f);
     		}
 			
-			featureCollection.setProperty("currencycode", dealsCurrencyCode);
-			if (dealsCurrencyCode != null && !dealsCurrencyCode.equals("EUR")) {
-				double exchangeRate = JSONUtils.getExchangeRate("EUR", dealsCurrencyCode);
-				if (exchangeRate > 0) {
-					featureCollection.setProperty("eurexchangerate", exchangeRate);					
+			double exchangeRate = -1d;
+			if (dealsCurrencyCode != null) {
+				featureCollection.setProperty("currencycode", dealsCurrencyCode);
+				if (!dealsCurrencyCode.equals("EUR")) {
+					exchangeRate = JSONUtils.getExchangeRate("EUR", dealsCurrencyCode);
+					if (exchangeRate > 0) {
+						featureCollection.setProperty("eurexchangerate", exchangeRate);					
+					}
+				} else if (dealsCurrencyCode.equals("EUR")) {
+					exchangeRate = 1d;
 				}
 			}
-		}	
+			
+			//build stats for hotels
+			if (StringUtils.equals(layer, Commons.HOTELS_LAYER)) {
+				Map<Integer, Integer> stars = new HashMap<Integer, Integer>();
+				Map<Integer, Integer> prices = new HashMap<Integer, Integer>();
+				for (ExtendedLandmark landmark : landmarks) {
+					String desc = landmark.getDescription();
+					int s = StringUtils.countMatches(desc, "star_blue");
+					if (stars.containsKey(s)) {
+						stars.put(s, stars.get(s)+1);
+					} else {
+						stars.put(s, 1);
+					}
+					if (exchangeRate > 0) {
+						s = 0;
+						if (landmark.containsDeal()) {
+							double eurvalue = landmark.getDeal().getPrice() / exchangeRate;
+							if (eurvalue < 50d) {
+								s = 1;
+							} else if (eurvalue >= 50d && eurvalue < 100d) {
+								s = 2;
+							} else if (eurvalue >= 100d && eurvalue < 150d) {
+								s = 3;
+							} else if (eurvalue >= 150d && eurvalue < 200d) {
+								s = 4;
+							} else if (eurvalue >= 200d) {
+								s = 5;
+							}
+						}
+						if (prices.containsKey(s)) {
+							prices.put(s, prices.get(s)+1);
+						} else {
+							prices.put(s, 1);
+						}
+					}
+				}
+				featureCollection.setProperty("stats.price", prices);
+				featureCollection.setProperty("stats.stars", stars);
+			}	
 
-    	try {
+			try {
     			String json = new ObjectMapper().writeValueAsString(featureCollection);
     			String latStr = StringUtil.formatCoordE2(lat);
     			String lngStr = StringUtil.formatCoordE2(lng);
@@ -267,10 +312,10 @@ public abstract class LayerHelper {
     				cacheProvider.put(key, json, 1);
     			    return key;
     			}
-    	} catch (JsonProcessingException e) {
+			} catch (JsonProcessingException e) {
     			logger.log(Level.SEVERE, e.getMessage(), e);
-    	}
-    	
+			}
+		}	
     	return null;
     }	
     
