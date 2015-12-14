@@ -70,7 +70,7 @@ public class ImageUtils {
 		return isBlack;
 	}
 	
-	public static String getGoogleMapsImageUrl(double latitude, double longitude, String size, int zoom, boolean anonymous) {
+	public static String getImageUrl(double latitude, double longitude, String size, int zoom, boolean anonymous) {
 		String lat = StringUtil.formatCoordE6(latitude);
 		String lng = StringUtil.formatCoordE6(longitude);
 		String mapsUrl = "http://maps.google.com/maps/api/staticmap?center=" + lat + "," + lng + "&zoom=" + zoom + "&size=" + size + "&markers=icon:http://gms-world.appspot.com/images/flagblue.png|" + lat + "," + lng; 
@@ -80,12 +80,12 @@ public class ImageUtils {
 		return mapsUrl;
 	}
 	
-	public static String getGoogleMapsPathUrl(List<Double[]> path, String size, boolean anonymous) throws UnsupportedEncodingException {
+	public static String getRouteUrl(List<Double[]> path, String size, boolean anonymous) throws UnsupportedEncodingException {
 		String mapsUrl = "http://maps.google.com/maps/api/staticmap?size=" + size; 
 		if (!anonymous) {
 			mapsUrl += "&key=" + Commons.getProperty(Commons.Property.GOOGLE_API_KEY);
 		}
-		if (! path.isEmpty()) {
+		if (!path.isEmpty()) {
 			List<String> coords = new ArrayList<String>(path.size());
 			for (Double[] point : path) {
 				coords.add(StringUtil.formatCoordE6(point[0]) + "," + StringUtil.formatCoordE6(point[1])); 
@@ -104,10 +104,10 @@ public class ImageUtils {
 	}
 	
 	public static byte[] loadImage(double latitude, double longitude, String size, int zoom) throws IOException {
-		return loadImage(getGoogleMapsImageUrl(latitude, longitude, size, zoom, false));
+		return loadImage(getImageUrl(latitude, longitude, size, zoom, false));
 	}
 	
 	public static byte[] loadPath(List<Double[]> path, String size) throws IOException {
-		return loadImage(getGoogleMapsPathUrl(path, size, false));
+		return loadImage(getRouteUrl(path, size, false));
 	}
 }

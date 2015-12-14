@@ -69,7 +69,7 @@ public class ImageServlet extends HttpServlet {
 					imageUrl = FileUtils.getImageUrlV2(image, thumbnail);
 				} catch (Exception e) {
 					logger.log(Level.SEVERE, e.getMessage(), e);
-					imageUrl = ImageUtils.getGoogleMapsImageUrl(lat, lng, "128x128", 9, thumbnail);
+					imageUrl = ImageUtils.getImageUrl(lat, lng, "128x128", 9, thumbnail);
 				}
 			} catch (Exception e) {
 				logger.log(Level.SEVERE, e.getMessage(), e);

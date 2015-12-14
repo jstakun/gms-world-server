@@ -45,7 +45,7 @@
                 <h4>You've selected following location:</h4>
 
                 <p class="image-section">
-                	<img src="<%= ImageUtils.getGoogleMapsImageUrl(lat.doubleValue(), lon.doubleValue(), "640x256", 10, true) %>" alt="Landmark on Google Map" height="256" width="640"/><br/>
+                	<img src="<%= ImageUtils.getImageUrl(lat.doubleValue(), lon.doubleValue(), "640x256", 10, true) %>" alt="Landmark on Google Map" height="256" width="640"/><br/>
                 </p>
                 
                 <p>

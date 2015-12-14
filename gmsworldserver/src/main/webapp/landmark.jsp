@@ -65,7 +65,7 @@
                         
                           <p class="image-section">
                               <a href="/showLandmark/<%=key%>/fullScreen">
-                                  <img src="<%= ImageUtils.getGoogleMapsImageUrl(landmark.getLatitude(), landmark.getLongitude(), "640x256", 12, true) %>" alt="Landmark on Google Map" title="See landmark on the map" width="640" height="256"/>
+                                  <img src="<%= ImageUtils.getImageUrl(landmark.getLatitude(), landmark.getLongitude(), "640x256", 12, true) %>" alt="Landmark on Google Map" title="See landmark on the map" width="640" height="256"/>
                               </a>
                           </p> 
                           <p class="post-details">                          
