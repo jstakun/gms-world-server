@@ -3,19 +3,14 @@
     Created on : 2010-12-19, 09:34:12
     Author     : jstakun
 --%>
-
 <%@page contentType="text/html" pageEncoding="utf-8"%>
 <%@page import="com.jstakun.lm.server.persistence.Landmark,
-        com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils,
         com.jstakun.lm.server.persistence.Comment,
+        com.jstakun.lm.server.utils.HtmlUtils,
         net.gmsworld.server.utils.UrlUtils,
         net.gmsworld.server.utils.ImageUtils,
-        net.gmsworld.server.utils.DateUtils,
-        java.util.List,
-        com.jstakun.lm.server.utils.HtmlUtils,
         net.gmsworld.server.utils.StringUtil,
-        com.jstakun.lm.server.config.ConfigurationManager,
-        com.jstakun.lm.server.utils.memcache.CacheUtil" %>
+        net.gmsworld.server.config.ConfigurationManager" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <!-- content-outer -->
 <html xmlns="http://www.cw3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -65,7 +60,7 @@
                         
                           <p class="image-section">
                               <a href="/showLandmark/<%=key%>/fullScreen">
-                                  <img src="<%= ImageUtils.getImageUrl(landmark.getLatitude(), landmark.getLongitude(), "640x256", 12, true) %>" alt="Landmark on Google Map" title="See landmark on the map" width="640" height="256"/>
+                                  <img src="<%= ImageUtils.getImageUrl(landmark.getLatitude(), landmark.getLongitude(), "640x256", 12, true, ConfigurationManager.MAP_PROVIDER.OSM_MAPS) %>" alt="Landmark on Google Map" title="See landmark on the map" width="640" height="256"/>
                               </a>
                           </p> 
                           <p class="post-details">                          

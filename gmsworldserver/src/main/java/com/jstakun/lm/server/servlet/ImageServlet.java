@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.utils.ImageUtils;
 import net.gmsworld.server.utils.StringUtil;
 
@@ -69,7 +70,7 @@ public class ImageServlet extends HttpServlet {
 					imageUrl = FileUtils.getImageUrlV2(image, thumbnail);
 				} catch (Exception e) {
 					logger.log(Level.SEVERE, e.getMessage(), e);
-					imageUrl = ImageUtils.getImageUrl(lat, lng, "128x128", 9, thumbnail);
+					imageUrl = ImageUtils.getImageUrl(lat, lng, "128x128", 9, thumbnail, ConfigurationManager.MAP_PROVIDER.OSM_MAPS);
 				}
 			} catch (Exception e) {
 				logger.log(Level.SEVERE, e.getMessage(), e);

@@ -8,7 +8,8 @@
 <%@page import="com.jstakun.lm.server.persistence.GeocodeCache,
 				net.gmsworld.server.utils.StringUtil,
 				net.gmsworld.server.utils.ImageUtils,
-				net.gmsworld.server.utils.DateUtils" %>
+				net.gmsworld.server.utils.DateUtils,
+				net.gmsworld.server.config.ConfigurationManager" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <!-- content-outer -->
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -47,7 +48,7 @@
 
                         <p class="image-section">
                           <a href="/showGeocode.do?key=<%= key %>&fullScreenGeocodeMap=1">
-                            <img src="<%= ImageUtils.getImageUrl(gc.getLatitude(), gc.getLongitude(), "640x256", 12, true) %>" alt="Geocode on Google Map" title="See geocode on the map" width="640" height="256"/>
+                            <img src="<%= ImageUtils.getImageUrl(gc.getLatitude(), gc.getLongitude(), "640x256", 12, true, ConfigurationManager.MAP_PROVIDER.OSM_MAPS) %>" alt="Geocode on Google Map" title="See geocode on the map" width="640" height="256"/>
                           </a>
                         </p>
                         <p class="post-details">

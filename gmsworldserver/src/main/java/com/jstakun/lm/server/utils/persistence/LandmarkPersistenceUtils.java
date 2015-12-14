@@ -981,7 +981,7 @@ public class LandmarkPersistenceUtils {
     	//
     	try {
 	    	//save map image thumbnail
-	    	byte[] thumbnail = ImageUtils.loadImage(l.getLatitude(), l.getLongitude(), "128x128", 9); 
+	    	byte[] thumbnail = ImageUtils.loadImage(l.getLatitude(), l.getLongitude(), "128x128", 9, ConfigurationManager.MAP_PROVIDER.OSM_MAPS); 
 	    	if (thumbnail != null && thumbnail.length > 0) {
 	    		FileUtils.saveFileV2("landmark_" + StringUtil.formatCoordE6(l.getLatitude()) + "_" + StringUtil.formatCoordE6(l.getLongitude()) + ".jpg", thumbnail, l.getLatitude(), l.getLongitude());
 	    	}

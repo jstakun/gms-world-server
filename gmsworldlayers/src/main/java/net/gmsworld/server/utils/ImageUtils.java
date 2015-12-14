@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.ConfigurationManager;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -85,9 +86,12 @@ public class ImageUtils {
 	    return "http://staticmap.openstreetmap.de/staticmap.php?center="+coords+"&zoom="+zoom+"&size="+size+"&maptype=mapnik&markers="+coords+",red-pushpin";
 	}
 	
-	public static String getImageUrl(double latitude, double longitude, String size, int zoom, boolean anonymous) {
-		//return getGoogleMapsImageUrl(latitude, longitude, size, zoom, anonymous);
-		return getOpenStreetMapsImageUrl(latitude, longitude, size, zoom);
+	public static String getImageUrl(double latitude, double longitude, String size, int zoom, boolean anonymous, ConfigurationManager.MAP_PROVIDER mapProvider) {
+		if (mapProvider == ConfigurationManager.MAP_PROVIDER.GOOGLE_MAPS) {
+			return getGoogleMapsImageUrl(latitude, longitude, size, zoom, anonymous);
+		} else { //ConfigurationManager.MAP_PROVIDER.OSM_MAPS
+			return getOpenStreetMapsImageUrl(latitude, longitude, size, zoom);
+		}
 	}
 	
 	public static String getRouteUrl(List<Double[]> path, String size, boolean anonymous) throws UnsupportedEncodingException {
@@ -113,8 +117,8 @@ public class ImageUtils {
 		return out.toByteArray();
 	}
 	
-	public static byte[] loadImage(double latitude, double longitude, String size, int zoom) throws IOException {
-		return loadImage(getImageUrl(latitude, longitude, size, zoom, false));
+	public static byte[] loadImage(double latitude, double longitude, String size, int zoom, ConfigurationManager.MAP_PROVIDER mapProvider) throws IOException {
+		return loadImage(getImageUrl(latitude, longitude, size, zoom, false, mapProvider));
 	}
 	
 	public static byte[] loadPath(List<Double[]> path, String size) throws IOException {

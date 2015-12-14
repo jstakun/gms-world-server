@@ -4,7 +4,8 @@
     Author     : jstakun
 --%>
 <%@page contentType="text/html" pageEncoding="utf-8"%>
-<%@page import="net.gmsworld.server.utils.ImageUtils" %>
+<%@page import="net.gmsworld.server.utils.ImageUtils,
+               net.gmsworld.server.config.ConfigurationManager" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <!-- content-outer -->
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -45,7 +46,7 @@
                 <h4>You've selected following location:</h4>
 
                 <p class="image-section">
-                	<img src="<%= ImageUtils.getImageUrl(lat.doubleValue(), lon.doubleValue(), "640x256", 10, true) %>" alt="Landmark on Google Map" height="256" width="640"/><br/>
+                	<img src="<%= ImageUtils.getImageUrl(lat.doubleValue(), lon.doubleValue(), "640x256", 10, true, ConfigurationManager.MAP_PROVIDER.OSM_MAPS) %>" alt="Landmark on Google Map" height="256" width="640"/><br/>
                 </p>
                 
                 <p>
