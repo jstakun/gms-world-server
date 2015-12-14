@@ -70,7 +70,7 @@ public class ImageUtils {
 		return isBlack;
 	}
 	
-	public static String getImageUrl(double latitude, double longitude, String size, int zoom, boolean anonymous) {
+	private static String getGoogleMapsImageUrl(double latitude, double longitude, String size, int zoom, boolean anonymous) {
 		String lat = StringUtil.formatCoordE6(latitude);
 		String lng = StringUtil.formatCoordE6(longitude);
 		String mapsUrl = "http://maps.google.com/maps/api/staticmap?center=" + lat + "," + lng + "&zoom=" + zoom + "&size=" + size + "&markers=icon:http://gms-world.appspot.com/images/flagblue.png|" + lat + "," + lng; 
@@ -78,6 +78,16 @@ public class ImageUtils {
 			mapsUrl += "&key=" + Commons.getProperty(Commons.Property.GOOGLE_API_KEY);
 		}
 		return mapsUrl;
+	}
+	
+	private static String getOpenStreetMapsImageUrl(double latitude, double longitude, String size, int zoom) {
+		String coords = latitude+","+longitude;
+	    return "http://staticmap.openstreetmap.de/staticmap.php?center="+coords+"&zoom="+zoom+"&size="+size+"&maptype=mapnik&markers="+coords+",red-pushpin";
+	}
+	
+	public static String getImageUrl(double latitude, double longitude, String size, int zoom, boolean anonymous) {
+		//return getGoogleMapsImageUrl(latitude, longitude, size, zoom, anonymous);
+		return getOpenStreetMapsImageUrl(latitude, longitude, size, zoom);
 	}
 	
 	public static String getRouteUrl(List<Double[]> path, String size, boolean anonymous) throws UnsupportedEncodingException {
