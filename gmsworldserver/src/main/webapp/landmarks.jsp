@@ -55,7 +55,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <% if (hotelsMode) { %>
     <title><bean:message key="hotels.discover" /></title>
-  	<% } else { %>
+  	<%@ include file="/WEB-INF/jspf/hotelsonmap_tracker.jspf" %>
+    <% } else { %>
   	<title><bean:message key="landmarks.discover" /></title>
   	<% } %>
 	<style>

@@ -7,4 +7,4 @@
 <meta name="keywords" content="geo, location, geolocation, blogeo, j2me, nokia, blackberry, gps, iphone, android, htc, palm, windows phone, windows ce, samsung, galaxy" />
 <meta name="robots" content="index, follow, noarchive" />
 <meta name="googlebot" content="noarchive" />
-<%@ include file="/WEB-INF/jspf/ga_tracker.jspf" %>
+<%@ include file="/WEB-INF/jspf/gms_mobile_tracker.jspf" %>

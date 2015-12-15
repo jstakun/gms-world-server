@@ -13,6 +13,7 @@
   <% if (hotelsMode) { %>
   <meta name="keywords" content="hotels, accommodation, hotel deals, compare hotels, hotel reviews, hotel photos" />
   <title><bean:message key="hotels.header" /></title>
+  <%@ include file="/WEB-INF/jspf/hotelsonmap_tracker.jspf" %>
   <% } else { %>
   <title><bean:message key="landmarks.header" /></title>
   <% } %>

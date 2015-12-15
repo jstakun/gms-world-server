@@ -2,8 +2,8 @@
 <%@ page pageEncoding="utf-8" %>
 <%@ page import="com.jstakun.lm.server.utils.persistence.GeocodeCachePersistenceUtils,
                  com.jstakun.lm.server.persistence.GeocodeCache,
-                 java.util.List,
                  com.jstakun.lm.server.utils.memcache.CacheUtil,
+                 java.util.List,
                  net.gmsworld.server.utils.DateUtils" %>
 <div id="sidebar">
 
@@ -78,14 +78,12 @@
 %>
         </ul>
         <h3 id="vistors">Visitors</h3>
-        <p id="clustrmaps-widget">      	
-        </p> 
-        <script type="text/javascript">var _clustrmaps = {'url' : 'http://www.gms-world.net', 'user' : 1119080, 'server' : '2', 'id' : 'clustrmaps-widget', 'version' : 1, 'date' : '2013-11-11', 'lang' : 'en', 'corners' : 'square' };
-             (function (){ var s = document.createElement('script'); s.type = 'text/javascript'; s.async = true; s.src = 'http://www2.clustrmaps.com/counter/map.js'; var x = document.getElementsByTagName('script')[0]; x.parentNode.insertBefore(s, x);})();
-        </script>
-        <noscript>
-             <a href="http://www2.clustrmaps.com/user/a1f111368"><img src="http://www2.clustrmaps.com/stats/maps-no_clusters/www.gms-world.net-thumb.jpg" alt="Locations of visitors to this page" /></a>
-        </noscript>
+        <p>
+            <a href="http://www.clustrmaps.com/map/gms-world.net" title="Visitor Map for www.gms-world.net">
+            	<img src="//www.clustrmaps.com/map_v2.png?u=TB9e&d=gO7aj1HRShvSvwKzJya-Xle_S979_yAtXMEddRQ9Qu0"/>
+            </a>
+        	<!-- script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?u=TB9e&d=gO7aj1HRShvSvwKzJya-Xle_S979_yAtXMEddRQ9Qu0"></script-->
+        </p>
     </div>
     <!-- /sidebar -->
 </div>
