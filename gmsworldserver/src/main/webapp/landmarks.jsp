@@ -74,6 +74,7 @@
     <script src="https://maps.googleapis.com/maps/api/js?libraries=visualization"></script>
     <script src="/js/marker.js"></script>
     <script src="/js/markerclusterer.js"></script>
+    <script src="/js/js.cookie.js"></script>
     <script>
       var map,
           mc,
@@ -339,6 +340,23 @@
 		     	    filtersDiv.index = 4
 		     	    map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(filtersDiv);
 		     	    //	     	    
+
+		     	    var filterStr = Cookies.get('filter');
+		     	    if (filterStr) {
+		     	    	console.log('filter cookie: ' + filterStr);
+                        var cids = filterStr.split(',');
+                        if (cids.length > 0) {
+                            for (var i=0;i<cids.length;i++) {
+                            	var cid = cids[i];
+                            	if (cid.length > 0) {
+                                	document.getElementById(cid).checked = false;
+                            	}
+                        	}     
+		     	    		filter();
+		     	    	} 	
+			     	} else {
+		     	    	console.log('no filter cookie set');
+			     	}
 			    }	 
 			} else if ((layer_counter + excluded_layers) == layers.length && marker_counter == 1) {
 				<% if (hotelsMode) { %>
@@ -438,6 +456,19 @@
 		  $("#status").center().show().delay(3000).queue(function(n) {
 				  $(this).hide(); n();
 		  });     
+
+		  var filter = "";
+		  for (var i = 0; i < 6; i++) {
+			 if (document.getElementById(i + 's').checked == false) {
+                 filter += i + "s,"; 
+             } 
+             if (i > 0 && document.getElementById(i + 'p').checked == false) {
+            	 filter += i + 'p,';   
+             }
+		  }
+		  if (filter.length > 0) {
+			 Cookies.set('filter', filter, '{ expires: 365 }');			
+	      }
       }
 
       google.maps.event.addDomListener(window, 'load', initialize);
