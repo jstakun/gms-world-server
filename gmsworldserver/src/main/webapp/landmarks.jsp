@@ -458,12 +458,17 @@
 		  });     
 
 		  var filter = "";
+		  var filterStr = Cookies.get('filter');
 		  for (var i = 0; i < 6; i++) {
 			 if (document.getElementById(i + 's').checked == false) {
                  filter += i + "s,"; 
              } 
-             if (i > 0 && document.getElementById(i + 'p') && document.getElementById(i + 'p').checked == false) {
-            	 filter += i + 'p,';   
+             if (i > 0 && document.getElementById(i + 'p')) {
+                 if (document.getElementById(i + 'p').checked == false) {
+            	 	filter += i + 'p,';   
+                 }
+             } else if (i > 0 && filterStr && filterStr.indexOf(i + 'p,') >= 0) {
+            	 filter += i + 'p,';  //rewrite existing filter in price checkboxes are hidden
              }
 		  }
 		  if (filter.length > 0) {
