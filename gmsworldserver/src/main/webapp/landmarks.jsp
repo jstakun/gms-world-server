@@ -467,7 +467,7 @@
              }
 		  }
 		  if (filter.length > 0) {
-			 Cookies.set('filter', filter, '{ expires: 365 }');			
+			 Cookies.set('filter', filter, '{ expires: 365, path: '/'}');			
 	      }
       }
 
@@ -475,7 +475,7 @@
     </script>
   </head>
   <body>
-    <div id="map-canvas"></div>                                             <!--         scale           -->
+    <div id="map-canvas"></div>                                            
     <div id="status" style="color:black;font-family:Roboto,Arial,sans-serif;font-size:<%=fontSize%>;line-height:32px;padding-left:4px;padding-right:4px"></div>
   </body>
 </html>
