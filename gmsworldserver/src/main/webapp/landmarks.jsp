@@ -348,7 +348,7 @@
                         if (cids.length > 0) {
                             for (var i=0;i<cids.length;i++) {
                             	var cid = cids[i];
-                            	if (cid.length > 0) {
+                            	if (cid.length > 0 && document.getElementById(cid)) {
                                 	document.getElementById(cid).checked = false;
                             	}
                         	}     
@@ -462,7 +462,7 @@
 			 if (document.getElementById(i + 's').checked == false) {
                  filter += i + "s,"; 
              } 
-             if (i > 0 && document.getElementById(i + 'p').checked == false) {
+             if (i > 0 && document.getElementById(i + 'p') && document.getElementById(i + 'p').checked == false) {
             	 filter += i + 'p,';   
              }
 		  }
