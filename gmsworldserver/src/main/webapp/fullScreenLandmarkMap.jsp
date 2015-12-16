@@ -72,22 +72,6 @@
     <body onLoad="initialize()">
         <% if (landmark != null) {%>
         <div id="map_canvas" style="width:100%; height:100%"></div>
-        <script type="text/javascript">
-            //<![CDATA[
-
-            var map;
-            if (GBrowserIsCompatible()) {
-
-                // Monitor the window resize event and let the map know when it occurs
-                if (window.attachEvent) {
-                    window.attachEvent("onresize", function() {this.map.onResize()} );
-                } else {
-                    window.addEventListener("resize", function() {this.map.onResize()} , false);
-                }
-            }
-
-            //]]>
-        </script>
         <% } else {%>
         No landmark selected
         <% }%>

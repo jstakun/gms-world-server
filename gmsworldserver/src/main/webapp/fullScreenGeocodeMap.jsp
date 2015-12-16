@@ -46,9 +46,9 @@
                 var image = '/images/flagblue.png';
                 var map = new google.maps.Map(document.getElementById("map_canvas"),myOptions);
 
-                var contentString = '<span style="font-family:Cursive;font-size:14px;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;">' +
-                    '<img src="/images/flagblue.png"/><br/>' +
-                    'Name: <%= StringEscapeUtils.escapeJavaScript(gc.getLocation())%>,<br/>' +
+                var contentString = '<span style="font-family:Roboto,Arial,sans-serif;font-size:16px;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;">' +
+                    '<b><%= StringEscapeUtils.escapeJavaScript(gc.getLocation())%></b><br/>' +
+                    '<img src="https://maps.googleapis.com/maps/api/streetview?size=200x150&location=<%=gc.getLatitude()%>,<%=gc.getLongitude()%>" style="margin: 4px 0px" title="Location street view image"/><br/>' +
                     '<%= request.getAttribute("address") != null ? "Geocode address: " + request.getAttribute("address") + ",<br/>" : ""%>' +
                     'Latitude: <%= StringUtil.formatCoordE6(gc.getLatitude()) %>, Longitude: <%= StringUtil.formatCoordE6(gc.getLongitude()) %>,<br/>' +
                     'Posted on <%= DateUtils.getFormattedDateTime(request.getLocale(), gc.getCreationDate())%>.</span>';
@@ -76,22 +76,6 @@
     <body onLoad="initialize()">
         <% if (gc != null) {%>
         <div id="map_canvas" style="width:100%; height:100%"></div>
-        <script type="text/javascript">
-            //<![CDATA[
-
-            var map;
-            if (GBrowserIsCompatible()) {
-
-                // Monitor the window resize event and let the map know when it occurs
-                if (window.attachEvent) {
-                    window.attachEvent("onresize", function() {this.map.onResize()} );
-                } else {
-                    window.addEventListener("resize", function() {this.map.onResize()} , false);
-                }
-            }
-
-            //]]>
-        </script>
         <% } else {%>
         No landmark selected
         <% }%>
