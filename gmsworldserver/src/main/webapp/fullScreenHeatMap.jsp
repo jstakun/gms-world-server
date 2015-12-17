@@ -31,7 +31,7 @@
                 }
     %>
     <head>
-        <%@ include file="/WEB-INF/jspf/head.jspf" %>
+        <%@ include file="/WEB-INF/jspf/head_small.jspf" %>
         <title>GMS World Heat Map</title>
         <% if (heatMapData != null) {%>
         <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />

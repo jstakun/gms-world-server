@@ -13,7 +13,7 @@
   <%@ include file="/WEB-INF/jspf/hotelsonmap_header.jspf" %>
   <title><bean:message key="hotels.header" /></title>
   <% } else { %>
-  <%@ include file="/WEB-INF/jspf/head.jspf" %>
+  <%@ include file="/WEB-INF/jspf/head_small.jspf" %>
   <title><bean:message key="landmarks.header" /></title>
   <% } %>
   <style type="text/css">

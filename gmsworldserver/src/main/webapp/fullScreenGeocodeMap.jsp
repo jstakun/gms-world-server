@@ -22,7 +22,7 @@
                 }
     %>
     <head>
-        <%@ include file="/WEB-INF/jspf/head.jspf" %>
+        <%@ include file="/WEB-INF/jspf/head_small.jspf" %>
         <title>Geocode Full Screen Map</title>
         <% if (gc != null) {%>
         <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />

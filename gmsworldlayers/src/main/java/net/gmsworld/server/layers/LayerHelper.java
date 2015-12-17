@@ -244,27 +244,27 @@ public abstract class LayerHelper {
     				if (thumbnail != null) {
     					f.setProperty("thumbnail", thumbnail);
     				}
-    				f.setProperty("desc", landmark.getDescription()); //desc
+    				f.setProperty("desc", StringUtils.replace(landmark.getDescription(), "<a href=", "<a target=\"_blank\" href=")); //desc
         		}
     			f.setProperty("mobile_url", landmark.getUrl());
     			featureCollection.add(f);
     		}
-			
-			double exchangeRate = -1d;
-			if (dealsCurrencyCode != null) {
-				featureCollection.setProperty("currencycode", dealsCurrencyCode);
-				if (!dealsCurrencyCode.equals("EUR")) {
-					exchangeRate = JSONUtils.getExchangeRate("EUR", dealsCurrencyCode);
-					if (exchangeRate > 0) {
-						featureCollection.setProperty("eurexchangerate", exchangeRate);					
-					}
-				} else if (dealsCurrencyCode.equals("EUR")) {
-					exchangeRate = 1d;
-				}
-			}
-			
-			//build stats for hotels
+						
+			//build stats and exchange rate for hotels
 			if (StringUtils.equals(layer, Commons.HOTELS_LAYER)) {
+				double exchangeRate = -1d;
+				if (dealsCurrencyCode != null) {
+					featureCollection.setProperty("currencycode", dealsCurrencyCode);
+					if (!dealsCurrencyCode.equals("EUR")) {
+						exchangeRate = JSONUtils.getExchangeRate("EUR", dealsCurrencyCode);
+						if (exchangeRate > 0) {
+							featureCollection.setProperty("eurexchangerate", exchangeRate);					
+						}
+					} else if (dealsCurrencyCode.equals("EUR")) {
+						exchangeRate = 1d;
+					}
+				}
+				
 				Map<Integer, Integer> stars = new HashMap<Integer, Integer>();
 				Map<Integer, Integer> prices = new HashMap<Integer, Integer>();
 				for (ExtendedLandmark landmark : landmarks) {
@@ -298,8 +298,8 @@ public abstract class LayerHelper {
 						}
 					}
 				}
-				featureCollection.setProperty("stats.price", prices);
-				featureCollection.setProperty("stats.stars", stars);
+				featureCollection.setProperty("stats_price", prices);
+				featureCollection.setProperty("stats_stars", stars);
 			}	
 
 			try {
