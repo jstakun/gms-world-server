@@ -9,12 +9,11 @@
 %>
 <html>
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <% if (hotelsMode) { %>
-  <meta name="keywords" content="hotels, accommodation, hotel deals, compare hotels, hotel reviews, hotel photos" />
+  <%@ include file="/WEB-INF/jspf/hotelsonmap_header.jspf" %>
   <title><bean:message key="hotels.header" /></title>
-  <%@ include file="/WEB-INF/jspf/hotelsonmap_tracker.jspf" %>
   <% } else { %>
+  <%@ include file="/WEB-INF/jspf/head.jspf" %>
   <title><bean:message key="landmarks.header" /></title>
   <% } %>
   <style type="text/css">

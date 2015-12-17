@@ -215,7 +215,7 @@ public abstract class LayerHelper {
     					desc = StringUtils.replace(desc, "star_5", "/images/star_5.png");
     				}	
     				desc += "<br/><a href=\"" + landmark.getUrl() + "\" target=\"_blank\">" + rb.getString("hotels.booking") + "</a>";
-    				f.setProperty("desc", desc);
+    				f.setProperty("desc", desc); //desc
     				int stars = StringUtils.countMatches(desc, "/images/star_blue.png");
     				String icon = "star_" + stars + ".png";
     				if (landmark.getAddressInfo().getField(AddressInfo.EXTENSION) != null)	{
@@ -228,17 +228,23 @@ public abstract class LayerHelper {
     						
     					}
     				} 
-    				f.setProperty("icon", icon); 
+    				f.setProperty("icon", icon); //icon
     				if (landmark.containsDeal()) {
-    					f.setProperty("price", StringUtil.formatCoordE0(landmark.getDeal().getPrice()));
+    					f.setProperty("price", StringUtil.formatCoordE0(landmark.getDeal().getPrice())); //price
     				    dealsCurrencyCode = landmark.getDeal().getCurrencyCode();
     				}
     				String thumbnail = landmark.getThumbnail(); 
     				if (thumbnail != null) {
-    					f.setProperty("thumbnail", thumbnail);
+    					f.setProperty("thumbnail", thumbnail); //thumbnail
     				}
         		} else if (StringUtils.equals(layer, Commons.PANORAMIO_LAYER)) {
         			f.setProperty("url", StringUtils.replace(landmark.getUrl(), "/m/photo", "/photo")); 
+        		} else if (StringUtils.equals(layer, Commons.FREEBASE_LAYER)) {
+        			String thumbnail = landmark.getThumbnail(); 
+    				if (thumbnail != null) {
+    					f.setProperty("thumbnail", thumbnail);
+    				}
+    				f.setProperty("desc", landmark.getDescription()); //desc
         		}
     			f.setProperty("mobile_url", landmark.getUrl());
     			featureCollection.add(f);

@@ -52,11 +52,11 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <% if (hotelsMode) { %>
     <title><bean:message key="hotels.discover" /></title>
-  	<%@ include file="/WEB-INF/jspf/hotelsonmap_tracker.jspf" %>
+  	<%@ include file="/WEB-INF/jspf/hotelsonmap_header.jspf" %>
     <% } else { %>
+  	<%@ include file="/WEB-INF/jspf/head.jspf" %>
   	<title><bean:message key="landmarks.discover" /></title>
   	<% } %>
 	<style>

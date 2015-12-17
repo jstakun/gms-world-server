@@ -31,7 +31,7 @@
                 }
     %>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <%@ include file="/WEB-INF/jspf/head.jspf" %>
         <title>GMS World Heat Map</title>
         <% if (heatMapData != null) {%>
         <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
