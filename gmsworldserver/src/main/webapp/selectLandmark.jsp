@@ -79,10 +79,6 @@
 
    var map;
    
-   var topcities = [
-		<%= HtmlUtils.getTopLocations(pageContext.getServletContext()) %>
-   ];
-   
    function initialize()
    {
 <% if (request.getParameter("lat") != null && request.getParameter("lng") != null && request.getParameter("zoom") != null) { %>	   
@@ -93,8 +89,7 @@
 		var zoom = 7;
 <% } %>
         
-        var myOptions =
-        	{
+        var myOptions = {
                     zoom: zoom,
                     center: latlng,
                     mapTypeId: google.maps.MapTypeId.ROADMAP,
@@ -124,20 +119,11 @@
        } else {
            desc = '<bean:message key="hotels.marker.desc" />'; 
        } 
-       
-       for (var i = 0; i < topcities.length; i++) {
-    	   var marker = new google.maps.Marker({
-    		    position: {lat: topcities[i].lat, lng: topcities[i].lng},
-    		    map: map,
-    		    title: topcities[i].name,
-    		    icon: '/images/ok.png',
-    		    desc: desc
-    		});   		
-    	    google.maps.event.addListener(marker, 'click', function() {
-    	    	proceedWithSelectedLocation(this.getPosition().lat(), this.getPosition().lng(), this.getTitle());   
-     		});          
-     		console.log("Added marker " + topcities[i].name + " to the map")
-       }
+
+       //add other markers here
+       var topcities = <%= HtmlUtils.getTopLocations(pageContext.getServletContext()) %>;
+       loadMarkers(topcities, '/images/ok.png', desc);
+       //
        
        var infoWindow = new google.maps.InfoWindow();
        var latlngbounds = new google.maps.LatLngBounds();
@@ -320,7 +306,23 @@
 		$("#status").center().show().delay(3000).queue(function(n) {
 				  $(this).hide(); n();
 		});
-	}    
+	}   
+
+	function loadMarkers(markers, icon, desc) {
+		for (var i = 0; i < markers.length; i++) {
+	    	   var marker = new google.maps.Marker({
+	    		    position: {lat: markers[i].lat, lng: markers[i].lng},
+	    		    map: map,
+	    		    title: markers[i].name,
+	    		    icon: icon,
+	    		    desc: desc
+	    		});   		
+	    	    google.maps.event.addListener(marker, 'click', function() {
+	    	    	proceedWithSelectedLocation(this.getPosition().lat(), this.getPosition().lng(), this.getTitle());   
+	     		});          
+	     		console.log("Added marker " + markers[i].name + " to the map")
+	     }
+	} 
 
     //google.maps.event.addDomListener(window, 'load', initialize);
   </script>

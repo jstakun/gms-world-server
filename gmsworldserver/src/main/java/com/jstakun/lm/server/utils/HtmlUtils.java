@@ -111,7 +111,7 @@ public class HtmlUtils {
 				//logger.log(Level.INFO, location[0] + ": " + location[1] + " " + location[2] + " -> " + location[3] + "," + location[4]);
 				String name = location[1];
 				if (!StringUtils.isEmpty(location[2])) {
-					name += " " + location[2];
+					name += ", " + location[2];
 				}
 				default_locations.put(location[0], LandmarkFactory.getLandmark(name, "", new QualifiedCoordinates(Double.valueOf(location[3]), Double.valueOf(location[4]), 0f, Float.NaN, Float.NaN), null, null, System.currentTimeMillis(), null)); 
 			}
