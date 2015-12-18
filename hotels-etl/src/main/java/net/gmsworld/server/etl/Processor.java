@@ -4,7 +4,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,17 +46,36 @@ public class Processor {
 	private static final String HOTELS_POST_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/cache/multi/hotels"; 
 	//private static final String HOTELS_POST_URL = "http://cache-gmsworld.rhcloud.com/camel/v1/cache/multi/test"; 
 	private static final String HOTELS_GET_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/cache/hotels/_id/"; 
-	private static final int BATCH_SIZE = 2000; 
-	private static final int TOTAL_SIZE = 100000; //max 400000, total 368412
-	private static final int FIRST = 0;
 	private static URL cachePostUrl;
 	private static ObjectMapper mapper = new ObjectMapper();
-
+	
+	private static final int BATCH_SIZE = 2000; 
+	private static final int TOTAL_SIZE = 100000; //400000; //, total ~369000
+	private static final int FIRST = 300000;
+	
+	private static final Boolean DRYRUN = false;
+	private static final Boolean COMPARE = false;
+	
 	public static void main(String[] args) throws IOException {
-		if (args.length != 2) {
+		if (args.length < 2) {
 			System.err.print("Please provide tsv or zip file name!");
 			System.exit(10);
 		}
+		
+		boolean dryrun = DRYRUN;
+		boolean compare = COMPARE;
+		
+		if (args.length > 2) {
+			try {
+				dryrun = Boolean.valueOf(args[2]).booleanValue();
+				compare = Boolean.valueOf(args[3]).booleanValue();
+			} catch (Exception e) {
+				e.printStackTrace(System.err);
+			}
+		}
+		
+		System.out.println("Dry run is set to: " + dryrun);
+		System.out.println("Records will be compared with database: " + compare);
 		
 		ICsvBeanReader beanReader = null;
 		ZipFile zf = null;
@@ -107,7 +125,7 @@ public class Processor {
 		    if (FIRST > 0) {
 		    	for (int i=0;i<FIRST;i++) {
 		    		try {
-		    			HotelBean h = beanReader.read(HotelBean.class, header, processors);
+		    			beanReader.read(HotelBean.class, header, processors);
 		    		} catch (Exception e) {
 		    			
 		    		}
@@ -137,7 +155,10 @@ public class Processor {
 		    		Map<String, Object> properties = getBeanMap(h, beanWrapper);
 		    		
 		    		//compare with current version
-		    		boolean equal = false; //TODO uncomment to check diff compareHotelBean(properties, beanWrapper, count);
+		    		boolean equal = false; 
+		    		if (compare) {
+		    			equal = compareHotelBean(properties, beanWrapper, count);
+		    		}
 		    			    		
 	    			if (!equal) {	
 	    				System.out.println(count + ". Hotel " + h.getId() + " added to batch.");
@@ -149,7 +170,7 @@ public class Processor {
 	    			}
 	    			
 		    		if (batchSize == BATCH_SIZE) {
-		    			saveBatchToDb(featureCollection);
+		    			saveBatchToDb(featureCollection, dryrun);
 		    			featureCollection.setFeatures(new ArrayList<Feature>());
 		    			batchSize = 0;
 		    			System.out.println("Processed " + count + " records ...");
@@ -163,7 +184,7 @@ public class Processor {
 		    }
 		   
 		    if (batchSize > 0) {
-		    	saveBatchToDb(featureCollection);
+		    	saveBatchToDb(featureCollection, dryrun);
     		}
 		    
 		    System.out.println("Processed " + count + " records with " + errors + " errors.");
@@ -232,18 +253,21 @@ public class Processor {
 	    return beanMap;
 	}
 	
-	private static void saveBatchToDb(FeatureCollection featureCollection) throws JsonProcessingException {
+	private static void saveBatchToDb(FeatureCollection featureCollection, boolean dryrun) throws JsonProcessingException {
+		long start = System.currentTimeMillis();
 		System.out.println("Saving to db batch of " + featureCollection.getFeatures().size() + "...");
 		
-		//load to db 		    		
-	    try {
-	    	String json = mapper.writeValueAsString(featureCollection).replace("id", "_id");
-	    	String resp = HttpUtils.processFileRequestWithBasicAuthn(cachePostUrl, "POST", null, json, "application/json", Commons.getProperty(Property.RH_GMS_USER));
-			System.out.println("Cache response: " + resp);
-		} catch (Exception e) {
-			e.printStackTrace();
+		//load to db 		    	
+		if (!dryrun) {
+			try {
+	    		String json = mapper.writeValueAsString(featureCollection).replace("id", "_id");
+	    		String resp = HttpUtils.processFileRequestWithBasicAuthn(cachePostUrl, "POST", null, json, "application/json", Commons.getProperty(Property.RH_GMS_USER));
+				System.out.println("Cache response: " + resp);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
-	    System.out.println("Done.");
+	    System.out.println("Done in " + (System.currentTimeMillis()-start) + " milliseconds.");
 	}
 	
 	private static HotelBean jsonToHotelBean(Long id) throws JsonParseException, JsonMappingException, IOException {
