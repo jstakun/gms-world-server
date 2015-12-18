@@ -412,7 +412,11 @@
                if (marker.stars > 0) {
 				   stars = marker.stars;
                }  
-               var checkedStars = document.getElementById(stars + 's').checked; 
+
+               var checkedStars = true;
+               if (document.getElementById(stars + 's')) {
+            	   checkedStars = document.getElementById(stars + 's').checked;
+               }  
 
                var checkedPrice = true; 
 

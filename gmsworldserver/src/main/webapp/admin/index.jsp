@@ -24,7 +24,7 @@
       <a href="createLayer.jsp">Create Layer</a>
     </h4>
     <h4>
-      <a href="populate.jsp">Refresh configuration</a>
+      <a href="populate.jsp" onclick="return confirm_action()">Refresh configuration</a>
     </h4>
     <h4>
       Available tasks:

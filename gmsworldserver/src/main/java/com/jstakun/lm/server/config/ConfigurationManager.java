@@ -9,6 +9,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.gmsworld.server.config.Commons;
 
@@ -34,6 +36,7 @@ public final class ConfigurationManager {
          List<Config> params = ConfigPersistenceUtils.selectAllConfigParams();
          for (Config param : params) {
              configuration.put(param.getKey(), param.getValue());
+             Logger.getLogger("com.jstakun.lm.server.config.ConfigurationManager").log(Level.INFO, "Setting {0}: {1}", new Object[]{param.getKey(), param.getValue()});
          }
          CacheUtil.put(CONFIG, configuration, CacheType.NORMAL);
     }
