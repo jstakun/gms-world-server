@@ -167,17 +167,17 @@ public class Landmark implements Serializable {
     	return getIntFlex("appId");
     }
     
-    public int getVersion() {
-    	return getIntFlex("version");
-    }
+    //public int getVersion() {
+    //	return getIntFlex("version");
+    //}
     
-    public String getCountryCode() {
-    	return getStringFlex("cc");
-    }
+    //public String getCountryCode() {
+    //	return getStringFlex("cc");
+    //}
     
-    public String getCity() {
-    	return getStringFlex("city");
-    }
+    //public String getCity() {
+    //	return getStringFlex("city");
+    //}
     
     public boolean compare(Landmark l) {
     	return StringUtils.equalsIgnoreCase(getName(), l.getName()) && 

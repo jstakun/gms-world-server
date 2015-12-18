@@ -62,23 +62,25 @@ public class HotelsBookingUtils extends LayerHelper {
 	
 	private static List<HotelBean> jsonToHotelList(String json) {
     	List<HotelBean> hotels = new ArrayList<HotelBean>();
-    	if (StringUtils.startsWith(StringUtils.trim(json), "[{")) {
+    	if (StringUtils.startsWith(StringUtils.trim(json), "[")) {
     		try {
     			JSONArray rootArray = new JSONArray(json);
-    			ObjectMapper mapper = new ObjectMapper();
+    			if (rootArray.length() > 0) {
+    				ObjectMapper mapper = new ObjectMapper();
     			
-    			for (int i=0;i<rootArray.length();i++) {
-    				Feature feature = mapper.readValue(rootArray.getJSONObject(i).toString().replace("_id",  "id"), Feature.class);
-    				HotelBean h = new HotelBean();
-    				BeanUtils.populate(h, feature.getProperties());
-    				Point geometry = (Point)feature.getGeometry(); 
-    				h.setLatitude(geometry.getCoordinates().getLatitude());
-    				h.setLongitude(geometry.getCoordinates().getLongitude());
-    				if (h.getReview_nr() == 1 && h.getReview_score() == 1) {
-    					h.setReview_nr(null);
-    					h.setReview_score(null);
+    				for (int i=0;i<rootArray.length();i++) {
+    					Feature feature = mapper.readValue(rootArray.getJSONObject(i).toString().replace("_id",  "id"), Feature.class);
+    					HotelBean h = new HotelBean();
+    					BeanUtils.populate(h, feature.getProperties());
+    					Point geometry = (Point)feature.getGeometry(); 
+    					h.setLatitude(geometry.getCoordinates().getLatitude());
+    					h.setLongitude(geometry.getCoordinates().getLongitude());
+    					if (h.getReview_nr() == 1 && h.getReview_score() == 1) {
+    						h.setReview_nr(null);
+    						h.setReview_score(null);
+    					}
+    					hotels.add(h);
     				}
-    				hotels.add(h);
     			}
     		} catch (Exception e) {
     			logger.log(Level.SEVERE, e.getMessage(), e);

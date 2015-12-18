@@ -1044,8 +1044,7 @@ public class LandmarkPersistenceUtils {
     		put("desc", l.getDescription()).
     		put("socialIds", socialIds != null ? socialIds : l.getUsername()).
     		put("imageUrl", imageUrl).build();  
-    	
-    
+    	  
     	NotificationUtils.createLadmarkCreationNotificationTask(params);
     }
     
@@ -1075,7 +1074,7 @@ public class LandmarkPersistenceUtils {
 		flex.putOpt("city", addressInfo.getField(AddressInfo.CITY));
 		l.setFlex(flex.toString());
 		
-		return addressInfo.getField(AddressInfo.EXTENSION);
+		return addressInfo.getField(AddressInfo.EXTENSION); //formatted address
     }
     
     public static void deleteLandmark(String key) {
