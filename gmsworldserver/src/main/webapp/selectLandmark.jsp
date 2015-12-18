@@ -80,7 +80,7 @@
    var map;
    
    var topcities = [
-		<%= HtmlUtils.getTopLocations() %>
+		<%= HtmlUtils.getTopLocations(pageContext.getServletContext()) %>
    ];
    
    function initialize()
@@ -89,7 +89,7 @@
         var latlng = new google.maps.LatLng(<%= request.getParameter("lat") %>,<%= request.getParameter("lng") %>);
         var zoom = <%= request.getParameter("zoom") %>;
 <% } else { %>
-		var latlng = new google.maps.LatLng(<%= HtmlUtils.getLocaleCoords(request.getLocale()) %>);
+		var latlng = new google.maps.LatLng(<%= HtmlUtils.getLocaleCoords(request.getLocale(), pageContext.getServletContext()) %>);
 		var zoom = 7;
 <% } %>
         

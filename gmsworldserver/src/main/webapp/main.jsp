@@ -58,7 +58,7 @@
                     
                     <div class="post">
                         <p>
-                         	Don't know where to go? <a href="<%= HtmlUtils.getRandomUrl() %>">Let us choose for you!</a>
+                         	Don't know where to go? <a href="<%= HtmlUtils.getRandomUrl(pageContext.getServletContext()) %>">Let us choose for you!</a>
                          </p>
                     </div>
                     
