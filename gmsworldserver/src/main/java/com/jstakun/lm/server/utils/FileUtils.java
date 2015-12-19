@@ -27,6 +27,7 @@ import com.jstakun.lm.server.utils.persistence.ScreenshotPersistenceUtils;
 public class FileUtils {
 
 	private static final Logger logger = Logger.getLogger(FileUtils.class.getName());
+	
 	/*public static BlobKey saveFile(String fileName, InputStream is) throws IOException {
 		FileService fileService = FileServiceFactory.getFileService();
         AppEngineFile file = fileService.createNewBlobFile("image/jpeg", fileName);
@@ -64,7 +65,7 @@ public class FileUtils {
         writeChannel.close();
 	}*/
 	
-	public static void saveFileV2(String fileName, byte[] screenshot, double lat, double lng) throws IOException {
+	public static void saveFileV2(String fileName, byte[] file, double lat, double lng) throws IOException {
 		String bucketName = AppIdentityServiceFactory.getAppIdentityService().getDefaultGcsBucketName();
 		GcsService gcsService = GcsServiceFactory.createGcsService();
         GcsFilename filename = new GcsFilename(bucketName, fileName);
@@ -74,10 +75,8 @@ public class FileUtils {
             .addUserMetadata("lat", Double.toString(lat))
             .addUserMetadata("lng", Double.toString(lng))
             .build();
-        GcsOutputChannel writeChannel = gcsService.createOrReplace(filename, options);
-        
-        writeChannel.write(ByteBuffer.wrap(screenshot, 0, screenshot.length));
-        
+        GcsOutputChannel writeChannel = gcsService.createOrReplace(filename, options);      
+        writeChannel.write(ByteBuffer.wrap(file, 0, file.length));
         writeChannel.close();
 	}
 	
@@ -115,8 +114,7 @@ public class FileUtils {
 		return getImageUrl(bk, thumbnail);
 	}
 	
-	private static BlobKey getCloudStorageBlobKey(String bucket_name, String object_name)
-	{       
+	private static BlobKey getCloudStorageBlobKey(String bucket_name, String object_name) {       
 	    String cloudStorageURL = "/gs/" + bucket_name + "/" + object_name;
 	    BlobstoreService bs = BlobstoreServiceFactory.getBlobstoreService();
 	    BlobKey bk = bs.createGsBlobKey(cloudStorageURL);

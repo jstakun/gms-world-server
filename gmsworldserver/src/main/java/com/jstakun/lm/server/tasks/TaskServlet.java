@@ -1,10 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.lm.server.tasks;
 
 import com.jstakun.lm.server.config.ConfigurationManager;
+import com.jstakun.lm.server.filter.GeocodeFilter;
+import com.jstakun.lm.server.utils.FileUtils;
 import com.jstakun.lm.server.utils.persistence.ScreenshotPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.ServiceLogPersistenceUtils;
 
@@ -24,7 +22,9 @@ import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.HttpUtils;
+import net.gmsworld.server.utils.ImageUtils;
 import net.gmsworld.server.utils.NumberUtils;
+import net.gmsworld.server.utils.StringUtil;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -55,8 +55,7 @@ public class TaskServlet extends HttpServlet {
         try {
             String entity = request.getParameter("entity");
             String action = request.getParameter("action");
-            //String time = request.getParameter("time");
-
+            
             if (StringUtils.isNotEmpty(action)) {
                 if (action.equalsIgnoreCase("purge")) {
                     if (entity.equalsIgnoreCase("log")) {
@@ -81,6 +80,22 @@ public class TaskServlet extends HttpServlet {
                 	rhcloudHealthCheck("landmarks", "http://landmarks-gmsworld.rhcloud.com/snoop.jsp");
                 	rhcloudHealthCheck("cache", "http://cache-gmsworld.rhcloud.com/snoop.jsp");
                 	logger.log(Level.INFO, "Done");
+                } else if (action.equalsIgnoreCase("loadImage")) {
+                	try {
+            	    	//save map image thumbnail
+                		double latitude = NumberUtils.getDouble(request.getParameter("latitude"), -200d);
+                		double longitude = NumberUtils.getDouble(request.getParameter("longitude"), -200d);
+                		if (latitude > -200d && longitude > -200d) {
+                			byte[] thumbnail = ImageUtils.loadImage(latitude, longitude, "128x128", 9, net.gmsworld.server.config.ConfigurationManager.MAP_PROVIDER.OSM_MAPS); 
+            	    		if (thumbnail != null && thumbnail.length > 0) {
+            	    			FileUtils.saveFileV2("landmark_" + StringUtil.formatCoordE6(latitude) + "_" + StringUtil.formatCoordE6(longitude) + ".jpg", thumbnail, latitude, longitude);
+            	    		}
+                		} else {
+                			logger.log(Level.SEVERE, "Wrong latitude and/or longitude parameters value(s).");
+                		}
+            	    } catch (Exception e) {
+            	    	logger.log(Level.SEVERE, e.getMessage(), e);
+            	    }
                 } else {
                     logger.log(Level.SEVERE, "Wrong parameter action: {0}", action);
                 }

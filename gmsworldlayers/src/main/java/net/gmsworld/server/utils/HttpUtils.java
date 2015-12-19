@@ -150,14 +150,13 @@ public class HttpUtils {
 
             if (responseCode == HttpServletResponse.SC_OK) {
                 is = conn.getInputStream();
-
-                logger.log(Level.INFO, "Received image, size: "+ conn.getContentLength() + " bytes, type: " + conn.getContentType());
-                               
-                       byte[] buf = new byte[1024];
-                int count = 0;
+                byte[] buf = new byte[1024];
+                int count = 0, total = 0;
                 while ((count = is.read(buf)) >= 0) {
                     out.write(buf, 0, count);
+                    total += count;
                 }
+                logger.log(Level.INFO, "Received image, size: "+ total + " bytes, type: " + conn.getContentType());
             } else {
             	logger.log(Level.SEVERE, "Received server response code " + responseCode);
             }

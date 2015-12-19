@@ -55,6 +55,17 @@ public class ImageUtilsTest {
         URI uri = new URI(url);	
         System.out.println(uri.toString());
         byte[] image = ImageUtils.loadImage(url);
+        if (image != null) {
+        	System.out.println("Image size " + image.length);
+        }
+	}
+	
+	@Test
+	public void loadImage() throws IOException {
+		byte[] image = ImageUtils.loadImage(52.25, 20.95, "128x128", 9, net.gmsworld.server.config.ConfigurationManager.MAP_PROVIDER.OSM_MAPS); 
+		if (image != null) {
+        	System.out.println("Image size " + image.length);
+        }
 	}
 		
 }
