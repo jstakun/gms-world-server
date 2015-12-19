@@ -44,7 +44,7 @@ public class NotificationsServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        GeocodeHelperFactory.setCacheProvider(new GoogleCacheProvider());
+        //GeocodeHelperFactory.setCacheProvider(new GoogleCacheProvider());
     }
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -88,9 +88,8 @@ public class NotificationsServlet extends HttpServlet {
                             l.setUsername(u);
                             String socialIds = request.getParameter("socialIds");
                             
-                            String desc = LandmarkPersistenceUtils.setFlex(l, request);
-                    		l.setDescription(desc); 
-            				l.setLayer(Commons.MY_POS_CODE);
+                            LandmarkPersistenceUtils.setFlex(l, request);
+                    		l.setLayer(Commons.MY_POS_CODE);
                 			
             				LandmarkPersistenceUtils.persistLandmark(l);
 

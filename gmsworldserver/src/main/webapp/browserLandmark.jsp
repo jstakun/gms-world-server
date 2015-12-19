@@ -59,7 +59,7 @@
  </div>
  <script>
 	(function() {
-   		var gmsAPI = "/services/browserLandmark?callback=landmark_callback";
+   		var gmsAPI = "/services/browserLandmark?callback=landmark_callback&hotelsMode=<%= hotelsMode %>";
    		$.ajax({
   			dataType: "json",
   			url: gmsAPI,

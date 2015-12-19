@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.config.ConfigurationManager;
-import net.gmsworld.server.layers.GeocodeHelperFactory;
 import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.ImageUtils;
@@ -38,7 +37,6 @@ import com.jstakun.lm.server.utils.FileUtils;
 import com.jstakun.lm.server.utils.memcache.CacheAction;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
-import com.openlapi.AddressInfo;
 
 /**
  *
@@ -1048,15 +1046,15 @@ public class LandmarkPersistenceUtils {
     	NotificationUtils.createLadmarkCreationNotificationTask(params);
     }
     
-    public static String setFlex(Landmark l, HttpServletRequest request) {
-    	AddressInfo addressInfo = new AddressInfo();
+    public static void setFlex(Landmark l, HttpServletRequest request) {
+    	//AddressInfo addressInfo = new AddressInfo();
     	
-    	try {
+    	/*try {
     		//addressInfo = GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(l.getLatitude(), l.getLongitude());
 			addressInfo = GeocodeHelperFactory.getMapQuestUtils().processReverseGeocode(l.getLatitude(), l.getLongitude());
     	} catch (Exception e) {
     		logger.log(Level.SEVERE, e.getMessage(), e);
-    	}
+    	}*/
     	
     	int useCount = NumberUtils.getInt(request.getHeader(Commons.USE_COUNT_HEADER), 1);
 		int appId = NumberUtils.getInt(request.getHeader(Commons.APP_HEADER), -1);
@@ -1070,11 +1068,11 @@ public class LandmarkPersistenceUtils {
 		if (version > 0) {
 			flex.put("version", version);
 		}
-		flex.putOpt("cc", addressInfo.getField(AddressInfo.COUNTRY_CODE));
-		flex.putOpt("city", addressInfo.getField(AddressInfo.CITY));
+		//flex.putOpt("cc", addressInfo.getField(AddressInfo.COUNTRY_CODE));
+		//flex.putOpt("city", addressInfo.getField(AddressInfo.CITY));
 		l.setFlex(flex.toString());
 		
-		return addressInfo.getField(AddressInfo.EXTENSION); //formatted address
+		//return addressInfo.getField(AddressInfo.EXTENSION); //formatted address
     }
     
     public static void deleteLandmark(String key) {

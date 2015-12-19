@@ -1,6 +1,7 @@
 package net.gmsworld.server.layers;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -10,9 +11,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
+
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.utils.HttpUtils;
+import net.gmsworld.server.utils.StringUtil;
 
+import com.google.appengine.api.ThreadManager;
 import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
@@ -34,7 +39,7 @@ public class BrowserLandmarkServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        GeocodeHelperFactory.setCacheProvider(new GoogleCacheProvider());
+        //GeocodeHelperFactory.setCacheProvider(new GoogleCacheProvider());
     }
 
 	/**
@@ -76,14 +81,18 @@ public class BrowserLandmarkServlet extends HttpServlet {
     			l.setLayer(Commons.MY_POSITION_LAYER);
     			l.setUsername(Commons.getProperty(Commons.Property.MYPOS_USER));
     			
-    			String desc = LandmarkPersistenceUtils.setFlex(l, request);
-        		l.setDescription(desc); 
+    			//layersloader will load hotels layer in hotels mode only - for performance reasons
+    			if (StringUtils.equals(request.getParameter("hotelsMode"), "true")) {
+    				LayersLoader loader = new LayersLoader(ThreadManager.currentRequestThreadFactory() , Arrays.asList(new String[]{Commons.HOTELS_LAYER}));
+    				loader.loadLayers(l.getLatitude(), l.getLongitude(), null, 50, 1134, 500, StringUtil.getStringLengthLimit("l"), null, null, request.getLocale(), true);
+    			}
+    			//
     			
+    			LandmarkPersistenceUtils.setFlex(l, request);
+        		
     			LandmarkPersistenceUtils.persistLandmark(l);
     			if (l.getId() > 0) {
     				LandmarkPersistenceUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), null);
-    				//LayersLoader loader = new LayersLoader(ThreadManager.currentRequestThreadFactory() , Arrays.asList(Commons.getLayers()));
-    				//loader.loadLayers(l.getLatitude(), l.getLongitude(), null, 20, 1132, 30, StringUtil.getStringLengthLimit("l"), null, null, Locale.US, true);
     				response.setContentType("text/javascript;charset=UTF-8");
     				response.getWriter().println("{\"id\": " + l.getId() +"}");
     				response.getWriter().close();
