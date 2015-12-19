@@ -104,10 +104,13 @@ public class LandmarkPersistenceUtils {
         return response;
     }
 
-    public static void persistLandmark(Landmark l) {
-    	Map<String, String> persistResponse = persistLandmark(l.getName(), l.getDescription(), l.getLatitude(), l.getLongitude(), l.getAltitude(), l.getUsername(), l.getValidityDate(), l.getLayer(), l.getEmail(), l.getFlex());
-    	l.setId(NumberUtils.getInt(persistResponse.get("id"),-1));
-    	l.setHash(persistResponse.get("hash"));
+    public static void persistLandmark(Landmark landmark) {
+    	Map<String, String> persistResponse = persistLandmark(landmark.getName(), landmark.getDescription(), landmark.getLatitude(), landmark.getLongitude(), landmark.getAltitude(), landmark.getUsername(), landmark.getValidityDate(), landmark.getLayer(), landmark.getEmail(), landmark.getFlex());
+    	landmark.setId(NumberUtils.getInt(persistResponse.get("id"),-1));
+    	landmark.setHash(persistResponse.get("hash"));
+    	if (landmark.getId() > 0) {
+    		CacheUtil.put(landmark.getId()+"", landmark, CacheType.NORMAL);
+    	}
     }
       
     /*public static List<Landmark> selectAllLandmarks() {
