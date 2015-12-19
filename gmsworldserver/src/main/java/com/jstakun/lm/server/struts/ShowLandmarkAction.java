@@ -79,13 +79,13 @@ public class ShowLandmarkAction extends Action {
         		 });
             	 landmark = (Landmark) landmarkCacheAction.getObjectFromCache(key, CacheType.NORMAL);
                     
-            	 isFullScreenLandmark = (System.currentTimeMillis() - landmark.getCreationDate().getTime() < CacheUtil.LONG_CACHE_LIMIT) || StringUtils.isNotEmpty(request.getParameter("fullScreenLandmarkMap"));
+            	 isFullScreenLandmark = false; 
             	    
             	 if (landmark != null) {
-            	    	request.setAttribute("landmark", landmark);
-            	 }
-            	    
-            	 if (landmark != null && !isFullScreenLandmark) {
+            		   request.setAttribute("landmark", landmark);
+            		   
+            		   isFullScreenLandmark = (System.currentTimeMillis() - landmark.getCreationDate().getTime() < CacheUtil.LONG_CACHE_LIMIT) || StringUtils.isNotEmpty(request.getParameter("fullScreenLandmarkMap"));
+             	    
                        CacheAction commentsCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
             				@Override
             				public Object executeAction() {

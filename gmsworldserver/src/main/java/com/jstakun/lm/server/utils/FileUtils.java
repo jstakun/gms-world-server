@@ -97,14 +97,18 @@ public class FileUtils {
         //To get a 32 pixel sized version (aspect-ratio preserved) simply append "=s32" to the url: "http://lh3.ggpht.com/SomeCharactersGoesHere=s32"
         //To get a 32 pixel cropped version simply append "=s32-c": "http://lh3.ggpht.com/SomeCharactersGoesHere=s32-c"
         //Valid sizes are any integer in the range [0, 1600] (maximum is available as SERVING_SIZES_LIMIT).
-
-        ImagesService imagesService = ImagesServiceFactory.getImagesService();
-        ServingUrlOptions sou = ServingUrlOptions.Builder.withBlobKey(blobKey);
-        String imageUrl = imagesService.getServingUrl(sou);
-        if (thumbnail) {
-        	imageUrl += "=s128";
-        }
-        return imageUrl;
+		try {
+			ImagesService imagesService = ImagesServiceFactory.getImagesService();
+			ServingUrlOptions sou = ServingUrlOptions.Builder.withBlobKey(blobKey);
+			String imageUrl = imagesService.getServingUrl(sou);
+			if (thumbnail) {
+				imageUrl += "=s128";
+			}
+			return imageUrl;
+		} catch (Exception e) {
+			logger.log(Level.WARNING, e.getMessage());
+			return null;
+		}
 	}
 	
 	//"http://storage.googleapis.com/" + bucketName + "/" + fileName;
