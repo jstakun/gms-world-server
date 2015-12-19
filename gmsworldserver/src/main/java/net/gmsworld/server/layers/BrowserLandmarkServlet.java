@@ -27,6 +27,8 @@ import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 public class BrowserLandmarkServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(BrowserLandmarkServlet.class.getName());
+	private static final int HOTELS_LIMIT = 500;
+	private static final int RADIUS = 50;
     
 	/**
      * @see HttpServlet#HttpServlet()
@@ -83,7 +85,7 @@ public class BrowserLandmarkServlet extends HttpServlet {
     			//layersloader will load hotels layer in hotels mode only - for performance reasons
     			if (StringUtils.equals(request.getParameter("hotelsMode"), "true")) {
     				LayersLoader loader = new LayersLoader(ThreadManager.currentRequestThreadFactory() , Arrays.asList(new String[]{Commons.HOTELS_LAYER}));
-    				loader.loadLayers(l.getLatitude(), l.getLongitude(), null, 50, 1134, 500, StringUtil.getStringLengthLimit("l"), null, null, request.getLocale(), true);
+    				loader.loadLayers(l.getLatitude(), l.getLongitude(), null, RADIUS, 1134, HOTELS_LIMIT, StringUtil.getStringLengthLimit("l"), null, null, request.getLocale(), true);
     			}
     			//
     			

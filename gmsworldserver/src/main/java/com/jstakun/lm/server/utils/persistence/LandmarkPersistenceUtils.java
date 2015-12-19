@@ -22,6 +22,7 @@ import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.ImageUtils;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
+import net.gmsworld.server.utils.ThreadManager;
 import net.gmsworld.server.utils.UrlUtils;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -34,6 +35,7 @@ import com.google.common.collect.ImmutableMap;
 import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.social.NotificationUtils;
 import com.jstakun.lm.server.utils.FileUtils;
+import com.jstakun.lm.server.utils.GoogleThreadProvider;
 import com.jstakun.lm.server.utils.memcache.CacheAction;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
@@ -45,6 +47,8 @@ import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 public class LandmarkPersistenceUtils {
 
     private static final Logger logger = Logger.getLogger(LandmarkPersistenceUtils.class.getName());
+    
+    private static ThreadManager threadManager = new ThreadManager(new GoogleThreadProvider());
     
     
     /*private static Date defaultValidityDate = null;
@@ -109,7 +113,8 @@ public class LandmarkPersistenceUtils {
     	landmark.setId(NumberUtils.getInt(persistResponse.get("id"),-1));
     	landmark.setHash(persistResponse.get("hash"));
     	if (landmark.getId() > 0) {
-    		CacheUtil.put(landmark.getId()+"", landmark, CacheType.NORMAL);
+    		CacheUtil.put(Integer.toString(landmark.getId()), landmark, CacheType.NORMAL);
+    		logger.log(Level.INFO, "Saved landmark to local in-memory cache with key: " + landmark.getId());
     	}
     }
       
@@ -978,76 +983,11 @@ public class LandmarkPersistenceUtils {
         return isSimilarToNewest;
     }
     
-    public static void notifyOnLandmarkCreation(Landmark l, String userAgent, String socialIds) {
-    	//
-    	try {
-	    	//save map image thumbnail
-	    	byte[] thumbnail = ImageUtils.loadImage(l.getLatitude(), l.getLongitude(), "128x128", 9, ConfigurationManager.MAP_PROVIDER.OSM_MAPS); 
-	    	if (thumbnail != null && thumbnail.length > 0) {
-	    		FileUtils.saveFileV2("landmark_" + StringUtil.formatCoordE6(l.getLatitude()) + "_" + StringUtil.formatCoordE6(l.getLongitude()) + ".jpg", thumbnail, l.getLatitude(), l.getLongitude());
-	    	}
-	    } catch (Exception e) {
-	    	logger.log(Level.SEVERE, e.getMessage(), e);
-	    }
-    	
-    	//social notifications
-    
-    	String landmarkUrl = ConfigurationManager.SERVER_URL + "showLandmark/" + l.getId();
-    	if (StringUtils.isNotEmpty(l.getHash())) {
-    		landmarkUrl = UrlUtils.BITLY_URL + l.getHash();
-    	} 
-                        
-    	String titleSuffix = "";
-    	String[] tokens = StringUtils.split(userAgent, ",");
-    	if (tokens != null) {
-        	for (int i = 0; i < tokens.length; i++) {
-            	String token = StringUtils.trimToEmpty(tokens[i]);
-            	if (token.startsWith("Package:") || token.startsWith("Version:") || token.startsWith("Version Code:")) {
-                	titleSuffix += " " + token;
-            	}
-        	}
-    	}
-
-    	String messageSuffix = "";
-    	if (l.getUseCount() > 0) {
-    		messageSuffix = " User has opened LM " + l.getUseCount() + " times.";
-    	}
-    	
-    	String title = "New landmark";
-    	if (StringUtils.isNotEmpty(titleSuffix)) {
-        	title += titleSuffix;
-    	}
-
-    	String body = "Landmark: " + l.getName() + " has been created by user " + 
-    			ConfigurationManager.SERVER_URL + "socialProfile?uid=" + l.getUsername() + "." + messageSuffix;
-    
-    	String userUrl = ConfigurationManager.SERVER_URL;
-    	if (l.isSocial()) {
-    		userUrl += "blogeo/" + l.getUsername();
-    	} else {
-    		userUrl += "showUser/" + l.getUsername();
-    	}
-    	
-    	String imageUrl = ConfigurationManager.SERVER_URL + "image?lat=" + l.getLatitude() + "&lng=" + l.getLongitude();
-    
-    	Map<String, String> params = new ImmutableMap.Builder<String, String>().
-            put("key", Integer.toString(l.getId())).
-    		put("landmarkUrl", landmarkUrl).
-    		put("email", l.getEmail()).
-    		put("title", title).
-    		put("userUrl", userUrl).
-    		put("username", l.getUsername()).
-    		put("name", l.getName()).
-    		put("body", body).
-    		put("latitude", Double.toString(l.getLatitude())).
-    		put("longitude", Double.toString(l.getLongitude())).
-    		put("layer", l.getLayer()).
-    		put("desc", l.getDescription()).
-    		put("socialIds", socialIds != null ? socialIds : l.getUsername()).
-    		put("imageUrl", imageUrl).build();  
-    	  
-    	NotificationUtils.createLadmarkCreationNotificationTask(params);
+    public static void notifyOnLandmarkCreation(Landmark landmark, String userAgent, String socialIds) {
+    	threadManager.startThread(Integer.toString(landmark.getId()), new LandmarkCreationNotifier(landmark, userAgent, socialIds));
     }
+    
+    
     
     public static void setFlex(Landmark l, HttpServletRequest request) {
     	//AddressInfo addressInfo = new AddressInfo();
@@ -1084,5 +1024,91 @@ public class LandmarkPersistenceUtils {
     
     public static void updateLandmark(String key, Map<String, Object> update) {
     	//TODO not yet implemented
+    }
+    
+    private static class LandmarkCreationNotifier implements Runnable {
+
+    	private Landmark landmark;
+    	private String userAgent;
+    	private String socialIds;
+    	
+    	public LandmarkCreationNotifier(Landmark landmark, String userAgent, String socialIds) {
+    		this.landmark = landmark;
+    		this.socialIds = socialIds;
+    		this.userAgent = userAgent;
+    	}
+    	
+		@Override
+		public void run() {
+			//
+	    	try {
+		    	//save map image thumbnail
+		    	byte[] thumbnail = ImageUtils.loadImage(landmark.getLatitude(), landmark.getLongitude(), "128x128", 9, ConfigurationManager.MAP_PROVIDER.OSM_MAPS); 
+		    	if (thumbnail != null && thumbnail.length > 0) {
+		    		FileUtils.saveFileV2("landmark_" + StringUtil.formatCoordE6(landmark.getLatitude()) + "_" + StringUtil.formatCoordE6(landmark.getLongitude()) + ".jpg", thumbnail, landmark.getLatitude(), landmark.getLongitude());
+		    	}
+		    } catch (Exception e) {
+		    	logger.log(Level.SEVERE, e.getMessage(), e);
+		    }
+	    	
+	    	//social notifications
+	    
+	    	String landmarkUrl = ConfigurationManager.SERVER_URL + "showLandmark/" + landmark.getId();
+	    	if (StringUtils.isNotEmpty(landmark.getHash())) {
+	    		landmarkUrl = UrlUtils.BITLY_URL + landmark.getHash();
+	    	} 
+	                        
+	    	String titleSuffix = "";
+	    	String[] tokens = StringUtils.split(userAgent, ",");
+	    	if (tokens != null) {
+	        	for (int i = 0; i < tokens.length; i++) {
+	            	String token = StringUtils.trimToEmpty(tokens[i]);
+	            	if (token.startsWith("Package:") || token.startsWith("Version:") || token.startsWith("Version Code:")) {
+	                	titleSuffix += " " + token;
+	            	}
+	        	}
+	    	}
+
+	    	String messageSuffix = "";
+	    	if (landmark.getUseCount() > 0) {
+	    		messageSuffix = " User has opened LM " + landmark.getUseCount() + " times.";
+	    	}
+	    	
+	    	String title = "New landmark";
+	    	if (StringUtils.isNotEmpty(titleSuffix)) {
+	        	title += titleSuffix;
+	    	}
+
+	    	String body = "Landmark: " + landmark.getName() + " has been created by user " + 
+	    			ConfigurationManager.SERVER_URL + "socialProfile?uid=" + landmark.getUsername() + "." + messageSuffix;
+	    
+	    	String userUrl = ConfigurationManager.SERVER_URL;
+	    	if (landmark.isSocial()) {
+	    		userUrl += "blogeo/" + landmark.getUsername();
+	    	} else {
+	    		userUrl += "showUser/" + landmark.getUsername();
+	    	}
+	    	
+	    	String imageUrl = ConfigurationManager.SERVER_URL + "image?lat=" + landmark.getLatitude() + "&lng=" + landmark.getLongitude();
+	    
+	    	Map<String, String> params = new ImmutableMap.Builder<String, String>().
+	            put("key", Integer.toString(landmark.getId())).
+	    		put("landmarkUrl", landmarkUrl).
+	    		put("email", landmark.getEmail()).
+	    		put("title", title).
+	    		put("userUrl", userUrl).
+	    		put("username", landmark.getUsername()).
+	    		put("name", landmark.getName()).
+	    		put("body", body).
+	    		put("latitude", Double.toString(landmark.getLatitude())).
+	    		put("longitude", Double.toString(landmark.getLongitude())).
+	    		put("layer", landmark.getLayer()).
+	    		put("desc", landmark.getDescription()).
+	    		put("socialIds", socialIds != null ? socialIds : landmark.getUsername()).
+	    		put("imageUrl", imageUrl).build();  
+	    	  
+	    	NotificationUtils.createLadmarkCreationNotificationTask(params);
+	    }
+    	
     }
 }

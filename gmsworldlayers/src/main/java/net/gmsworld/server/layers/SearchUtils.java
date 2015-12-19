@@ -119,8 +119,7 @@ public class SearchUtils extends LayerHelper {
         	threadManager.startThread(Commons.GROUPON_LAYER, threadProvider.newThread(new SerialSearchTask(lat, lng, query, null, language, Commons.GROUPON_LAYER, radius, dealLimit, limit, stringLimit, locale, isDeal, threadManager.getThreads(), foundLandmarks)));
         }
 
-        threadManager.startThread(Commons.LOCAL_LAYER, threadProvider.newThread(new SerialSearchTask(lat, lng, query, null, language, Commons.LOCAL_LAYER, radius, dealLimit, limit, stringLimit, locale, isDeal, threadManager.getThreads(), foundLandmarks)));
-        
+        threadManager.startThread(Commons.LOCAL_LAYER, threadProvider.newThread(new SerialSearchTask(lat, lng, query, null, language, Commons.LOCAL_LAYER, radius, dealLimit, limit, stringLimit, locale, isDeal, threadManager.getThreads(), foundLandmarks)));      
         
         threadManager.waitForThreads();
         

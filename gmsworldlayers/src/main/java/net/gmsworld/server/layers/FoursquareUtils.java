@@ -203,9 +203,6 @@ public class FoursquareUtils extends LayerHelper {
                api.setUseCallback(false);
                
                //venues search
-               
-               //Result<VenuesSearchResult> result = api.venuesSearch(lat + "," + lng, (double) radius, null, null, query, limit, intent, null, null, null, null);
-
                Map<String, String> params = new HashMap<String, String>();
                params.put("ll", lat + "," + lng);
                params.put("radius", Integer.toString(radius));

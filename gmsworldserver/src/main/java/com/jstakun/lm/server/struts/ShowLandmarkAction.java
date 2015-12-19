@@ -55,13 +55,14 @@ public class ShowLandmarkAction extends Action {
 
         final String key = (String) request.getParameter("key");
         Landmark landmark = null;
+        boolean isFullScreenLandmark = false;
+        
         if (StringUtils.isNotEmpty(key)) {
             try {
-                //if (CommonPersistenceUtils.isKeyValid(key)) {
-            	    request.setAttribute("key", key);
-            	    logger.log(Level.INFO, "Searching for key: " + key);
+                  request.setAttribute("key", key);
+            	  logger.log(Level.INFO, "Searching for key: " + key);
             	    
-            	    CacheAction landmarkCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
+            	  CacheAction landmarkCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
         				@Override
         				public Object executeAction() {
         					Browser browser = Browser.parseUserAgentString(request.getHeader("User-Agent"));
@@ -75,46 +76,39 @@ public class ShowLandmarkAction extends Action {
         		            	return null;
         		            }
         				}
-        			});
-            	    landmark = (Landmark) landmarkCacheAction.getObjectFromCache(key, CacheType.NORMAL);
+        		 });
+            	 landmark = (Landmark) landmarkCacheAction.getObjectFromCache(key, CacheType.NORMAL);
                     
-            	    if (landmark != null) {
-                        request.setAttribute("landmark", landmark);
-                        //String address = GeocodeHelperFactory.getMapQuestUtils().processReverseGeocode(landmark.getLatitude(),landmark.getLongitude()).getField(AddressInfo.EXTENSION);
-                        //if (StringUtils.isNotEmpty(address)) {
-                        //   request.setAttribute("address", address);
-                        //}
-
-                        //List<Comment> comments = CommentPersistenceUtils.selectCommentsByLandmark(key);
-                        CacheAction commentsCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
+            	 isFullScreenLandmark = (System.currentTimeMillis() - landmark.getCreationDate().getTime() < CacheUtil.LONG_CACHE_LIMIT) || StringUtils.isNotEmpty(request.getParameter("fullScreenLandmarkMap"));
+            	    
+            	 if (landmark != null) {
+            	    	request.setAttribute("landmark", landmark);
+            	 }
+            	    
+            	 if (landmark != null && !isFullScreenLandmark) {
+                       CacheAction commentsCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
             				@Override
             				public Object executeAction() {
             					return CommentPersistenceUtils.selectCommentsByLandmark(key);
             				}
-            			});
-                        List<Comment> comments = (List<Comment>)commentsCacheAction.getObjectFromCache("comments_" + key, CacheType.NORMAL);
-                        if (comments != null && !comments.isEmpty()) {
+            		   });
+                       List<Comment> comments = (List<Comment>)commentsCacheAction.getObjectFromCache("comments_" + key, CacheType.NORMAL);
+                       if (comments != null && !comments.isEmpty()) {
                             request.setAttribute("comments", comments);
-                        }
+                       }
                         
-                        if (!landmark.isSocial()) {
-                            //List<Checkin> checkins = CheckinPersistenceUtils.selectAllLandmarkCheckins(key);
-                        	CacheAction checkinCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
+                       if (!landmark.isSocial()) {
+                           CacheAction checkinCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
                 				@Override
                 				public Object executeAction() {
                 					return CheckinPersistenceUtils.selectCheckinsByLandmark(key);
                 				}
-                			});
-                        	List<Checkin> checkins = (List<Checkin>)checkinCacheAction.getObjectFromCache("checkins_" + key, CacheType.NORMAL);
+                		   });
+                           List<Checkin> checkins = (List<Checkin>)checkinCacheAction.getObjectFromCache("checkins_" + key, CacheType.NORMAL);
                         	
-                        	if (checkins != null && !checkins.isEmpty()) {
+                           if (checkins != null && !checkins.isEmpty()) {
                                 Checkin lastCheckin = checkins.get(0);
                                 String username = lastCheckin.getUsername();
-                                //List<OAuthToken> tokens = OAuthTokenPersistenceUtils.selectOAuthTokenByUser(lastCheckin.getUsername());
-                                //if (tokens != null && !tokens.isEmpty()) {
-                                //    OAuthToken userToken = tokens.get(0);
-                                //    username = userToken.getUserId() + "@" + userToken.getService();
-                                //}
                                 request.setAttribute("lastCheckinUsername", username);
                                 request.setAttribute("lastCheckinDate", lastCheckin.getCreationDate());
                                 if (checkins.size() == 100) {
@@ -122,35 +116,21 @@ public class ShowLandmarkAction extends Action {
                                 } else {
                                 	request.setAttribute("checkinsCount", checkins.size());	
                                 }                               
-                            }
-                        }
-                    }
-                //}
+                           }
+                      }
+                 }
             } catch (Exception e) {
                 logger.log(Level.SEVERE, e.getMessage(), e);
             }
         }
         
-        if (landmark != null && System.currentTimeMillis() - landmark.getCreationDate().getTime() < CacheUtil.LONG_CACHE_LIMIT) {
+        if (landmark != null && isFullScreenLandmark) {
         	OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
         	boolean isMobile = os.isMobileDevice();
         	request.setAttribute("lat", StringUtil.formatCoordE6(landmark.getLatitude()));
         	request.setAttribute("lng", StringUtil.formatCoordE6(landmark.getLongitude()));
         	request.setAttribute("landmarkDesc", HtmlUtils.buildLandmarkDescV2(landmark, request.getAttribute("address"), request.getLocale(), isMobile));
         	request.setAttribute("landmarkName", "'" + landmark.getName() + "'");
-        	if (isMobile) {
-                return mapping.findForward("landmarksMobile");
-            } else {
-            	return mapping.findForward("landmarks");
-            } 
-        } else if (landmark != null && StringUtils.isNotEmpty(request.getParameter("fullScreenLandmarkMap"))) {
-        	OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
-        	boolean isMobile = os.isMobileDevice();
-        	request.setAttribute("lat", StringUtil.formatCoordE6(landmark.getLatitude()));
-        	request.setAttribute("lng", StringUtil.formatCoordE6(landmark.getLongitude()));
-        	request.setAttribute("landmarkDesc", HtmlUtils.buildLandmarkDescV2(landmark, request.getAttribute("address"), request.getLocale(), isMobile));
-        	request.setAttribute("landmarkName", "'" + landmark.getName() + "'");
-        	//return mapping.findForward("fullScreen");
         	if (isMobile) {
                 return mapping.findForward("landmarksMobile");
             } else {
