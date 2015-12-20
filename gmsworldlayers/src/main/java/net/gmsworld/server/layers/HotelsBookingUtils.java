@@ -24,6 +24,7 @@ import org.apache.commons.lang.StringUtils;
 import org.geojson.Feature;
 import org.geojson.Point;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Function;
@@ -87,9 +88,13 @@ public class HotelsBookingUtils extends LayerHelper {
 			}
 		}
 		logger.log(Level.INFO, "Processing hotels list...");
-        List<HotelBean> hotelsList = jsonToHotelList(hotels);
-		logger.log(Level.INFO, "Found " + hotelsList.size() + " hotels.");
-		landmarks.addAll(Lists.transform(hotelsList, new HotelToExtendedLandmarkFunction(locale)));
+		HotelToExtendedLandmarkFunction ht = new HotelToExtendedLandmarkFunction(locale);
+		if (hotels != null) {
+			for (int i=0; i<hotels.length(); i++) {
+				landmarks.add(ht.apply(hotels.getJSONObject(i)));
+			}
+		}
+        logger.log(Level.INFO, "Found " + landmarks.size() + " hotels.");
 		return landmarks;
 	}
 	
@@ -125,8 +130,8 @@ public class HotelsBookingUtils extends LayerHelper {
 		return Commons.HOTELS_LAYER;
 	}
 	
-	private static List<HotelBean> jsonToHotelList(JSONArray rootArray) {
-    	List<HotelBean> hotels = new ArrayList<HotelBean>();
+	/*private static List<HotelBean> jsonToHotelList(JSONArray rootArray) {
+		List<HotelBean> hotels = new ArrayList<HotelBean>();
     	try {
     		if (rootArray != null && rootArray.length() > 0) {
     			ObjectMapper mapper = new ObjectMapper();
@@ -150,20 +155,15 @@ public class HotelsBookingUtils extends LayerHelper {
     	}
     	 	
     	return hotels;
-	}
+	}*/
 	
-	private static ExtendedLandmark hotelToLandmark(HotelBean hotel, Locale locale) {
+	/*private static ExtendedLandmark hotelToLandmark(HotelBean hotel, Locale locale) {
     	QualifiedCoordinates qc = new QualifiedCoordinates(hotel.getLatitude(), hotel.getLongitude(), 0f, 0f, 0f); 
     	AddressInfo address = new AddressInfo();
     	
     	address.setField(AddressInfo.STREET, hotel.getAddress());
     	address.setField(AddressInfo.CITY, hotel.getCity_hotel());
-    	/*for (Locale l : Locale.getAvailableLocales()) {
-    		if (StringUtils.equalsIgnoreCase(l.getCountry(), hotel.getCc1())) {
-    			address.setField(AddressInfo.COUNTRY, l.getDisplayCountry());
-    			break;
-    		}
-    	}*/
+    	
     	Locale l = new Locale("", hotel.getCc1().toUpperCase(Locale.US));
     	String country = l.getDisplayCountry();
     	if (country == null) {
@@ -213,8 +213,69 @@ public class HotelsBookingUtils extends LayerHelper {
         landmark.setDescription(desc);
 
         return landmark;
-    }
+    }*/
+	
+	private static ExtendedLandmark hotelToLandmark(JSONObject hotel, Locale locale) {
+		JSONArray coords = hotel.getJSONObject("geometry").getJSONArray("coordinates");
+    	QualifiedCoordinates qc = new QualifiedCoordinates(coords.getDouble(1), coords.getDouble(0), 0f, 0f, 0f); 
+    	
+    	JSONObject props = hotel.getJSONObject("properties");
+    	AddressInfo address = new AddressInfo();
+    	address.setField(AddressInfo.STREET, props.getString("address"));
+    	address.setField(AddressInfo.CITY, props.getString("city_hotel"));
+    	
+    	String cc = props.getString("cc1");
+    	Locale l = new Locale("", cc.toUpperCase(Locale.US));
+    	String country = l.getDisplayCountry();
+    	if (country == null) {
+    		country = cc;
+    	}
+    	address.setField(AddressInfo.COUNTRY, country);
+    	address.setField(AddressInfo.POSTAL_CODE, props.getString("zip"));
 
+        long creationDate = props.getLong("creationDate");
+        
+    	ExtendedLandmark landmark = LandmarkFactory.getLandmark(props.getString("name"), null, qc, Commons.HOTELS_LAYER, address,  creationDate, null);
+    	landmark.setUrl(props.getString("hotel_url"));
+        
+    	int rs = props.getInt("review_score");
+    	int rn = props.getInt("review_nr");
+    	
+    	if (rs != 1 || rn != 1) {
+    		landmark.setRating(rs);
+    		landmark.setNumberOfReviews(rn);
+        }
+        
+        landmark.setCategoryId(7);
+        landmark.setSubCategoryId(129);
+        
+        Map<String, String> tokens = new HashMap<String, String>();
+        
+        String currencycode = props.getString("currencycode");
+        if (!props.isNull("minrate")) {
+            Deal deal = new Deal(props.getDouble("minrate"), -1, -1, null, currencycode);
+            landmark.setDeal(deal);
+        } else if (!props.isNull("maxrate")) {
+        	Deal deal = new Deal(props.getDouble("maxrate"), -1, -1, null, currencycode);
+        	landmark.setDeal(deal);       	
+        }
+        
+        tokens.put("maxRating", "10");
+        tokens.put("star_rating", Double.toString(props.getDouble("stars")));
+        
+        int nr = props.getInt("nr_rooms");
+        if (nr > 0) {
+        	tokens.put("no_rooms", Integer.toString(nr));
+        }
+        address.setField(AddressInfo.EXTENSION, Integer.toString(nr));
+
+        landmark.setThumbnail(props.getString("photo_url"));
+        
+        String desc = JSONUtils.buildLandmarkDesc(landmark, tokens, locale);
+        landmark.setDescription(desc);
+
+        return landmark;
+    }
 	
 	public static int countNearbyHotels(double lat, double lng, int r) throws MalformedURLException, IOException {
 		int normalizedRadius = r;
@@ -226,7 +287,7 @@ public class HotelsBookingUtils extends LayerHelper {
 		return NumberUtils.getInt(hotelsCount, -1);
 	}
 
-	private class HotelToExtendedLandmarkFunction implements Function<HotelBean, ExtendedLandmark> {
+	private class HotelToExtendedLandmarkFunction implements Function<JSONObject, ExtendedLandmark> {
 
 		private Locale locale;
     	
@@ -234,7 +295,7 @@ public class HotelsBookingUtils extends LayerHelper {
     		this.locale = locale;
     	}
     	
-		public ExtendedLandmark apply(HotelBean hotel) {
+		public ExtendedLandmark apply(JSONObject hotel) {
 			return hotelToLandmark(hotel, locale);
 		}
 		
