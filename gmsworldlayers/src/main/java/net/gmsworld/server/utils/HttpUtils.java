@@ -63,6 +63,7 @@ public class HttpUtils {
     private static String processFileRequest(URL fileUrl, boolean authn, String userpassword, String authnOther, String method, String locale, String accept, String content, String contentType) throws IOException {
         InputStream is = null;
         String file = null;
+        long start = System.currentTimeMillis();
 
         try {
             HttpURLConnection conn = (HttpURLConnection) fileUrl.openConnection();
@@ -87,15 +88,18 @@ public class HttpUtils {
             if (StringUtils.isNotEmpty(accept)) {
                 conn.setRequestProperty("Accept", accept);
             }
-
+            
             if (content != null) {
                 conn.setRequestProperty("Content-Length", Integer.toString(content.getBytes().length));
                 //conn.setRequestProperty("Content-Language", "en-US");
+                
                 if (contentType != null) {
                 	conn.setRequestProperty("Content-Type", contentType);
                 } else {
                 	conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
                 }
+                conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
+                
                 conn.setDoInput(true);
                 conn.setDoOutput(true);
                 //Send request
@@ -103,7 +107,6 @@ public class HttpUtils {
             } else {
                 conn.connect();
             }
-            //int length = conn.getContentLength();
             
             int responseCode = conn.getResponseCode();
             httpResponseStatuses.put(fileUrl.toExternalForm(), responseCode);
@@ -119,8 +122,10 @@ public class HttpUtils {
             } else if (responseCode >= 400 ){
                 is = conn.getErrorStream();
                 logger.log(Level.SEVERE, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString()});   
-            } else {
+            } else if (responseCode >= 300 && responseCode < 400) {
             	logger.log(Level.WARNING, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString()});   
+            } else if (responseCode > 200) {
+            	logger.log(Level.INFO, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString()});
             }
             
             if (is != null) {
@@ -135,6 +140,8 @@ public class HttpUtils {
                 is.close();
             }
         }
+        
+        logger.log(Level.INFO, "Request processed in " + (System.currentTimeMillis()-start) + " millis.");
 
         return file;
     }
@@ -173,7 +180,7 @@ public class HttpUtils {
         }
     }
     
-    public static void processImageFileRequest(HttpServletResponse response, String imageUrl) throws IOException {
+    /*public static void processImageFileRequest(HttpServletResponse response, String imageUrl) throws IOException {
 
         InputStream is = null;
         OutputStream out = null;
@@ -216,7 +223,7 @@ public class HttpUtils {
             	out.close();
             }
         }
-    }
+    }*/
 
     public static boolean isEmptyAny(HttpServletRequest request, String... params) {
         for (String p : params) {

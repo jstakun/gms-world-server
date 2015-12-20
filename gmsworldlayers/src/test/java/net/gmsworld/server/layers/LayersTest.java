@@ -30,6 +30,8 @@ import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 public class LayersTest {
 	
 	private static final int limit = 30;
+	private static final int apiLevel = 1115;
+	private static final int radius = 10000;
 	
 	private static CacheProvider cacheProvider;	
 	private double lat, lng;
@@ -45,15 +47,17 @@ public class LayersTest {
 	@Before
 	public void initialize() {
 		//warsaw test
-		//lat = 52.25;
-		//lng = 20.95;
-		//bbox = "20.96,52.24,20.97,52.25"; //"51.25,19.95,53.25,21.95";
+		lat = 52.25;
+		lng = 20.95;
+		bbox = "20.96,52.24,20.97,52.25"; //"51.25,19.95,53.25,21.95";
 		locale = new Locale("pl",""); //"PL");
 		//new york test
-		lat = 40.71;
-		lng = -74.01;
-		bbox = "-74.06,40.66,-74.01,40.71";//"-75.01,39.71,-73.01,41.71";
+		//lat = 40.71;
+		//lng = -74.01;
+		//bbox = "-74.06,40.66,-74.01,40.71";//"-75.01,39.71,-73.01,41.71";
 		//locale = Locale.US;
+		//bbox = "30.16,-97.79,30.26,-97.74"; picasa bug
+		//LayerHelperFactory.getHotelsBookingUtils().loadHotelsAsync(lat, lng, radius, limit);   
 	}
 	
 	
@@ -123,29 +127,31 @@ public class LayersTest {
 		try {
 			List<ExtendedLandmark> landmarks = null;
 			if (StringUtils.equals(layer.getLayerName(), Commons.OSM_ATM_LAYER)) {
-				landmarks = layer.processBinaryRequest(lat, lng, null, 10000, 1115, limit, 1024, "atm", bbox, locale, true);
+				landmarks = layer.processBinaryRequest(lat, lng, null, radius, apiLevel, limit, 1024, "atm", bbox, locale, true);
 			} else if (StringUtils.equals(layer.getLayerName(), Commons.FOURSQUARE_MERCHANT_LAYER)) {
-			    landmarks = layer.processBinaryRequest(lat, lng, null, 10000, 1115, limit, 1024, Commons.getProperty(Property.FS_OAUTH_TOKEN), "1,2,3,4,5,6,7,8", locale, true);
+			    landmarks = layer.processBinaryRequest(lat, lng, null, radius, apiLevel, limit, 1024, Commons.getProperty(Property.FS_OAUTH_TOKEN), "1,2,3,4,5,6,7,8", locale, true);
 			} else if (StringUtils.equals(layer.getLayerName(), Commons.FOURSQUARE_LAYER)) {
-				landmarks = layer.processBinaryRequest(lat, lng, null, 10000, 1115, limit, 1024, "checkin", "en", locale, true);
+				landmarks = layer.processBinaryRequest(lat, lng, null, radius, apiLevel, limit, 1024, "checkin", "en", locale, true);
 			} else if (StringUtils.equals(layer.getLayerName(), Commons.YELP_LAYER)) {
-				landmarks = layer.processBinaryRequest(lat, lng, null, 10000, 1115, limit, 1024, "false", "en", locale, true);
+				landmarks = layer.processBinaryRequest(lat, lng, null, radius, apiLevel, limit, 1024, "false", "en", locale, true);
 			} else if (StringUtils.equals(layer.getLayerName(), Commons.GOOGLE_PLACES_LAYER)) {
-				landmarks = layer.processBinaryRequest(lat, lng, null, 10000, 1115, limit, 1024, "en", null, locale, true);
+				landmarks = layer.processBinaryRequest(lat, lng, null, radius, apiLevel, limit, 1024, "en", null, locale, true);
 			} else if (StringUtils.equals(layer.getLayerName(), Commons.COUPONS_LAYER)) {
-				landmarks = layer.processBinaryRequest(lat, lng, null, 10000, 1115, limit, 1024, null, "en", locale, true);
+				landmarks = layer.processBinaryRequest(lat, lng, null, radius, apiLevel, limit, 1024, null, "en", locale, true);
 			} else if (StringUtils.equals(layer.getLayerName(), Commons.FACEBOOK_LAYER)) {
-			    landmarks = layer.processBinaryRequest(lat, lng, null, 10000, 1115, limit, 1024, null, "", locale, true);
+			    landmarks = layer.processBinaryRequest(lat, lng, null, radius, apiLevel, limit, 1024, null, "", locale, true);
 			} else if (StringUtils.equals(layer.getLayerName(), Commons.WIKIPEDIA_LAYER)) {
-			    landmarks = layer.processBinaryRequest(lat, lng, null, 10000, 1115, limit, 1024, "en", null, locale, true);
+			    landmarks = layer.processBinaryRequest(lat, lng, null, radius, apiLevel, limit, 1024, "en", null, locale, true);
 			} else if (StringUtils.equals(layer.getLayerName(), Commons.LM_SERVER_LAYER)) {
-			    landmarks = layer.processBinaryRequest(lat, lng, null, 15, 1115, limit, 1024, Commons.LM_SERVER_LAYER, null, locale, true);
+			    landmarks = layer.processBinaryRequest(lat, lng, null, 15, apiLevel, limit, 1024, Commons.LM_SERVER_LAYER, null, locale, true);
 			} else if (StringUtils.equals(layer.getLayerName(), Commons.PICASA_LAYER) || StringUtils.equals(layer.getLayerName(), Commons.PANORAMIO_LAYER)) {
-				landmarks = layer.processBinaryRequest(lat, lng, null, 10000, 1115, limit, 1024, bbox, "", locale, true);
+				landmarks = layer.processBinaryRequest(lat, lng, null, radius, apiLevel, limit, 1024, bbox, "", locale, true);
 			} else if (StringUtils.equals(layer.getLayerName(), "Search")) {
-				landmarks = layer.processBinaryRequest(lat, lng, "restaurant", 10000, 1115, limit, 1024, "0_0_50", null, locale, true);
+				landmarks = layer.processBinaryRequest(lat, lng, "restaurant", radius, apiLevel, limit, 1024, "0_0_50", null, locale, true);
+			} else if (StringUtils.equals(layer.getLayerName(), Commons.HOTELS_LAYER)) {
+				landmarks = layer.processBinaryRequest(lat, lng, null, radius, apiLevel, limit, 1024, "true", null, locale, true);
 			} else {
-				landmarks = layer.processBinaryRequest(lat, lng, null, 10000, 1115, limit, 1024, null, null, locale, true);
+				landmarks = layer.processBinaryRequest(lat, lng, null, radius, apiLevel, limit, 1024, null, null, locale, true);
 			}
 			int size = landmarks.size();
 			System.out.println("Found " + size + " landmarks in layer " + layer.getLayerName());

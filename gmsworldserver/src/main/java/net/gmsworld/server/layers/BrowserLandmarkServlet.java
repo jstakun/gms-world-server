@@ -82,12 +82,10 @@ public class BrowserLandmarkServlet extends HttpServlet {
     			l.setLayer(Commons.MY_POSITION_LAYER);
     			l.setUsername(Commons.getProperty(Commons.Property.MYPOS_USER));
     			
-    			//layersloader will load hotels layer in hotels mode only - for performance reasons
+    			//load hotels layer in asynchronous mode 
     			if (StringUtils.equals(request.getParameter("hotelsMode"), "true")) {
-    				LayersLoader loader = new LayersLoader(ThreadManager.currentRequestThreadFactory() , Arrays.asList(new String[]{Commons.HOTELS_LAYER}));
-    				loader.loadLayers(l.getLatitude(), l.getLongitude(), null, RADIUS, 1134, HOTELS_LIMIT, StringUtil.getStringLengthLimit("l"), null, null, request.getLocale(), true);
+    				LayerHelperFactory.getHotelsBookingUtils().loadHotelsAsync(latitude, longitude, RADIUS, HOTELS_LIMIT); 
     			}
-    			//
     			
     			LandmarkPersistenceUtils.setFlex(l, request);
         		
