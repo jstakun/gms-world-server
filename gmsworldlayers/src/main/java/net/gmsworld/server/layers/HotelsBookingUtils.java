@@ -53,11 +53,11 @@ public class HotelsBookingUtils extends LayerHelper {
 		List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
 		JSONArray hotels = null;
 		
-		//call hotels cache first
+		//first call hotels cache
 		if (StringUtils.equals(callCacheFirst, "true")) {
 			String hotelsUrl = HOTELS_CACHE_URL + StringUtil.formatCoordE2(lng) + "_" + StringUtil.formatCoordE2(lat) + "_" + normalizedRadius + "_" + limit;
 			logger.log(Level.INFO, "Calling: " + hotelsUrl);
-			String json = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER));
+			String json = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), true);
 			if (StringUtils.startsWith(StringUtils.trim(json), "[")) {
 	    		try {
 	    			JSONArray rootArray = new JSONArray(json);
@@ -75,7 +75,7 @@ public class HotelsBookingUtils extends LayerHelper {
 		if (hotels == null) {
 			String hotelsUrl = HOTELS_PROVIDER_URL + StringUtil.formatCoordE2(lat) + "/" + StringUtil.formatCoordE2(lng) + "/" + normalizedRadius + "/" + limit;			
 			logger.log(Level.INFO, "Calling: " + hotelsUrl);
-			String json = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER));
+			String json = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), true);
 			if (StringUtils.startsWith(StringUtils.trim(json), "[")) {
 	    		try {
 	    			hotels = new JSONArray(json);
@@ -86,8 +86,9 @@ public class HotelsBookingUtils extends LayerHelper {
 				logger.log(Level.WARNING, "Received following server response " + json);
 			}
 		}
+		logger.log(Level.INFO, "Processing hotels list...");
         List<HotelBean> hotelsList = jsonToHotelList(hotels);
-		logger.log(Level.INFO, "Found " + hotelsList.size() + " hotels...");
+		logger.log(Level.INFO, "Found " + hotelsList.size() + " hotels.");
 		landmarks.addAll(Lists.transform(hotelsList, new HotelToExtendedLandmarkFunction(locale)));
 		return landmarks;
 	}
@@ -104,7 +105,7 @@ public class HotelsBookingUtils extends LayerHelper {
 		
 		try {
 			logger.log(Level.INFO, "Calling: " + hotelsUrl);
-			HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER));
+			HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), false);
 		    int responseCode = HttpUtils.getResponseCode(hotelsUrl);
 			if (responseCode >= 400) {
 		    	id = null;
@@ -221,7 +222,7 @@ public class HotelsBookingUtils extends LayerHelper {
 			normalizedRadius = r * 1000;
 		}	
 		String hotelsUrl = HOTELS_COUNTER_URL + StringUtil.formatCoordE2(lat) + "/" + StringUtil.formatCoordE2(lng) + "/" + normalizedRadius;			
-        String hotelsCount = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER));
+        String hotelsCount = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), false);
 		return NumberUtils.getInt(hotelsCount, -1);
 	}
 

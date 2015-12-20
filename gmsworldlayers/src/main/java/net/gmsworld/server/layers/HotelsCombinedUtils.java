@@ -78,7 +78,7 @@ public class HotelsCombinedUtils extends LayerHelper {
             
             String hotelsUrl = HOTELS_PROVIDER_URL + "?lat=" + lat + "&lng=" + lng + "&radius=" + radius + "&limit=" + limit;			
 			logger.log(Level.INFO, "Calling: " + hotelsUrl);
-            String hotelsJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER));		
+            String hotelsJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), false);		
 			List<Hotel> hotels = jsonToHotelList(hotelsJson);      	
 			logger.log(Level.INFO, "Found " + hotels.size() + " hotels...");		
             if (!hotels.isEmpty()) {
@@ -252,7 +252,7 @@ public class HotelsCombinedUtils extends LayerHelper {
 		String hotelsUrl = HOTELS_PROVIDER_URL + "?lat=" + lat + "&lng=" + lng + "&radius=" + radius + "&limit=" + limit;			
         logger.log(Level.INFO, "Calling: " + hotelsUrl);
         	//String hotelsJson = HttpUtils.processFileRequest(new URL(hotelsUrl));	
-        String hotelsJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER));
+        String hotelsJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), false);
 		List<Hotel> hotels = jsonToHotelList(hotelsJson);
 		logger.log(Level.INFO, "Found " + hotels.size() + " hotels...");
 		landmarks.addAll(Lists.transform(hotels, new HotelToExtendedLandmarkFunction(language, locale)));

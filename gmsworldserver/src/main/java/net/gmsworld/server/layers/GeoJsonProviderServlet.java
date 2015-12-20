@@ -72,18 +72,18 @@ public class GeoJsonProviderServlet extends HttpServlet {
 			    double lng =  GeocodeUtils.getLongitude(request.getParameter("lng"));
 			    String layer = request.getParameter("layer"); 
 			    Locale locale = request.getLocale();
-				String language = StringUtil.getLanguage(locale.getLanguage(), "en", 2);
+				String flexString = StringUtil.getLanguage(locale.getLanguage(), "en", 2);
 				LayerHelper layerHelper = LayerHelperFactory.getByName(layer);
 			    if (layerHelper != null) {
 			    	logger.log(Level.INFO, "Searching geojson document in local in-memory cache...");
-			    	json = layerHelper.getGeoJson(lat, lng, layer, language);		
+			    	json = layerHelper.getGeoJson(lat, lng, layer, flexString);		
 			    }
 			    
 				if (!StringUtils.startsWith(json, "{")) {
 					String latStr = StringUtil.formatCoordE2(lat);
 	    			String lngStr = StringUtil.formatCoordE2(lng);
 	    			logger.log(Level.INFO, "Searching geojson document in remote document cache...");
-			    	json = cacheProvider.getFromSecondLevelCache("geojson/" + layer + "/" + latStr + "/" + lngStr + "/" + language);
+			    	json = cacheProvider.getFromSecondLevelCache("geojson/" + layer + "/" + latStr + "/" + lngStr + "/" + flexString);
 	    		}
 				
 				if (!StringUtils.startsWith(json, "{")  && layerHelper != null) {
@@ -97,12 +97,13 @@ public class GeoJsonProviderServlet extends HttpServlet {
 							} catch (Exception e) {
 						    	logger.log(Level.SEVERE, e.getMessage(), e);
 						    } 
-							limit = HOTELS_LIMIT; 
+							limit = HOTELS_LIMIT;
+							flexString = "true";
 						} else if (StringUtils.equals(layer, Commons.FACEBOOK_LAYER) || StringUtils.equals(layer, Commons.FOURSQUARE_LAYER) || StringUtils.equals(layer, Commons.FOURSQUARE_MERCHANT_LAYER)) {
-						    language = null;	
+						    flexString = null;	
 						}
 						//
-						List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(lat, lng, null, RADIUS, 1134, limit, StringUtil.getStringLengthLimit("l"), language, null, locale, true);
+						List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(lat, lng, null, RADIUS, 1134, limit, StringUtil.getStringLengthLimit("l"), flexString, null, locale, true);
 			    		String newkey = layerHelper.cacheGeoJson(landmarks, lat, lng, layer, locale);                          
 			    		if (newkey != null) {
 			    			logger.log(Level.INFO, "Searching geojson document in in-memory document cache...");

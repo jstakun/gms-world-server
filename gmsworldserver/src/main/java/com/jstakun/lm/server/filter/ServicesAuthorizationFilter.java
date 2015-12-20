@@ -84,7 +84,7 @@ public class ServicesAuthorizationFilter implements Filter {
             	if (authHeader != null && scope != null) {
             		try {
             			String tokenUrl = net.gmsworld.server.config.ConfigurationManager.RHCLOUD_SERVER_URL + "isValidToken?scope=" + scope + "&key=" + authHeader;
-            			String tokenJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(tokenUrl), Commons.getProperty(Property.RH_GMS_USER));		
+            			String tokenJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(tokenUrl), Commons.getProperty(Property.RH_GMS_USER), false);		
         				if (StringUtils.startsWith(tokenJson, "{")) {
         					JSONObject root = new JSONObject(tokenJson);
         					auth = root.getBoolean("output");

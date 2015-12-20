@@ -21,7 +21,6 @@ import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.HttpUtils;
-import net.gmsworld.server.utils.ImageUtils;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.UrlUtils;
@@ -37,7 +36,6 @@ import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.common.collect.ImmutableMap;
 import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.social.NotificationUtils;
-import com.jstakun.lm.server.utils.FileUtils;
 import com.jstakun.lm.server.utils.memcache.CacheAction;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
@@ -578,6 +576,7 @@ public class LandmarkPersistenceUtils {
         	        }      
         		}
         	} else {
+        		
         		logger.log(Level.SEVERE, "Received following server response: " + gJson);
         	}
         } catch (Exception e) {

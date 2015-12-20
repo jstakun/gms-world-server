@@ -57,7 +57,7 @@ public class LayersTest {
 		//bbox = "-74.06,40.66,-74.01,40.71";//"-75.01,39.71,-73.01,41.71";
 		//locale = Locale.US;
 		//bbox = "30.16,-97.79,30.26,-97.74"; picasa bug
-		//LayerHelperFactory.getHotelsBookingUtils().loadHotelsAsync(lat, lng, radius, limit);   
+		LayerHelperFactory.getHotelsBookingUtils().loadHotelsAsync(lat, lng, radius, limit);   
 	}
 	
 	
@@ -159,14 +159,14 @@ public class LayersTest {
 			//assertEquals("Found " + size + " landmarks", limit, size);
 			assertEquals("Layer " + layer.getLayerName() + " is empty!", landmarks.isEmpty(), false);
 			
-			for (ExtendedLandmark landmark : landmarks) {
-				System.out.println(landmark.getName() + " :-> " + landmark.getDescription() + "---\n");
+			//for (ExtendedLandmark landmark : landmarks) {
+				//System.out.println(landmark.getName() + " :-> " + landmark.getDescription() + "---\n");
 				//System.out.println(landmark.getThumbnail());
 				//System.out.println(landmark.getUrl());
-			}
+			//}
 			
 			String key = layer.cacheGeoJson(landmarks, lat, lng, layer.getLayerName(), locale);
-			System.out.println(cacheProvider.getString(key));
+			//System.out.println(cacheProvider.getString(key));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

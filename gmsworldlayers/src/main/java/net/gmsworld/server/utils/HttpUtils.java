@@ -29,38 +29,38 @@ public class HttpUtils {
     private static final Map<String, Integer> httpResponseStatuses = new HashMap<String, Integer>();
 
     public static String processFileRequestWithLocale(URL fileUrl, String locale) throws IOException {
-        return processFileRequest(fileUrl, false, null, null, "GET", locale, null, null, null);
+        return processFileRequest(fileUrl, false, null, null, "GET", locale, null, null, null, false);
     }
 
     public static String processFileRequestWithAuthn(URL fileUrl, String authn) throws IOException {
-        return processFileRequest(fileUrl, true, null, authn, "GET", null, null, null, null);
+        return processFileRequest(fileUrl, true, null, authn, "GET", null, null, null, null, false);
     }
     
-    public static String processFileRequestWithBasicAuthn(URL fileUrl, String authn) throws IOException {
-        return processFileRequest(fileUrl, true, authn, null, "GET", null, null, null, null);
+    public static String processFileRequestWithBasicAuthn(URL fileUrl, String authn, boolean compress) throws IOException {
+        return processFileRequest(fileUrl, true, authn, null, "GET", null, null, null, null, compress);
     }
 
     public static String processFileRequest(URL fileUrl) throws IOException {
-        return processFileRequest(fileUrl, false, null, null, "GET", null, null, null, null);
+        return processFileRequest(fileUrl, false, null, null, "GET", null, null, null, null, false);
     }
 
     public static String processFileRequest(URL fileUrl, String method, String accept, String content) throws IOException {
-        return processFileRequest(fileUrl, false, null, null, method, null, accept, content, null);
+        return processFileRequest(fileUrl, false, null, null, method, null, accept, content, null, false);
     }
     
     public static String processFileRequest(URL fileUrl, String method, String accept, String content, String contentType) throws IOException {
-        return processFileRequest(fileUrl, false, null, null, method, null, accept, content, contentType);
+        return processFileRequest(fileUrl, false, null, null, method, null, accept, content, contentType, false);
     }
     
     public static String processFileRequestWithBasicAuthn(URL fileUrl, String method, String accept, String urlParams, String authn) throws IOException {
-        return processFileRequest(fileUrl, true, authn, null, method, null, accept, urlParams, null);
+        return processFileRequest(fileUrl, true, authn, null, method, null, accept, urlParams, null, false);
     }
     
     public static String processFileRequestWithBasicAuthn(URL fileUrl, String method, String accept, String urlParams, String contentType, String authn) throws IOException {
-        return processFileRequest(fileUrl, true, authn, null, method, null, accept, urlParams, contentType);
+        return processFileRequest(fileUrl, true, authn, null, method, null, accept, urlParams, contentType, false);
     }
 
-    private static String processFileRequest(URL fileUrl, boolean authn, String userpassword, String authnOther, String method, String locale, String accept, String content, String contentType) throws IOException {
+    private static String processFileRequest(URL fileUrl, boolean authn, String userpassword, String authnOther, String method, String locale, String accept, String content, String contentType, boolean compress) throws IOException {
         InputStream is = null;
         String file = null;
         long start = System.currentTimeMillis();
@@ -98,7 +98,10 @@ public class HttpUtils {
                 } else {
                 	conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
                 }
-                conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
+                
+                if (compress) {
+                	conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
+                }
                 
                 conn.setDoInput(true);
                 conn.setDoOutput(true);
@@ -112,13 +115,7 @@ public class HttpUtils {
             httpResponseStatuses.put(fileUrl.toExternalForm(), responseCode);
 
             if (responseCode == HttpServletResponse.SC_OK) {
-                is = conn.getInputStream();
-                   
-                //byte[] buf = new byte[1024];
-                //int count = 0;
-                //while ((count = is.read(buf)) >= 0) {
-                //    file.append(new String(buf, 0, count));
-                //}
+                is = conn.getInputStream();   
             } else if (responseCode >= 400 ){
                 is = conn.getErrorStream();
                 logger.log(Level.SEVERE, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString()});   
@@ -129,7 +126,8 @@ public class HttpUtils {
             }
             
             if (is != null) {
-            	file = IOUtils.toString(is, "UTF-8");
+            	logger.log(Level.INFO, "Received following content type " + conn.getContentType());
+                file = IOUtils.toString(is, "UTF-8");
             }
             
         } catch (Exception e) {
@@ -152,6 +150,8 @@ public class HttpUtils {
             URL fileUrl = new URL(imageUrl);
             HttpURLConnection conn = (HttpURLConnection) fileUrl.openConnection();
             conn.setRequestMethod("GET");
+            //TODO add support for gzip
+            //conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
             conn.connect();
             int responseCode = conn.getResponseCode();
 
