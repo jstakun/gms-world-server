@@ -248,6 +248,7 @@ public class LayerHelperFactory {
      */
     public static HotelsBookingUtils getHotelsBookingUtils() {
     	hotelsBookingUtils.setCacheProvider(cacheProvider);
+    	hotelsBookingUtils.setThreadProvider(threadProvider);
     	return hotelsBookingUtils;
     }
     

@@ -11,24 +11,19 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.JSONUtils;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
-import net.gmsworld.server.utils.persistence.HotelBean;
+import net.gmsworld.server.utils.ThreadManager;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
-import org.geojson.Feature;
-import org.geojson.Point;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 import com.jstakun.gms.android.deals.Deal;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
@@ -51,7 +46,6 @@ public class HotelsBookingUtils extends LayerHelper {
 		if (r < 1000) {
 			normalizedRadius = r * 1000;
 		}	
-		List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
 		JSONArray hotels = null;
 		
 		//first call hotels cache
@@ -89,11 +83,32 @@ public class HotelsBookingUtils extends LayerHelper {
 		}
 		logger.log(Level.INFO, "Processing hotels list...");
 		HotelToExtendedLandmarkFunction ht = new HotelToExtendedLandmarkFunction(locale);
-		if (hotels != null) {
+		
+		/*if (hotels != null) {
 			for (int i=0; i<hotels.length(); i++) {
-				landmarks.add(ht.apply(hotels.getJSONObject(i)));
+				try {
+					landmarks.add(ht.apply(hotels.getJSONObject(i))); 
+				} catch (Exception e) {
+	    			logger.log(Level.SEVERE, e.getMessage(), e);
+	    		}	
 			}
+		}*/
+		int size = 0;
+		if (hotels != null) {
+			size = hotels.length();
 		}
+		List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>(size);
+		ThreadManager threadManager = new ThreadManager(threadProvider);
+		for (int i=0; i<size; i++) {
+			try {
+				String key = Integer.toString(i);
+				threadManager.put(key, new ConcurrentHotelsProcessor(ht, landmarks, hotels.getJSONObject(i), threadManager, key));
+			} catch (Exception e) {
+				logger.log(Level.SEVERE, e.getMessage(), e);
+    		}	
+		}
+		threadManager.waitForThreads();
+		
         logger.log(Level.INFO, "Found " + landmarks.size() + " hotels.");
 		return landmarks;
 	}
@@ -221,7 +236,9 @@ public class HotelsBookingUtils extends LayerHelper {
     	
     	JSONObject props = hotel.getJSONObject("properties");
     	AddressInfo address = new AddressInfo();
-    	address.setField(AddressInfo.STREET, props.getString("address"));
+    	if (!props.isNull("address")) {
+    		address.setField(AddressInfo.STREET, props.getString("address"));
+    	}
     	address.setField(AddressInfo.CITY, props.getString("city_hotel"));
     	
     	String cc = props.getString("cc1");
@@ -297,7 +314,32 @@ public class HotelsBookingUtils extends LayerHelper {
     	
 		public ExtendedLandmark apply(JSONObject hotel) {
 			return hotelToLandmark(hotel, locale);
+		}		
+	}
+	
+	private class ConcurrentHotelsProcessor implements Runnable {
+
+		private HotelToExtendedLandmarkFunction ht;
+		private List<ExtendedLandmark> landmarks;
+		private JSONObject json;
+		private ThreadManager threadManager;
+		private String key;
+		
+		public ConcurrentHotelsProcessor(HotelToExtendedLandmarkFunction ht, List<ExtendedLandmark> landmarks, JSONObject json, ThreadManager threadManager, String key) {
+			this.ht = ht;
+			this.landmarks = landmarks;
+			this.json = json;
+			this.threadManager = threadManager;
+			this.key = key;
 		}
 		
+		@Override
+		public void run() {
+			ExtendedLandmark l = ht.apply(json);
+			if (l != null) {
+				landmarks.add(l);
+			}
+			threadManager.take(key);
+		}
 	}
 }

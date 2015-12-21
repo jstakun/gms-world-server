@@ -29,7 +29,7 @@ import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 @RunWith(Parameterized.class)
 public class LayersTest {
 	
-	private static final int limit = 30;
+	private static final int limit = 100;
 	private static final int apiLevel = 1115;
 	private static final int radius = 10000;
 	
@@ -78,17 +78,18 @@ public class LayersTest {
 	   //data.add(new Object[]{LayerHelperFactory.getYoutubeUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getGrouponUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getCouponsUtils()});
-	   //data.add(new Object[]{LayerHelperFactory.getFoursquareMerchantUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getExpediaUtils()});
-	   //data.add(new Object[]{LayerHelperFactory.getYelpUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getMcOpenApiUtils()});
-	   //data.add(new Object[]{LayerHelperFactory.getGooglePlacesUtils()});
-	   //data.add(new Object[]{LayerHelperFactory.getFoursquareUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getGeonamesUtils()});
-	   //data.add(new Object[]{LayerHelperFactory.getFacebookUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getGmsUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getTwitterUtils()});
-	   //data.add(new Object[]{LayerHelperFactory.getSearchUtils()});
+	   
+	   data.add(new Object[]{LayerHelperFactory.getYelpUtils()});
+	   data.add(new Object[]{LayerHelperFactory.getGooglePlacesUtils()});
+	   data.add(new Object[]{LayerHelperFactory.getFoursquareUtils()});
+	   data.add(new Object[]{LayerHelperFactory.getFacebookUtils()});
+	   data.add(new Object[]{LayerHelperFactory.getFoursquareMerchantUtils()});
+	   data.add(new Object[]{LayerHelperFactory.getSearchUtils()});
 	   
 	   System.out.println("Found " + data.size() + " layers.");
 	   

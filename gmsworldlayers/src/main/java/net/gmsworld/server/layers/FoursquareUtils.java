@@ -791,7 +791,7 @@ public class FoursquareUtils extends LayerHelper {
             if (i % 5 == 4 || i == (venueIds.size() - 1)) {
                 //call foursquare
             	
-                threadManager.startThread(multiRequest, new VenueDetailsRetriever(threadManager.getThreads(), attrs,
+                threadManager.put(multiRequest, new VenueDetailsRetriever(threadManager, attrs,
                         locale, urlPrefix.toString(), multiRequest, venueId, false));
 
                 multiRequest = "";
@@ -858,14 +858,14 @@ public class FoursquareUtils extends LayerHelper {
 
     private static class VenueDetailsRetriever implements Runnable {
 
-        private Map<String, Thread> venueDetailsThreads;
+        private ThreadManager threadManager;
         private Map<String, Map<String, String>> attrs;
         private String locale, urlPrefix, multiRequest, venueId;
         //private boolean bitlyFailed;
 
-        public VenueDetailsRetriever(Map<String, Thread> venueDetailsThreads, Map<String, Map<String, String>> attrs,
+        public VenueDetailsRetriever(ThreadManager threadManager, Map<String, Map<String, String>> attrs,
                 String locale, String urlPrefix, String multiRequest, String venueId, boolean bitlyFailed) {
-            this.venueDetailsThreads = venueDetailsThreads;
+            this.threadManager = threadManager;
             this.attrs = attrs;
             this.locale = locale;
             this.urlPrefix = urlPrefix;
@@ -1009,7 +1009,7 @@ public class FoursquareUtils extends LayerHelper {
             } catch (Exception ex) {
                 logger.log(Level.SEVERE, "FoursquareUtils.VenueDetailsRetriever execption:", ex);
             } finally {
-                venueDetailsThreads.remove(multiRequest);
+                threadManager.take(multiRequest);
             }
         }
     }

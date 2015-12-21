@@ -316,7 +316,7 @@ public class GooglePlacesUtils extends LayerHelper {
         	for (int i = count; i < (count+batchSize); i++) {
         		JSONObject item = results.getJSONObject(i);
         		String place_id = item.getString("place_id");
-        		threadManager.startThread(place_id, new VenueDetailsRetriever(threadManager.getThreads(), placeDetails, place_id, language));
+        		threadManager.put(place_id, new VenueDetailsRetriever(threadManager, placeDetails, place_id, language));
         	}
 
         	threadManager.waitForThreads();
@@ -465,10 +465,10 @@ public class GooglePlacesUtils extends LayerHelper {
 
         private String placeid, language;
         private List<String> placeDetails;
-        private Map<String, Thread> venueDetailsThreads;
+        private ThreadManager threadManager;
 
-        public VenueDetailsRetriever(Map<String, Thread> venueDetailsThreads, List<String> placeDetails, String placeid, String language) {
-            this.venueDetailsThreads = venueDetailsThreads;
+        public VenueDetailsRetriever(ThreadManager threadManager, List<String> placeDetails, String placeid, String language) {
+            this.threadManager = threadManager;
             this.placeDetails = placeDetails;
             this.placeid= placeid;
             this.language = language;
@@ -482,7 +482,7 @@ public class GooglePlacesUtils extends LayerHelper {
             } catch (Exception e) {
                 logger.log(Level.SEVERE, "VenueDetailsRetriever.run exception:", e);
             } finally {
-                venueDetailsThreads.remove(placeid);
+                threadManager.take(placeid);
             }
         }
     }

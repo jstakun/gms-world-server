@@ -59,7 +59,7 @@ public class YelpUtils extends LayerHelper {
         		int offset = 0;
 
         		while (offset < normalizedLimit) {
-        			threadManager.startThread(Integer.toString(offset), new VenueDetailsRetriever(threadManager.getThreads(), venueArray,
+        			threadManager.put(Integer.toString(offset), new VenueDetailsRetriever(threadManager, venueArray,
                         lat, lng, query, normalizedRadius, offset, isDeal, stringLimit, language, "json", null));
         			offset += 20;
         		}
@@ -330,8 +330,7 @@ public class YelpUtils extends LayerHelper {
     		int offset = 0;
 
     		while (offset < limit) {
-    			threadManager.startThread(Integer.toString(offset), new ReviewDetailsRetriever(threadManager.getThreads(), reviewsArray,
-                    latitude, longitude, query, normalizedRadius, offset, hasDeals, language));
+    			threadManager.put(Integer.toString(offset), new ReviewDetailsRetriever(threadManager, reviewsArray, latitude, longitude, query, normalizedRadius, offset, hasDeals, language));
     			offset += 20;
     		}
 
@@ -362,7 +361,7 @@ public class YelpUtils extends LayerHelper {
         		int offset = 0;
 
         		while (offset < normalizedLimit) {
-        			threadManager.startThread(Integer.toString(offset), new VenueDetailsRetriever(threadManager.getThreads(), landmarks,
+        			threadManager.put(Integer.toString(offset), new VenueDetailsRetriever(threadManager, landmarks,
                         lat, lng, query, normalizedRadius, offset, isDeal, stringLimit, language, "bin", locale));
         			offset += 20;
         		}
@@ -535,16 +534,16 @@ public class YelpUtils extends LayerHelper {
 	
 	private class ReviewDetailsRetriever implements Runnable {
 
-        private Map<String, Thread> reviewDetailsThreads;
+		private ThreadManager threadManager;
         private Map<String, Map<String, String>> reviewsArray;
         private double latitude, longitude;
         private String query, language;
         private int radius, offset;
         private boolean hasDeals;
 
-        public ReviewDetailsRetriever(Map<String, Thread> reviewDetailsThreads, Map<String, Map<String, String>> reviewsArray,
+        public ReviewDetailsRetriever(ThreadManager threadManager, Map<String, Map<String, String>> reviewsArray,
                 double latitude, double longitude, String query, int radius, int offset, boolean hasDeals, String language) {
-            this.reviewDetailsThreads = reviewDetailsThreads;
+            this.threadManager = threadManager;
             this.reviewsArray = reviewsArray;
             this.latitude = latitude;
             this.longitude = longitude;
@@ -562,14 +561,14 @@ public class YelpUtils extends LayerHelper {
             } catch (Exception e) {
                 logger.log(Level.SEVERE, "ReviewDetailsRetriever.run exception:", e);
             } finally {
-                reviewDetailsThreads.remove(Integer.toString(offset));
+                threadManager.take(Integer.toString(offset));
             }
         }
     }
 
     private class VenueDetailsRetriever implements Runnable {
 
-        private Map<String, Thread> venueDetailsThreads;
+    	private ThreadManager threadManager;
         private List<? extends Object> venueArray;
         private double latitude, longitude;
         private String query, language, format;
@@ -577,10 +576,10 @@ public class YelpUtils extends LayerHelper {
         private boolean hasDeals;
         private Locale locale;
 
-        public VenueDetailsRetriever(Map<String, Thread> venueDetailsThreads, List<? extends Object> venueArray,
+        public VenueDetailsRetriever(ThreadManager threadManager, List<? extends Object> venueArray,
                 double latitude, double longitude, String query, int radius,
                 int offset, boolean hasDeals, int stringLimit, String language, String format, Locale locale) {
-            this.venueDetailsThreads = venueDetailsThreads;
+            this.threadManager = threadManager;
             this.venueArray = venueArray;
             this.latitude = latitude;
             this.longitude = longitude;
@@ -605,7 +604,7 @@ public class YelpUtils extends LayerHelper {
             } catch (Exception e) {
                 logger.log(Level.SEVERE, "VenueDetailsRetriever.run exception:", e);
             } finally {
-                venueDetailsThreads.remove(Integer.toString(offset));
+                threadManager.take(Integer.toString(offset));
             }
         }
     }

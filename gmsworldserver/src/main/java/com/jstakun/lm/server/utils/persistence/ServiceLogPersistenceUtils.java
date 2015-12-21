@@ -1,5 +1,9 @@
 package com.jstakun.lm.server.utils.persistence;
 
+import java.util.Date;
+
+import javax.persistence.EntityManager;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -10,23 +14,12 @@ import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.jstakun.lm.server.persistence.EMF;
 import com.jstakun.lm.server.persistence.ServiceLog;
 
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.jdo.PersistenceManager;
-import javax.jdo.Query;
-import javax.persistence.EntityManager;
-
-import net.gmsworld.server.utils.DateUtils;
-
 /**
  *
  * @author jstakun
  */
 public class ServiceLogPersistenceUtils {
 
-    private static final Logger logger = Logger.getLogger(ServiceLogPersistenceUtils.class.getName());
     private static final long FIVE_MINS = 1000 * 60 * 5;
 
     public static void persistServiceLog(String username, String serviceUri, boolean auth, int appId)

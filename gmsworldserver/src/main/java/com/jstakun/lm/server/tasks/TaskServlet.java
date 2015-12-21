@@ -1,11 +1,5 @@
 package com.jstakun.lm.server.tasks;
 
-import com.jstakun.lm.server.config.ConfigurationManager;
-import com.jstakun.lm.server.filter.GeocodeFilter;
-import com.jstakun.lm.server.utils.FileUtils;
-import com.jstakun.lm.server.utils.persistence.ScreenshotPersistenceUtils;
-import com.jstakun.lm.server.utils.persistence.ServiceLogPersistenceUtils;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
@@ -27,6 +21,11 @@ import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
 
 import org.apache.commons.lang.StringUtils;
+
+import com.jstakun.lm.server.config.ConfigurationManager;
+import com.jstakun.lm.server.utils.FileUtils;
+import com.jstakun.lm.server.utils.persistence.ScreenshotPersistenceUtils;
+import com.jstakun.lm.server.utils.persistence.ServiceLogPersistenceUtils;
 
 /**
  *
