@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.GZIPInputStream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -150,20 +151,24 @@ public class HttpUtils {
             URL fileUrl = new URL(imageUrl);
             HttpURLConnection conn = (HttpURLConnection) fileUrl.openConnection();
             conn.setRequestMethod("GET");
-            //TODO add support for gzip
-            //conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
+            conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
+            
             conn.connect();
             int responseCode = conn.getResponseCode();
 
-            if (responseCode == HttpServletResponse.SC_OK) {
-                is = conn.getInputStream();
+            if (responseCode == HttpServletResponse.SC_OK) { 
+            	if (StringUtils.indexOf(conn.getContentType(), "gzip") > -1) {
+    				is = new GZIPInputStream(conn.getInputStream());
+    			} else {
+    				is = conn.getInputStream();
+    			}
                 byte[] buf = new byte[1024];
                 int count = 0, total = 0;
                 while ((count = is.read(buf)) >= 0) {
                     out.write(buf, 0, count);
                     total += count;
                 }
-                logger.log(Level.INFO, "Received image, size: "+ total + " bytes, type: " + conn.getContentType());
+                logger.log(Level.INFO, "Received image, size: " + total + " bytes, type: " + conn.getContentType());
             } else {
             	logger.log(Level.SEVERE, "Received server response code " + responseCode);
             }
