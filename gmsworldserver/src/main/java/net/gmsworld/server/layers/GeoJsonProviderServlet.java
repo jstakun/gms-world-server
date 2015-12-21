@@ -18,6 +18,7 @@ import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.memcache.CacheProvider;
 
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
@@ -62,7 +63,7 @@ public class GeoJsonProviderServlet extends HttpServlet {
 	}
 	
 	private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		String json = null;
+		String json = null, layer = null;
 		try {
 			if (HttpUtils.isEmptyAny(request, "lat", "lng", "layer")) {
 				response.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -70,7 +71,7 @@ public class GeoJsonProviderServlet extends HttpServlet {
 				response.setContentType("text/javascript;charset=UTF-8");
 				double lat = GeocodeUtils.getLatitude(request.getParameter("lat"));
 			    double lng =  GeocodeUtils.getLongitude(request.getParameter("lng"));
-			    String layer = request.getParameter("layer"); 
+			    layer = request.getParameter("layer"); 
 			    Locale locale = request.getLocale();
 				String flexString = StringUtil.getLanguage(locale.getLanguage(), "en", 2);
 				LayerHelper layerHelper = LayerHelperFactory.getByName(layer);
@@ -99,7 +100,7 @@ public class GeoJsonProviderServlet extends HttpServlet {
 						    } 
 							limit = HOTELS_LIMIT;
 							flexString = "true";
-						} else if (StringUtils.equals(layer, Commons.FACEBOOK_LAYER) || StringUtils.equals(layer, Commons.FOURSQUARE_LAYER) || StringUtils.equals(layer, Commons.FOURSQUARE_MERCHANT_LAYER)) {
+						} else if (StringUtils.equals(layer, Commons.FACEBOOK_LAYER) || StringUtils.equals(layer, Commons.FOURSQUARE_LAYER) || StringUtils.equals(layer, Commons.FOURSQUARE_MERCHANT_LAYER) || StringUtils.equals(layer, Commons.GROUPON_LAYER) || StringUtils.equals(layer, Commons.COUPONS_LAYER)) {
 						    flexString = null;	
 						}
 						//
@@ -117,8 +118,11 @@ public class GeoJsonProviderServlet extends HttpServlet {
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
         } finally {
-        	if (!StringUtils.startsWith(json, "{")) {
-				json = "{}";
+        	if (!StringUtils.startsWith(json, "{")) {      		
+        		JSONObject resp = new JSONObject().
+        				put("properties", new JSONObject().put("layer", layer)).
+        				put("features", new JSONArray());
+				json = resp.toString();			
 			} else {
 				try {
 					//{"type":"FeatureCollection","properties":{"layer":"Layer"},"features":[]});

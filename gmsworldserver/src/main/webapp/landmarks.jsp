@@ -260,13 +260,12 @@
                             if (layer != "Hotels") {
 								hotelsOnly = false;
                             }
-                            //$("#status").hide();
                             mc.repaint();
           			 }	   
            		} 
       	   }
            layer_counter++;
-		   console.log("Loaded " + mc.getTotalMarkers() + " markers from (" + layer_counter + "/" + layers.length + ") layers!");
+		   console.log("Loaded markers from (" + layer_counter + "/" + layers.length + ") layers!");
 		   if ((layer_counter + excluded_layers) == layers.length && marker_counter > 1) {
 				mc.repaint();
 

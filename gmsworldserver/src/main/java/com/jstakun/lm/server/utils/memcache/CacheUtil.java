@@ -125,7 +125,7 @@ public class CacheUtil {
 	
 	public static void put(String key, Object value, CacheType type) {
 		if (type == CacheType.NORMAL) {
-			putAsync(key, value); //put(key, value);
+			put(key, value); //putAsync(key, value); //TODO
 		} else if (type == CacheType.FAST) {
 			putToFastCache(key, value);
 		} else if (type == CacheType.LONG) {

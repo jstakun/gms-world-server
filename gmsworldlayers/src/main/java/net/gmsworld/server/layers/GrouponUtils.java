@@ -343,15 +343,14 @@ public class GrouponUtils extends LayerHelper {
 	
 	private static List<ExtendedLandmark> createCustomLandmarkGrouponList(String grouponJson, String categoryid, int limit, String query, int stringLimit, Locale locale) throws JSONException {
 		List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
-		
 		String[] enabledCategories = {""};
         if (categoryid != null) {
             enabledCategories = StringUtils.split(categoryid, ",");
         }
 
         JSONArray deals = JSONUtils.getJSonArray(grouponJson, "deals");
-        if (deals != null) {
-            
+        if (deals != null && deals.length() > 0) {
+            logger.log(Level.INFO, "Processing {0} deals...", deals.length());
             for (int i = 0; i < deals.length(); i++) {
                 try {
                     JSONObject deal = deals.getJSONObject(i);
@@ -431,7 +430,6 @@ public class GrouponUtils extends LayerHelper {
                             }
                         }
                         
-
                         JSONObject mer = deal.getJSONObject("merchant");
                         String merchant = mer.getString("name");
 
