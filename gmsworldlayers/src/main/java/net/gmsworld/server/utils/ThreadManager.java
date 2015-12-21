@@ -36,14 +36,14 @@ public class ThreadManager {
         long startTime = System.currentTimeMillis();
 
         while (System.currentTimeMillis() - startTime < WAIT_LIMIT) {
-            logger.log(Level.INFO, "Layers size {0}", threads.size());
+            logger.log(Level.INFO, "Threads size {0}", threads.size());
 
             if (threads.isEmpty()) {
                 logger.log(Level.INFO, "Finished in {0} ms", (System.currentTimeMillis() - startTime));
                 break;
             } else {
                 try {
-                    Thread.sleep(50L);
+                    Thread.sleep(100L);
                 } catch (InterruptedException ie) {
                 }
             }

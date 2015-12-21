@@ -70,7 +70,7 @@ public abstract class LayerHelper {
 		}
         if (landmarks == null) {
         	landmarks = loadLandmarks(lat, lng, query, radius, version, limit, stringLimit, flexString, flexString2, locale, useCache);
-        	if (useCache && !landmarks.isEmpty() && landmarks.size() <= 300) { //don't cache too large objects
+        	if (useCache && !landmarks.isEmpty()) { // && landmarks.size() <= 300) { //don't cache too large objects
         		logger.log(Level.INFO, "Adding {0} landmark list to cache with key {1}", new Object[]{getLayerName(), key});
                 cacheProvider.put(key, landmarks);
             }

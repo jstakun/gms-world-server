@@ -50,6 +50,10 @@ public class CacheUtil {
 		return cache;
 	}
 
+	private static void putAsync(String key, Object value) {
+		new Thread(new ThreadPut(key, value)).start();
+	}
+	
 	private static void put(String key, Object value) {
 		//logger.log(Level.INFO, "put " + key);
 		try {
@@ -121,7 +125,7 @@ public class CacheUtil {
 	
 	public static void put(String key, Object value, CacheType type) {
 		if (type == CacheType.NORMAL) {
-			put(key, value);
+			putAsync(key, value); //put(key, value);
 		} else if (type == CacheType.FAST) {
 			putToFastCache(key, value);
 		} else if (type == CacheType.LONG) {
@@ -159,4 +163,20 @@ public class CacheUtil {
 		}
 		
 	}*/
+	
+	private static class ThreadPut implements Runnable {
+
+		private String key;
+		private Object value;
+		
+		public ThreadPut(String key, Object value) {
+			this.key = key;
+			this.value = value;
+		}
+		
+		@Override
+		public void run() {
+			put(key, value);	
+		}
+	}
 }

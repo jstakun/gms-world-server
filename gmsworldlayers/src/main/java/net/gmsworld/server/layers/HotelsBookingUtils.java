@@ -23,7 +23,6 @@ import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.google.common.base.Function;
 import com.jstakun.gms.android.deals.Deal;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
@@ -81,35 +80,31 @@ public class HotelsBookingUtils extends LayerHelper {
 				logger.log(Level.WARNING, "Received following server response " + json);
 			}
 		}
+		long start = System.currentTimeMillis();
 		logger.log(Level.INFO, "Processing hotels list...");
-		HotelToExtendedLandmarkFunction ht = new HotelToExtendedLandmarkFunction(locale);
 		
-		/*if (hotels != null) {
-			for (int i=0; i<hotels.length(); i++) {
-				try {
-					landmarks.add(ht.apply(hotels.getJSONObject(i))); 
-				} catch (Exception e) {
-	    			logger.log(Level.SEVERE, e.getMessage(), e);
-	    		}	
-			}
-		}*/
 		int size = 0;
 		if (hotels != null) {
 			size = hotels.length();
 		}
-		List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>(size);
-		ThreadManager threadManager = new ThreadManager(threadProvider);
-		for (int i=0; i<size; i++) {
-			try {
-				String key = Integer.toString(i);
-				threadManager.put(key, new ConcurrentHotelsProcessor(ht, landmarks, hotels.getJSONObject(i), threadManager, key));
-			} catch (Exception e) {
-				logger.log(Level.SEVERE, e.getMessage(), e);
-    		}	
-		}
-		threadManager.waitForThreads();
 		
-        logger.log(Level.INFO, "Found " + landmarks.size() + " hotels.");
+		//TODO try jackson here
+		List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>(size);
+		if (size > 0) {
+			//ThreadManager threadManager = new ThreadManager(threadProvider);
+			for (int i=0; i<size; i++) {
+				try {
+					//String key = Integer.toString(i);
+					//threadManager.put(key, new ConcurrentHotelsProcessor(locale, landmarks, threadManager, key, hotels.getJSONObject(i)));
+					landmarks.add(hotelToLandmark(hotels.getJSONObject(i), locale));
+				} catch (Exception e) {
+					logger.log(Level.SEVERE, e.getMessage(), e);
+				}	
+			}
+			//threadManager.waitForThreads();
+		}
+		//
+        logger.log(Level.INFO, "Processed " + landmarks.size() + " hotels in " + (System.currentTimeMillis()-start) + " millis.");
 		return landmarks;
 	}
 	
@@ -145,91 +140,6 @@ public class HotelsBookingUtils extends LayerHelper {
 		return Commons.HOTELS_LAYER;
 	}
 	
-	/*private static List<HotelBean> jsonToHotelList(JSONArray rootArray) {
-		List<HotelBean> hotels = new ArrayList<HotelBean>();
-    	try {
-    		if (rootArray != null && rootArray.length() > 0) {
-    			ObjectMapper mapper = new ObjectMapper();
-    			
-    			for (int i=0;i<rootArray.length();i++) {
-    				Feature feature = mapper.readValue(rootArray.getJSONObject(i).toString().replace("_id",  "id"), Feature.class);
-    				HotelBean h = new HotelBean();
-    				BeanUtils.populate(h, feature.getProperties());
-    				Point geometry = (Point)feature.getGeometry(); 
-    				h.setLatitude(geometry.getCoordinates().getLatitude());
-    				h.setLongitude(geometry.getCoordinates().getLongitude());
-    				if (h.getReview_nr() == 1 && h.getReview_score() == 1) {
-    					h.setReview_nr(null);
-    					h.setReview_score(null);
-    				}
-    				hotels.add(h);
-    			}
-    		}
-    	} catch (Exception e) {
-    		logger.log(Level.SEVERE, e.getMessage(), e);
-    	}
-    	 	
-    	return hotels;
-	}*/
-	
-	/*private static ExtendedLandmark hotelToLandmark(HotelBean hotel, Locale locale) {
-    	QualifiedCoordinates qc = new QualifiedCoordinates(hotel.getLatitude(), hotel.getLongitude(), 0f, 0f, 0f); 
-    	AddressInfo address = new AddressInfo();
-    	
-    	address.setField(AddressInfo.STREET, hotel.getAddress());
-    	address.setField(AddressInfo.CITY, hotel.getCity_hotel());
-    	
-    	Locale l = new Locale("", hotel.getCc1().toUpperCase(Locale.US));
-    	String country = l.getDisplayCountry();
-    	if (country == null) {
-    		country = hotel.getCc1();
-    	}
-    	address.setField(AddressInfo.COUNTRY, country);
-    	address.setField(AddressInfo.POSTAL_CODE, hotel.getZip());
-
-        long creationDate = hotel.getCreationDate();
-        
-    	ExtendedLandmark landmark = LandmarkFactory.getLandmark(hotel.getName(), null, qc, Commons.HOTELS_LAYER, address,  creationDate, null);
-    	landmark.setUrl(hotel.getHotel_url());
-        
-    	if (hotel.getReview_score() != null) {
-        	landmark.setRating(hotel.getReview_score());
-        }
-        if (hotel.getReview_nr() != null) {
-        	landmark.setNumberOfReviews(hotel.getReview_nr());
-        }
-        
-        landmark.setCategoryId(7);
-        landmark.setSubCategoryId(129);
-        
-        Map<String, String> tokens = new HashMap<String, String>();
-        
-        if (hotel.getMinrate() > 0.0) {
-            Deal deal = new Deal(hotel.getMinrate(), -1, -1, null, hotel.getCurrencycode());
-            landmark.setDeal(deal);
-        } else if (hotel.getMaxrate() > 0.0) {
-        	Deal deal = new Deal(hotel.getMaxrate(), -1, -1, null, hotel.getCurrencycode());
-            landmark.setDeal(deal);	
-        }
-        
-        tokens.put("maxRating", "10");
-        tokens.put("star_rating", Double.toString(hotel.getStars()));
-        
-        if (hotel.getNr_rooms() > 0) {
-        	tokens.put("no_rooms", Integer.toString(hotel.getNr_rooms()));
-        }
-        address.setField(AddressInfo.EXTENSION, Integer.toString(hotel.getNr_rooms()));
-
-        if (hotel.getPhoto_url() != null) {
-            landmark.setThumbnail(hotel.getPhoto_url());
-        }
-        
-        String desc = JSONUtils.buildLandmarkDesc(landmark, tokens, locale);
-        landmark.setDescription(desc);
-
-        return landmark;
-    }*/
-	
 	private static ExtendedLandmark hotelToLandmark(JSONObject hotel, Locale locale) {
 		JSONArray coords = hotel.getJSONObject("geometry").getJSONArray("coordinates");
     	QualifiedCoordinates qc = new QualifiedCoordinates(coords.getDouble(1), coords.getDouble(0), 0f, 0f, 0f); 
@@ -248,8 +158,10 @@ public class HotelsBookingUtils extends LayerHelper {
     		country = cc;
     	}
     	address.setField(AddressInfo.COUNTRY, country);
-    	address.setField(AddressInfo.POSTAL_CODE, props.getString("zip"));
-
+    	if (!props.isNull("zip")) {
+    		address.setField(AddressInfo.POSTAL_CODE, props.getString("zip"));
+    	}
+    	
         long creationDate = props.getLong("creationDate");
         
     	ExtendedLandmark landmark = LandmarkFactory.getLandmark(props.getString("name"), null, qc, Commons.HOTELS_LAYER, address,  creationDate, null);
@@ -303,43 +215,32 @@ public class HotelsBookingUtils extends LayerHelper {
         String hotelsCount = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), false);
 		return NumberUtils.getInt(hotelsCount, -1);
 	}
-
-	private class HotelToExtendedLandmarkFunction implements Function<JSONObject, ExtendedLandmark> {
-
-		private Locale locale;
-    	
-    	public HotelToExtendedLandmarkFunction(Locale locale) {
-    		this.locale = locale;
-    	}
-    	
-		public ExtendedLandmark apply(JSONObject hotel) {
-			return hotelToLandmark(hotel, locale);
-		}		
-	}
 	
 	private class ConcurrentHotelsProcessor implements Runnable {
 
-		private HotelToExtendedLandmarkFunction ht;
 		private List<ExtendedLandmark> landmarks;
-		private JSONObject json;
+		private JSONObject hotel;
 		private ThreadManager threadManager;
 		private String key;
+		private Locale locale;
 		
-		public ConcurrentHotelsProcessor(HotelToExtendedLandmarkFunction ht, List<ExtendedLandmark> landmarks, JSONObject json, ThreadManager threadManager, String key) {
-			this.ht = ht;
+		public ConcurrentHotelsProcessor(Locale locale, List<ExtendedLandmark> landmarks, ThreadManager threadManager, String key, JSONObject hotel) {
 			this.landmarks = landmarks;
-			this.json = json;
 			this.threadManager = threadManager;
+			this.locale = locale;
+			this.hotel = hotel;
 			this.key = key;
 		}
 		
 		@Override
 		public void run() {
-			ExtendedLandmark l = ht.apply(json);
-			if (l != null) {
-				landmarks.add(l);
+			try {
+				landmarks.add(hotelToLandmark(hotel, locale));
+			} catch (Exception e) {
+				logger.log(Level.SEVERE, e.getMessage(), e);
+			} finally {
+				threadManager.take(key);
 			}
-			threadManager.take(key);
 		}
 	}
 }

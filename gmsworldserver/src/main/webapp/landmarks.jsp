@@ -123,8 +123,8 @@
           for (var i = 0; i < layers.length; i++) {
               if (layers[i].enabled == "true") {
                 	var script = document.createElement('script');
-                    script.src = '<%= ConfigurationManager.SERVER_URL %>geoJsonProvider?lat=<%= latitude %>&lng=<%= longitude %>&layer=' + layers[i].name + '&callback=layers_callback'; 
-        			//script.src = 'http://localhost:8080/geoJsonProvider?lat=<%= latitude %>&lng=<%= longitude %>&layer=' + layers[i].name + '&callback=layers_callback'; 
+                    script.src = '<%= ConfigurationManager.SERVER_URL %>geoJsonProvider?layer=' + layers[i].name + '&lat=<%= latitude %>&lng=<%= longitude %>&callback=layers_callback'; 
+        			//script.src = 'http://localhost:8080/geoJsonProvider?layer=' + layers[i].name + '&lat=<%= latitude %>&lng=<%= longitude %>&callback=layers_callback'; 
         			document.getElementsByTagName('head')[0].appendChild(script);
               }	else {
                     excluded_layers++; 
