@@ -137,22 +137,6 @@ public class YelpUtils extends LayerHelper {
         return responseBody;
     }
 
-    /*public boolean hasNeighborhoods(double lat, double lng) throws IOException, JSONException {
-        String url = "http://api.yelp.com/neighborhood_search?lat=" + StringUtil.formatCoordE6(lat) + "&long=" + StringUtil.formatCoordE6(lng) + "&ywsid=" + Commons.getProperty(Property.YELP_ywsid);
-        String json = HttpUtils.processFileRequest(new URL(url));
-        boolean hasNeighborhood = false;
-        if (StringUtils.startsWith(json, "{")) {
-            JSONObject jsonRoot = new JSONObject(json);
-            JSONArray neighborhoods = jsonRoot.optJSONArray("neighborhoods");
-            if (neighborhoods != null && neighborhoods.length() > 0) {
-                hasNeighborhood = true;
-            } else {
-                logger.log(Level.INFO, "Location [{0},{1}] has no neighborhood.", new Object[]{lat, lng});
-            }
-        }
-        return hasNeighborhood;
-    }*/
-
     private int createCustomJsonYelpList(String yelpJson, List<Object> jsonArray, int stringLimit, boolean hasDeals) throws JSONException {
         int total = 0;
         if (StringUtils.startsWith(yelpJson, "{")) {

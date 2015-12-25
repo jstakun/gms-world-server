@@ -1,5 +1,7 @@
 package com.jstakun.lm.server.utils.memcache;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,9 +53,9 @@ public class CacheUtil {
 		return cache;
 	}
 
-	private static void putAsync(String key, Object value) {
-		new Thread(new ThreadPut(key, value)).start();
-	}
+	//private static void putAsync(String key, Object value) {
+	//	new Thread(new ThreadPut(key, value)).start();
+	//}
 	
 	private static void put(String key, Object value) {
 		//logger.log(Level.INFO, "put " + key);
@@ -84,12 +86,18 @@ public class CacheUtil {
 	}
 	
 	public static <T> List<T> getList(Class<T> type, String key) {
-		//TODO fix warning
-		//List<T> r = new ArrayList<T>(c.size());
-	    //for(Object o: c)
-	    //  r.add(clazz.cast(o));
-	    //return r;
-	    return getObject(List.class, key);
+		//return getObject(List.class, key);
+	    Collection<?> c = (Collection<?>) getCache().get(key);
+	    if (c != null) {
+	    	List<T> r = new ArrayList<T>(c.size());
+	    	for (Object o : c) {
+				if (type.isAssignableFrom(o.getClass())) {
+					r.add(type.cast(o));
+				}
+			}
+	    	return r;
+		}
+	    return null;
 	}
 	
 	public static boolean containsKey(String key) {
@@ -174,7 +182,7 @@ public class CacheUtil {
 		
 	}*/
 	
-	private static class ThreadPut implements Runnable {
+	/*private static class ThreadPut implements Runnable {
 
 		private String key;
 		private Object value;
@@ -188,5 +196,5 @@ public class CacheUtil {
 		public void run() {
 			put(key, value);	
 		}
-	}
+	}*/
 }

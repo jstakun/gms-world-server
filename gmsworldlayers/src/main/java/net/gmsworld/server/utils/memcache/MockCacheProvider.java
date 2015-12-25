@@ -1,5 +1,7 @@
 package net.gmsworld.server.utils.memcache;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +57,17 @@ public class MockCacheProvider implements CacheProvider {
 
 	@Override
 	public <T> List<T> getList(Class<T> type, String key) {
-		//TODO fix warning
-		return getObject(List.class, key);
+		//return getObject(List.class, key);
+		Collection<?> c = (Collection<?>) cache.get(key);
+	    if (c != null) {
+	    	List<T> r = new ArrayList<T>(c.size());
+	    	for (Object o : c) {
+				if (type.isAssignableFrom(o.getClass())) {
+					r.add(type.cast(o));
+				}
+			}
+	    	return r;
+		}
+	    return null;
 	}
 }	
