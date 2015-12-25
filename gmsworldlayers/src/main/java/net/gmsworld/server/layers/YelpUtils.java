@@ -41,7 +41,7 @@ import com.openlapi.QualifiedCoordinates;
  */
 public class YelpUtils extends LayerHelper {
 
-	private static final String CACHE_KEY = "YelpUsageLimitsMarker";
+	private static final String USAGE_LIMIT_MARKER = "YelpUsageLimitsMarker";
 	
     @Override
 	public JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String hasDeals, String language) throws Exception {
@@ -53,7 +53,7 @@ public class YelpUtils extends LayerHelper {
         if (cachedResponse == null) {
         	List<Object> venueArray = new ArrayList<Object>();
             
-        	if (!cacheProvider.containsKey(CACHE_KEY)) {
+        	if (!cacheProvider.containsKey(USAGE_LIMIT_MARKER)) {
         		ThreadManager threadManager = new ThreadManager(threadProvider);
                 boolean isDeal = Boolean.parseBoolean(hasDeals);
         		int offset = 0;
@@ -91,7 +91,7 @@ public class YelpUtils extends LayerHelper {
     private String processRequest(double latitude, double longitude, String query, int radius, boolean hasDeals, int offset, String language) throws OAuthException, IOException {
     	String responseBody = null;
     	
-    	if (!cacheProvider.containsKey(CACHE_KEY)) {
+    	if (!cacheProvider.containsKey(USAGE_LIMIT_MARKER)) {
     	
     		OAuthHmacSha1Signer hmacSigner = new OAuthHmacSha1Signer();
     		OAuthParameters parameters = new OAuthParameters();
@@ -323,7 +323,7 @@ public class YelpUtils extends LayerHelper {
         
     	Map<String, Map<String, String>> reviewsArray = new HashMap<String, Map<String, String>>();
     	
-    	if (!cacheProvider.containsKey(CACHE_KEY)) {
+    	if (!cacheProvider.containsKey(USAGE_LIMIT_MARKER)) {
         	
     		ThreadManager threadManager = new ThreadManager(threadProvider);
             int normalizedRadius = NumberUtils.normalizeNumber(radius, 1000, 40000);
@@ -352,7 +352,7 @@ public class YelpUtils extends LayerHelper {
         
         List<ExtendedLandmark> landmarks = Collections.synchronizedList(new ArrayList<ExtendedLandmark>());
             
-        if (!cacheProvider.containsKey(CACHE_KEY)) {
+        if (!cacheProvider.containsKey(USAGE_LIMIT_MARKER)) {
         		ThreadManager threadManager = new ThreadManager(threadProvider);
                 boolean isDeal = false;
         		if (hasDeals != null) {
@@ -521,9 +521,9 @@ public class YelpUtils extends LayerHelper {
 	private void handleError(JSONObject root) {
 		JSONObject error = root.optJSONObject("error");
 		if (error != null && StringUtils.equals(error.optString("id"), "EXCEEDED_REQS")) {
-			cacheProvider.put(CACHE_KEY, "1");
+			cacheProvider.put(USAGE_LIMIT_MARKER, "1");
 		} else if (error != null && StringUtils.equals(error.optString("id"), "UNAVAILABLE_FOR_LOCATION")) {
-			//TODO handle error
+			//TODO handle error - save to cache
 		}
 		logger.log(Level.SEVERE, "Received Yelp error response {0}", root);
 	}
@@ -556,6 +556,7 @@ public class YelpUtils extends LayerHelper {
 
         public void run() {
             try {
+            	//TODO check in cache if location is available
                 String responseBody = processRequest(latitude, longitude, query, radius, hasDeals, offset, language);
                 createCustomJsonReviewsList(responseBody, reviewsArray);
             } catch (Exception e) {

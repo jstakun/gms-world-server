@@ -88,7 +88,7 @@ public class HotelsBookingUtils extends LayerHelper {
 			size = hotels.length();
 		}
 		
-		//TODO try jackson here
+		//TODO test different json parser
 		List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>(size);
 		if (size > 0) {
 			//ThreadManager threadManager = new ThreadManager(threadProvider);

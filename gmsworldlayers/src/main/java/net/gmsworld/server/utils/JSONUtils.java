@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -182,49 +183,45 @@ public class JSONUtils {
     	}
     	
     	if (tocc != null && fromcc != null && !StringUtils.equals(tocc, fromcc) && fromcc.length() == 3) {  		
-    		double toccrate = getExchangeRate(fromcc, tocc);
-			if (toccrate > 0) {
+    		Double toccrate = getExchangeRate(fromcc, tocc);
+			if (toccrate != null) {
 				deal.setCurrencyCode(tocc);
 				deal.setPrice(deal.getPrice() * toccrate);
 			}
     	}  	
     }
     
-    public static double getExchangeRate(String fromcc, String tocc) {
-    	String currencyUrl = "http://api.fixer.io/latest?base=" + fromcc;
-		String resp = LayerHelperFactory.getByName(Commons.HOTELS_LAYER).getCacheProvider().getString(currencyUrl);
-		boolean fromCache = false;
+    public static Double getExchangeRate(String fromcc, String tocc) {
+    	final String currencyUrl = "http://api.fixer.io/latest?base=" + fromcc;
+		Map<String, Double> ratesMap = (Map<String, Double>) LayerHelperFactory.getByName(Commons.HOTELS_LAYER).getCacheProvider().getObject(currencyUrl);
 		
-		if (resp == null) {
+		if (ratesMap == null) {
+			ratesMap = new HashMap<String, Double>();
 			try {
 				logger.log(Level.INFO, "Calling " + currencyUrl + "...");
-				resp = HttpUtils.processFileRequest(new URL(currencyUrl));				
+				String resp = HttpUtils.processFileRequest(new URL(currencyUrl));			
+				
 				if (StringUtils.startsWith(resp, "{")) {
-			    	LayerHelperFactory.getByName(Commons.HOTELS_LAYER).getCacheProvider().put(currencyUrl, resp);
-			    } 
+					JSONObject root = new JSONObject(resp);
+					if (root.has("error")) {
+						logger.log(Level.WARNING, "Currency " + fromcc + " response error: " + root.getString("error"));
+					} else {
+						JSONObject rates = root.getJSONObject("rates");
+						for (Iterator<String> keys=rates.keys();keys.hasNext();) {
+							String key = keys.next();
+							ratesMap.put(key, rates.getDouble(key));
+						}
+						LayerHelperFactory.getByName(Commons.HOTELS_LAYER).getCacheProvider().put(currencyUrl, ratesMap);
+					}
+				} else {
+					logger.log(Level.WARNING, currencyUrl + " received following response from the server: " + resp);
+				}
 			} catch (Exception e) {
 				logger.log(Level.SEVERE, e.getMessage(), e);
 			}
-		} else {
-			fromCache = true;
-		}
-			
-		if (StringUtils.startsWith(resp, "{")) {
-			JSONObject root = new JSONObject(resp);
-			if (root.has("error")) {
-				if (!fromCache) {
-					logger.log(Level.WARNING, "Currency " + fromcc + " response error: " + root.getString("error"));
-				}
-			} else {
-				JSONObject rates = root.getJSONObject("rates");
-				if (rates.has(tocc)) {
-					return rates.getDouble(tocc);
-				}
-			}
-		} else if (!fromCache) {
-			logger.log(Level.WARNING, currencyUrl + " received following response from the server: " + resp);
-		}
-		return -1d;
+		} 
+		
+		return ratesMap.get(tocc);		
     }
     
     private static String formatDeal(Deal deal, Locale locale, ResourceBundle rb) {

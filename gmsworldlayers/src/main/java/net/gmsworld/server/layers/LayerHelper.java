@@ -252,12 +252,12 @@ public abstract class LayerHelper {
 						
 			//build stats and exchange rate for hotels
 			if (StringUtils.equals(layer, Commons.HOTELS_LAYER)) {
-				double exchangeRate = -1d;
+				Double exchangeRate = null;
 				if (dealsCurrencyCode != null) {
 					featureCollection.setProperty("currencycode", dealsCurrencyCode);
 					if (!dealsCurrencyCode.equals("EUR")) {
 						exchangeRate = JSONUtils.getExchangeRate("EUR", dealsCurrencyCode);
-						if (exchangeRate > 0) {
+						if (exchangeRate != null) {
 							featureCollection.setProperty("eurexchangerate", exchangeRate);					
 						}
 					} else if (dealsCurrencyCode.equals("EUR")) {

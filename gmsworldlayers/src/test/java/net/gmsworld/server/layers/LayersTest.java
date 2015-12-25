@@ -31,7 +31,7 @@ public class LayersTest {
 	
 	private static final int apiLevel = 1115;
 	private static final int limit = 30; //1000
-	private static final int radius = 10000; //50000
+	private static final int radius = 50000; 
 	
 	private static CacheProvider cacheProvider;	
 	private double lat, lng;
