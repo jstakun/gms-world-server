@@ -1,5 +1,6 @@
 package com.jstakun.lm.server.utils.memcache;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,6 +32,20 @@ public class CacheAction {
 			}
 		}
 		return o;
+	}
+	
+	public <T> List<T> getListFromCache(Class<T> type, String key, CacheType cacheType) {
+		List<T> l = CacheUtil.getList(type, key);
+		if (l != null) {
+			logger.log(Level.INFO, "Found object {0} in cache", key);
+		} else {
+			l = (List<T>) executor.executeAction();
+			logger.log(Level.INFO, "Execution action for {0}", key);
+			if (l != null) {
+				CacheUtil.put(key, l, cacheType);
+			}
+		}
+		return l;
 	}
 	
 	public Integer getIntFromCache(String key, CacheType cacheType) {

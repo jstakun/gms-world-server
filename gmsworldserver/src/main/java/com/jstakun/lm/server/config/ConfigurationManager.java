@@ -43,11 +43,9 @@ public final class ConfigurationManager {
 
     private static void refreshConfig()
     {
-        Object o = CacheUtil.getObject(CONFIG);
-        if (o != null && o instanceof HashMap) {
-            configuration = (HashMap<String, String>) o;
-        } else {
-            populateConfig();
+    	configuration = CacheUtil.getObject(HashMap.class, CONFIG);
+        if (configuration == null) {
+        	populateConfig();
         }
     }
 

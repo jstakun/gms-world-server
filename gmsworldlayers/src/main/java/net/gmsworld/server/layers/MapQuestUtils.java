@@ -116,7 +116,7 @@ public class MapQuestUtils extends GeocodeHelper {
 		String normLat = StringUtil.formatCoordE6(lat);
 		String normLng = StringUtil.formatCoordE6(lng);
 		String key = getClass().getName() + "_" + normLat + "_" + normLng;
-		AddressInfo addressInfo = (AddressInfo) cacheProvider.getObject(key);
+		AddressInfo addressInfo = cacheProvider.getObject(AddressInfo.class, key);
 		
 		if (addressInfo == null) {
 			String urlString = "http://open.mapquestapi.com/geocoding/v1/reverse?key=" + Commons.getProperty(Property.MAPQUEST_APPKEY) + "&location=" + normLat + "," + normLng;

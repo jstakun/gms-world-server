@@ -82,7 +82,7 @@ public class ShowLayerAction extends org.apache.struts.action.Action {
     					return LandmarkPersistenceUtils.selectLandmarksByUserAndLayer(null, layer, first, nextCandidate);
     				}
     			});
-            	layerLandmarks = (List<Landmark>)userLandmarksCacheAction.getObjectFromCache(layer + "_" + first + "_" + nextCandidate, CacheType.NORMAL);
+            	layerLandmarks = userLandmarksCacheAction.getListFromCache(Landmark.class, layer + "_" + first + "_" + nextCandidate, CacheType.NORMAL);
                 
                 request.setAttribute("layerLandmarks", layerLandmarks);
                 request.setAttribute("collectionAttributeName", "layerLandmarks");

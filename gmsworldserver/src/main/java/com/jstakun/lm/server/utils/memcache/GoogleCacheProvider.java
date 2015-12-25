@@ -1,6 +1,7 @@
 package com.jstakun.lm.server.utils.memcache;
 
 import java.net.URL;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -67,6 +68,14 @@ public class GoogleCacheProvider implements CacheProvider {
 			return null;
 		}
 	}
-		
 
+	@Override
+	public <T> T getObject(Class<T> type, String key) {
+		return CacheUtil.getObject(type, key);
+	}
+		
+	@Override
+	public <T> List<T> getList(Class<T> type, String key) {
+		return CacheUtil.getList(type, key);
+	}
 }

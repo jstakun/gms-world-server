@@ -96,7 +96,7 @@ public class LandmarkPersistenceUtils {
 
     public static Landmark selectLandmarkById(String id, CacheProvider cacheProvider) {
         String key = "landmark_" + id;
-    	Landmark landmark = (Landmark)cacheProvider.getObject(key);
+    	Landmark landmark = cacheProvider.getObject(Landmark.class, key);
         
         if (landmark == null) {
         	try {

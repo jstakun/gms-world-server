@@ -192,7 +192,7 @@ public class LandmarkPersistenceUtils {
 
     public static Landmark selectLandmarkById(String id) {
         String key = "landmark_" + id;
-    	Landmark landmark = (Landmark)CacheUtil.getObject(key);
+    	Landmark landmark = CacheUtil.getObject(Landmark.class, key);
         
         if (landmark == null) {
         	try {
@@ -952,7 +952,7 @@ public class LandmarkPersistenceUtils {
         		}
         	});
         	
-        	List<Landmark> landmarkList = (List<Landmark>)newestLandmarksAction.getObjectFromCache("newestLandmarks", CacheType.FAST);
+        	List<Landmark> landmarkList = newestLandmarksAction.getListFromCache(Landmark.class, "newestLandmarks", CacheType.FAST);
         	if (!landmarkList.isEmpty()) {
         		Landmark newestLandmark = landmarkList.get(0);
         		logger.log(Level.INFO, "Newest landmark: " + newestLandmark.getName() + ", " + newestLandmark.getLatitude() + ", " + newestLandmark.getLongitude());

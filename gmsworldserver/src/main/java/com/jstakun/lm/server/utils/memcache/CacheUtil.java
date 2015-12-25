@@ -1,6 +1,7 @@
 package com.jstakun.lm.server.utils.memcache;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -73,13 +74,22 @@ public class CacheUtil {
 		return getCache().get(key);
 	}
 	
-	protected static <T> T getObject(Class<T> type, String key) {
+	public static <T> T getObject(Class<T> type, String key) {
 		Object o = getCache().get(key);
 		if (o != null && type.isAssignableFrom(o.getClass())) {
 			return type.cast(o);
 	    } else {
 	    	return null;
 	    }
+	}
+	
+	public static <T> List<T> getList(Class<T> type, String key) {
+		//TODO fix warning
+		//List<T> r = new ArrayList<T>(c.size());
+	    //for(Object o: c)
+	    //  r.add(clazz.cast(o));
+	    //return r;
+	    return getObject(List.class, key);
 	}
 	
 	public static boolean containsKey(String key) {

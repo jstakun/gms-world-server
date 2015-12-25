@@ -193,7 +193,7 @@ public class JSONUtils {
     
     public static Double getExchangeRate(String fromcc, String tocc) {
     	final String currencyUrl = "http://api.fixer.io/latest?base=" + fromcc;
-		Map<String, Double> ratesMap = (Map<String, Double>) LayerHelperFactory.getByName(Commons.HOTELS_LAYER).getCacheProvider().getObject(currencyUrl);
+		Map<String, Double> ratesMap = LayerHelperFactory.getByName(Commons.HOTELS_LAYER).getCacheProvider().getObject(HashMap.class , currencyUrl);
 		
 		if (ratesMap == null) {
 			ratesMap = new HashMap<String, Double>();

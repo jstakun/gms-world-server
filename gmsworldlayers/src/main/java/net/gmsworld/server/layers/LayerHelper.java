@@ -66,7 +66,9 @@ public abstract class LayerHelper {
 		List<ExtendedLandmark> landmarks = null;
 		if (useCache) {
 			key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, limit, stringLimit, flexString, flexString2);
-			landmarks = (List<ExtendedLandmark>)cacheProvider.getObject(key);
+			if (cacheProvider != null) {
+				landmarks = cacheProvider.getObject(List.class, key);
+			}
 		}
         if (landmarks == null) {
         	landmarks = loadLandmarks(lat, lng, query, radius, version, limit, stringLimit, flexString, flexString2, locale, useCache);

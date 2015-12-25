@@ -43,7 +43,7 @@ public class TokenFilter implements Filter {
 			HttpServletRequest httpRequest = (HttpServletRequest)request;
 			String authHeader = httpRequest.getHeader(Commons.TOKEN_HEADER);
 			if (authHeader != null) {
-				Integer token_count = (Integer)CacheUtil.getObject(authHeader);
+				Integer token_count = CacheUtil.getObject(Integer.class, authHeader);
 				
 				if (token_count == null) {
 					token_count = 1;

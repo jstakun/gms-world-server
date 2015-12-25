@@ -1,7 +1,7 @@
 package com.jstakun.lm.server.tasks;
 
 import java.io.IOException;
-import java.util.Enumeration;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,24 +30,25 @@ public class NotificationTaskServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	try {
+    		Map<String, String[]> params = request.getParameterMap();
     		if (!HttpUtils.isEmptyAny(request, "key", "landmarkUrl", "title", "body", "username", "userUrl", "service")) {
-    			NotificationUtils.sendLandmarkCreationNotification(request.getParameterMap(), getServletContext());
+    			NotificationUtils.sendLandmarkCreationNotification(params, getServletContext());
     		} else if (!HttpUtils.isEmptyAny(request, "service", "accessToken", "name", "username")) {
-    			NotificationUtils.sendUserLoginNotification(request.getParameterMap(), getServletContext());
+    			NotificationUtils.sendUserLoginNotification(params, getServletContext());
             } else if (!HttpUtils.isEmptyAny(request, "imageUrl", "showImageUrl", "lat", "lng", "service")) {
-            	NotificationUtils.sendImageCreationNotification(request.getParameterMap());
+            	NotificationUtils.sendImageCreationNotification(params);
             } else if (!HttpUtils.isEmptyAny(request, "url", "type", "title", "service")) {
-            	NotificationUtils.sendUserProfileNotification(request.getParameterMap());
+            	NotificationUtils.sendUserProfileNotification(params);
             } else if (!HttpUtils.isEmptyAny(request, "url", "name", "service")) { 
-            	NotificationUtils.sendCheckinNotification(request.getParameterMap());         	
+            	NotificationUtils.sendCheckinNotification(params);         	
             } else if (!HttpUtils.isEmptyAny(request, "routeType", "username", "imageUrl")) { 
-            	NotificationUtils.sendRouteCreationNotification(request.getParameterMap());         	
+            	NotificationUtils.sendRouteCreationNotification(params);         	
             } else {
-            	String params = "";
-            	for (Enumeration<String> iter=request.getParameterNames();iter.hasMoreElements(); ) {
-            		params += iter.nextElement() + " ";
+            	String paramsStr = "";
+            	for (String param : params.keySet()) {
+            		paramsStr += param + " ";
             	}
-            	logger.log(Level.SEVERE, "Wrong parameters: " + params);
+            	logger.log(Level.SEVERE, "Wrong parameters: " + paramsStr);
             	response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             }
     	} catch (Exception e) {

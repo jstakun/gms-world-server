@@ -1,5 +1,7 @@
 package net.gmsworld.server.utils.memcache;
 
+import java.util.List;
+
 public interface CacheProvider {
 	
 	public void put(String key, Object value);
@@ -10,6 +12,10 @@ public interface CacheProvider {
 
 	public Object getObject(String key);
 
+	public <T> T getObject(Class<T> type, String key);
+	
+	public <T> List<T> getList(Class<T> clazz, String key);
+	
 	public boolean containsKey(String key);
 	
 	public void putToSecondLevelCache(String key, String value);

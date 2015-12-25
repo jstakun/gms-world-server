@@ -222,7 +222,7 @@ public class TwitterUtils extends LayerHelper {
 	
 	public List<ExtendedLandmark> getFriendsStatuses(String token, String secret, Locale locale) throws TwitterException, UnsupportedEncodingException {
 		String key = getCacheKey(TwitterUtils.class, "getFriendsStatuses", 0, 0, null, 0, 1, 1, 0, token, locale.getCountry());
-        List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>) cacheProvider.getObject(key);
+        List<ExtendedLandmark> landmarks = cacheProvider.getList(ExtendedLandmark.class, key);
 
         if (landmarks == null) {
         	Twitter twitter = getTwitter(token, secret);

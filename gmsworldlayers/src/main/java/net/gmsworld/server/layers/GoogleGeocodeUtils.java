@@ -128,7 +128,7 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
 	protected AddressInfo processReverseGeocode(double lat, double lng) {
 		String coords = StringUtil.formatCoordE6(lat) + "," + StringUtil.formatCoordE6(lng);
 		final String key = getClass().getName() + coords;
-		AddressInfo addressInfo = (AddressInfo) cacheProvider.getObject(key);
+		AddressInfo addressInfo = cacheProvider.getObject(AddressInfo.class, key);
 
         if (addressInfo == null) {
         	addressInfo = new AddressInfo();

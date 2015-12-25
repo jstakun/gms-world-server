@@ -17,7 +17,6 @@ import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.JSONUtils;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
-import net.gmsworld.server.utils.ThreadManager;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
@@ -216,7 +215,7 @@ public class HotelsBookingUtils extends LayerHelper {
 		return NumberUtils.getInt(hotelsCount, -1);
 	}
 	
-	private class ConcurrentHotelsProcessor implements Runnable {
+	/*private class ConcurrentHotelsProcessor implements Runnable {
 
 		private List<ExtendedLandmark> landmarks;
 		private JSONObject hotel;
@@ -242,5 +241,5 @@ public class HotelsBookingUtils extends LayerHelper {
 				threadManager.take(key);
 			}
 		}
-	}
+	}*/
 }

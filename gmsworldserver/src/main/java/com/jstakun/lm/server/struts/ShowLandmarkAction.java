@@ -92,7 +92,7 @@ public class ShowLandmarkAction extends Action {
             					return CommentPersistenceUtils.selectCommentsByLandmark(key);
             				}
             		   });
-                       List<Comment> comments = (List<Comment>)commentsCacheAction.getObjectFromCache("comments_" + key, CacheType.NORMAL);
+                       List<Comment> comments = commentsCacheAction.getListFromCache(Comment.class, "comments_" + key, CacheType.NORMAL);
                        if (comments != null && !comments.isEmpty()) {
                             request.setAttribute("comments", comments);
                        }
@@ -104,7 +104,7 @@ public class ShowLandmarkAction extends Action {
                 					return CheckinPersistenceUtils.selectCheckinsByLandmark(key);
                 				}
                 		   });
-                           List<Checkin> checkins = (List<Checkin>)checkinCacheAction.getObjectFromCache("checkins_" + key, CacheType.NORMAL);
+                           List<Checkin> checkins = checkinCacheAction.getListFromCache(Checkin.class, "checkins_" + key, CacheType.NORMAL);
                         	
                            if (checkins != null && !checkins.isEmpty()) {
                                 Checkin lastCheckin = checkins.get(0);

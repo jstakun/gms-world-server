@@ -78,7 +78,7 @@ public class LayerPersistenceUtils {
 				}
 			}
 		});
-	    return (List<Layer>) layersCacheAction.getObjectFromCache(key, CacheType.NORMAL);
+	    return layersCacheAction.getListFromCache(Layer.class, key, CacheType.NORMAL);
     }
 
     public static void persistLayer(String name, String desc, boolean enabled, boolean manageable, boolean checkinable, String formatted) {
@@ -182,7 +182,7 @@ public class LayerPersistenceUtils {
 				}	
 			}
 		});
-	    return (List<Layer>) layersCacheAction.getObjectFromCache(key, CacheType.NORMAL);
+	    return layersCacheAction.getListFromCache(Layer.class, key, CacheType.NORMAL);
     }
     
     public static String createCustomJSonLayersList(List<Layer> layerList, double latitude, double longitude, int radius) throws JSONException {

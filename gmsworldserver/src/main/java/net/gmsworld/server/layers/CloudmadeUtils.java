@@ -195,7 +195,7 @@ public class CloudmadeUtils extends GeocodeHelper {
     
     protected AddressInfo processReverseGeocode(double lat, double lng) throws Exception {
         String key = getClass().getName() + "_" + lat + "_" + lng;
-        AddressInfo address = (AddressInfo) cacheProvider.getObject(key);
+        AddressInfo address = cacheProvider.getObject(AddressInfo.class, key); 
 
         if (address == null) {
             String token = cacheProvider.getString(Commons.getProperty(Property.CLOUDMADE_TOKEN_KEY));

@@ -906,7 +906,7 @@ public class FacebookUtils extends LayerHelper {
     
     public List<ExtendedLandmark> getMyTaggedPlaces(int version, int limit, int stringLength, String token, Locale locale) throws UnsupportedEncodingException, ParseException {
     	String key = getCacheKey(getClass(), "getMyTaggedPlaces", 0, 0, null, 0, version, limit, stringLength, token, null);
-        List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)cacheProvider.getObject(key);
+        List<ExtendedLandmark> landmarks =  cacheProvider.getList(ExtendedLandmark.class, key);
         if (landmarks == null) {
         	FacebookClient facebookClient = getFacebookClient(token);
         	List<JsonObject> placesSearch = facebookClient.fetchConnection("me/tagged_places", JsonObject.class, Parameter.with("limit", limit * 3), Parameter.with("fields", "place,created_time")).getData();
@@ -959,7 +959,7 @@ public class FacebookUtils extends LayerHelper {
     
     public List<ExtendedLandmark> getMyPlaces(int version, int limit, int stringLength, String token, Locale locale) throws UnsupportedEncodingException, ParseException {
     	String key = getCacheKey(getClass(), "getMyPlaces", 0, 0, null, 0, version, limit, stringLength, token, null);
-        List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)cacheProvider.getObject(key);
+        List<ExtendedLandmark> landmarks = cacheProvider.getList(ExtendedLandmark.class, key);
         if (landmarks == null) {
         	FacebookClient facebookClient = getFacebookClient(token);
         	List<JsonObject> placesSearch = facebookClient.fetchConnection("me/posts", JsonObject.class, Parameter.with("with", "location"), Parameter.with("limit", "300"), Parameter.with("fields", "place,from,created_time")).getData();

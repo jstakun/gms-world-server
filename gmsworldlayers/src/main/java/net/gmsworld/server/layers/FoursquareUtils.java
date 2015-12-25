@@ -361,7 +361,7 @@ public class FoursquareUtils extends LayerHelper {
     
     public List<ExtendedLandmark> exploreVenuesToLandmark(double lat, double lng, String query, int radius, int limit, int version, String token, String locale, Locale l) throws JSONException, MalformedURLException, IOException, FoursquareApiException {
         String key = getCacheKey(FoursquareUtils.class, "exploreVenuesToLandmark", lat, lng, query, radius, version, limit, 0, token, locale);
-        List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>)cacheProvider.getObject(key);
+        List<ExtendedLandmark> landmarks = cacheProvider.getList(ExtendedLandmark.class,key);
         if (landmarks == null) {
             FoursquareApi api = getFoursquareApi(token);
             api.setUseCallback(false);
@@ -422,7 +422,7 @@ public class FoursquareUtils extends LayerHelper {
 
     public List<ExtendedLandmark> getFriendsCheckinsToLandmarks(double latitude, double longitude, int limit, int version, String token, String locale, Locale l) throws FoursquareApiException, JSONException, UnsupportedEncodingException {
         String key = getCacheKey(FoursquareUtils.class, "getFriendsCheckinsToLandmark", 0, 0, null, 0, version, limit, 0, token, locale);
-        List<ExtendedLandmark> landmarks = (List<ExtendedLandmark>) cacheProvider.getObject(key);
+        List<ExtendedLandmark> landmarks = cacheProvider.getList(ExtendedLandmark.class,key);
 
         if (landmarks == null) {
             FoursquareApi api = getFoursquareApi(token);

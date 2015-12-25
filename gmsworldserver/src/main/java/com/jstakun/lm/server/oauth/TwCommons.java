@@ -48,7 +48,7 @@ public final class TwCommons {
     protected static Map<String, String> authorize(String token, String verifier) throws Exception {
     	Twitter twitter = new TwitterFactory().getInstance();
 		twitter.setOAuthConsumer(Commons.getProperty(Property.TW_CONSUMER_KEY), Commons.getProperty(Property.TW_CONSUMER_SECRET));
-		RequestToken requestToken = (RequestToken) CacheUtil.getObject("twRequestToken_" + token);
+		RequestToken requestToken = CacheUtil.getObject(RequestToken.class, "twRequestToken_" + token);
 		
 		Map<String, String> userData = new HashMap<String, String>();
 		

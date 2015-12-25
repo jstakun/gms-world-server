@@ -1,6 +1,7 @@
 package net.gmsworld.server.utils.memcache;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MockCacheProvider implements CacheProvider {
@@ -40,5 +41,21 @@ public class MockCacheProvider implements CacheProvider {
 	
 	public String getFromSecondLevelCache(String key) {
 		return null;
+	}
+
+	@Override
+	public <T> T getObject(Class<T> type, String key) {
+		Object o = cache.get(key);
+		if (o != null && type.isAssignableFrom(o.getClass())) {
+			return type.cast(o);
+	    } else {
+	    	return null;
+	    }
+	}
+
+	@Override
+	public <T> List<T> getList(Class<T> type, String key) {
+		//TODO fix warning
+		return getObject(List.class, key);
 	}
 }	

@@ -34,7 +34,7 @@ public class WelcomeAction extends org.apache.struts.action.Action {
 			}
 		});
 				
-		List<Landmark> landmarkList = (List<Landmark>)newestLandmarksAction.getObjectFromCache("newestLandmarks", CacheType.FAST);
+		List<Landmark> landmarkList = newestLandmarksAction.getListFromCache(Landmark.class, "newestLandmarks", CacheType.FAST);
         request.setAttribute("newestLandmarkList", landmarkList);   
         
         //handle different request urls

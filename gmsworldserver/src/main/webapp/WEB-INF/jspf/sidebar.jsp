@@ -63,7 +63,7 @@
         <ul>
 <%
 	
-	List<GeocodeCache> geocodeCacheList = (List<GeocodeCache>)CacheUtil.getObject("newestGeocodes");
+	List<GeocodeCache> geocodeCacheList = CacheUtil.getList(GeocodeCache.class, "newestGeocodes");
 	if (geocodeCacheList == null) {
 		geocodeCacheList = GeocodeCachePersistenceUtils.selectNewestGeocodes();
 		CacheUtil.put("newestGeocodes", geocodeCacheList, CacheUtil.CacheType.FAST);

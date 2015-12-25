@@ -45,13 +45,13 @@ public class IPFilter implements Filter {
 		final String ip = request.getRemoteAddr();
 		final String ip_key = getClass().getName() + "_" + ip;
 
-		Integer total_count = (Integer)CacheUtil.getObject(ip_key);
+		Integer total_count = CacheUtil.getObject(Integer.class, ip_key);
 
 		if (total_count == null) {
-				total_count = 1;
-				CacheUtil.put(ip_key, 0, CacheType.NORMAL);
+			total_count = 1;
+			CacheUtil.put(ip_key, 0, CacheType.NORMAL);
 		} else {
-				total_count += 1;
+			total_count += 1;
 		}
 		
 		CacheUtil.increment(ip_key);
@@ -77,7 +77,7 @@ public class IPFilter implements Filter {
 				final String uri = httpRequest.getRequestURI();
 				final String uri_key = getClass().getName() + "_" + ip + "_" + uri;
             			
-				Integer uri_count = (Integer)CacheUtil.getObject(uri_key);
+				Integer uri_count = CacheUtil.getObject(Integer.class, uri_key);
 
 				if (uri_count == null) {
 					uri_count = 1;
