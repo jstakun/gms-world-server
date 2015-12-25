@@ -52,12 +52,13 @@
                 <p>
                    <%= request.getAttribute("address")!=null ? "Geocode address: " + request.getAttribute("address") : "" %><br/>
                    Latitude: <%= lat %>, Longitude: <%= lon %><br/>
+                   <b><a href="/hotelLandmark/<%= lat %>/<%= lon %>" target="_blank">Discover hotels around!</a></b><br/>
                 </p>
              <%
                 }
              %>
 
-                    <!-- /main -->
+                  <br/>  
                   <%@ include file="/WEB-INF/jspf/ad_medium_baner.jspf" %>
                 </div>
                 <%@ include file="/WEB-INF/jspf/sidebar.jsp" %>

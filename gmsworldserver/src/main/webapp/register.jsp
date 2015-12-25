@@ -17,18 +17,15 @@
         <title>Landmark Manager User Registration</title>
         <%@ include file="/WEB-INF/jspf/head.jspf" %>
         <script type="text/javascript">
-			<!-- //
-				function ClearPassword(){
+			function clearPassword() {
    					 document.userForm.password.value = "";
     			 	document.userForm.repassword.value = "";
 			}
-			// -->
 		</script>
         <script src="https://www.google.com/recaptcha/api.js" async defer></script> 
     </head>
 
-    <body onLoad="ClearPassword()">
-
+    <body onLoad="clearPassword()">
 
         <jsp:include page="/WEB-INF/jspf/header.jsp">
             <jsp:param name="current" value="register" />
@@ -76,7 +73,7 @@
                             <html:text property="lastname"/>
                         </p>
                         <p>
-  							<div class="g-recaptcha" data-sitekey="<%= Commons.RECAPTCHA_PUBLIC_KEY %>"></div>
+  							<div class="g-recaptcha" data-sitekey="<%= Commons.RECAPTCHA_PUBLIC_KEY %>"/>
                         </p>
                         <p class="no-border">
                             <html:submit styleClass="button"/>

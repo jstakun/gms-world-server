@@ -63,7 +63,7 @@
                             <html:text property="lastname"/>
                         </p>
                         <p>
-  							<div class="g-recaptcha" data-sitekey="<%= Commons.RECAPTCHA_PUBLIC_KEY %>"></div>
+  							<div class="g-recaptcha" data-sitekey="<%= Commons.RECAPTCHA_PUBLIC_KEY %>"/>
                         </p>
 
                         <p>

@@ -51,16 +51,13 @@
                      <%=address != null ? "Geocode address: " + address + "<br/>" : ""%>
                      Latitude: <%=StringUtil.formatCoordE6(screenshot.getLatitude())%>, Longitude: <%=StringUtil.formatCoordE6(screenshot.getLongitude())%><br/>
                      Posted on <%=DateUtils.getFormattedDateTime(request.getLocale(), screenshot.getCreationDate())%> by 
-    <%
-                     	if (screenshot.getUsername() != null) {
-                     %>
+<%  if (screenshot.getUsername() != null) { %>
                      <a href="<%=response.encodeURL("/showUser/" + screenshot.getUsername())%>"><%=UrlUtils.createUsernameMask(screenshot.getUsername())%></a>
-    <%
-    	} else {
-    %>
-                     <%=UrlUtils.createUsernameMask(screenshot.getUsername())%>
-    <% } %>
-                  <br/>
+<%  } else { %>
+                    <%=UrlUtils.createUsernameMask(screenshot.getUsername())%>
+<%  } %>
+                   <br/><b><a href="/hotelLandmark/<%= screenshot.getLatitude() %>/<%= screenshot.getLongitude() %>" target="_blank">Discover hotels around!</a></b><br/>
+                  
                  </p>
 <% } else { %>
                  <h3>Image not found.</h3>
