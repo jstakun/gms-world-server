@@ -42,6 +42,7 @@ import com.openlapi.QualifiedCoordinates;
 public class YelpUtils extends LayerHelper {
 
 	private static final String USAGE_LIMIT_MARKER = "YelpUsageLimitsMarker";
+	private static final String LOCATION_UNAVAILABILITY_MARKER = "YelpLocationUnavailabilityMarker";	
 	
     @Override
 	public JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String hasDeals, String language) throws Exception {
@@ -137,7 +138,7 @@ public class YelpUtils extends LayerHelper {
         return responseBody;
     }
 
-    private int createCustomJsonYelpList(String yelpJson, List<Object> jsonArray, int stringLimit, boolean hasDeals) throws JSONException {
+    private int createCustomJsonYelpList(String yelpJson, List<Object> jsonArray, double latitude, double longitude, int stringLimit, boolean hasDeals) throws JSONException {
         int total = 0;
         if (StringUtils.startsWith(yelpJson, "{")) {
             JSONObject jsonRoot = new JSONObject(yelpJson);
@@ -256,13 +257,13 @@ public class YelpUtils extends LayerHelper {
                     }
                 }
             } else {
-            	handleError(jsonRoot);
+            	handleError(jsonRoot, latitude, longitude);
             }
         }
         return total;
     }
 
-    private int createCustomJsonReviewsList(String yelpJson, Map<String, Map<String, String>> jsonObjects) throws JSONException {
+    private int createCustomJsonReviewsList(String yelpJson, double latitude, double longitude, Map<String, Map<String, String>> jsonObjects) throws JSONException {
         int total = 0;
         if (StringUtils.startsWith(yelpJson, "{")) {
             JSONObject jsonRoot = new JSONObject(yelpJson);
@@ -296,7 +297,7 @@ public class YelpUtils extends LayerHelper {
                     }
                 }
             } else {
-            	handleError(jsonRoot);
+            	handleError(jsonRoot, latitude, longitude);
             }
         }
 
@@ -362,7 +363,7 @@ public class YelpUtils extends LayerHelper {
         return landmarks;
 	}
 	
-	private int createCustomLandmarkYelpList(String yelpJson, List<ExtendedLandmark> landmarks, int stringLimit, boolean hasDeals, Locale locale) throws JSONException {
+	private int createCustomLandmarkYelpList(String yelpJson, List<ExtendedLandmark> landmarks, double latitude, double longitude, int stringLimit, boolean hasDeals, Locale locale) throws JSONException {
         int total = 0;
         if (StringUtils.startsWith(yelpJson, "{")) {
             JSONObject jsonRoot = new JSONObject(yelpJson);
@@ -496,18 +497,19 @@ public class YelpUtils extends LayerHelper {
                     }
                 }
             } else {
-            	handleError(jsonRoot);
+            	handleError(jsonRoot, latitude, longitude);
             }
         }
         return total;
     }
 	
-	private void handleError(JSONObject root) {
+	private void handleError(JSONObject root, double latitude, double longitude) {
 		JSONObject error = root.optJSONObject("error");
 		if (error != null && StringUtils.equals(error.optString("id"), "EXCEEDED_REQS")) {
 			cacheProvider.put(USAGE_LIMIT_MARKER, "1");
 		} else if (error != null && StringUtils.equals(error.optString("id"), "UNAVAILABLE_FOR_LOCATION")) {
-			//TODO handle error - save to cache
+			String key = LOCATION_UNAVAILABILITY_MARKER + "_" + StringUtil.formatCoordE2(latitude) + "_" + StringUtil.formatCoordE2(longitude);
+        	cacheProvider.put(key, "1");
 		}
 		logger.log(Level.SEVERE, "Received Yelp error response {0}", root);
 	}
@@ -540,9 +542,13 @@ public class YelpUtils extends LayerHelper {
 
         public void run() {
             try {
-            	//TODO check in cache if location is available
-                String responseBody = processRequest(latitude, longitude, query, radius, hasDeals, offset, language);
-                createCustomJsonReviewsList(responseBody, reviewsArray);
+            	String key = LOCATION_UNAVAILABILITY_MARKER + "_" + StringUtil.formatCoordE2(latitude) + "_" + StringUtil.formatCoordE2(longitude);
+            	if (!cacheProvider.containsKey(key)) { 
+            		String responseBody = processRequest(latitude, longitude, query, radius, hasDeals, offset, language);
+            		createCustomJsonReviewsList(responseBody, latitude, longitude, reviewsArray);
+            	} else {
+            		logger.log(Level.INFO, "Yelp api is unavailable from this location.");
+            	}
             } catch (Exception e) {
                 logger.log(Level.SEVERE, "ReviewDetailsRetriever.run exception:", e);
             } finally {
@@ -580,12 +586,17 @@ public class YelpUtils extends LayerHelper {
 
         public void run() {
             try {
-                String responseBody = processRequest(latitude, longitude, query, radius, hasDeals, offset, language);
-                if (format.equals("bin")) {
-                	createCustomLandmarkYelpList(responseBody, (List<ExtendedLandmark>)venueArray, stringLimit, hasDeals, locale);
-                } else {
-                    createCustomJsonYelpList(responseBody, (List<Object>)venueArray, stringLimit, hasDeals);
-                }
+            	String key = LOCATION_UNAVAILABILITY_MARKER + "_" + StringUtil.formatCoordE2(latitude) + "_" + StringUtil.formatCoordE2(longitude);
+            	if (!cacheProvider.containsKey(key)) { 
+            		String responseBody = processRequest(latitude, longitude, query, radius, hasDeals, offset, language);
+            		if (format.equals("bin")) {
+            			createCustomLandmarkYelpList(responseBody, (List<ExtendedLandmark>)venueArray, latitude, longitude, stringLimit, hasDeals, locale);
+            		} else {
+            			createCustomJsonYelpList(responseBody, (List<Object>)venueArray, latitude, longitude, stringLimit, hasDeals);
+            		}
+            	} else {
+            		logger.log(Level.INFO, "Yelp api is unavailable from this location.");
+            	}
             } catch (Exception e) {
                 logger.log(Level.SEVERE, "VenueDetailsRetriever.run exception:", e);
             } finally {
