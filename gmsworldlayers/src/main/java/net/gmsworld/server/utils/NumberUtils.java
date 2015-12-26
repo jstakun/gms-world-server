@@ -93,4 +93,19 @@ public class NumberUtils {
 
         return dist;
     }
+    
+    public static Double getDouble(Object o) {
+    	if (o == null) {
+    		return null;
+    	} else {
+    		if (o instanceof Integer) {
+    			Integer i = (Integer) o;
+    			return new Double(i);
+    		} else if (o instanceof Double) {
+    			return (Double) o;
+    		} else {
+    			return null;
+    		}
+    	}
+    }
 }

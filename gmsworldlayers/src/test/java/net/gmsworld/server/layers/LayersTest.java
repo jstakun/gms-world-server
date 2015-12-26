@@ -30,7 +30,7 @@ import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 public class LayersTest {
 	
 	private static final int apiLevel = 1115;
-	private static final int limit = 30; //1000
+	private static final int limit = 30; //max 1000
 	private static final int radius = 50000; 
 	
 	private static CacheProvider cacheProvider;	
@@ -52,15 +52,13 @@ public class LayersTest {
 		//bbox = "20.96,52.24,20.97,52.25"; //"51.25,19.95,53.25,21.95";
 		locale = new Locale("pl",""); //"PL");
 		//new york test
-		//lat = 40.71;
-		//lng = -74.01;
+		lat = 40.71;
+		lng = -74.01;
 		bbox = "-74.06,40.66,-74.01,40.71";//"-75.01,39.71,-73.01,41.71";
 		//locale = Locale.US;
 		//bbox = "30.16,-97.79,30.26,-97.74"; picasa bug
-		
-		lat = 46.782499;
-		lng = 23.558828;
-		
+		//lat = 46.782499;
+		//lng = 23.558828;
 		//LayerHelperFactory.getHotelsBookingUtils().loadHotelsAsync(lat, lng, radius, limit);   
 	}
 	
@@ -89,7 +87,7 @@ public class LayersTest {
 	   //data.add(new Object[]{LayerHelperFactory.getGrouponUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getCouponsUtils()});
 	   
-	   data.add(new Object[]{LayerHelperFactory.getYelpUtils()});
+	   //data.add(new Object[]{LayerHelperFactory.getYelpUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getGooglePlacesUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getFoursquareUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getFacebookUtils()});

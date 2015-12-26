@@ -67,7 +67,7 @@ public abstract class LayerHelper {
 		if (useCache) {
 			key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, limit, stringLimit, flexString, flexString2);
 			if (cacheProvider != null) {
-				landmarks = cacheProvider.getObject(List.class, key);
+				landmarks = cacheProvider.getList(ExtendedLandmark.class, key);
 			}
 		}
         if (landmarks == null) {
