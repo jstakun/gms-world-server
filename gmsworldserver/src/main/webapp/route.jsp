@@ -39,8 +39,8 @@
                      </a>
                  </p>
                  <p class="post-details">
-                     <b>Discover hotels around <a href="/hotelLandmark/<%= request.getParameter("lat_start") %>/<%= request.getParameter("lng_start") %>" target="_blank">route start</a> or around 
-                     <a href="/hotelLandmark/<%= request.getParameter("lat_end") %>/<%= request.getParameter("lng_end") %>" target="_blank">route end</a>!</b><br/>  
+                     <b>Discover hotels around <a href="/hotelLandmark/<%= request.getParameter("lat_start") %>/<%= request.getParameter("lng_start") %>" target="_blank">route starting point</a> or around 
+                     <a href="/hotelLandmark/<%= request.getParameter("lat_end") %>/<%= request.getParameter("lng_end") %>" target="_blank">route end point</a>!</b><br/>  
                  </p>
 <%
 	} else {

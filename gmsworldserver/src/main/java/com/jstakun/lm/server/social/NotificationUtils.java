@@ -227,7 +227,7 @@ public class NotificationUtils {
                 userMask = UrlUtils.createUsernameMask(user);
             }
             logger.log(Level.INFO, "Using user mask " + userMask);
-    		FacebookSocialUtils.sendMessageToPageFeed(landmarkUrl, userMask, name, imageUrl, Commons.SERVER, null);
+            FacebookSocialUtils.sendMessageToPageFeed(landmarkUrl, userMask, name, imageUrl, Commons.SERVER, null);
     	} else if (StringUtils.equals(service, Commons.TWITTER)) {
     	    if (socialIdsMap.containsKey(Commons.TWITTER)) {
                 userMask = "@" + socialIdsMap.get(Commons.TWITTER);
