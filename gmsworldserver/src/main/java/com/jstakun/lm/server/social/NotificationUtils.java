@@ -3,6 +3,7 @@ package com.jstakun.lm.server.social;
 import static com.google.appengine.api.taskqueue.TaskOptions.Builder.withUrl;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -13,6 +14,7 @@ import javax.servlet.ServletContext;
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.config.ConfigurationManager;
+import net.gmsworld.server.layers.GeocodeHelperFactory;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.UrlUtils;
 
@@ -24,6 +26,7 @@ import com.google.appengine.api.taskqueue.TaskOptions;
 import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.MailUtils;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
+import com.openlapi.AddressInfo;
 
 public class NotificationUtils {
 	
@@ -227,7 +230,30 @@ public class NotificationUtils {
                 userMask = UrlUtils.createUsernameMask(user);
             }
             logger.log(Level.INFO, "Using user mask " + userMask);
-            FacebookSocialUtils.sendMessageToPageFeed(landmarkUrl, userMask, name, imageUrl, Commons.SERVER, null);
+            String fbTitle = name;
+            try {
+            	AddressInfo addressInfo = GeocodeHelperFactory.getMapQuestUtils().processReverseGeocode(latitude, longitude);
+            	fbTitle = "Somewhere in ";
+            	String city = addressInfo.getField(AddressInfo.CITY);
+            	if (StringUtils.isNotEmpty(city)) {
+            		fbTitle += city + ", ";
+            	}
+            	String cc = addressInfo.getField(AddressInfo.COUNTRY_CODE);
+            	if (StringUtils.isNotEmpty(cc)) {
+            		Locale l = new Locale("", cc);
+            		String country = l.getDisplayCountry();
+            		if (StringUtils.isNotEmpty(country)) {
+            			fbTitle += country;
+            		} else {
+            			fbTitle += "...";
+            		}
+            	} else {
+            		fbTitle += "...";
+            	}
+            } catch (Exception e) {
+            	logger.log(Level.SEVERE, e.getMessage(), e);
+            }
+            FacebookSocialUtils.sendMessageToPageFeed(landmarkUrl, userMask, fbTitle, imageUrl, Commons.SERVER, null);
     	} else if (StringUtils.equals(service, Commons.TWITTER)) {
     	    if (socialIdsMap.containsKey(Commons.TWITTER)) {
                 userMask = "@" + socialIdsMap.get(Commons.TWITTER);
