@@ -68,12 +68,12 @@
                           </p> 
                           <p class="post-details">                          
                         <%
-                                                  	if (System.currentTimeMillis() - landmark.getCreationDate().getTime() < CacheUtil.LONG_CACHE_LIMIT) {
-                                                  %>    
+                            if (System.currentTimeMillis() - landmark.getCreationDate().getTime() < CacheUtil.LONG_CACHE_LIMIT) {
+                        %>    
                               <a href="/landmarks.jsp?lat=<%=landmark.getLatitude()%>&lng=<%=landmark.getLongitude()%>">See landmarks on the map (Experimental)</a> 
                         <%
                          	} else {
-                         %>
+                        %>
                               <a href="/showLandmark/<%=key%>/fullScreen">See full screen map</a>
                         <%
                         	}

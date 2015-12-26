@@ -38,7 +38,10 @@
                      	<img src="/image?<%= routeQueryString %>" title="See route on the map" alt="GMS World route" width="640" height="256"/>
                      </a>
                  </p>
-                 <br/>
+                 <p class="post-details">
+                     <b>Discover hotels around <a href="/hotelLandmark/<%= request.getParameter("lat_start") %>/<%= request.getParameter("lng_start") %>" target="_blank">route start</a> or around 
+                     <a href="/hotelLandmark/<%= request.getParameter("lat_end") %>/<%= request.getParameter("lng_end") %>" target="_blank">route end</a>!</b><br/>  
+                 </p>
 <%
 	} else {
 %>
@@ -51,6 +54,7 @@
 <% 
 	}
 %>
+                  <br/>
                   <%@ include file="/WEB-INF/jspf/ad_medium_baner.jspf" %>
                 </div>
                 <%@ include file="/WEB-INF/jspf/sidebar.jsp" %>
