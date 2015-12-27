@@ -46,4 +46,12 @@ public class ServiceLog {
   public ServiceLog() {
 	  this.creationDate = new Date(System.currentTimeMillis());
   }
+  
+  public Date getCreationDate() {
+	  return creationDate;
+  }
+  
+  public int getAppId() {
+	  return appId;
+  }
 }

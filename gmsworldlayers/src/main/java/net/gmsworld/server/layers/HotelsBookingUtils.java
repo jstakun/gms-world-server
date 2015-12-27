@@ -22,6 +22,8 @@ import org.apache.commons.lang.StringUtils;
 import org.geojson.Feature;
 import org.geojson.FeatureCollection;
 import org.geojson.Point;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,18 +43,22 @@ public class HotelsBookingUtils extends LayerHelper {
 	
 	private static final String HOTELS_COUNTER_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/count/hotels/nearby/";
 	
-	/*@Override
+	@Override
 	protected List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int r, int version, int limit, int stringLimit, String callCacheFirst, String flexString2, Locale locale, boolean useCache) throws Exception {
 		int normalizedRadius = r;
 		if (r < 1000) {
 			normalizedRadius = r * 1000;
 		}	
-		
+		return loadLandmarksJackson(lat, lng, query, normalizedRadius, version, limit, stringLimit, callCacheFirst, flexString2, locale, useCache);
+		//return loadLandmarksJSON(lat, lng, query, normalizedRadius, version, limit, stringLimit, callCacheFirst, flexString2, locale, useCache);
+	}
+	
+	private List<ExtendedLandmark> loadLandmarksJSON(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String callCacheFirst, String flexString2, Locale locale, boolean useCache) throws Exception {
 		JSONArray hotels = null;
 		
 		//first call hotels cache
 		if (StringUtils.equals(callCacheFirst, "true")) {
-			String hotelsUrl = HOTELS_CACHE_URL + StringUtil.formatCoordE2(lng) + "_" + StringUtil.formatCoordE2(lat) + "_" + normalizedRadius + "_" + limit;
+			String hotelsUrl = HOTELS_CACHE_URL + StringUtil.formatCoordE2(lng) + "_" + StringUtil.formatCoordE2(lat) + "_" + radius + "_" + limit;
 			logger.log(Level.INFO, "Calling: " + hotelsUrl);
 			String json = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), true);
 			if (StringUtils.startsWith(StringUtils.trim(json), "[")) {
@@ -70,7 +76,7 @@ public class HotelsBookingUtils extends LayerHelper {
 		}
 		
 		if (hotels == null) {
-			String hotelsUrl = HOTELS_PROVIDER_URL + StringUtil.formatCoordE2(lat) + "/" + StringUtil.formatCoordE2(lng) + "/" + normalizedRadius + "/" + limit;			
+			String hotelsUrl = HOTELS_PROVIDER_URL + StringUtil.formatCoordE2(lat) + "/" + StringUtil.formatCoordE2(lng) + "/" + radius + "/" + limit;			
 			logger.log(Level.INFO, "Calling: " + hotelsUrl);
 			String json = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), true);
 			if (StringUtils.startsWith(json, "[")) {
@@ -84,7 +90,7 @@ public class HotelsBookingUtils extends LayerHelper {
 			}
 		}
 		long start = System.currentTimeMillis();
-		logger.log(Level.INFO, "Processing hotels list...");
+		logger.log(Level.INFO, "Processing hotels list with JSON...");
 		
 		int size = 0;
 		if (hotels != null) {
@@ -103,22 +109,16 @@ public class HotelsBookingUtils extends LayerHelper {
 		}
 		logger.log(Level.INFO, "Processed " + landmarks.size() + " hotels in " + (System.currentTimeMillis()-start) + " millis.");
 		return landmarks;
-	}*/
+	}
 	
-	@Override
-	protected List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int r, int version, int limit, int stringLimit, String callCacheFirst, String flexString2, Locale locale, boolean useCache) throws Exception {
-		int normalizedRadius = r;
-		if (r < 1000) {
-			normalizedRadius = r * 1000;
-		}	
-		
+	private List<ExtendedLandmark> loadLandmarksJackson(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String callCacheFirst, String flexString2, Locale locale, boolean useCache) throws Exception {
 		FeatureCollection hotels = null;
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		
 		//first call hotels cache
 		if (StringUtils.equals(callCacheFirst, "true")) {
-			String hotelsUrl = HOTELS_CACHE_URL + StringUtil.formatCoordE2(lng) + "_" + StringUtil.formatCoordE2(lat) + "_" + normalizedRadius + "_" + limit;
+			String hotelsUrl = HOTELS_CACHE_URL + StringUtil.formatCoordE2(lng) + "_" + StringUtil.formatCoordE2(lat) + "_" + radius + "_" + limit;
 			logger.log(Level.INFO, "Calling: " + hotelsUrl);
 			String json = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), true);
 			if (StringUtils.startsWith(json, "[") && json.length() > 2) {
@@ -134,7 +134,7 @@ public class HotelsBookingUtils extends LayerHelper {
 		}
 		
 		if (hotels == null) {
-			String hotelsUrl = HOTELS_PROVIDER_URL + StringUtil.formatCoordE2(lat) + "/" + StringUtil.formatCoordE2(lng) + "/" + normalizedRadius + "/" + limit;			
+			String hotelsUrl = HOTELS_PROVIDER_URL + StringUtil.formatCoordE2(lat) + "/" + StringUtil.formatCoordE2(lng) + "/" + radius + "/" + limit;			
 			logger.log(Level.INFO, "Calling: " + hotelsUrl);
 			String json = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), true);
 			if (StringUtils.startsWith(json, "[")) {
@@ -149,7 +149,7 @@ public class HotelsBookingUtils extends LayerHelper {
 			}
 		}
 		long start = System.currentTimeMillis();
-		logger.log(Level.INFO, "Processing hotels list...");
+		logger.log(Level.INFO, "Processing hotels list with Jackson...");
 		
 		int size = 0;
 		if (hotels != null) {
@@ -202,7 +202,7 @@ public class HotelsBookingUtils extends LayerHelper {
 		return Commons.HOTELS_LAYER;
 	}
 	
-	/*private static ExtendedLandmark hotelToLandmark(JSONObject hotel, Locale locale) {
+	private static ExtendedLandmark hotelToLandmark(JSONObject hotel, Locale locale) {
 		JSONArray coords = hotel.getJSONObject("geometry").getJSONArray("coordinates");
     	QualifiedCoordinates qc = new QualifiedCoordinates(coords.getDouble(1), coords.getDouble(0), 0f, 0f, 0f); 
     	
@@ -266,7 +266,7 @@ public class HotelsBookingUtils extends LayerHelper {
         landmark.setDescription(desc);
 
         return landmark;
-    }*/
+    }
 	
 	private static ExtendedLandmark hotelToLandmark(Feature hotel, Locale locale) {
 		Point g = (Point)hotel.getGeometry();

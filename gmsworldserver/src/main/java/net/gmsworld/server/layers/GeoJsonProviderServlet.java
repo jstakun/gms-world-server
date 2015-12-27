@@ -89,12 +89,13 @@ public class GeoJsonProviderServlet extends HttpServlet {
 				
 				if (!StringUtils.startsWith(json, "{")  && layerHelper != null) {
 					try {
+						int hotelsInRangeCount = -1;
 						//layers specific code
 						int limit = DEFAULT_LIMIT;
 						if (StringUtils.equals(layer, Commons.HOTELS_LAYER)) {
 							try {
-								int count = HotelsBookingUtils.countNearbyHotels(lat, lng, RADIUS);
-								logger.log(Level.INFO, count + " hotels in range.");
+								hotelsInRangeCount = HotelsBookingUtils.countNearbyHotels(lat, lng, RADIUS);
+								logger.log(Level.INFO, hotelsInRangeCount + " hotels in range.");
 							} catch (Exception e) {
 						    	logger.log(Level.SEVERE, e.getMessage(), e);
 						    } 
@@ -104,7 +105,11 @@ public class GeoJsonProviderServlet extends HttpServlet {
 						    flexString = null;	
 						}
 						//
-						List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(lat, lng, null, RADIUS, 1134, limit, StringUtil.getStringLengthLimit("l"), flexString, null, locale, true);
+						int radius = RADIUS;
+						if (hotelsInRangeCount < 10) {
+							radius = 2 * RADIUS; //max 100
+						}
+						List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(lat, lng, null, radius, 1134, limit, StringUtil.getStringLengthLimit("l"), flexString, null, locale, true);
 			    		String newkey = layerHelper.cacheGeoJson(landmarks, lat, lng, layer, locale);                          
 			    		if (newkey != null) {
 			    			logger.log(Level.INFO, "Searching geojson document in in-memory document cache...");

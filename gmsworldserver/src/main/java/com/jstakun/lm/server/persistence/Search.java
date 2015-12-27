@@ -67,4 +67,9 @@ public class Search {
     public Search() {
     	this.creationDate = new Date(System.currentTimeMillis());
     }
+    
+    public Date getCreationDate() {
+    	return creationDate;
+    }
 }
+
