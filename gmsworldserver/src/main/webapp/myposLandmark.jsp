@@ -18,7 +18,7 @@
 
  function showPosition(position) {
 	document.getElementById("status").innerHTML = "<bean:message key="landmarks.redirect" />";
-	window.location.replace("/newLandmark/" + position.coords.latitude + "/" + position.coords.longitude);
+	window.location.replace("/newLandmark/" + encodeDouble(position.coords.latitude) + "/" + encodeDouble(position.coords.longitude));
  }
 
  function errorCallback(error) {
@@ -40,6 +40,18 @@
 	}
 	window.location.replace('/landmarks');
  }
+
+ function encodeDouble(val) {
+		var v = val * 1E6;
+		var iv = parseInt(v, 10);
+		var n = iv.toString(); 
+		var out = "";
+		for (var i = 0; i < n.length; i++) {
+         var k = n.charCodeAt(i) + 64;
+			out += String.fromCharCode(k);
+	 	}
+	 	return out;
+  }
  </script>
 </head>
 <body onLoad="getLocation()">

@@ -291,9 +291,9 @@
 
          if (r == true) {
               if (hotelsMode == true) {
-             	 window.location.replace("/hotelLandmark/" +  lat + "/" + lng);   
+             	 window.location.replace("/hotelLandmark/" +  encodeDouble(lat) + "/" + encodeDouble(lng));   
               } else {
-         		 window.location.replace("/newLandmark/" +  lat + "/" + lng);
+         		 window.location.replace("/newLandmark/" +  encodeDouble(lat) + "/" + encodeDouble(lng));
               }
          } else {
          	     //                	 
@@ -323,6 +323,18 @@
 	     		console.log("Added marker " + markers[i].name + " to the map")
 	     }
 	} 
+
+	function encodeDouble(val) {
+ 		var v = val * 1E6;
+ 		var iv = parseInt(v, 10);
+ 		var n = iv.toString(); 
+ 		var out = "";
+ 		for (var i = 0; i < n.length; i++) {
+            var k = n.charCodeAt(i) + 64;
+			out += String.fromCharCode(k);
+ 	 	}
+ 	 	return out;
+	}
 
     //google.maps.event.addDomListener(window, 'load', initialize);
   </script>

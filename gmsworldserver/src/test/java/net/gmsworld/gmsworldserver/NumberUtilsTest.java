@@ -51,9 +51,9 @@ public class NumberUtilsTest {
 		double[] coords = {52.25, 20.95, 30.16,-97.79, -74.01, 40.71};
 		
 		for (int i=0; i < coords.length; i++) {
-			String enc = new HtmlUtils().encodeDouble(coords[i]);
+			String enc = HtmlUtils.encodeDouble(coords[i]);
 			System.out.println(coords[i] + " -> " + enc);
-			double dec = new HtmlUtils().decodeDouble(enc);
+			double dec = HtmlUtils.decodeDouble(enc);
 			System.out.println(coords[i] + " -> " + enc + " -> " + dec);
 		}
 	}

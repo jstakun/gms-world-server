@@ -44,6 +44,8 @@ public class HtmlUtils {
 	
 	private static final Map<String, ExtendedLandmark> default_locations = new HashMap<String, ExtendedLandmark>();
 	
+	private static HtmlUtils instance = new HtmlUtils();
+	
 	public static String getRandomUrl(ServletContext context) {
 		if (default_locations.isEmpty()) {
     		readTopCities(context);
@@ -62,8 +64,8 @@ public class HtmlUtils {
 	}
 	
 	public static String getHotelLandmarkUrl(double lat, double lng) {
-		return "/hotelLandmark/" + lat + "/" + lng;
-		//return "/hotelLandmark/" + encodeDouble(lat) + "/" + encodeDouble(lng);
+		//return "/hotelLandmark/" + lat + "/" + lng;
+		return "/hotelLandmark/" + encodeDouble(lat) + "/" + encodeDouble(lng);
 	}
 	
 	public static String getHotelLandmarkUrl(String lat, String lng) {
@@ -246,7 +248,7 @@ public class HtmlUtils {
     	return resp;
     }
     
-    public String encodeDouble(double val) {
+    private String encode(double val) {
     	double toInt = val * 1E6;
     	if (toInt < Integer.MAX_VALUE && toInt > Integer.MIN_VALUE) {
     		int i = (int)toInt;
@@ -261,12 +263,24 @@ public class HtmlUtils {
     	return null;
     }
     
-    public double decodeDouble(String val) {
-    	StringBuilder sb = new StringBuilder();
-	    for (char c : val.toCharArray()) {
-	    	sb.append((char)((int)c - 64));
-	    }
-	    return (double)new Double(sb.toString()) / 1E6;
+    private Double decode(String val) {
+    	if (val != null) {
+    		StringBuilder sb = new StringBuilder();
+    		for (char c : val.toCharArray()) {
+    			sb.append((char)((int)c - 64));
+    		}
+    		return new Double(sb.toString()) / 1E6;
+    	} else {
+    		return null;
+    	}
+    }
+    
+    public static String encodeDouble(double val) {
+    	return instance.encode(val);
+    }
+    
+    public static Double decodeDouble(String val) {
+    	return instance.decode(val);
     }
 }
 

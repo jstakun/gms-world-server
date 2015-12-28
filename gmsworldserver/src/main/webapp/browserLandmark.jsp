@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="org.apache.commons.lang.StringUtils" %>
+<%@ page import="org.apache.commons.lang.StringUtils,
+                 com.jstakun.lm.server.utils.HtmlUtils" %>
 <%@ taglib uri="http://struts.apache.org/tags-bean" prefix="bean"%>                 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -17,8 +18,16 @@
  } else {
 	 enabled = "";
  }
- String latitude = request.getParameter("latitude");
- String longitude = request.getParameter("longitude");
+ 
+ Double latitude = HtmlUtils.decodeDouble(request.getParameter("latitudeEnc"));
+ if (latitude == null) {
+ 	latitude = Double.parseDouble(request.getParameter("latitude"));
+ }
+ 
+ Double longitude = HtmlUtils.decodeDouble(request.getParameter("longitudeEnc"));
+ if (longitude == null) {
+ 	longitude = Double.parseDouble(request.getParameter("longitude"));
+ }
 %>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />

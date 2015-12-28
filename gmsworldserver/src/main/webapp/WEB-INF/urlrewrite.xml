@@ -154,7 +154,7 @@
     
     <!-- browserLandmark rules -->
     
-    <rule>
+    <!--rule>
             <from>^/services/newLandmark/([0-9.-]+)/([0-9.-]+)$</from>
             <to>/browserLandmark.jsp?latitude=$1&amp;longitude=$2&amp;generatetoken=true</to>
     </rule>
@@ -162,11 +162,21 @@
     <rule>
             <from>^/newLandmark/([0-9.-]+)/([0-9.-]+)$</from>
             <to>/browserLandmark.jsp?latitude=$1&amp;longitude=$2&amp;generatetoken=true</to>
-    </rule>
+    </rule-->
     
     <rule>
+            <from>^/newLandmark/([m-y]+)/([m-y]+)$</from>
+            <to>/browserLandmark.jsp?latitudeEnc=$1&amp;longitudeEnc=$2&amp;generatetoken=true</to>
+    </rule>
+    
+    <!--rule>
             <from>^/hotelLandmark/([0-9.-]+)/([0-9.-]+)$</from>
             <to>/browserLandmark.jsp?latitude=$1&amp;longitude=$2&amp;enabled=Hotels&amp;generatetoken=true</to>
+    </rule-->
+    
+    <rule>
+            <from>^/hotelLandmark/([m-y]+)/([m-y]+)$</from>
+            <to>/browserLandmark.jsp?latitudeEnc=$1&amp;longitudeEnc=$2&amp;enabled=Hotels&amp;generatetoken=true</to>
     </rule>
     
     <rule>
