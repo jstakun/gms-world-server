@@ -1,5 +1,6 @@
 <%@page contentType="text/html" pageEncoding="utf-8"%>
 <%@page import="com.jstakun.lm.server.persistence.Screenshot,
+                com.jstakun.lm.server.utils.HtmlUtils,
 				net.gmsworld.server.utils.UrlUtils,
 				net.gmsworld.server.utils.DateUtils,
 				net.gmsworld.server.utils.StringUtil" %>
@@ -56,7 +57,7 @@
 <%  } else { %>
                     <%=UrlUtils.createUsernameMask(screenshot.getUsername())%>
 <%  } %>
-                   <br/><b><a href="/hotelLandmark/<%= screenshot.getLatitude() %>/<%= screenshot.getLongitude() %>" target="_blank">Discover hotels around!</a></b><br/>
+                   <br/><b><a href="<%= HtmlUtils.getHotelLandmarkUrl(screenshot.getLatitude(), screenshot.getLongitude()) %>" target="_blank">Discover hotels around!</a></b><br/>
                   
                  </p>
 <% } else { %>

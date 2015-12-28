@@ -5,7 +5,8 @@
 --%>
 <%@page contentType="text/html" pageEncoding="utf-8"%>
 <%@page import="net.gmsworld.server.utils.ImageUtils,
-               net.gmsworld.server.config.ConfigurationManager" %>
+                net.gmsworld.server.config.ConfigurationManager,
+                com.jstakun.lm.server.utils.HtmlUtils" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <!-- content-outer -->
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -52,7 +53,7 @@
                 <p>
                    <%= request.getAttribute("address")!=null ? "Geocode address: " + request.getAttribute("address") : "" %><br/>
                    Latitude: <%= lat %>, Longitude: <%= lon %><br/>
-                   <b><a href="/hotelLandmark/<%= lat %>/<%= lon %>" target="_blank">Discover hotels around!</a></b><br/>
+                   <b><a href="<%= HtmlUtils.getHotelLandmarkUrl(lat, lon) %>" target="_blank">Discover hotels around!</a></b><br/>
                 </p>
              <%
                 }

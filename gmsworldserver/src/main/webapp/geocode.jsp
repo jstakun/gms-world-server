@@ -6,6 +6,7 @@
 
 <%@page contentType="text/html" pageEncoding="utf-8"%>
 <%@page import="com.jstakun.lm.server.persistence.GeocodeCache,
+				com.jstakun.lm.server.utils.HtmlUtils,
 				net.gmsworld.server.utils.StringUtil,
 				net.gmsworld.server.utils.ImageUtils,
 				net.gmsworld.server.utils.DateUtils,
@@ -55,7 +56,7 @@
                           <a href="/showGeocode.do?key=<%= key %>&fullScreenGeocodeMap=1">See full screen map</a><br/>
                           Latitude: <%= StringUtil.formatCoordE6(gc.getLatitude()) %>, Longitude: <%= StringUtil.formatCoordE6(gc.getLongitude()) %><br/>
                           Posted on <%= DateUtils.getFormattedDateTime(request.getLocale(), gc.getCreationDate()) %><br/>
-                          <b><a href="/hotelLandmark/<%= gc.getLatitude() %>/<%= gc.getLongitude() %>" target="_blank">Discover hotels around!</a></b>
+                          <b><a href="<%= HtmlUtils.getHotelLandmarkUrl(gc.getLatitude(), gc.getLongitude()) %>" target="_blank">Discover hotels around!</a></b>
                         </p>
 
                         <%

@@ -1,15 +1,13 @@
 package net.gmsworld.gmsworldserver;
 
-//import static org.junit.Assert.*;
-
 import org.junit.Test;
+
+import com.jstakun.lm.server.utils.HtmlUtils;
 
 public class NumberUtilsTest {
 
 	@Test
 	public void test() {
-		//fail("Not yet implemented");
-		
 		//int limit = (int)1E16;
         
 		/*long start = System.currentTimeMillis();
@@ -49,6 +47,14 @@ public class NumberUtilsTest {
         }
         end = System.currentTimeMillis();
         System.out.println("Mult: " + (end - start) + " ms");*/
+		
+		double[] coords = {52.25, 20.95, 30.16,-97.79, -74.01, 40.71};
+		
+		for (int i=0; i < coords.length; i++) {
+			String enc = new HtmlUtils().encodeDouble(coords[i]);
+			System.out.println(coords[i] + " -> " + enc);
+			double dec = new HtmlUtils().decodeDouble(enc);
+			System.out.println(coords[i] + " -> " + enc + " -> " + dec);
+		}
 	}
-
 }

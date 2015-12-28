@@ -328,8 +328,8 @@ public class HotelsBookingUtils extends LayerHelper {
         } 
         
         tokens.put("maxRating", "10");
-        Integer stars = hotel.getProperty("stars");
-        tokens.put("star_rating", Integer.toString(stars));
+        Double stars = NumberUtils.getDouble(hotel.getProperty("stars"));
+        tokens.put("star_rating", Double.toString(stars));
         
         int nr = hotel.getProperty("nr_rooms");
         if (nr > 0) {

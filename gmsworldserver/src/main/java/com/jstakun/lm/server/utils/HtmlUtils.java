@@ -57,8 +57,17 @@ public class HtmlUtils {
 			if (landmark == null) {
 				landmark = default_locations.get("en_GB");
 			}
-			return "/hotelLandmark/" + landmark.getQualifiedCoordinates().getLatitude() + "/" + landmark.getQualifiedCoordinates().getLongitude();
+			return getHotelLandmarkUrl(landmark.getQualifiedCoordinates().getLatitude(), landmark.getQualifiedCoordinates().getLongitude());
 		}
+	}
+	
+	public static String getHotelLandmarkUrl(double lat, double lng) {
+		return "/hotelLandmark/" + lat + "/" + lng;
+		//return "/hotelLandmark/" + encodeDouble(lat) + "/" + encodeDouble(lng);
+	}
+	
+	public static String getHotelLandmarkUrl(String lat, String lng) {
+		return getHotelLandmarkUrl(Double.valueOf(lat), Double.valueOf(lng));
 	}
     
     public static String getLocaleCoords(Locale locale, ServletContext context) {
@@ -235,6 +244,29 @@ public class HtmlUtils {
     	}
     	resp += "<li><a href=\"/archive/2014\">January 2014</a></li>\n";
     	return resp;
+    }
+    
+    public String encodeDouble(double val) {
+    	double toInt = val * 1E6;
+    	if (toInt < Integer.MAX_VALUE && toInt > Integer.MIN_VALUE) {
+    		int i = (int)toInt;
+    		String s = Integer.toString(i);
+    		StringBuilder sb = new StringBuilder();
+    	    for (char c : s.toCharArray()) {
+    	    	int k = (int)c + 64;
+    	    	sb.append((char)k);
+    	    }
+    	    return sb.toString();
+    	}
+    	return null;
+    }
+    
+    public double decodeDouble(String val) {
+    	StringBuilder sb = new StringBuilder();
+	    for (char c : val.toCharArray()) {
+	    	sb.append((char)((int)c - 64));
+	    }
+	    return (double)new Double(sb.toString()) / 1E6;
     }
 }
 
