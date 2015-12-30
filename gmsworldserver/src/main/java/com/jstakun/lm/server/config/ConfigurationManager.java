@@ -43,8 +43,9 @@ public final class ConfigurationManager {
 
     private static void refreshConfig()
     {
-    	configuration = CacheUtil.getObject(HashMap.class, CONFIG);
+    	configuration = (Map<String, String>)CacheUtil.getObject(CONFIG);
         if (configuration == null) {
+        	Logger.getLogger("com.jstakun.lm.server.config.ConfigurationManager").log(Level.WARNING, "Loading configuration from datastore...");
         	populateConfig();
         }
     }

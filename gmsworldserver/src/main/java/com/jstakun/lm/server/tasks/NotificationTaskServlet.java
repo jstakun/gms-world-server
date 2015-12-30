@@ -5,14 +5,17 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.gmsworld.server.layers.GeocodeHelperFactory;
 import net.gmsworld.server.utils.HttpUtils;
 
 import com.jstakun.lm.server.social.NotificationUtils;
+import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 
 /**
  * Servlet implementation class NotificationTaskServlet
@@ -21,6 +24,11 @@ public class NotificationTaskServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(NotificationTaskServlet.class.getName());
        
+	@Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        GeocodeHelperFactory.getMapQuestUtils().setCacheProvider(new GoogleCacheProvider()); //this is for landmark creation notification
+    }    
 	/** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
