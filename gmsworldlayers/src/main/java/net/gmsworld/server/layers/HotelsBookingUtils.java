@@ -39,7 +39,7 @@ public class HotelsBookingUtils extends LayerHelper {
 	
 	private static final String HOTELS_ASYNC_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/cache/hotels/async/nearby/";
 	
-	private static final String HOTELS_CACHE_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/cache/cache/_id/"; 
+	private static final String HOTELS_CACHE_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/one/cache/_id/"; 
 	
 	private static final String HOTELS_COUNTER_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/count/hotels/nearby/";
 	
@@ -67,6 +67,13 @@ public class HotelsBookingUtils extends LayerHelper {
 	    			if (root.length() > 0) {
 	    				hotels = root.getJSONObject(0).getJSONArray("features");
 	    			}
+	    		} catch (Exception e) {
+	    			logger.log(Level.SEVERE, e.getMessage(), e);
+	    		}
+			} else if (StringUtils.startsWith(StringUtils.trim(json), "{")) {
+	    		try {
+	    			JSONObject root = new JSONObject(json);
+	    			hotels = root.optJSONArray("features");
 	    		} catch (Exception e) {
 	    			logger.log(Level.SEVERE, e.getMessage(), e);
 	    		}
@@ -124,6 +131,12 @@ public class HotelsBookingUtils extends LayerHelper {
 			if (StringUtils.startsWith(json, "[") && json.length() > 2) {
 	    		try {
 	    			json = json.substring(1, json.length()-1);
+	    			hotels = objectMapper.readValue(json, FeatureCollection.class);
+	    		} catch (Exception e) {
+	    			logger.log(Level.SEVERE, e.getMessage(), e);
+	    		}
+			} else if (StringUtils.startsWith(json, "{") && json.length() > 2) {
+				try {
 	    			hotels = objectMapper.readValue(json, FeatureCollection.class);
 	    		} catch (Exception e) {
 	    			logger.log(Level.SEVERE, e.getMessage(), e);

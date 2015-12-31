@@ -127,8 +127,8 @@ public class HttpUtils {
             }
             
             if (is != null) {
-            	logger.log(Level.INFO, "Received following content type " + conn.getContentType());
-                file = IOUtils.toString(is, "UTF-8");
+            	file = IOUtils.toString(is, "UTF-8");
+            	logger.log(Level.INFO, "Received " + conn.getContentType() + " content containing " + file.length() + " characters");
             }
             
         } catch (Exception e) {

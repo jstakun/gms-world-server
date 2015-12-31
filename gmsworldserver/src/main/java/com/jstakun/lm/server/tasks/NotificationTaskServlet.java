@@ -27,7 +27,7 @@ public class NotificationTaskServlet extends HttpServlet {
 	@Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        GeocodeHelperFactory.getMapQuestUtils().setCacheProvider(new GoogleCacheProvider()); //this is for landmark creation notification
+        GeocodeHelperFactory.setCacheProvider(new GoogleCacheProvider()); //this is for landmark creation notification
     }    
 	/** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.

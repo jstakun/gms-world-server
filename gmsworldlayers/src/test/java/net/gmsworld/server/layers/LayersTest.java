@@ -59,7 +59,7 @@ public class LayersTest {
 		//bbox = "30.16,-97.79,30.26,-97.74"; picasa bug
 		//lat = 46.782499;
 		//lng = 23.558828;
-		//LayerHelperFactory.getHotelsBookingUtils().loadHotelsAsync(lat, lng, radius, limit);   
+		LayerHelperFactory.getHotelsBookingUtils().loadHotelsAsync(lat, lng, radius, limit);   
 	}
 	
 	
@@ -73,7 +73,7 @@ public class LayersTest {
 	   //data.add(new Object[]{LayerHelperFactory.getLastfmUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getOsmXapiUtils()});
 	   
-	   //data.add(new Object[]{LayerHelperFactory.getHotelsBookingUtils()});
+	   data.add(new Object[]{LayerHelperFactory.getHotelsBookingUtils()});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getFreebaseUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getInstagramUtils()});
@@ -90,7 +90,7 @@ public class LayersTest {
 	   //data.add(new Object[]{LayerHelperFactory.getYelpUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getGooglePlacesUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getFoursquareUtils()});
-	   data.add(new Object[]{LayerHelperFactory.getFacebookUtils()});
+	   //data.add(new Object[]{LayerHelperFactory.getFacebookUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getFoursquareMerchantUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getSearchUtils()});
 	   

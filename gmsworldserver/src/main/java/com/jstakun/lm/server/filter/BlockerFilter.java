@@ -27,7 +27,7 @@ import com.jstakun.lm.server.config.ConfigurationManager;
  */
 public class BlockerFilter implements Filter {
 
-	 private static final Logger logger = Logger.getLogger(BlockerFilter.class.getName());
+	private static final Logger logger = Logger.getLogger(BlockerFilter.class.getName());
 	/**
 	 * Default constructor.
 	 */
@@ -65,7 +65,7 @@ public class BlockerFilter implements Filter {
                 	for (int i=0;i<blockedAgentsList.length;i++) {
                 		//System.out.println("Checking if " + userAgent + "=" + blockedAgentsList[i]);
                 		if (StringUtils.containsIgnoreCase(userAgent,blockedAgentsList[i])) {
-                			logger.log(Level.SEVERE, "Remote Addr: " + ip + ", User agent: " + userAgent + ", username: " + username + ", blocked AppId = -1");
+                			logger.log(Level.WARNING, "Remote Addr: " + ip + ", User agent: " + userAgent + ", username: " + username + ", blocked AppId = -1");
                 			block = true;
                 			break;
                 		}
@@ -75,14 +75,14 @@ public class BlockerFilter implements Filter {
             
             //blocked urls
             if (!block) {
-            	logger.log(Level.WARNING, "User agent: " + userAgent + ", appId: " + appIdVal);    
+            	logger.log(Level.INFO, "User agent: " + userAgent + ", appId: " + appIdVal);    
             	String closed = ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.CLOSED_URLS, "");
             	String[] closedUrlsList = StringUtils.split(closed, ",");
                 if (closedUrlsList != null && closedUrlsList.length > 0) {
                 	String uri = httpRequest.getRequestURI();
                 	for (int i=0;i<closedUrlsList.length;i++) {
                 		if (StringUtils.equals(uri, closedUrlsList[i])) {
-                			logger.log(Level.SEVERE, "Remote Addr: " + ip + ", User agent: " + userAgent + ", username: " + username + ", AppId = " + appIdVal);
+                			logger.log(Level.WARNING, "Remote Addr: " + ip + ", User agent: " + userAgent + ", username: " + username + ", AppId = " + appIdVal);
                         	block = true;
                         	break;
                 		}

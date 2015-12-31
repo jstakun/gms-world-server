@@ -59,7 +59,7 @@ public class IPFilter implements Filter {
 		logger.log(Level.INFO, "Added address to cache " + ip_key + ": " + total_count);
 		
 		if (total_count > NumberUtils.getInt(ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.IP_TOTAL_LIMIT, "90"), 90)) {
-				logger.log(Level.SEVERE, "IP: " + ip + " is blocked after " + total_count + " requests");
+				logger.log(Level.WARNING, "IP: " + ip + " is blocked after " + total_count + " requests");
 				if (response instanceof HttpServletResponse) {
 					logger.log(Level.INFO, "User-Agent: " + ((HttpServletRequest) request).getHeader("User-Agent"));
 					((HttpServletResponse) response).setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -92,7 +92,7 @@ public class IPFilter implements Filter {
             
 				if (uri_count > NumberUtils.getInt(ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.IP_URI_LIMIT, "3"), 3)) {
 					logger.log(Level.INFO, "User-Agent: " + httpRequest.getHeader("User-Agent"));
-					logger.log(Level.SEVERE, "IP: " + ip + " is blocked after " + uri_count + " uri requests");
+					logger.log(Level.WARNING, "IP: " + ip + " is blocked after " + uri_count + " uri requests");
 					((HttpServletResponse) response).setStatus(HttpServletResponse.SC_FORBIDDEN);
 					response.setContentType("text/html");
 				    PrintWriter out = response.getWriter();
