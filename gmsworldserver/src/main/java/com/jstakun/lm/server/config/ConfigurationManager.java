@@ -22,7 +22,7 @@ import org.apache.commons.lang.StringUtils;
  */
 public final class ConfigurationManager {
     
-    private static Map<String, String> configuration = new HashMap<String, String>();
+    private static Map<String, String> configuration;
     public static final String CONFIG = "config";
     public static final String GMS_WORLD_PAGE_TOKEN = "gmsWorldPageToken";
     public static final String GMS_WORLD_ACCESS_TOKEN = "gmsWorldAccessToken";
@@ -34,6 +34,7 @@ public final class ConfigurationManager {
     public static void populateConfig()
     {
          List<Config> params = ConfigPersistenceUtils.selectAllConfigParams();
+         configuration = new HashMap<String, String>();
          for (Config param : params) {
              configuration.put(param.getKey(), param.getValue());
              Logger.getLogger("com.jstakun.lm.server.config.ConfigurationManager").log(Level.INFO, "Setting {0}: {1}", new Object[]{param.getKey(), param.getValue()});
@@ -65,6 +66,7 @@ public final class ConfigurationManager {
     }    
     
     public static Map<String, String> getConfiguration() {
+    	refreshConfig();
     	return Collections.unmodifiableMap(configuration);
     }
     
