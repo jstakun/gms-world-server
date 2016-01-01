@@ -56,10 +56,12 @@ public class LayersTest {
 		lng = -74.01;
 		bbox = "-74.06,40.66,-74.01,40.71";//"-75.01,39.71,-73.01,41.71";
 		//locale = Locale.US;
-		//bbox = "30.16,-97.79,30.26,-97.74"; picasa bug
+		//lat = 30.21;
+		//lng = -97.77;
+		//bbox = "-97.79,30.16,-97.74,30.26"; 
 		//lat = 46.782499;
 		//lng = 23.558828;
-		LayerHelperFactory.getHotelsBookingUtils().loadHotelsAsync(lat, lng, radius, limit);   
+		//LayerHelperFactory.getHotelsBookingUtils().loadHotelsAsync(lat, lng, radius, limit);   
 	}
 	
 	
@@ -69,11 +71,11 @@ public class LayersTest {
 		
 	   List<Object[]> data = new ArrayList<Object[]>();	
 	  
-	   //data.add(new Object[]{LayerHelperFactory.getPicasaUtils()});
+	   data.add(new Object[]{LayerHelperFactory.getPicasaUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getLastfmUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getOsmXapiUtils()});
 	   
-	   data.add(new Object[]{LayerHelperFactory.getHotelsBookingUtils()});
+	   //data.add(new Object[]{LayerHelperFactory.getHotelsBookingUtils()});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getFreebaseUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getInstagramUtils()});
@@ -87,9 +89,10 @@ public class LayersTest {
 	   //data.add(new Object[]{LayerHelperFactory.getGrouponUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getCouponsUtils()});
 	   
+	   //data.add(new Object[]{LayerHelperFactory.getFoursquareUtils()});
+	   
 	   //data.add(new Object[]{LayerHelperFactory.getYelpUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getGooglePlacesUtils()});
-	   //data.add(new Object[]{LayerHelperFactory.getFoursquareUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getFacebookUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getFoursquareMerchantUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getSearchUtils()});

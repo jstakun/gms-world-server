@@ -175,7 +175,7 @@ public class PicasaUtils extends LayerHelper {
 		String[] coords = StringUtils.split(bbox, ",");
         //set new bbox
         
-        double[] dcoords = new double[]{latitude, longitude, latitude, longitude};
+        double[] dcoords = new double[]{longitude, latitude, longitude, latitude};
         if (coords != null && coords.length == 4) {
         	dcoords[0] = Double.parseDouble(coords[0]);
         	dcoords[1] = Double.parseDouble(coords[1]);
@@ -201,11 +201,13 @@ public class PicasaUtils extends LayerHelper {
         	}
         }
         
-        String normalizedBbox = MathUtils.normalizeE2(dcoords[0]) + "," +
-        		MathUtils.normalizeE2(dcoords[1]) + "," +
-        		MathUtils.normalizeE2(dcoords[2]) + "," +
-        		MathUtils.normalizeE2(dcoords[3]);    
+        String normalizedBbox = String.format("%.2f", MathUtils.normalizeE2(dcoords[0])) + "," +
+        		String.format("%.2f", MathUtils.normalizeE2(dcoords[1])) + "," +
+        		String.format("%.2f", MathUtils.normalizeE2(dcoords[2])) + "," +
+        		String.format("%.2f", MathUtils.normalizeE2(dcoords[3]));    
         //
+        
+        logger.log(Level.INFO, "Setting bbox " + normalizedBbox + "...");
         
         List<ExtendedLandmark> output = new ArrayList<ExtendedLandmark>();
 

@@ -37,7 +37,7 @@
                         We are APIs company. <a href="/apis.jsp">Learn more...</a>.
                     </p>
                     <p>
-                        Currently we are delivering number of projects including <b>Landmark Manager</b> and <b>Blogeo</b>.
+                        Currently we are delivering number of projects including <b>Landmark Manager</b>, <b>Hotels on Map</b> and <b>Blogeo</b>.
                     </p>
                     <p>
                         <b>Landmark Manager</b> is mashup aggregating places from multiple providers including <b>Facebook</b>, <b>Twitter</b>, <b>Foursquare</b>, <b>Yelp</b>, <b>Google Places</b>, <b>Freebase</b>, <b>Wikipedia</b>, <b>Eventful</b>,
@@ -66,6 +66,10 @@
 						  <li>Call selected place,</li>
 						  <li>Calculate route from your current position to selected point of interest.</li>
                         </ul>
+                    </p>
+                    <p>
+                        <a href="http://www.hotelsonmap.net"><b>Hotels on Map</b></a> is hotels booking facility.<br/>
+                        <b>Hotels on Map</b> let's you search for hotels around location you'll choose on the map or based on your browser location. <a href="http://www.hotelsonmap.net">Try it now!</a>
                     </p>
                     <p>
                         <a href="http://gms-blogeo.appspot.com"><b>Blogeo</b></a> is revolutionery GeoLocation Blog.<br/>

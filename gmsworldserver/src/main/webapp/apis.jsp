@@ -119,6 +119,7 @@
                         <b>URL Shortening</b>
                         <ul>
                             <li><a href="http://api.bitly.com/">Bit.ly</a></li>
+                            <li><a href="https://goo.gl/">Google url shortener</a></li>
                         </ul>
                     </p>
                     <p>
