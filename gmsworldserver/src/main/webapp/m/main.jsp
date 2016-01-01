@@ -52,7 +52,7 @@
         <h3>Newest Landmarks</h3>
         </article>
         <%
-        	List<Landmark> landmarkList = (List<Landmark>) request.getAttribute("newestLandmarkList");
+        	List<Landmark> landmarkList = HtmlUtils.getList(Landmark.class, request, "newestLandmarkList");
             if (landmarkList != null) {
                  for (Landmark landmark : landmarkList) {
         %>

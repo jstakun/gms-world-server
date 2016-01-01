@@ -69,7 +69,7 @@
             <div class="recent-comments">
                 <ul>
 <%
-	List<Landmark> landmarkList1 = (List<Landmark>)request.getAttribute("newestLandmarkList");
+	List<Landmark> landmarkList1 = HtmlUtils.getList(Landmark.class, request, "newestLandmarkList");
 
    if (landmarkList1 == null) {
 	   landmarkList1 = LandmarkPersistenceUtils.selectNewestLandmarks();
@@ -113,7 +113,7 @@
 <div id="footer-bottom">
 
     <p class="bottom-left">
-        &copy; 2010-15 <strong>GMS World</strong>&nbsp; &nbsp; &nbsp;
+        &copy; 2010-16 <strong>GMS World</strong>&nbsp; &nbsp; &nbsp;
         <a href="http://www.bluewebtemplates.com/" title="Website Templates">website templates</a> by <a href="http://www.styleshout.com/">styleshout</a>
     </p>
 

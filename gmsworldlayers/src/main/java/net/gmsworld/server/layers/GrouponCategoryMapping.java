@@ -15,6 +15,7 @@ import org.apache.commons.lang.StringUtils;
 public class GrouponCategoryMapping {
 
     private static final Logger logger = Logger.getLogger(GrouponCategoryMapping.class.getName());
+    
     private static final String[][] PARENT_CATEGORIES = {
         {"Arts and Entertainment", "2"},
         {"Automotive", "4"},
@@ -650,7 +651,7 @@ public class GrouponCategoryMapping {
             return new String[]{"8", ""};
         } else {
             if (StringUtils.isEmpty(categoryStr)) {
-                logger.log(Level.SEVERE, "Category is empty");               
+                logger.log(Level.WARNING, "Category is empty");               
             } else {
                 for (int i = 0; i < PARENT_CATEGORIES.length; i++) {
                     String[] category = PARENT_CATEGORIES[i];
@@ -658,7 +659,7 @@ public class GrouponCategoryMapping {
                         return new String[]{category[1], ""};
                     }
                 }
-                logger.log(Level.SEVERE, "No matching parent category: {0}", categoryStr);
+                logger.log(Level.WARNING, "No matching parent category: {0}", categoryStr);
             }
             return new String[]{"8", ""};
         }

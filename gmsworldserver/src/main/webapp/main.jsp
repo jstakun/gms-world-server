@@ -79,7 +79,7 @@
                     <h3>Newest Landmarks</h3>
 
                     <%
-                    	List<Landmark> landmarkList = (List<Landmark>) request.getAttribute("newestLandmarkList");
+                    	List<Landmark> landmarkList = HtmlUtils.getList(Landmark.class, request, "newestLandmarkList");
                         if (landmarkList != null) { 
                              PrettyTime prettyTime = new PrettyTime(request.getLocale());
                              for (Landmark landmark : landmarkList) {

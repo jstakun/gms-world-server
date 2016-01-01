@@ -52,7 +52,7 @@
                     <ul class="archive">
                         <%
                         	if (request.getAttribute("landmarkList") != null) {
-                            	List<Landmark> landmarkList = (List<Landmark>) request.getAttribute("landmarkList");
+                            	List<Landmark> landmarkList = HtmlUtils.getList(Landmark.class, request, "landmarkList");
                               	PrettyTime prettyTime = new PrettyTime(request.getLocale());
                               	for (Landmark landmark : landmarkList) {
                         %>

@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -15,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.layers.LayerHelper;
@@ -244,9 +246,26 @@ public class HtmlUtils {
     		String[] date = DateUtils.getShortMonthYearString(i).split("-");
     	    resp += "<li><a href=\"/archive/" + date[1] + "/" + date[0] + "\">" + DateUtils.getLongMonthYearString(i) + "</a></li>\n";
     	}
-    	resp += "<li><a href=\"/archive/2014\">January 2014</a></li>\n";
+    	resp += "<li><a href=\"/archive/2015\">January 2015</a></li>\n" +
+    			"<li><a href=\"/archive/2014\">January 2014</a></li>\n";
     	return resp;
     }
+    
+    public static <T> List<T> getList(Class<T> type, HttpServletRequest request, String key) {
+		Collection<?> c = (Collection<?>) request.getAttribute(key);
+	    if (c != null) {
+	    	List<T> r = new ArrayList<T>(c.size());
+	    	for (Object o : c) {
+				if (type.isAssignableFrom(o.getClass())) {
+					r.add(type.cast(o));
+				}
+			}
+	    	return r;
+		}
+	    return null;
+	}
+    
+    //
     
     private String encode(double val) {
     	double toInt = val * 1E6;

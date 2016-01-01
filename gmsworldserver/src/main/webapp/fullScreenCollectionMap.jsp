@@ -6,6 +6,7 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="com.jstakun.lm.server.persistence.Landmark,
+        com.jstakun.lm.server.utils.HtmlUtils,    
         com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils,
         java.util.List,
         net.gmsworld.server.utils.DateUtils,
@@ -25,7 +26,7 @@
                            collectionAttributeName = (String) request.getAttribute("collectionAttributeName");
                         }
                         if (request.getAttribute(collectionAttributeName) != null) {
-                            landmarkList = (List<Landmark>) request.getAttribute(collectionAttributeName);
+                            landmarkList = HtmlUtils.getList(Landmark.class, request, collectionAttributeName);
                         }
                         if (request.getAttribute("centerLat") != null) {
                             centerLat = (Double) request.getAttribute("centerLat");

@@ -1,6 +1,7 @@
 <%@page contentType="text/html" pageEncoding="utf-8"%>
 <%@ page import="com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils,
                  com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils,
+                 com.jstakun.lm.server.utils.HtmlUtils,
                  net.gmsworld.server.utils.UrlUtils,
                  net.gmsworld.server.utils.StringUtil,
                  com.jstakun.lm.server.persistence.Landmark,
@@ -33,7 +34,7 @@
         <h3>Landmarks in layer <%=LayerPersistenceUtils.getLayerFormattedName(layer)%></h3>
 
         <%
-        	List<Landmark> landmarkList = (List<Landmark>) request.getAttribute("layerLandmarks");
+        	List<Landmark> landmarkList = HtmlUtils.getList(Landmark.class, request, "layerLandmarks");
                    		   
                            if (landmarkList == null || landmarkList.isEmpty())
                            {

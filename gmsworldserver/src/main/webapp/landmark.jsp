@@ -96,9 +96,9 @@
                             Last check-in by user <a href="<%=response.encodeURL("/showUser/" + lastCheckinUsername)%>"><%=UrlUtils.createUsernameMask(lastCheckinUsername)%></a> on  <%=request.getAttribute("lastCheckinDate")%>
                             <%
                             	}
-                                                                                       if (request.getAttribute("comments") != null)
-                                                                                       {
-                                                                                            List<Comment> commentList = (List<Comment>) request.getAttribute("comments");
+                                if (request.getAttribute("comments") != null)
+                                {
+                                       List<Comment> commentList = HtmlUtils.getList(Comment.class, request, "comments");
                             %>
                         </p>
                         <h4><%=commentList.size()%> comments</h4>

@@ -77,7 +77,7 @@
                      <div class="date"><span>Last check-in <%=DateUtils.getFormattedDateTime(request.getLocale(), (Date)request.getAttribute("lastCheckinDate"))%> | by <a href="<%=response.encodeURL("/showUser/" + lastCheckinUsername)%>"><%=UrlUtils.createUsernameMask(lastCheckinUsername)%></a></span></div>
                 <%
                 	}
-                    List<Comment> commentList = (List<Comment>) request.getAttribute("comments");
+                    List<Comment> commentList = HtmlUtils.getList(Comment.class, request, "comments");
                                                                
                     if (commentList != null)
                     {

@@ -200,21 +200,23 @@ public class FoursquareUtils extends LayerHelper {
     	   List<ExtendedLandmark> response = new ArrayList<ExtendedLandmark>();
            
            FoursquareApi api = getFoursquareApi(null);
-               api.setUseCallback(false);
+           api.setUseCallback(false);
+           
+           logger.log(Level.INFO, "Searching for venues around...");
+           
+           //venues search
+           Map<String, String> params = new HashMap<String, String>();
+           params.put("ll", lat + "," + lng);
+           params.put("radius", Integer.toString(radius));
+           params.put("limit", Integer.toString(limit));
+           params.put("intent", intent);
+           if (StringUtils.isNotEmpty(query)) {
+               params.put("query", query);
+           }
                
-               //venues search
-               Map<String, String> params = new HashMap<String, String>();
-               params.put("ll", lat + "," + lng);
-               params.put("radius", Integer.toString(radius));
-               params.put("limit", Integer.toString(limit));
-               params.put("intent", intent);
-               if (StringUtils.isNotEmpty(query)) {
-               	params.put("query", query);
-               }
+           Result<VenuesSearchResult> result = api.venuesSearch(params);              
                
-               Result<VenuesSearchResult> result = api.venuesSearch(params);              
-               
-               if (result.getMeta().getCode() == 200) {
+           if (result.getMeta().getCode() == 200) {
                    VenuesSearchResult searchResult = result.getResult();
                    CompactVenue[] venues = searchResult.getVenues();
                    logger.log(Level.INFO, "No of Foursquare search venues {0}", venues.length);
@@ -241,15 +243,17 @@ public class FoursquareUtils extends LayerHelper {
                    			}
                    		}
                    }	
-               } else {
-            	   handleError(result.getMeta(), "loadLandmarks");
-               }
+          } else {
+        	  	handleError(result.getMeta(), "loadLandmarks");
+          }
                
-               //venues trending
+          //venues trending
+               
+          logger.log(Level.INFO, "Loading trending venues...");
 
-               Result<CompactVenue[]> resultT = api.venuesTrending(lat + "," + lng, limit, radius);
+          Result<CompactVenue[]> resultT = api.venuesTrending(lat + "," + lng, limit, radius);
 
-               if (resultT.getMeta().getCode() == 200) {
+          if (resultT.getMeta().getCode() == 200) {
                    CompactVenue[] venues = resultT.getResult();
                    logger.log(Level.INFO, "No of Foursquare trending venues {0}", venues.length);
 
@@ -289,9 +293,11 @@ public class FoursquareUtils extends LayerHelper {
                    		}
                    }
                } else {
-            	   handleError(resultT.getMeta(), "loadLandmarks");
-               }
+            	   handleError(resultT.getMeta(), "loadLandmarksTrending");
+           }
 
+           logger.log(Level.INFO, "Done.");    
+               
            return response;
    	}
 
@@ -819,7 +825,7 @@ public class FoursquareUtils extends LayerHelper {
     }
 
     private static void handleError(ResultMeta meta, String key) throws FoursquareApiException {
-    	logger.log(Level.SEVERE, "Received FS response {0} {1}: {2}", new Object[]{meta.getCode(), meta.getErrorDetail(), key});
+    	logger.log(Level.SEVERE, "Received FS response {0} {1} {2}: {3}", new Object[]{meta.getCode(), meta.getErrorType(), meta.getErrorDetail(), key});
     	if (meta.getCode() == HttpServletResponse.SC_UNAUTHORIZED) {
     		throw new FoursquareApiException("Unauthorized");
     	}

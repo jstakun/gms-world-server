@@ -8,6 +8,7 @@
 <%@ page import="com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils,
                  com.jstakun.lm.server.persistence.Landmark,
                  net.gmsworld.server.utils.ImageUtils,
+                 com.jstakun.lm.server.utils.HtmlUtils,
                  java.util.List,
                  java.util.Date,
                  net.gmsworld.server.utils.DateUtils,
@@ -46,7 +47,7 @@
    }
    else
    {
-        List<Landmark> landmarkList = (List<Landmark>) request.getAttribute("userLandmarks");
+        List<Landmark> landmarkList = HtmlUtils.getList(Landmark.class, request, "userLandmarks");
 
         if (landmarkList.isEmpty())
         {
