@@ -54,7 +54,7 @@ public class LayersTest {
 		//new york test
 		lat = 40.71;
 		lng = -74.01;
-		bbox = "-74.06,40.66,-74.01,40.71";//"-75.01,39.71,-73.01,41.71";
+		bbox = "-74.060000,40.660000,-74.010000,40.710000";//"-75.01,39.71,-73.01,41.71";
 		//locale = Locale.US;
 		//lat = 30.21;
 		//lng = -97.77;
@@ -72,10 +72,10 @@ public class LayersTest {
 	   List<Object[]> data = new ArrayList<Object[]>();	
 	  
 	   data.add(new Object[]{LayerHelperFactory.getPicasaUtils()});
-	   //data.add(new Object[]{LayerHelperFactory.getLastfmUtils()});
+	   data.add(new Object[]{LayerHelperFactory.getLastfmUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getOsmXapiUtils()});
 	   
-	   //data.add(new Object[]{LayerHelperFactory.getHotelsBookingUtils()});
+	   data.add(new Object[]{LayerHelperFactory.getHotelsBookingUtils()});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getFreebaseUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getInstagramUtils()});
@@ -89,7 +89,7 @@ public class LayersTest {
 	   //data.add(new Object[]{LayerHelperFactory.getGrouponUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getCouponsUtils()});
 	   
-	   //data.add(new Object[]{LayerHelperFactory.getFoursquareUtils()});
+	   data.add(new Object[]{LayerHelperFactory.getFoursquareUtils()});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getYelpUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getGooglePlacesUtils()});

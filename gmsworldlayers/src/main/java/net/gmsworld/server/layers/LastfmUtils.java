@@ -30,10 +30,9 @@ import com.openlapi.QualifiedCoordinates;
  * @author jstakun
  */
 public class LastfmUtils extends LayerHelper {
-
-    //Fri, 26 Aug 2011 12:33:01
-    private static final SimpleDateFormat formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss", Locale.US);
-
+	
+    private static final SimpleDateFormat formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss", Locale.US); //Fri, 26 Aug 2011 12:33:01
+    private static final String SERVER_ERROR_MARKER = "LastFmServerErrorMarker";
 
     @Override
 	public JSONObject processRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2) throws Exception {
@@ -291,10 +290,19 @@ public class LastfmUtils extends LayerHelper {
     }
 
 	@Override
-	public List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale, boolean useCache) throws Exception {
-		URL lastfmUrl = new URL("http://ws.audioscrobbler.com/2.0/?method=geo.getevents&lat=" + lat
+	public List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale, boolean useCache) throws Exception {		
+		String lastfmResponse = null;
+		
+		if (!cacheProvider.containsKey(SERVER_ERROR_MARKER)) {
+			URL lastfmUrl = new URL("http://ws.audioscrobbler.com/2.0/?method=geo.getevents&lat=" + lat
                     + "&long=" + lng + "&distance=" + radius + "&limit=" + limit + "&format=json&api_key=" + Commons.getProperty(Property.LASTFM_API_KEY));
-        String lastfmResponse = HttpUtils.processFileRequest(lastfmUrl);
+			lastfmResponse = HttpUtils.processFileRequest(lastfmUrl);
+			Integer responseCode = HttpUtils.getResponseCode(lastfmUrl.toString());
+			if (responseCode != null && responseCode == 400) {
+				cacheProvider.put(SERVER_ERROR_MARKER, "1");
+			}
+		}	
+		
         return createCustomLandmarkLastfmList(lastfmResponse, stringLimit, locale);           
 	}
 	

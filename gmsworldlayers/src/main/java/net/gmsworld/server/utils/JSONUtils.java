@@ -211,8 +211,8 @@ public class JSONUtils {
 							String key = keys.next();
 							ratesMap.put(key, rates.getDouble(key));
 						}
-						LayerHelperFactory.getByName(Commons.HOTELS_LAYER).getCacheProvider().put(currencyUrl, ratesMap);
 					}
+					LayerHelperFactory.getByName(Commons.HOTELS_LAYER).getCacheProvider().put(currencyUrl, ratesMap);
 				} else {
 					logger.log(Level.WARNING, currencyUrl + " received following response from the server: " + resp);
 				}

@@ -1013,7 +1013,7 @@ public class FacebookUtils extends LayerHelper {
     } 
     
     public List<ExtendedLandmark> getMyPhotos(int version, int limit, int stringLength, String token, Locale locale) throws UnsupportedEncodingException, ParseException {
-    	//TODO must be implemented
+    	//TODO not yet implemented
     	return null;
     } 
     

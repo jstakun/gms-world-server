@@ -64,6 +64,7 @@ public class FoursquareUtils extends LayerHelper {
 
     private static final CheckinComparator checkinComparator = new CheckinComparator();
     protected static final String FOURSQUARE_PREFIX = "http://foursquare.com/venue/";
+    private static final String TRENDING_ENDPOINT_ERROR_MARKER = "FoursquareTrendingApiEndpointErrorMarker";
     
     @Override
 	public JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String intent, String locale) throws JSONException, MalformedURLException, IOException, FoursquareApiException {
@@ -217,10 +218,10 @@ public class FoursquareUtils extends LayerHelper {
            Result<VenuesSearchResult> result = api.venuesSearch(params);              
                
            if (result.getMeta().getCode() == 200) {
-                   VenuesSearchResult searchResult = result.getResult();
-                   CompactVenue[] venues = searchResult.getVenues();
-                   logger.log(Level.INFO, "No of Foursquare search venues {0}", venues.length);
-                   if (venues.length > 0) {
+              VenuesSearchResult searchResult = result.getResult();
+              CompactVenue[] venues = searchResult.getVenues();
+              logger.log(Level.INFO, "No of Foursquare search venues {0}", venues.length);
+              if (venues.length > 0) {
                 	    List<String> venueIds = new ArrayList<String>();
 
                    		for (int j = 0; j < venues.length; j++) {
@@ -242,63 +243,69 @@ public class FoursquareUtils extends LayerHelper {
                    				response.add(landmark);
                    			}
                    		}
-                   }	
+              }	
           } else {
-        	  	handleError(result.getMeta(), "loadLandmarks");
+        	  handleError(result.getMeta(), "loadLandmarks");
           }
                
           //venues trending
-               
-          logger.log(Level.INFO, "Loading trending venues...");
+          
+          if (!cacheProvider.containsKey(TRENDING_ENDPOINT_ERROR_MARKER)) {
+        	  logger.log(Level.INFO, "Loading trending venues...");
 
-          Result<CompactVenue[]> resultT = api.venuesTrending(lat + "," + lng, limit, radius);
+        	  Result<CompactVenue[]> resultT = api.venuesTrending(lat + "," + lng, limit, radius);
 
-          if (resultT.getMeta().getCode() == 200) {
-                   CompactVenue[] venues = resultT.getResult();
-                   logger.log(Level.INFO, "No of Foursquare trending venues {0}", venues.length);
+        	  if (resultT.getMeta().getCode() == 200) {
+        		  CompactVenue[] venues = resultT.getResult();
+        		  logger.log(Level.INFO, "No of Foursquare trending venues {0}", venues.length);
 
-                   if (venues.length > 0) {
-                   		List<String> venueIds = new ArrayList<String>();
+        		  if (venues.length > 0) {
+        			  List<String> venueIds = new ArrayList<String>();
                    		 
-                   		for (int j = 0; j < venues.length; j++) {
-                   			venueIds.add(venues[j].getId());
-                   		}
+                   	  for (int j = 0; j < venues.length; j++) {
+                   		  venueIds.add(venues[j].getId());
+                   	  }
 
-                   		Map<String, Map<String, String>> descs = getVenueDetails(venueIds, locale);
+                   	  Map<String, Map<String, String>> descs = getVenueDetails(venueIds, locale);
 
-                   		for (int j = 0; j < venues.length; j++) {
-                   			CompactVenue venue = venues[j];
+                   	  for (int j = 0; j < venues.length; j++) {
+                   		  CompactVenue venue = venues[j];
 
-                   			Map<String, String> attrs = descs.remove(venue.getId());
-                   			if (attrs == null) {
-                   				attrs = new HashMap<String, String>();
-                   			}
+                   		  Map<String, String> attrs = descs.remove(venue.getId());
+                   		  if (attrs == null) {
+                   			  attrs = new HashMap<String, String>();
+                   		  }
 
-                   			HereNow hereNow = venue.getHereNow();
-                   			if (hereNow != null) {
-                   				long hereNowCount = hereNow.getCount();
-                   				attrs.put("isTrending", Long.toString(hereNowCount));
-                   				//CheckinGroup[] groups = venue.getHereNow().getGroups();
-                   				//for (int i = 0; i < groups.length; i++) {
-                   				//CheckinGroup group = groups[i];
-                   				//String name = group.getName();
-                   				//long count = group.getCount();
-                   				//}
-                   			}
+                   		  HereNow hereNow = venue.getHereNow();
+                   		  if (hereNow != null) {
+                   			  long hereNowCount = hereNow.getCount();
+                   			  attrs.put("isTrending", Long.toString(hereNowCount));
+                   			  //CheckinGroup[] groups = venue.getHereNow().getGroups();
+                   			  //for (int i = 0; i < groups.length; i++) {
+                   			  //CheckinGroup group = groups[i];
+                   			  //String name = group.getName();
+                   			  //long count = group.getCount();
+                   			  //}
+                   		  }
 
-                   			ExtendedLandmark landmark = parseCompactVenueToLandmark(venue, attrs, l);
-                   			if (landmark != null) {
-                   				response.add(landmark);
-                   			}
-                   		}
-                   }
-               } else {
-            	   handleError(resultT.getMeta(), "loadLandmarksTrending");
-           }
+                   		  ExtendedLandmark landmark = parseCompactVenueToLandmark(venue, attrs, l);
+                   		  if (landmark != null) {
+                   			  response.add(landmark);
+                   		  }
+                   	  }
+        		  }
+        	  } else {
+        		  handleError(resultT.getMeta(), "loadLandmarksTrending");
+        	   	  Integer responseCode = resultT.getMeta().getCode();
+        	   	  if (responseCode != null && responseCode == 400) {
+        	   		  cacheProvider.put(TRENDING_ENDPOINT_ERROR_MARKER, "1");
+        	   	  }
+        	  }
+          }
 
-           logger.log(Level.INFO, "Done.");    
+          logger.log(Level.INFO, "Done.");    
                
-           return response;
+          return response;
    	}
 
     public String exploreVenuesToJSon(double lat, double lng, String query, int radius, int limit, int version, String token, String locale) throws JSONException, MalformedURLException, IOException, FoursquareApiException {

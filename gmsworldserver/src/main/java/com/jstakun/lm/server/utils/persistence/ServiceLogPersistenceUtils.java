@@ -35,9 +35,9 @@ public class ServiceLogPersistenceUtils {
     }
 
     public static long countServiceLogByDay(Date day) {
-        //TODO must be implemented
+        //TODO not yet implemented
     	//day in format dd-MM-yyyy
-        long result = 0;
+        //long result = 0;
         /*PersistenceManager pm = PMF.get().getPersistenceManager();
 
         try {
@@ -55,7 +55,8 @@ public class ServiceLogPersistenceUtils {
             pm.close();
         }*/
 
-        return result;
+        //return result;
+    	return 0;
     }
 
     public static long deleteLogsOlderThanDate(Date day) {

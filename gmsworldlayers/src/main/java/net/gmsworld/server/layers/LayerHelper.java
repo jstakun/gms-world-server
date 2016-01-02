@@ -277,7 +277,7 @@ public abstract class LayerHelper {
 					} else {
 						stars.put(s, 1);
 					}
-					if (exchangeRate > 0) {
+					if (exchangeRate != null) {
 						s = 0;
 						if (landmark.containsDeal()) {
 							double eurvalue = landmark.getDeal().getPrice() / exchangeRate;
