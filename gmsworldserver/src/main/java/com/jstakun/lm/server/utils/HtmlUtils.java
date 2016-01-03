@@ -183,9 +183,11 @@ public class HtmlUtils {
 	    if (isMobile) {
 	    	fontSize = 24;
 	    }
-		String desc = "'<span style=\"font-family:Roboto,Arial,sans-serif;font-size:" + fontSize + "px;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;\">'+\n";
+		String desc = "'<span style=\"font-family:Roboto,Arial,sans-serif;font-size:" + fontSize + "px;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;\">'+\n" +
+					  "'<b>Selected location</b><br/>'+\n" +
+					  "'<img src=\"https://maps.googleapis.com/maps/api/streetview?size=200x150&location=" + lat + "," + lng + "\" style=\"margin: 4px 0px\" title=\"Location street view image\"/><br/>'+\n";
 		if (address != null && StringUtils.isNotEmpty(address.toString())) {
-	           desc += "'Geocode address: " + StringEscapeUtils.escapeJavaScript(address.toString()) + ",<br/>'+\n"; 
+	           desc += "'" + StringEscapeUtils.escapeJavaScript(address.toString()) + ",<br/>'+\n"; 
 	    }        
 		desc += "'Latitude: " + StringUtil.formatCoordE6(lat) + ", Longitude: " + StringUtil.formatCoordE6(lng) + "<br/>'+\n" +
                 "'</span>'";
