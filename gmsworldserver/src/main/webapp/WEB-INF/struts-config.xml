@@ -123,6 +123,8 @@
         <action path="/showLocation" type="com.jstakun.lm.server.struts.ShowLocationAction">
              <forward name="mobile" path="/m/showLoc.jsp"/>
              <forward name="success" path="/showLoc.jsp"/>
+             <forward name="landmarks" path="/landmarks.jsp"/>
+             <forward name="landmarksMobile" path="/landmarks.jsp?mobile=true"/>
          </action>
         <action path="/verify" type="com.jstakun.lm.server.struts.RegistrationConfirmationAction">
             <forward name="success_reg" path="/confirm.jsp?step=2"/>

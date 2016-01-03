@@ -67,7 +67,6 @@ public class HtmlUtils {
 	}
 	
 	public static String getHotelLandmarkUrl(double lat, double lng) {
-		//return "/hotelLandmark/" + lat + "/" + lng;
 		return "/hotelLandmark/" + encodeDouble(lat) + "/" + encodeDouble(lng);
 	}
 	
@@ -176,6 +175,20 @@ public class HtmlUtils {
 	    }        
 		desc += "'Latitude: " + StringUtil.formatCoordE6(gc.getLatitude()) + ", Longitude: " + StringUtil.formatCoordE6(gc.getLongitude()) + "<br/>'+\n" +
                 "'Posted on " + DateUtils.getFormattedDateTime(locale, gc.getCreationDate()) + ".</span>'";
+		return desc;
+	}
+	
+	public static String buildLocationDescV2(Double lat, Double lng, Object address, Locale locale, boolean isMobile) {
+		int fontSize = 16;
+	    if (isMobile) {
+	    	fontSize = 24;
+	    }
+		String desc = "'<span style=\"font-family:Roboto,Arial,sans-serif;font-size:" + fontSize + "px;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;\">'+\n";
+		if (address != null && StringUtils.isNotEmpty(address.toString())) {
+	           desc += "'Geocode address: " + StringEscapeUtils.escapeJavaScript(address.toString()) + ",<br/>'+\n"; 
+	    }        
+		desc += "'Latitude: " + StringUtil.formatCoordE6(lat) + ", Longitude: " + StringUtil.formatCoordE6(lng) + "<br/>'+\n" +
+                "'</span>'";
 		return desc;
 	}
 	

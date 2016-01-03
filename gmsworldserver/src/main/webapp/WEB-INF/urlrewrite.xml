@@ -91,6 +91,7 @@
             <from>^/showGeocode/([a-zA-Z0-9_-]+)/(fullScreen)$</from>
             <to>/showGeocode.do?key=$1&amp;fullScreenGeocodeMap=1</to>
     </rule>
+    
     <!-- showUser rules -->
 
     <rule>
@@ -103,19 +104,9 @@
             <to type="forward" encode="true">/showUser.do?user=$1</to>
     </rule>
 
-    <!--rule>
-            <from>^/showUser/([a-zA-Z0-9@_-]+)$</from>
-            <to>/showUser.do?user=$1</to>
-    </rule>
-
-    <rule>
-            <from>^/showUser/([a-zA-Z0-9@_-]+);jsessionid=(.*)$</from>
-            <to>/showUser.do?user=$1</to>
-    </rule-->
-
     <outbound-rule>
-        <from>^/showUser.do\?user=([a-zA-Z0-9@_-]+)$</from>
-        <to>/showUser/$1</to>
+        	<from>^/showUser.do\?user=([a-zA-Z0-9@_-]+)$</from>
+        	<to>/showUser/$1</to>
     </outbound-rule>
 
 
@@ -136,10 +127,9 @@
             <to>/showLayer.do?layer=$1&amp;fullScreenCollectionMap=1</to>
     </rule>
 
-
     <outbound-rule>
-        <from>^/showLayer.do\?layer=([a-zA-Z0-9_-]+)$</from>
-        <to>/showLayer/$1</to>
+        	<from>^/showLayer.do\?layer=([a-zA-Z0-9_-]+)$</from>
+        	<to>/showLayer/$1</to>
     </outbound-rule>
 
     <!-- heatMap rules -->
@@ -156,32 +146,35 @@
             <to>/showLocation.do?lat=$1&amp;lon=$2</to>
     </rule>
     
-    <!-- browserLandmark rules -->
-    
-    <!--rule>
-            <from>^/services/newLandmark/([0-9.-]+)/([0-9.-]+)$</from>
-            <to>/browserLandmark.jsp?latitude=$1&amp;longitude=$2&amp;generatetoken=true</to>
+    <rule>
+            <from>^/showLocation/([0-9.-]+)/([0-9.-]+)/(fullScreen)$</from>
+            <to>/showLocation.do?lat=$1&amp;lon=$2&amp;fullScreen=true</to>
     </rule>
     
     <rule>
-            <from>^/newLandmark/([0-9.-]+)/([0-9.-]+)$</from>
-            <to>/browserLandmark.jsp?latitude=$1&amp;longitude=$2&amp;generatetoken=true</to>
-    </rule-->
+            <from>^/showLocation/([m-y]+)/([m-y]+)$</from>
+            <to>/showLocation.do?latitudeEnc=$1&amp;longitudeEnc=$2</to>
+    </rule>
+    
+    <rule>
+            <from>^/showLocation/([m-y]+)/([m-y]+)/(fullScreen)$</from>
+            <to>/showLocation.do?latitudeEnc=$1&amp;longitudeEnc=$2&amp;fullScreen=true</to>
+    </rule>
+    
+    <!-- browserLandmark.jsp rules -->
     
     <rule>
             <from>^/newLandmark/([m-y]+)/([m-y]+)$</from>
             <to>/browserLandmark.jsp?latitudeEnc=$1&amp;longitudeEnc=$2&amp;generatetoken=true</to>
     </rule>
-    
-    <!--rule>
-            <from>^/hotelLandmark/([0-9.-]+)/([0-9.-]+)$</from>
-            <to>/browserLandmark.jsp?latitude=$1&amp;longitude=$2&amp;enabled=Hotels&amp;generatetoken=true</to>
-    </rule-->
-    
+     
     <rule>
             <from>^/hotelLandmark/([m-y]+)/([m-y]+)$</from>
-            <to>/browserLandmark.jsp?latitudeEnc=$1&amp;longitudeEnc=$2&amp;enabled=Hotels&amp;generatetoken=true</to>
+            <!--to>/browserLandmark.jsp?latitudeEnc=$1&amp;longitudeEnc=$2&amp;enabled=Hotels&amp;generatetoken=true</to-->
+            <to>/showLocation.do?latitudeEnc=$1&amp;longitudeEnc=$2&amp;fullScreen=true&amp;enabled=Hotels</to>
     </rule>
+    
+    <!-- selectLandmark.jsp rules -->
     
     <rule>
             <from>^/landmarks</from>
@@ -198,12 +191,14 @@
             <to>/selectLandmark.jsp?hotels=true</to>
     </rule>
     
+    <!-- myposLandmark.jsp rules -->
+    
     <rule>
             <from>^/share</from>
             <to>/myposLandmark.jsp</to>
     </rule>
     
-    <!-- showLocation rules -->
+    <!-- showRoute rules -->
     
     <rule>
             <from>^/showRoute/([0-9.-]+)/([0-9.-]+)/([0-9.-]+)/([0-9.-]+)$</from>

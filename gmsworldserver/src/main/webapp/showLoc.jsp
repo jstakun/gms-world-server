@@ -20,7 +20,6 @@
 
         <jsp:include page="/WEB-INF/jspf/header.jsp"/>
 
-
         <div id="content-wrap" class="clear" >
 
             <!-- content -->
@@ -29,11 +28,11 @@
                 <!-- main -->
                 <div id="main">
 
-                    <% 
+            <% 
                 Double lat = null, lon = null;    
                 try {    
     				lat = Double.valueOf((String)request.getAttribute("lat"));
-            		lon = Double.valueOf((String)request.getAttribute("lon"));
+            		lon = Double.valueOf((String)request.getAttribute("lng"));
                 } catch (Exception e) {
                 	
                 }
@@ -43,14 +42,17 @@
             <%                    
                 } else {      
             %>
-                <h3>Your location</h3>
+                <h3>Selected location</h3>
                 <h4>You've selected following location:</h4>
 
                 <p class="image-section">
-                	<img src="<%= ImageUtils.getImageUrl(lat.doubleValue(), lon.doubleValue(), "640x256", 10, true, ConfigurationManager.MAP_PROVIDER.OSM_MAPS) %>" alt="Landmark on the map" height="256" width="640"/><br/>
+                	<a href="/showLocation/<%= HtmlUtils.encodeDouble(lat) %>/<%= HtmlUtils.encodeDouble(lon) %>/fullScreen">
+                		<img src="<%= ImageUtils.getImageUrl(lat.doubleValue(), lon.doubleValue(), "640x256", 10, true, ConfigurationManager.MAP_PROVIDER.OSM_MAPS) %>" alt="Landmark on the map" height="256" width="640"/><br/>
+                	</a>
                 </p>
                 
                 <p>
+                   <a href="/showLocation/<%= HtmlUtils.encodeDouble(lat) %>/<%= HtmlUtils.encodeDouble(lon) %>/fullScreen">See full screen map</a><br/>
                    <%= request.getAttribute("address")!=null ? "Geocode address: " + request.getAttribute("address") : "" %><br/>
                    Latitude: <%= lat %>, Longitude: <%= lon %><br/>
                    <b><a href="<%= HtmlUtils.getHotelLandmarkUrl(lat, lon) %>" target="_blank">Discover hotels around!</a></b><br/>
@@ -58,7 +60,6 @@
              <%
                 }
              %>
-
                   <br/>  
                   <%@ include file="/WEB-INF/jspf/ad_medium_baner.jspf" %>
                 </div>
@@ -66,9 +67,7 @@
                 <!-- content -->
             </div>
             <!-- /content-out -->
-        </div>
-
+         </div>
        <jsp:include page="/WEB-INF/jspf/footer.jsp" />
-
     </body>
 </html>

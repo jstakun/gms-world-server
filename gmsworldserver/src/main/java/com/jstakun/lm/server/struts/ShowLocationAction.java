@@ -15,6 +15,7 @@ import net.gmsworld.server.layers.GeocodeHelperFactory;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.StringUtil;
 
+import com.jstakun.lm.server.utils.HtmlUtils;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.openlapi.AddressInfo;
 
@@ -43,31 +44,46 @@ public class ShowLocationAction extends org.apache.struts.action.Action {
      * @return
      */
     @Override
-    public ActionForward execute(ActionMapping mapping, ActionForm form,
-            HttpServletRequest request, HttpServletResponse response)
-            throws Exception {
-
-        if (!HttpUtils.isEmptyAny(request, "lat", "lon")) {
+    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    	Double lat = null, lng = null;
+    	OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
+        boolean isMobile = os.isMobileDevice();
+        
+        if (!HttpUtils.isEmptyAny(request, "lat", "lon") || !HttpUtils.isEmptyAny(request, "latitudeEnc", "longitudeEnc")) {
             try {
-                double lat = Double.parseDouble(request.getParameter("lat"));
-                double lon = Double.parseDouble(request.getParameter("lon"));
+            	lat = HtmlUtils.decodeDouble(request.getParameter("latitudeEnc"));
+            	if (lat == null) {
+            	 	lat = Double.parseDouble(request.getParameter("lat"));
+            	}           	 
+            	lng = HtmlUtils.decodeDouble(request.getParameter("longitudeEnc"));
+            	if (lng == null) {
+            	 	lng = Double.parseDouble(request.getParameter("lon"));
+            	}
                 request.setAttribute("lat", StringUtil.formatCoordE6(lat));
-                request.setAttribute("lon", StringUtil.formatCoordE6(lon));
-                String address = GeocodeHelperFactory.getMapQuestUtils().processReverseGeocode(lat, lon).getField(AddressInfo.EXTENSION);
+                request.setAttribute("lng", StringUtil.formatCoordE6(lng));
+                String address = GeocodeHelperFactory.getMapQuestUtils().processReverseGeocode(lat, lng).getField(AddressInfo.EXTENSION);
                 if (StringUtils.isNotEmpty(address)) {
                     request.setAttribute("address", address);
                 }
+                request.setAttribute("landmarkDesc", HtmlUtils.buildLocationDescV2(lat, lng, address, request.getLocale(), isMobile));
+            	request.setAttribute("landmarkName", "'Selected location'");
             } catch (Exception e) {
                 logger.log(Level.SEVERE, e.getMessage(), e);
             }
         }
 
-        OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
-
-        if (os.isMobileDevice()) {
-           return mapping.findForward("mobile");
+        if (StringUtils.isNotEmpty(request.getParameter("fullScreen")) && lat != null && lng != null) {
+        	if (isMobile) {
+        		return mapping.findForward("landmarksMobile");
+        	} else {
+        		return mapping.findForward("landmarks");
+        	}
         } else {
-           return mapping.findForward("success");
+        	if (isMobile) {
+        		return mapping.findForward("mobile");
+        	} else {
+        		return mapping.findForward("success");
+        	}
         }
     }
 }

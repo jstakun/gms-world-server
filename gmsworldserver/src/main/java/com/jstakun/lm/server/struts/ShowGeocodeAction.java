@@ -53,9 +53,9 @@ public class ShowGeocodeAction extends org.apache.struts.action.Action {
         }
 
         OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
+        boolean isMobile = os.isMobileDevice();
         if (StringUtils.isNotEmpty(request.getParameter("fullScreenGeocodeMap"))) {
-            if (gc != null) {
-            	boolean isMobile = os.isMobileDevice();
+            if (gc != null) {    	
             	request.setAttribute("lat", StringUtil.formatCoordE6(gc.getLatitude()));
             	request.setAttribute("lng", StringUtil.formatCoordE6(gc.getLongitude()));
             	request.setAttribute("landmarkDesc", HtmlUtils.buildGeocodeDescV2(gc, request.getAttribute("address"), request.getLocale(), isMobile));
@@ -69,7 +69,7 @@ public class ShowGeocodeAction extends org.apache.struts.action.Action {
             	return mapping.findForward("fullScreen");
             }
         } else {
-            if (os.isMobileDevice()) {
+            if (isMobile) {
                 return mapping.findForward("mobile");
             } else {
                 return mapping.findForward("success");
