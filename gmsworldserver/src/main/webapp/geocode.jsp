@@ -48,12 +48,12 @@
                         <h3>Geocode location for: <%= gc.getLocation() %></h3>
 
                         <p class="image-section">
-                          <a href="/showGeocode.do?key=<%= key %>&fullScreenGeocodeMap=1">
+                          <a href="/showGeocode/<%= key %>/fullScreen">
                             <img src="<%= ImageUtils.getImageUrl(gc.getLatitude(), gc.getLongitude(), "640x256", 12, true, ConfigurationManager.MAP_PROVIDER.OSM_MAPS) %>" alt="Geocode on the map" title="See geocode on the map" width="640" height="256"/>
                           </a>
                         </p>
                         <p class="post-details">
-                          <a href="/showGeocode.do?key=<%= key %>&fullScreenGeocodeMap=1">See full screen map</a><br/>
+                          <a href="/showGeocode/<%= key %>/fullScreen">See full screen map</a><br/>
                           Latitude: <%= StringUtil.formatCoordE6(gc.getLatitude()) %>, Longitude: <%= StringUtil.formatCoordE6(gc.getLongitude()) %><br/>
                           Posted on <%= DateUtils.getFormattedDateTime(request.getLocale(), gc.getCreationDate()) %><br/>
                           <b><a href="<%= HtmlUtils.getHotelLandmarkUrl(gc.getLatitude(), gc.getLongitude()) %>" target="_blank">Discover hotels around!</a></b>

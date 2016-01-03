@@ -230,9 +230,9 @@ public class GrouponUtils extends LayerHelper {
                                             String address = location.getString("streetAddress1");
                                             if (address.length() > 0) {
                                                 if (location.has("streetAddress2")) {
-                                                    String s = location.getString("streetAddress2");
-                                                    if (s.length() > 0) {
-                                                        address += ", " + location.getString("streetAddress2");
+                                                	Object s = location.get("streetAddress2");
+                                                    if (s != null && s.toString().length() > 0) {
+                                                        address += ", " + s.toString();
                                                     }
                                                 }
                                                 desc.put("address", address);

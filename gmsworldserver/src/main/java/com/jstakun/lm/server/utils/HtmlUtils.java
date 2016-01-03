@@ -34,6 +34,7 @@ import org.ocpsoft.prettytime.PrettyTime;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.lm.server.config.ConfigurationManager;
+import com.jstakun.lm.server.persistence.GeocodeCache;
 import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils;
 import com.openlapi.QualifiedCoordinates;
@@ -160,6 +161,22 @@ public class HtmlUtils {
 	            "'Posted on " + DateUtils.getFormattedDateTime(locale, landmark.getCreationDate()) + " by " + UrlUtils.createUsernameMask(landmark.getUsername()) + ",<br/>'+\n" +
 	            "'Created in layer " + LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer()) + ".</span>'";
 	    return desc;
+	}
+	
+	public static String buildGeocodeDescV2(GeocodeCache gc, Object address, Locale locale, boolean isMobile) {
+	    int fontSize = 16;
+	    if (isMobile) {
+	    	fontSize = 24;
+	    }
+		String desc = "'<span style=\"font-family:Roboto,Arial,sans-serif;font-size:" + fontSize + "px;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;\">'+\n" +
+				      "'<b>" + StringEscapeUtils.escapeJavaScript(gc.getLocation()) + "</b><br/>'+\n" +
+                      "'<img src=\"https://maps.googleapis.com/maps/api/streetview?size=200x150&location=" + gc.getLatitude() + "," + gc.getLongitude() + "\" style=\"margin: 4px 0px\" title=\"Location street view image\"/><br/>'+\n";
+		if (address != null && StringUtils.isNotEmpty(address.toString())) {
+	           desc += "'Geocode address: " + StringEscapeUtils.escapeJavaScript(address.toString()) + ",<br/>'+\n"; 
+	    }        
+		desc += "'Latitude: " + StringUtil.formatCoordE6(gc.getLatitude()) + ", Longitude: " + StringUtil.formatCoordE6(gc.getLongitude()) + "<br/>'+\n" +
+                "'Posted on " + DateUtils.getFormattedDateTime(locale, gc.getCreationDate()) + ".</span>'";
+		return desc;
 	}
 	
 	private static String getStatusImage(int useCount) {

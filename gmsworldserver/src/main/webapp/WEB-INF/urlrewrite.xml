@@ -87,6 +87,10 @@
             <to>/showGeocode.do?key=$1</to>
     </rule>
 
+    <rule>
+            <from>^/showGeocode/([a-zA-Z0-9_-]+)/(fullScreen)$</from>
+            <to>/showGeocode.do?key=$1&amp;fullScreenGeocodeMap=1</to>
+    </rule>
     <!-- showUser rules -->
 
     <rule>

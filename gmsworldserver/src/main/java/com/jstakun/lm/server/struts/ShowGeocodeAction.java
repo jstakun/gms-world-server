@@ -1,16 +1,18 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.lm.server.struts;
 
 import com.jstakun.lm.server.persistence.GeocodeCache;
+import com.jstakun.lm.server.utils.HtmlUtils;
 import com.jstakun.lm.server.utils.persistence.GeocodeCachePersistenceUtils;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import eu.bitwalker.useragentutils.OperatingSystem;
+import net.gmsworld.server.utils.StringUtil;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -38,21 +40,35 @@ public class ShowGeocodeAction extends org.apache.struts.action.Action {
             HttpServletRequest request, HttpServletResponse response)
             throws Exception {
 
+    	GeocodeCache gc = null;
+    	
         if (request.getParameter("key") != null) {
             try {
                 String key = (String) request.getParameter("key");
-                GeocodeCache gc = GeocodeCachePersistenceUtils.selectGeocodeCache(key);
+                gc = GeocodeCachePersistenceUtils.selectGeocodeCache(key);
                 request.setAttribute("geocodeCache", gc);
             } catch (Exception e) {
                 logger.log(Level.SEVERE, e.getMessage(), e);
             }
         }
 
+        OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
         if (StringUtils.isNotEmpty(request.getParameter("fullScreenGeocodeMap"))) {
-            return mapping.findForward("fullScreen");
+            if (gc != null) {
+            	boolean isMobile = os.isMobileDevice();
+            	request.setAttribute("lat", StringUtil.formatCoordE6(gc.getLatitude()));
+            	request.setAttribute("lng", StringUtil.formatCoordE6(gc.getLongitude()));
+            	request.setAttribute("landmarkDesc", HtmlUtils.buildGeocodeDescV2(gc, request.getAttribute("address"), request.getLocale(), isMobile));
+            	request.setAttribute("landmarkName", "'" + gc.getLocation() + "'");
+            	if (isMobile) {
+            		return mapping.findForward("landmarksMobile");
+            	} else {
+            		return mapping.findForward("landmarks");
+            	}
+            } else {
+            	return mapping.findForward("fullScreen");
+            }
         } else {
-            OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
-
             if (os.isMobileDevice()) {
                 return mapping.findForward("mobile");
             } else {

@@ -104,6 +104,8 @@
             <forward name="success" path="/geocode.jsp"/>
             <forward name="mobile" path="/m/geocode.jsp"/>
             <forward name="fullScreen" path="/fullScreenGeocodeMap.jsp"/>
+            <forward name="landmarks" path="/landmarks.jsp"/>
+            <forward name="landmarksMobile" path="/landmarks.jsp?mobile=true"/>
         </action>
         <action path="/archive" type="com.jstakun.lm.server.struts.ShowArchiveAction">
             <forward name="success" path="/archive.jsp"/>
