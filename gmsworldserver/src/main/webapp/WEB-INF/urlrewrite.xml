@@ -23,13 +23,13 @@
     </rule>
 
     <outbound-rule>
-        <from>^/blogeo.do\?user=([a-zA-Z0-9_-]+)$</from>
-        <to>/blogeo/$1</to>
+        	<from>^/blogeo.do\?user=([a-zA-Z0-9_-]+)$</from>
+        	<to>/blogeo/$1</to>
     </outbound-rule>
 
     <outbound-rule>
-        <from>^/blogeo.do\?user=([a-zA-Z0-9_-]+)@([a-zA-Z]+)$</from>
-        <to>/blogeo/$1</to>
+        	<from>^/blogeo.do\?user=([a-zA-Z0-9_-]+)@([a-zA-Z]+)$</from>
+        	<to>/blogeo/$1</to>
     </outbound-rule>
 
     <!-- showLandmark rules -->
@@ -50,8 +50,8 @@
     </rule>
 
     <outbound-rule>
-        <from>^/showLandmark.do\?key=([a-zA-Z0-9_-]+)$</from>
-        <to>/showLandmark/$1</to>
+        	<from>^/showLandmark.do\?key=([a-zA-Z0-9_-]+)$</from>
+        	<to>/showLandmark/$1</to>
     </outbound-rule>
     
     <!-- showImage rules -->

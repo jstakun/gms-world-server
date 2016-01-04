@@ -1,4 +1,5 @@
 <%@page contentType="text/html" pageEncoding="utf-8"%>
+<%@page import="com.jstakun.lm.server.utils.HtmlUtils" %>
 <!DOCTYPE html>
 <html>
 
@@ -17,20 +18,28 @@
     <div class="content">
     	<article>
     		<% 
-    			String lat = (String) request.getAttribute("lat");
-            	String lon = (String) request.getAttribute("lon");
-    		    if (lat == null || lon == null) {
+    			Double lat = null, lon = null;    
+            	try {    
+					lat = Double.valueOf((String)request.getAttribute("lat"));
+        			lon = Double.valueOf((String)request.getAttribute("lng"));
+            	} catch (Exception e) {
+            	
+            	}
+    			if (lat == null || lon == null) {
             %>
             	<h3>No location specified</h3>
             <%                    
                 } else {      
             %>
-                <h3>Your location</h3>
+                <h3>Selected location</h3>
                 <h4>You've selected following location:</h4>
 
-                <img src="/image?lat=<%= lat%>&lng=<%= lon%>" alt="Location on Google Map" height="128" width="128"/><br/>
+                <a href="/showLocation/<%= HtmlUtils.encodeDouble(lat) %>/<%= HtmlUtils.encodeDouble(lon) %>/fullScreen">
+                	<img src="/image?lat=<%= lat%>&lng=<%= lon%>" alt="Location on Google Map" height="128" width="128"/><br/>
+                </a>
                 
                 <p>
+                   <a href="/showLocation/<%= HtmlUtils.encodeDouble(lat) %>/<%= HtmlUtils.encodeDouble(lon) %>/fullScreen">See full screen map</a><br/>
                    <%= request.getAttribute("address")!=null ? "Geocode address: " + request.getAttribute("address") : "" %><br/>
                    Latitude: <%= lat %>, Longitude: <%= lon %><br/>
                 </p>

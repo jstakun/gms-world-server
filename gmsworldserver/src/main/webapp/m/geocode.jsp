@@ -32,12 +32,12 @@
         %>
            <h3>Geocode location for: <%= gc.getLocation() %></h3>
 
-           <a href="/showGeocode.do?key=<%= key %>&fullScreenGeocodeMap=1">
+           <a href="/showGeocode/<%= key %>/fullScreen">
             <img src="/image?lat=<%= gc.getLatitude() %>&lng=<%= gc.getLongitude() %>" alt="Geocode on Google Map" height="128" width="128"/><br/>
            </a>
                                       
            <p>
-             <a href="/showGeocode.do?key=<%= key %>&fullScreenGeocodeMap=1">See full screen map</a><br/>
+             <a href="/showGeocode/<%= key %>/fullScreen">See full screen map</a><br/>
              Latitude: <%= StringUtil.formatCoordE6(gc.getLatitude()) %>, Longitude: <%= StringUtil.formatCoordE6(gc.getLongitude()) %><br/>
              <div class="date"><span>Posted <%= prettyTime.format(gc.getCreationDate()) %></span></div>
            </p>

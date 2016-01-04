@@ -12,6 +12,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import net.gmsworld.server.layers.GeocodeHelperFactory;
+import net.gmsworld.server.layers.LayerHelperFactory;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.StringUtil;
 
@@ -28,6 +29,8 @@ import eu.bitwalker.useragentutils.OperatingSystem;
 public class ShowLocationAction extends org.apache.struts.action.Action {
 
     private static final Logger logger = Logger.getLogger(ShowLocationAction.class.getName());
+    private static final int HOTELS_LIMIT = 500;
+	private static final int RADIUS = 50;
 
     public ShowLocationAction() {
     	super();
@@ -73,6 +76,10 @@ public class ShowLocationAction extends org.apache.struts.action.Action {
         }
 
         if (StringUtils.isNotEmpty(request.getParameter("fullScreen")) && lat != null && lng != null) {
+        	//load hotels layer in asynchronous mode 
+			if (StringUtils.contains(request.getParameter("enabled"), "Hotels")) {
+				LayerHelperFactory.getHotelsBookingUtils().loadHotelsAsync(lat, lng, RADIUS, HOTELS_LIMIT); 
+			}
         	if (isMobile) {
         		return mapping.findForward("landmarksMobile");
         	} else {
