@@ -347,8 +347,10 @@ public class HotelsBookingUtils extends LayerHelper {
         Integer nr = hotel.getProperty("nr_rooms");
         if (nr != null && nr > 0) {
         	tokens.put("no_rooms", Integer.toString(nr));
-        }
-        address.setField(AddressInfo.EXTENSION, Integer.toString(nr));
+        	address.setField(AddressInfo.EXTENSION, Integer.toString(nr));
+        } else {
+        	address.setField(AddressInfo.EXTENSION, "0");
+        }      
 
         value = hotel.getProperty("photo_url");
         landmark.setThumbnail(value);
