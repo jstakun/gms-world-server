@@ -344,8 +344,8 @@ public class HotelsBookingUtils extends LayerHelper {
         Double stars = NumberUtils.getDouble(hotel.getProperty("stars"));
         tokens.put("star_rating", Double.toString(stars));
         
-        int nr = hotel.getProperty("nr_rooms");
-        if (nr > 0) {
+        Integer nr = hotel.getProperty("nr_rooms");
+        if (nr != null && nr > 0) {
         	tokens.put("no_rooms", Integer.toString(nr));
         }
         address.setField(AddressInfo.EXTENSION, Integer.toString(nr));
