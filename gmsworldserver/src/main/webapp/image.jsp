@@ -35,7 +35,7 @@
     if (myposcode != null) {
     	imageLink = "/showLandmark/" + myposcode; 
     } else {
-    	imageLink = "/showLocation/" + screenshot.getLatitude() + "/" + screenshot.getLongitude();
+    	imageLink = "/showLocation/" + HtmlUtils.encodeDouble(screenshot.getLatitude()) + "/" + HtmlUtils.encodeDouble(screenshot.getLongitude()) + "/fullScreen";
     }
 %>
 
@@ -49,6 +49,7 @@
                      </a>
                  </p>
                  <p class="post-details">
+                     <a href="<%=imageLink%>">See full screen map</a><br/>
                      <%=address != null ? "Geocode address: " + address + "<br/>" : ""%>
                      Latitude: <%=StringUtil.formatCoordE6(screenshot.getLatitude())%>, Longitude: <%=StringUtil.formatCoordE6(screenshot.getLongitude())%><br/>
                      Posted on <%=DateUtils.getFormattedDateTime(request.getLocale(), screenshot.getCreationDate())%> by 
