@@ -129,7 +129,7 @@ public class ScreenshotPersistenceUtils {
     			logger.log(Level.INFO, "Deleting screenshot " + id + " response: " + response);
     			deleted = true;    
     		} else {
-    			logger.log(Level.SEVERE, "Failed to delete screenshot " + filename);
+    			logger.log(Level.SEVERE, "Failed to delete file {0} from screeshot {1}", new Object[] {filename, id});
     		}
     	} catch (Exception e) {
         	logger.log(Level.SEVERE, e.getMessage(), e);

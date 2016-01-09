@@ -21,7 +21,7 @@ public class LandmarkForm extends DynaActionForm {
     }
     
     @Override
-  public void reset(ActionMapping mapping, HttpServletRequest request)
+    public void reset(ActionMapping mapping, HttpServletRequest request)
     {
       super.reset(mapping, request);
 
