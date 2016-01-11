@@ -24,6 +24,7 @@ import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
 import com.jstakun.lm.server.persistence.Landmark;
+import com.jstakun.lm.server.utils.HtmlUtils;
 import com.jstakun.lm.server.utils.MailUtils;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 import com.openlapi.AddressInfo;
@@ -223,6 +224,16 @@ public class NotificationUtils {
     	logger.log(Level.INFO, "Sending landmark creation notification to service {0}...", service);
     	
     	String userMask = null;
+    	
+    	AddressInfo addressInfo = null;
+    	if (StringUtils.equals(service, Commons.FACEBOOK) || StringUtils.equals(service, Commons.TWITTER)) {
+    		 try {
+    			 addressInfo = GeocodeHelperFactory.getMapQuestUtils().processReverseGeocode(latitude, longitude);
+    		 } catch (Exception e) {
+    	         logger.log(Level.SEVERE, e.getMessage(), e);
+    	     } 
+    	}
+    	
         if (StringUtils.equals(service, Commons.FACEBOOK)) {
     		if (socialIdsMap.containsKey(Commons.FACEBOOK)) {
                 userMask = UrlUtils.createUsernameMask(socialIdsMap.get(Commons.FACEBOOK) + "@" + Commons.FACEBOOK);
@@ -231,8 +242,7 @@ public class NotificationUtils {
             }
             logger.log(Level.INFO, "Using user mask " + userMask);
             String fbTitle = name;
-            try {
-            	AddressInfo addressInfo = GeocodeHelperFactory.getMapQuestUtils().processReverseGeocode(latitude, longitude);
+            if (addressInfo != null) {
             	fbTitle = "Somewhere in ";
             	String city = addressInfo.getField(AddressInfo.CITY);
             	if (StringUtils.isNotEmpty(city)) {
@@ -242,17 +252,15 @@ public class NotificationUtils {
             	if (StringUtils.isNotEmpty(cc)) {
             		Locale l = new Locale("", cc);
             		String country = l.getDisplayCountry();
-            		if (StringUtils.isNotEmpty(country)) {
-            			fbTitle += country;
+            			if (StringUtils.isNotEmpty(country)) {
+            				fbTitle += country;
+            			} else {
+            				fbTitle += "...";
+            			}
             		} else {
-            			fbTitle += "...";
-            		}
-            	} else {
             		fbTitle += "...";
             	}
-            } catch (Exception e) {
-            	logger.log(Level.SEVERE, e.getMessage(), e);
-            }
+            }    
             FacebookSocialUtils.sendMessageToPageFeed(landmarkUrl, userMask, fbTitle, imageUrl, Commons.SERVER, null);
     	} else if (StringUtils.equals(service, Commons.TWITTER)) {
     	    if (socialIdsMap.containsKey(Commons.TWITTER)) {
@@ -262,6 +270,26 @@ public class NotificationUtils {
             }
     	    logger.log(Level.INFO, "Using user mask " + userMask);
     		TwitterUtils.sendMessage(landmarkUrl, Commons.getProperty(Property.TW_TOKEN), Commons.getProperty(Property.TW_SECRET), userMask, name, imageUrl, latitude, longitude, Commons.SERVER);
+    		//TODO move link to config file
+    		if (latitude != null && longitude != null) {
+    			String hotelsUrl = UrlUtils.getShortUrl("http://www.hotelsonmap.net/hotelLandmark/" + HtmlUtils.encodeDouble(latitude) + "/" + HtmlUtils.encodeDouble(longitude));
+    			name = "";
+    			if (addressInfo != null) {
+                	String city = addressInfo.getField(AddressInfo.CITY);
+                	if (StringUtils.isNotEmpty(city)) {
+                		name += city + ", ";
+                	}
+                	String cc = addressInfo.getField(AddressInfo.COUNTRY_CODE);
+                	if (StringUtils.isNotEmpty(cc)) {
+                		Locale l = new Locale("", cc);
+                		String country = l.getDisplayCountry();
+                		if (StringUtils.isNotEmpty(country)) {
+                			name += country;
+                		} 
+                	} 
+                }
+                TwitterUtils.sendMessage(hotelsUrl, Commons.getProperty(Property.TW_TOKEN), Commons.getProperty(Property.TW_SECRET), userMask, name, imageUrl, latitude, longitude, Commons.HOTELS);
+    		}
     	} else if (StringUtils.equals(service, Commons.GOOGLE)) {
     		if (socialIdsMap.containsKey(Commons.GOOGLE)) {
     			userMask = socialIdsMap.get(Commons.GOOGLE) + "@" + Commons.GOOGLE;

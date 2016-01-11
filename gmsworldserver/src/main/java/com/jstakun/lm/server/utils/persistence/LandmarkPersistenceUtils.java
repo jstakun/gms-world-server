@@ -979,7 +979,9 @@ public class LandmarkPersistenceUtils {
     	String landmarkUrl = ConfigurationManager.SERVER_URL + "showLandmark/" + l.getId();
     	if (StringUtils.isNotEmpty(l.getHash())) {
     		landmarkUrl = UrlUtils.BITLY_URL + l.getHash();
-    	} 
+    	} else {
+    		landmarkUrl = UrlUtils.getShortUrl(landmarkUrl);
+    	}
                         
     	String titleSuffix = "";
     	String[] tokens = StringUtils.split(userAgent, ",");

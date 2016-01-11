@@ -53,6 +53,13 @@ public class TwitterUtils {
                     message = String.format(rb.getString("Social.tw.login"), url);
                 } else if (type == Commons.CHECKIN) { 
                 	message = String.format(rb.getString("Social.tw.checkin"), user, name, url);
+                } else if (type == Commons.HOTELS) {
+                	//TODO move to resource bundle
+                	message = "Discover hotels around";
+                	if (StringUtils.isNotEmpty(name)) {
+                		message += " " + name;
+                	}
+                	message += ": " + url;
                 }
 
                 if (message != null) {
@@ -70,7 +77,7 @@ public class TwitterUtils {
                             	InputStream is  = new URL(imageUrl).openStream();
                             	if (is != null && imageUrl.endsWith("png")) {
                             		update.media("checkin.png", is);
-                            	} else  if (is != null) {
+                            	} else if (is != null) {
                                 	update.media("landmark.jpg", is);
                             	}
                             } catch (Exception e) {
