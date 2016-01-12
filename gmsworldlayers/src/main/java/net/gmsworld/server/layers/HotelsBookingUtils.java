@@ -196,12 +196,14 @@ public class HotelsBookingUtils extends LayerHelper {
 		try {
 			logger.log(Level.INFO, "Calling: " + hotelsUrl);
 			HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), false);
-		    int responseCode = HttpUtils.getResponseCode(hotelsUrl);
-			if (responseCode >= 400) {
+		    Integer responseCode = HttpUtils.getResponseCode(hotelsUrl);
+			if (responseCode != null && responseCode >= 400) {
 		    	id = null;
 		    	logger.log(Level.SEVERE, "Received following server response code {0}", responseCode);
-		    } else {
+		    } else if (responseCode != null) {
 		    	logger.log(Level.INFO, "Received following server response code {0}", responseCode);
+		    } else {
+		    	logger.log(Level.SEVERE, "No response from server"); 
 		    }
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);

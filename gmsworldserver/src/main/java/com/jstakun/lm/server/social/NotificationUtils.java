@@ -270,9 +270,8 @@ public class NotificationUtils {
             }
     	    logger.log(Level.INFO, "Using user mask " + userMask);
     		TwitterUtils.sendMessage(landmarkUrl, Commons.getProperty(Property.TW_TOKEN), Commons.getProperty(Property.TW_SECRET), userMask, name, imageUrl, latitude, longitude, Commons.SERVER);
-    		//TODO move link to config file
     		if (latitude != null && longitude != null) {
-    			String hotelsUrl = UrlUtils.getShortUrl("http://www.hotelsonmap.net/hotelLandmark/" + HtmlUtils.encodeDouble(latitude) + "/" + HtmlUtils.encodeDouble(longitude));
+    			String hotelsUrl = UrlUtils.getShortUrl(com.jstakun.lm.server.config.ConfigurationManager.HOTELS_URL + "hotelLandmark/" + HtmlUtils.encodeDouble(latitude) + "/" + HtmlUtils.encodeDouble(longitude));
     			name = "";
     			if (addressInfo != null) {
                 	String city = addressInfo.getField(AddressInfo.CITY);

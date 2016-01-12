@@ -54,12 +54,12 @@ public class TwitterUtils {
                 } else if (type == Commons.CHECKIN) { 
                 	message = String.format(rb.getString("Social.tw.checkin"), user, name, url);
                 } else if (type == Commons.HOTELS) {
-                	//TODO move to resource bundle
-                	message = "Discover hotels around";
+                	String suffix = "";
                 	if (StringUtils.isNotEmpty(name)) {
-                		message += " " + name;
+                		suffix += " " + name;
                 	}
-                	message += ": " + url;
+                	suffix += ": " + url;
+                	message = String.format(rb.getString("Social.tw.hotels"), suffix);
                 }
 
                 if (message != null) {

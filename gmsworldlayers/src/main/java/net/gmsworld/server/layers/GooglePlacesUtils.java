@@ -444,8 +444,8 @@ public class GooglePlacesUtils extends LayerHelper {
 			String url = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + placeid + "&key=" + Commons.getProperty(Property.GOOGLE_API_KEY) + "&language=" + language;
             URL itemDetails = new URL(url);
             String response = HttpUtils.processFileRequest(itemDetails);
-            int responseCode = HttpUtils.getResponseCode(url);
-            if (responseCode == 200 && response != null) {
+            Integer responseCode = HttpUtils.getResponseCode(url);
+            if (responseCode != null && responseCode == 200 && response != null) {
                return response;	
             } else {
                logger.log(Level.SEVERE, "Received following server response code " + responseCode);
