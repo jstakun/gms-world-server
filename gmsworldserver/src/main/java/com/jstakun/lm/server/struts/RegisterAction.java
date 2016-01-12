@@ -23,14 +23,8 @@ public class RegisterAction extends Action {
 
     private static final Logger logger = Logger.getLogger(RegisterAction.class.getName());
 
-
     @Override
-        public ActionForward execute(ActionMapping mapping, ActionForm form,
-                                 HttpServletRequest request,
-                                 HttpServletResponse response) throws IOException,
-                                                                      ServletException
-                                                                       {
-
+    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         UserForm userForm = (UserForm)form;
         String login = StringUtils.trimToEmpty((String) userForm.get("login"));
         String email = StringUtils.trimToEmpty((String) userForm.get("email"));

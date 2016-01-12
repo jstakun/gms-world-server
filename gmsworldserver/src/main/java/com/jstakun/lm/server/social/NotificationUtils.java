@@ -243,7 +243,7 @@ public class NotificationUtils {
             logger.log(Level.INFO, "Using user mask " + userMask);
             String fbTitle = name;
             if (addressInfo != null) {
-            	fbTitle = "Somewhere in ";
+            	fbTitle = "In ";
             	String city = addressInfo.getField(AddressInfo.CITY);
             	if (StringUtils.isNotEmpty(city)) {
             		fbTitle += city + ", ";

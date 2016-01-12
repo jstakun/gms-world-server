@@ -22,7 +22,6 @@
 
         <jsp:include page="/WEB-INF/jspf/header.jsp"/>
 
-
         <div id="content-wrap" class="clear" >
 
             <!-- content -->
@@ -35,7 +34,7 @@
 
 
 
-                    <html:form action="contact" method="post">
+                    <html:form action="/contact" method="post">
 
                         <p class="no-border"><strong>
                                 <%
@@ -88,7 +87,6 @@
                         <p class="no-border"><strong>*) Required</strong></p>
 
                     </html:form>
-
 
                     <!-- /main -->
                     <%@ include file="/WEB-INF/jspf/ad_medium_baner.jspf" %>

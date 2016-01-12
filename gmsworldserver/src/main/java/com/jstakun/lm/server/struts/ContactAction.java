@@ -32,10 +32,7 @@ public class ContactAction extends org.apache.struts.action.Action {
      * @return
      */
     @Override
-    public ActionForward execute(ActionMapping mapping, ActionForm form,
-            HttpServletRequest request, HttpServletResponse response)
-            {
-
+    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
         DynaActionForm contactForm = (DynaActionForm) form;
 
         String subject = (String) contactForm.get("subject");
@@ -45,10 +42,10 @@ public class ContactAction extends org.apache.struts.action.Action {
 
         try {
             MailUtils.sendContactMessage(email, name, subject, message);
-             request.setAttribute("status","success");
+            request.setAttribute("status","success");
         } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.getMessage(), ex);
-             request.setAttribute("status","failed");
+            request.setAttribute("status","failed");
         }
 
         return mapping.findForward("success");
