@@ -66,9 +66,12 @@ public class ShowLocationAction extends org.apache.struts.action.Action {
                 request.setAttribute("lng", StringUtil.formatCoordE6(lng));
                 String address = null;
                 if (!StringUtils.equals(request.getParameter("enabled"), "Hotels")) {
-                	address = GeocodeHelperFactory.getMapQuestUtils().processReverseGeocode(lat, lng).getField(AddressInfo.EXTENSION);
-                	if (StringUtils.isNotEmpty(address)) {
-                		request.setAttribute("address", address);
+                	AddressInfo ai = GeocodeHelperFactory.getMapQuestUtils().processReverseGeocode(lat, lng); 
+                	if (ai != null) {
+                		address = ai.getField(AddressInfo.EXTENSION);
+                		if (StringUtils.isNotEmpty(address)) {
+                			request.setAttribute("address", address);
+                		}
                 	}
                 }
                 request.setAttribute("landmarkDesc", HtmlUtils.buildLocationDescV2(lat, lng, address, request.getLocale(), isMobile));

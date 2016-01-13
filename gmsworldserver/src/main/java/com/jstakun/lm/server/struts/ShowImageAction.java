@@ -37,19 +37,20 @@ public class ShowImageAction extends org.apache.struts.action.Action {
      * @return
      */
     @Override
-    public ActionForward execute(ActionMapping mapping, ActionForm form,
-            HttpServletRequest request, HttpServletResponse response)
-            throws Exception {
+    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         final String key = (String) request.getParameter("key");
 
         Screenshot s = FileUtils.getScreenshot(key, false);
         
         if (s != null) {
-        	String address = GeocodeHelperFactory.getMapQuestUtils().processReverseGeocode(s.getLatitude(),s.getLongitude()).getField(AddressInfo.EXTENSION);
-            if (StringUtils.isNotEmpty(address)) {
-                request.setAttribute("address", address);
-            }
+        	AddressInfo ai = GeocodeHelperFactory.getMapQuestUtils().processReverseGeocode(s.getLatitude(),s.getLongitude());
+        	if (ai != null) {
+        		String address = ai.getField(AddressInfo.EXTENSION);
+        		if (StringUtils.isNotEmpty(address)) {
+        			request.setAttribute("address", address);
+        		}
+        	}
             request.setAttribute("screenshot", s);
         }
         
