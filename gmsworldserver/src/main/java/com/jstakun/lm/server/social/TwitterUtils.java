@@ -52,7 +52,8 @@ public class TwitterUtils {
                 } else if (type == Commons.LOGIN) {
                     message = String.format(rb.getString("Social.tw.login"), url);
                 } else if (type == Commons.CHECKIN) { 
-                	message = String.format(rb.getString("Social.tw.checkin"), user, name, url);
+                	//message = String.format(rb.getString("Social.tw.checkin"), user, name, url);
+                	message = String.format(rb.getString("Social.tw.checkin.short"), url);
                 } else if (type == Commons.HOTELS) {
                 	String suffix = "";
                 	if (StringUtils.isNotEmpty(name)) {

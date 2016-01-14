@@ -507,11 +507,14 @@ public class YelpUtils extends LayerHelper {
 		JSONObject error = root.optJSONObject("error");
 		if (error != null && StringUtils.equals(error.optString("id"), "EXCEEDED_REQS")) {
 			cacheProvider.put(USAGE_LIMIT_MARKER, "1");
+			logger.log(Level.WARNING, "Yelp error: {0}", root);
 		} else if (error != null && StringUtils.equals(error.optString("id"), "UNAVAILABLE_FOR_LOCATION")) {
 			String key = LOCATION_UNAVAILABILITY_MARKER + "_" + StringUtil.formatCoordE2(latitude) + "_" + StringUtil.formatCoordE2(longitude);
         	cacheProvider.put(key, "1");
+        	logger.log(Level.WARNING, "Yelp error: {0}", root);
+		} else {
+			logger.log(Level.SEVERE, "Received Yelp error response {0}", root);
 		}
-		logger.log(Level.SEVERE, "Received Yelp error response {0}", root);
 	}
 	
 	public String getLayerName() {
