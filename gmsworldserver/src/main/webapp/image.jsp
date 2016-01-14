@@ -45,7 +45,7 @@
                     <!-- /main -->
                  <p class="image-section">
                      <a href="<%=imageLink%>">
-                     	<img src="<%=screenshot.getUrl()%>" title="See location on the map" alt="GMS World screenshot"/>
+                     	<img src="<%=screenshot.getUrl()%>" title="Discover interesting places around" alt="GMS World screenshot"/>
                      </a>
                  </p>
                  <p class="post-details">

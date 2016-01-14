@@ -128,12 +128,15 @@ public class HttpUtils {
             
             if (is != null) {
             	file = IOUtils.toString(is, "UTF-8");
-            	logger.log(Level.INFO, "Received " + conn.getContentType() + " content containing " + file.length() + " characters");
+            	int length = file.length();
+            	if (length > 0) {
+            		logger.log(Level.INFO, "Received " + conn.getContentType() + " document having " + length + " characters");
+            	}
             }
             
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
-            httpResponseStatuses.remove(fileUrl.toExternalForm());
+            //httpResponseStatuses.remove(fileUrl.toExternalForm());
         } finally {
             if (is != null) {
                 is.close();
@@ -168,11 +171,14 @@ public class HttpUtils {
                     out.write(buf, 0, count);
                     total += count;
                 }
-                logger.log(Level.INFO, "Received image, size: " + total + " bytes, type: " + conn.getContentType());
-            } else {
-            	logger.log(Level.SEVERE, "Received server response code " + responseCode);
+                logger.log(Level.INFO, "Received " + conn.getContentType() + " image having " + total + " bytes");
+            } else if (responseCode >= 400 ){
+                logger.log(Level.SEVERE, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString()});   
+            } else if (responseCode >= 300 && responseCode < 400) {
+            	logger.log(Level.WARNING, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString()});   
+            } else if (responseCode > 200) {
+            	logger.log(Level.INFO, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString()});
             }
-
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
         } finally {
@@ -184,51 +190,6 @@ public class HttpUtils {
             }
         }
     }
-    
-    /*public static void processImageFileRequest(HttpServletResponse response, String imageUrl) throws IOException {
-
-        InputStream is = null;
-        OutputStream out = null;
-        
-        try {
-            URL fileUrl = new URL(imageUrl);
-            HttpURLConnection conn = (HttpURLConnection) fileUrl.openConnection();
-            conn.setRequestMethod("GET");
-            conn.connect();
-            int responseCode = conn.getResponseCode();
-
-            if (responseCode == HttpServletResponse.SC_OK) {
-                is = conn.getInputStream();
-
-                logger.log(Level.INFO, "Received image, size: "+ conn.getContentLength() + " bytes, type: " + conn.getContentType());
-                               
-                response.setHeader("Content-Encoding", "gzip");
-                response.setHeader("Vary", "Accept-Encoding");
-                response.setContentType(conn.getContentType());
-                //response.setContentLength(length);
-
-                byte[] buf = new byte[1024];
-                int count = 0;
-                out = response.getOutputStream();
-                while ((count = is.read(buf)) >= 0) {
-                    out.write(buf, 0, count);
-                }
-            } else {
-                response.sendError(responseCode);
-            }
-
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        } finally {
-            if (is != null) {
-                is.close();
-            }
-            if (out != null) {
-            	out.close();
-            }
-        }
-    }*/
 
     public static boolean isEmptyAny(HttpServletRequest request, String... params) {
         for (String p : params) {
