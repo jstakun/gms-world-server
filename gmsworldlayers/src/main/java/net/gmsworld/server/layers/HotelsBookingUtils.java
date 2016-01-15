@@ -203,7 +203,7 @@ public class HotelsBookingUtils extends LayerHelper {
 		    } else if (responseCode != null) {
 		    	logger.log(Level.INFO, "Received following server response code {0}", responseCode);
 		    } else {
-		    	logger.log(Level.SEVERE, "No response from server"); 
+		    	logger.log(Level.WARNING, "No response code found"); 
 		    }
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);

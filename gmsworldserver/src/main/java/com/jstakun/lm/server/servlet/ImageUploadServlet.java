@@ -80,7 +80,7 @@ public class ImageUploadServlet extends HttpServlet {
 
                     	byte[] screenshot = IOUtils.toByteArray(item.openStream());
                     	
-                    	if (screenshot != null && screenshot.length > 0) {
+                    	if (screenshot != null && screenshot.length > 3) {
                     		
                     		itemName = System.currentTimeMillis() + "_" + itemName;
                     		
@@ -112,7 +112,7 @@ public class ImageUploadServlet extends HttpServlet {
                         			//sometimes uploaded image is black
                         			try {
                         				byte[] uploadedImage = ImageUtils.loadImage(imageUrl);
-                        				if (ImageUtils.isBlackImage(uploadedImage)) {
+                        				if (uploadedImage != null && uploadedImage.length > 3 && ImageUtils.isBlackImage(uploadedImage)) {
                         					logger.log(Level.SEVERE, "Uploaded image " + key + " is black: " + imageUrl);
                         					output = "Uploaded image is black!";
                         				} else {  		

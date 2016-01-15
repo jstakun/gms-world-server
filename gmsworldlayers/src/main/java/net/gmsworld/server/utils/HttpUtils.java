@@ -134,6 +134,8 @@ public class HttpUtils {
             	}
             }
             
+            logger.log(Level.INFO, "Request processed with status " + responseCode + " in " + (System.currentTimeMillis()-start) + " millis.");
+            
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
             //httpResponseStatuses.remove(fileUrl.toExternalForm());
@@ -143,8 +145,6 @@ public class HttpUtils {
             }
         }
         
-        logger.log(Level.INFO, "Request processed in " + (System.currentTimeMillis()-start) + " millis.");
-
         return file;
     }
 

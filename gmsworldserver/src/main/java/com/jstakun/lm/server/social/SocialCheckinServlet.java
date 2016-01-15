@@ -44,6 +44,8 @@ public final class SocialCheckinServlet extends HttpServlet {
     	
     	logger.log(Level.INFO, "Checkin to social network: " + service);
     	
+    	//TODO check if user has checked in to the place from different device within 8 hours (checkinTimeInterval param in the client)
+    	
     	if (StringUtils.equals(service, Commons.FOURSQUARE)) {
     		if (!HttpUtils.isEmptyAny(request, "accessToken", "venueId", "name")) {
     			String accessToken = request.getParameter("accessToken");
