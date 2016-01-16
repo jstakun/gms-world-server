@@ -85,7 +85,7 @@ public class LayersTest {
 	   //data.add(new Object[]{LayerHelperFactory.getGeonamesUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getGmsUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getTwitterUtils()});
-	   //data.add(new Object[]{LayerHelperFactory.getEventfulUtils()});
+	   data.add(new Object[]{LayerHelperFactory.getEventfulUtils()});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getGrouponUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getCouponsUtils()});

@@ -103,6 +103,12 @@ public class NumberUtils {
     			return new Double(i);
     		} else if (o instanceof Double) {
     			return (Double) o;
+    		} else if (o instanceof String) {
+    			try {
+    				return Double.parseDouble((String)o);
+    			} catch (Exception e) {
+    				return null;
+    			}
     		} else {
     			return null;
     		}

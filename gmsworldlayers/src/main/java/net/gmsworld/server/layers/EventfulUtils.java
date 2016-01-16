@@ -17,6 +17,7 @@ import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.JSONUtils;
+import net.gmsworld.server.utils.NumberUtils;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
@@ -183,64 +184,69 @@ public class EventfulUtils extends LayerHelper {
 	}
 	
 	private static ExtendedLandmark createEventfulLandmark(JSONObject event, int stringLimit, Locale locale) throws JSONException {
-            try {
-            	String name = event.getString("title");
-            	double lat = event.getDouble("latitude");
-            	double lng = event.getDouble("longitude");
-            	String url = event.getString("url");
+		ExtendedLandmark landmark = null;
+		try {
+            	Double lat = NumberUtils.getDouble(event.get("latitude"));
+            	Double lng = NumberUtils.getDouble(event.get("longitude"));
+            	
+            	if (lat != null && lng != null) {          	
+            		String name = event.getString("title");
+            		String url = event.getString("url");
 
-            	Map<String, String> tokens = new HashMap<String, String>();
-            	JSONUtils.putOptValue(tokens, "description", event, "description", false, stringLimit, true);
-            	JSONUtils.putOptValue(tokens, "venue", event, "venue_name", true, stringLimit, false);
-            	JSONUtils.putOptValue(tokens, "region", event, "region_name", true, stringLimit, false);
+            		Map<String, String> tokens = new HashMap<String, String>();
+            		JSONUtils.putOptValue(tokens, "description", event, "description", false, stringLimit, true);
+            		JSONUtils.putOptValue(tokens, "venue", event, "venue_name", true, stringLimit, false);
+            		JSONUtils.putOptValue(tokens, "region", event, "region_name", true, stringLimit, false);
             
-            	JSONUtils.putOptDate(tokens, "start_date", event, "start_time", formatter);
-            	long creationDate = -1;
-            	if (tokens.containsKey("start_date")) {
-            		creationDate = Long.parseLong(tokens.get("start_date"));
-            	}
+            		JSONUtils.putOptDate(tokens, "start_date", event, "start_time", formatter);
+            		long creationDate = -1;
+            		if (tokens.containsKey("start_date")) {
+            			creationDate = Long.parseLong(tokens.get("start_date"));
+            		}
             
-            	AddressInfo address = new AddressInfo();
+            		AddressInfo address = new AddressInfo();
             
-            	String val = event.optString("venue_address");
-            	if (StringUtils.isNotEmpty(val)) {
-            		address.setField(AddressInfo.STREET, val);
-            	}                    
-            	val = event.optString("city_name");
-            	if (StringUtils.isNotEmpty(val)) {
-            		address.setField(AddressInfo.CITY, val);
-            	}
-            	val = event.optString("country_name");
-            	if (StringUtils.isNotEmpty(val)) {
-            		address.setField(AddressInfo.COUNTRY, val);
-            	}
-            	val = event.optString("postal_code");
-            	if (StringUtils.isNotEmpty(val)) {
-            		address.setField(AddressInfo.POSTAL_CODE, val);
-            	}
+            		String val = event.optString("venue_address");
+            		if (StringUtils.isNotEmpty(val)) {
+            			address.setField(AddressInfo.STREET, val);
+            		}                    
+            		val = event.optString("city_name");
+            		if (StringUtils.isNotEmpty(val)) {
+            			address.setField(AddressInfo.CITY, val);
+            		}
+            		val = event.optString("country_name");
+            		if (StringUtils.isNotEmpty(val)) {
+            			address.setField(AddressInfo.COUNTRY, val);
+            		}
+            		val = event.optString("postal_code");
+            		if (StringUtils.isNotEmpty(val)) {
+            			address.setField(AddressInfo.POSTAL_CODE, val);
+            		}
             
-            	QualifiedCoordinates qc = new QualifiedCoordinates(lat, lng, 0f, 0f, 0f);
-            	ExtendedLandmark landmark = LandmarkFactory.getLandmark(name, null, qc, Commons.EVENTFUL_LAYER, address, creationDate, null);
-            	landmark.setUrl(url);
+            		QualifiedCoordinates qc = new QualifiedCoordinates(lat, lng, 0f, 0f, 0f);
+            		landmark = LandmarkFactory.getLandmark(name, null, qc, Commons.EVENTFUL_LAYER, address, creationDate, null);
+            		landmark.setUrl(url);
 
-            	JSONObject images = event.optJSONObject("image");
-            	if (images != null) {
-                	JSONObject thumb = images.optJSONObject("thumb");
-                	if (thumb != null) {
-                    	String icon = thumb.optString("url");
-                    	if (StringUtils.isNotEmpty(icon)){
-                           landmark.setThumbnail(icon);
-                    	}
-                	}
-            	}
+            		JSONObject images = event.optJSONObject("image");
+            		if (images != null) {
+            			JSONObject thumb = images.optJSONObject("thumb");
+            			if (thumb != null) {
+            				String icon = thumb.optString("url");
+            				if (StringUtils.isNotEmpty(icon)){
+            					landmark.setThumbnail(icon);
+            				}
+            			}
+            		}
           
-            	String description = JSONUtils.buildLandmarkDesc(landmark, tokens, locale);
-            	landmark.setDescription(description);
-            	return landmark;
-            } catch (JSONException ex) {
-                logger.log(Level.SEVERE, ex.getMessage(), ex);
-                return null;
-            }
+            		String description = JSONUtils.buildLandmarkDesc(landmark, tokens, locale);
+            		landmark.setDescription(description);
+            	} else {
+            		logger.log(Level.SEVERE, "Wrong coord format: " + event.get("latitude") + "," + event.get("longitude"));
+            	}
+        } catch (JSONException ex) {
+            logger.log(Level.SEVERE, ex.getMessage(), ex);
+        }
+		return landmark;
     }
 
     private static List<ExtendedLandmark> createCustomLandmarkEventfulList(String eventfulJson, int version, int stringLimit, Locale locale) throws JSONException, ParseException {
