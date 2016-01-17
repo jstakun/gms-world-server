@@ -58,14 +58,13 @@ public final class SocialCheckinServlet extends HttpServlet {
     					//response.sendError(responseCode);
     					logger.log(Level.SEVERE, "Received following http response code: {0}", responseCode);
     				} else {
-    					//TODO put imageUrl 
     					Map<String, String> params = new ImmutableMap.Builder<String, String>().
-                        put("user", "Foursquare User").
-                        put("name", name).
-                        put("url", UrlUtils.getShortUrl("http://foursquare.com/venue/" + venueId)).
-                        put("lat", lat != null ? lat : "").
-    					put("lng", lng != null ? lng : "").
-    					put("imageUrl", ConfigurationManager.SERVER_URL + "images/fs_checkin.png").build();
+                         put("user", "Foursquare User").
+                         put("name", name).
+                         put("url", UrlUtils.getShortUrl("http://foursquare.com/venue/" + venueId)).
+                         put("lat", lat != null ? lat : "").
+    					 put("lng", lng != null ? lng : "").
+    					 put("imageUrl", ConfigurationManager.SERVER_URL + "images/fs_checkin.png").build();
     					NotificationUtils.createSocialCheckinNotificationTask(params);
     				}
     			} else {
@@ -88,12 +87,12 @@ public final class SocialCheckinServlet extends HttpServlet {
     					logger.log(Level.SEVERE, "Received following http response code: {0}", responseCode);
     				} else {
     					Map<String, String> params = new ImmutableMap.Builder<String, String>().
-    					put("user", "Facebook User").
-    					put("name", name).
-                    	put("url", UrlUtils.getShortUrl("http://facebook.com/profile.php?id=" + venueId)).
-                    	put("lat", lat != null ? lat : "").
-    					put("lng", lng != null ? lng : "").
-    					put("imageUrl", ConfigurationManager.SERVER_URL + "images/fb_checkin.jpg").build();
+    					 put("user", "Facebook User").
+    					 put("name", name).
+                    	 put("url", UrlUtils.getShortUrl("http://facebook.com/profile.php?id=" + venueId)).
+                    	 put("lat", lat != null ? lat : "").
+    					 put("lng", lng != null ? lng : "").
+    					 put("imageUrl", ConfigurationManager.SERVER_URL + "images/fb_checkin.jpg").build();
     					NotificationUtils.createSocialCheckinNotificationTask(params);
     				}
     			} else {
@@ -114,8 +113,7 @@ public final class SocialCheckinServlet extends HttpServlet {
     				if (landmark != null) {
     					   String url = landmark.getUrl();
     					   if (StringUtils.isNotEmpty(url)) {
-    						    //TODO put imageUrl 
-    		    				Map<String, String> params = new ImmutableMap.Builder<String, String>().
+    						    Map<String, String> params = new ImmutableMap.Builder<String, String>().
     								put("user", "Google User").
     								put("name", landmark.getName()).
     								put("url", UrlUtils.getGoogleShortUrl(url)). 
