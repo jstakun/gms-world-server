@@ -52,22 +52,24 @@ public final class SocialCheckinServlet extends HttpServlet {
     			String name = request.getParameter("name");
     			String lat = request.getParameter("lat");
     			String lng = request.getParameter("lng");
-    			//TODO check if user has checked in to the place from different device within 8 hours (checkinTimeInterval param in the client)
-    	    	CheckinPersistenceUtils.persistCheckin(accessToken, venueId, -1, 2);
-    			int responseCode = FoursquareUtils.checkin(accessToken, venueId, name);
-    			if (responseCode != HttpServletResponse.SC_OK) {
-    				//response.sendError(responseCode);
-    				logger.log(Level.SEVERE, "Received following http response code: {0}", responseCode);
-    			} else {
-    				//TODO put imageUrl 
-    				Map<String, String> params = new ImmutableMap.Builder<String, String>().
+    			if (CheckinPersistenceUtils.persistCheckin(accessToken, venueId, -1, 2)) {
+    	    		int responseCode = FoursquareUtils.checkin(accessToken, venueId, name);
+    				if (responseCode != HttpServletResponse.SC_OK) {
+    					//response.sendError(responseCode);
+    					logger.log(Level.SEVERE, "Received following http response code: {0}", responseCode);
+    				} else {
+    					//TODO put imageUrl 
+    					Map<String, String> params = new ImmutableMap.Builder<String, String>().
                         put("user", "Foursquare User").
                         put("name", name).
                         put("url", UrlUtils.getShortUrl("http://foursquare.com/venue/" + venueId)).
                         put("lat", lat != null ? lat : "").
     					put("lng", lng != null ? lng : "").
     					put("imageUrl", ConfigurationManager.SERVER_URL + "images/fs_checkin.png").build();
-    				NotificationUtils.createSocialCheckinNotificationTask(params);
+    					NotificationUtils.createSocialCheckinNotificationTask(params);
+    				}
+    			} else {
+    				logger.log(Level.SEVERE, "Last checkin to " + venueId + " in less than 8 hours");
     			}
     		} else {
     			//response.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -79,20 +81,23 @@ public final class SocialCheckinServlet extends HttpServlet {
     			String name = request.getParameter("name");
     			String lat = request.getParameter("lat");
     			String lng = request.getParameter("lng");
-    			//TODO check if user has checked in to the place from different device within 8 hours (checkinTimeInterval param in the client)
-    	    	CheckinPersistenceUtils.persistCheckin(accessToken, venueId, -1, 2);
-    			int responseCode = FacebookSocialUtils.checkin(accessToken, venueId, name);
-    			if (responseCode != HttpServletResponse.SC_OK) {
-    				response.sendError(responseCode);
-    			} else {
-    				Map<String, String> params = new ImmutableMap.Builder<String, String>().
+    			if (CheckinPersistenceUtils.persistCheckin(accessToken, venueId, -1, 2)) {
+    				int responseCode = FacebookSocialUtils.checkin(accessToken, venueId, name);
+    				if (responseCode != HttpServletResponse.SC_OK) {
+    					//response.sendError(responseCode);
+    					logger.log(Level.SEVERE, "Received following http response code: {0}", responseCode);
+    				} else {
+    					Map<String, String> params = new ImmutableMap.Builder<String, String>().
     					put("user", "Facebook User").
     					put("name", name).
                     	put("url", UrlUtils.getShortUrl("http://facebook.com/profile.php?id=" + venueId)).
                     	put("lat", lat != null ? lat : "").
     					put("lng", lng != null ? lng : "").
     					put("imageUrl", ConfigurationManager.SERVER_URL + "images/fb_checkin.jpg").build();
-    				NotificationUtils.createSocialCheckinNotificationTask(params);
+    					NotificationUtils.createSocialCheckinNotificationTask(params);
+    				}
+    			} else {
+    				logger.log(Level.SEVERE, "Last checkin to " + venueId + " in less than 8 hours");
     			}
     		} else {
     			//response.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -121,7 +126,7 @@ public final class SocialCheckinServlet extends HttpServlet {
     					   }
     				}   
     			} catch (Exception e) {
-    					logger.log(Level.SEVERE, "SocialCheckinServlet.processRequest() exception", e);
+    				logger.log(Level.SEVERE, "SocialCheckinServlet.processRequest() exception", e);
     			}
     		} else {
     			response.sendError(HttpServletResponse.SC_BAD_REQUEST);

@@ -35,7 +35,8 @@ public class CheckinPersistenceUtils {
     /*
      * type 0 - qrcode, 1 - GMS world landmark, 2 - social checkin (fb, fs, gg)
      */
-    public static void persistCheckin(String username, String venueId, int landmarkKey, Integer type) {
+    public static boolean persistCheckin(String username, String venueId, int landmarkKey, Integer type) {
+    	boolean result = true;
     	try {
         	String landmarksUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "addItem?";
         	String params = "username=" + username + "&itemType=" + type + "&type=checkin";
@@ -48,9 +49,13 @@ public class CheckinPersistenceUtils {
         	//logger.log(Level.INFO, "Calling " + landmarksUrl + params);
         	String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl + params), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
         	logger.log(Level.INFO, "Received following server response: " + landmarksJson);
-        } catch (Exception e) {
+            if (StringUtils.contains(landmarksJson, "error")) {
+            	result = false;
+            }
+    	} catch (Exception e) {
         	logger.log(Level.SEVERE, e.getMessage(), e);
         }
+    	return result;
     }
 
     public static List<Checkin> selectCheckinsByLandmark(String landmarkid) {
