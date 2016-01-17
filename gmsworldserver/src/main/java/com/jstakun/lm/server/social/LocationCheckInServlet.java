@@ -76,7 +76,7 @@ public class LocationCheckInServlet extends HttpServlet {
                 } 
                 
                 if (landmark != null && landmark.getName() != null) {
-                    CheckinPersistenceUtils.persistCheckin(username, landmark.getId() + "", 1);
+                    CheckinPersistenceUtils.persistCheckin(username, null, landmark.getId(), 1);
                     response.setHeader("name", URLEncoder.encode(landmark.getName(), "UTF-8"));
                     resp.put("status", "ok");
                 } else {

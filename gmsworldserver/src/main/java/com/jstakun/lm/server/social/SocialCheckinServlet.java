@@ -15,6 +15,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.google.common.collect.ImmutableMap;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
+import com.jstakun.lm.server.utils.persistence.CheckinPersistenceUtils;
 
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.ConfigurationManager;
@@ -44,8 +45,6 @@ public final class SocialCheckinServlet extends HttpServlet {
     	
     	logger.log(Level.INFO, "Checkin to social network: " + service);
     	
-    	//TODO check if user has checked in to the place from different device within 8 hours (checkinTimeInterval param in the client)
-    	
     	if (StringUtils.equals(service, Commons.FOURSQUARE)) {
     		if (!HttpUtils.isEmptyAny(request, "accessToken", "venueId", "name")) {
     			String accessToken = request.getParameter("accessToken");
@@ -53,6 +52,8 @@ public final class SocialCheckinServlet extends HttpServlet {
     			String name = request.getParameter("name");
     			String lat = request.getParameter("lat");
     			String lng = request.getParameter("lng");
+    			//TODO check if user has checked in to the place from different device within 8 hours (checkinTimeInterval param in the client)
+    	    	CheckinPersistenceUtils.persistCheckin(accessToken, venueId, -1, 2);
     			int responseCode = FoursquareUtils.checkin(accessToken, venueId, name);
     			if (responseCode != HttpServletResponse.SC_OK) {
     				//response.sendError(responseCode);
@@ -78,7 +79,8 @@ public final class SocialCheckinServlet extends HttpServlet {
     			String name = request.getParameter("name");
     			String lat = request.getParameter("lat");
     			String lng = request.getParameter("lng");
-    			
+    			//TODO check if user has checked in to the place from different device within 8 hours (checkinTimeInterval param in the client)
+    	    	CheckinPersistenceUtils.persistCheckin(accessToken, venueId, -1, 2);
     			int responseCode = FacebookSocialUtils.checkin(accessToken, venueId, name);
     			if (responseCode != HttpServletResponse.SC_OK) {
     				response.sendError(responseCode);

@@ -32,49 +32,33 @@ public class CheckinPersistenceUtils {
 
     private static final Logger logger = Logger.getLogger(CheckinPersistenceUtils.class.getName());
 
-    public static void persistCheckin(String username, String landmarkKey, Integer type) {
-    	/*PersistenceManager pm = PMF.get().getPersistenceManager();
-
-        try {
-            pm.makePersistent(new Checkin(username, landmarkKey, type));
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
-        } finally {
-            pm.close();
-        }*/
-    	
+    /*
+     * type 0 - qrcode, 1 - GMS world landmark, 2 - social checkin (fb, fs, gg)
+     */
+    public static void persistCheckin(String username, String venueId, int landmarkKey, Integer type) {
     	try {
-        	String landmarksUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "addItem";
-        	String params = "username=" + username + "&landmarkId=" + landmarkKey + "&itemType=" + type + "&type=checkin";
-        	//logger.log(Level.INFO, "Calling: " + landmarksUrl);
-        	String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
-        	logger.log(Level.INFO, "Received response: " + landmarksJson);
+        	String landmarksUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "addItem?";
+        	String params = "username=" + username + "&itemType=" + type + "&type=checkin";
+        	if (landmarkKey > 0) {
+        		params += "&landmarkId=" + landmarkKey;
+        	}
+        	if (StringUtils.isNotEmpty(venueId)) {
+        		params += "&venueId=" + venueId;
+        	}
+        	//logger.log(Level.INFO, "Calling " + landmarksUrl + params);
+        	String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl + params), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
+        	logger.log(Level.INFO, "Received following server response: " + landmarksJson);
         } catch (Exception e) {
         	logger.log(Level.SEVERE, e.getMessage(), e);
         }
     }
 
-    public static List<Checkin> selectCheckinsByLandmark(String key) {
+    public static List<Checkin> selectCheckinsByLandmark(String landmarkid) {
     	List<Checkin> results = new ArrayList<Checkin>();
-        /*PersistenceManager pm = PMF.get().getPersistenceManager();
-        try {
-            Query query = pm.newQuery(Checkin.class);
-            query.setFilter("landmarkKey == key");
-            query.setOrdering("creationDate desc");
-            query.setRange(0, 100);
-            query.declareParameters("String key");
-            results = (List<Checkin>) query.execute(key);
-            //pm.retrieveAll(results);
-            results = (List<Checkin>) pm.detachCopyAll(results);
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
-        } finally {
-            pm.close();
-        }*/
-    	
+        
     	try {
         	String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "itemProvider";
-        	String params = "type=checkin&landmarkId=" + key;			 
+        	String params = "type=checkin&landmarkId=" + landmarkid;			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
         	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
         	//logger.log(Level.INFO, "Received response: " + gJson);

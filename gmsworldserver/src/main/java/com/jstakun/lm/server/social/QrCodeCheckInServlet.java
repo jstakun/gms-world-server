@@ -52,7 +52,7 @@ public class QrCodeCheckInServlet extends HttpServlet {
                 Landmark landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
                 if (landmark != null)
                 {
-                    CheckinPersistenceUtils.persistCheckin(username, key, 0);
+                    CheckinPersistenceUtils.persistCheckin(username, null, landmark.getId(), 0);
                     response.setHeader("name", URLEncoder.encode(landmark.getName(),"UTF-8"));
                     out.println("Checkin done");
                 }
