@@ -15,6 +15,7 @@ import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.layers.GeocodeHelperFactory;
+import net.gmsworld.server.layers.LayerHelperFactory;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.UrlUtils;
 
@@ -226,12 +227,14 @@ public class NotificationUtils {
     	String userMask = null;
     	
     	AddressInfo addressInfo = null;
+    	String cheapestPrice = null;
     	if (StringUtils.equals(service, Commons.FACEBOOK) || StringUtils.equals(service, Commons.TWITTER)) {
     		 try {
     			 addressInfo = GeocodeHelperFactory.getMapQuestUtils().processReverseGeocode(latitude, longitude);
     		 } catch (Exception e) {
     	         logger.log(Level.SEVERE, e.getMessage(), e);
     	     } 
+    		 cheapestPrice = LayerHelperFactory.getHotelsBookingUtils().findCheapestHotel(latitude, longitude, 50, 1);
     	}
     	
         if (StringUtils.equals(service, Commons.FACEBOOK)) {
@@ -262,6 +265,7 @@ public class NotificationUtils {
             	}
             }    
             FacebookSocialUtils.sendMessageToPageFeed(landmarkUrl, userMask, fbTitle, imageUrl, Commons.SERVER, null);
+            //TODO add hotels notification
     	} else if (StringUtils.equals(service, Commons.TWITTER)) {
     	    if (socialIdsMap.containsKey(Commons.TWITTER)) {
                 userMask = "@" + socialIdsMap.get(Commons.TWITTER);
@@ -287,6 +291,12 @@ public class NotificationUtils {
                 		} 
                 	} 
                 }
+    			if (cheapestPrice != null) {
+    				if (StringUtils.isNotEmpty(name)) {
+    					name += " ";
+    				}
+    				name += "from " + cheapestPrice;
+    			}
                 TwitterUtils.sendMessage(hotelsUrl, Commons.getProperty(Property.TW_TOKEN), Commons.getProperty(Property.TW_SECRET), userMask, name, imageUrl, latitude, longitude, Commons.HOTELS);
     		}
     	} else if (StringUtils.equals(service, Commons.GOOGLE)) {
@@ -299,6 +309,7 @@ public class NotificationUtils {
     		}
     		logger.log(Level.INFO, "Using user mask " + userMask);
     		GoogleBloggerUtils.sendMessage(landmarkUrl, Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), userMask, name, imageUrl, layer, latitude, longitude, desc, Commons.SERVER);
+    		//TODO add hotels notification
     	} else if (StringUtils.equals(service, Commons.GOOGLE_PLUS)) {
     		userMask = UrlUtils.createUsernameMask(user);
     		logger.log(Level.INFO, "Using user mask " + userMask);

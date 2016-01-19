@@ -61,7 +61,9 @@ public class LayersTest {
 		//bbox = "-97.79,30.16,-97.74,30.26"; 
 		//lat = 46.782499;
 		//lng = 23.558828;
+		
 		//LayerHelperFactory.getHotelsBookingUtils().loadHotelsAsync(lat, lng, radius, limit);   
+		//System.out.println("Cheapest hotel price: " + LayerHelperFactory.getHotelsBookingUtils().findCheapestHotel(lat, lng, radius, 1));
 	}
 	
 	
@@ -85,7 +87,7 @@ public class LayersTest {
 	   //data.add(new Object[]{LayerHelperFactory.getGeonamesUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getGmsUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getTwitterUtils()});
-	   data.add(new Object[]{LayerHelperFactory.getEventfulUtils()});
+	   //data.add(new Object[]{LayerHelperFactory.getEventfulUtils()});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getGrouponUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getCouponsUtils()});

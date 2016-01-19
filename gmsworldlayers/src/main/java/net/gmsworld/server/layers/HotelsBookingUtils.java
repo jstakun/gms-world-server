@@ -37,6 +37,8 @@ public class HotelsBookingUtils extends LayerHelper {
 
 	private static final String HOTELS_PROVIDER_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/cache/hotels/nearby/"; 
 	
+	private static final String HOTELS_CHEAPEST_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/cache/hotels/cheapest/nearby/"; 
+	
 	private static final String HOTELS_ASYNC_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/cache/hotels/async/nearby/";
 	
 	private static final String HOTELS_CACHE_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/one/cache/_id/"; 
@@ -55,11 +57,12 @@ public class HotelsBookingUtils extends LayerHelper {
 	
 	private List<ExtendedLandmark> loadLandmarksJSON(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String callCacheFirst, String flexString2, Locale locale, boolean useCache) throws Exception {
 		JSONArray hotels = null;
-		
+		String lngStr = StringUtil.formatCoordE2(lng);
+		String latStr = StringUtil.formatCoordE2(lat);	
 		//first call hotels cache
 		if (StringUtils.equals(callCacheFirst, "true")) {
-			String hotelsUrl = HOTELS_CACHE_URL + StringUtil.formatCoordE2(lng) + "_" + StringUtil.formatCoordE2(lat) + "_" + radius + "_" + limit;
-			logger.log(Level.INFO, "Calling: " + hotelsUrl);
+			String hotelsUrl = HOTELS_CACHE_URL + lngStr + "_" + latStr + "_" + radius + "_" + limit;
+			//logger.log(Level.INFO, "Calling: " + hotelsUrl);
 			String json = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), true);
 			if (StringUtils.startsWith(StringUtils.trim(json), "[")) {
 	    		try {
@@ -78,12 +81,12 @@ public class HotelsBookingUtils extends LayerHelper {
 	    			logger.log(Level.SEVERE, e.getMessage(), e);
 	    		}
 			} else {
-				logger.log(Level.WARNING, "Received following server response " + json);
+				logger.log(Level.WARNING, "Received following hotels cache server response " + json);
 			}	
 		}
 		
 		if (hotels == null) {
-			String hotelsUrl = HOTELS_PROVIDER_URL + StringUtil.formatCoordE2(lat) + "/" + StringUtil.formatCoordE2(lng) + "/" + radius + "/" + limit;			
+			String hotelsUrl = HOTELS_PROVIDER_URL + latStr + "/" + lngStr + "/" + radius + "/" + limit;			
 			logger.log(Level.INFO, "Calling: " + hotelsUrl);
 			String json = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), true);
 			if (StringUtils.startsWith(json, "[")) {
@@ -122,10 +125,12 @@ public class HotelsBookingUtils extends LayerHelper {
 		FeatureCollection hotels = null;
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-		
+		String lngStr = StringUtil.formatCoordE2(lng);
+		String latStr = StringUtil.formatCoordE2(lat);	
+
 		//first call hotels cache
 		if (StringUtils.equals(callCacheFirst, "true")) {
-			String hotelsUrl = HOTELS_CACHE_URL + StringUtil.formatCoordE2(lng) + "_" + StringUtil.formatCoordE2(lat) + "_" + radius + "_" + limit;
+			String hotelsUrl = HOTELS_CACHE_URL + lngStr + "_" + latStr + "_" + radius + "_" + limit;
 			logger.log(Level.INFO, "Calling: " + hotelsUrl);
 			String json = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), true);
 			if (StringUtils.startsWith(json, "[") && json.length() > 2) {
@@ -142,13 +147,13 @@ public class HotelsBookingUtils extends LayerHelper {
 	    			logger.log(Level.SEVERE, e.getMessage(), e);
 	    		}
 			} else {
-				logger.log(Level.WARNING, "Received following server response " + json);
+				logger.log(Level.WARNING, "Received following hotels cache server response " + json);
 			}	
 		}
 		
 		if (hotels == null) {
-			String hotelsUrl = HOTELS_PROVIDER_URL + StringUtil.formatCoordE2(lat) + "/" + StringUtil.formatCoordE2(lng) + "/" + radius + "/" + limit;			
-			logger.log(Level.INFO, "Calling: " + hotelsUrl);
+			String hotelsUrl = HOTELS_PROVIDER_URL + latStr + "/" + lngStr + "/" + radius + "/" + limit;			
+			//logger.log(Level.INFO, "Calling: " + hotelsUrl);
 			String json = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), true);
 			if (StringUtils.startsWith(json, "[")) {
 	    		try {
@@ -201,7 +206,7 @@ public class HotelsBookingUtils extends LayerHelper {
 		    	id = null;
 		    	logger.log(Level.SEVERE, "Received following server response code {0}", responseCode);
 		    } else if (responseCode != null) {
-		    	logger.log(Level.INFO, "Received following server response code {0}", responseCode);
+		    	//logger.log(Level.INFO, "Received following server response code {0}", responseCode);
 		    } else {
 		    	logger.log(Level.WARNING, "No response code found"); 
 		    }
@@ -210,6 +215,64 @@ public class HotelsBookingUtils extends LayerHelper {
 		}
 		
 		return id;
+	}
+	
+	public String findCheapestHotel(double lat, double lng, int r, int limit) {
+        String response = null;
+		JSONObject cheapest = findCheapestHotelJSon(lat, lng, r, limit);
+		
+		if (cheapest != null) {
+			JSONObject props = cheapest.getJSONObject("properties");
+			String currencycode = props.getString("currencycode");
+			Double minrate = null;
+			if (!props.isNull("minrate")) {
+				minrate = props.getDouble("minrate");
+			}			
+			if (StringUtils.isNotEmpty(currencycode) && minrate != null) {
+				response = Math.round(minrate) + " " + currencycode;
+			}
+		}
+		
+		return response;
+	}
+	
+	
+	private JSONObject findCheapestHotelJSon(double lat, double lng, int r, int limit) {
+		int normalizedRadius = r;
+		if (r < 1000) {
+			normalizedRadius = r * 1000;
+		}	
+		String lngStr = StringUtil.formatCoordE2(lng);
+		String latStr = StringUtil.formatCoordE2(lat);	
+		String hotelsUrl = HOTELS_CHEAPEST_URL + latStr + "/" + lngStr + "/" + normalizedRadius + "/" + limit;
+		JSONObject cheapest = null;
+		
+		try {
+			//logger.log(Level.INFO, "Calling: " + hotelsUrl);
+			String json = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), true);
+			if (StringUtils.startsWith(StringUtils.trim(json), "[")) {
+	    		try {
+	    			JSONArray root = new JSONArray(json);
+	    			if (root.length() > 0) {
+	    				cheapest = root.getJSONObject(0);
+	    			}
+	    		} catch (Exception e) {
+	    			logger.log(Level.SEVERE, e.getMessage(), e);
+	    		}
+			} else if (StringUtils.startsWith(StringUtils.trim(json), "{")) {
+	    		try {
+	    			cheapest = new JSONObject(json);
+	    		} catch (Exception e) {
+	    			logger.log(Level.SEVERE, e.getMessage(), e);
+	    		}
+			} else {
+				logger.log(Level.WARNING, "Received following server response " + json);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage(), e);
+		}
+		
+		return cheapest;
 	}
 
 	@Override
