@@ -265,7 +265,10 @@ public class NotificationUtils {
             	}
             }    
             FacebookSocialUtils.sendMessageToPageFeed(landmarkUrl, userMask, fbTitle, imageUrl, Commons.SERVER, null);
-            //TODO add hotels notification
+            if (cheapestPrice != null) {
+				fbTitle += " from " + cheapestPrice;
+			}
+            FacebookSocialUtils.sendMessageToPageFeed(landmarkUrl, userMask, fbTitle, imageUrl, Commons.HOTELS, null);
     	} else if (StringUtils.equals(service, Commons.TWITTER)) {
     	    if (socialIdsMap.containsKey(Commons.TWITTER)) {
                 userMask = "@" + socialIdsMap.get(Commons.TWITTER);

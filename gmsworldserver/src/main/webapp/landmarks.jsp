@@ -292,7 +292,7 @@
 		        if (window.location.href.indexOf("?enabled=Hotels") == -1 && hotelsOnly == false) {
 					var hotelControlDiv = document.createElement('div');
 		        	hotelControlDiv.index = 2;
-		        	var centerControl = new CenterControl(hotelControlDiv, 'center', '<img src=\'/images/hotel_search.png\' title=\'<bean:message key="hotels.discover.nearby" />\'/>', '<bean:message key="hotels.discover.nearby" />'); 
+		        	var centerControl = new CenterControl(hotelControlDiv, 'center', '<img src=\'/images/hotel_search_64.png\' title=\'<bean:message key="hotels.discover.nearby" />\'/>', '<bean:message key="hotels.discover.nearby" />'); 
 		        	map.controls[google.maps.ControlPosition.TOP_CENTER].push(hotelControlDiv);
 		        	google.maps.event.addDomListener(hotelControlDiv, 'click', function() { 
 		                window.location.href = window.location.pathname + '?enabled=Hotels';

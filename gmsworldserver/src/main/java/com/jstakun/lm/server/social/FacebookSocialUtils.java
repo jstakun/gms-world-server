@@ -136,6 +136,17 @@ public class FacebookSocialUtils {
                     Parameter.with("link", url),
                     Parameter.with("picture", imageUrl)
             };   
+        } else if (type == Commons.HOTELS) {
+        	if (imageUrl == null) {
+         	   imageUrl = ConfigurationManager.SERVER_URL + "images/hotel_search_128.jpg";
+            }
+            params = new Parameter[]{
+                    Parameter.with("message", "Discover hotels around!"), //TODO move to resource bundle
+                    Parameter.with("name", name),
+                    Parameter.with("description", rb.getString("Social.fb.desc.server")),
+                    Parameter.with("link", url),
+                    Parameter.with("picture", imageUrl)
+            };	
         }
         
         if (params != null) {      	

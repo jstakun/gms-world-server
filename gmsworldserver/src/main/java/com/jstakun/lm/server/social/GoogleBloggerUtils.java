@@ -81,7 +81,7 @@ public class GoogleBloggerUtils {
         	if (message != null) { 
                 createPost(getBlogger(), String.format(rb.getString("Social.gl.title.checkin"), username, name), message, lat, lng, "See " + name + " on the map");
             }
-        }
+        } 
         
         
     }
