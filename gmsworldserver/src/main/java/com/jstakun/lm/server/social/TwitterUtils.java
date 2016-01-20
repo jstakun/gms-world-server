@@ -55,9 +55,11 @@ public class TwitterUtils {
                 	//message = String.format(rb.getString("Social.tw.checkin"), user, name, url);
                 	message = String.format(rb.getString("Social.tw.checkin.short"), url);
                 } else if (type == Commons.HOTELS) {
-                	String suffix = "";
+                	String suffix = " ";
                 	if (StringUtils.isNotEmpty(name)) {
-                		suffix += " " + name;
+                		suffix += name;
+                	} else {
+                		suffix = "...";
                 	}
                 	suffix += ": " + url;
                 	message = String.format(rb.getString("Social.tw.hotels"), suffix);
