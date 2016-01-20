@@ -51,9 +51,7 @@ public class JSONUtils {
         tidy.setOutputEncoding("UTF-8");
     };
 
-    
-
- public static void putOptDate(Map<String, String> array, String name, String date, SimpleDateFormat formatter) {
+    public static void putOptDate(Map<String, String> array, String name, String date, SimpleDateFormat formatter) {
         if (StringUtils.isNotEmpty(date)) {
             try {
                 Date d = formatter.parse(date);

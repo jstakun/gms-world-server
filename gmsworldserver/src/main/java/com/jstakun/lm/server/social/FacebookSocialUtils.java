@@ -141,9 +141,9 @@ public class FacebookSocialUtils {
          	   imageUrl = ConfigurationManager.SERVER_URL + "images/hotel_search_128.jpg";
             }
             params = new Parameter[]{
-                    Parameter.with("message", "Discover hotels around!"), //TODO move to resource bundle
+                    Parameter.with("message", String.format(rb.getString("Social.fb.message.hotels"), user)),
                     Parameter.with("name", name),
-                    Parameter.with("description", rb.getString("Social.fb.desc.server")),
+                    Parameter.with("description", rb.getString("Social.fb.desc.hotels")),
                     Parameter.with("link", url),
                     Parameter.with("picture", imageUrl)
             };	

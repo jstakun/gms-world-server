@@ -229,6 +229,14 @@ public class HotelsBookingUtils extends LayerHelper {
 				minrate = props.getDouble("minrate");
 			}			
 			if (StringUtils.isNotEmpty(currencycode) && minrate != null) {
+				if (!StringUtils.endsWithAny(currencycode, new String[]{"USD", "GBP", "EUR"})) {
+					Double exchangeRate = JSONUtils.getExchangeRate("EUR", currencycode);
+					if (exchangeRate != null) {
+						minrate = minrate / exchangeRate;
+						currencycode = "EUR";
+					}
+				}
+				
 				response = Math.round(minrate) + " " + currencycode;
 			}
 		}

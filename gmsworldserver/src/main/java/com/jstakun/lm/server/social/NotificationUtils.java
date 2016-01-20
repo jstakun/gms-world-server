@@ -266,8 +266,11 @@ public class NotificationUtils {
             }    
             FacebookSocialUtils.sendMessageToPageFeed(landmarkUrl, userMask, fbTitle, imageUrl, Commons.SERVER, null);
             if (cheapestPrice != null) {
-				fbTitle += " from " + cheapestPrice;
-			}
+            	userMask = " " + fbTitle.replace('I', 'i');
+            	fbTitle = "From " + cheapestPrice;
+            } else {
+            	userMask = "!";
+            }
             FacebookSocialUtils.sendMessageToPageFeed(landmarkUrl, userMask, fbTitle, imageUrl, Commons.HOTELS, null);
     	} else if (StringUtils.equals(service, Commons.TWITTER)) {
     	    if (socialIdsMap.containsKey(Commons.TWITTER)) {
