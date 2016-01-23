@@ -250,23 +250,25 @@ public class NotificationUtils {
             	String city = addressInfo.getField(AddressInfo.CITY);
             	if (StringUtils.isNotEmpty(city)) {
             		fbTitle += city + ", ";
+            	} else {
+            		fbTitle = "Somewhere in ";
             	}
             	String cc = addressInfo.getField(AddressInfo.COUNTRY_CODE);
             	if (StringUtils.isNotEmpty(cc)) {
             		Locale l = new Locale("", cc);
             		String country = l.getDisplayCountry();
-            			if (StringUtils.isNotEmpty(country)) {
-            				fbTitle += country;
-            			} else {
-            				fbTitle += "...";
-            			}
+            		if (StringUtils.isNotEmpty(country)) {
+            			fbTitle += country;
             		} else {
+            			fbTitle += "...";
+            		}
+            	} else {
             		fbTitle += "...";
             	}
             }    
             FacebookSocialUtils.sendMessageToPageFeed(landmarkUrl, userMask, fbTitle, imageUrl, Commons.SERVER, null);
             if (cheapestPrice != null) {
-            	userMask = " " + fbTitle.replace("In", "around");
+            	userMask = " " + fbTitle.replace("In ", "around ").replace("Somewhere", "somewhere");
             	fbTitle = "From " + cheapestPrice + " per night";
             } else {
             	userMask = " around!";
@@ -288,6 +290,8 @@ public class NotificationUtils {
                 	String city = addressInfo.getField(AddressInfo.CITY);
                 	if (StringUtils.isNotEmpty(city)) {
                 		name += city + ", ";
+                	} else {
+                		name = "somewhere in ";
                 	}
                 	String cc = addressInfo.getField(AddressInfo.COUNTRY_CODE);
                 	if (StringUtils.isNotEmpty(cc)) {
@@ -295,8 +299,12 @@ public class NotificationUtils {
                 		String country = l.getDisplayCountry();
                 		if (StringUtils.isNotEmpty(country)) {
                 			name += country;
-                		} 
-                	} 
+                		} else {
+                			name += "...";
+                		}
+                	} else {
+                		name += "...";
+                	}
                 }
     			if (cheapestPrice != null) {
     				if (StringUtils.isNotEmpty(name)) {

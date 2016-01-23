@@ -7,6 +7,7 @@ import java.io.Reader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,8 +15,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.utils.HttpUtils;
 import net.sf.juffrou.reflect.BeanWrapperContext;
 import net.sf.juffrou.reflect.JuffrouBeanWrapper;
@@ -33,7 +34,6 @@ import org.supercsv.cellprocessor.ParseLong;
 import org.supercsv.cellprocessor.constraint.NotNull;
 import org.supercsv.cellprocessor.ift.CellProcessor;
 import org.supercsv.io.CsvBeanReader;
-import org.supercsv.io.ICsvBeanReader;
 import org.supercsv.prefs.CsvPreference;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -50,12 +50,14 @@ public class Processor {
 	private static ObjectMapper mapper = new ObjectMapper();
 	
 	private static final int BATCH_SIZE = 2000; 
-	private static final int TOTAL_SIZE = 100000; //400000; //, total ~369000
-	private static final int FIRST = 300000;
+	private static final int TOTAL_FILE_SIZE = 400000;
+	//private static final int FIRST = 0;
 	
-	private static final Boolean DRYRUN = false;
+	private static final Boolean DRYRUN = true;
 	private static final Boolean COMPARE = false;
 	
+	private static int count = 0;
+   
 	public static void main(String[] args) throws IOException {
 		if (args.length < 2) {
 			System.err.print("Please provide tsv or zip file name!");
@@ -77,7 +79,7 @@ public class Processor {
 		System.out.println("Dry run is set to: " + dryrun);
 		System.out.println("Records will be compared with database: " + compare);
 		
-		ICsvBeanReader beanReader = null;
+		CsvBeanReader beanReader = null;
 		ZipFile zf = null;
 		
 		try {
@@ -86,20 +88,29 @@ public class Processor {
 			
 			if (args[0].equals("zip")) {
 				zf = new ZipFile(args[1]);
-				ZipEntry ze = zf.entries().nextElement();
-				if (ze != null) {
-					reader = new InputStreamReader(zf.getInputStream(ze));
-				}
+				List<? extends ZipEntry> zipFiles = Collections.list(zf.entries());
+				for(ZipEntry ze : zipFiles) {
+					if (ze != null) {
+						reader = new InputStreamReader(zf.getInputStream(ze));
+						beanReader = new CsvBeanReader(reader, new CsvPreference.Builder(CsvPreference.TAB_PREFERENCE).surroundingSpacesNeedQuotes(true).build());
+						processFile(beanReader, dryrun, compare);
+					}
+				}	
 			} else if (args[0].equals("tsv")) {
 				reader = new FileReader(args[1]);
+				beanReader = new CsvBeanReader(reader, new CsvPreference.Builder(CsvPreference.TAB_PREFERENCE).surroundingSpacesNeedQuotes(true).build());
+	            processFile(beanReader, dryrun, compare);
 			}
-			
-		    beanReader = new CsvBeanReader(
-		            reader,
-		            new CsvPreference.Builder(CsvPreference.TAB_PREFERENCE)
-		                    .surroundingSpacesNeedQuotes(true).build());
-
-		    final String[] header = beanReader.getHeader(true);
+		} finally {
+			if (zf != null) {
+				zf.close();
+			}
+		}
+	}
+	
+	private static void processFile(CsvBeanReader beanReader, boolean dryrun, boolean compare) throws IOException {
+		try {
+			final String[] header = beanReader.getHeader(true);
 		    
 		    //filter columns
 		    List<String> columnsToMap = Arrays.asList("header_to_exclude");
@@ -116,13 +127,12 @@ public class Processor {
 		    	}
 		    }
 
-		    int count = 0;
 		    int errors = 0;
 		    int batchSize = 0;
 		    FeatureCollection featureCollection = new FeatureCollection();
 		    JuffrouBeanWrapper beanWrapper = new JuffrouBeanWrapper(BeanWrapperContext.create(HotelBean.class));
 		    
-		    if (FIRST > 0) {
+		    /*if (FIRST > 0) {
 		    	for (int i=0;i<FIRST;i++) {
 		    		try {
 		    			beanReader.read(HotelBean.class, header, processors);
@@ -131,9 +141,9 @@ public class Processor {
 		    		}
 		    	}
 		    }
-		    System.out.println("Skipped " + FIRST + " records.");
+		    System.out.println("Skipped " + FIRST + " records.");*/
 		    
-		    for (int i=0;i<TOTAL_SIZE;i++) {
+		    for (int i=0;i<TOTAL_FILE_SIZE;i++) {
 		    //while (true) {
 		    	try {
 		    		count++;
@@ -192,12 +202,8 @@ public class Processor {
 		} finally {
 			if (beanReader != null) {
 				beanReader.close();
-			}
-			if (zf != null) {
-				zf.close();
-			}
+			}	
 		}
-
 	}
 	
 	private static final CellProcessor[] processors = new CellProcessor[] { 
