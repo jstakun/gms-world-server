@@ -1,7 +1,5 @@
 package net.gmsworld.server.layers;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -434,14 +432,21 @@ public class HotelsBookingUtils extends LayerHelper {
         return landmark;
     }
 	
-	public static int countNearbyHotels(double lat, double lng, int r) throws MalformedURLException, IOException {
+	public int countNearbyHotels(double lat, double lng, int r) {
 		int normalizedRadius = r;
+		String hotelsCount = null;
 		if (r < 1000) {
 			normalizedRadius = r * 1000;
-		}	
-		String hotelsUrl = HOTELS_COUNTER_URL + StringUtil.formatCoordE2(lat) + "/" + StringUtil.formatCoordE2(lng) + "/" + normalizedRadius;			
-        String hotelsCount = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), false);
-		return NumberUtils.getInt(hotelsCount, -1);
+		}
+		
+		try {
+			String hotelsUrl = HOTELS_COUNTER_URL + StringUtil.formatCoordE2(lat) + "/" + StringUtil.formatCoordE2(lng) + "/" + normalizedRadius;			
+			hotelsCount = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), false);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage(), e);
+		}
+		
+        return NumberUtils.getInt(hotelsCount, -1);
 	}
 	
 	/*private class ConcurrentHotelsProcessor implements Runnable {

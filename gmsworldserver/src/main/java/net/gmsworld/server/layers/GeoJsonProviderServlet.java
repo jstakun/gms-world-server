@@ -94,8 +94,8 @@ public class GeoJsonProviderServlet extends HttpServlet {
 						int limit = DEFAULT_LIMIT;
 						if (StringUtils.equals(layer, Commons.HOTELS_LAYER)) {
 							try {
-								int hotelsInRangeCount = HotelsBookingUtils.countNearbyHotels(lat, lng, RADIUS);
-								if (hotelsInRangeCount < 10) {
+								int hotelsInRangeCount = LayerHelperFactory.getHotelsBookingUtils().countNearbyHotels(lat, lng, RADIUS);
+								if (hotelsInRangeCount >= 0 && hotelsInRangeCount < 10) {
 									radius = 2 * RADIUS; //max 100
 								}
 								logger.log(Level.INFO, hotelsInRangeCount + " hotels in range.");

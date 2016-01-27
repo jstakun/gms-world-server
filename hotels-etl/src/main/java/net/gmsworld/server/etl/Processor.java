@@ -57,6 +57,7 @@ public class Processor {
 	private static final Boolean COMPARE = false;
 	
 	private static int count = 0;
+	private static int errors = 0;
    
 	public static void main(String[] args) throws IOException {
 		if (args.length < 2) {
@@ -127,7 +128,6 @@ public class Processor {
 		    	}
 		    }
 
-		    int errors = 0;
 		    int batchSize = 0;
 		    FeatureCollection featureCollection = new FeatureCollection();
 		    JuffrouBeanWrapper beanWrapper = new JuffrouBeanWrapper(BeanWrapperContext.create(HotelBean.class));

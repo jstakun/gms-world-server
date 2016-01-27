@@ -65,7 +65,8 @@ public class LayersTest {
 		//lat = 46.782499;
 		//lng = 23.558828;
 		
-		//LayerHelperFactory.getHotelsBookingUtils().loadHotelsAsync(lat, lng, radius, limit);   
+		//LayerHelperFactory.getHotelsBookingUtils().loadHotelsAsync(lat, lng, radius, limit);  
+		//System.out.println("Hotels in radius: " + LayerHelperFactory.getHotelsBookingUtils().countNearbyHotels(lat, lng, radius));
 		//System.out.println("Cheapest hotel price: " + LayerHelperFactory.getHotelsBookingUtils().findCheapestHotel(lat, lng, radius, 1));
 	}
 	

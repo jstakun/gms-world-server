@@ -34,6 +34,8 @@ public class NotificationUtils {
 	
 	private static final Logger logger = Logger.getLogger(NotificationUtils.class.getName());
 	
+	private static final int HOTELS_RADIUS = 50;
+	
 	public static void createNotificationTask(Map<String, String> params) {
 		Queue queue = QueueFactory.getQueue("notifications");
 		TaskOptions options = withUrl("/tasks/notificationTask");
@@ -228,13 +230,17 @@ public class NotificationUtils {
     	
     	AddressInfo addressInfo = null;
     	String cheapestPrice = null;
+    	int hotelsCount = -1;
     	if (StringUtils.equals(service, Commons.FACEBOOK) || StringUtils.equals(service, Commons.TWITTER)) {
     		 try {
     			 addressInfo = GeocodeHelperFactory.getMapQuestUtils().processReverseGeocode(latitude, longitude);
     		 } catch (Exception e) {
     	         logger.log(Level.SEVERE, e.getMessage(), e);
     	     } 
-    		 cheapestPrice = LayerHelperFactory.getHotelsBookingUtils().findCheapestHotel(latitude, longitude, 50, 1);
+    		 hotelsCount = LayerHelperFactory.getHotelsBookingUtils().countNearbyHotels(latitude, longitude, HOTELS_RADIUS);
+    	     if (hotelsCount > 0) {	
+    	    	 cheapestPrice = LayerHelperFactory.getHotelsBookingUtils().findCheapestHotel(latitude, longitude, HOTELS_RADIUS, 1);
+    	     }
     	}
     	
         if (StringUtils.equals(service, Commons.FACEBOOK)) {
@@ -273,8 +279,10 @@ public class NotificationUtils {
             } else {
             	userMask = " around!";
             }
-            String hotelsUrl = UrlUtils.getShortUrl(com.jstakun.lm.server.config.ConfigurationManager.HOTELS_URL + "hotelLandmark/" + HtmlUtils.encodeDouble(latitude) + "/" + HtmlUtils.encodeDouble(longitude));
-			FacebookSocialUtils.sendMessageToPageFeed(hotelsUrl, userMask, fbTitle, imageUrl, Commons.HOTELS, null);
+            if (hotelsCount > 0) {
+            	String hotelsUrl = UrlUtils.getShortUrl(com.jstakun.lm.server.config.ConfigurationManager.HOTELS_URL + "hotelLandmark/" + HtmlUtils.encodeDouble(latitude) + "/" + HtmlUtils.encodeDouble(longitude));
+            	FacebookSocialUtils.sendMessageToPageFeed(hotelsUrl, userMask, fbTitle, imageUrl, Commons.HOTELS, null);
+            }
     	} else if (StringUtils.equals(service, Commons.TWITTER)) {
     	    if (socialIdsMap.containsKey(Commons.TWITTER)) {
                 userMask = "@" + socialIdsMap.get(Commons.TWITTER);
@@ -312,7 +320,9 @@ public class NotificationUtils {
     				}
     				name += "from " + cheapestPrice + " per night";
     			}
-                TwitterUtils.sendMessage(hotelsUrl, Commons.getProperty(Property.TW_TOKEN), Commons.getProperty(Property.TW_SECRET), userMask, name, imageUrl, latitude, longitude, Commons.HOTELS);
+    			if (hotelsCount > 0) {
+    				TwitterUtils.sendMessage(hotelsUrl, Commons.getProperty(Property.TW_TOKEN), Commons.getProperty(Property.TW_SECRET), userMask, name, imageUrl, latitude, longitude, Commons.HOTELS);
+    			}
     		}
     	} else if (StringUtils.equals(service, Commons.GOOGLE)) {
     		if (socialIdsMap.containsKey(Commons.GOOGLE)) {

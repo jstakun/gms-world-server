@@ -79,9 +79,9 @@ public class TwitterUtils {
                         	try {
                             	InputStream is  = new URL(imageUrl).openStream();
                             	if (is != null && imageUrl.endsWith("png")) {
-                            		update.media("checkin.png", is);
+                            		update.setMedia("checkin.png", is);
                             	} else if (is != null) {
-                                	update.media("landmark.jpg", is);
+                                	update.setMedia("landmark.jpg", is);
                             	}
                             } catch (Exception e) {
                             	logger.log(Level.SEVERE, "Failed to load landmark.", e);
@@ -131,7 +131,7 @@ public class TwitterUtils {
             		is  = new URL(imageUrl + "&thumbnail=false").openStream();
             	}
             	if (is != null) {
-            		update.media("image.jpg", is);
+            		update.setMedia("image.jpg", is);
             	}
             } catch (Exception e) {
             	logger.log(Level.SEVERE, "Failed to load image " + imageUrl, e);
