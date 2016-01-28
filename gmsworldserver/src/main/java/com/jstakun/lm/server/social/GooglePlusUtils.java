@@ -36,7 +36,7 @@ public class GooglePlusUtils {
     private static final Logger logger = Logger.getLogger(GooglePlusUtils.class.getName());
     private static final Random random = new Random();
 
-    protected static void sendMessage(String accessToken, String refreshToken, String url, String user, String name, Double lat, Double lng, int type) {
+    protected static String sendMessage(String accessToken, String refreshToken, String url, String user, String name, Double lat, Double lng, int type) {
         if (accessToken != null || refreshToken != null) {
             
         	final String[] images = {"blogeo_j.png", "blogeo_a.png", "poi_j.png", "poi_a.png"};
@@ -70,33 +70,53 @@ public class GooglePlusUtils {
                 }
                 
                 if (token != null) {
-                	Plus plus = getPlus(token, refreshToken);
-                
-                	sendMoment(plus, message, "Message from GMS World", ConfigurationManager.SERVER_URL + "images/" + images[imageId], lat, lng);
-
-                	sendUrlMoment(plus, url);
+                	Plus plus = getPlus(token, refreshToken);               
+                	String mid = sendMoment(plus, message, "Message from GMS World", ConfigurationManager.SERVER_URL + "images/" + images[imageId], lat, lng);
+                	String uid = sendUrlMoment(plus, url);
+                	if (mid != null && uid != null) {
+                    	return mid + "_" + uid;
+                    } else {
+                    	return null;
+                    }
                 } else {
                 	logger.log(Level.SEVERE, "Token is null!");
+                	return null;
                 }
+            } else {
+            	logger.log(Level.SEVERE, "Message is null!");
+            	return null;
             }
         } else {
             logger.log(Level.SEVERE, "Token is null!");
+            return null;
         }
     }
 
-    protected static void sendImageMessage(String showImageUrl, String username, String imageUrl, String flex, int type) {
+    protected static String sendImageMessage(String showImageUrl, String username, String imageUrl, String flex, int type) {
         String userMask = UrlUtils.createUsernameMask(username); 
         ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
         Plus plus = getPlus(null, null);
         if (type == Commons.SCREENSHOT) {
         	String message = String.format(rb.getString("Social.gp.screenshot"), userMask , showImageUrl);
-            sendMoment(plus, message, "Message from GMS World", imageUrl, null, null);
-        	sendUrlMoment(plus, showImageUrl);
+            String mid = sendMoment(plus, message, "Message from GMS World", imageUrl, null, null);
+            String uid = sendUrlMoment(plus, showImageUrl);
+            if (mid != null && uid != null) {
+            	return mid + "_" + uid;
+            } else {
+            	return null;
+            }
         } else if (type == Commons.ROUTE) {
         	String url = UrlUtils.getGoogleShortUrl(imageUrl);
         	String message = String.format(rb.getString("Social.gp.route"), userMask, flex, url);
-        	sendMoment(plus, message, "Message from GMS World", imageUrl, null, null);
-        	sendUrlMoment(plus, showImageUrl);
+        	String mid = sendMoment(plus, message, "Message from GMS World", imageUrl, null, null);
+        	String uid = sendUrlMoment(plus, showImageUrl);
+        	if (mid != null && uid != null) {
+            	return mid + "_" + uid;
+            } else {
+            	return null;
+            }
+        } else {
+        	return null;
         }
     }
 
@@ -118,7 +138,7 @@ public class GooglePlusUtils {
         return plus;
     }
 
-    private static void sendUrlMoment(Plus plus, String url) {
+    private static String sendUrlMoment(Plus plus, String url) {
         if (url != null) {
         	Moment moment = new Moment();
         	moment.setType("http://schema.org/AddAction");
@@ -128,15 +148,18 @@ public class GooglePlusUtils {
             try {
                 Moment momentResult1 = plus.moments().insert("me", "vault", moment).execute();
                 logger.log(Level.INFO, "Created activity with id: {0}", momentResult1.getId());
+                return momentResult1.getId();
             } catch (IOException ex) {
                 logger.log(Level.SEVERE, "GooglePlusUtils.sendUrlMoment() exception", ex);
+                return null;
             }
         } else {
             logger.log(Level.SEVERE, "Url is null!");
+            return null;
         }
     }
 
-    private static void sendMoment(Plus plus, String name, String desc, String image, Double lat, Double lng) {
+    private static String sendMoment(Plus plus, String name, String desc, String image, Double lat, Double lng) {
         try {
             Moment moment = new Moment();
         	moment.setType("http://schema.org/AddAction");
@@ -155,8 +178,10 @@ public class GooglePlusUtils {
             moment.setObject(itemScope);
             Moment momentResult = plus.moments().insert("me", "vault", moment).execute();
             logger.log(Level.INFO, "Created activity with id: {0}", momentResult.getId());
+            return momentResult.getId();
         } catch (IOException ex) {
             logger.log(Level.SEVERE, "GooglePlusUtils.sendMoment() exception", ex);
+            return null;
         }
     }
     

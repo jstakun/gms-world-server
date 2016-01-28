@@ -63,7 +63,7 @@ public class FacebookSocialUtils {
         }
     }
 
-	protected static void sendMessageToUserFeed(String token, String url, String title, int type) {
+	protected static String sendMessageToUserFeed(String token, String url, String title, int type) {
         if (token != null) {
             FacebookClient facebookClient = FacebookUtils.getFacebookClient(token);
             Parameter params[] = null;
@@ -104,13 +104,14 @@ public class FacebookSocialUtils {
             			Parameter.with("name", title),
             	};		
             }
-            sendMessage(facebookClient, "me/feed", params, true);
+            return sendMessage(facebookClient, "me/feed", params, true);
         } else {
             logger.log(Level.SEVERE, "Token is empty!");
+            return null;
         }
     }
 
-    protected static void sendMessageToPageFeed(String url, String user, String name, String imageUrl, int type, String token) {
+    protected static String sendMessageToPageFeed(String url, String user, String name, String imageUrl, int type, String token) {
         ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
         Parameter params[] = null;
         
@@ -154,11 +155,14 @@ public class FacebookSocialUtils {
         		token = com.jstakun.lm.server.config.ConfigurationManager.getParam(com.jstakun.lm.server.config.ConfigurationManager.GMS_WORLD_PAGE_TOKEN, null);
         	}
         	FacebookClient facebookClient = FacebookUtils.getFacebookClient(token);
-        	sendMessage(facebookClient, Commons.getProperty(Property.FB_GMS_WORLD_FEED), params, false);
+        	return sendMessage(facebookClient, Commons.getProperty(Property.FB_GMS_WORLD_FEED), params, false);
+        } else {
+        	logger.log(Level.SEVERE, "Params are null!");
+        	return null;
         }
     }
     
-    protected static void sendImageMessage(String imageUrl, String showImageUrl, String username, String flex, int type) {
+    protected static String sendImageMessage(String imageUrl, String showImageUrl, String username, String flex, int type) {
         if (imageUrl != null) {
             FacebookClient facebookClient = FacebookUtils.getFacebookClient(com.jstakun.lm.server.config.ConfigurationManager.getParam(com.jstakun.lm.server.config.ConfigurationManager.GMS_WORLD_PAGE_TOKEN, null));
             ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
@@ -183,10 +187,14 @@ public class FacebookSocialUtils {
             }
 
             if (params != null) {
-            	sendMessage(facebookClient, Commons.getProperty(Property.FB_GMS_WORLD_FEED), params, false);
+            	return sendMessage(facebookClient, Commons.getProperty(Property.FB_GMS_WORLD_FEED), params, false);
+            } else {
+            	logger.log(Level.SEVERE, "Params are null!");
+            	return null;
             }
         } else {
             logger.log(Level.SEVERE, "Image url is null!");
+            return null;
         }
     }
     

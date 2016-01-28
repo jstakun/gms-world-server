@@ -196,7 +196,7 @@ public class NotificationUtils {
     	}
 	}
 	
-	public static void sendLandmarkCreationNotification(Map<String, String[]> params, ServletContext context) {
+	public static String sendLandmarkCreationNotification(Map<String, String[]> params, ServletContext context) {
 		String service = params.get("service")[0];
     	//String key = params.get("key")[0];
     	String landmarkUrl = params.get("landmarkUrl")[0];
@@ -289,7 +289,9 @@ public class NotificationUtils {
                 }
                 if (hotelsCount > 0) {
                 	String hotelsUrl = UrlUtils.getShortUrl(com.jstakun.lm.server.config.ConfigurationManager.HOTELS_URL + "hotelLandmark/" + HtmlUtils.encodeDouble(latitude) + "/" + HtmlUtils.encodeDouble(longitude));
-                	FacebookSocialUtils.sendMessageToPageFeed(hotelsUrl, userMask, fbTitle, imageUrl, Commons.HOTELS, null);
+                	return FacebookSocialUtils.sendMessageToPageFeed(hotelsUrl, userMask, fbTitle, imageUrl, Commons.HOTELS, null);
+                } else {
+                	return null;
                 }
     		} else {
     			if (socialIdsMap.containsKey(Commons.FACEBOOK)) {
@@ -320,12 +322,11 @@ public class NotificationUtils {
     					fbTitle += "...";
     				}
     			}    
-    			FacebookSocialUtils.sendMessageToPageFeed(landmarkUrl, userMask, fbTitle, imageUrl, Commons.SERVER, null);
+    			return FacebookSocialUtils.sendMessageToPageFeed(landmarkUrl, userMask, fbTitle, imageUrl, Commons.SERVER, null);
     		}
     	} else if (StringUtils.equals(service, Commons.TWITTER)) {
     		if (StringUtils.equals(type, "Hotels")) {
     			if (latitude != null && longitude != null) {
-        			String hotelsUrl = UrlUtils.getShortUrl(com.jstakun.lm.server.config.ConfigurationManager.HOTELS_URL + "hotelLandmark/" + HtmlUtils.encodeDouble(latitude) + "/" + HtmlUtils.encodeDouble(longitude));
         			name = "";
         			if (addressInfo != null) {
                     	String city = addressInfo.getField(AddressInfo.CITY);
@@ -354,8 +355,13 @@ public class NotificationUtils {
         				name += "from " + cheapestPrice + " per night";
         			}
         			if (hotelsCount > 0) {
-        				TwitterUtils.sendMessage(hotelsUrl, Commons.getProperty(Property.TW_TOKEN), Commons.getProperty(Property.TW_SECRET), userMask, name, imageUrl, latitude, longitude, Commons.HOTELS);
+        				String hotelsUrl = UrlUtils.getShortUrl(com.jstakun.lm.server.config.ConfigurationManager.HOTELS_URL + "hotelLandmark/" + HtmlUtils.encodeDouble(latitude) + "/" + HtmlUtils.encodeDouble(longitude));
+            			return TwitterUtils.sendMessage(hotelsUrl, Commons.getProperty(Property.TW_TOKEN), Commons.getProperty(Property.TW_SECRET), userMask, name, imageUrl, latitude, longitude, Commons.HOTELS);
+        			} else {
+        				return null;
         			}
+        		} else {
+        			return null;
         		}
     		} else {
     			if (socialIdsMap.containsKey(Commons.TWITTER)) {
@@ -364,9 +370,10 @@ public class NotificationUtils {
     				userMask = UrlUtils.createUsernameMask(user);
     			}
     			logger.log(Level.INFO, "Using user mask " + userMask);
-    			TwitterUtils.sendMessage(landmarkUrl, Commons.getProperty(Property.TW_TOKEN), Commons.getProperty(Property.TW_SECRET), userMask, name, imageUrl, latitude, longitude, Commons.SERVER);
+    			return TwitterUtils.sendMessage(landmarkUrl, Commons.getProperty(Property.TW_TOKEN), Commons.getProperty(Property.TW_SECRET), userMask, name, imageUrl, latitude, longitude, Commons.SERVER);
     		}
     	} else if (StringUtils.equals(service, Commons.GOOGLE)) {
+    		//TODO add hotels notification
     		if (socialIdsMap.containsKey(Commons.GOOGLE)) {
     			userMask = socialIdsMap.get(Commons.GOOGLE) + "@" + Commons.GOOGLE;
     		} else if (socialIdsMap.containsKey(Commons.GOOGLE_PLUS)) {
@@ -375,20 +382,23 @@ public class NotificationUtils {
     			userMask = user;
     		}
     		logger.log(Level.INFO, "Using user mask " + userMask);
-    		GoogleBloggerUtils.sendMessage(landmarkUrl, Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), userMask, name, imageUrl, layer, latitude, longitude, desc, Commons.SERVER);
-    		//TODO add hotels notification
+    		return GoogleBloggerUtils.sendMessage(landmarkUrl, Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), userMask, name, imageUrl, layer, latitude, longitude, desc, Commons.SERVER);
     	} else if (StringUtils.equals(service, Commons.GOOGLE_PLUS)) {
     		userMask = UrlUtils.createUsernameMask(user);
     		logger.log(Level.INFO, "Using user mask " + userMask);
-    		GooglePlusUtils.sendMessage(Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), landmarkUrl, userMask, name, latitude, longitude, Commons.SERVER);
+    		return GooglePlusUtils.sendMessage(Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), landmarkUrl, userMask, name, latitude, longitude, Commons.SERVER);
     	} else if (StringUtils.equals(service, Commons.MAIL)) {
     		MailUtils.sendLandmarkCreationNotification(title, body);
     		//send landmark creation notification email to user
     		if (StringUtils.isNotEmpty(email)) {
     			userMask = UrlUtils.createUsernameMask(user);
     			logger.log(Level.INFO, "Using user mask " + userMask);
-        		MailUtils.sendLandmarkNotification(email, userUrl, userMask, landmarkUrl, context);
-    		}			
+        		return MailUtils.sendLandmarkNotification(email, userUrl, userMask, landmarkUrl, context);
+    		} else {
+    			return null;
+    		}
+    	} else {
+    		return null;
     	}
 	}
 	

@@ -36,25 +36,25 @@ public class TwitterUtils {
         return twitter;
     }
 	
-	protected static void sendMessage(String url, String token, String secret, String user, String name, String imageUrl, Double latitude, Double longitude, int type) {
+	protected static String sendMessage(String url, String token, String secret, String user, String name, String imageUrl, Double latitude, Double longitude, int type) {
 		String message = null;
 		try {
-        	    ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
-                if (type == Commons.SERVER) {
+        	ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
+            if (type == Commons.SERVER) {
                     //message = String.format(rb.getString("Social.tw.server"), user, name, url);
                 	message = String.format(rb.getString("Social.tw.status.short"), url);
-                } else if (type == Commons.BLOGEO) {
+            } else if (type == Commons.BLOGEO) {
                     message = String.format(rb.getString("Social.tw.status"), "new geo message to #GMSWorldBlogeo", name, url);              	
-                } else if (type == Commons.LANDMARK) {
+            } else if (type == Commons.LANDMARK) {
                 	message = String.format(rb.getString("Social.tw.status"), "new point of interest to #GMSWorld", name, url); 
-                } else if (type == Commons.MY_POS) {
+            } else if (type == Commons.MY_POS) {
                     message = String.format(rb.getString("Social.tw.myloc"),  url);
-                } else if (type == Commons.LOGIN) {
+            } else if (type == Commons.LOGIN) {
                     message = String.format(rb.getString("Social.tw.login"), url);
-                } else if (type == Commons.CHECKIN) { 
+            } else if (type == Commons.CHECKIN) { 
                 	//message = String.format(rb.getString("Social.tw.checkin"), user, name, url);
                 	message = String.format(rb.getString("Social.tw.checkin.short"), url);
-                } else if (type == Commons.HOTELS) {
+            } else if (type == Commons.HOTELS) {
                 	String suffix = " ";
                 	if (StringUtils.isNotEmpty(name)) {
                 		suffix += name;
@@ -63,18 +63,19 @@ public class TwitterUtils {
                 	}
                 	suffix += ": " + url;
                 	message = String.format(rb.getString("Social.tw.hotels"), suffix);
-                }
+            }
 
-                if (message != null) {
+            if (message != null) {
                 	//message length must be < 140
-                    if (message.length() > 130 && url != null) {
+               if (message.length() > 130 && url != null) {
                     	//Social.tw.short
-                		message = String.format(rb.getString("Social.tw.status.short"), url);
-                	}
-                	StatusUpdate update = new StatusUpdate(message);
-                    if (latitude != null && longitude != null) {
-                    	update.setDisplayCoordinates(true);
-                        update.setLocation(new GeoLocation(latitude, longitude));
+                	message = String.format(rb.getString("Social.tw.status.short"), url);
+               }
+            
+               StatusUpdate update = new StatusUpdate(message);
+               if (latitude != null && longitude != null) {
+            	   update.setDisplayCoordinates(true);
+            	   update.setLocation(new GeoLocation(latitude, longitude));
                         if (imageUrl != null) {
                         	try {
                             	InputStream is  = new URL(imageUrl).openStream();
@@ -87,19 +88,24 @@ public class TwitterUtils {
                             	logger.log(Level.SEVERE, "Failed to load landmark.", e);
                             }
                         }
-                    }
-                    Status s = getTwitter(token, secret).updateStatus(update);
-                    logger.log(Level.INFO, "Sent twitter update id: {0}", s.getId());
-                } 
+                }
+                Status s = getTwitter(token, secret).updateStatus(update);
+                logger.log(Level.INFO, "Sent twitter update id: {0}", s.getId());
+                return Long.toString(s.getId()); 
+            }  else {
+            	logger.log(Level.SEVERE, "Message is empty!");
+            	return null;
+            }         
         } catch (Exception ex) {
             if (message != null) {
             	logger.log(Level.SEVERE, "Failed to send status: {0}", message);
             }
         	logger.log(Level.SEVERE, ex.getMessage(), ex);    
+        	return null;
         }
     }
 
-    protected static void sendImageMessage(String showImageUrl, String imageUrl, String username, Double latitude, Double longitude, String flex, int type) {
+    protected static String sendImageMessage(String showImageUrl, String imageUrl, String username, Double latitude, Double longitude, String flex, int type) {
     	String message = null;
     	try {
             String userMask;
@@ -142,11 +148,13 @@ public class TwitterUtils {
             }
             Status s = getTwitter(null, null).updateStatus(update);
             logger.log(Level.INFO, "Sent twitter update id: {0}", s.getId());
+            return Long.toString(s.getId());
         } catch (Exception ex) {
         	if (message != null) {
             	logger.log(Level.SEVERE, "Failed to send status: {0}", message);
             }
         	logger.log(Level.SEVERE, ex.getMessage(), ex);
+        	return null;
         }
     }
 }

@@ -40,7 +40,11 @@ public class NotificationTaskServlet extends HttpServlet {
     	try {
     		Map<String, String[]> params = request.getParameterMap();
     		if (!HttpUtils.isEmptyAny(request, "key", "landmarkUrl", "title", "body", "username", "userUrl", "service")) {
-    			NotificationUtils.sendLandmarkCreationNotification(params, getServletContext());
+    			String status = NotificationUtils.sendLandmarkCreationNotification(params, getServletContext());
+    			if (status == null) {
+    				//in case of failure retry request 
+    				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+    			}
     		} else if (!HttpUtils.isEmptyAny(request, "service", "accessToken", "name", "username")) {
     			NotificationUtils.sendUserLoginNotification(params, getServletContext());
             } else if (!HttpUtils.isEmptyAny(request, "imageUrl", "showImageUrl", "lat", "lng", "service")) {

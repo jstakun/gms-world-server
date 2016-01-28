@@ -34,7 +34,7 @@ public class GoogleBloggerUtils {
     private static final Logger logger = Logger.getLogger(GoogleBloggerUtils.class.getName());
     private static final String CACHE_KEY = "BloggerUsageLimitsMarker";
     
-    protected static void sendMessage(String url, String token, String secret, String username, String name, String imageUrl, String layer, Double lat, Double lng, String desc, int type) {
+    protected static String sendMessage(String url, String token, String secret, String username, String name, String imageUrl, String layer, Double lat, Double lng, String desc, int type) {
         if (type == Commons.SERVER) {
         	ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
             if (token != null && secret != null && url != null) {
@@ -70,23 +70,28 @@ public class GoogleBloggerUtils {
             		} else {
             			lname = "See " + lname + " on the map"; 
             		}
-                    createPost(getBlogger(), name, message, lat, lng, lname);
+                    return createPost(getBlogger(), name, message, lat, lng, lname);
+                } else {
+                	return null;
                 }
         	} else {
         		logger.log(Level.SEVERE, "Something is empty! token: {0}, secret: {1}, url: {2}", new Object[]{token, secret, url});
+        		return null;
         	}
         } else if (type == Commons.CHECKIN) { 
         	ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
             String message = String.format(rb.getString("Social.gl.message.checkin"), username, url, name);
         	if (message != null) { 
-                createPost(getBlogger(), String.format(rb.getString("Social.gl.title.checkin"), username, name), message, lat, lng, "See " + name + " on the map");
+                return createPost(getBlogger(), String.format(rb.getString("Social.gl.title.checkin"), username, name), message, lat, lng, "See " + name + " on the map");
+            } else {
+            	return null; 
             }
-        } 
-        
-        
+        } else {
+        	return null;
+        }      
     }
 
-    protected static void sendImageMessage(String showImageUrl, String username, String imageUrl, String flex, Double lat, Double lng, int type) {
+    protected static String sendImageMessage(String showImageUrl, String username, String imageUrl, String flex, Double lat, Double lng, int type) {
     	ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
         String userMask = UrlUtils.createUsernameMask(username);
         if (StringUtils.isNotEmpty(username)) {
@@ -109,11 +114,13 @@ public class GoogleBloggerUtils {
         }        
         
         if (message != null && title != null) {
-        	createPost(getBlogger(), title, message, lat, lng, "See location on the map");
+        	return createPost(getBlogger(), title, message, lat, lng, "See location on the map");
+        } else {
+        	return null;
         }
     }
 
-    private static void createPost(Blogger blogger, String title, String content, Double lat, Double lng, String lname) {
+    private static String createPost(Blogger blogger, String title, String content, Double lat, Double lng, String lname) {
         try {
             BlogList blogList = blogger.blogs().listByUser("self").execute();
             List<Blog> blogs = blogList.getItems();
@@ -136,11 +143,14 @@ public class GoogleBloggerUtils {
                 	}
                 	Post postResp = blogger.posts().insert(blog.getId(), post).setFields("id").execute();
                 	logger.log(Level.INFO, "Successfully created post: {0} at blog {1}", new Object[]{postResp.getId(), blog.getId()});
+                	return postResp.getId();
                 } else {
                 	logger.log(Level.WARNING, "Blogger Rate Limit Exceeded");
+                	return null;
                 }
             } else {
                 logger.log(Level.INFO, "No blogs found for the user!");
+                return null;
             }
         } catch (GoogleJsonResponseException ex) {
         	int status = ex.getStatusCode();
@@ -148,8 +158,10 @@ public class GoogleBloggerUtils {
         		CacheUtil.put(CACHE_KEY, "1", CacheType.NORMAL);
         	}
         	logger.log(Level.SEVERE, "GoogleBloggerUtils.createPost() exception with error " + status, ex);
+        	return null;
         } catch (Exception ex) {
             logger.log(Level.SEVERE, "GoogleBloggerUtils.createPost() exception", ex);
+            return null;
         }
     }
 

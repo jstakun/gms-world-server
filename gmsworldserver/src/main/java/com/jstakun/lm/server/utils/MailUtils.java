@@ -30,7 +30,7 @@ public class MailUtils {
 
     private static final Logger logger = Logger.getLogger(MailUtils.class.getName());
 
-    private static void sendMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType) {
+    private static String sendMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType) {
         try {
             Properties props = new Properties();
             Session session = Session.getDefaultInstance(props, null);
@@ -40,8 +40,10 @@ public class MailUtils {
             msg.setSubject(subject);
             msg.setContent(content, contentType);
             Transport.send(msg);
+            return "ok";
         } catch (Exception ex) {
             logger.log(Level.SEVERE, null, ex);
+            return null;
         }
     }
 
@@ -134,12 +136,13 @@ public class MailUtils {
         }
     }
     
-    public static void sendLandmarkNotification(String toA, String userUrl, String nick, String landmarkUrl, ServletContext context) {
+    public static String sendLandmarkNotification(String toA, String userUrl, String nick, String landmarkUrl, ServletContext context) {
         InputStream is = null;
+        String status = null;
         try {
             is = context.getResourceAsStream("/WEB-INF/emails/landmark.html");
             String message = String.format(IOUtils.toString(is), userUrl, nick, landmarkUrl, landmarkUrl);
-            sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "Message from GMS World", message, "text/html");
+            status = sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "Message from GMS World", message, "text/html");
             //remove after tests
             //sendMail(SUPPORT_MAIL, ADMIN_NICK, ADMIN_MAIL, ADMIN_NICK, "Copy of message to " + toA, message, "text/html");
         } catch (IOException ex) {
@@ -153,6 +156,7 @@ public class MailUtils {
                 }
             }
         }
+        return status;
     }
     
     public static void sendUserCreationNotification(String body) {
