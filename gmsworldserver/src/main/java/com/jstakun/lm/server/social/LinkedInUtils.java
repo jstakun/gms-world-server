@@ -20,9 +20,11 @@ public class LinkedInUtils {
 	
 	private static final Logger logger = Logger.getLogger(LinkedInUtils.class.getName());
 	
-	protected static void sendPost(String url, String title, int type, String token) {
+	protected static String sendPost(String url, String title, int type, String token) {
 		ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
 		InputStream is = null;
+		String response = null;
+		
 		try {
             String message = null;
             if (type == Commons.BLOGEO) {
@@ -79,7 +81,6 @@ public class LinkedInUtils {
                 
             }          
             
-            String response = null; 
             if (is != null) {
                 response = IOUtils.toString(is, "UTF-8");
             } else {
@@ -100,5 +101,7 @@ public class LinkedInUtils {
             	}
             }
         }
+		
+		return response;
     }
 }

@@ -38,23 +38,20 @@ public class NotificationTaskServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	try {
+    		String status = null;
     		Map<String, String[]> params = request.getParameterMap();
     		if (!HttpUtils.isEmptyAny(request, "key", "landmarkUrl", "title", "body", "username", "userUrl", "service")) {
-    			String status = NotificationUtils.sendLandmarkCreationNotification(params, getServletContext());
-    			if (status == null) {
-    				//in case of failure retry request 
-    				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-    			}
+    			status = NotificationUtils.sendLandmarkCreationNotification(params, getServletContext());
     		} else if (!HttpUtils.isEmptyAny(request, "service", "accessToken", "name", "username")) {
-    			NotificationUtils.sendUserLoginNotification(params, getServletContext());
+    			status = NotificationUtils.sendUserLoginNotification(params, getServletContext());
             } else if (!HttpUtils.isEmptyAny(request, "imageUrl", "showImageUrl", "lat", "lng", "service")) {
-            	NotificationUtils.sendImageCreationNotification(params);
+            	status = NotificationUtils.sendImageCreationNotification(params);
             } else if (!HttpUtils.isEmptyAny(request, "url", "type", "title", "service")) {
-            	NotificationUtils.sendUserProfileNotification(params);
+            	status = NotificationUtils.sendUserProfileNotification(params);
             } else if (!HttpUtils.isEmptyAny(request, "url", "name", "service")) { 
-            	NotificationUtils.sendCheckinNotification(params);         	
+            	status = NotificationUtils.sendCheckinNotification(params);         	
             } else if (!HttpUtils.isEmptyAny(request, "routeType", "username", "imageUrl")) { 
-            	NotificationUtils.sendRouteCreationNotification(params);         	
+            	status = NotificationUtils.sendRouteCreationNotification(params);         	
             } else {
             	String paramsStr = "";
             	for (String param : params.keySet()) {
@@ -63,6 +60,11 @@ public class NotificationTaskServlet extends HttpServlet {
             	logger.log(Level.SEVERE, "Wrong parameters: " + paramsStr);
             	response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             }
+    		if (status == null) {
+				//in case of failure retry request 
+				//response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				logger.log(Level.SEVERE, "This request should be retried!");
+			}
     	} catch (Exception e) {
     		logger.log(Level.SEVERE, e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

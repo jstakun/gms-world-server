@@ -169,7 +169,7 @@ public class NotificationUtils {
         //createNotificationTask(newParams);
 	}
 	
-	public static void sendImageCreationNotification(Map<String, String[]> params) {
+	public static String sendImageCreationNotification(Map<String, String[]> params) {
 		String imageUrl = params.get("imageUrl")[0];
     	String username = params.get("username")[0];
     	String service = params.get("service")[0];
@@ -177,22 +177,22 @@ public class NotificationUtils {
         Double lat = NumberUtils.getDouble(params.get("lat")[0], 0d);
     	Double lng = NumberUtils.getDouble(params.get("lng")[0], 0d);
     	
-    	if (StringUtils.isNotEmpty(imageUrl) && StringUtils.isNotEmpty(service) && StringUtils.isNotEmpty(showImageUrl)) {
-    	
-    		logger.log(Level.INFO, "Sending image creation notification to {0}...", service);
-    	
+    	if (StringUtils.isNotEmpty(imageUrl) && StringUtils.isNotEmpty(service) && StringUtils.isNotEmpty(showImageUrl)) {  	
+    		logger.log(Level.INFO, "Sending image creation notification to {0}...", service);    	
     		if (StringUtils.equals(service, Commons.FACEBOOK)) {
-    			FacebookSocialUtils.sendImageMessage(imageUrl, showImageUrl, username, null, Commons.SCREENSHOT);
+    			return FacebookSocialUtils.sendImageMessage(imageUrl, showImageUrl, username, null, Commons.SCREENSHOT);
     		} else if (StringUtils.equals(service, Commons.TWITTER)) {
-    			TwitterUtils.sendImageMessage(showImageUrl, imageUrl, username, lat, lng, null, Commons.SCREENSHOT);
+    			return TwitterUtils.sendImageMessage(showImageUrl, imageUrl, username, lat, lng, null, Commons.SCREENSHOT);
     		} else if (StringUtils.equals(service, Commons.GOOGLE)) {
-    			GoogleBloggerUtils.sendImageMessage(showImageUrl, username, imageUrl, null, lat, lng, Commons.SCREENSHOT);
+    			return GoogleBloggerUtils.sendImageMessage(showImageUrl, username, imageUrl, null, lat, lng, Commons.SCREENSHOT);
     		} else if (StringUtils.equals(service, Commons.GOOGLE_PLUS)) {
-    			GooglePlusUtils.sendImageMessage(showImageUrl, username, imageUrl, null, Commons.SCREENSHOT);
-    		}
-    	
+    			return GooglePlusUtils.sendImageMessage(showImageUrl, username, imageUrl, null, Commons.SCREENSHOT);
+    		} else {
+    			return null;
+    		}   	
     	} else {
-    		logger.log(Level.SEVERE, "Wrong parameters imageUrl={0}, service={1}, showImageUrl={2}", new Object[]{imageUrl, service, showImageUrl});	
+    		logger.log(Level.SEVERE, "Wrong parameters imageUrl={0}, service={1}, showImageUrl={2}", new Object[]{imageUrl, service, showImageUrl});
+    		return null;
     	}
 	}
 	
@@ -402,7 +402,7 @@ public class NotificationUtils {
     	}
 	}
 	
-	public static void sendUserLoginNotification(Map<String, String[]> params, ServletContext context) {
+	public static String sendUserLoginNotification(Map<String, String[]> params, ServletContext context) {
 		String service = params.get("service")[0];
     	String accessToken = params.get("accessToken")[0];
     	String username = params.get("username")[0];
@@ -412,38 +412,42 @@ public class NotificationUtils {
     		email = params.get("email")[0];
     	}
     	String layer = null;
+    	String status = null;
     	
     	logger.log(Level.INFO, "Sending user login notification to {0}...", service);
     	
     	if (StringUtils.equals(service, Commons.FACEBOOK)) {
-    		FacebookSocialUtils.sendMessageToUserFeed(accessToken, ConfigurationManager.SERVER_URL, "Message from GMS World", Commons.LOGIN);
+    		status = FacebookSocialUtils.sendMessageToUserFeed(accessToken, ConfigurationManager.SERVER_URL, "Message from GMS World", Commons.LOGIN);
             layer = Commons.FACEBOOK_LAYER;
     	} else if (StringUtils.equals(service, Commons.FOURSQUARE)) {
     		layer = Commons.FOURSQUARE_LAYER;
+    		status = "ok";
     	} else if (StringUtils.equals(service, Commons.GOOGLE_PLUS)) {
     		String refreshToken = null;
     		if (params.containsKey("refreshToken")) {
     			refreshToken = params.get("refreshToken")[0];
     		}
-        	GooglePlusUtils.sendMessage(accessToken, refreshToken, ConfigurationManager.SERVER_URL, username, name, null, null, Commons.LOGIN);
+    		status = GooglePlusUtils.sendMessage(accessToken, refreshToken, ConfigurationManager.SERVER_URL, username, name, null, null, Commons.LOGIN);
         	layer = "Google";
     	} else if (StringUtils.equals(service, Commons.LINKEDIN)) {
-    		LinkedInUtils.sendPost(ConfigurationManager.SERVER_URL, "GMS World", Commons.LOGIN, accessToken);
+    		status = LinkedInUtils.sendPost(ConfigurationManager.SERVER_URL, "GMS World", Commons.LOGIN, accessToken);
     		layer = "LinkedIn";
     	} else if (StringUtils.equals(service, Commons.TWITTER)) {
     		String tokenSecret = params.get("tokenSecret")[0];
-        	TwitterUtils.sendMessage(ConfigurationManager.SERVER_URL, accessToken, tokenSecret, username, name, null, null, null, Commons.LOGIN);
+    		status = TwitterUtils.sendMessage(ConfigurationManager.SERVER_URL, accessToken, tokenSecret, username, name, null, null, null, Commons.LOGIN);
         	layer = Commons.TWITTER_LAYER;
-    	}
+    	} 
     	
     	ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
         MailUtils.sendUserCreationNotification(String.format(rb.getString("Social.user.login"), ConfigurationManager.SERVER_URL, username, service));
         if (StringUtils.isNotEmpty(email) && layer != null) {
         	MailUtils.sendLoginNotification(email, name, layer, context);
         }
+        
+        return status;
 	}
 	
-	public static void sendUserProfileNotification(Map<String, String[]> params) {
+	public static String sendUserProfileNotification(Map<String, String[]> params) {
 		String service = params.get("service")[0];
     	String url = params.get("url")[0];
     	int type = NumberUtils.getInt(params.get("type")[0],-1);
@@ -460,19 +464,21 @@ public class NotificationUtils {
     	logger.log(Level.INFO, "Sending notification to {0} user social profile...", service);
     	
     	if (StringUtils.equals(service, Commons.FACEBOOK)) {
-        	FacebookSocialUtils.sendMessageToUserFeed(token, url, title, type);
+        	return FacebookSocialUtils.sendMessageToUserFeed(token, url, title, type);
     	} else if (StringUtils.equals(service, Commons.GOOGLE_PLUS)) {
     		String refreshToken = params.get("refresh_token")[0];
-    	    GooglePlusUtils.sendMessage(token, refreshToken, url, null, null, null, null, type);
+    	    return GooglePlusUtils.sendMessage(token, refreshToken, url, null, null, null, null, type);
     	} else if (StringUtils.equals(service, Commons.LINKEDIN)) {
-    		LinkedInUtils.sendPost(url, title, type, token);
+    		return LinkedInUtils.sendPost(url, title, type, token);
     	} else if (StringUtils.equals(service, Commons.TWITTER)) {
     		String secret = params.get("secret")[0];
-    		TwitterUtils.sendMessage(url, token, secret, null, null, null, null, null, type);
+    		return TwitterUtils.sendMessage(url, token, secret, null, null, null, null, null, type);
+    	} else {
+    		return null;
     	}
 	}
 	
-	public static void sendCheckinNotification(Map<String, String[]> params) {
+	public static String sendCheckinNotification(Map<String, String[]> params) {
 		String service = params.get("service")[0];
     	String url = params.get("url")[0];
     	String user = params.get("user")[0];
@@ -493,17 +499,19 @@ public class NotificationUtils {
     	}
     	
     	if (StringUtils.equals(service, Commons.FACEBOOK)) {
-    		FacebookSocialUtils.sendMessageToPageFeed(url, user, name, imageUrl, Commons.CHECKIN, null);
+    		return FacebookSocialUtils.sendMessageToPageFeed(url, user, name, imageUrl, Commons.CHECKIN, null);
     	} else if (StringUtils.equals(service, Commons.TWITTER)) {
-    		TwitterUtils.sendMessage(url, Commons.getProperty(Property.TW_TOKEN), Commons.getProperty(Property.TW_SECRET), user, name, imageUrl, latitude, longitude, Commons.CHECKIN);
+    		return TwitterUtils.sendMessage(url, Commons.getProperty(Property.TW_TOKEN), Commons.getProperty(Property.TW_SECRET), user, name, imageUrl, latitude, longitude, Commons.CHECKIN);
     	} else if (StringUtils.equals(service, Commons.GOOGLE)) {
-    		GoogleBloggerUtils.sendMessage(url, Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), user, name, imageUrl, null, latitude, longitude, null,  Commons.CHECKIN);
+    		return GoogleBloggerUtils.sendMessage(url, Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), user, name, imageUrl, null, latitude, longitude, null,  Commons.CHECKIN);
     	} else if (StringUtils.equals(service, Commons.GOOGLE_PLUS)) {
-    		GooglePlusUtils.sendMessage(Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), url, user, name, latitude, longitude, Commons.CHECKIN);
+    		return GooglePlusUtils.sendMessage(Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), url, user, name, latitude, longitude, Commons.CHECKIN);
+    	} else {
+    		return null;
     	}
 	}
 	
-	public static void sendRouteCreationNotification(Map<String, String[]> params) {
+	public static String sendRouteCreationNotification(Map<String, String[]> params) {
 		String service = params.get("service")[0];
     	String imageUrl = params.get("imageUrl")[0];
     	String routeType = params.get("routeType")[0];
@@ -513,13 +521,15 @@ public class NotificationUtils {
     	Double lng = NumberUtils.getDouble(params.get("lng")[0], 0d);
     	
     	if (StringUtils.equals(service, Commons.FACEBOOK)) {
-			FacebookSocialUtils.sendImageMessage(imageUrl, routeUrl, username, routeType, Commons.ROUTE);
+			return FacebookSocialUtils.sendImageMessage(imageUrl, routeUrl, username, routeType, Commons.ROUTE);
 		} else if (StringUtils.equals(service, Commons.TWITTER)) {
-			TwitterUtils.sendImageMessage(routeUrl, imageUrl, username, lat, lng, routeType, Commons.ROUTE);
+			return TwitterUtils.sendImageMessage(routeUrl, imageUrl, username, lat, lng, routeType, Commons.ROUTE);
 	    } else if (StringUtils.equals(service, Commons.GOOGLE)) {
-			GoogleBloggerUtils.sendImageMessage(routeUrl, username, imageUrl, routeType, lat, lng, Commons.ROUTE);
+			return GoogleBloggerUtils.sendImageMessage(routeUrl, username, imageUrl, routeType, lat, lng, Commons.ROUTE);
 		} else if (StringUtils.equals(service, Commons.GOOGLE_PLUS)) {
-			GooglePlusUtils.sendImageMessage(routeUrl, username, imageUrl, routeType, Commons.ROUTE);
+			return GooglePlusUtils.sendImageMessage(routeUrl, username, imageUrl, routeType, Commons.ROUTE);
+		} else {
+			return null;
 		}
 	}
 	
