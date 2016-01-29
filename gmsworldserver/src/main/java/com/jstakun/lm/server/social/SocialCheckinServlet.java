@@ -68,7 +68,7 @@ public final class SocialCheckinServlet extends HttpServlet {
     					NotificationUtils.createSocialCheckinNotificationTask(params);
     				}
     			} else {
-    				logger.log(Level.SEVERE, "Last checkin to " + venueId + " in less than 8 hours");
+    				logger.log(Level.WARNING, "Last checkin to " + venueId + " in less than 8 hours");
     			}
     		} else {
     			//response.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -96,7 +96,7 @@ public final class SocialCheckinServlet extends HttpServlet {
     					NotificationUtils.createSocialCheckinNotificationTask(params);
     				}
     			} else {
-    				logger.log(Level.SEVERE, "Last checkin to " + venueId + " in less than 8 hours");
+    				logger.log(Level.WARNING, "Last checkin to " + venueId + " in less than 8 hours");
     			}
     		} else {
     			//response.sendError(HttpServletResponse.SC_BAD_REQUEST);

@@ -62,8 +62,8 @@ public class NotificationTaskServlet extends HttpServlet {
             }
     		if (status == null) {
 				//in case of failure retry request 
-				//response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-				logger.log(Level.SEVERE, "This request should be retried!");
+    			logger.log(Level.WARNING, "This request will be retried!");
+    			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			}
     	} catch (Exception e) {
     		logger.log(Level.SEVERE, e.getMessage(), e);

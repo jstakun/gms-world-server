@@ -53,7 +53,7 @@ public class HotelsBookingUtils extends LayerHelper {
 		//return loadLandmarksJSON(lat, lng, query, normalizedRadius, version, limit, stringLimit, callCacheFirst, flexString2, locale, useCache);
 	}
 	
-	private List<ExtendedLandmark> loadLandmarksJSON(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String callCacheFirst, String flexString2, Locale locale, boolean useCache) throws Exception {
+	/*private List<ExtendedLandmark> loadLandmarksJSON(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String callCacheFirst, String flexString2, Locale locale, boolean useCache) throws Exception {
 		JSONArray hotels = null;
 		String lngStr = StringUtil.formatCoordE2(lng);
 		String latStr = StringUtil.formatCoordE2(lat);	
@@ -117,7 +117,7 @@ public class HotelsBookingUtils extends LayerHelper {
 		}
 		logger.log(Level.INFO, "Processed " + landmarks.size() + " hotels in " + (System.currentTimeMillis()-start) + " millis.");
 		return landmarks;
-	}
+	}*/
 	
 	private List<ExtendedLandmark> loadLandmarksJackson(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String callCacheFirst, String flexString2, Locale locale, boolean useCache) throws Exception {
 		FeatureCollection hotels = null;
@@ -286,7 +286,7 @@ public class HotelsBookingUtils extends LayerHelper {
 		return Commons.HOTELS_LAYER;
 	}
 	
-	private static ExtendedLandmark hotelToLandmark(JSONObject hotel, Locale locale) {
+	/*private static ExtendedLandmark hotelToLandmark(JSONObject hotel, Locale locale) {
 		JSONArray coords = hotel.getJSONObject("geometry").getJSONArray("coordinates");
     	QualifiedCoordinates qc = new QualifiedCoordinates(coords.getDouble(1), coords.getDouble(0), 0f, 0f, 0f); 
     	
@@ -350,7 +350,7 @@ public class HotelsBookingUtils extends LayerHelper {
         landmark.setDescription(desc);
 
         return landmark;
-    }
+    }*/
 	
 	private static ExtendedLandmark hotelToLandmark(Feature hotel, Locale locale) {
 		Point g = (Point)hotel.getGeometry();

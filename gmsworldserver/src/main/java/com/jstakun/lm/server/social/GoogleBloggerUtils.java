@@ -32,7 +32,7 @@ import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 public class GoogleBloggerUtils {
 
     private static final Logger logger = Logger.getLogger(GoogleBloggerUtils.class.getName());
-    private static final String CACHE_KEY = "BloggerUsageLimitsMarker";
+    private static final String USAGE_LIMIT_MARKER = "BloggerUsageLimitsMarker";
     
     protected static String sendMessage(String url, String token, String secret, String username, String name, String imageUrl, String layer, Double lat, Double lng, String desc, int type) {
         if (type == Commons.SERVER) {
@@ -130,7 +130,7 @@ public class GoogleBloggerUtils {
             }
 
             if (blog != null) {
-                if (!CacheUtil.containsKey(CACHE_KEY)) {
+                if (!CacheUtil.containsKey(USAGE_LIMIT_MARKER)) {
                 	Post post = new Post();
                 	post.setTitle(title);
                 	post.setContent(content);
@@ -146,7 +146,7 @@ public class GoogleBloggerUtils {
                 	return postResp.getId();
                 } else {
                 	logger.log(Level.WARNING, "Blogger Rate Limit Exceeded");
-                	return null;
+                	return USAGE_LIMIT_MARKER;
                 }
             } else {
                 logger.log(Level.INFO, "No blogs found for the user!");
@@ -155,7 +155,7 @@ public class GoogleBloggerUtils {
         } catch (GoogleJsonResponseException ex) {
         	int status = ex.getStatusCode();
         	if (status == 403) {
-        		CacheUtil.put(CACHE_KEY, "1", CacheType.NORMAL);
+        		CacheUtil.put(USAGE_LIMIT_MARKER, "1", CacheType.NORMAL);
         	}
         	logger.log(Level.SEVERE, "GoogleBloggerUtils.createPost() exception with error " + status, ex);
         	return null;

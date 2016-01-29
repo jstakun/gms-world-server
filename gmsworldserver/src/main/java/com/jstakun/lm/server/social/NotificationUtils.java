@@ -32,9 +32,9 @@ import com.openlapi.AddressInfo;
 
 public class NotificationUtils {
 	
-	private static final Logger logger = Logger.getLogger(NotificationUtils.class.getName());
-	
+	private static final Logger logger = Logger.getLogger(NotificationUtils.class.getName());	
 	private static final int HOTELS_RADIUS = 50;
+	private static final String NO_HOTELS_IN_RANGE = "NoHotelsInRangeMarker";
 	
 	public static void createNotificationTask(Map<String, String> params) {
 		Queue queue = QueueFactory.getQueue("notifications");
@@ -290,7 +290,10 @@ public class NotificationUtils {
                 if (hotelsCount > 0) {
                 	String hotelsUrl = UrlUtils.getShortUrl(com.jstakun.lm.server.config.ConfigurationManager.HOTELS_URL + "hotelLandmark/" + HtmlUtils.encodeDouble(latitude) + "/" + HtmlUtils.encodeDouble(longitude));
                 	return FacebookSocialUtils.sendMessageToPageFeed(hotelsUrl, userMask, fbTitle, imageUrl, Commons.HOTELS, null);
-                } else {
+                } if (hotelsCount == 0) { 
+    				logger.log(Level.INFO, "No hotels in range " + HOTELS_RADIUS + "km");
+                	return NO_HOTELS_IN_RANGE;
+    			} else {
                 	return null;
                 }
     		} else {
@@ -357,6 +360,9 @@ public class NotificationUtils {
         			if (hotelsCount > 0) {
         				String hotelsUrl = UrlUtils.getShortUrl(com.jstakun.lm.server.config.ConfigurationManager.HOTELS_URL + "hotelLandmark/" + HtmlUtils.encodeDouble(latitude) + "/" + HtmlUtils.encodeDouble(longitude));
             			return TwitterUtils.sendMessage(hotelsUrl, Commons.getProperty(Property.TW_TOKEN), Commons.getProperty(Property.TW_SECRET), userMask, name, imageUrl, latitude, longitude, Commons.HOTELS);
+        			} else if (hotelsCount == 0) { 
+        				logger.log(Level.INFO, "No hotels in range " + HOTELS_RADIUS + "km");
+                    	return NO_HOTELS_IN_RANGE;
         			} else {
         				return null;
         			}
@@ -388,15 +394,14 @@ public class NotificationUtils {
     		logger.log(Level.INFO, "Using user mask " + userMask);
     		return GooglePlusUtils.sendMessage(Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), landmarkUrl, userMask, name, latitude, longitude, Commons.SERVER);
     	} else if (StringUtils.equals(service, Commons.MAIL)) {
-    		MailUtils.sendLandmarkCreationNotification(title, body);
+    		String status = MailUtils.sendLandmarkCreationNotification(title, body);
     		//send landmark creation notification email to user
     		if (StringUtils.isNotEmpty(email)) {
     			userMask = UrlUtils.createUsernameMask(user);
     			logger.log(Level.INFO, "Using user mask " + userMask);
-        		return MailUtils.sendLandmarkNotification(email, userUrl, userMask, landmarkUrl, context);
-    		} else {
-    			return null;
-    		}
+        		MailUtils.sendLandmarkNotification(email, userUrl, userMask, landmarkUrl, context);
+    		} 
+    		return status;
     	} else {
     		return null;
     	}
