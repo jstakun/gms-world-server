@@ -110,7 +110,7 @@ public class GeoJsonProviderServlet extends HttpServlet {
 						
 						String newkey = null;
 						if (StringUtils.equals(layer, Commons.GROUPON_LAYER) || StringUtils.equals(layer, Commons.COUPONS_LAYER)) {
-							if (GeocodeUtils.isNorthAmericaLocation(request.getParameter("lat"), request.getParameter("lng"))) {
+							if (GeocodeUtils.isNorthAmericaLocation(lat, lng)) {
 								List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(lat, lng, null, radius, 1134, limit, StringUtil.getStringLengthLimit("l"), null, null, locale, true);
 					    		newkey = layerHelper.cacheGeoJson(landmarks, lat, lng, layer, locale);                       
 							}

@@ -171,24 +171,17 @@ public class GeocodeUtils {
         return longitude;
     }
 
-    protected static boolean isNorthAmericaLocation(String latitude, String longitude) {
-        boolean isNA = false;
+    protected static boolean isNorthAmericaLocation(double lat, double lng) {
+    	boolean isNA = false;
 
         try {
-            if (StringUtils.isNotEmpty(latitude) && StringUtils.isNotEmpty(longitude)) {
-                double lat = Double.parseDouble(latitude);
-                double lng = Double.parseDouble(longitude);
+        	
+             Validate.isTrue(!(lat > 85.0 || lat < 5.0), "Latitude must be in [5, 85]  but was ", lat);
+             Validate.isTrue(!(lng < -170.0 || lng > -50.0), "Longitude must be in [-170, -50] but was ", lng);
 
-                //N 83.162102, E -52.233040
-                //S 5.499550, W -167.276413
-
-                Validate.isTrue(!(lat > 85.0 || lat < 5.0), "Latitude must be in [5, 85]  but was ", lat);
-                Validate.isTrue(!(lng < -170.0 || lng > -50.0), "Longitude must be in [-170, -50] but was ", lng);
-
-                isNA = true;
-            }
+             isNA = true;
         } catch (Exception ex) {
-            logger.log(Level.WARNING, ex.getMessage(), ex);
+        	logger.log(Level.WARNING, ex.getMessage(), ex);
         }
 
         return isNA;

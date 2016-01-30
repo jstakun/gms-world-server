@@ -359,7 +359,7 @@ public class GrouponUtils extends LayerHelper {
 			radius = 100;
 		}
 		URL grouponUrl = new URL(API_URL + "&lat=" + lat + "&lng=" + lng + "&radius=" + radius + "&limit=" + dealLimit); 
-        logger.log(Level.INFO, "Calling: " + grouponUrl.toExternalForm());
+        //logger.log(Level.INFO, "Calling: " + grouponUrl.toExternalForm());
 		String grouponResponse = HttpUtils.processFileRequest(grouponUrl);
         return createCustomLandmarkGrouponList(grouponResponse, categoryid, dealLimit, query, stringLimit, locale);
    }

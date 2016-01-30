@@ -191,7 +191,7 @@ public class LayersProviderServlet extends HttpServlet {
                 if (HttpUtils.isEmptyAny(request, "latitude", "longitude", "radius")) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 } else {
-                    if (GeocodeUtils.isNorthAmericaLocation(request.getParameter("latitude"), request.getParameter("longitude"))) {
+                    if (GeocodeUtils.isNorthAmericaLocation(latitude, longitude)) {
                         String categoryid = "";
                         if (StringUtils.isNotEmpty(request.getParameter("categoryid"))) {
                             categoryid = request.getParameter("categoryid");
@@ -209,7 +209,7 @@ public class LayersProviderServlet extends HttpServlet {
                 if (HttpUtils.isEmptyAny(request, "lat", "lng", "radius") && HttpUtils.isEmptyAny(request, "latitude", "longitude", "radius")) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 } else {
-                    if (GeocodeUtils.isNorthAmericaLocation(request.getParameter("lat"), request.getParameter("lng"))) {
+                    if (GeocodeUtils.isNorthAmericaLocation(latitude, longitude)) {
                         String categoryid = null;
                         if (StringUtils.isNotEmpty(request.getParameter("categoryid"))) {
                             categoryid = request.getParameter("categoryid");
