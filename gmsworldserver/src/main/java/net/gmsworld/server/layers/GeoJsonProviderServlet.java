@@ -104,13 +104,22 @@ public class GeoJsonProviderServlet extends HttpServlet {
 						    } 
 							limit = HOTELS_LIMIT;
 							flexString = "true";
-						} else if (StringUtils.equals(layer, Commons.FACEBOOK_LAYER) || StringUtils.equals(layer, Commons.FOURSQUARE_LAYER) || StringUtils.equals(layer, Commons.FOURSQUARE_MERCHANT_LAYER) || StringUtils.equals(layer, Commons.GROUPON_LAYER) || StringUtils.equals(layer, Commons.COUPONS_LAYER)) {
+						} else if (StringUtils.equals(layer, Commons.FACEBOOK_LAYER) || StringUtils.equals(layer, Commons.FOURSQUARE_LAYER) || StringUtils.equals(layer, Commons.FOURSQUARE_MERCHANT_LAYER)) {
 						    flexString = null;	
+						} 
+						
+						String newkey = null;
+						if (StringUtils.equals(layer, Commons.GROUPON_LAYER) || StringUtils.equals(layer, Commons.COUPONS_LAYER)) {
+							if (GeocodeUtils.isNorthAmericaLocation(request.getParameter("lat"), request.getParameter("lng"))) {
+								List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(lat, lng, null, radius, 1134, limit, StringUtil.getStringLengthLimit("l"), null, null, locale, true);
+					    		newkey = layerHelper.cacheGeoJson(landmarks, lat, lng, layer, locale);                       
+							}
+						} else {
+							List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(lat, lng, null, radius, 1134, limit, StringUtil.getStringLengthLimit("l"), flexString, null, locale, true);
+				    		newkey = layerHelper.cacheGeoJson(landmarks, lat, lng, layer, locale);                          				    		
 						}
-						//
-						List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(lat, lng, null, radius, 1134, limit, StringUtil.getStringLengthLimit("l"), flexString, null, locale, true);
-			    		String newkey = layerHelper.cacheGeoJson(landmarks, lat, lng, layer, locale);                          
-			    		if (newkey != null) {
+						
+						if (newkey != null) {
 			    			logger.log(Level.INFO, "Searching geojson document in in-memory document cache...");
 					    	json = CacheUtil.getString(newkey);
 			    		}

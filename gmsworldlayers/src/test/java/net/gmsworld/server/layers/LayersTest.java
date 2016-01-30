@@ -81,7 +81,7 @@ public class LayersTest {
 	   //data.add(new Object[]{LayerHelperFactory.getLastfmUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getOsmXapiUtils()});
 	   
-	   data.add(new Object[]{LayerHelperFactory.getHotelsBookingUtils()});
+	   //data.add(new Object[]{LayerHelperFactory.getHotelsBookingUtils()});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getFreebaseUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getInstagramUtils()});
@@ -93,7 +93,7 @@ public class LayersTest {
 	   //data.add(new Object[]{LayerHelperFactory.getTwitterUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getEventfulUtils()});
 	   
-	   //data.add(new Object[]{LayerHelperFactory.getGrouponUtils()});
+	   data.add(new Object[]{LayerHelperFactory.getGrouponUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getCouponsUtils()});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getFoursquareUtils()});   

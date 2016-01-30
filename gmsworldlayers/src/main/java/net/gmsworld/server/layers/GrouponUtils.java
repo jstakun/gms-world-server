@@ -37,17 +37,28 @@ public class GrouponUtils extends LayerHelper {
 
     //2011-08-20 03:59:59
     private static final String dateFormat = "yyyy-MM-dd HH:mm:ss";
+    
+    private static final String API_URL = "https://partner-api.groupon.com/v2/deals.json?tsToken=US_AFF_0_" + Commons.getProperty(Property.GROUPON_AFFILIATE_ID) + "_212556_0";
 
     
     @Override
 	public JSONObject processRequest(double lat, double lng, String query, int radius, int version, int dealLimit, int stringLimit, String categoryid, String flexString2) throws MalformedURLException, IOException, JSONException {
-        String key = getCacheKey(getClass(), "processRequest", lat, lng, query, radius, version, dealLimit, stringLimit, categoryid, flexString2);
+    	if (dealLimit > 250) {
+			dealLimit = 250;
+		}
+    	if (radius > 1000) {
+			radius = radius / 1000;
+		}
+		if (radius > 100) {
+			radius = 100;
+		}
+		String key = getCacheKey(getClass(), "processRequest", lat, lng, query, radius, version, dealLimit, stringLimit, categoryid, flexString2);
 
         JSONObject json = null;
 
         String cachedResponse = cacheProvider.getString(key);
         if (cachedResponse == null) {
-            URL grouponUrl = new URL("http://api.groupon.com/v2/deals.json?client_id=" + Commons.getProperty(Property.GROUPON_CLIENT_ID) + "&force_http_success=true&lat=" + lat + "&lng=" + lng + "&radius=" + radius + "&show=title,announcementTitle,division,dealUrl,tags,startAt,endAt,merchant,options,mediumImageUrl"); //smallImageUrl
+            URL grouponUrl = new URL(API_URL + "&lat=" + lat + "&lng=" + lng + "&radius=" + radius + "&limit=" + dealLimit);
             String grouponResponse = HttpUtils.processFileRequest(grouponUrl);
             if (version == 1) {
                 json = createCustomJsonGrouponListV1(grouponResponse, dealLimit);
@@ -297,6 +308,8 @@ public class GrouponUtils extends LayerHelper {
                     break;
                 }
             }
+        } else {
+        	logger.log(Level.SEVERE, "Received following server response: " + grouponJson);
         }
 
         JSONObject json = new JSONObject().put("ResultSet", jsonArray);
@@ -336,8 +349,18 @@ public class GrouponUtils extends LayerHelper {
 
 	@Override
 	public List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int radius, int version, int dealLimit, int stringLimit, String categoryid, String flexString2, Locale locale, boolean useCache) throws Exception {
-		URL grouponUrl = new URL("http://api.groupon.com/v2/deals.json?client_id=" + Commons.getProperty(Property.GROUPON_CLIENT_ID) + "&force_http_success=true&lat=" + lat + "&lng=" + lng + "&radius=" + radius + "&show=title,announcementTitle,division,dealUrl,tags,startAt,endAt,merchant,options,mediumImageUrl"); //smallImageUrl
-        String grouponResponse = HttpUtils.processFileRequest(grouponUrl);
+		if (dealLimit > 250) {
+			dealLimit = 250;
+		}
+		if (radius > 1000) {
+			radius = radius / 1000;
+		}
+		if (radius > 100) {
+			radius = 100;
+		}
+		URL grouponUrl = new URL(API_URL + "&lat=" + lat + "&lng=" + lng + "&radius=" + radius + "&limit=" + dealLimit); 
+        logger.log(Level.INFO, "Calling: " + grouponUrl.toExternalForm());
+		String grouponResponse = HttpUtils.processFileRequest(grouponUrl);
         return createCustomLandmarkGrouponList(grouponResponse, categoryid, dealLimit, query, stringLimit, locale);
    }
 	
@@ -574,6 +597,8 @@ public class GrouponUtils extends LayerHelper {
                     break;
                 }
             }
+        } else {
+        	logger.log(Level.SEVERE, "Received following server response: " + grouponJson);
         }
 
         return landmarks;

@@ -1,7 +1,6 @@
 package com.jstakun.lm.server.tasks;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.URL;
 import java.util.Date;
 import java.util.logging.Level;
