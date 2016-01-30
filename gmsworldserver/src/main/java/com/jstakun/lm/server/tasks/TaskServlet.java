@@ -47,10 +47,8 @@ public class TaskServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
         try {
             String entity = request.getParameter("entity");
             String action = request.getParameter("action");
@@ -60,6 +58,7 @@ public class TaskServlet extends HttpServlet {
                     if (entity.equalsIgnoreCase("log")) {
                         //long count = ServiceLogPersistenceUtils.deleteAllLogs();
                         Date nDaysAgo = DateUtils.getDayInPast(Integer.parseInt(ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.LOG_OLDER_THAN_DAYS, "60")), false);
+                        //TODO set status
                         long count = ServiceLogPersistenceUtils.deleteLogsOlderThanDate(nDaysAgo);
                         logger.log(Level.INFO, "Deleted {0} logs.", count);
                     } else if (entity.equalsIgnoreCase("screenshot")) {
@@ -69,7 +68,7 @@ public class TaskServlet extends HttpServlet {
                         //long count = ScreenshotPersistenceUtils.deleteScreenshotsOlderThanDate(nDaysAgo);
                         //
                         long count = ScreenshotPersistenceUtils.deleteScreenshotsOlderThanDate(ndays);
-                        //
+                        //TODO set status
                         logger.log(Level.INFO, "Deleted {0} screenshots.", count);
                     } else {
                         logger.log(Level.INFO, "Wrong parameter entity: {0}", entity);
@@ -78,30 +77,29 @@ public class TaskServlet extends HttpServlet {
                 	rhcloudHealthCheck("hotels", "http://hotels-gmsworld.rhcloud.com/snoop.jsp");
                 	rhcloudHealthCheck("landmarks", "http://landmarks-gmsworld.rhcloud.com/snoop.jsp");
                 	rhcloudHealthCheck("cache", "http://cache-gmsworld.rhcloud.com/snoop.jsp");
+                	//TODO set status
                 	logger.log(Level.INFO, "Done");
                 } else if (action.equalsIgnoreCase("loadImage")) {
-                	try {
-            	    	//save map image thumbnail
-                		double latitude = NumberUtils.getDouble(request.getParameter("latitude"), -200d);
-                		double longitude = NumberUtils.getDouble(request.getParameter("longitude"), -200d);
-                		if (latitude > -200d && longitude > -200d) {
-                			byte[] thumbnail = ImageUtils.loadImage(latitude, longitude, "128x128", 9, net.gmsworld.server.config.ConfigurationManager.MAP_PROVIDER.OSM_MAPS); 
-            	    		if (thumbnail != null && thumbnail.length > 0) {
-            	    			FileUtils.saveFileV2("landmark_" + StringUtil.formatCoordE6(latitude) + "_" + StringUtil.formatCoordE6(longitude) + ".jpg", thumbnail, latitude, longitude);
-            	    		}
-                		} else {
-                			logger.log(Level.SEVERE, "Wrong latitude and/or longitude parameters value(s).");
-                		}
-            	    } catch (Exception e) {
-            	    	logger.log(Level.SEVERE, e.getMessage(), e);
-            	    }
+                	//save map image thumbnail
+                	double latitude = NumberUtils.getDouble(request.getParameter("latitude"), -200d);
+                	double longitude = NumberUtils.getDouble(request.getParameter("longitude"), -200d);
+                	if (latitude > -200d && longitude > -200d) {
+                		byte[] thumbnail = ImageUtils.loadImage(latitude, longitude, "128x128", 9, net.gmsworld.server.config.ConfigurationManager.MAP_PROVIDER.OSM_MAPS); 
+            	    	if (thumbnail != null && thumbnail.length > 0) {
+            	    		FileUtils.saveFileV2("landmark_" + StringUtil.formatCoordE6(latitude) + "_" + StringUtil.formatCoordE6(longitude) + ".jpg", thumbnail, latitude, longitude);
+            	    	}
+                	} else {
+                		logger.log(Level.SEVERE, "Wrong latitude and/or longitude parameters value(s).");
+                	}   
+                	//TODO set status
                 } else {
                     logger.log(Level.SEVERE, "Wrong parameter action: {0}", action);
                 }
-            }
-        } finally {
-            out.close();
-        }
+           }
+        }  catch (Exception e) {
+    	   logger.log(Level.SEVERE, e.getMessage(), e);
+    	   response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+    	}  
     }
 
     /** 
@@ -112,8 +110,7 @@ public class TaskServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
 
@@ -125,8 +122,7 @@ public class TaskServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
 
@@ -139,7 +135,7 @@ public class TaskServlet extends HttpServlet {
         return "Cron Tasks Servlet";
     }
     
-    private static void rhcloudHealthCheck(String appname, String healthCheckUrl) throws IOException {
+    private void rhcloudHealthCheck(String appname, String healthCheckUrl) throws IOException {
     	logger.log(Level.INFO, "Checking if {0} app is running...", appname);
     	URL rhcloudUrl = new URL(healthCheckUrl);
     	HttpUtils.processFileRequest(rhcloudUrl);

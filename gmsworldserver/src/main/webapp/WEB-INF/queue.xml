@@ -2,9 +2,15 @@
 <queue-entries>
     <queue>
         <name>default</name>
-        <rate>5/s</rate>
+        <rate>1/s</rate>
+        <retry-parameters> <!--  10s, 20s, 40s, 80s, 120s, 160s, -->
+      		<min-backoff-seconds>10</min-backoff-seconds>
+      		<max-backoff-seconds>180</max-backoff-seconds>
+      		<max-doublings>2</max-doublings>
+      		<task-retry-limit>6</task-retry-limit>      		
+    	</retry-parameters>
     </queue>
-    <queue>
+    <!--queue>
         <name>hotelLoaderQueue</name>
         <rate>10/s</rate>
     </queue>
@@ -12,7 +18,7 @@
         <name>searchQueue</name>
         <rate>15/s</rate>
         <bucket-size>30</bucket-size>
-    </queue>
+    </queue-->
     <queue>
     	<name>notifications</name>
     	<rate>1/s</rate>
