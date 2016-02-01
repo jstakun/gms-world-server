@@ -79,7 +79,7 @@ public class LayersTest {
 	  
 	   //data.add(new Object[]{LayerHelperFactory.getPicasaUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getLastfmUtils()});
-	   //data.add(new Object[]{LayerHelperFactory.getOsmXapiUtils()});
+	   data.add(new Object[]{LayerHelperFactory.getOsmXapiUtils()});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getHotelsBookingUtils()});
 	   
@@ -93,7 +93,7 @@ public class LayersTest {
 	   //data.add(new Object[]{LayerHelperFactory.getTwitterUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getEventfulUtils()});
 	   
-	   data.add(new Object[]{LayerHelperFactory.getGrouponUtils()});
+	   //data.add(new Object[]{LayerHelperFactory.getGrouponUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getCouponsUtils()});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getFoursquareUtils()});   
@@ -140,7 +140,7 @@ public class LayersTest {
 		try {
 			List<ExtendedLandmark> landmarks = null;
 			if (StringUtils.equals(layer.getLayerName(), Commons.OSM_ATM_LAYER)) {
-				landmarks = layer.processBinaryRequest(lat, lng, null, radius, apiLevel, limit, 1024, "atm", bbox, locale, true);
+				landmarks = layer.processBinaryRequest(lat, lng, null, radius, apiLevel, limit, 1024, "atm", null, locale, true);
 			} else if (StringUtils.equals(layer.getLayerName(), Commons.FOURSQUARE_MERCHANT_LAYER)) {
 			    landmarks = layer.processBinaryRequest(lat, lng, null, radius, apiLevel, limit, 1024, Commons.getProperty(Property.FS_OAUTH_TOKEN), "1,2,3,4,5,6,7,8", locale, true);
 			} else if (StringUtils.equals(layer.getLayerName(), Commons.FOURSQUARE_LAYER)) {

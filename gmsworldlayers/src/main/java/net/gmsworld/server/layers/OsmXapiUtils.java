@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.utils.JSONUtils;
+import net.gmsworld.server.utils.MathUtils;
 import net.gmsworld.server.utils.xml.ParserManager;
 
 import org.apache.commons.lang.StringUtils;
@@ -160,6 +161,34 @@ public class OsmXapiUtils extends LayerHelper {
 	public List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String amenity, String bbox, Locale locale, boolean useCache)	throws Exception {
 		this.amenity = amenity;
         List<ExtendedLandmark> output = new ArrayList<ExtendedLandmark>();
+        
+        if (bbox == null) {
+        	double[] dcoords = new double[]{lng, lat, lng, lat};
+        
+        	if ((dcoords[2] - dcoords[0]) < 0.1) {
+        		if (dcoords[2] < 180.0) {
+        			dcoords[2] += 0.1;
+        		}
+        		if (dcoords[0] > -180.0) {
+        			dcoords[0] -= 0.1;
+        		}
+        	}
+        
+        	if ((dcoords[3] - dcoords[1]) < 0.1) {
+        		if (dcoords[3] < 90.0) {
+        			dcoords[3] += 0.1;
+        		}
+        		if (dcoords[1] > -90.0) {
+        			dcoords[1] -= 0.1;
+        		}
+        	}
+        
+        	bbox = String.format("%.2f", MathUtils.normalizeE2(dcoords[0])) + "," +
+        		String.format("%.2f", MathUtils.normalizeE2(dcoords[1])) + "," +
+        		String.format("%.2f", MathUtils.normalizeE2(dcoords[2])) + "," +
+        		String.format("%.2f", MathUtils.normalizeE2(dcoords[3]));  
+        }
+        
         if (amenity != null && bbox != null) {
             OSMFile file = getAmenities(amenity.toLowerCase(), bbox);
             if (file != null) {
