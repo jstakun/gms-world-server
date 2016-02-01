@@ -15,6 +15,7 @@ import com.jstakun.lm.server.utils.FileUtils;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.openlapi.AddressInfo;
 
+import eu.bitwalker.useragentutils.DeviceType;
 import eu.bitwalker.useragentutils.OperatingSystem;
 
 /**
@@ -55,7 +56,7 @@ public class ShowImageAction extends org.apache.struts.action.Action {
         }
         
         OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
-        if (os.isMobileDevice()) {
+        if (os.getDeviceType().equals(DeviceType.MOBILE)) {
             return mapping.findForward("mobile");
         } else {
             return mapping.findForward("success");

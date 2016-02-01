@@ -73,9 +73,18 @@ public class TaskServlet extends HttpServlet {
                         logger.log(Level.INFO, "Wrong parameter entity: {0}", entity);
                     }
                 } else if (action.equalsIgnoreCase("rhcloud")) {
-                	rhcloudHealthCheck("hotels", "http://hotels-gmsworld.rhcloud.com/snoop.jsp");
-                	rhcloudHealthCheck("landmarks", "http://landmarks-gmsworld.rhcloud.com/snoop.jsp");
+                	Integer status = rhcloudHealthCheck("hotels", "http://hotels-gmsworld.rhcloud.com/snoop.jsp");
+                	if (status == null || status > 299) {
+                		logger.log(Level.SEVERE, "Received hotels status code " + status);
+                	}
+                	status = rhcloudHealthCheck("landmarks", "http://landmarks-gmsworld.rhcloud.com/snoop.jsp");
+                	if (status == null || status > 299) {
+                		logger.log(Level.SEVERE, "Received landmarks status code " + status);
+                	}
                 	rhcloudHealthCheck("cache", "http://cache-gmsworld.rhcloud.com/snoop.jsp");
+                	if (status == null || status > 299) {
+                		logger.log(Level.SEVERE, "Received cache status code " + status);
+                	}
                 	//TODO set status
                 	logger.log(Level.INFO, "Done");
                 } else if (action.equalsIgnoreCase("loadImage")) {
@@ -134,7 +143,7 @@ public class TaskServlet extends HttpServlet {
         return "Cron Tasks Servlet";
     }
     
-    private void rhcloudHealthCheck(String appname, String healthCheckUrl) throws IOException {
+    private Integer rhcloudHealthCheck(String appname, String healthCheckUrl) throws IOException {
     	logger.log(Level.INFO, "Checking if {0} app is running...", appname);
     	URL rhcloudUrl = new URL(healthCheckUrl);
     	HttpUtils.processFileRequest(rhcloudUrl);
@@ -152,5 +161,6 @@ public class TaskServlet extends HttpServlet {
     	} else {
     		logger.log(Level.INFO, "Received server response code " + status);
     	}
+    	return status;
     }
 }

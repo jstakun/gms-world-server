@@ -32,6 +32,7 @@ import com.jstakun.lm.server.utils.persistence.CommonPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 
 import eu.bitwalker.useragentutils.Browser;
+import eu.bitwalker.useragentutils.DeviceType;
 import eu.bitwalker.useragentutils.OperatingSystem;
 
 /**
@@ -126,7 +127,7 @@ public class ShowLandmarkAction extends Action {
         
         if (landmark != null && isFullScreenLandmark) {
         	OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
-        	boolean isMobile = os.isMobileDevice();
+        	boolean isMobile = os.getDeviceType().equals(DeviceType.MOBILE);
         	request.setAttribute("lat", StringUtil.formatCoordE6(landmark.getLatitude()));
         	request.setAttribute("lng", StringUtil.formatCoordE6(landmark.getLongitude()));
         	request.setAttribute("landmarkDesc", HtmlUtils.buildLandmarkDescV2(landmark, request.getAttribute("address"), request.getLocale(), isMobile));
@@ -138,7 +139,7 @@ public class ShowLandmarkAction extends Action {
             } 
         } else {
         	OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
-            if (os.isMobileDevice()) {
+            if (os.getDeviceType().equals(DeviceType.MOBILE)) {
                 return mapping.findForward("mobile");
             } else {
             	return mapping.findForward("success");

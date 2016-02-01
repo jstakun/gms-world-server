@@ -17,6 +17,7 @@ import com.jstakun.lm.server.utils.memcache.CacheAction;
 import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 
+import eu.bitwalker.useragentutils.DeviceType;
 import eu.bitwalker.useragentutils.OperatingSystem;
 
 public class WelcomeAction extends org.apache.struts.action.Action {
@@ -53,7 +54,7 @@ public class WelcomeAction extends org.apache.struts.action.Action {
         	return mapping.findForward("landmarks");
         } else {
         	OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
-        	if (os.isMobileDevice()) {
+        	if (os.getDeviceType().equals(DeviceType.MOBILE)) {
         		return mapping.findForward("mobile");
         	} else {
         		return mapping.findForward("success");

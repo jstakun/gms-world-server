@@ -25,6 +25,8 @@ import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 
+import eu.bitwalker.useragentutils.OperatingSystem;
+
 /**
  * Servlet implementation class geoJsonProviderServlet
  */
@@ -68,6 +70,8 @@ public class GeoJsonProviderServlet extends HttpServlet {
 			if (HttpUtils.isEmptyAny(request, "lat", "lng", "layer")) {
 				response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 			} else {
+				OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
+	        	logger.log(Level.INFO, "User agent device type: " + os.getDeviceType().getName());
 				response.setContentType("text/javascript;charset=UTF-8");
 				double lat = GeocodeUtils.getLatitude(request.getParameter("lat"));
 			    double lng =  GeocodeUtils.getLongitude(request.getParameter("lng"));

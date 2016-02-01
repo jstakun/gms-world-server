@@ -20,6 +20,7 @@ import com.jstakun.lm.server.utils.HtmlUtils;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.openlapi.AddressInfo;
 
+import eu.bitwalker.useragentutils.DeviceType;
 import eu.bitwalker.useragentutils.OperatingSystem;
 
 /**
@@ -50,7 +51,7 @@ public class ShowLocationAction extends org.apache.struts.action.Action {
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
     	Double lat = null, lng = null;
     	OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
-        boolean isMobile = os.isMobileDevice();
+        boolean isMobile = os.getDeviceType().equals(DeviceType.MOBILE);
         
         if (!HttpUtils.isEmptyAny(request, "lat", "lon") || !HttpUtils.isEmptyAny(request, "latitudeEnc", "longitudeEnc")) {
             try {

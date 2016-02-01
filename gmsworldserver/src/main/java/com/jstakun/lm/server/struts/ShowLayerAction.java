@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import eu.bitwalker.useragentutils.Browser;
+import eu.bitwalker.useragentutils.DeviceType;
 import eu.bitwalker.useragentutils.OperatingSystem;
 import net.gmsworld.server.utils.NumberUtils;
 
@@ -117,7 +118,7 @@ public class ShowLayerAction extends org.apache.struts.action.Action {
         } else {
             OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
 
-            if (os.isMobileDevice()) {
+            if (os.getDeviceType().equals(DeviceType.MOBILE)) {
                 return mapping.findForward("mobile");
             } else {
                 return mapping.findForward("success");

@@ -74,9 +74,9 @@
         	<version>2.4</version>
         </dependency>
         <dependency>
-        	<groupId>bitwalker</groupId>
-        	<artifactId>useragentutils</artifactId>
-        	<version>1.13</version>
+        	<groupId>eu.bitwalker</groupId>
+   			<artifactId>UserAgentUtils</artifactId>
+        	<version>1.19</version>
         </dependency>
         <dependency>
         	<groupId>org.tuckey</groupId>

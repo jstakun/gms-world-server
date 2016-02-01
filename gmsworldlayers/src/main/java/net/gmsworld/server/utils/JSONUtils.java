@@ -164,7 +164,7 @@ public class JSONUtils {
         }
     }
     
-    private static void formatCurrency(Deal deal, String language, String country, String layer) {
+    public static void formatCurrency(Deal deal, String language, String country, String layer) {
     	
     	String fromcc = deal.getCurrencyCode();
     	String tocc = null;
@@ -177,7 +177,7 @@ public class JSONUtils {
     		Currency currency = Currency.getInstance(locale);
     		tocc = currency.getCurrencyCode();
     	} catch (Exception e) {
-    		logger.log(Level.SEVERE, e.getMessage() + ": " + country + "," + language);
+    		logger.log(Level.SEVERE, "Error for: " + country + "," + language, e);
     	}
     	
     	if (tocc != null && fromcc != null && !StringUtils.equals(tocc, fromcc) && fromcc.length() == 3) {  		

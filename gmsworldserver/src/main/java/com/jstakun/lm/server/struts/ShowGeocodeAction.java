@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import eu.bitwalker.useragentutils.DeviceType;
 import eu.bitwalker.useragentutils.OperatingSystem;
 import net.gmsworld.server.utils.StringUtil;
 
@@ -53,7 +54,7 @@ public class ShowGeocodeAction extends org.apache.struts.action.Action {
         }
 
         OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
-        boolean isMobile = os.isMobileDevice();
+        boolean isMobile = os.getDeviceType().equals(DeviceType.MOBILE);
         if (StringUtils.isNotEmpty(request.getParameter("fullScreenGeocodeMap"))) {
             if (gc != null) {    	
             	request.setAttribute("lat", StringUtil.formatCoordE6(gc.getLatitude()));

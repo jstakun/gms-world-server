@@ -1,6 +1,6 @@
 package net.gmsworld.server.layers;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotEquals;
 import net.gmsworld.server.utils.UrlUtils;
 
 import org.junit.Test;
@@ -16,6 +16,13 @@ public class UrlUtilsTest {
 		System.out.println("Short url #2: " + shortUrl2);
 		assertNotEquals("Shortening url 1 failed!", longUrl, shortUrl1);
 		assertNotEquals("Shortening url 2 failed!", longUrl, shortUrl2);
+		
+		/*Deal d = new Deal();
+		d.setCurrencyCode("PLN");
+		d.setPrice(123.99);
+		
+		JSONUtils.formatCurrency(d, "en", "us", Commons.HOTELS_LAYER);
+		System.out.println(d.getPrice() + " " + d.getCurrencyCode());*/
 	}
 
 }
