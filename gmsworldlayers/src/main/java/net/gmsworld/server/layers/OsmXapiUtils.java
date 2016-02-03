@@ -1,8 +1,7 @@
 package net.gmsworld.server.layers;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -16,6 +15,8 @@ import java.util.logging.Level;
 import javax.servlet.http.HttpServletResponse;
 
 import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.JSONUtils;
 import net.gmsworld.server.utils.MathUtils;
 import net.gmsworld.server.utils.xml.ParserManager;
@@ -43,25 +44,21 @@ public class OsmXapiUtils extends LayerHelper {
 
     private static OSMFile getAmenities(String amenity, String bbox) throws IOException {
 
-        String xapiUrl = "http://open.mapquestapi.com/xapi/api/0.6/node" + URLEncoder.encode("[amenity=" + amenity + "][bbox=" + bbox + "]", "UTF-8");
+        String xapiUrl = "http://open.mapquestapi.com/xapi/api/0.6/node" + URLEncoder.encode("[amenity=" + amenity + "][bbox=" + bbox + "]", "UTF-8") + "?key=" + Commons.getProperty(Property.MAPQUEST_APPKEY);
         OSMFile file = null;
-        //System.out.println(xapiUrl);
-        
         URL fileUrl = new URL(xapiUrl);
-        HttpURLConnection conn = (HttpURLConnection) fileUrl.openConnection();
-        
-        conn.connect();
-        
-        int responseCode = conn.getResponseCode();
+        String response = HttpUtils.processFileRequest(fileUrl);
+        Integer responseCode = HttpUtils.getResponseCode(xapiUrl);
 
-        if (responseCode == HttpServletResponse.SC_OK) {
-            InputStream is = conn.getInputStream();
+        if (responseCode != null && responseCode == HttpServletResponse.SC_OK && response != null) {
             OSMSaxParser parser = new OSMSaxParser();
             ParserManager pm = new ParserManager(parser);
-            pm.parseInputStream(is);       
+            pm.parseInputStream(new ByteArrayInputStream(response.getBytes()));       
             file = parser.getOSMFile();
+        } else if (response != null) {
+        	logger.log(Level.WARNING, "Received following server response: " + response);
         } else {
-            logger.log(Level.WARNING, "Received following response code: " + conn.getResponseCode() + ", and content: " + conn.getContent());
+        	logger.log(Level.WARNING, "Received empty server response");
         }
 
         return file;
