@@ -148,8 +148,9 @@ public class HttpUtils {
         return file;
     }
 
-    public static void processImageFileRequest(OutputStream out, String imageUrl) throws IOException {
+    public static int processImageFileRequest(OutputStream out, String imageUrl) throws IOException {
     	InputStream is = null;
+    	int total = 0;
         try {
             URL fileUrl = new URL(imageUrl);
             HttpURLConnection conn = (HttpURLConnection) fileUrl.openConnection();
@@ -166,7 +167,7 @@ public class HttpUtils {
     				is = conn.getInputStream();
     			}
                 byte[] buf = new byte[1024];
-                int count = 0, total = 0;
+                int count = 0;
                 while ((count = is.read(buf)) >= 0) {
                     out.write(buf, 0, count);
                     total += count;
@@ -181,6 +182,7 @@ public class HttpUtils {
             }
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
+            total = -1;
         } finally {
             if (is != null) {
                 is.close();
@@ -189,6 +191,8 @@ public class HttpUtils {
             	out.close();
             }
         }
+        
+        return total;
     }
 
     public static boolean isEmptyAny(HttpServletRequest request, String... params) {

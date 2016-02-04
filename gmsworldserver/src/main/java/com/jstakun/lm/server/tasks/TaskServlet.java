@@ -95,6 +95,8 @@ public class TaskServlet extends HttpServlet {
                 		byte[] thumbnail = ImageUtils.loadImage(latitude, longitude, "128x128", 9, net.gmsworld.server.config.ConfigurationManager.MAP_PROVIDER.OSM_MAPS); 
             	    	if (thumbnail != null && thumbnail.length > 0) {
             	    		FileUtils.saveFileV2("landmark_" + StringUtil.formatCoordE6(latitude) + "_" + StringUtil.formatCoordE6(longitude) + ".jpg", thumbnail, latitude, longitude);
+            	    	} else {
+            	    		response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             	    	}
                 	} else {
                 		logger.log(Level.SEVERE, "Wrong latitude and/or longitude parameters value(s).");
