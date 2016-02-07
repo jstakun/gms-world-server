@@ -238,19 +238,11 @@ public class FacebookUtils extends LayerHelper {
                         String photoUser = users.get(Long.parseLong(photo.owner));
                         placeids.add(photo.place_id);
 
-                        //System.out.println(checkin.pageId + " " + checkin.timestamp + " " + checkin.userId);
-
                         String name = place.name;
                         Map<String, String> tokens = new HashMap<String, String>();
 
                         String url = photo.link;
-                        //if (!bitlyFailed) {
-                        //    url = UrlUtils.getShortUrl(photo.link);
-                        //    if (StringUtils.equals(photo.link, url)) {
-                        //        bitlyFailed = true;
-                        //    }
-                        //}
-
+                        
                         JSONUtils.putOptValue(tokens, "caption", photo.caption, stringLength, false);
                         if (StringUtils.isEmpty(photo.caption)) {
                             tokens.put("caption", url);
@@ -962,7 +954,8 @@ public class FacebookUtils extends LayerHelper {
         List<ExtendedLandmark> landmarks = cacheProvider.getList(ExtendedLandmark.class, key);
         if (landmarks == null) {
         	FacebookClient facebookClient = getFacebookClient(token);
-        	List<JsonObject> placesSearch = facebookClient.fetchConnection("me/posts", JsonObject.class, Parameter.with("with", "location"), Parameter.with("limit", "300"), Parameter.with("fields", "place,from,created_time")).getData();
+        	//me/feed?with=location, me/posts
+        	List<JsonObject> placesSearch = facebookClient.fetchConnection("me/feed", JsonObject.class, Parameter.with("with", "location"), Parameter.with("limit", limit), Parameter.with("fields", "place,from,created_time")).getData();
         	int dataSize = placesSearch.size();
         	PrettyTime prettyTime = new PrettyTime(locale);
         	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -971,20 +964,22 @@ public class FacebookUtils extends LayerHelper {
         	List<JsonObject> places = new ArrayList<JsonObject>(dataSize);
         	ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource", locale);
         	logger.log(Level.INFO, "Found " + dataSize + " places.");
-        	for (JsonObject tagged : placesSearch) {
-        		JsonObject place = tagged.getJsonObject("place");
-        		String placeid = place.getString("id");
-        		if (!pages.contains(placeid)) {
-        			pages.add(placeid);
-        			places.add(place);
-        			JsonObject from = tagged.getJsonObject("from");
-            		Map<String, String> pageDesc = new HashMap<String, String>();
-            		Date d = sdf.parse(tagged.getString("created_time"));//2015-05-05T06:20:42+0000
-            		String checkins = String.format(rb.getString("Landmark.checkinUser"), from.getString("name"), prettyTime.format(d));
-            		pageDesc.put("checkins", checkins);  
-            		pageDesc.put("creation_date", Long.toString(d.getTime()));
-            		pageDescs.put(placeid, pageDesc);
-        		}
+        	for (JsonObject post : placesSearch) {
+        		if (post.has("place")) {
+        			JsonObject place = post.getJsonObject("place");
+        			String placeid = place.getString("id");
+        			if (!pages.contains(placeid)) {
+        				pages.add(placeid);
+        				places.add(place);
+        				JsonObject from = post.getJsonObject("from");
+        				Map<String, String> pageDesc = new HashMap<String, String>();
+        				Date d = sdf.parse(post.getString("created_time"));//2015-05-05T06:20:42+0000
+        				String checkins = String.format(rb.getString("Landmark.checkinUser"), from.getString("name"), prettyTime.format(d));
+        				pageDesc.put("checkins", checkins);  
+        				pageDesc.put("creation_date", Long.toString(d.getTime()));
+        				pageDescs.put(placeid, pageDesc);
+        			}
+        		} 
         	}
 
         	readFacebookPlacesDetails(facebookClient, pages, pageDescs, stringLength);
@@ -1008,13 +1003,66 @@ public class FacebookUtils extends LayerHelper {
         	logger.log(Level.INFO, "Reading FB landmark list from cache with key {0}", key);
         }
         logger.log(Level.INFO, "Found {0} landmarks", landmarks.size()); 
+        
         return landmarks;
-
     } 
     
     public List<ExtendedLandmark> getMyPhotos(int version, int limit, int stringLength, String token, Locale locale) throws UnsupportedEncodingException, ParseException {
-    	//TODO not yet implemented
-    	return null;
+    	String key = getCacheKey(getClass(), "getMyPhotos", 0, 0, null, 0, version, limit, stringLength, token, null);
+        List<ExtendedLandmark> landmarks = cacheProvider.getList(ExtendedLandmark.class, key);
+        if (landmarks == null) {
+        	FacebookClient facebookClient = getFacebookClient(token);
+        	//{user-id}/photos,/{user-id}/photos?type=uploaded
+        	List<JsonObject> photos = facebookClient.fetchConnection("me/photos", JsonObject.class, Parameter.with("type","uploaded"), Parameter.with("limit", limit), Parameter.with("fields", "picture,place,from,created_time")).getData();
+        	int dataSize = photos.size();
+        	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        	Map<String, Map<String, String>> pageDescs = new HashMap<String, Map<String, String>>();     
+        	List<String> pages = new ArrayList<String>(dataSize);
+        	List<JsonObject> places = new ArrayList<JsonObject>(dataSize);
+        	logger.log(Level.INFO, "Found " + dataSize + " photos.");
+        	for (JsonObject photo : photos) {
+        		if (photo.has("place")) {
+        			JsonObject place = photo.getJsonObject("place");
+        			String placeid = place.getString("id");
+        			if (!pages.contains(placeid)) {
+        				pages.add(placeid);
+        				places.add(place);
+        				JsonObject from = photo.getJsonObject("from");
+        				Map<String, String> pageDesc = new HashMap<String, String>();
+        				Date d = sdf.parse(photo.getString("created_time"));//2015-05-05T06:20:42+0000
+        				pageDesc.put("photoUser", from.getString("name"));
+        				pageDesc.put("icon", photo.getString("picture"));  
+        				pageDesc.put("caption", photo.getString("picture"));
+        				pageDesc.put("creation_date", Long.toString(d.getTime()));
+        				pageDescs.put(placeid, pageDesc);
+        			}
+        		} 
+        	}
+        	
+        	readFacebookPlacesDetails(facebookClient, pages, pageDescs, stringLength);
+        	landmarks = createCustomLandmarkFacebookList(places, pageDescs, locale);
+        	
+        	for (ExtendedLandmark landmark : landmarks) {
+        		landmark.setHasCheckinsOrPhotos(true);
+        	}
+
+        	if (landmarks.size() > limit) {
+        		landmarks = landmarks.subList(0, limit);
+        	}
+        	
+        	logger.log(Level.INFO, "No of unique FB places {0}", landmarks.size());
+
+        	if (!landmarks.isEmpty()) {
+        		cacheProvider.put(key, landmarks);
+        		logger.log(Level.INFO, "Adding FB photo list to cache with key {0}", key);
+        	}
+        } else {
+        	logger.log(Level.INFO, "Reading FB photo list from cache with key {0}", key);
+        }
+        
+        logger.log(Level.INFO, "Found {0} landmarks", landmarks.size()); 
+    	
+    	return landmarks;
     } 
     
     
