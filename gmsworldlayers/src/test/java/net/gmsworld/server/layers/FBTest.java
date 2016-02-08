@@ -22,7 +22,7 @@ public class FBTest {
 		LayerHelperFactory.setThreadProvider(new JvmThreadProvider());	
 	}
 	
-	String token = Commons.FB_TEST_TOKEN_FULL;
+	String token = Commons.FB_TEST_TOKEN_FULL_1;
 	double lat = 52.25;
 	double lng = 20.95;
 	int limit = 93;
@@ -57,13 +57,13 @@ public class FBTest {
 	@Test
 	public void testUserTaggedPlaces() throws UnsupportedEncodingException, ParseException {	
 		List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getMyTaggedPlaces(1126, limit, 1024, token, Locale.UK);
-		printLandmarks(landmarks, "places");
+		printLandmarks(landmarks, "tagged places");
 	}
 	
 	@Test
 	public void testPlaces() throws Exception {	
 		List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().processBinaryRequest(lat, lng, null, 10, 1126, 30, 1024, null, null, Locale.UK, false);
-		printLandmarks(landmarks, "places");
+		printLandmarks(landmarks, "places around");
 	}
     
 }

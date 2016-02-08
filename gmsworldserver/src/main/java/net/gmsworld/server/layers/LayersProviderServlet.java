@@ -3,7 +3,6 @@ package net.gmsworld.server.layers;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLDecoder;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
@@ -506,14 +505,12 @@ public class LayersProviderServlet extends HttpServlet {
             	if (HttpUtils.isEmptyAny(request,"lat","lng","token") && HttpUtils.isEmptyAny(request,"latitude","longitude","token")) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                  } else {
-                	//String token = URLDecoder.decode(request.getParameter("token"), "UTF-8");
-                	List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
+                	String token = URLDecoder.decode(request.getParameter("token"), "UTF-8");
+                	List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getMyPhotos(version, limit, stringLimit, token, l);
                 	if (outFormat.equals(Format.BIN)) {
-                    	//List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getFriendsPhotosToLandmark(latitude, longitude, version, limit, stringLimit, token, l);
                     	LayerHelperFactory.getFacebookUtils().serialize(landmarks, response.getOutputStream(), version);
                     } else {
                     	outString = new JSONObject().put("ResultSet", landmarks).toString();
-                    	//outString = LayerHelperFactory.getFacebookUtils().getFriendsPhotosToJSon(latitude, longitude, version, limit, stringLimit, token).toString();              
                     }
                  }
             } else if (StringUtils.contains(uri, "fbTagged")) {
