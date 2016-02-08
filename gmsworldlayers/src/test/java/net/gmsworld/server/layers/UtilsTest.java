@@ -73,8 +73,10 @@ public class UtilsTest {
 	
 	@Test
 	public void dateTest() {
-		Date date = new Date();
+		long l = 1454963549623L; //21:32 PL
+		Date date = new Date(l);
 		System.out.println(DateUtils.getFormattedDateTime(new Locale("us"), date));		
+		System.out.println(DateUtils.getFormattedDateTime(new Locale("pl"), date));		
 	}
 	
 	

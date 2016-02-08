@@ -591,14 +591,23 @@ public class LandmarkPersistenceUtils {
 		   
 		Map<String, String> landmarkMap = new HashMap<String, String>();
 		for(Iterator<String> iter = landmark.keys();iter.hasNext();) {
-				String key = iter.next();
-				Object value = landmark.get(key);
-				landmarkMap.put(key, value.toString());
+			String key = iter.next();
+			Object value = landmark.get(key);
+			landmarkMap.put(key, value.toString());
 		}
 		   
 		ConvertUtils.register(DateUtils.getRHCloudDateConverter(), Date.class);
 		BeanUtils.populate(l, landmarkMap);
 		   
+		try {
+			Date d = new Date(Long.parseLong(landmarkMap.get("creationDateLong")));
+			l.setCreationDate(d);
+			d = new Date(Long.parseLong(landmarkMap.get("validityDateLong")));
+			l.setValidityDate(d);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage(), e);
+		}
+			
 		return l;
 	}
 
