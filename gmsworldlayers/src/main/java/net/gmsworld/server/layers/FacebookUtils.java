@@ -903,9 +903,13 @@ public class FacebookUtils extends LayerHelper {
     	return Commons.FACEBOOK_LAYER;
     }
     
-    public List<ExtendedLandmark> getMyTaggedPlaces(int version, int limit, int stringLength, String token, Locale locale) throws UnsupportedEncodingException, ParseException {
-    	String key = getCacheKey(getClass(), "getMyTaggedPlaces", 0, 0, null, 0, version, limit, stringLength, token, null);
-        List<ExtendedLandmark> landmarks =  cacheProvider.getList(ExtendedLandmark.class, key);
+    public List<ExtendedLandmark> getMyTaggedPlaces(int version, int limit, int stringLength, String token, Locale locale, boolean useCache) throws UnsupportedEncodingException, ParseException {
+    	String key = null;
+    	List<ExtendedLandmark> landmarks = null;
+    	if (useCache) {
+        	key = getCacheKey(getClass(), "getMyTaggedPlaces", 0, 0, null, 0, version, limit, stringLength, token, null);
+        	landmarks = cacheProvider.getList(ExtendedLandmark.class, key);
+    	}
         if (landmarks == null) {
         	FacebookClient facebookClient = getFacebookClient(token);
         	List<JsonObject> placesSearch = facebookClient.fetchConnection("me/tagged_places", JsonObject.class, Parameter.with("limit", limit * 3), Parameter.with("fields", "place,created_time")).getData();
@@ -945,7 +949,7 @@ public class FacebookUtils extends LayerHelper {
         	
         	logger.log(Level.INFO, "No of unique FB tagged places {0}", landmarks.size());
 
-        	if (!landmarks.isEmpty()) {
+        	if (useCache && !landmarks.isEmpty()) {
         		cacheProvider.put(key, landmarks);
         		logger.log(Level.INFO, "Adding FB landmark list to cache with key {0}", key);
         	}
@@ -956,9 +960,13 @@ public class FacebookUtils extends LayerHelper {
         return landmarks;
     }
     
-    public List<ExtendedLandmark> getMyPlaces(int version, int limit, int stringLength, String token, Locale locale) throws UnsupportedEncodingException, ParseException {
-    	String key = getCacheKey(getClass(), "getMyPlaces", 0, 0, null, 0, version, limit, stringLength, token, null);
-        List<ExtendedLandmark> landmarks = cacheProvider.getList(ExtendedLandmark.class, key);
+    public List<ExtendedLandmark> getMyPlaces(int version, int limit, int stringLength, String token, Locale locale, boolean useCache) throws UnsupportedEncodingException, ParseException {
+    	String key = null;
+    	List<ExtendedLandmark> landmarks = null;
+    	if (useCache) {
+    		key = getCacheKey(getClass(), "getMyPlaces", 0, 0, null, 0, version, limit, stringLength, token, null);
+    		landmarks = cacheProvider.getList(ExtendedLandmark.class, key);
+    	}
         if (landmarks == null) {
         	FacebookClient facebookClient = getFacebookClient(token);
         	//me/feed?with=location, me/posts
@@ -1002,7 +1010,7 @@ public class FacebookUtils extends LayerHelper {
         	
         	logger.log(Level.INFO, "No of unique FB places {0}", landmarks.size());
 
-        	if (!landmarks.isEmpty()) {
+        	if (useCache && !landmarks.isEmpty()) {
         		cacheProvider.put(key, landmarks);
         		logger.log(Level.INFO, "Adding FB landmark list to cache with key {0}", key);
         	}
@@ -1014,10 +1022,14 @@ public class FacebookUtils extends LayerHelper {
         return landmarks;
     } 
     
-    public List<ExtendedLandmark> getMyPhotos(int version, int limit, int stringLength, String token, Locale locale) throws UnsupportedEncodingException, ParseException {
-    	String key = getCacheKey(getClass(), "getMyPhotos", 0, 0, null, 0, version, limit, stringLength, token, null);
-        List<ExtendedLandmark> landmarks = cacheProvider.getList(ExtendedLandmark.class, key);
-        if (landmarks == null) {
+    public List<ExtendedLandmark> getMyPhotos(int version, int limit, int stringLength, String token, Locale locale, boolean useCache) throws UnsupportedEncodingException, ParseException {
+    	String key = null;
+    	List<ExtendedLandmark> landmarks = null;
+    	if (useCache) {
+    		key = getCacheKey(getClass(), "getMyPhotos", 0, 0, null, 0, version, limit, stringLength, token, null);
+    		landmarks = cacheProvider.getList(ExtendedLandmark.class, key);
+    	}
+    	if (landmarks == null) {
         	FacebookClient facebookClient = getFacebookClient(token);
         	//{user-id}/photos,/{user-id}/photos?type=uploaded
         	List<JsonObject> photos = facebookClient.fetchConnection("me/photos", JsonObject.class, Parameter.with("type","uploaded"), Parameter.with("limit", limit), Parameter.with("fields", "picture,place,from,created_time,link")).getData();
@@ -1060,7 +1072,7 @@ public class FacebookUtils extends LayerHelper {
         	
         	logger.log(Level.INFO, "No of unique FB places {0}", landmarks.size());
 
-        	if (!landmarks.isEmpty()) {
+        	if (useCache && !landmarks.isEmpty()) {
         		cacheProvider.put(key, landmarks);
         		logger.log(Level.INFO, "Adding FB photo list to cache with key {0}", key);
         	}

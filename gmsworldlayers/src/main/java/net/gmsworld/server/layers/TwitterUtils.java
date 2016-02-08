@@ -220,10 +220,13 @@ public class TwitterUtils extends LayerHelper {
         return createCustomLandmarksList(tweets, null, locale, false);
 	}
 	
-	public List<ExtendedLandmark> getFriendsStatuses(String token, String secret, Locale locale) throws TwitterException, UnsupportedEncodingException {
-		String key = getCacheKey(TwitterUtils.class, "getFriendsStatuses", 0, 0, null, 0, 1, 1, 0, token, locale.getCountry());
-        List<ExtendedLandmark> landmarks = cacheProvider.getList(ExtendedLandmark.class, key);
-
+	public List<ExtendedLandmark> getFriendsStatuses(String token, String secret, Locale locale, boolean useCache) throws TwitterException, UnsupportedEncodingException {
+		String key = null;
+    	List<ExtendedLandmark> landmarks = null;
+    	if (useCache) {
+    		key = getCacheKey(TwitterUtils.class, "getFriendsStatuses", 0, 0, null, 0, 1, 1, 0, token, locale.getCountry());
+        	landmarks = cacheProvider.getList(ExtendedLandmark.class, key);
+    	}
         if (landmarks == null) {
         	Twitter twitter = getTwitter(token, secret);
         	String username = twitter.getScreenName();
@@ -261,7 +264,7 @@ public class TwitterUtils extends LayerHelper {
         		logger.log(Level.INFO, "No followers found");
         	}		
         	
-        	if (!landmarks.isEmpty()) {
+        	if (useCache && !landmarks.isEmpty()) {
                 cacheProvider.put(key, landmarks);
                 logger.log(Level.INFO, "Adding TW friends to cache with key {0}", key);
             }

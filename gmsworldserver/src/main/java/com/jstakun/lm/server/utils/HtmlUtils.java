@@ -247,7 +247,7 @@ public class HtmlUtils {
 		String description = landmark.getDescription();
 		if (StringUtils.isNotEmpty(description)) {
 			desc = description + "<br/>";
-		}
+		}	
 		desc += "Posted " + prettyTime.format(landmark.getCreationDate()) + " on " + DateUtils.getFormattedDateTime(locale, landmark.getCreationDate()) + " by <a href=\"" + userUrl + "\">" + UrlUtils.createUsernameMask(landmark.getUsername()) + "</a>&nbsp;" + 
         "| Created in layer <a href=\"" + layerUrl + "\">" + LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer()) + "</a> using <a href=\"" + ConfigurationManager.getAppUrl(landmark.getAppId()) + "\" target=\"_blank\">" +  ConfigurationManager.getAppName(landmark.getAppId()) + "</a>" +
 		"<br/><b><a href=\"" + bookingUrl + "\" target=\"_blank\">" + hotelsText + "</a></b>" + HtmlUtils.getStatusImage(landmark.getUseCount());
@@ -264,7 +264,6 @@ public class HtmlUtils {
 		} else {
 			userUrl = URLEncoder.encode("/showUser/" + landmark.getUsername(), "UTF-8");
 		}
-		
 		String desc = "Created in layer <a href=\"" + layerUrl + "\">" + LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer()) + "</a>" +
         "<div class=\"date\"><span>Posted " + prettyTime.format(landmark.getCreationDate()) + " on " + DateUtils.getFormattedDateTime(locale, landmark.getCreationDate()) + " by <a href=\"" + userUrl + "\">" + UrlUtils.createUsernameMask(landmark.getUsername()) + "</a></span></div>";
 		

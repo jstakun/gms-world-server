@@ -35,13 +35,13 @@ public class FBTest {
 	
 	@Test
 	public void testMyCheckins() throws UnsupportedEncodingException, ParseException {
-		List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getMyPlaces(1126, limit, 1024, token, Locale.UK);
+		List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getMyPlaces(1126, limit, 1024, token, Locale.UK, false);
 		printLandmarks(landmarks, "checkins");
 	}
 	
 	@Test
 	public void testMyPhotos() throws UnsupportedEncodingException, ParseException {
-		List<ExtendedLandmark> landmarks =	LayerHelperFactory.getFacebookUtils().getMyPhotos(1126, limit, 1024, token, Locale.UK);
+		List<ExtendedLandmark> landmarks =	LayerHelperFactory.getFacebookUtils().getMyPhotos(1126, limit, 1024, token, Locale.UK, false);
 	    printLandmarks(landmarks, "photos");
 	}
 	
@@ -56,7 +56,7 @@ public class FBTest {
 
 	@Test
 	public void testUserTaggedPlaces() throws UnsupportedEncodingException, ParseException {	
-		List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getMyTaggedPlaces(1126, limit, 1024, token, Locale.UK);
+		List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getMyTaggedPlaces(1126, limit, 1024, token, Locale.UK, false);
 		printLandmarks(landmarks, "tagged places");
 	}
 	

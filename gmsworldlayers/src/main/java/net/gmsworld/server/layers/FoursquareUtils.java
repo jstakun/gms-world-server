@@ -372,10 +372,14 @@ public class FoursquareUtils extends LayerHelper {
         return jsonString;
      }
     
-    public List<ExtendedLandmark> exploreVenuesToLandmark(double lat, double lng, String query, int radius, int limit, int version, String token, String locale, Locale l) throws JSONException, MalformedURLException, IOException, FoursquareApiException {
-        String key = getCacheKey(FoursquareUtils.class, "exploreVenuesToLandmark", lat, lng, query, radius, version, limit, 0, token, locale);
-        List<ExtendedLandmark> landmarks = cacheProvider.getList(ExtendedLandmark.class,key);
-        if (landmarks == null) {
+    public List<ExtendedLandmark> exploreVenuesToLandmark(double lat, double lng, String query, int radius, int limit, int version, String token, String locale, Locale l, boolean useCache) throws JSONException, MalformedURLException, IOException, FoursquareApiException {
+    	String key = null;
+    	List<ExtendedLandmark> landmarks = null;
+    	if (useCache) {
+    		key = getCacheKey(FoursquareUtils.class, "exploreVenuesToLandmark", lat, lng, query, radius, version, limit, 0, token, locale);
+    		landmarks = cacheProvider.getList(ExtendedLandmark.class,key);
+    	}
+    	if (landmarks == null) {
             FoursquareApi api = getFoursquareApi(token);
             api.setUseCallback(false);
             Result<Recommended> recommended = api.venuesExplore(lat + "," + lng, null, null, null, radius, null, query, limit, "friends");
@@ -422,7 +426,7 @@ public class FoursquareUtils extends LayerHelper {
                 logger.log(Level.INFO, "No of Foursquare recommended venues {0}", recCount);
 
                 //write to cache
-                if (landmarks != null && !landmarks.isEmpty()) {
+                if (useCache && landmarks != null && !landmarks.isEmpty()) {
                     logger.log(Level.INFO, "Adding fs explore list to cache with key {0}", key);
                     cacheProvider.put(key, landmarks);
                 }
@@ -433,10 +437,13 @@ public class FoursquareUtils extends LayerHelper {
         return landmarks;
     }
 
-    public List<ExtendedLandmark> getFriendsCheckinsToLandmarks(double latitude, double longitude, int limit, int version, String token, String locale, Locale l) throws FoursquareApiException, JSONException, UnsupportedEncodingException {
-        String key = getCacheKey(FoursquareUtils.class, "getFriendsCheckinsToLandmark", 0, 0, null, 0, version, limit, 0, token, locale);
-        List<ExtendedLandmark> landmarks = cacheProvider.getList(ExtendedLandmark.class,key);
-
+    public List<ExtendedLandmark> getFriendsCheckinsToLandmarks(double latitude, double longitude, int limit, int version, String token, String locale, Locale l, boolean useCache) throws FoursquareApiException, JSONException, UnsupportedEncodingException {
+    	String key = null;
+    	List<ExtendedLandmark> landmarks = null;
+    	if (useCache) {
+    		key = getCacheKey(FoursquareUtils.class, "getFriendsCheckinsToLandmark", 0, 0, null, 0, version, limit, 0, token, locale);
+        	landmarks = cacheProvider.getList(ExtendedLandmark.class,key);
+    	}
         if (landmarks == null) {
             FoursquareApi api = getFoursquareApi(token);
             api.setUseCallback(false);
@@ -516,7 +523,7 @@ public class FoursquareUtils extends LayerHelper {
             }
 
             //write to cache
-            if (landmarks != null && !landmarks.isEmpty()) {
+            if (useCache && landmarks != null && !landmarks.isEmpty()) {
                 logger.log(Level.INFO, "Adding fs friends list to cache with key {0}", key);
                 cacheProvider.put(key, landmarks);
             }

@@ -378,12 +378,6 @@ public class LayersProviderServlet extends HttpServlet {
                 		outString = LayerHelperFactory.getWebcamUtils().processRequest(latitude, longitude, null, radius, version, limit, stringLimit, null, null).toString();
                 	}	
                 }
-            } else if (StringUtils.contains(uri, "hotwireProvider")) {
-                if (HttpUtils.isEmptyAny(request, "latitude", "longitude", "radius")) {
-                    response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-                } else {
-                    outString = LayerHelperFactory.getHotwireUtils().processRequest(latitude, longitude, null, radius, version, limit, stringLimit, null, null).toString();
-                }
             } else if (StringUtils.contains(uri, "panoramio2Provider")) {
                 if (HttpUtils.isEmptyAny(request, "minx", "miny", "maxx", "maxy")) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -494,7 +488,7 @@ public class LayersProviderServlet extends HttpServlet {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 } else {
                 	String token = URLDecoder.decode(request.getParameter("token"), "UTF-8");
-                  	List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getMyPlaces(version, dealLimit, stringLimit, token, l);
+                  	List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getMyPlaces(version, dealLimit, stringLimit, token, l, false);
                     if (outFormat.equals(Format.BIN)) {
                     	LayerHelperFactory.getFacebookUtils().serialize(landmarks, response.getOutputStream(), version);
                     } else {
@@ -506,7 +500,7 @@ public class LayersProviderServlet extends HttpServlet {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                  } else {
                 	String token = URLDecoder.decode(request.getParameter("token"), "UTF-8");
-                	List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getMyPhotos(version, limit, stringLimit, token, l);
+                	List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getMyPhotos(version, limit, stringLimit, token, l, false);
                 	if (outFormat.equals(Format.BIN)) {
                     	LayerHelperFactory.getFacebookUtils().serialize(landmarks, response.getOutputStream(), version);
                     } else {
@@ -518,7 +512,7 @@ public class LayersProviderServlet extends HttpServlet {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 } else {
                 	String token = URLDecoder.decode(request.getParameter("token"), "UTF-8");
-                	List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getMyTaggedPlaces(version, dealLimit, stringLimit, token, l);
+                	List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getMyTaggedPlaces(version, dealLimit, stringLimit, token, l, false);
                 	if (outFormat.equals(Format.BIN)) {
                     	LayerHelperFactory.getFacebookUtils().serialize(landmarks, response.getOutputStream(), version);
                     } else {
@@ -531,7 +525,7 @@ public class LayersProviderServlet extends HttpServlet {
                 } else { 
                 	String token = URLDecoder.decode(request.getParameter("token"), "UTF-8");
                     if (outFormat.equals(Format.BIN)) {
-                    	List<ExtendedLandmark> landmarks = LayerHelperFactory.getFoursquareUtils().getFriendsCheckinsToLandmarks(latitude, longitude, limit, version, token, language, l);
+                    	List<ExtendedLandmark> landmarks = LayerHelperFactory.getFoursquareUtils().getFriendsCheckinsToLandmarks(latitude, longitude, limit, version, token, language, l, false);
                     	LayerHelperFactory.getFoursquareUtils().serialize(landmarks, response.getOutputStream(), version);
                     } else {
                     	outString = LayerHelperFactory.getFoursquareUtils().getFriendsCheckinsToJSon(latitude, longitude, limit, version, token, language).toString();
@@ -543,7 +537,7 @@ public class LayersProviderServlet extends HttpServlet {
                 } else {
                     String token = URLDecoder.decode(request.getParameter("token"), "UTF-8");
                     if (outFormat.equals(Format.BIN)) {
-                    	List<ExtendedLandmark> landmarks = LayerHelperFactory.getFoursquareUtils().exploreVenuesToLandmark(latitude, longitude, null, radius * 1000, limit, version, token, language, l);
+                    	List<ExtendedLandmark> landmarks = LayerHelperFactory.getFoursquareUtils().exploreVenuesToLandmark(latitude, longitude, null, radius * 1000, limit, version, token, language, l, false);
                     	LayerHelperFactory.getFoursquareUtils().serialize(landmarks, response.getOutputStream(), version);
                     } else {
                     	outString = LayerHelperFactory.getFoursquareUtils().exploreVenuesToJSon(latitude, longitude, null, radius * 1000, limit, version, token, language).toString();
@@ -555,15 +549,15 @@ public class LayersProviderServlet extends HttpServlet {
             	} else {
             		String token = URLDecoder.decode(request.getParameter("token"), "UTF-8");
             		String secret = URLDecoder.decode(request.getParameter("secret"), "UTF-8");
-            		List<ExtendedLandmark> landmarks = LayerHelperFactory.getTwitterUtils().getFriendsStatuses(token, secret, l);
+            		List<ExtendedLandmark> landmarks = LayerHelperFactory.getTwitterUtils().getFriendsStatuses(token, secret, l, false);
                     if (outFormat.equals(Format.BIN)) {
                     	LayerHelperFactory.getTwitterUtils().serialize(landmarks, response.getOutputStream(), version);
                     } else {
                     	outString = new JSONObject().put("ResultSet", landmarks).toString();
                     }
             	}
-            } else if (StringUtils.contains(uri, "qypeProvider") || StringUtils.contains(uri, "upcomingProvider") || StringUtils.contains(uri, "gowallaProvider")) {
-            	logger.log(Level.INFO, "Closed api request uri: {0}", uri);
+            } else if (StringUtils.contains(uri, "qypeProvider") || StringUtils.contains(uri, "upcomingProvider") || StringUtils.contains(uri, "gowallaProvider") || StringUtils.contains(uri, "hotwireProvider")) {
+            	logger.log(Level.WARNING, "Closed api request uri: {0}", uri);
             } else {
             	logger.log(Level.SEVERE, "Unexpected uri: {0}", uri);
             }
