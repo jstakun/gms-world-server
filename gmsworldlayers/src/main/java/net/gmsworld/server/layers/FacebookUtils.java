@@ -716,7 +716,8 @@ public class FacebookUtils extends LayerHelper {
 
         for (JsonObject place : data) {
         	JsonObject location = place.getJsonObject("location");
-            if (location.has("latitude") && location.has("longitude")) {
+        	String name = place.getString("name");
+        	if (location.has("latitude") && location.has("longitude")) {
 
                 double lat;
                 Object c = location.remove("latitude");
@@ -739,14 +740,17 @@ public class FacebookUtils extends LayerHelper {
                 }
                 
                 QualifiedCoordinates qc = new QualifiedCoordinates(lat, lng, 0f, 0f, 0f);
-     		    String name = place.getString("name");
-                String url =  FBPLACES_PREFIX + place.getString("id");
-                
+     		    
                 String placeid = place.getString("id");
 
                 Map<String, String> pageDesc = pageDescs.remove(placeid);
                 if (pageDesc == null) {
                 	pageDesc = new HashMap<String, String>();
+                }
+                
+                String url = pageDesc.remove("url");
+                if (url == null) {
+                	url =  FBPLACES_PREFIX + placeid;
                 }
                 
                 if (place.has("category_list")) {
@@ -796,8 +800,11 @@ public class FacebookUtils extends LayerHelper {
                 
                 ExtendedLandmark landmark = LandmarkFactory.getLandmark(name, null, qc, Commons.FACEBOOK_LAYER, address, creationDate, null);
      		    landmark.setUrl(url);
-     		    String thumbnail = pageDesc.remove("icon");
-                if (thumbnail != null) {
+     		    String thumbnail = pageDesc.remove("thumbnail");
+     		    if (thumbnail == null) {
+     		    	thumbnail = pageDesc.remove("icon");
+     		    }
+     		    if (thumbnail != null) {
                 	 landmark.setThumbnail(thumbnail);
                 }
      		    
@@ -806,7 +813,7 @@ public class FacebookUtils extends LayerHelper {
              
      		    landmarks.add(landmark);
             } else {
-            	logger.log(Level.INFO, "Following object returned: " + place);
+            	logger.log(Level.WARNING, "Object {0} has no coordinates.", name);
             }
         }
 
@@ -1013,7 +1020,7 @@ public class FacebookUtils extends LayerHelper {
         if (landmarks == null) {
         	FacebookClient facebookClient = getFacebookClient(token);
         	//{user-id}/photos,/{user-id}/photos?type=uploaded
-        	List<JsonObject> photos = facebookClient.fetchConnection("me/photos", JsonObject.class, Parameter.with("type","uploaded"), Parameter.with("limit", limit), Parameter.with("fields", "picture,place,from,created_time")).getData();
+        	List<JsonObject> photos = facebookClient.fetchConnection("me/photos", JsonObject.class, Parameter.with("type","uploaded"), Parameter.with("limit", limit), Parameter.with("fields", "picture,place,from,created_time,link")).getData();
         	int dataSize = photos.size();
         	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         	Map<String, Map<String, String>> pageDescs = new HashMap<String, Map<String, String>>();     
@@ -1031,8 +1038,9 @@ public class FacebookUtils extends LayerHelper {
         				Map<String, String> pageDesc = new HashMap<String, String>();
         				Date d = sdf.parse(photo.getString("created_time"));//2015-05-05T06:20:42+0000
         				pageDesc.put("photoUser", from.getString("name"));
-        				pageDesc.put("icon", photo.getString("picture"));  
-        				pageDesc.put("caption", photo.getString("picture"));
+        				pageDesc.put("thumbnail", photo.getString("picture"));  
+        				pageDesc.put("caption", photo.getString("link"));
+        				pageDesc.put("url", photo.getString("link"));
         				pageDesc.put("creation_date", Long.toString(d.getTime()));
         				pageDescs.put(placeid, pageDesc);
         			}

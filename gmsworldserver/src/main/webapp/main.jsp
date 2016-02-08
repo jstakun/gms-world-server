@@ -2,7 +2,6 @@
 <%@page import="com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils,
          com.jstakun.lm.server.persistence.Landmark,
          com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils,
-         org.ocpsoft.prettytime.PrettyTime,
          net.gmsworld.server.utils.UrlUtils,
          net.gmsworld.server.utils.DateUtils,
          com.jstakun.lm.server.utils.HtmlUtils,
@@ -81,7 +80,6 @@
                     <%
                     	List<Landmark> landmarkList = HtmlUtils.getList(Landmark.class, request, "newestLandmarkList");
                         if (landmarkList != null) { 
-                             PrettyTime prettyTime = new PrettyTime(request.getLocale());
                              for (Landmark landmark : landmarkList) {
                     %>
                     <div class="post">

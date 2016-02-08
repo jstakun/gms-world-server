@@ -22,7 +22,7 @@ public class FBTest {
 		LayerHelperFactory.setThreadProvider(new JvmThreadProvider());	
 	}
 	
-	String token = Commons.FB_TEST_TOKEN_FULL_1;
+	String token = Commons.FB_TEST_TOKEN_FULL_0;
 	double lat = 52.25;
 	double lng = 20.95;
 	int limit = 93;
@@ -49,7 +49,7 @@ public class FBTest {
 		if (landmarks != null) {
 			System.out.println("Found " + landmarks.size() + " " + name);    
 			for (ExtendedLandmark l : landmarks) {
-				System.out.println(DateUtils.getFormattedDateTime(Locale.US, new Date(l.getCreationDate())) + " " + l.getName() + ": " + l.getLatitudeE6() + "," + l.getLongitudeE6() + "\n\nDescription: " + l.getDescription() + "\nThumbnail: " + l.getThumbnail() + "\n");
+				System.out.println(DateUtils.getFormattedDateTime(Locale.US, new Date(l.getCreationDate())) + " " + l.getName() + ": " + l.getLatitudeE6() + "," + l.getLongitudeE6() + "\n\nDescription: " + l.getDescription() + "\nThumbnail: " + l.getThumbnail() + "\nUrl: " + l.getUrl() + "\n");
 			}
 		}
 	}
