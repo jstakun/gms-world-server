@@ -24,6 +24,7 @@ import net.gmsworld.server.layers.LayerHelperFactory;
 import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.UrlUtils;
+import net.gmsworld.server.utils.persistence.GeocodeCache;
 import net.gmsworld.server.utils.persistence.Landmark;
 
 import org.apache.commons.lang.StringEscapeUtils;
@@ -35,7 +36,6 @@ import org.ocpsoft.prettytime.PrettyTime;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.lm.server.config.ConfigurationManager;
-import com.jstakun.lm.server.persistence.GeocodeCache;
 import com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils;
 import com.openlapi.QualifiedCoordinates;
 

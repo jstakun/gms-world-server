@@ -1,6 +1,8 @@
 <%@page contentType="text/html" pageEncoding="utf-8"%>
-<%@page import="com.jstakun.lm.server.persistence.GeocodeCache,net.gmsworld.server.utils.StringUtil,
-                org.ocpsoft.prettytime.PrettyTime,net.gmsworld.server.utils.DateUtils" %>
+<%@page import="net.gmsworld.server.utils.persistence.GeocodeCache,
+                net.gmsworld.server.utils.StringUtil,
+                org.ocpsoft.prettytime.PrettyTime,
+                net.gmsworld.server.utils.DateUtils" %>
 <!DOCTYPE html>
 <html>
 

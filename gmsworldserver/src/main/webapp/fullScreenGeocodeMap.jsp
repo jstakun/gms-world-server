@@ -5,8 +5,8 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="com.jstakun.lm.server.persistence.GeocodeCache,
-        com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils,
+<%@page import="net.gmsworld.server.utils.persistence.GeocodeCache,
+		com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils,
         com.jstakun.lm.server.utils.HtmlUtils,
         net.gmsworld.server.utils.DateUtils,
         net.gmsworld.server.utils.UrlUtils,

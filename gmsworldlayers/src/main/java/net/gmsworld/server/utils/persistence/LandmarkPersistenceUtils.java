@@ -322,7 +322,6 @@ public class LandmarkPersistenceUtils {
 		ConvertUtils.register(DateUtils.getRHCloudDateConverter(), Date.class);
 		BeanUtils.populate(l, landmarkMap);
 		
-		//TODO find better solution
 		try {
 			Date d = new Date(Long.parseLong(landmarkMap.get("creationDateLong")));
 			l.setCreationDate(d);

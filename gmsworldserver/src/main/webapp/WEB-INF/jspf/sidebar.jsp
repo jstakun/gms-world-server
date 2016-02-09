@@ -1,7 +1,7 @@
 <%-- any content can be specified here e.g.: --%>
 <%@ page pageEncoding="utf-8" %>
-<%@ page import="com.jstakun.lm.server.utils.persistence.GeocodeCachePersistenceUtils,
-                 com.jstakun.lm.server.persistence.GeocodeCache,
+<%@ page import="net.gmsworld.server.utils.persistence.GeocodeCachePersistenceUtils,
+                 net.gmsworld.server.utils.persistence.GeocodeCache,
                  com.jstakun.lm.server.utils.memcache.CacheUtil,
                  java.util.List,
                  net.gmsworld.server.utils.DateUtils" %>

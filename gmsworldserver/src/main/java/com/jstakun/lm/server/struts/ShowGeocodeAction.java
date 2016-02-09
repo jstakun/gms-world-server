@@ -1,8 +1,6 @@
 package com.jstakun.lm.server.struts;
 
-import com.jstakun.lm.server.persistence.GeocodeCache;
 import com.jstakun.lm.server.utils.HtmlUtils;
-import com.jstakun.lm.server.utils.persistence.GeocodeCachePersistenceUtils;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -13,6 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import eu.bitwalker.useragentutils.DeviceType;
 import eu.bitwalker.useragentutils.OperatingSystem;
 import net.gmsworld.server.utils.StringUtil;
+import net.gmsworld.server.utils.persistence.GeocodeCache;
+import net.gmsworld.server.utils.persistence.GeocodeCachePersistenceUtils;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;

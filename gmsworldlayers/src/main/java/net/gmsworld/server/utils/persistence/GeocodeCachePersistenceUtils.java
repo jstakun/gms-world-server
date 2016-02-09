@@ -195,6 +195,13 @@ public class GeocodeCachePersistenceUtils {
 		   
 		ConvertUtils.register(DateUtils.getRHCloudDateConverter(), Date.class);
 		BeanUtils.populate(gc, geocodeMap);
+		
+		try {
+			Date d = new Date(Long.parseLong(geocodeMap.get("creationDateLong")));
+			gc.setCreationDate(d);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage(), e);
+		}
 		   
 		return gc;
 	}
