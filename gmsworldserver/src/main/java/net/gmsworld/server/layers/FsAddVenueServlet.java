@@ -25,7 +25,7 @@ public class FsAddVenueServlet extends HttpServlet {
 	@Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        LayerHelperFactory.setCacheProvider(new GoogleCacheProvider());
+        LayerHelperFactory.setCacheProvider(GoogleCacheProvider.getInstance());
     }
 	/** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.

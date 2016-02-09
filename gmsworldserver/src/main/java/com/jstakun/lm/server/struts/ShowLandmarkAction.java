@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.gmsworld.server.layers.GeocodeHelperFactory;
 import net.gmsworld.server.utils.StringUtil;
+import net.gmsworld.server.utils.persistence.Landmark;
+import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.Action;
@@ -20,7 +22,6 @@ import org.apache.struts.action.ActionMapping;
 
 import com.jstakun.lm.server.persistence.Checkin;
 import com.jstakun.lm.server.persistence.Comment;
-import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.HtmlUtils;
 import com.jstakun.lm.server.utils.memcache.CacheAction;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
@@ -29,7 +30,6 @@ import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.jstakun.lm.server.utils.persistence.CheckinPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.CommentPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.CommonPersistenceUtils;
-import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 
 import eu.bitwalker.useragentutils.Browser;
 import eu.bitwalker.useragentutils.DeviceType;
@@ -45,7 +45,7 @@ public class ShowLandmarkAction extends Action {
     
     public ShowLandmarkAction() {
     	super();
-    	GeocodeHelperFactory.setCacheProvider(new GoogleCacheProvider());
+    	GeocodeHelperFactory.setCacheProvider(GoogleCacheProvider.getInstance());
     }
 
     @Override
@@ -71,7 +71,7 @@ public class ShowLandmarkAction extends Action {
         		            	logger.log(Level.WARNING, "User agent: " + browser.getName() + ", " + request.getHeader("User-Agent"));
         		            	return null;
         		            } else if (CommonPersistenceUtils.isKeyValid(key)) {
-        		            	return LandmarkPersistenceUtils.selectLandmarkById(key);
+        		            	return LandmarkPersistenceUtils.selectLandmarkById(key, GoogleCacheProvider.getInstance());
         		            } else {
         		            	logger.log(Level.SEVERE, "Wrong key format " + key);
         		            	return null;

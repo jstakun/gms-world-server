@@ -17,15 +17,17 @@ import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
+import net.gmsworld.server.utils.persistence.Landmark;
+import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
 import com.google.gdata.util.common.util.Base64;
 import com.jstakun.lm.server.config.ConfigurationManager;
-import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.MailUtils;
-import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
+import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
+import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceWebUtils;
 
 /**
  *
@@ -74,7 +76,7 @@ public class NotificationsServlet extends HttpServlet {
                 		//persist location
                 	    
                 		l.setName(Commons.MY_POSITION_LAYER);
-                		boolean isSimilarToNewest = LandmarkPersistenceUtils.isSimilarToNewest(l);
+                		boolean isSimilarToNewest = LandmarkPersistenceWebUtils.isSimilarToNewest(l);
                 		if (!isSimilarToNewest) {
                 			String u = StringUtil.getUsername(request.getAttribute("username"),request.getParameter("username"));
                             if (u != null && u.length() % 4 == 0) {
@@ -87,13 +89,13 @@ public class NotificationsServlet extends HttpServlet {
                             l.setUsername(u);
                             String socialIds = request.getParameter("socialIds");
                             
-                            LandmarkPersistenceUtils.setFlex(l, request);
+                            LandmarkPersistenceWebUtils.setFlex(l, request);
                     		l.setLayer(Commons.MY_POS_CODE);
                 			
-            				LandmarkPersistenceUtils.persistLandmark(l);
+            				LandmarkPersistenceUtils.persistLandmark(l, GoogleCacheProvider.getInstance());
 
                 			if (l.getId() > 0) {	
-                				LandmarkPersistenceUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), socialIds);
+                				LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), socialIds);
                 			} 
                 		}
                 	} catch (Exception e) {

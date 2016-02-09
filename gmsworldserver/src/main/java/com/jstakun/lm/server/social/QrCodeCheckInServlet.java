@@ -1,14 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.jstakun.lm.server.social;
-
-import com.jstakun.lm.server.persistence.Landmark;
-import com.jstakun.lm.server.utils.persistence.CheckinPersistenceUtils;
-import com.jstakun.lm.server.utils.persistence.CommonPersistenceUtils;
-import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -22,6 +12,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.gmsworld.server.utils.StringUtil;
+import net.gmsworld.server.utils.persistence.Landmark;
+import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;
+
+import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
+import com.jstakun.lm.server.utils.persistence.CheckinPersistenceUtils;
+import com.jstakun.lm.server.utils.persistence.CommonPersistenceUtils;
 
 /**
  *
@@ -49,7 +45,7 @@ public class QrCodeCheckInServlet extends HttpServlet {
             String key = request.getParameter("key");
             if (CommonPersistenceUtils.isKeyValid(key)) {
                 String username = StringUtil.getUsername(request.getAttribute("username"),request.getParameter("username"));
-                Landmark landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
+                Landmark landmark = LandmarkPersistenceUtils.selectLandmarkById(key, GoogleCacheProvider.getInstance());
                 if (landmark != null)
                 {
                     boolean status = CheckinPersistenceUtils.persistCheckin(username, null, landmark.getId(), 0);  
@@ -104,7 +100,7 @@ public class QrCodeCheckInServlet extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
+        return "Browser landmark servlet";
+    }
 
 }

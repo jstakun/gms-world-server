@@ -14,14 +14,15 @@ import javax.servlet.http.HttpServletResponse;
 import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.UrlUtils;
+import net.gmsworld.server.utils.persistence.Landmark;
+import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
-import com.jstakun.lm.server.persistence.Landmark;
+import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.jstakun.lm.server.utils.persistence.CheckinPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.CommonPersistenceUtils;
-import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 
 /**
  *
@@ -63,8 +64,7 @@ public class LocationCheckInServlet extends HttpServlet {
                 	   String extractedKey = key.substring(index+1);	
                 	   logger.log(Level.INFO, "Key is: " + extractedKey);
                 	   if (CommonPersistenceUtils.isKeyValid(extractedKey)) {
-                		   landmark = LandmarkPersistenceUtils.selectLandmarkById(extractedKey);
-                	   } else {
+                		   landmark = LandmarkPersistenceUtils.selectLandmarkById(extractedKey, GoogleCacheProvider.getInstance());
                 		   logger.log(Level.INFO, "Wrong key format " + extractedKey);
                 	   }
                 	} else {
@@ -72,7 +72,7 @@ public class LocationCheckInServlet extends HttpServlet {
                 	}
                 } else {
                 	logger.log(Level.INFO, "Key is: " + key);
-                    landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
+                    landmark = LandmarkPersistenceUtils.selectLandmarkById(key, GoogleCacheProvider.getInstance());
                 } 
                 
                 if (landmark != null && landmark.getName() != null) {
@@ -133,6 +133,6 @@ public class LocationCheckInServlet extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
+        return "Location Checkin Servlet";
+    }
 }

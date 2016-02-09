@@ -1,7 +1,7 @@
 <%-- any content can be specified here e.g.: --%>
 <%@ page pageEncoding="utf-8" %>
-<%@ page import="com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils,
-                 com.jstakun.lm.server.persistence.Landmark,
+<%@ page import="net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils,
+                 net.gmsworld.server.utils.persistence.Landmark,
                  com.jstakun.lm.server.utils.HtmlUtils,
                  net.gmsworld.server.utils.UrlUtils,
                  org.apache.commons.lang.StringUtils,

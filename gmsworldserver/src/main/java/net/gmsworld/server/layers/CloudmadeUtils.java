@@ -9,6 +9,8 @@ import java.util.logging.Logger;
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.HttpUtils;
+import net.gmsworld.server.utils.persistence.Landmark;
+import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
@@ -16,9 +18,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.persistence.GeocodeCachePersistenceUtils;
-import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
 import com.openlapi.AddressInfo;
 
 /**
@@ -270,7 +270,7 @@ public class CloudmadeUtils extends GeocodeHelper {
                     				if (email != null) {
                     					l.setEmail(email);
                     				}
-                    				LandmarkPersistenceUtils.persistLandmark(l);
+                    				LandmarkPersistenceUtils.persistLandmark(l, cacheProvider);
                             	}
                         	} catch (Exception ex) {
                         		logger.log(Level.SEVERE, ex.getMessage(), ex);

@@ -5,12 +5,12 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="utf-8"%>
-<%@ page import="com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils,
-                 com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils,
+<%@ page import="com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils,
                  com.jstakun.lm.server.utils.HtmlUtils,
                  net.gmsworld.server.utils.UrlUtils,
                  net.gmsworld.server.utils.StringUtil,
-                 com.jstakun.lm.server.persistence.Landmark,
+                 net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils,
+         		 net.gmsworld.server.utils.persistence.Landmark,
                  net.gmsworld.server.utils.DateUtils,java.util.List"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <!-- content-outer -->

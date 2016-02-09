@@ -20,7 +20,7 @@ public class FreebaseViewAction extends Action {
 	
 	public FreebaseViewAction() {
 		super();
-		LayerHelperFactory.setCacheProvider(new GoogleCacheProvider());
+		LayerHelperFactory.setCacheProvider(GoogleCacheProvider.getInstance());
 	}
 	
     /**

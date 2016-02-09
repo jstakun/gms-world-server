@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.gmsworld.server.utils.UrlUtils;
+import net.gmsworld.server.utils.persistence.Landmark;
 
 import com.flickr4java.flickr.photos.Photo;
 import com.flickr4java.flickr.photos.PhotoList;
@@ -11,7 +12,6 @@ import com.google.gdata.data.geo.impl.GeoRssWhere;
 import com.google.gdata.data.media.mediarss.MediaPlayer;
 import com.google.gdata.data.youtube.VideoEntry;
 import com.google.gdata.data.youtube.YouTubeMediaGroup;
-import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.persistence.Layer;
 
 /**

@@ -1,15 +1,5 @@
 package com.jstakun.lm.server.social;
 
-import net.gmsworld.server.config.ConfigurationManager;
-import net.gmsworld.server.utils.HttpUtils;
-import net.gmsworld.server.utils.StringUtil;
-import net.gmsworld.server.utils.UrlUtils;
-
-import com.jstakun.lm.server.persistence.Landmark;
-import com.jstakun.lm.server.utils.persistence.CommentPersistenceUtils;
-import com.jstakun.lm.server.utils.persistence.CommonPersistenceUtils;
-import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.logging.Level;
@@ -20,7 +10,19 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.gmsworld.server.config.ConfigurationManager;
+import net.gmsworld.server.layers.LayerHelperFactory;
+import net.gmsworld.server.utils.HttpUtils;
+import net.gmsworld.server.utils.StringUtil;
+import net.gmsworld.server.utils.UrlUtils;
+import net.gmsworld.server.utils.persistence.Landmark;
+import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;
+
 import org.apache.commons.lang.StringUtils;
+
+import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
+import com.jstakun.lm.server.utils.persistence.CommentPersistenceUtils;
+import com.jstakun.lm.server.utils.persistence.CommonPersistenceUtils;
 
 /**
  *
@@ -63,13 +65,13 @@ public class AddCommentServlet extends HttpServlet {
                 	   String extractedKey = key.substring(index+1);	
                  	   logger.log(Level.INFO, "Key is: " + extractedKey);
                  	   if (CommonPersistenceUtils.isKeyValid(extractedKey)) {
-                 		   landmark = LandmarkPersistenceUtils.selectLandmarkById(extractedKey);
+                 		   landmark = LandmarkPersistenceUtils.selectLandmarkById(extractedKey, GoogleCacheProvider.getInstance());
                  	   } else {
                  		   logger.log(Level.INFO, "Wrong key format " + extractedKey);
                  	   }
                 	}                	 
                 } else {
-                    landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
+                    landmark = LandmarkPersistenceUtils.selectLandmarkById(key, LayerHelperFactory.getCacheProvider());
                 } 
                 
                 if (landmark != null) {
@@ -120,6 +122,6 @@ public class AddCommentServlet extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
+        return "Add Comment Servlet";
+    }
 }

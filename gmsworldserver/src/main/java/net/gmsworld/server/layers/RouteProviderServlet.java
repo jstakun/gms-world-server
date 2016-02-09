@@ -1,10 +1,5 @@
 package net.gmsworld.server.layers;
 
-import com.google.common.collect.ImmutableMap;
-import com.jstakun.lm.server.social.NotificationUtils;
-import com.jstakun.lm.server.utils.FileUtils;
-import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -25,11 +20,15 @@ import net.gmsworld.server.utils.ImageUtils;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.UrlUtils;
-import net.gmsworld.server.utils.memcache.CacheProvider;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import com.google.common.collect.ImmutableMap;
+import com.jstakun.lm.server.social.NotificationUtils;
+import com.jstakun.lm.server.utils.FileUtils;
+import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 
 /**
  *
@@ -43,13 +42,11 @@ public class RouteProviderServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(RouteProviderServlet.class.getName());
     private static final int LIMIT = 64;
-    private CacheProvider cacheProvider = null;
 	
 	@Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        cacheProvider = new GoogleCacheProvider();
-        GeocodeHelperFactory.setCacheProvider(cacheProvider);
+        GeocodeHelperFactory.setCacheProvider(GoogleCacheProvider.getInstance());
     }
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -113,9 +110,7 @@ public class RouteProviderServlet extends HttpServlet {
                 			
                 			NotificationUtils.createRouteCreationNotificationTask(params);
                 			
-                			if (cacheProvider != null) {
-                				cacheProvider.putToSecondLevelCache(pathKey, output.toString());
-                			}
+                			GoogleCacheProvider.getInstance().putToSecondLevelCache(pathKey, output.toString());
                 		}
                 	} catch (Exception e) {
                 		logger.log(Level.SEVERE, e.getMessage(), e);

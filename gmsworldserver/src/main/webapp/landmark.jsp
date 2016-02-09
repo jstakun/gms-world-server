@@ -4,7 +4,7 @@
     Author     : jstakun
 --%>
 <%@page contentType="text/html" pageEncoding="utf-8"%>
-<%@page import="com.jstakun.lm.server.persistence.Landmark,
+<%@page import="net.gmsworld.server.utils.persistence.Landmark,
         com.jstakun.lm.server.persistence.Comment,
         com.jstakun.lm.server.utils.HtmlUtils,
         com.jstakun.lm.server.utils.memcache.CacheUtil,

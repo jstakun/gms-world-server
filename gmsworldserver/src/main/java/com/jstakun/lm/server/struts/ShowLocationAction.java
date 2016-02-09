@@ -35,7 +35,7 @@ public class ShowLocationAction extends org.apache.struts.action.Action {
 
     public ShowLocationAction() {
     	super();
-    	GeocodeHelperFactory.setCacheProvider(new GoogleCacheProvider());
+    	GeocodeHelperFactory.setCacheProvider(GoogleCacheProvider.getInstance());
     }
     
     /**

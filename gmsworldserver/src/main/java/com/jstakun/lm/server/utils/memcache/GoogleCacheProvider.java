@@ -16,6 +16,16 @@ public class GoogleCacheProvider implements CacheProvider {
 
 	private static final Logger logger = Logger.getLogger(GoogleCacheProvider.class.getName());
 	
+	private static GoogleCacheProvider instance = new GoogleCacheProvider();
+	
+	private GoogleCacheProvider() {
+		
+	}
+	
+	public static GoogleCacheProvider getInstance() {
+		return instance;
+	}
+	
 	@Override
 	public void put(String key, Object value) {
 		CacheUtil.put(key, value, CacheType.NORMAL);

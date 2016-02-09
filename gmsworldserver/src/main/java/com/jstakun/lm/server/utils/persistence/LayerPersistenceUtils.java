@@ -23,6 +23,7 @@ import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.JSONUtils;
 import net.gmsworld.server.utils.NumberUtils;
+import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;
 
 import com.jstakun.lm.server.persistence.Layer;
 import com.jstakun.lm.server.utils.memcache.CacheAction;

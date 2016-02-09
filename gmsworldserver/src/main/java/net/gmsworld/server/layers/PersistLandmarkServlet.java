@@ -17,14 +17,15 @@ import net.gmsworld.server.utils.CryptoTools;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
+import net.gmsworld.server.utils.persistence.Landmark;
+import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;
 
 import org.apache.commons.lang.StringUtils;
 
 import com.google.gdata.util.common.util.Base64;
-import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
-import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
+import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceWebUtils;
 import com.openlapi.AddressInfo;
 
 /**
@@ -43,7 +44,7 @@ public class PersistLandmarkServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        GeocodeHelperFactory.setCacheProvider(new GoogleCacheProvider());
+        GeocodeHelperFactory.setCacheProvider(GoogleCacheProvider.getInstance());
     }
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -116,10 +117,10 @@ public class PersistLandmarkServlet extends HttpServlet {
                 }
 
                 //check if this landmark has the same name and location as newest (last saved) landmark
-                boolean isSimilarToNewest = LandmarkPersistenceUtils.isSimilarToNewest(l);
+                boolean isSimilarToNewest = LandmarkPersistenceWebUtils.isSimilarToNewest(l);
             	if (!isSimilarToNewest) {
-            		LandmarkPersistenceUtils.setFlex(l, request);          		
-            		LandmarkPersistenceUtils.persistLandmark(l);
+            		LandmarkPersistenceWebUtils.setFlex(l, request);          		
+            		LandmarkPersistenceUtils.persistLandmark(l, GeocodeHelperFactory.getGoogleGeocodeUtils().cacheProvider);
 
                 	if (l.getId() > 0) {	
                     	//After adding landmark remove from cache layer list for the location
@@ -129,7 +130,7 @@ public class PersistLandmarkServlet extends HttpServlet {
                     	logger.log(Level.INFO, "Removed from cache layer list {0}: {1}", new Object[]{layerKey, CacheUtil.remove(layerKey)});           
                 	    
                     	//send notification to social networks
-                    	LandmarkPersistenceUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), socialIds);
+                    	LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), socialIds);
                 	} 
                 }
             }

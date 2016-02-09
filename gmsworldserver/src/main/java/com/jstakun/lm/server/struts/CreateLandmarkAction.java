@@ -1,8 +1,5 @@
 package com.jstakun.lm.server.struts;
 
-import com.jstakun.lm.server.persistence.Landmark;
-import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
-
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -11,11 +8,16 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.gmsworld.server.utils.persistence.Landmark;
+import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;
+
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
+
+import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 
 /**
  *
@@ -40,7 +42,7 @@ public class CreateLandmarkAction extends Action {
         l.setValidityDate(new Date(((Timestamp)landmarkForm.get("validityDate")).getTime()));
         l.setLayer((String)landmarkForm.get("layer"));
 
-        LandmarkPersistenceUtils.persistLandmark(l);      
+        LandmarkPersistenceUtils.persistLandmark(l, GoogleCacheProvider.getInstance());      
         
         return mapping.findForward( "success");
     }

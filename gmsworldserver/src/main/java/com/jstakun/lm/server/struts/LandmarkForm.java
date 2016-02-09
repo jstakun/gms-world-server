@@ -1,14 +1,17 @@
 package com.jstakun.lm.server.struts;
 
-import com.jstakun.lm.server.persistence.Landmark;
-import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
-import com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils;
 import java.sql.Timestamp;
 
 import javax.servlet.http.HttpServletRequest;
 
+import net.gmsworld.server.utils.persistence.Landmark;
+import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;
+
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.DynaActionForm;
+
+import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
+import com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils;
 
 public class LandmarkForm extends DynaActionForm {
     /**
@@ -30,7 +33,7 @@ public class LandmarkForm extends DynaActionForm {
       if (request.getParameter("key") != null)
       {
             String k = (String)request.getParameter("key");
-            Landmark landmark = LandmarkPersistenceUtils.selectLandmarkById(k);
+            Landmark landmark = LandmarkPersistenceUtils.selectLandmarkById(k, GoogleCacheProvider.getInstance());
 
             set("name",landmark.getName());
             set("description",landmark.getDescription());

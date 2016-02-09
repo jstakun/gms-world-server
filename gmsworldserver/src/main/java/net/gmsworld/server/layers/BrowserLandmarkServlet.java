@@ -12,11 +12,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.utils.HttpUtils;
+import net.gmsworld.server.utils.persistence.Landmark;
+import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.jstakun.lm.server.persistence.Landmark;
-import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
+import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
+import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceWebUtils;
 
 /**
  * Servlet implementation class BrowserLandmarkServlet
@@ -84,11 +86,11 @@ public class BrowserLandmarkServlet extends HttpServlet {
     				LayerHelperFactory.getHotelsBookingUtils().loadHotelsAsync(latitude, longitude, RADIUS, HOTELS_LIMIT); 
     			}
     			
-    			LandmarkPersistenceUtils.setFlex(l, request);
+    			LandmarkPersistenceWebUtils.setFlex(l, request);
         		
-    			LandmarkPersistenceUtils.persistLandmark(l);
+    			LandmarkPersistenceUtils.persistLandmark(l, GoogleCacheProvider.getInstance());
     			if (l.getId() > 0) {
-    				LandmarkPersistenceUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), null);
+    				LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), null);
     				response.setContentType("text/javascript;charset=UTF-8");
     				response.getWriter().println("{\"id\": " + l.getId() +"}");
     				response.getWriter().close();

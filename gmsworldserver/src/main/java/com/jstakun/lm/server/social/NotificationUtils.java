@@ -18,16 +18,17 @@ import net.gmsworld.server.layers.GeocodeHelperFactory;
 import net.gmsworld.server.layers.LayerHelperFactory;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.UrlUtils;
+import net.gmsworld.server.utils.persistence.Landmark;
+import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;
 
 import org.apache.commons.lang.StringUtils;
 
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
-import com.jstakun.lm.server.persistence.Landmark;
 import com.jstakun.lm.server.utils.HtmlUtils;
 import com.jstakun.lm.server.utils.MailUtils;
-import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceUtils;
+import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.openlapi.AddressInfo;
 
 public class NotificationUtils {
@@ -51,7 +52,7 @@ public class NotificationUtils {
 		
 		if (StringUtils.isNotEmpty(key)) {
 			params.put("key", key);
-			Landmark landmark = LandmarkPersistenceUtils.selectLandmarkById(key);
+			Landmark landmark = LandmarkPersistenceUtils.selectLandmarkById(key, GoogleCacheProvider.getInstance());
 			if (landmark != null) {
 				params.put("url", UrlUtils.getShortUrl(UrlUtils.getLandmarkUrl(landmark.getHash(), landmark.getId(), landmark.getCreationDate())));
 				if (landmark.isSocial()) {

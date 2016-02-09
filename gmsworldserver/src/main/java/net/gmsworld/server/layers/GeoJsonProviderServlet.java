@@ -6,7 +6,6 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.StringUtil;
-import net.gmsworld.server.utils.memcache.CacheProvider;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
@@ -34,7 +32,6 @@ import eu.bitwalker.useragentutils.OperatingSystem;
 public class GeoJsonProviderServlet extends HttpServlet {
 	private static final Logger logger = Logger.getLogger(GeoJsonProviderServlet.class.getName());
 	private static final long serialVersionUID = 1L;
-	private CacheProvider cacheProvider = null;
 	private static final int HOTELS_LIMIT = 500;
 	private static final int DEFAULT_LIMIT = 50;
 	private static final int RADIUS = 50;
@@ -45,12 +42,7 @@ public class GeoJsonProviderServlet extends HttpServlet {
     public GeoJsonProviderServlet() {
         super();
     }
-
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        cacheProvider = new GoogleCacheProvider();
-    }    
+    
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
@@ -90,7 +82,7 @@ public class GeoJsonProviderServlet extends HttpServlet {
 	        			String latStr = StringUtil.formatCoordE2(lat);
 	        			String lngStr = StringUtil.formatCoordE2(lng);
 	        			logger.log(Level.INFO, "Searching geojson document in remote document cache...");
-	        			json = cacheProvider.getFromSecondLevelCache("geojson/" + layer + "/" + latStr + "/" + lngStr + "/" + flexString);
+	        			json = GoogleCacheProvider.getInstance().getFromSecondLevelCache("geojson/" + layer + "/" + latStr + "/" + lngStr + "/" + flexString);
 	        		}
 				
 					if (!StringUtils.startsWith(json, "{")  && layerHelper != null) {

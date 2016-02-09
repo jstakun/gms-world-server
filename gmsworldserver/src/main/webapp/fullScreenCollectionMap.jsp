@@ -5,9 +5,10 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="com.jstakun.lm.server.persistence.Landmark,
-        com.jstakun.lm.server.utils.HtmlUtils,    
+<%@page import="net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils,
         com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils,
+        net.gmsworld.server.utils.persistence.Landmark,
+        com.jstakun.lm.server.utils.HtmlUtils,    
         java.util.List,
         net.gmsworld.server.utils.DateUtils,
         net.gmsworld.server.utils.StringUtil,

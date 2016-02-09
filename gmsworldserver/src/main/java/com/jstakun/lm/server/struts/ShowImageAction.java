@@ -26,7 +26,7 @@ public class ShowImageAction extends org.apache.struts.action.Action {
 
 	public ShowImageAction() {
 		super();
-		GeocodeHelperFactory.setCacheProvider(new GoogleCacheProvider());
+		GeocodeHelperFactory.setCacheProvider(GoogleCacheProvider.getInstance());
 	}
      /**
      * This is the action called from the Struts framework.

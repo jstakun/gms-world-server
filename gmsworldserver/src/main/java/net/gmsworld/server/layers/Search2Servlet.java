@@ -47,7 +47,7 @@ public class Search2Servlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        LayerHelperFactory.setCacheProvider(new GoogleCacheProvider());
+        LayerHelperFactory.setCacheProvider(GoogleCacheProvider.getInstance());
         LayerHelperFactory.setThreadProvider(new GoogleThreadProvider());
     }
     /**
