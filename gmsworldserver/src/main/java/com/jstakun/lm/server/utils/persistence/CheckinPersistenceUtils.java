@@ -82,6 +82,13 @@ public class CheckinPersistenceUtils {
     				ConvertUtils.register(DateUtils.getRHCloudDateConverter(), Date.class);
     				BeanUtils.populate(c, cMap);
     				
+    				try {
+    					Date d = new Date(Long.parseLong(cMap.get("creationDateLong")));
+    					c.setCreationDate(d);
+    				} catch (Exception e) {
+    					logger.log(Level.SEVERE, e.getMessage(), e);
+    				}
+    				
     		    	results.add(c);
     		    }
         	} else {
