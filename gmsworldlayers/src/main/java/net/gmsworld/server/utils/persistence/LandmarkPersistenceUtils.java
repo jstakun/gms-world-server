@@ -23,6 +23,7 @@ import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.HttpUtils;
+import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.memcache.CacheProvider;
 
 /**
@@ -71,6 +72,16 @@ public class LandmarkPersistenceUtils {
 
         return response;
     }
+    
+    public static void persistLandmark(Landmark landmark, CacheProvider cacheProvider) {
+    	Map<String, String> persistResponse = net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils.persistLandmark(landmark.getName(), landmark.getDescription(), landmark.getLatitude(), landmark.getLongitude(), landmark.getAltitude(), landmark.getUsername(), landmark.getValidityDate(), landmark.getLayer(), landmark.getEmail(), landmark.getFlex());
+    	landmark.setId(NumberUtils.getInt(persistResponse.get("id"),-1));
+    	landmark.setHash(persistResponse.get("hash"));
+    	if (landmark.getId() > 0 && cacheProvider != null) {
+    		cacheProvider.put(Integer.toString(landmark.getId()), landmark);
+    		logger.log(Level.INFO, "Saved landmark to local in-memory cache with key: " + landmark.getId());
+    	}
+    }
 
     public static Landmark selectLandmarkByHash(String hash) {
         Landmark landmark = null;
@@ -96,7 +107,10 @@ public class LandmarkPersistenceUtils {
 
     public static Landmark selectLandmarkById(String id, CacheProvider cacheProvider) {
         String key = "landmark_" + id;
-    	Landmark landmark = cacheProvider.getObject(Landmark.class, key);
+    	Landmark landmark = null;
+    	if (cacheProvider != null) {
+    		landmark = cacheProvider.getObject(Landmark.class, key);
+    	}
         
         if (landmark == null) {
         	try {
@@ -307,6 +321,16 @@ public class LandmarkPersistenceUtils {
 		   
 		ConvertUtils.register(DateUtils.getRHCloudDateConverter(), Date.class);
 		BeanUtils.populate(l, landmarkMap);
+		
+		//TODO find better solution
+		try {
+			Date d = new Date(Long.parseLong(landmarkMap.get("creationDateLong")));
+			l.setCreationDate(d);
+			d = new Date(Long.parseLong(landmarkMap.get("validityDateLong")));
+			l.setValidityDate(d);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage(), e);
+		}
 		   
 		return l;
 	}
@@ -368,7 +392,7 @@ public class LandmarkPersistenceUtils {
         }
     	
 
-        if (!bucket.isEmpty()) {
+        if (!bucket.isEmpty() && cacheProvider != null) {
             try {
                 String cacheKey = DateUtils.getDay(new Date()) + "_" + nDays + "_heatMap";
                 cacheProvider.put(cacheKey, bucket);
@@ -427,7 +451,14 @@ public class LandmarkPersistenceUtils {
        		logger.log(Level.SEVERE, e.getMessage(), e);
         }
 
-
         return result;
+    }
+    
+    public static void deleteLandmark(String key) {
+    	//TODO not yet implemented
+    }
+    
+    public static void updateLandmark(String key, Map<String, Object> update) {
+    	//TODO not yet implemented
     }
 }

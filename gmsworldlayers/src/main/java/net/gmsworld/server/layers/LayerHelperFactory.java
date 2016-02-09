@@ -79,6 +79,10 @@ public class LayerHelperFactory {
     	threadProvider = tp;
     }
     
+    public static CacheProvider getCacheProvider() {
+		return cacheProvider;
+	}
+    
     /**
      * @return the googlePlacesUtils
      */

@@ -43,4 +43,8 @@ public abstract class GeocodeHelper {
     public void setCacheProvider(CacheProvider cacheProvider) {
 		this.cacheProvider = cacheProvider;
 	}
+    
+    public CacheProvider getCacheProvider() {
+		return cacheProvider;
+	}
 }

@@ -87,7 +87,7 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
                         				flex.put("appId", appId);
                         			}
                         	   
-                        			LandmarkPersistenceUtils.persistLandmark(address, "", lat, lng, 0.0, "geocode", null, Commons.GEOCODES_LAYER, email, flex.toString());
+                        			LandmarkPersistenceUtils.persistLandmark(address, "", lat, lng, 0.0d, "geocode", null, Commons.GEOCODES_LAYER, email, flex.toString());
                         		}
                         	} catch (Exception ex) {
                                 logger.log(Level.SEVERE, ex.getMessage(), ex);

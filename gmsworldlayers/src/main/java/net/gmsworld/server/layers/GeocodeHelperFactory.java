@@ -23,4 +23,8 @@ public class GeocodeHelperFactory {
 	public static void setCacheProvider(CacheProvider cp) {
     	cacheProvider = cp;
     }
+	
+	public static CacheProvider getCacheProvider() {
+		return cacheProvider;
+	}
 }

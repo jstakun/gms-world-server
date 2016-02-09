@@ -1,12 +1,13 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package net.gmsworld.server.utils.persistence;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+
+import net.gmsworld.server.config.Commons;
+
+import org.apache.commons.lang.StringUtils;
+import org.json.JSONObject;
 
 /**
  *
@@ -37,7 +38,9 @@ public class Landmark implements Serializable {
     
     private String hash;
    
-    //private String email;
+    private String flex;
+    
+    private String email;
 
     public Landmark(double latitude, double longitude, double altitude, String name, String description, String username, Date validityDate, String layer, List<String> geoCells, String email) {
         this();
@@ -149,4 +152,78 @@ public class Landmark implements Serializable {
     public void setId(int id){
     	this.id = id;
     }
+    
+    public void setFlex(String f) {
+        this.flex = f;
+    }
+    
+    public String getFlex() {
+    	return flex;
+    }
+    
+    public void setEmail(String e) {
+    	this.email = e;
+    }
+    
+    public String getEmail() {
+    	return email;
+    }
+    
+    public int getUseCount() {
+    	return getIntFlex("useCount");
+    }
+    
+    public int getAppId() {
+    	return getIntFlex("appId");
+    }
+    
+    public int getVersion() {
+    	return getIntFlex("version");
+    }
+    
+    public String getCountryCode() {
+    	return getStringFlex("cc");
+    }
+    
+    public String getCity() {
+    	return getStringFlex("city");
+    }
+    
+    public boolean compare(Landmark l) {
+    	return StringUtils.equalsIgnoreCase(getName(), l.getName()) && 
+    			Math.abs(getLatitude() - l.getLatitude()) < 0.02d &&
+    			Math.abs(getLongitude() - l.getLongitude()) < 0.02d &&
+    			StringUtils.equals(getLayer(), l.getLayer());
+    }
+    
+    public boolean isSocial() {
+    	return StringUtils.equals(getLayer(), Commons.SOCIAL);
+    }
+    
+    private int getIntFlex(String name) {
+    	try {
+    		if (flex != null) {
+    			JSONObject details = new JSONObject(flex);
+    			return details.getInt(name);
+    		} else {
+    			return -1;
+    		}
+    	} catch (Exception e) {
+    		return -1;
+    	}
+    }
+    
+    private String getStringFlex(String name) {
+    	try {
+    		if (flex != null) {
+    			JSONObject details = new JSONObject(flex);
+    			return details.optString(name);
+    		} else {
+    			return null;
+    		}
+    	} catch (Exception e) {
+    		return null;
+    	}
+    }
+    
 }
