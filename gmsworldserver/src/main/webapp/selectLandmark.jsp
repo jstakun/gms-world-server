@@ -178,6 +178,7 @@
 	     	searchBox.setBounds(map.getBounds());
 	   });
 
+	   //SEARCH BOX
 	   searchBox.addListener('places_changed', function() {
 		    var places = searchBox.getPlaces();
 
@@ -185,16 +186,20 @@
 			    showStatus('<bean:message key="landmarks.notfound" />');
 		    	console.log('No matching place found!');
 		     	return;
-		    } else if (places.length > 1) {
-		    	console.log('Found ' + places.length + ' places. First one will be selected...');
-			}
+		    } else if (places.length >= 1) {
+                if (places.length > 1) {
+		    		console.log('Found ' + places.length + ' places. First one will be selected...');
+                }
+                console.log('Selected place: ' + places[0].name + ' - ' + places[0].geometry.location);
+              	//center map in selected location 
+    		    //map.setZoom(10);
+                //map.setCenter(places[0].geometry.location);
+    		    //start hotels search in selected location
+    		    proceedWithSelectedLocation(places[0].geometry.location.lat(), places[0].geometry.location.lng(), places[0].name);
+                //
+    		}
 
-		    console.log('Selected place: ' + places[0].name + ' - ' + places[0].geometry.location);
-
-		    map.setZoom(10);
-            map.setCenter(places[0].geometry.location);
-		    //proceedWithSelectedLocation(places[0].geometry.location.lat(), places[0].geometry.location.lng(), places[0].name);
-	   });	    	   
+		});	    	   
    }
 
    function CenterControl(controlDiv, map, center, text) {
