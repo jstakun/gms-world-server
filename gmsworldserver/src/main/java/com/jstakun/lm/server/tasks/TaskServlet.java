@@ -102,7 +102,7 @@ public class TaskServlet extends HttpServlet {
         					logger.log(Level.INFO, "Image {0} found in the storage.", imageUrl);
         				}
                 	} else {
-                		logger.log(Level.SEVERE, "Wrong latitude and/or longitude parameters value(s).");
+                		logger.log(Level.SEVERE, "Wrong latitude and/or longitude parameter(s) value.");
                 	}   
                 } else {
                     logger.log(Level.SEVERE, "Wrong parameter action: {0}", action);

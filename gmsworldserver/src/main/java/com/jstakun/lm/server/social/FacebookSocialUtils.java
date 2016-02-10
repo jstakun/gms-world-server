@@ -174,7 +174,7 @@ public class FacebookSocialUtils {
             			Parameter.with("name", "GMS World"),
             			Parameter.with("description", rb.getString("Social.fb.desc.image")),
             			Parameter.with("link", showImageUrl),
-            			Parameter.with("picture", imageUrl)
+            			Parameter.with("picture", imageUrl + "?thumbnail=false")
             	};
             } else if (type == Commons.ROUTE) {
             	params = new Parameter[]{
@@ -182,7 +182,7 @@ public class FacebookSocialUtils {
             			Parameter.with("name", "GMS World"),
             			Parameter.with("description", rb.getString("Social.fb.desc.image")),
             			Parameter.with("link", showImageUrl),
-            			Parameter.with("picture", imageUrl)
+            			Parameter.with("picture", imageUrl + "&thumbnail=false")
             	};
             }
 
