@@ -52,11 +52,15 @@ public class Landmark implements Serializable {
         this.username = username;
         this.validityDate = validityDate;       
         this.layer = layer;
-        //this.email = email;
+        this.email = email;
     }
     
     public Landmark() {
     	this.creationDate = new Date(System.currentTimeMillis());
+    	this.email = "";
+    	this.id = -1;
+    	this.altitude = 0d;
+    	this.description = "";
     }
 
     public String getName() {

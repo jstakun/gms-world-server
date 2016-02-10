@@ -115,7 +115,11 @@ public class FileUtils {
 	public static String getImageUrlV2(String fileName, boolean thumbnail) {
 		String bucketName = AppIdentityServiceFactory.getAppIdentityService().getDefaultGcsBucketName();
 		BlobKey bk = getCloudStorageBlobKey(bucketName, fileName);
-		return getImageUrl(bk, thumbnail);
+		if (bk != null) {
+			return getImageUrl(bk, thumbnail);
+		} else {
+			return null;
+		}
 	}
 	
 	private static BlobKey getCloudStorageBlobKey(String bucket_name, String object_name) {       
