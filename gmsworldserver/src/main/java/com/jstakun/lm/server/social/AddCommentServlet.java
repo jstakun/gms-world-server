@@ -58,7 +58,7 @@ public class AddCommentServlet extends HttpServlet {
                 Landmark landmark = null;
                 if (StringUtils.startsWith(key, UrlUtils.BITLY_URL)) {
                     String hash = StringUtils.remove(key, UrlUtils.BITLY_URL);
-                    landmark = LandmarkPersistenceUtils.selectLandmarkByHash(hash);
+                    landmark = LandmarkPersistenceUtils.selectLandmarkByHash(hash, GoogleCacheProvider.getInstance());
                 } else if (StringUtils.startsWith(key, ConfigurationManager.SERVER_URL)) {
                 	int index = StringUtils.lastIndexOfAny(key, new String[]{",","/"});
                 	if (index > 0 && index < key.length()) {

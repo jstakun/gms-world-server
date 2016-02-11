@@ -83,24 +83,37 @@ public class LandmarkPersistenceUtils {
     	}
     }
 
-    public static Landmark selectLandmarkByHash(String hash) {
-        Landmark landmark = null;
+    public static Landmark selectLandmarkByHash(String hash, CacheProvider cacheProvider) {
+    	String key = "landmark_" + hash;
+    	Landmark landmark = null;
+    	if (cacheProvider != null) {
+    		landmark = cacheProvider.getObject(Landmark.class, key);
+    	}
     
-        try {
-        	String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "landmarksProvider";
-        	String params = "hash=" + hash;			 
-        	//logger.log(Level.INFO, "Calling: " + gUrl);
-        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
-        	//logger.log(Level.INFO, "Received response: " + gJson);
-        	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
-        		JSONObject l = new JSONObject(gJson);
-    		    landmark = jsonToLandmark(l);
-        	} else {
-        		logger.log(Level.SEVERE, "Received following server response: " + gJson);
-        	}
-        } catch (Exception e) {
-        	logger.log(Level.SEVERE, e.getMessage(), e);
-        }
+    	if (landmark == null) {
+    		try {
+    			String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "landmarksProvider";
+    			String params = "hash=" + hash;			 
+    			//logger.log(Level.INFO, "Calling: " + gUrl);
+    			String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
+    			//logger.log(Level.INFO, "Received response: " + gJson);
+    			if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
+    				JSONObject l = new JSONObject(gJson);
+    				if (l.has("error")) {
+    					logger.log(Level.SEVERE, "Received following server response: " + l.getString("error"));
+    				} else {
+    					landmark = jsonToLandmark(l);
+    					if (cacheProvider != null) {
+    						cacheProvider.put(key, landmark);
+    					}
+    				}
+    			} else {
+    				logger.log(Level.SEVERE, "Received following server response: " + gJson);
+    			}
+    		} catch (Exception e) {
+    			logger.log(Level.SEVERE, e.getMessage(), e);
+    		}
+    	}
 
         return landmark;
     }
@@ -121,8 +134,14 @@ public class LandmarkPersistenceUtils {
         		//logger.log(Level.INFO, "Received response: " + gJson);
         		if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
         			JSONObject l = new JSONObject(gJson);
-        			landmark = jsonToLandmark(l);
-        			cacheProvider.put(key, landmark);
+        			if (l.has("error")) {
+        				logger.log(Level.SEVERE, "Received following server response: " + l.getString("error"));
+        			} else {
+        				landmark = jsonToLandmark(l);
+        				if (cacheProvider != null) {
+        					cacheProvider.put(key, landmark);
+        				}
+        			}
         		} else {
         			logger.log(Level.SEVERE, "Received following server response: " + gJson);
         		}

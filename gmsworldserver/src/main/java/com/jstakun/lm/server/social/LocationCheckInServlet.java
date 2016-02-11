@@ -57,7 +57,7 @@ public class LocationCheckInServlet extends HttpServlet {
                 if (StringUtils.startsWith(key, UrlUtils.BITLY_URL)) {
                 	String extractedKey = StringUtils.remove(key, UrlUtils.BITLY_URL);
                 	logger.log(Level.INFO, "Key is: " + extractedKey);
-                    landmark = LandmarkPersistenceUtils.selectLandmarkByHash(extractedKey);
+                    landmark = LandmarkPersistenceUtils.selectLandmarkByHash(extractedKey, GoogleCacheProvider.getInstance());
                 } else if (StringUtils.startsWith(key, ConfigurationManager.SERVER_URL)) {
                 	int index = StringUtils.lastIndexOfAny(key, new String[]{",","/"});
                 	if (index > 0 && index < key.length()) {
