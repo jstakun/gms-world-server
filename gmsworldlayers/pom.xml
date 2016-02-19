@@ -5,10 +5,10 @@
   <version>0.0.4.21</version>
   
   <properties>
-      <google.http.client.version>1.20.0</google.http.client.version>
+      <google.http.client.version>1.21.0</google.http.client.version>
       <freebase.version>v1-rev68-1.20.0</freebase.version>
-      <youtube.version>v3-rev151-1.20.0</youtube.version>
-      <shortener.version>v1-rev41-1.20.0</shortener.version>
+      <youtube.version>v3-rev162-1.21.0</youtube.version>
+      <shortener.version>v1-rev43-1.21.0</shortener.version>
       <picasa.version>1.0.10-alpha</picasa.version>  
   </properties>
   
@@ -41,7 +41,7 @@
   	<dependency>
   		<groupId>com.restfb</groupId>
   		<artifactId>restfb</artifactId>
-  		<version>1.16.0</version>
+  		<version>1.19.0</version>
   	</dependency>
   	<dependency>
   		<groupId>com.rosaloves</groupId>
@@ -51,7 +51,7 @@
   	<dependency>
   		<groupId>com.flickr4java</groupId>
   		<artifactId>flickr4java</artifactId>
-  		<version>2.13</version>
+  		<version>2.15</version>
   	</dependency>
   	<dependency>
   		<groupId>net.gms-world</groupId>
@@ -86,12 +86,12 @@
   	<dependency>
   		<groupId>com.twitter</groupId>
   		<artifactId>twitter-text</artifactId>
-  		<version>1.13.0</version>
+  		<version>1.13.3</version>
   	</dependency>
   	<dependency>
   		<groupId>org.ocpsoft.prettytime</groupId>
   		<artifactId>prettytime</artifactId>
-  		<version>4.0.0.Final</version>
+  		<version>4.0.1.Final</version>
   	</dependency>
   	<dependency>
   		<groupId>commons-validator</groupId>

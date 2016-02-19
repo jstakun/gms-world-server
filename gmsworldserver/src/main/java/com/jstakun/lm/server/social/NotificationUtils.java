@@ -444,11 +444,13 @@ public class NotificationUtils {
         	layer = Commons.TWITTER_LAYER;
     	} 
     	
-    	ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
-        MailUtils.sendUserCreationNotification(String.format(rb.getString("Social.user.login"), ConfigurationManager.SERVER_URL, username, service));
-        if (StringUtils.isNotEmpty(email) && layer != null) {
-        	MailUtils.sendLoginNotification(email, name, layer, context);
-        }
+    	if (status != null) {
+    		ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource");
+    		MailUtils.sendUserCreationNotification(String.format(rb.getString("Social.user.login"), ConfigurationManager.SERVER_URL, username, service));
+    		if (StringUtils.isNotEmpty(email) && layer != null) {
+    			MailUtils.sendLoginNotification(email, name, layer, context);
+    		}
+    	}
         
         return status;
 	}

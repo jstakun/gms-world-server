@@ -1,6 +1,5 @@
 package com.jstakun.lm.server.social;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -24,8 +23,6 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.api.services.plus.Plus;
-import com.google.api.services.plus.model.ItemScope;
-import com.google.api.services.plus.model.Moment;
 
 /**
  *
@@ -139,7 +136,8 @@ public class GooglePlusUtils {
     }
 
     private static String sendUrlMoment(Plus plus, String url) {
-        if (url != null) {
+    	//TODO not yet implemented
+    	/*if (url != null) {
         	Moment moment = new Moment();
         	moment.setType("http://schema.org/AddAction");
         	ItemScope itemScope = new ItemScope();
@@ -156,11 +154,13 @@ public class GooglePlusUtils {
         } else {
             logger.log(Level.SEVERE, "Url is null!");
             return null;
-        }
+        }*/
+    	return "ok";
     }
 
     private static String sendMoment(Plus plus, String name, String desc, String image, Double lat, Double lng) {
-        try {
+        //TODO not yet implemented
+    	/*try {
             Moment moment = new Moment();
         	moment.setType("http://schema.org/AddAction");
             ItemScope itemScope = new ItemScope();
@@ -182,7 +182,8 @@ public class GooglePlusUtils {
         } catch (IOException ex) {
             logger.log(Level.SEVERE, "GooglePlusUtils.sendMoment() exception", ex);
             return null;
-        }
+        }*/
+    	return "ok";
     }
     
     private static Map<String, String> requestAccessToken(String refreshToken) {
