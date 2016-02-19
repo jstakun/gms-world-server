@@ -559,9 +559,15 @@ public class JSONUtils {
 
         //checkins
 
-        String checkins = tokens.remove("checkins"); 
-        if (checkins != null) {
-            result.add("<font color=\"red\">" + checkins + "</font>");
+        String checkin_user = tokens.remove("checkin_user"); 
+        if (checkin_user != null) {
+            result.add("<font color=\"red\">" + String.format(rb.getString("Landmark.checkinUser"), checkin_user, prettyTime.format(new Date(landmark.getCreationDate()))) + "</font>");
+        }
+        
+        //tagged
+        String tagged = tokens.remove("tagged");
+        if (tagged != null) {
+        	result.add("<font color=\"red\">" + String.format(rb.getString("Landmark.tagged"), prettyTime.format(new Date(landmark.getCreationDate())))  + "</font>");
         }
 
         //photo

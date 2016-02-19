@@ -10,7 +10,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.logging.Level;
 
 import net.gmsworld.server.config.Commons;
@@ -23,7 +22,6 @@ import net.gmsworld.server.utils.ThreadManager;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.ocpsoft.prettytime.PrettyTime;
 
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
@@ -33,6 +31,8 @@ import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;
 import com.restfb.Parameter;
 import com.restfb.Version;
+import com.restfb.batch.BatchRequest;
+import com.restfb.batch.BatchResponse;
 import com.restfb.json.JsonArray;
 import com.restfb.json.JsonException;
 import com.restfb.json.JsonObject;
@@ -181,13 +181,13 @@ public class FacebookUtils extends LayerHelper {
         return json;
     }
     
-    private static List<ExtendedLandmark> createCustomLandmarkFacebookList(List<JsonObject> data, Map<String, Map<String, String>> pageDescs, Locale locale) throws JsonException {
+    private static List<ExtendedLandmark> createCustomLandmarkFacebookList(List<JsonObject> places, Map<String, Map<String, String>> pageDescs, Locale locale) throws JsonException {
     	List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
 
-        for (JsonObject place : data) {
-        	JsonObject location = place.getJsonObject("location");
+        for (JsonObject place : places) {
         	String name = place.getString("name");
-        	if (location.has("latitude") && location.has("longitude")) {
+        	JsonObject location = place.optJsonObject("location");
+        	if (location != null && location.has("latitude") && location.has("longitude")) {
 
                 double lat;
                 Object c = location.remove("latitude");
@@ -308,7 +308,7 @@ public class FacebookUtils extends LayerHelper {
                 String pageIds = StringUtils.join(pages.subList(first, last), ",");
 
                 threadManager.put(pageIds, new VenueDetailsRetriever(threadManager, pageDescs,
-                        facebookClient, pageIds, stringLength));
+                        facebookClient, pages, stringLength));
 
                 first = last;
                 last += 50;
@@ -368,7 +368,7 @@ public class FacebookUtils extends LayerHelper {
 	}
     
     public static FacebookClient getFacebookClient(String token) {
-    	return new DefaultFacebookClient(token, Version.VERSION_2_0);
+    	return new DefaultFacebookClient(token, Version.VERSION_2_5);
     }
     
     public String getLayerName() {
@@ -386,13 +386,11 @@ public class FacebookUtils extends LayerHelper {
         	FacebookClient facebookClient = getFacebookClient(token);
         	List<JsonObject> placesSearch = facebookClient.fetchConnection("me/tagged_places", JsonObject.class, Parameter.with("limit", limit * 3), Parameter.with("fields", "place,created_time")).getData();
         	int dataSize = placesSearch.size();
-        	PrettyTime prettyTime = new PrettyTime(locale);
         	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         	Map<String, Map<String, String>> pageDescs = new HashMap<String, Map<String, String>>();     
         	List<String> pages = new ArrayList<String>(dataSize);
         	List<JsonObject> places = new ArrayList<JsonObject>(dataSize);
-        	ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource", locale);
-            logger.log(Level.INFO, "Found " + dataSize + " tagged places.");
+        	logger.log(Level.INFO, "Found " + dataSize + " tagged places.");
         	for (JsonObject tagged : placesSearch) {
         		JsonObject place = tagged.getJsonObject("place");
         		String placeid = place.getString("id");
@@ -401,8 +399,7 @@ public class FacebookUtils extends LayerHelper {
         			places.add(place);
         			Map<String, String> pageDesc = new HashMap<String, String>();
         			Date d = sdf.parse(tagged.getString("created_time"));//2015-05-05T06:20:42+0000
-        			String checkins = String.format(rb.getString("Landmark.tagged"), prettyTime.format(d));
-        			pageDesc.put("checkins", checkins);  
+        			pageDesc.put("tagged", "1");  
         			pageDesc.put("creation_date", Long.toString(d.getTime()));
         			pageDescs.put(placeid, pageDesc);
         		}
@@ -444,12 +441,10 @@ public class FacebookUtils extends LayerHelper {
         	//me/feed?with=location, me/posts
         	List<JsonObject> placesSearch = facebookClient.fetchConnection("me/feed", JsonObject.class, Parameter.with("with", "location"), Parameter.with("limit", limit), Parameter.with("fields", "place,from,created_time")).getData();
         	int dataSize = placesSearch.size();
-        	PrettyTime prettyTime = new PrettyTime(locale);
         	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         	Map<String, Map<String, String>> pageDescs = new HashMap<String, Map<String, String>>();     
         	List<String> pages = new ArrayList<String>(dataSize);
         	List<JsonObject> places = new ArrayList<JsonObject>(dataSize);
-        	ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource", locale);
         	logger.log(Level.INFO, "Found " + dataSize + " places.");
         	for (JsonObject post : placesSearch) {
         		if (post.has("place")) {
@@ -461,8 +456,7 @@ public class FacebookUtils extends LayerHelper {
         				JsonObject from = post.getJsonObject("from");
         				Map<String, String> pageDesc = new HashMap<String, String>();
         				Date d = sdf.parse(post.getString("created_time"));//2015-05-05T06:20:42+0000
-        				String checkins = String.format(rb.getString("Landmark.checkinUser"), from.getString("name"), prettyTime.format(d));
-        				pageDesc.put("checkins", checkins);  
+        				pageDesc.put("checkin_user", from.getString("name"));
         				pageDesc.put("creation_date", Long.toString(d.getTime()));
         				pageDescs.put(placeid, pageDesc);
         			}
@@ -503,7 +497,7 @@ public class FacebookUtils extends LayerHelper {
     	}
     	if (landmarks == null) {
         	FacebookClient facebookClient = getFacebookClient(token);
-        	//{user-id}/photos,/{user-id}/photos?type=uploaded
+        	//{user-id}/photos,/{user-id}/photos?type=uploaded order created_time desc
         	List<JsonObject> photos = facebookClient.fetchConnection("me/photos", JsonObject.class, Parameter.with("type","uploaded"), Parameter.with("limit", limit), Parameter.with("fields", "picture,place,from,created_time,link")).getData();
         	int dataSize = photos.size();
         	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -513,6 +507,7 @@ public class FacebookUtils extends LayerHelper {
         	logger.log(Level.INFO, "Found " + dataSize + " photos.");
         	for (JsonObject photo : photos) {
         		if (photo.has("place")) {
+        			//TODO add support for multiple photos per page
         			JsonObject place = photo.getJsonObject("place");
         			String placeid = place.getString("id");
         			if (!pages.contains(placeid)) {
@@ -564,10 +559,10 @@ public class FacebookUtils extends LayerHelper {
         private FacebookClient facebookClient;
         private Map<String, Map<String, String>> pageDescs;
         private int stringLength;
-        private String pageIds;
+        private List<String> pageIds;
 
         public VenueDetailsRetriever(ThreadManager threadManager, Map<String, Map<String, String>> pageDescs,
-                FacebookClient facebookClient, String pageIds, int stringLength) {
+                FacebookClient facebookClient, List<String> pageIds, int stringLength) {
             this.threadManager = threadManager;
             this.pageDescs = pageDescs;
             this.facebookClient = facebookClient;
@@ -577,48 +572,50 @@ public class FacebookUtils extends LayerHelper {
 
         public void run() {
             try {
-                //TODO migrate to v2.x before August 7, 2016
-                List<FBPlaceDetails> queryResults = new ArrayList<FBPlaceDetails>();
+            	List<BatchRequest> requests = new ArrayList<BatchRequest>(pageIds.size());
+            	for (String pageId : pageIds) {
+            		requests.add(new BatchRequest.BatchRequestBuilder(pageId + "?fields=website,picture,phone,description").build());
+            	}
+                List<BatchResponse> batchResponses = facebookClient.executeBatch(requests);
+            	for (BatchResponse batchResponse : batchResponses) {           		
+            		JSONObject reply = new JSONObject(batchResponse.getBody()); //The HTTP response body JSON.
+            		
+            		HashMap<String, String> details = new HashMap<String, String>();
 
-                String query = "SELECT page_id, pic, website, phone, description FROM page WHERE page_id IN (" + pageIds + ")";
+            		if (reply.has("description")) {
+            			JSONUtils.putOptValue(details, "description", reply.getString("description"), stringLength, true);
+            			if (details.containsKey("description")) {
+            				String desc = ((String)details.get("description")); 
+            				details.put("description", desc.replaceAll("/pages/w/", "http://facebook.com/pages/w/"));
+            			}
+            		}
 
-                queryResults.addAll(facebookClient.executeFqlQuery(query, FBPlaceDetails.class));
-
-                for (FBPlaceDetails pageDetails : queryResults) {
-                	
-                	HashMap<String, String> details = new HashMap<String, String>();
-
-                    JSONUtils.putOptValue(details, "description", pageDetails.desc, stringLength, true);
-                    if (details.containsKey("description")) {
-                    	String desc = ((String)details.get("description")); 
-                    	details.put("description", desc.replaceAll("/pages/w/", "http://facebook.com/pages/w/"));
+                    if (reply.has("phone")) {
+                        details.put("phone", reply.getString("phone"));
                     }
 
-                    if (StringUtils.isNotEmpty(pageDetails.phone)) {
-                        details.put("phone", pageDetails.phone);
+                    if (reply.has("website")) {
+                        details.put("homepage", reply.getString("website"));
                     }
 
-                    if (StringUtils.isNotEmpty(pageDetails.website)) {
-                        details.put("homepage", pageDetails.website);
-                    }
-
-                    if (StringUtils.isNotEmpty(pageDetails.pic)) {
-                        details.put("icon", pageDetails.pic);
+                    if (reply.has("picture")) {
+                    	details.put("icon", reply.getJSONObject("picture").getJSONObject("data").getString("url"));
                     }
 
                     if (!details.isEmpty()) {
-                    	if (pageDescs.containsKey(pageDetails.objectId)) {
-                    		pageDescs.get(pageDetails.objectId).putAll(details);
+                    	String objectId = reply.getString("id");
+                    	if (pageDescs.containsKey(objectId)) {
+                    		pageDescs.get(objectId).putAll(details);
                     	} else {
                     		//System.out.println("Creating new desc");
-                    		pageDescs.put(pageDetails.objectId, details);
+                    		pageDescs.put(objectId, details);
                     	}
                     }
-                }
+            	}
             } catch (Exception e) {
                 logger.log(Level.SEVERE, "FacebookUtils.readFacebookPlacesDetails() exception", e);
             } finally {
-                threadManager.take(pageIds);
+            	threadManager.take(StringUtils.join(pageIds, ","));
             }
         }
     }
