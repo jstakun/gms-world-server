@@ -25,7 +25,7 @@ public class FBTest {
 	String token = Commons.FB_TEST_TOKEN_FULL_0;
 	double lat = 52.25;
 	double lng = 20.95;
-	int limit = 93;
+	int limit = 30;
 
 	@Test
 	public void testMyFriends() throws UnsupportedEncodingException {		
@@ -62,7 +62,7 @@ public class FBTest {
 	
 	@Test
 	public void testPlaces() throws Exception {	
-		List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().processBinaryRequest(lat, lng, null, 10, 1126, 30, 1024, null, null, Locale.UK, false);
+		List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().processBinaryRequest(lat, lng, null, 10, 1126, limit, 1024, null, null, Locale.UK, false);
 		printLandmarks(landmarks, "places around");
 	}
     

@@ -308,7 +308,7 @@ public class FacebookUtils extends LayerHelper {
                 String pageIds = StringUtils.join(pages.subList(first, last), ",");
 
                 threadManager.put(pageIds, new VenueDetailsRetriever(threadManager, pageDescs,
-                        facebookClient, pages, stringLength));
+                        facebookClient, pages.subList(first, last), stringLength));
 
                 first = last;
                 last += 50;
