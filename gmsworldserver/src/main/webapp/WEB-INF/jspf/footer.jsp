@@ -48,9 +48,10 @@
 
             <div class="footer-list">
                 <ul>
+                    <li><a href="http://www.hotelsonmap.net">Hotels</a></li>
+                    <li><a href="/landmarks">Landmarks</a></li>
                     <li><a href="/index.jsp">Home</a></li>
                     <li><a href="/download.jsp">Download</a></li>
-                    <li><a href="/demo/run.jsp">Online Demo</a></li>
                     <li><a href="http://blog.gms-world.net">Blog</a></li>
                     <li><a href="/archive.do">Archives</a></li>
                     <li><a href="/about.jsp">About</a></li>

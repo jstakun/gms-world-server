@@ -172,6 +172,10 @@ public class JSONUtils {
 			country = language;
 		}
 		
+    	if (StringUtils.equals(language, "en") && StringUtils.equals(country, "en")) {
+    		country = "us";
+    	}
+    	
     	try {
     		Locale locale = new Locale(language, country);
     		Currency currency = Currency.getInstance(locale);
