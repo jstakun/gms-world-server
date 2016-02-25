@@ -16,6 +16,8 @@
 	    </div>
 	    <nav class="vertical menu">
 	    	<ul>
+	    	    <li><a href="http://www.hotelsonmap.net">Hotels</a></li>
+	    	    <li><a href="/landmarks">Landmarks</a></li>
 	            <li><a href="/m/index.jsp">Home</a></li>
 	            <li><a href="http://blog.gms-world.net/">Blog</a></li>
 	            <li><a href="/m/register.jsp">Register</a></li>

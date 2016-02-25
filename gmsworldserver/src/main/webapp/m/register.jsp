@@ -12,12 +12,10 @@
   <link rel="stylesheet" media="all" href="/style.css" type="text/css">
   <%@ include file="/WEB-INF/jspf/head_small.jspf" %>
   <script type="text/javascript">
-   <!-- //
     function ClearPassword(){
       document.userForm.password.value = "";
       document.userForm.repassword.value = "";
     }
-   // -->
   </script>
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>

@@ -206,7 +206,11 @@ public class CouponsUtils extends LayerHelper {
                     double lat = Double.valueOf(deal.getString("lat")).doubleValue();
                     double lng = Double.valueOf(deal.getString("lon")).doubleValue();
                     QualifiedCoordinates qc = new QualifiedCoordinates(lat, lng, 0f, 0f, 0f);
-         		    String name = StringEscapeUtils.unescapeHtml(deal.getString("dealTitle"));
+                    String title = deal.optString("dealTitle");
+                    if (title == null) {
+                    	title = "Deal!";
+                    }
+         		    String name = StringEscapeUtils.unescapeHtml(title);
                     String url = deal.getString("URL");
 
                     Map<String, String> tokens = new HashMap<String, String>();

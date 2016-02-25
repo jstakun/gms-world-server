@@ -574,7 +574,7 @@ public class FacebookUtils extends LayerHelper {
             try {
             	List<BatchRequest> requests = new ArrayList<BatchRequest>(pageIds.size());
             	for (String pageId : pageIds) {
-            		requests.add(new BatchRequest.BatchRequestBuilder(pageId + "?fields=website,picture,phone,description").build());
+            		requests.add(new BatchRequest.BatchRequestBuilder(pageId + "?fields=website,picture.type(normal),phone,description").build());
             	}
                 List<BatchResponse> batchResponses = facebookClient.executeBatch(requests);
             	for (BatchResponse batchResponse : batchResponses) {           		
