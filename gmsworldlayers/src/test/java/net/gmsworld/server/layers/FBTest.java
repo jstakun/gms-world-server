@@ -9,6 +9,7 @@ import java.util.Locale;
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.JvmThreadProvider;
+import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.memcache.MockCacheProvider;
 
 import org.junit.Test;
@@ -35,13 +36,13 @@ public class FBTest {
 	
 	@Test
 	public void testMyCheckins() throws UnsupportedEncodingException, ParseException {
-		List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getMyPlaces(1126, limit, 1024, token, Locale.UK, false);
+		List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getMyPlaces(1126, limit, StringUtil.XLARGE, token, Locale.UK, false);
 		printLandmarks(landmarks, "checkins");
 	}
 	
 	@Test
 	public void testMyPhotos() throws UnsupportedEncodingException, ParseException {
-		List<ExtendedLandmark> landmarks =	LayerHelperFactory.getFacebookUtils().getMyPhotos(1126, limit, 1024, token, Locale.UK, false);
+		List<ExtendedLandmark> landmarks =	LayerHelperFactory.getFacebookUtils().getMyPhotos(1126, limit, StringUtil.XLARGE, token, Locale.UK, false);
 	    printLandmarks(landmarks, "photos");
 	}
 	
@@ -56,13 +57,13 @@ public class FBTest {
 
 	@Test
 	public void testUserTaggedPlaces() throws UnsupportedEncodingException, ParseException {	
-		List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getMyTaggedPlaces(1126, limit, 1024, token, Locale.UK, false);
+		List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getMyTaggedPlaces(1126, limit, StringUtil.XLARGE, token, Locale.UK, false);
 		printLandmarks(landmarks, "tagged places");
 	}
 	
 	@Test
 	public void testPlaces() throws Exception {	
-		List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().processBinaryRequest(lat, lng, null, 10, 1126, limit, 1024, null, null, Locale.UK, false);
+		List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().processBinaryRequest(lat, lng, null, 10, 1126, limit, StringUtil.XLARGE, null, null, Locale.UK, false);
 		printLandmarks(landmarks, "places around");
 	}
     

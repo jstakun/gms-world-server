@@ -17,6 +17,7 @@ import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.JSONUtils;
 import net.gmsworld.server.utils.MathUtils;
 import net.gmsworld.server.utils.NumberUtils;
+import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.ThreadManager;
 
 import org.apache.commons.lang.StringUtils;
@@ -574,7 +575,11 @@ public class FacebookUtils extends LayerHelper {
             try {
             	List<BatchRequest> requests = new ArrayList<BatchRequest>(pageIds.size());
             	for (String pageId : pageIds) {
-            		requests.add(new BatchRequest.BatchRequestBuilder(pageId + "?fields=website,picture.type(normal),phone,description").build());
+            		//if (stringLength == StringUtil.XLARGE) {
+            		//	requests.add(new BatchRequest.BatchRequestBuilder(pageId + "?fields=website,picture.type(large),phone,description").build()); //small, normal, large, square
+            		//} else {
+            			requests.add(new BatchRequest.BatchRequestBuilder(pageId + "?fields=website,picture.type(normal),phone,description").build()); //small, normal, large, square
+            		//}
             	}
                 List<BatchResponse> batchResponses = facebookClient.executeBatch(requests);
             	for (BatchResponse batchResponse : batchResponses) {           		

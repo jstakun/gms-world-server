@@ -637,7 +637,7 @@ public class FoursquareUtils extends LayerHelper {
                 }
                 if (StringUtils.isEmpty(icon)) {
                     Icon iconObj = categories[k].getIcon();
-                	icon = iconObj.getPrefix() + "bg_32" + iconObj.getSuffix(); //32, 44, 64, and 88 are available
+                	icon = iconObj.getPrefix() + "bg_64" + iconObj.getSuffix(); //32, 44, 64, and 88 are available
                 }
                 category += categories[k].getName();
             }
@@ -708,7 +708,7 @@ public class FoursquareUtils extends LayerHelper {
                 }
                 if (StringUtils.isEmpty(thumbnail)) {
                     Icon iconObj = categories[k].getIcon();
-                	thumbnail = iconObj.getPrefix() + "bg_32" + iconObj.getSuffix(); //32, 44, 64, and 88 are available
+                	thumbnail = iconObj.getPrefix() + "bg_64" + iconObj.getSuffix(); //32, 44, 64, and 88 are available
                 }
                 category += categories[k].getName();
             }
@@ -796,8 +796,6 @@ public class FoursquareUtils extends LayerHelper {
 
         ThreadManager threadManager = new ThreadManager(threadProvider);
         
-        //boolean bitlyFailed = false;
-
         for (int i = 0; i < venueIds.size(); i++) {
 
             String venueId = venueIds.get(i);
@@ -953,23 +951,13 @@ public class FoursquareUtils extends LayerHelper {
                                                     }
 
                                                     //photo url
-                                                    //String photo = newest.getString("url");
-                                                    	
+                                                    //36, 100, 300, or 500
                                                     String photo = newest.getString("prefix") + "100x100" + newest.getString("suffix");
-                                                    	
-                                                    /*if (!bitlyFailed) {
-                                                    	String shortUrl = UrlUtils.getShortUrl(photo);
-                                                        if (StringUtils.equals(shortUrl, photo)) {
-                                                        	bitlyFailed = true;
-                                                        } else {
-                                                        	photo = shortUrl;
-                                                        }
-                                                     }*/
                                                         
-                                                     venueAttrs.put("caption", photo);
-                                                     hasPhoto = true;
+                                                    venueAttrs.put("caption", photo);
+                                                    hasPhoto = true;
                                                      	
-                                                     venueAttrs.put("icon", photo);
+                                                    venueAttrs.put("icon", photo);
 
                                                      //icon
                                                      /*JSONObject sizes = newest.optJSONObject("sizes");

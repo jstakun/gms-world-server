@@ -147,8 +147,8 @@ public class FoursquareMerchantUtils extends FoursquareUtils {
 
                                     if (StringUtils.isEmpty(icon)) {
                                         JSONObject jsonIcon = c.getJSONObject("icon");
-                                        if (jsonIcon.has("prefix") && jsonIcon.has("sizes") && jsonIcon.has("name")) {
-                                            icon = jsonIcon.getString("prefix") + jsonIcon.getJSONArray("sizes").getInt(0) + jsonIcon.getString("name");
+                                        if (jsonIcon.has("prefix") && jsonIcon.has("suffix")) {
+                                            icon = jsonIcon.getString("prefix") + "bg_64" + jsonIcon.getString("suffix");
                                         }
                                     }
                                 }
@@ -292,8 +292,8 @@ public class FoursquareMerchantUtils extends FoursquareUtils {
 
                                     if (StringUtils.isEmpty(icon)) {
                                         JSONObject jsonIcon = c.getJSONObject("icon");
-                                        if (jsonIcon.has("prefix") && jsonIcon.has("sizes") && jsonIcon.has("name")) {
-                                            icon = jsonIcon.getString("prefix") + jsonIcon.getJSONArray("sizes").getInt(0) + jsonIcon.getString("name");
+                                        if (jsonIcon.has("prefix") && jsonIcon.has("suffix")) {
+                                            icon = jsonIcon.getString("prefix") + "bg_64" + jsonIcon.getString("suffix");
                                         }
                                     }
                                 }    
