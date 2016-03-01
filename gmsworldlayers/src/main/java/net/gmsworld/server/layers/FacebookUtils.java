@@ -559,27 +559,27 @@ public class FacebookUtils extends LayerHelper {
         private ThreadManager threadManager;
         private FacebookClient facebookClient;
         private Map<String, Map<String, String>> pageDescs;
-        private int stringLength;
+        private int stringLimit;
         private List<String> pageIds;
 
         public VenueDetailsRetriever(ThreadManager threadManager, Map<String, Map<String, String>> pageDescs,
-                FacebookClient facebookClient, List<String> pageIds, int stringLength) {
+                FacebookClient facebookClient, List<String> pageIds, int stringLimit) {
             this.threadManager = threadManager;
             this.pageDescs = pageDescs;
             this.facebookClient = facebookClient;
             this.pageIds = pageIds;
-            this.stringLength = stringLength;
+            this.stringLimit = stringLimit;
         }
 
         public void run() {
             try {
             	List<BatchRequest> requests = new ArrayList<BatchRequest>(pageIds.size());
             	for (String pageId : pageIds) {
-            		//if (stringLength == StringUtil.XLARGE) {
-            		//	requests.add(new BatchRequest.BatchRequestBuilder(pageId + "?fields=website,picture.type(large),phone,description").build()); //small, normal, large, square
-            		//} else {
+            		if (stringLimit == StringUtil.XLARGE) {
+            			requests.add(new BatchRequest.BatchRequestBuilder(pageId + "?fields=website,picture.type(large),phone,description").build()); //small, normal, large, square
+            		} else {
             			requests.add(new BatchRequest.BatchRequestBuilder(pageId + "?fields=website,picture.type(normal),phone,description").build()); //small, normal, large, square
-            		//}
+            		}
             	}
                 List<BatchResponse> batchResponses = facebookClient.executeBatch(requests);
             	for (BatchResponse batchResponse : batchResponses) {           		
@@ -588,7 +588,7 @@ public class FacebookUtils extends LayerHelper {
             		HashMap<String, String> details = new HashMap<String, String>();
 
             		if (reply.has("description")) {
-            			JSONUtils.putOptValue(details, "description", reply.getString("description"), stringLength, true);
+            			JSONUtils.putOptValue(details, "description", reply.getString("description"), stringLimit, true);
             			if (details.containsKey("description")) {
             				String desc = ((String)details.get("description")); 
             				details.put("description", desc.replaceAll("/pages/w/", "http://facebook.com/pages/w/"));

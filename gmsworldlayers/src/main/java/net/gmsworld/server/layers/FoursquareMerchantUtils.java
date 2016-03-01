@@ -17,6 +17,7 @@ import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.JSONUtils;
 import net.gmsworld.server.utils.MathUtils;
 import net.gmsworld.server.utils.NumberUtils;
+import net.gmsworld.server.utils.StringUtil;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
@@ -107,7 +108,7 @@ public class FoursquareMerchantUtils extends FoursquareUtils {
                             venueIds.add(venue.getString("id"));
                         }
 
-                        Map<String, Map<String, String>> descs = getVenueDetails(venueIds, locale);
+                        Map<String, Map<String, String>> descs = getVenueDetails(venueIds, locale, stringLimit);
 
                         for (int i = 0; i < items.length(); i++) {
                             JSONObject item = items.getJSONObject(i);
@@ -148,7 +149,11 @@ public class FoursquareMerchantUtils extends FoursquareUtils {
                                     if (StringUtils.isEmpty(icon)) {
                                         JSONObject jsonIcon = c.getJSONObject("icon");
                                         if (jsonIcon.has("prefix") && jsonIcon.has("suffix")) {
-                                            icon = jsonIcon.getString("prefix") + "bg_64" + jsonIcon.getString("suffix");
+                                        	if (stringLimit == StringUtil.XLARGE) {
+                                        		icon = jsonIcon.getString("prefix") + "bg_88" + jsonIcon.getString("suffix");
+                                        	} else {
+                                        		icon = jsonIcon.getString("prefix") + "bg_64" + jsonIcon.getString("suffix");
+                                        	}
                                         }
                                     }
                                 }
@@ -253,7 +258,7 @@ public class FoursquareMerchantUtils extends FoursquareUtils {
                             venueIds.add(venue.getString("id"));
                         }
 
-                        Map<String, Map<String, String>> descs = getVenueDetails(venueIds, locale);
+                        Map<String, Map<String, String>> descs = getVenueDetails(venueIds, locale, stringLimit);
                         String category = "", icon = "";
                         int categoryID = -1, subcategoryID = -1;
                         
@@ -293,7 +298,11 @@ public class FoursquareMerchantUtils extends FoursquareUtils {
                                     if (StringUtils.isEmpty(icon)) {
                                         JSONObject jsonIcon = c.getJSONObject("icon");
                                         if (jsonIcon.has("prefix") && jsonIcon.has("suffix")) {
-                                            icon = jsonIcon.getString("prefix") + "bg_64" + jsonIcon.getString("suffix");
+                                        	if (stringLimit == StringUtil.XLARGE) {
+                                        		icon = jsonIcon.getString("prefix") + "bg_88" + jsonIcon.getString("suffix");
+                                        	} else {
+                                        		icon = jsonIcon.getString("prefix") + "bg_64" + jsonIcon.getString("suffix");
+                                        	}
                                         }
                                     }
                                 }    

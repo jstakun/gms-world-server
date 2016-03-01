@@ -24,6 +24,7 @@ import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.JSONUtils;
 import net.gmsworld.server.utils.MathUtils;
 import net.gmsworld.server.utils.NumberUtils;
+import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.ThreadManager;
 
 import org.apache.commons.lang.StringUtils;
@@ -105,7 +106,7 @@ public class FoursquareUtils extends LayerHelper {
                 		venueIds.add(venues[j].getId());
                 	}
 
-                	Map<String, Map<String, String>> descs = getVenueDetails(venueIds, locale);
+                	Map<String, Map<String, String>> descs = getVenueDetails(venueIds, locale, stringLimit);
 
                 	for (int j = 0; j < venues.length; j++) {
                 		CompactVenue venue = venues[j];
@@ -140,7 +141,7 @@ public class FoursquareUtils extends LayerHelper {
                     	venueIds.add(venues[j].getId());
                 	}
 
-                	Map<String, Map<String, String>> descs = getVenueDetails(venueIds, locale);
+                	Map<String, Map<String, String>> descs = getVenueDetails(venueIds, locale, stringLimit);
 
                 	for (int j = 0; j < venues.length; j++) {
                 		CompactVenue venue = venues[j];
@@ -228,7 +229,7 @@ public class FoursquareUtils extends LayerHelper {
                    			venueIds.add(venues[j].getId());
                    		}
 
-                   		Map<String, Map<String, String>> descs = getVenueDetails(venueIds, locale);
+                   		Map<String, Map<String, String>> descs = getVenueDetails(venueIds, locale, stringLimit);
 
                    		for (int j = 0; j < venues.length; j++) {
                    			CompactVenue venue = venues[j];
@@ -238,7 +239,7 @@ public class FoursquareUtils extends LayerHelper {
                    				attrs = new HashMap<String, String>();
                    			}
                        
-                   			ExtendedLandmark landmark = parseCompactVenueToLandmark(venue, attrs, l);
+                   			ExtendedLandmark landmark = parseCompactVenueToLandmark(venue, attrs, l, stringLimit);
                    			if (landmark != null) {
                    				response.add(landmark);
                    			}
@@ -266,7 +267,7 @@ public class FoursquareUtils extends LayerHelper {
                    		  venueIds.add(venues[j].getId());
                    	  }
 
-                   	  Map<String, Map<String, String>> descs = getVenueDetails(venueIds, locale);
+                   	  Map<String, Map<String, String>> descs = getVenueDetails(venueIds, locale, stringLimit);
 
                    	  for (int j = 0; j < venues.length; j++) {
                    		  CompactVenue venue = venues[j];
@@ -288,7 +289,7 @@ public class FoursquareUtils extends LayerHelper {
                    			  //}
                    		  }
 
-                   		  ExtendedLandmark landmark = parseCompactVenueToLandmark(venue, attrs, l);
+                   		  ExtendedLandmark landmark = parseCompactVenueToLandmark(venue, attrs, l, stringLimit);
                    		  if (landmark != null) {
                    			  response.add(landmark);
                    		  }
@@ -308,7 +309,7 @@ public class FoursquareUtils extends LayerHelper {
           return response;
    	}
 
-    public String exploreVenuesToJSon(double lat, double lng, String query, int radius, int limit, int version, String token, String locale) throws JSONException, MalformedURLException, IOException, FoursquareApiException {
+    public String exploreVenuesToJSon(double lat, double lng, String query, int radius, int limit, int stringLimit, int version, String token, String locale) throws JSONException, MalformedURLException, IOException, FoursquareApiException {
         String key = getCacheKey(FoursquareUtils.class, "exploreVenuesToJSon", lat, lng, query, radius, version, limit, 0, token, locale);
         String jsonString = cacheProvider.getString(key);
         if (jsonString == null) {
@@ -333,7 +334,7 @@ public class FoursquareUtils extends LayerHelper {
                         venueIds.add(r.getVenue().getId());
                     }
 
-                    Map<String, Map<String, String>> descs = getVenueDetails(venueIds, locale);
+                    Map<String, Map<String, String>> descs = getVenueDetails(venueIds, locale, stringLimit);
 
                     for (int j = 0; j < rec.length; j++) {
 
@@ -372,7 +373,7 @@ public class FoursquareUtils extends LayerHelper {
         return jsonString;
      }
     
-    public List<ExtendedLandmark> exploreVenuesToLandmark(double lat, double lng, String query, int radius, int limit, int version, String token, String locale, Locale l, boolean useCache) throws JSONException, MalformedURLException, IOException, FoursquareApiException {
+    public List<ExtendedLandmark> exploreVenuesToLandmark(double lat, double lng, String query, int radius, int limit, int stringLimit, int version, String token, String locale, Locale l, boolean useCache) throws JSONException, MalformedURLException, IOException, FoursquareApiException {
     	String key = null;
     	List<ExtendedLandmark> landmarks = null;
     	if (useCache) {
@@ -401,7 +402,7 @@ public class FoursquareUtils extends LayerHelper {
                         venueIds.add(r.getVenue().getId());
                     }
 
-                    Map<String, Map<String, String>> descs = getVenueDetails(venueIds, locale);
+                    Map<String, Map<String, String>> descs = getVenueDetails(venueIds, locale, stringLimit);
 
                     for (int j = 0; j < rec.length; j++) {
 
@@ -416,7 +417,7 @@ public class FoursquareUtils extends LayerHelper {
 
                         attrs.put("rating", "5");
 
-                        ExtendedLandmark landmark = parseCompactVenueToLandmark(venue, attrs, l);
+                        ExtendedLandmark landmark = parseCompactVenueToLandmark(venue, attrs, l, stringLimit);
                         if (landmark != null) {
                         	landmarks.add(landmark);
                         }
@@ -437,7 +438,7 @@ public class FoursquareUtils extends LayerHelper {
         return landmarks;
     }
 
-    public List<ExtendedLandmark> getFriendsCheckinsToLandmarks(double latitude, double longitude, int limit, int version, String token, String locale, Locale l, boolean useCache) throws FoursquareApiException, JSONException, UnsupportedEncodingException {
+    public List<ExtendedLandmark> getFriendsCheckinsToLandmarks(double latitude, double longitude, int limit, int stringLimit, int version, String token, String locale, Locale l, boolean useCache) throws FoursquareApiException, JSONException, UnsupportedEncodingException {
     	String key = null;
     	List<ExtendedLandmark> landmarks = null;
     	if (useCache) {
@@ -513,7 +514,7 @@ public class FoursquareUtils extends LayerHelper {
                 for (CompactVenue venue : venues) {
                 	//create landmark
                 	Map<String, String> attrs = venuesAttrs.get(venue.getId());
-                	ExtendedLandmark landmark = parseCompactVenueToLandmark(venue, attrs, l);
+                	ExtendedLandmark landmark = parseCompactVenueToLandmark(venue, attrs, l, stringLimit);
                     if (landmark != null) {
                     	landmarks.add(landmark);
                     } 
@@ -680,7 +681,7 @@ public class FoursquareUtils extends LayerHelper {
         return jsonObject;
     }
     
-    private static ExtendedLandmark parseCompactVenueToLandmark(CompactVenue venue, Map<String, String> desc, Locale locale) {
+    private static ExtendedLandmark parseCompactVenueToLandmark(CompactVenue venue, Map<String, String> desc, Locale locale, int stringLimit) {
     	ExtendedLandmark landmark = null;
     	Location location = venue.getLocation();
 
@@ -708,7 +709,11 @@ public class FoursquareUtils extends LayerHelper {
                 }
                 if (StringUtils.isEmpty(thumbnail)) {
                     Icon iconObj = categories[k].getIcon();
-                	thumbnail = iconObj.getPrefix() + "bg_64" + iconObj.getSuffix(); //32, 44, 64, and 88 are available
+                    if (stringLimit == StringUtil.XLARGE) {
+                    	thumbnail = iconObj.getPrefix() + "bg_88" + iconObj.getSuffix();
+                    } else {
+                    	thumbnail = iconObj.getPrefix() + "bg_64" + iconObj.getSuffix(); //32, 44, 64, and 88 are available
+                    }
                 }
                 category += categories[k].getName();
             }
@@ -784,7 +789,7 @@ public class FoursquareUtils extends LayerHelper {
         return landmark;
     }
 
-    protected Map<String, Map<String, String>> getVenueDetails(List<String> venueIds, String locale) throws UnsupportedEncodingException, MalformedURLException, IOException, JSONException {
+    protected Map<String, Map<String, String>> getVenueDetails(List<String> venueIds, String locale, int stringLimit) throws UnsupportedEncodingException, MalformedURLException, IOException, JSONException {
         StringBuilder urlPrefix = new StringBuilder("https://api.foursquare.com/v2/multi").
         		append("?client_id=").append(Commons.getProperty(Property.FS_CLIENT_ID)).
                 append("&client_secret=").append(Commons.getProperty(Property.FS_CLIENT_SECRET)).
@@ -810,7 +815,7 @@ public class FoursquareUtils extends LayerHelper {
                 //call foursquare
             	
                 threadManager.put(multiRequest, new VenueDetailsRetriever(threadManager, attrs,
-                        locale, urlPrefix.toString(), multiRequest, venueId, false));
+                        locale, urlPrefix.toString(), multiRequest, venueId, stringLimit));
 
                 multiRequest = "";
             }
@@ -879,17 +884,17 @@ public class FoursquareUtils extends LayerHelper {
         private ThreadManager threadManager;
         private Map<String, Map<String, String>> attrs;
         private String locale, urlPrefix, multiRequest, venueId;
-        //private boolean bitlyFailed;
+        private int stringLimit;
 
         public VenueDetailsRetriever(ThreadManager threadManager, Map<String, Map<String, String>> attrs,
-                String locale, String urlPrefix, String multiRequest, String venueId, boolean bitlyFailed) {
+                String locale, String urlPrefix, String multiRequest, String venueId, int stringLimit) {
             this.threadManager = threadManager;
             this.attrs = attrs;
             this.locale = locale;
             this.urlPrefix = urlPrefix;
             this.multiRequest = multiRequest;
             this.venueId = venueId;
-            //this.bitlyFailed = bitlyFailed;
+            this.stringLimit = stringLimit;
         }
 
         public void run() {
@@ -951,9 +956,17 @@ public class FoursquareUtils extends LayerHelper {
                                                     }
 
                                                     //photo url
-                                                    //36, 100, 300, or 500
-                                                    String photo = newest.getString("prefix") + "100x100" + newest.getString("suffix");
+                                                    //36, 100, 300, or 500 
+                                                    String photo = newest.getString("prefix");
                                                         
+                                                    if (stringLimit == StringUtil.XLARGE) {
+                                                    	photo += "200x200";
+                                                    } else {
+                                                    	photo += "100x100";
+                                                    }
+                                                    
+                                                    photo += newest.getString("suffix");
+                                                    
                                                     venueAttrs.put("caption", photo);
                                                     hasPhoto = true;
                                                      	
@@ -1021,155 +1034,4 @@ public class FoursquareUtils extends LayerHelper {
             }
         }
     }
-    
-    /*private static class VenueDetailsCallable implements Callable<Map<String, String>> {
-    	
-    	private String locale, urlPrefix, multiRequest, venueId;
-        private boolean bitlyFailed;
-
-        public VenueDetailsCallable(String locale, String urlPrefix, String multiRequest, String venueId, boolean bitlyFailed) {
-            this.locale = locale;
-            this.urlPrefix = urlPrefix;
-            this.multiRequest = multiRequest;
-            this.venueId = venueId;
-            this.bitlyFailed = bitlyFailed;
-        }
-        
-		public Map<String, String> call() throws Exception {
-			Map<String, String> venueAttrs = new HashMap<String, String>();
-            try {
-                URL url = new URL(urlPrefix.toString() + "&requests=" + URLEncoder.encode(multiRequest, "UTF-8"));
-                String fourquareJson = HttpUtils.processFileRequestWithLocale(url, locale);
-
-                if (StringUtils.startsWith(fourquareJson, "{")) {
-                    JSONObject jsonRoot = new JSONObject(fourquareJson);
-                    JSONObject meta = jsonRoot.getJSONObject("meta");
-                    int code = meta.getInt("code");
-                    if (code == 200) {
-                        JSONObject response = jsonRoot.getJSONObject("response");
-                        JSONArray responses = response.getJSONArray("responses");
-
-                        for (int j = 0; j < responses.length(); j++) {
-                            JSONObject resp = responses.getJSONObject(j);
-                            JSONObject metar = jsonRoot.getJSONObject("meta");
-                            int coder = metar.getInt("code");
-                            if (coder == 200) {
-                                JSONObject responser = resp.getJSONObject("response");
-                                JSONObject venue = responser.optJSONObject("venue");
-                                if (venue != null) {
-                                    //creationDate
-                                    Long creationDate = venue.getLong("createdAt") * 1000;
-                                    venueAttrs.put("creationDate", Long.toString(creationDate));
-                                    //
-
-                                    //photos
-                                    JSONObject photos = venue.getJSONObject("photos");
-                                    int count = photos.getInt("count");
-
-                                    if (count > 0) {
-                                    	JSONArray groups = photos.getJSONArray("groups");
-                                        boolean hasPhoto = false;
-                                        for (int k = 0; k < groups.length(); k++) {
-                                        	JSONObject group = groups.getJSONObject(k);
-                                            int groupCount = group.getInt("count");
-                                            //String type = group.getString("type");
-                                            //System.out.println("Photos: type " + type + ", count " + groupCount);
-                                            if (groupCount > 0) {
-                                            	JSONArray items = group.getJSONArray("items");
-                                                if (items.length() > 0) {
-                                                	JSONObject newest = items.getJSONObject(0);
-
-                                                	//photoUser
-                                                	JSONObject user = newest.getJSONObject("user");
-                                                    String photoUser = "";
-                                                    if (user.has("firstName")) {
-                                                        photoUser = user.getString("firstName");
-                                                    }
-                                                    if (user.has("lastName")) {
-                                                        photoUser += " " + user.getString("lastName");
-                                                    }
-                                                    if (StringUtils.isNotEmpty("photoUser")) {
-                                                        venueAttrs.put("photoUser", photoUser);
-                                                    }
-
-                                                    //photo url
-                                                    //String photo = newest.getString("url");
-                                                    	
-                                                    String photo = newest.getString("prefix") + "100x100" + newest.getString("suffix");
-                                                    	
-                                                    if (!bitlyFailed) {
-                                                    	String shortUrl = UrlUtils.getShortUrl(photo);
-                                                        if (StringUtils.equals(shortUrl, photo)) {
-                                                        	bitlyFailed = true;
-                                                        } else {
-                                                        	photo = shortUrl;
-                                                        }
-                                                     }
-                                                        
-                                                     venueAttrs.put("caption", photo);
-                                                     hasPhoto = true;
-                                                     	
-                                                     venueAttrs.put("icon", photo);
-
-                                                     //icon
-                                                     //JSONObject sizes = newest.optJSONObject("sizes");
-                                                     //if (sizes != null) {
-                                                     //    JSONArray imgItems = sizes.getJSONArray("items");
-                                                     //    for (int i=0;i<imgItems.length();i++) {
-                                                     //   	JSONObject item = imgItems.getJSONObject(i);
-                                                     //       if (item.getInt("width") == 100 && item.getInt("height") == 100) {
-                                                     //           venueAttrs.put("icon", item.getString("url"));
-                                                     //       }
-                                                     //    }
-                                                     //}
-                                                }
-                                            }
-                                            if (hasPhoto) {
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    
-                                    //
-
-                                    //menu
-                                    JSONObject menu = venue.optJSONObject("menu");
-                                    if (menu != null) {
-                                        venueAttrs.put("menu", menu.getString("mobileUrl"));
-                                        //menu: {
-                                        //url: "https://foursquare.com/v/clinton-street-baking-co/40a55d80f964a52020f31ee3/menu"
-                                        //mobileUrl: "https://foursquare.com/v/40a55d80f964a52020f31ee3/device_menu"
-                                        //}
-                                    }
-                                    //
-
-                                    //stats
-                                    JSONObject stats = venue.optJSONObject("stats");
-                                    if (stats != null) {
-                                        int numOfReviews = stats.optInt("tipCount", 0);
-                                        if (numOfReviews > 0) {
-                                            venueAttrs.put("numberOfReviews", Integer.toString(numOfReviews));
-                                        }
-                                    }
-                                    //
-
-                                } else {
-                                	logger.log(Level.WARNING, "Venue is empty");
-                                }
-                            }
-                        }
-
-                        if (!venueAttrs.isEmpty()) {
-                            venueAttrs.put("venueId", venueId);
-                        }
-                    }
-                } else {
-                	logger.log(Level.WARNING, "Received following server response: " + fourquareJson);
-                }
-            } catch (Exception ex) {
-                logger.log(Level.SEVERE, "FoursquareUtils.VenueDetailsRetriever execption:", ex);
-            }
-            return venueAttrs;
-		}    	
-    }*/
 }

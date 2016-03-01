@@ -525,7 +525,7 @@ public class LayersProviderServlet extends HttpServlet {
                 } else { 
                 	String token = URLDecoder.decode(request.getParameter("token"), "UTF-8");
                     if (outFormat.equals(Format.BIN)) {
-                    	List<ExtendedLandmark> landmarks = LayerHelperFactory.getFoursquareUtils().getFriendsCheckinsToLandmarks(latitude, longitude, limit, version, token, language, l, false);
+                    	List<ExtendedLandmark> landmarks = LayerHelperFactory.getFoursquareUtils().getFriendsCheckinsToLandmarks(latitude, longitude, limit, stringLimit, version, token, language, l, false);
                     	LayerHelperFactory.getFoursquareUtils().serialize(landmarks, response.getOutputStream(), version);
                     } else {
                     	outString = LayerHelperFactory.getFoursquareUtils().getFriendsCheckinsToJSon(latitude, longitude, limit, version, token, language).toString();
@@ -537,10 +537,10 @@ public class LayersProviderServlet extends HttpServlet {
                 } else {
                     String token = URLDecoder.decode(request.getParameter("token"), "UTF-8");
                     if (outFormat.equals(Format.BIN)) {
-                    	List<ExtendedLandmark> landmarks = LayerHelperFactory.getFoursquareUtils().exploreVenuesToLandmark(latitude, longitude, null, radius * 1000, limit, version, token, language, l, false);
+                    	List<ExtendedLandmark> landmarks = LayerHelperFactory.getFoursquareUtils().exploreVenuesToLandmark(latitude, longitude, null, radius * 1000, limit, stringLimit, version, token, language, l, false);
                     	LayerHelperFactory.getFoursquareUtils().serialize(landmarks, response.getOutputStream(), version);
                     } else {
-                    	outString = LayerHelperFactory.getFoursquareUtils().exploreVenuesToJSon(latitude, longitude, null, radius * 1000, limit, version, token, language).toString();
+                    	outString = LayerHelperFactory.getFoursquareUtils().exploreVenuesToJSon(latitude, longitude, null, radius * 1000, limit, stringLimit, version, token, language).toString();
                     }
                 }    
             } else if (StringUtils.contains(uri, "twFriends")) {

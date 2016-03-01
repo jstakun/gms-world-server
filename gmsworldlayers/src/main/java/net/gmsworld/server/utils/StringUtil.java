@@ -14,9 +14,9 @@ import org.apache.commons.lang.WordUtils;
  */
 public class StringUtil {
 
-    private static int SMALL = 128;
-    private static int NORMAL = 256;
-    private static int LARGE = 512;
+    public static int SMALL = 128;
+    public static int NORMAL = 256;
+    public static int LARGE = 512;
     public static int XLARGE = 1024;
     private static final DecimalFormat coordsFormatE6 = new DecimalFormat("##.######");
     private static final DecimalFormat coordsFormatE2 = new DecimalFormat("##.##");
