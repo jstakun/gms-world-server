@@ -182,6 +182,9 @@ public class YoutubeUtils extends LayerHelper {
     		String desc = snippet.getDescription();
     		
     		String thumbnail = snippet.getThumbnails().getDefault().getUrl();
+    		if (stringLimit == StringUtil.XLARGE) {
+    			thumbnail = snippet.getThumbnails().getMedium().getUrl();
+    		}
     		
     		QualifiedCoordinates qc = new QualifiedCoordinates(lat, lng, 0f, 0f, 0f);;
     		if (video.getRecordingDetails() != null) {
@@ -192,8 +195,9 @@ public class YoutubeUtils extends LayerHelper {
     		}
     		ExtendedLandmark landmark = LandmarkFactory.getLandmark(title, null, qc, Commons.YOUTUBE_LAYER, new AddressInfo(), creationDate, null);
         	landmark.setUrl(url);
-        	landmark.setThumbnail(thumbnail);
-        	
+        	if (thumbnail != null) {
+        		landmark.setThumbnail(thumbnail);
+        	}
         	Map<String, String> tokens = new HashMap<String, String>();
         	if (desc != null) {
         		JSONUtils.putOptValue(tokens, "description", desc, stringLimit, false);

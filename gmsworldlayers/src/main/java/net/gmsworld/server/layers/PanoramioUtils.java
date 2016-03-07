@@ -13,6 +13,7 @@ import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.JSONUtils;
 import net.gmsworld.server.utils.MathUtils;
+import net.gmsworld.server.utils.StringUtil;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
@@ -40,9 +41,14 @@ public class PanoramioUtils extends LayerHelper {
         String output = cacheProvider.getString(key);
 
         if (output == null) {
+        	
+        	String size = "thumbnail";
+        	if (stringLimit == StringUtil.XLARGE) {
+        		size = "small";
+        	}
 
             URL panoramioUrl = new URL("http://www.panoramio.com/map/get_panoramas.php?order=popularity&"
-                    + "set=full&from=0&to=" + limit + "&" + bbox + "&size=thumbnail&mapfilter=true");
+                    + "set=full&from=0&to=" + limit + "&" + bbox + "&size=" + size + "&mapfilter=true");
 
             //System.out.print("calling url: " + panoramioUrl.toString());
 
@@ -129,8 +135,12 @@ public class PanoramioUtils extends LayerHelper {
 
 	@Override
 	public List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String bbox, String flexString2, Locale locale, boolean useCache) throws Exception {
+		String size = "thumbnail";
+    	if (stringLimit == StringUtil.XLARGE) {
+    		size = "small";
+    	}
 		URL panoramioUrl = new URL("http://www.panoramio.com/map/get_panoramas.php?order=popularity&"
-                    + "set=full&from=0&to=" + limit + "&" + bbox + "&size=thumbnail&mapfilter=true");
+                    + "set=full&from=0&to=" + limit + "&" + bbox + "&size=" + size + "&mapfilter=true");
 		String panoramioResponse = HttpUtils.processFileRequest(panoramioUrl);
         return createLandmarkPanoramioList(panoramioResponse, stringLimit, locale);    
 	}
@@ -148,7 +158,10 @@ public class PanoramioUtils extends LayerHelper {
                         double lat = photo.getDouble("latitude");
                         double lng = photo.getDouble("longitude");
                         String url = photo.getString("photo_url");
-                        url = url.replace(".com", ".com/m");
+                        
+                        if (stringLimit != StringUtil.XLARGE) {
+                        	url = url.replace(".com", ".com/m");
+                        }
 
                         String name = photo.optString("photo_title", "No name");
                         

@@ -17,6 +17,7 @@ import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.JSONUtils;
 import net.gmsworld.server.utils.NumberUtils;
+import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.xml.XMLUtils;
 
 import org.apache.commons.lang.StringUtils;
@@ -147,8 +148,10 @@ public class FlickrUtils extends LayerHelper {
                 jsonObject.put("lat", p.getGeoData().getLatitude());
                 jsonObject.put("lng", p.getGeoData().getLongitude());
 
-                String url = p.getUrl();
-                url = url.replace("http://", "http://m.");
+                String url = p.getUrl(); 
+                if (stringLimit != StringUtil.XLARGE) {
+                	url = url.replace("http://", "http://m.");
+                }
                 if (version >= 2) {
                     Map<String, String> desc = new HashMap<String, String>();
                     JSONUtils.putOptValue(desc, "description", p.getDescription(), stringLimit, false);
@@ -235,8 +238,13 @@ public class FlickrUtils extends LayerHelper {
                 ExtendedLandmark landmark = LandmarkFactory.getLandmark(name, null, qc, Commons.FLICKR_LAYER, new AddressInfo(), creationDate, null);
                 landmark.setUrl(url); 
                 
-                if (p.getThumbnailUrl() != null) {
-                     landmark.setThumbnail(p.getThumbnailUrl());
+                String image = p.getThumbnailUrl();
+                if (stringLimit == StringUtil.XLARGE) {
+                	image = p.getSmall320Url();
+                } 
+                
+                if (image != null) {
+                     landmark.setThumbnail(image);
                 }
                 
                 String description = JSONUtils.buildLandmarkDesc(landmark, tokens, locale);

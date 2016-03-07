@@ -15,6 +15,7 @@ import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.JSONUtils;
 import net.gmsworld.server.utils.NumberUtils;
+import net.gmsworld.server.utils.StringUtil;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
@@ -60,12 +61,16 @@ public class InstagramUtils extends LayerHelper {
             			   name = location.getString("name");
             		   }
             		   
-            		   //System.out.println(new JSONObject(qc).toString());
             		   long creationDate = media.getLong("created_time") * 1000;
             		   JSONObject images = media.getJSONObject("images");
-            		   JSONObject thumbnail = images.getJSONObject("thumbnail");
-            		   String url = media.getString("link");
-            		   String icon = thumbnail.getString("url");
+            		   
+            		   String size = "thumbnail"; //"low_resolution", "standard_resolution"
+            		   if (stringLimit == StringUtil.XLARGE) {
+            			   size = "low_resolution";
+            		   }
+            		   
+            		   JSONObject image = images.getJSONObject(size); 
+            		   String icon = image.getString("url");
             		    
             		   if (!media.isNull("caption")) {
             			   JSONObject caption = media.getJSONObject("caption");
@@ -95,6 +100,8 @@ public class InstagramUtils extends LayerHelper {
             		   if (count > 0) {
             			   tokens.put("Likes", Integer.toString(count));
             		   }
+            		   
+            		   String url = media.getString("link");
             		   
             		   ExtendedLandmark landmark = LandmarkFactory.getLandmark(name, null, qc, Commons.INSTAGRAM_LAYER, new AddressInfo(), creationDate, null);
             		   landmark.setUrl(url);
