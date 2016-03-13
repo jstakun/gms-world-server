@@ -214,7 +214,8 @@ public class CouponsUtils extends LayerHelper {
                     String url = deal.getString("URL");
 
                     Map<String, String> tokens = new HashMap<String, String>();
-                    tokens.put("merchant", StringEscapeUtils.unescapeHtml(deal.getString("name")));
+                    Object merchant =  deal.get("name");
+                    tokens.put("merchant", StringEscapeUtils.unescapeHtml(merchant.toString()));
                     
                     double price = 0;
                     if (deal.has("dealPrice") && !deal.isNull("dealPrice")) {

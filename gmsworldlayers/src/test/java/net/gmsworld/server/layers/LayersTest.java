@@ -49,16 +49,16 @@ public class LayersTest {
 	@Before
 	public void initialize() {
 		//warsaw test
-		lat = 52.25;
-		lng = 20.95;
-		bbox = "20.96,52.24,20.97,52.25"; //"51.25,19.95,53.25,21.95";
-		locale = new Locale("pl",""); //"PL");
+		//lat = 52.25;
+		//lng = 20.95;
+		//bbox = "20.96,52.24,20.97,52.25"; //"51.25,19.95,53.25,21.95";
+		//locale = new Locale("pl",""); //"PL");
 		
 		//new york test
-		//lat = 40.71;
-		//lng = -74.01;
-		//bbox = "-74.060000,40.660000,-74.010000,40.710000";//"-75.01,39.71,-73.01,41.71";
-		//locale = Locale.US;
+		lat = 40.71;
+		lng = -74.01;
+		bbox = "-74.060000,40.660000,-74.010000,40.710000";//"-75.01,39.71,-73.01,41.71";
+		locale = Locale.US;
 		
 		//lat = 30.21;
 		//lng = -97.77;
@@ -86,10 +86,10 @@ public class LayersTest {
 	   //data.add(new Object[]{LayerHelperFactory.getHotelsBookingUtils()});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getFreebaseUtils()});
-	   data.add(new Object[]{LayerHelperFactory.getInstagramUtils()});
-	   data.add(new Object[]{LayerHelperFactory.getPanoramioUtils()});
-	   data.add(new Object[]{LayerHelperFactory.getFlickrUtils()});
-	   data.add(new Object[]{LayerHelperFactory.getYoutubeUtils()});
+	   //data.add(new Object[]{LayerHelperFactory.getInstagramUtils()});
+	   //data.add(new Object[]{LayerHelperFactory.getPanoramioUtils()});
+	   //data.add(new Object[]{LayerHelperFactory.getFlickrUtils()});
+	   //data.add(new Object[]{LayerHelperFactory.getYoutubeUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getExpediaUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getMcOpenApiUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getGeonamesUtils()});
@@ -98,7 +98,7 @@ public class LayersTest {
 	   //data.add(new Object[]{LayerHelperFactory.getEventfulUtils()});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getGrouponUtils()});
-	   //data.add(new Object[]{LayerHelperFactory.getCouponsUtils()});
+	   data.add(new Object[]{LayerHelperFactory.getCouponsUtils()});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getFoursquareUtils()});   
 	   //data.add(new Object[]{LayerHelperFactory.getYelpUtils()});
@@ -121,14 +121,15 @@ public class LayersTest {
 	   List<Method> methods = getStaticGetMethods(LayerHelperFactory.class);
 	   for (Method m : methods) {
 		   try {
-			   data.add(new Object[]{ m.invoke(null,(Object[])null) });
-		   } catch (IllegalAccessException e) {
-			   e.printStackTrace();
-		   } catch (IllegalArgumentException e) {
-			   e.printStackTrace();
-		   } catch (InvocationTargetException e) {
+			   System.out.println("Checking method " + m.getName());
+			   if (!m.getName().equals("getCacheProvider") && !m.getName().equals("getByName")) {
+				   System.out.println("Adding method " + m.getName() + " to test case");
+				   data.add(new Object[]{ m.invoke(null,(Object[])null) });
+			   }
+		   } catch (Exception e) {
 			   e.printStackTrace();
 		   }
+		   System.out.println("Done");
 	   }
 	   
 	   System.out.println("Found " + data.size() + " layers.");
@@ -174,7 +175,9 @@ public class LayersTest {
 			System.out.println("Found " + size + " landmarks in layer " + layer.getLayerName());
 			//assertNotNull(landmarks);
 			//assertEquals("Found " + size + " landmarks", limit, size);
-			assertEquals("Layer " + layer.getLayerName() + " is empty!", landmarks.isEmpty(), false);
+			assertEquals("Layer " + layer.getLayerName() + " is empty!", false, landmarks.isEmpty());
+			
+			assertEquals("Layer " + layer.getLayerName() + " size is " + landmarks.size(), limit, landmarks.size());
 			
 			for (ExtendedLandmark landmark : landmarks) {
 				System.out.println(landmark.getName() + " :-> " + landmark.getDescription() + "---\n");
