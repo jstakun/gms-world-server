@@ -98,13 +98,13 @@ public class LayersTest {
 	   //data.add(new Object[]{LayerHelperFactory.getEventfulUtils()});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getGrouponUtils()});
-	   data.add(new Object[]{LayerHelperFactory.getCouponsUtils()});
+	   //data.add(new Object[]{LayerHelperFactory.getCouponsUtils()});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getFoursquareUtils()});   
 	   //data.add(new Object[]{LayerHelperFactory.getYelpUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getGooglePlacesUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getFacebookUtils()});
-	   //data.add(new Object[]{LayerHelperFactory.getFoursquareMerchantUtils()});
+	   data.add(new Object[]{LayerHelperFactory.getFoursquareMerchantUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getSearchUtils()});
 	   
 	   System.out.println("Found " + data.size() + " layers.");

@@ -66,7 +66,8 @@ public class Search2Servlet extends HttpServlet {
         	response.setContentType("text/json;charset=UTF-8");
         	out = response.getWriter();
         } else if (format.equals("bin")) {
-        	response.setContentType("deflate");        
+        	//response.setContentType("deflate"); 
+        	response.setContentType("application/x-java-serialized-object");
         }
         
         try {
