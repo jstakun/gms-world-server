@@ -71,6 +71,9 @@ public class HttpUtils {
             conn.setRequestMethod(method);
             conn.setConnectTimeout(timeoutMs);
             conn.setReadTimeout(timeoutMs);
+            
+            conn.setRequestProperty("User-Agent", "http://www.gms-world.net HTTP client");
+
 
             if (authn && userpassword != null) {
                 //username : password
@@ -156,7 +159,8 @@ public class HttpUtils {
             HttpURLConnection conn = (HttpURLConnection) fileUrl.openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
-            
+            conn.setRequestProperty("User-Agent", "http://www.gms-world.net HTTP client");
+
             conn.connect();
             int responseCode = conn.getResponseCode();
 

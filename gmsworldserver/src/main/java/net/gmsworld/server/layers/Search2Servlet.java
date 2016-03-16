@@ -3,6 +3,7 @@ package net.gmsworld.server.layers;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
@@ -39,7 +40,7 @@ public class Search2Servlet extends HttpServlet {
     private double latitude, longitude;
     private String query, ftoken;
     private int radius, limit, stringLimit, dealLimit;
-    private List<ExtendedLandmark> foundLandmarks;
+    private List<ExtendedLandmark> foundLandmarks = new ArrayList<ExtendedLandmark>();
     private Locale locale;
     private JSONObject jsonResponse;
     
@@ -60,14 +61,19 @@ public class Search2Servlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String format = StringUtil.getStringParam(request.getParameter("format"), "json");
+        int version = NumberUtils.getVersion(request.getParameter("version"), 1);
         PrintWriter out = null;
         
         if (format.equals("json")) {
         	response.setContentType("text/json;charset=UTF-8");
         	out = response.getWriter();
         } else if (format.equals("bin")) {
-        	//response.setContentType("deflate"); 
-        	response.setContentType("application/x-java-serialized-object");
+        	if (version >= 12) {
+        		response.setContentType("deflate");
+        	} else {
+        		//version = 11; //this will use only serialization
+        		response.setContentType("application/x-java-serialized-object"); 
+        	}
         }
         
         try {
@@ -82,7 +88,6 @@ public class Search2Servlet extends HttpServlet {
                 dealLimit = NumberUtils.getInt(request.getParameter("dealLimit"), 300);
                 limit = NumberUtils.getInt(request.getParameter("limit"), 30);
                 stringLimit = StringUtil.getStringLengthLimit(request.getParameter("display"));
-                int version = NumberUtils.getVersion(request.getParameter("version"), 1);
                 String flexString = "0";
                 if (StringUtils.isNotEmpty(request.getParameter("deals"))) {
                     flexString = "1";
@@ -111,7 +116,7 @@ public class Search2Servlet extends HttpServlet {
         		}
         		out.close();
         	} else if (format.equals("bin")) {
-            	LayerHelperFactory.getSearchUtils().serialize(foundLandmarks, response.getOutputStream(), 12);
+            	LayerHelperFactory.getSearchUtils().serialize(foundLandmarks, response.getOutputStream(), version);
         	}
         }
     }

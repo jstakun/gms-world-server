@@ -91,12 +91,12 @@ public abstract class LayerHelper {
     	ObjectOutputStream outObj = null;
     	DeflaterOutputStream compressor = null;
     	try {
-    		//if (version >= 12) {
-    		//	compressor = new DeflaterOutputStream(out, new Deflater(Deflater.BEST_COMPRESSION, false));
-    		//	outObj = new ObjectOutputStream(compressor);
-    		//} else {
+    		if (version >= 12) {
+    			compressor = new DeflaterOutputStream(out, new Deflater(Deflater.BEST_COMPRESSION, false));
+    			outObj = new ObjectOutputStream(compressor);
+    		} else {
     			outObj = new ObjectOutputStream(out);
-    		//}
+    		}
     		
     		if (version >= 11) {
     			//Externalization

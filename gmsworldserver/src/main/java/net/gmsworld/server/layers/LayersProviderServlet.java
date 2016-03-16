@@ -70,11 +70,12 @@ public class LayersProviderServlet extends HttpServlet {
             outString = "<results/>";
             outFormat = Format.XML;
         } else if (formatParam.equals("bin")) {
-        	//if (version >= 12) {
-        	//	response.setContentType("deflate");
-        	//} else {
+        	if (version >= 12) {
+        		response.setContentType("deflate");
+        	} else {
+        		//version = 11; //this will use only serialization
         		response.setContentType("application/x-java-serialized-object"); 
-        	//}
+        	}
             outFormat = Format.BIN;
         } else {
             response.setContentType("text/json;charset=UTF-8");
