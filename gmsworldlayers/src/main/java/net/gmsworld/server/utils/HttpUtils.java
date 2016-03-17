@@ -1,20 +1,28 @@
 package net.gmsworld.server.utils;
 
 import com.google.gdata.util.common.util.Base64;
+import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
+import java.util.zip.Inflater;
+import java.util.zip.InflaterInputStream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import net.gmsworld.server.config.Commons;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -73,7 +81,6 @@ public class HttpUtils {
             conn.setReadTimeout(timeoutMs);
             
             conn.setRequestProperty("User-Agent", "http://www.gms-world.net HTTP client");
-
 
             if (authn && userpassword != null) {
                 //username : password
@@ -163,9 +170,10 @@ public class HttpUtils {
 
             conn.connect();
             int responseCode = conn.getResponseCode();
+            httpResponseStatuses.put(fileUrl.toExternalForm(), responseCode);
 
             if (responseCode == HttpServletResponse.SC_OK) { 
-            	if (StringUtils.indexOf(conn.getContentType(), "gzip") > -1) {
+            	if (StringUtils.indexOf(conn.getContentType(), "deflate") > -1) {
     				is = new GZIPInputStream(conn.getInputStream());
     			} else {
     				is = conn.getInputStream();
@@ -197,6 +205,75 @@ public class HttpUtils {
         }
         
         return total;
+    }
+    
+    public static List<ExtendedLandmark> loadLandmarksList(String landmarksUrl, String token, String scope) throws IOException {
+    	ObjectInputStream ois = null;
+    	List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
+    	
+    	try {
+            URL fileUrl = new URL(landmarksUrl);
+            HttpURLConnection conn = (HttpURLConnection) fileUrl.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
+            conn.setRequestProperty("User-Agent", "http://www.gms-world.net HTTP client");
+
+            if (token != null && scope != null) {
+            	conn.setRequestProperty(Commons.TOKEN_HEADER, token);
+            	conn.setRequestProperty(Commons.SCOPE_HEADER, scope);
+            }
+
+            conn.connect();
+            int responseCode = conn.getResponseCode();
+            httpResponseStatuses.put(fileUrl.toExternalForm(), responseCode);
+
+            if (responseCode == HttpServletResponse.SC_OK) { 
+            	logger.log(Level.INFO, "Received " + conn.getContentType() + " content"); 
+            	if (conn.getContentType().indexOf("deflate") != -1) {
+					ois = new ObjectInputStream(new InflaterInputStream(conn.getInputStream(), new Inflater(false)));
+				} else if (conn.getContentType().indexOf("application/x-java-serialized-object")  != -1) {
+					ois = new ObjectInputStream(conn.getInputStream());
+				} else {
+					logger.log(Level.WARNING, "Received " + conn.getContentType() + " content: " + IOUtils.toString(new GZIPInputStream(conn.getInputStream()), "UTF-8"));
+				}
+            	int size = 0;
+            	if (ois != null) {
+        			size = ois.readInt();
+        			logger.log(Level.INFO, "Reading " + size + " landmarks");
+        			if (size > 0) {
+        				for(int i = 0;i < size;i++) {
+        					try {
+        						logger.log(Level.INFO, "Reading landmark " + i); 
+        						ExtendedLandmark landmark = new ExtendedLandmark(); 
+        						landmark.readExternal(ois);
+        						landmarks.add(landmark);
+        					} catch (IOException e) {
+        						e.printStackTrace();
+        					}
+        				}
+        				logger.log(Level.INFO, "Done");
+        			}
+        		} else {
+        			logger.log(Level.SEVERE, "Object stream is null");
+        		}
+                logger.log(Level.INFO, "Received " + conn.getContentType() + " file has " + size + " landmarks");
+            } else if (responseCode >= 400 ){
+                logger.log(Level.SEVERE, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString()});   
+            } else if (responseCode >= 300 && responseCode < 400) {
+            	logger.log(Level.WARNING, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString()});   
+            } else if (responseCode > 200) {
+            	logger.log(Level.INFO, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString()});
+            }
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+        } finally {
+            if (ois != null) {
+                ois.close();
+            }
+            
+        }
+        
+        return landmarks;
     }
 
     public static boolean isEmptyAny(HttpServletRequest request, String... params) {
