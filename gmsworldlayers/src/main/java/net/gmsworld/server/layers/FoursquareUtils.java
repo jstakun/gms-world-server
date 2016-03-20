@@ -189,12 +189,12 @@ public class FoursquareUtils extends LayerHelper {
     }
     
     @Override
-	public List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String intent, String locale, Locale l, boolean useCache) throws Exception {
+	public List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String intent, String language, Locale locale, boolean useCache) throws Exception {
        	   if (lat == 0d && lng == 0d) {
        		  throw new IllegalArgumentException("Latitude or longitude mustn't be zero!");
        	   }
-       	   if (locale == null) {
-       		   locale = l.getLanguage();
+       	   if (language == null) {
+       		   language = locale.getLanguage();
        	   }
        	   if (intent == null) {
        		   intent = "checkin";
@@ -229,7 +229,7 @@ public class FoursquareUtils extends LayerHelper {
                    			venueIds.add(venues[j].getId());
                    		}
 
-                   		Map<String, Map<String, String>> descs = getVenueDetails(venueIds, locale, stringLimit);
+                   		Map<String, Map<String, String>> descs = getVenueDetails(venueIds, language, stringLimit);
 
                    		for (int j = 0; j < venues.length; j++) {
                    			CompactVenue venue = venues[j];
@@ -239,7 +239,7 @@ public class FoursquareUtils extends LayerHelper {
                    				attrs = new HashMap<String, String>();
                    			}
                        
-                   			ExtendedLandmark landmark = parseCompactVenueToLandmark(venue, attrs, l, stringLimit);
+                   			ExtendedLandmark landmark = parseCompactVenueToLandmark(venue, attrs, locale, stringLimit);
                    			if (landmark != null) {
                    				response.add(landmark);
                    			}
@@ -267,7 +267,7 @@ public class FoursquareUtils extends LayerHelper {
                    		  venueIds.add(venues[j].getId());
                    	  }
 
-                   	  Map<String, Map<String, String>> descs = getVenueDetails(venueIds, locale, stringLimit);
+                   	  Map<String, Map<String, String>> descs = getVenueDetails(venueIds, language, stringLimit);
 
                    	  for (int j = 0; j < venues.length; j++) {
                    		  CompactVenue venue = venues[j];
@@ -289,7 +289,7 @@ public class FoursquareUtils extends LayerHelper {
                    			  //}
                    		  }
 
-                   		  ExtendedLandmark landmark = parseCompactVenueToLandmark(venue, attrs, l, stringLimit);
+                   		  ExtendedLandmark landmark = parseCompactVenueToLandmark(venue, attrs, locale, stringLimit);
                    		  if (landmark != null) {
                    			  response.add(landmark);
                    		  }
@@ -373,11 +373,11 @@ public class FoursquareUtils extends LayerHelper {
         return jsonString;
      }
     
-    public List<ExtendedLandmark> exploreVenuesToLandmark(double lat, double lng, String query, int radius, int limit, int stringLimit, int version, String token, String locale, Locale l, boolean useCache) throws JSONException, MalformedURLException, IOException, FoursquareApiException {
+    public List<ExtendedLandmark> exploreVenuesToLandmark(double lat, double lng, String query, int radius, int limit, int stringLimit, int version, String token, Locale locale, boolean useCache) throws JSONException, MalformedURLException, IOException, FoursquareApiException {
     	String key = null;
     	List<ExtendedLandmark> landmarks = null;
     	if (useCache) {
-    		key = getCacheKey(FoursquareUtils.class, "exploreVenuesToLandmark", lat, lng, query, radius, version, limit, 0, token, locale);
+    		key = getCacheKey(FoursquareUtils.class, "exploreVenuesToLandmark", lat, lng, query, radius, version, limit, 0, token, locale.getLanguage());
     		landmarks = cacheProvider.getList(ExtendedLandmark.class,key);
     	}
     	if (landmarks == null) {
@@ -402,7 +402,7 @@ public class FoursquareUtils extends LayerHelper {
                         venueIds.add(r.getVenue().getId());
                     }
 
-                    Map<String, Map<String, String>> descs = getVenueDetails(venueIds, locale, stringLimit);
+                    Map<String, Map<String, String>> descs = getVenueDetails(venueIds, locale.getLanguage(), stringLimit);
 
                     for (int j = 0; j < rec.length; j++) {
 
@@ -417,7 +417,7 @@ public class FoursquareUtils extends LayerHelper {
 
                         attrs.put("rating", "5");
 
-                        ExtendedLandmark landmark = parseCompactVenueToLandmark(venue, attrs, l, stringLimit);
+                        ExtendedLandmark landmark = parseCompactVenueToLandmark(venue, attrs, locale, stringLimit);
                         if (landmark != null) {
                         	landmarks.add(landmark);
                         }
@@ -438,11 +438,11 @@ public class FoursquareUtils extends LayerHelper {
         return landmarks;
     }
 
-    public List<ExtendedLandmark> getFriendsCheckinsToLandmarks(double latitude, double longitude, int limit, int stringLimit, int version, String token, String locale, Locale l, boolean useCache) throws FoursquareApiException, JSONException, UnsupportedEncodingException {
+    public List<ExtendedLandmark> getFriendsCheckinsToLandmarks(double latitude, double longitude, int limit, int stringLimit, int version, String token, Locale locale, boolean useCache) throws FoursquareApiException, JSONException, UnsupportedEncodingException {
     	String key = null;
     	List<ExtendedLandmark> landmarks = null;
     	if (useCache) {
-    		key = getCacheKey(FoursquareUtils.class, "getFriendsCheckinsToLandmark", 0, 0, null, 0, version, limit, 0, token, locale);
+    		key = getCacheKey(FoursquareUtils.class, "getFriendsCheckinsToLandmark", 0, 0, null, 0, version, limit, 0, token, locale.getLanguage());
         	landmarks = cacheProvider.getList(ExtendedLandmark.class,key);
     	}
         if (landmarks == null) {
@@ -455,8 +455,8 @@ public class FoursquareUtils extends LayerHelper {
             if (response.getMeta().getCode() == 200) {
                 Checkin[] checkins = response.getResult();
                 logger.log(Level.INFO, "No of Foursquare checkins {0}", checkins.length);
-                ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource", l);
-                PrettyTime prettyTime = new PrettyTime(l);
+                ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource", locale);
+                PrettyTime prettyTime = new PrettyTime(locale);
             	Calendar cal = Calendar.getInstance();
             	List<CompactVenue> venues = new ArrayList<CompactVenue>();
             	Map<String, Map<String, String>> venuesAttrs = new HashMap<String, Map<String, String>>(); 
@@ -481,11 +481,9 @@ public class FoursquareUtils extends LayerHelper {
                     			attrs.put("photo", photo);
                     		}
                         
-                    		//creationDate
+                    		//checkin
                     		long creationDate = checkin.getCreatedAt() * 1000;
                     		attrs.put("creationDate", Long.toString(creationDate));
-                        
-                    		//checkin
                     		String username = checkin.getUser().getFirstName();
                     		String lastname = checkin.getUser().getLastName();
                     		if (StringUtils.isNotEmpty(lastname)) {
@@ -497,7 +495,7 @@ public class FoursquareUtils extends LayerHelper {
                     		
                     		venuesAttrs.put(venueid, attrs);
                     	} else {
-                    		//creationDate
+                    		//checkin
                     		long creationDate = checkin.getCreatedAt() * 1000;
                     		String username = checkin.getUser().getFirstName();
                     		String lastname = checkin.getUser().getLastName();
@@ -514,7 +512,7 @@ public class FoursquareUtils extends LayerHelper {
                 for (CompactVenue venue : venues) {
                 	//create landmark
                 	Map<String, String> attrs = venuesAttrs.get(venue.getId());
-                	ExtendedLandmark landmark = parseCompactVenueToLandmark(venue, attrs, l, stringLimit);
+                	ExtendedLandmark landmark = parseCompactVenueToLandmark(venue, attrs, locale, stringLimit);
                     if (landmark != null) {
                     	landmarks.add(landmark);
                     } 

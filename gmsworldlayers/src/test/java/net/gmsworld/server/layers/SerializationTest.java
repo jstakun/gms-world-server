@@ -15,7 +15,7 @@ public class SerializationTest {
         URL url = new URL("https://landmarks-gmsworld.rhcloud.com/s/facebookProvider?format=bin&latitude=52.25&longitude=20.95&distance=10");
 		HttpUtils.loadLandmarksList(url.toExternalForm(), Commons.RH_TEST_TOKEN, Commons.RH_TEST_SCOPE);
 		
-		//------------------
+		System.out.println("\n\n------------------------------------------------------------------------------\n");
 		
 		url = new URL("http://www.gms-world.net/facebookProvider?format=bin&lat=52.25&lng=20.95&distance=10&version=12"); //version=11,12
 		HttpUtils.loadLandmarksList(url.toExternalForm(), null, null);
