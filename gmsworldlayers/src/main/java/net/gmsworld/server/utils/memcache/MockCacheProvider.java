@@ -45,7 +45,6 @@ public class MockCacheProvider implements CacheProvider {
 		return null;
 	}
 
-	@Override
 	public <T> T getObject(Class<T> type, String key) {
 		Object o = cache.get(key);
 		if (o != null && type.isAssignableFrom(o.getClass())) {
@@ -55,7 +54,6 @@ public class MockCacheProvider implements CacheProvider {
 	    }
 	}
 
-	@Override
 	public <T> List<T> getList(Class<T> type, String key) {
 		//return getObject(List.class, key);
 		Collection<?> c = (Collection<?>) cache.get(key);
