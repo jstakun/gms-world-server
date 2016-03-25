@@ -673,13 +673,4 @@
     <description>Admin</description>
     <role-name>admin</role-name>
   </security-role>
-  <filter>
-    <display-name>GeocodeFilter</display-name>
-    <filter-name>GeocodeFilter</filter-name>
-    <filter-class>com.jstakun.lm.server.filter.GeocodeFilter</filter-class>
-  </filter>
-  <filter-mapping>
-    <filter-name>GeocodeFilter</filter-name>
-    <url-pattern>/GeocodeFilter</url-pattern>
-  </filter-mapping>
 </web-app>
