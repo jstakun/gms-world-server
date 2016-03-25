@@ -50,7 +50,7 @@ public class Processor {
 	private static ObjectMapper mapper = new ObjectMapper();
 	
 	private static final int BATCH_SIZE = 2000; 
-	private static final int TOTAL_FILE_SIZE = 400000;
+	private static final int TOTAL_FILE_SIZE = 450000;
 	//private static final int FIRST = 0;
 	
 	private static final Boolean DRYRUN = true;
