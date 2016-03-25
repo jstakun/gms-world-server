@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.utils.ImageUtils;
 import net.gmsworld.server.utils.NumberUtils;
@@ -51,10 +52,10 @@ public class ImageUploadServlet extends HttpServlet {
         response.setContentType("text/plain;charset=UTF-8");
         PrintWriter out = response.getWriter();
         try {
-            double lat = NumberUtils.getDouble(request.getHeader("X-GMS-Lat"), Double.NaN);
-            double lng = NumberUtils.getDouble(request.getHeader("X-GMS-Lng"), Double.NaN);
+            double lat = NumberUtils.getDouble(request.getHeader(Commons.LAT_HEADER), Double.NaN);
+            double lng = NumberUtils.getDouble(request.getHeader(Commons.LNG_HEADER), Double.NaN);
             boolean isMultipart = ServletFileUpload.isMultipartContent(request);           
-            String myPosKey = request.getHeader("X-GMS-MyPos-Key");
+            String myPosKey = request.getHeader(Commons.MYPOS_KEY_HEADER);
             
             String cacheKey = "screenshot_" + StringUtil.formatCoordE2(lat) + "_" + StringUtil.formatCoordE2(lng);
             if (CacheUtil.containsKey(cacheKey)) {
