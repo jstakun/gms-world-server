@@ -385,7 +385,7 @@ public class HotelsBookingUtils extends LayerHelper {
     	ExtendedLandmark landmark = LandmarkFactory.getLandmark(value, null, qc, Commons.HOTELS_LAYER, address,  creationDate, null);
     	
     	value = hotel.getProperty("hotel_url");
-        landmark.setUrl(value);
+        landmark.setUrl(value.replace("a_id", "aid"));
         
     	int rs = hotel.getProperty("review_score");
     	int rn = hotel.getProperty("review_nr");

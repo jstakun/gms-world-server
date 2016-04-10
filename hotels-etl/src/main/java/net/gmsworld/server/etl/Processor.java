@@ -56,6 +56,8 @@ public class Processor {
 	private static final Boolean DRYRUN = true;
 	private static final Boolean COMPARE = false;
 	
+	private static final String AID = "864525";
+	
 	private static int count = 0;
 	private static int errors = 0;
    
@@ -151,7 +153,7 @@ public class Processor {
 		    		if (h == null) {
 						break;
 					}
-		    		h.setHotel_url(h.getHotel_url() + "?aid=864525");
+		    		h.setHotel_url(h.getHotel_url() + "?aid=" + AID);
 		    		h.setPhoto_url(h.getPhoto_url().replace("max500", "max200"));
 		    		
 		    		Feature f = new Feature();
@@ -263,16 +265,17 @@ public class Processor {
 		long start = System.currentTimeMillis();
 		System.out.println("Saving to db batch of " + featureCollection.getFeatures().size() + "...");
 		
+		String json = mapper.writeValueAsString(featureCollection).replace("\"id\"", "\"_id\"");
 		//load to db 		    	
 		if (!dryrun) {
 			try {
-	    		String json = mapper.writeValueAsString(featureCollection).replace("id", "_id");
 	    		String resp = HttpUtils.processFileRequestWithBasicAuthn(cachePostUrl, "POST", null, json, "application/json", Commons.getProperty(Property.RH_GMS_USER));
 				System.out.println("Cache response: " + resp);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
+		System.out.println(json);
 	    System.out.println("Done in " + (System.currentTimeMillis()-start) + " milliseconds.");
 	}
 	

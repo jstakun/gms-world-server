@@ -1,8 +1,8 @@
 <p>
-<ins data-banner_id="9611" class="bookingaff" data-aid="864526" data-target_aid="864525" data-prod="banner" data-width="200" data-height="200">
+  <ins data-banner_id="9611" class="bookingaff" data-aid="864526" data-target_aid="864525" data-prod="banner" data-width="200" data-height="200">
     <a href="//www.booking.com?aid=864525">Booking.com</a>
-</ins>
-<script type="text/javascript">
+  </ins>
+  <script type="text/javascript">
     (function(d, sc, u) {
       var s = d.createElement(sc), p = d.getElementsByTagName(sc)[0];
       s.type = 'text/javascript';
@@ -10,5 +10,5 @@
       s.src = u + '?v=' + (+new Date());
       p.parentNode.insertBefore(s,p);
       })(document, 'script', '//aff.bstatic.com/static/affiliate_base/js/flexiproduct.js');
-</script>
+  </script>
 </p>
