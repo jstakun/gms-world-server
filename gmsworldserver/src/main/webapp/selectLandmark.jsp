@@ -69,6 +69,7 @@
   <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/sunny/jquery-ui.min.css" />
   <script src="http://code.jquery.com/jquery-1.12.3.min.js"></script>
   <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+  <script src="https://raw.githubusercontent.com/jquery/jquery-ui/master/ui/i18n/datepicker-<%= request.getLocale().getLanguage() %>.js"></script>
   <script type="text/javascript">
     jQuery.fn.center = function () {
         this.css("position","absolute");
@@ -368,11 +369,12 @@
 	<div id="map_canvas"></div>
     <div id="status" style="color:black;font-family:Roboto,Arial,sans-serif;font-size:16px;line-height:28px;padding-left:4px;padding-right:4px"></div>
     <div id="checkin" style="background-color:#fff;border:2px solid #fff;border-radius:3px;box-shadow:0 2px 6px rgba(0,0,0,.3);color:black;font-family:Roboto,Arial,sans-serif;font-size:16px;line-height:28px;padding-left:4px;padding-right:4px;margin-right:10px">
-    <table><tr><td>Check-in date</td><td><input type="text" id="checkinDate" size="10"></td></tr><tr><td>Check-out date</td><td><input type="text" id="checkoutDate" size="10"></td></tr></table>
+    <table><tr><th colspan="2">Travel dates</th></tr><tr><td>From</td><td><input type="text" id="checkinDate" size="10"></td></tr><tr><td>To</td><td><input type="text" id="checkoutDate" size="10"></td></tr></table>
     </div>
     <script type="text/javascript">
       $(function() {
 	     var daysToAdd = 1;
+	     $.datepicker.setDefaults($.datepicker.regional['<%= request.getLocale().getLanguage() %>']);
 	     $("#checkinDate").datepicker({
 	        onSelect: function (selected) {
 	            var dtMax = new Date(selected);
