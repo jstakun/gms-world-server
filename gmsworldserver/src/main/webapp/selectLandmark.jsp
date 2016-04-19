@@ -65,7 +65,10 @@
   		font-weight: 300;	
 	}  
   </style>
-  <script src="/js/jquery.min.js"></script>
+  <!--script src="/js/jquery.min.js"></script-->
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/sunny/jquery-ui.min.css" />
+  <script src="http://code.jquery.com/jquery-1.12.3.min.js"></script>
+  <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
   <script type="text/javascript">
     jQuery.fn.center = function () {
         this.css("position","absolute");
@@ -73,7 +76,7 @@
         this.css("left", ( $(window).width() - this.width() ) / 2+$(window).scrollLeft() + "px");
         return this;
     }
-  </script>
+  </script>  
   <script type="text/javascript">
    var hotelsMode = <%= hotelsMode %>;
 
@@ -132,43 +135,44 @@
     	   proceedWithSelectedLocation(e.latLng.lat(), e.latLng.lng(), null); 
        });
 
+       //top header
        var centerControlDiv = document.createElement('div');
 	   var centerControl;
-
 	   if (hotelsMode == true) {
-		   centerControl = new CenterControl(centerControlDiv, map, latlng, '<bean:message key="hotels.header" />');
+		   centerControl = new CenterControl(centerControlDiv, '<bean:message key="hotels.header" />', true);
 	   } else {
-		   centerControl = new CenterControl(centerControlDiv, map, latlng, '<bean:message key="landmarks.header" />');  
+		   centerControl = new CenterControl(centerControlDiv, '<bean:message key="landmarks.header" />', true);  
 	   }
-
 	   centerControlDiv.index = 1;
 	   map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
 
+	   //my location box
 	   var shareControlDiv = document.createElement('div');
-
 	   var message
 	   if (hotelsMode == true) {
 			message = "<img src='/images/mypos.png' title='<bean:message key="hotels.your.location" />'/>";
 	   } else {
 		    message = "<img src='/images/mypos.png' title='<bean:message key="landmarks.your.location" />'/>";
 	   }
-	   
-	   var shareControl = new CenterControl(shareControlDiv, map, latlng, message);
-
+	   var shareControl = new CenterControl(shareControlDiv, message, true);
 	   google.maps.event.addDomListener(shareControlDiv, 'click', function() {
 		   showStatus("<bean:message key="landmarks.location.prompt" />");
 		   getLocation();
   	   });
-
 	   shareControlDiv.index = 2;
 	   map.controls[google.maps.ControlPosition.LEFT_CENTER].push(shareControlDiv);
 
+       //top locations box 
 	   var topLocationsDiv = document.createElement('div');
-	   var topLocationsControl = new CenterControl(topLocationsDiv, map, latlng, '<img src=\'/images/ok.png\' style=\'width:24px; height:24px; vertical-align: middle;\'><span style=\'line-height:24px;\'>&nbsp;<bean:message key="hotels.top.destinations" /></span>');
-
+	   var topLocationsControl = new CenterControl(topLocationsDiv, '<img src=\'/images/ok.png\' style=\'width:24px; height:24px; vertical-align: middle;\'><span style=\'line-height:24px;\'>&nbsp;<bean:message key="hotels.top.destinations" /></span>', false);
 	   topLocationsDiv.index = 3
 	   map.controls[google.maps.ControlPosition.RIGHT_TOP].push(topLocationsDiv);	   
 
+	   //checkin dates box
+	   var checkinDiv = document.getElementById('checkin');
+	   checkinDiv.index = 4
+	   map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(checkinDiv);	   
+	   
 	   //search box
 	   var input = document.getElementById('pac-input');
 	   var searchBox = new google.maps.places.SearchBox(input);
@@ -178,7 +182,6 @@
 	     	searchBox.setBounds(map.getBounds());
 	   });
 
-	   //SEARCH BOX
 	   searchBox.addListener('places_changed', function() {
 		    var places = searchBox.getPlaces();
 
@@ -202,23 +205,25 @@
 		});	    	   
    }
 
-   function CenterControl(controlDiv, map, center, text) {
+   function CenterControl(controlDiv, text, addTitle) {
 
-       // Set CSS for the control border
-       var controlUI = document.createElement('div');
-       controlUI.style.backgroundColor = '#fff';
-       controlUI.style.border = '2px solid #fff';
-       controlUI.style.borderRadius = '2px';
-       controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
-       controlUI.style.cursor = 'pointer';
-       controlUI.style.marginTop = '10px';
-       controlUI.style.marginLeft = '10px';
-       controlUI.style.marginRight = '10px';
-       controlUI.style.marginBottom = '10px';
- 	   controlUI.style.textAlign = 'center';
-       controlUI.title = text;
-       controlDiv.appendChild(controlUI);
-
+	   // Set CSS for the control border
+  	   var controlUI = document.createElement('div');
+  	   controlUI.style.backgroundColor = '#fff';
+  	   controlUI.style.border = '2px solid #fff';
+  	   controlUI.style.borderRadius = '2px';
+  	   controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+  	   controlUI.style.cursor = 'pointer';
+  	   controlUI.style.marginTop = '10px';
+  	   controlUI.style.marginLeft = '10px';
+  	   controlUI.style.marginRight = '10px';
+  	   controlUI.style.marginBottom = '10px';
+   	   controlUI.style.textAlign = 'center';
+	   controlDiv.appendChild(controlUI);	   
+	   
+	   if (addTitle) {
+       		controlUI.title = text;
+       }
        // Set CSS for the control interior
        var controlText = document.createElement('div');
        controlText.style.color = 'rgb(25,25,25)';
@@ -296,7 +301,15 @@
 
          if (r == true) {
               if (hotelsMode == true) {
-             	 window.location.replace("/hotelLandmark/" +  encodeDouble(lat) + "/" + encodeDouble(lng));   
+            	  var checkin = document.getElementById("checkinDate").value;
+            	  if (isEmpty(checkin)) {
+					 checkin = "0";
+                  }
+            	  var checkout = document.getElementById("checkoutDate").value; 
+            	  if (isEmpty(checkout)) {
+ 					 checkout = "0";
+                  }          
+             	  window.location.replace("/hotelLandmark/" +  encodeDouble(lat) + "/" + encodeDouble(lng) + "/" + checkin + "/" + checkout);   
               } else {
          		 window.location.replace("/newLandmark/" +  encodeDouble(lat) + "/" + encodeDouble(lng));
               }
@@ -341,7 +354,10 @@
  	 	return out;
 	}
 
-    //google.maps.event.addDomListener(window, 'load', initialize);
+	function isEmpty(str) {
+	    return (!str || 0 === str.length);
+	}
+
   </script>
   <script src="https://maps.googleapis.com/maps/api/js?libraries=places&callback=initialize" async defer> 
     //key=
@@ -351,5 +367,36 @@
     <input id="pac-input" class="controls" type="text" placeholder="<bean:message key="landmarks.search" />">
 	<div id="map_canvas"></div>
     <div id="status" style="color:black;font-family:Roboto,Arial,sans-serif;font-size:16px;line-height:28px;padding-left:4px;padding-right:4px"></div>
+    <div id="checkin" style="background-color:#fff;border:2px solid #fff;border-radius:3px;box-shadow:0 2px 6px rgba(0,0,0,.3);color:black;font-family:Roboto,Arial,sans-serif;font-size:16px;line-height:28px;padding-left:4px;padding-right:4px;margin-right:10px">
+    <table><tr><td>Check-in date</td><td><input type="text" id="checkinDate" size="10"></td></tr><tr><td>Check-out date</td><td><input type="text" id="checkoutDate" size="10"></td></tr></table>
+    </div>
+    <script type="text/javascript">
+      $(function() {
+	     var daysToAdd = 1;
+	     $("#checkinDate").datepicker({
+	        onSelect: function (selected) {
+	            var dtMax = new Date(selected);
+	            dtMax.setDate(dtMax.getDate() + daysToAdd); 
+	            var dd = dtMax.getDate();
+	            var mm = dtMax.getMonth() + 1;
+	            var y = dtMax.getFullYear();
+	            var dtFormatted = y + '-'+ mm + '-'+ dd;
+	            $("#checkoutDate").datepicker("option", "minDate", dtFormatted);
+	        }, minDate: 0, dateFormat: 'yy-mm-dd'
+	     });
+	    
+	     $("#checkoutDate").datepicker({
+	        onSelect: function (selected) {
+	            var dtMax = new Date(selected);
+	            dtMax.setDate(dtMax.getDate() - daysToAdd); 
+	            var dd = dtMax.getDate();
+	            var mm = dtMax.getMonth() + 1;
+	            var y = dtMax.getFullYear();
+	            var dtFormatted = y + '-'+ mm + '-'+ dd;
+	            $("#checkinDate").datepicker("option", "maxDate", dtFormatted)
+	        },  minDate: 1, dateFormat: 'yy-mm-dd'
+	     });                 
+      })
+    </script>
 </body>
 </html>
