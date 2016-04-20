@@ -207,12 +207,12 @@
                                 '<strong>' + name + '</strong>';
 
                      if (thumbnail != null) {
-							descr += '<br/><a href=\"' + url + '\" target=\"_blank\">' +
+							descr += '<br/><a href=\"' + url + '<%= request.getAttribute("hotelUrlSuffix") %>\" target=\"_blank\">' +
 							         '<img src=\"' + thumbnail +  ' \" style=\"margin: 4px 0px\" title=\"<bean:message key="hotels.booking"/>\"/>' + 
 							         '</a>' 
                      }       
 
-                     descr += '<br/>' + desc + '</span>';
+                     descr += '<br/>' + desc.replace('?aid=864525','?aid=864525<%= request.getAttribute("hotelUrlSuffix") %>') + '</span>';
                 }
                   	 
                 //my Marker

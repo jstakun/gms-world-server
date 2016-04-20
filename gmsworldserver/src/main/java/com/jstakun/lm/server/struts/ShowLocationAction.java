@@ -75,6 +75,17 @@ public class ShowLocationAction extends org.apache.struts.action.Action {
                 		}
                 	}
                 }
+                //checkin_monthday=21&checkin_year_month=2016-4&checkout_monthday=23&checkout_year_month=2016-4
+                String hotelUrlSuffix = "";
+                String checkin = request.getParameter("checkin");
+                if (checkin != null && checkin.length() == 10) {
+                	hotelUrlSuffix = "&checkin_year_month=" + checkin.substring(0, 7) + "&checkin_monthday=" + checkin.substring(8);  
+                }
+                String checkout = request.getParameter("checkout");
+                if (checkout != null && checkout.length() == 10) {
+                	hotelUrlSuffix += "&checkout_year_month=" + checkout.substring(0, 7) + "&checkout_monthday=" + checkout.substring(8);  
+                }
+                request.setAttribute("hotelUrlSuffix", hotelUrlSuffix);
                 request.setAttribute("landmarkDesc", HtmlUtils.buildLocationDescV2(lat, lng, address, request.getLocale(), isMobile));
             	request.setAttribute("landmarkName", "'Selected location'");
             } catch (Exception e) {

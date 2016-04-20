@@ -66,10 +66,10 @@
 	}  
   </style>
   <!--script src="/js/jquery.min.js"></script-->
-  <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/sunny/jquery-ui.min.css" />
-  <script src="http://code.jquery.com/jquery-1.12.3.min.js"></script>
-  <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
-  <script src="https://raw.githubusercontent.com/jquery/jquery-ui/master/ui/i18n/datepicker-<%= request.getLocale().getLanguage() %>.js"></script>
+  <link rel="stylesheet" href="/css/jquery-ui.min.css" />
+  <script src="/js/jquery.min.js"></script>
+  <script src="/js/jquery-ui.min.js"></script>
+  <script src="/js/datepicker-<%= request.getLocale().getLanguage() %>.js"></script>
   <script type="text/javascript">
     jQuery.fn.center = function () {
         this.css("position","absolute");
@@ -78,6 +78,7 @@
         return this;
     }
   </script>  
+  <script src="/js/js.cookie.js"></script>
   <script type="text/javascript">
    var hotelsMode = <%= hotelsMode %>;
 
@@ -302,15 +303,19 @@
 
          if (r == true) {
               if (hotelsMode == true) {
-            	  var checkin = document.getElementById("checkinDate").value;
-            	  if (isEmpty(checkin)) {
-					 checkin = "0";
+            	  var checkinDate = document.getElementById("checkinDate").value;
+            	  if (isEmpty(checkinDate)) {
+            		  checkinDate = "0";
+                  } else {
+                	  Cookies.set('checkinDate', checkinDate, '{ expires: 2, path: '/'}');	
                   }
-            	  var checkout = document.getElementById("checkoutDate").value; 
-            	  if (isEmpty(checkout)) {
- 					 checkout = "0";
-                  }          
-             	  window.location.replace("/hotelLandmark/" +  encodeDouble(lat) + "/" + encodeDouble(lng) + "/" + checkin + "/" + checkout);   
+            	  var checkoutDate = document.getElementById("checkoutDate").value; 
+            	  if (isEmpty(checkoutDate)) {
+ 					  checkoutDate = "0";
+                  } else {
+                	  Cookies.set('checkoutDate', checkoutDate, '{ expires: 2, path: '/'}');	
+                  }         
+             	  window.location.replace("/hotelLandmark/" +  encodeDouble(lat) + "/" + encodeDouble(lng) + "/" + checkinDate + "/" + checkoutDate);   
               } else {
          		 window.location.replace("/newLandmark/" +  encodeDouble(lat) + "/" + encodeDouble(lng));
               }
@@ -356,7 +361,7 @@
 	}
 
 	function isEmpty(str) {
-	    return (!str || 0 === str.length);
+	    return (!str || 0 == str.length);
 	}
 
   </script>
@@ -369,7 +374,7 @@
 	<div id="map_canvas"></div>
     <div id="status" style="color:black;font-family:Roboto,Arial,sans-serif;font-size:16px;line-height:28px;padding-left:4px;padding-right:4px"></div>
     <div id="checkin" style="background-color:#fff;border:2px solid #fff;border-radius:3px;box-shadow:0 2px 6px rgba(0,0,0,.3);color:black;font-family:Roboto,Arial,sans-serif;font-size:16px;line-height:28px;padding-left:4px;padding-right:4px;margin-right:10px">
-    <table><tr><th colspan="2">Travel dates</th></tr><tr><td>From</td><td><input type="text" id="checkinDate" size="10"></td></tr><tr><td>To</td><td><input type="text" id="checkoutDate" size="10"></td></tr></table>
+    <table><tr><th colspan="2"><bean:message key="landmarks.checkin.dates" /></th></tr><tr><td><bean:message key="landmarks.checkin" /></td><td><input type="text" id="checkinDate" size="10"></td></tr><tr><td><bean:message key="landmarks.checkout" /></td><td><input type="text" id="checkoutDate" size="10"></td></tr></table>
     </div>
     <script type="text/javascript">
       $(function() {
@@ -399,6 +404,14 @@
 	        },  minDate: 1, dateFormat: 'yy-mm-dd'
 	     });                 
       })
+      var checkinDate = Cookies.get('checkinDate');
+      if (!isEmpty(checkinDate)) {
+ 		   document.getElementById('checkinDate').value = checkinDate;
+      }
+      var checkoutDate = Cookies.get('checkoutDate');
+      if (!isEmpty(checkoutDate)) {
+ 		   document.getElementById('checkoutDate').value = checkoutDate;
+      }
     </script>
 </body>
 </html>
