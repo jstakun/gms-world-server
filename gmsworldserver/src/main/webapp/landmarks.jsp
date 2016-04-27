@@ -62,7 +62,10 @@
 	<style>
       html, body, #map-canvas { margin: 0; padding: 0; height: 100%; }
     </style>
-    <script src="/js/jquery.min.js"></script>
+    <link rel="stylesheet" href="/css/jquery-ui.min.css" />
+  	<script src="/js/jquery.min.js"></script>
+  	<script src="/js/jquery-ui.min.js"></script>
+  	<script src="/js/datepicker-<%= request.getLocale().getLanguage() %>.js"></script>
     <script type="text/javascript">
     jQuery.fn.center = function () {
         this.css("position","absolute");
@@ -70,6 +73,27 @@
         this.css("left", ( $(window).width() - this.width() ) / 2+$(window).scrollLeft() + "px");
         return this;
     }
+
+    function isEmpty(str) {
+	      return (!str || 0 == str.length);
+	}
+
+	function callHotelUrl(url) {
+		//checkin_monthday=21&checkin_year_month=2016-4&checkout_monthday=23&checkout_year_month=2016-4
+		var hotelUrlSuffix = "";
+        var checkinDate = document.getElementById("checkinDate").value;
+        if (!isEmpty(checkinDate) && checkinDate.length == 10) {
+       	 	 hotelUrlSuffix = "&checkin_year_month=" + checkinDate.substring(0, 7) + "&checkin_monthday=" + checkinDate.substring(8);  
+		     Cookies.set('checkinDate', checkinDate, '{ expires: 2, path: '/'}');	
+     	}
+	  	var checkoutDate = document.getElementById("checkoutDate").value; 
+        if (!isEmpty(checkoutDate) && checkoutDate.length == 10) {
+       	 	 hotelUrlSuffix += "&checkout_year_month=" + checkoutDate.substring(0, 7) + "&checkout_monthday=" + checkoutDate.substring(8);  
+	  		 Cookies.set('checkoutDate', checkoutDate, '{ expires: 2, path: '/'}');	
+        } 	
+        console.log('Opening ' + url + hotelUrlSuffix + '...')
+        window.open(url + hotelUrlSuffix, '_blank');
+	}
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?libraries=visualization"></script>
     <script src="/js/marker.js"></script>
@@ -206,13 +230,15 @@
                      descr = '<span style=\"font-family:Roboto,Arial,sans-serif;font-size:<%=fontSize%>;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;\">' + 
                                 '<strong>' + name + '</strong>';
 
-                     if (thumbnail != null) {
-							descr += '<br/><a href=\"' + url + '<%= request.getAttribute("hotelUrlSuffix") %>\" target=\"_blank\">' +
-							         '<img src=\"' + thumbnail +  ' \" style=\"margin: 4px 0px\" title=\"<bean:message key="hotels.booking"/>\"/>' + 
-							         '</a>' 
+                      if (thumbnail != null) {
+							descr += '<br/><a href=\"javascript:callHotelUrl(\'' + url + '\')\">' +
+							         '<img src=\"' + thumbnail +  '\" style=\"margin: 4px 0px\" title=\"<bean:message key="hotels.booking"/>\"/>' + 
+							         '</a>';
                      }       
 
-                     descr += '<br/>' + desc.replace('?aid=864525','?aid=864525<%= request.getAttribute("hotelUrlSuffix") %>') + '</span>';
+                     descr += '<br/>' + desc +
+                              '<br/><a href=\"javascript:callHotelUrl(\'' + url + '\')\"><bean:message key="hotels.booking"/></a>' +   
+                              '</span>'; 
                 }
                   	 
                 //my Marker
@@ -314,6 +340,11 @@
 		        	var topLocationsControl = new CenterControl(topLocationsDiv, 'left', text, '');
 		     	    topLocationsDiv.index = 3
 		     	    map.controls[google.maps.ControlPosition.RIGHT_TOP].push(topLocationsDiv);	
+
+		     	    //dates
+		     	    var checkinDiv = document.getElementById('checkin');
+		     	    checkinDiv.index = 4
+		     	    map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(checkinDiv);	
 		     	     
 		     	    //filters
 		     	    var filtersDiv = document.createElement('div');
@@ -337,8 +368,8 @@
                     }
            		    text += '</table>'; 
 		     	    var filtersControl = new CenterControl(filtersDiv, 'center', text, '');
-		     	    filtersDiv.index = 4
-		     	    map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(filtersDiv);
+		     	    filtersDiv.index = 5
+		     	    map.controls[google.maps.ControlPosition.LEFT_CENTER].push(filtersDiv);
 		     	    //	     	    
 
 		     	    var filterStr = Cookies.get('filter');
@@ -486,5 +517,45 @@
   <body>
     <div id="map-canvas"></div>                                            
     <div id="status" style="color:black;font-family:Roboto,Arial,sans-serif;font-size:<%=fontSize%>;line-height:32px;padding-left:4px;padding-right:4px"></div>
+    <div id="checkin" style="background-color:#fff;border:2px solid #fff;border-radius:3px;box-shadow:0 2px 6px rgba(0,0,0,.3);color:black;font-family:Roboto,Arial,sans-serif;font-size:<%=fontSize%>;line-height:28px;padding-left:4px;padding-right:4px;margin-right:10px">
+    <table><tr><th colspan="2"><bean:message key="landmarks.checkin.dates" /></th></tr><tr><td><bean:message key="landmarks.checkin" /></td><td><input type="text" id="checkinDate" size="10" value="<%= StringUtils.length(request.getParameter("checkin")) == 10 ? request.getParameter("checkin") : "" %>"></td></tr><tr><td><bean:message key="landmarks.checkout" /></td><td><input type="text" id="checkoutDate" size="10" value="<%= StringUtils.length(request.getParameter("checkout")) == 10 ? request.getParameter("checkout") : "" %>"></td></tr></table>
+    </div>
+    <script type="text/javascript">
+      $(function() {
+	     var daysToAdd = 1;
+	     $.datepicker.setDefaults($.datepicker.regional['<%= request.getLocale().getLanguage() %>']);
+	     $("#checkinDate").datepicker({
+	        onSelect: function (selected) {
+	            var dtMax = new Date(selected);
+	            dtMax.setDate(dtMax.getDate() + daysToAdd); 
+	            var dd = dtMax.getDate();
+	            var mm = dtMax.getMonth() + 1;
+	            var y = dtMax.getFullYear();
+	            var dtFormatted = y + '-'+ mm + '-'+ dd;
+	            $("#checkoutDate").datepicker("option", "minDate", dtFormatted);
+	        }, minDate: 0, dateFormat: 'yy-mm-dd'
+	     });
+	    
+	     $("#checkoutDate").datepicker({
+	        onSelect: function (selected) {
+	            var dtMax = new Date(selected);
+	            dtMax.setDate(dtMax.getDate() - daysToAdd); 
+	            var dd = dtMax.getDate();
+	            var mm = dtMax.getMonth() + 1;
+	            var y = dtMax.getFullYear();
+	            var dtFormatted = y + '-'+ mm + '-'+ dd;
+	            $("#checkinDate").datepicker("option", "maxDate", dtFormatted)
+	        },  minDate: 1, dateFormat: 'yy-mm-dd'
+	     });                 
+      })
+      var checkinDate = Cookies.get('checkinDate');
+      if (!isEmpty(checkinDate)) {
+ 		   document.getElementById('checkinDate').value = checkinDate;
+      }
+      var checkoutDate = Cookies.get('checkoutDate');
+      if (!isEmpty(checkoutDate)) {
+ 		   document.getElementById('checkoutDate').value = checkoutDate;
+      }
+    </script>
   </body>
 </html>

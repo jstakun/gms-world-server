@@ -65,7 +65,6 @@
   		font-weight: 300;	
 	}  
   </style>
-  <!--script src="/js/jquery.min.js"></script-->
   <link rel="stylesheet" href="/css/jquery-ui.min.css" />
   <script src="/js/jquery.min.js"></script>
   <script src="/js/jquery-ui.min.js"></script>

@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -190,8 +189,7 @@ public abstract class LayerHelper {
 		featureCollection.setProperty("language", locale.getLanguage());
 		String dealsCurrencyCode = null;
 		if (!landmarks.isEmpty()) {    		
-			//Map<String, Integer> tags = new HashMap<String, Integer>();
-			ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource", locale);
+			//ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource", locale);
 			for (ExtendedLandmark landmark : landmarks) {
     			Feature f = new Feature();
     			Point p = new Point();
@@ -216,7 +214,7 @@ public abstract class LayerHelper {
     				} else if (desc.contains("star_5")) {
     					desc = StringUtils.replace(desc, "star_5", "/images/star_5.png");
     				}	
-    				desc += "<br/><a href=\"" + landmark.getUrl() + "\" target=\"_blank\">" + rb.getString("hotels.booking") + "</a>";
+    				//desc += "<br/><a href=\"" + landmark.getUrl() + "\" target=\"_blank\">" + rb.getString("hotels.booking") + "</a>";
     				f.setProperty("desc", desc); //desc
     				int stars = StringUtils.countMatches(desc, "/images/star_blue.png");
     				String icon = "star_" + stars + ".png";
