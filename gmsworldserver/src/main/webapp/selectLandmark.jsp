@@ -170,10 +170,12 @@
 	   map.controls[google.maps.ControlPosition.RIGHT_TOP].push(topLocationsDiv);	   
 
 	   //checkin dates box
+	   var checkinDiv = document.getElementById('checkin');
 	   if (hotelsMode == true) {
-	   		var checkinDiv = document.getElementById('checkin');
 	   		checkinDiv.index = 4
 	   		map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(checkinDiv);	   
+	   } else {
+			checkinDiv.remove();
 	   }
 	   
 	   //search box

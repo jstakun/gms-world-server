@@ -81,16 +81,18 @@
 	function callHotelUrl(url) {
 		//checkin_monthday=21&checkin_year_month=2016-4&checkout_monthday=23&checkout_year_month=2016-4
 		var hotelUrlSuffix = "";
-        var checkinDate = document.getElementById("checkinDate").value;
-        if (!isEmpty(checkinDate) && checkinDate.length == 10) {
-       	 	 hotelUrlSuffix = "&checkin_year_month=" + checkinDate.substring(0, 7) + "&checkin_monthday=" + checkinDate.substring(8);  
-		     Cookies.set('checkinDate', checkinDate, '{ expires: 2, path: '/'}');	
-     	}
-	  	var checkoutDate = document.getElementById("checkoutDate").value; 
-        if (!isEmpty(checkoutDate) && checkoutDate.length == 10) {
-       	 	 hotelUrlSuffix += "&checkout_year_month=" + checkoutDate.substring(0, 7) + "&checkout_monthday=" + checkoutDate.substring(8);  
-	  		 Cookies.set('checkoutDate', checkoutDate, '{ expires: 2, path: '/'}');	
-        } 	
+		if (document.getElementById("checkinDate") != null && document.getElementById("checkoutDate") != null) {
+        	var checkinDate = document.getElementById("checkinDate").value;
+        	if (!isEmpty(checkinDate) && checkinDate.length == 10) {
+       	 		 hotelUrlSuffix = "&checkin_year_month=" + checkinDate.substring(0, 7) + "&checkin_monthday=" + checkinDate.substring(8);  
+		     	Cookies.set('checkinDate', checkinDate, '{ expires: 2, path: '/'}');	
+     		}
+	  		var checkoutDate = document.getElementById("checkoutDate").value; 
+        	if (!isEmpty(checkoutDate) && checkoutDate.length == 10) {
+       	 		 hotelUrlSuffix += "&checkout_year_month=" + checkoutDate.substring(0, 7) + "&checkout_monthday=" + checkoutDate.substring(8);  
+	  		 	Cookies.set('checkoutDate', checkoutDate, '{ expires: 2, path: '/'}');	
+        	} 	
+		}
         console.log('Opening ' + url + hotelUrlSuffix + '...')
         window.open(url + hotelUrlSuffix, '_blank');
 	}
@@ -178,6 +180,7 @@
           var message = '<bean:message key="hotels.wait" />';
           <% } else { %>
           var message = '<bean:message key="landmarks.wait" />';
+          document.getElementById('checkin').remove();
           <% } %>
 
           //scale
@@ -323,7 +326,7 @@
 		        	google.maps.event.addDomListener(hotelControlDiv, 'click', function() { 
 		                window.location.href = window.location.pathname + '?enabled=Hotels';
 		       	    });
-		        } else {
+		       } else {
 			        //new search button
 		        	var hotelControlDiv = document.createElement('div');
 		        	hotelControlDiv.index = 2;
