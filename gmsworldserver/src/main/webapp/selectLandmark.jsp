@@ -170,9 +170,11 @@
 	   map.controls[google.maps.ControlPosition.RIGHT_TOP].push(topLocationsDiv);	   
 
 	   //checkin dates box
-	   var checkinDiv = document.getElementById('checkin');
-	   checkinDiv.index = 4
-	   map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(checkinDiv);	   
+	   if (hotelsMode == true) {
+	   		var checkinDiv = document.getElementById('checkin');
+	   		checkinDiv.index = 4
+	   		map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(checkinDiv);	   
+	   }
 	   
 	   //search box
 	   var input = document.getElementById('pac-input');

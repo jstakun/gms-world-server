@@ -92,7 +92,7 @@
   		.error(function(jqXHR, textStatus, errorThrown){ /* assign handler */
   		    $( 'div' ).remove();   
   		    var errorMessage = "<bean:message key="errors.occured"/>: " + errorThrown + "!"; //translate
-	  		$( 'body' ).append("<p>" + errorMessage + "<br/><a href=\"<%= hotelsMode ? "/hotels" : "/landmarks" %>\"><bean:message key="landmarks.try.again"/></a></p>"); 
+	  		$( 'body' ).append("<p>" + errorMessage + "<br/><a href=\"<%= hotelsMode ? "/hotels" : "/landmarks" %><%= "?lat=" + latitude + "&lng=" + longitude + "&zoom=7"%>\"><bean:message key="landmarks.try.again"/></a></p>"); 
 	  		console.log(errorMessage);
   	    	alert(errorMessage);
   		});
