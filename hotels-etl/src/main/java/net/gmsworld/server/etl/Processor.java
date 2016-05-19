@@ -53,6 +53,7 @@ public class Processor {
 	private static final int TOTAL_FILE_SIZE = 450000;
 	//private static final int FIRST = 0;
 	
+	//last count 848460
 	private static final Boolean DRYRUN = true;
 	private static final Boolean COMPARE = false;
 	
@@ -275,7 +276,7 @@ public class Processor {
 				e.printStackTrace();
 			}
 		}
-		System.out.println(json);
+		//System.out.println(json);
 	    System.out.println("Done in " + (System.currentTimeMillis()-start) + " milliseconds.");
 	}
 	
