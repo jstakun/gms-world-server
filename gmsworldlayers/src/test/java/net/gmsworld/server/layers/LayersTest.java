@@ -83,10 +83,10 @@ public class LayersTest {
 	   //data.add(new Object[]{LayerHelperFactory.getLastfmUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getOsmXapiUtils()});
 	   
-	   data.add(new Object[]{LayerHelperFactory.getHotelsBookingUtils()});
+	   //data.add(new Object[]{LayerHelperFactory.getHotelsBookingUtils()});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getFreebaseUtils()});
-	   //data.add(new Object[]{LayerHelperFactory.getInstagramUtils()});
+	   data.add(new Object[]{LayerHelperFactory.getInstagramUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getPanoramioUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getFlickrUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getYoutubeUtils()});

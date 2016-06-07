@@ -35,7 +35,7 @@ public class InstagramUtils extends LayerHelper {
 		List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
 		
 		if (lat != 0.0d && lng != 0.0d) {
-			String instagramUrl = "https://api.instagram.com/v1/media/search?lat=" + lat + "&lng=" + lng + "&distance=" + normalizedDistance + "&count=" + normalizedLimit + "&client_id=" + Commons.getProperty(Property.INSTAGRAM_CLIENT_ID);			
+			String instagramUrl = "https://api.instagram.com/v1/media/search?lat=" + lat + "&lng=" + lng + "&distance=" + normalizedDistance + "&count=" + normalizedLimit + "&access_token=" + Commons.getProperty(Property.INSTAGRAM_ACCESS_TOKEN);			
 			String instagramJson = HttpUtils.processFileRequest(new URL(instagramUrl));		
 			createCustomJsonInstagramList(landmarks, instagramJson, stringLimit, locale);		 	
 		}

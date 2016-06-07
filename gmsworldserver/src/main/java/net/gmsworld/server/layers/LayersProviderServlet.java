@@ -3,6 +3,7 @@ package net.gmsworld.server.layers;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
@@ -464,7 +465,8 @@ public class LayersProviderServlet extends HttpServlet {
             	if (HttpUtils.isEmptyAny(request, "lat", "lng", "radius") && HttpUtils.isEmptyAny(request, "latitude", "longitude", "radius")) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 } else {
-                	List<ExtendedLandmark> landmarks = LayerHelperFactory.getInstagramUtils().processBinaryRequest(latitude, longitude, null, radius * 1000, version, limit, stringLimit, language, null, l, true);               	
+                	//TODO instagram api changed
+                	List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>(); //LayerHelperFactory.getInstagramUtils().processBinaryRequest(latitude, longitude, null, radius * 1000, version, limit, stringLimit, language, null, l, true);               	
                 	if (outFormat.equals(Format.BIN)) {
                 		LayerHelperFactory.getInstagramUtils().serialize(landmarks, response.getOutputStream(), version);
                 		LayerHelperFactory.getInstagramUtils().cacheGeoJson(landmarks, latitude, longitude, Commons.INSTAGRAM_LAYER, l);                          
