@@ -240,6 +240,13 @@
             <to>/archive.do?year=$1&amp;month=01</to>
     </rule>
     
+    <!-- mobile app providers -->
+    
+    <rule>
+            <from>^/providers</from>
+            <to>/m/urls.jsp</to>
+    </rule>
+    
     <!-- hotel booking -->
     
     <!-- rule>

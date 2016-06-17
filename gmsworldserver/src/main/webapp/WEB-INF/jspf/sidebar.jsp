@@ -44,6 +44,12 @@
             	<img src="https://apps.opera.com/badge.php?a=s&v=dark&did=7629&pid=36609" width="173" height="55" alt="Get it on Opera Mobile Store" title="Get in on Opera Mobile Store"/>
             </a>  
         </p>
+        
+        <p>
+            <a href="https://store.yandex.com/" target="_blank">
+            	<img alt="Get it on Yandex Mobile Store" title="Get in on Yandex Mobile Store" src="/images/yandex.jpg" width="160" height="52"/>
+            </a>  
+        </p>
     </div>
 
     <div class="sidemenu">
