@@ -14,7 +14,7 @@
  <div class="wrap">
     <%@ include file="/WEB-INF/jspf/header_mobile.jspf" %>
        
-    <div class="content">
+    <div class="content" align="center">
     	<article>
     	
     	<h3>Choose your provider</h3>
