@@ -49,13 +49,9 @@ public class Processor {
 	private static URL cachePostUrl;
 	private static ObjectMapper mapper = new ObjectMapper();
 	
+	//last count 900132
 	private static final int BATCH_SIZE = 2000; 
-	private static final int TOTAL_FILE_SIZE = 450000;
 	//private static final int FIRST = 0;
-	
-	//last count 848460
-	private static final Boolean DRYRUN = true;
-	private static final Boolean COMPARE = false;
 	
 	private static final String AID = "864525";
 	
@@ -68,13 +64,15 @@ public class Processor {
 			System.exit(10);
 		}
 		
-		boolean dryrun = DRYRUN;
-		boolean compare = COMPARE;
+		boolean dryrun = true;
+		boolean compare = false;
 		
-		if (args.length > 2) {
+		if (args.length >= 3) {
 			try {
 				dryrun = Boolean.valueOf(args[2]).booleanValue();
-				compare = Boolean.valueOf(args[3]).booleanValue();
+				if (args.length >= 4) {
+					compare = Boolean.valueOf(args[3]).booleanValue();
+				}
 			} catch (Exception e) {
 				e.printStackTrace(System.err);
 			}
@@ -103,7 +101,7 @@ public class Processor {
 			} else if (args[0].equals("tsv")) {
 				reader = new FileReader(args[1]);
 				beanReader = new CsvBeanReader(reader, new CsvPreference.Builder(CsvPreference.TAB_PREFERENCE).surroundingSpacesNeedQuotes(true).build());
-	            processFile(beanReader, dryrun, compare);
+				processFile(beanReader, dryrun, compare);
 			}
 		} finally {
 			if (zf != null) {
@@ -146,8 +144,7 @@ public class Processor {
 		    }
 		    System.out.println("Skipped " + FIRST + " records.");*/
 		    
-		    for (int i=0;i<TOTAL_FILE_SIZE;i++) {
-		    //while (true) {
+		    while (true) {
 		    	try {
 		    		count++;
 		    		HotelBean h = beanReader.read(HotelBean.class, header, processors);
