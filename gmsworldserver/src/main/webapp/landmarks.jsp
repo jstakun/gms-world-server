@@ -554,10 +554,17 @@
       var checkinDate = Cookies.get('checkinDate');
       if (!isEmpty(checkinDate)) {
  		   document.getElementById('checkinDate').value = checkinDate;
+      } else {
+          var today = new Date();
+    	  document.getElementById('checkinDate').value = today.toISOString().substring(0, 10); 
       }
       var checkoutDate = Cookies.get('checkoutDate');
       if (!isEmpty(checkoutDate)) {
  		   document.getElementById('checkoutDate').value = checkoutDate;
+      } else {
+    	  var tomorrow = new Date();
+    	  tomorrow.setDate(tomorrow.getDate() + 1);  
+    	  document.getElementById('checkoutDate').value = tomorrow.toISOString().substring(0, 10); 
       }
     </script>
   </body>
