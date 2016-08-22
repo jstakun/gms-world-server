@@ -41,7 +41,7 @@ public class ImageUtils {
 	    	}
 	    }  
 		
-	    logger.log(Level.INFO, "Image has " + String.format("%1.4f", ((double)blackPixelsCount/(totalPixels))) + " black factor.");
+	    logger.log(Level.INFO, "Image has reached " + String.format("%1.4f", ((double)blackPixelsCount/(totalPixels))) + " black factor.");
 	    
 	    return isBlack;
 	}
@@ -67,7 +67,7 @@ public class ImageUtils {
     			}
     		}
 		}
-		logger.log(Level.INFO, "Image has " + String.format("%1.4f", ((double)blackPixelsCount/(totalPixels))) + " black factor.");	    
+		logger.log(Level.INFO, "Image has reached " + String.format("%1.4f", ((double)blackPixelsCount/(totalPixels))) + " black factor.");	    
 		return isBlack;
 	}
 	

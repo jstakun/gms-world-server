@@ -26,8 +26,9 @@ public class ImageUtilsTest {
 				//"http://lh5.ggpht.com/Z-IuuMwGbGAJyOobO2o1OyatirvnMqcZypn2r8PcSNIjnvDRYLofDxZZxp5WPpWZ0411ncy1xK1_vNLlYtpElA",
 				//"http://lh3.ggpht.com/Ti4s1kmi4eY9kZ-E2LRX1SmHgAAPtr_asUzMMsvshoYUKknScvJfLudbT0HZQvkkvjZnrYzrgwEAGyS2Li5f",
 				//"http://lh5.ggpht.com/Z-IuuMwGbGAJyOobO2o1OyatirvnMqcZypn2r8PcSNIjnvDRYLofDxZZxp5WPpWZ0411ncy1xK1_vNLlYtpElA",
-			    "http://lh6.ggpht.com/i1OHP63MGpmEVSrt2UArxBcCg3aYf8oX4J3ui2UdevIHqcSATS8-h-Px2Xvko4ralasL434Ddt2NgoLJgTt9",
-				"http://www.gms-world.net/image/20565"};
+			    //"http://lh6.ggpht.com/i1OHP63MGpmEVSrt2UArxBcCg3aYf8oX4J3ui2UdevIHqcSATS8-h-Px2Xvko4ralasL434Ddt2NgoLJgTt9",
+				//"http://www.gms-world.net/image/20565",
+				"http://lh3.googleusercontent.com/OmEMXJbCKW71o0LhevpKLwB0L-Nx5foL-co2LkLH_obzPE1PryMMtU4B9cxFitd1wacamLoi_KHBMNNbARBSTA"};
 		
 		for (int i=0;i<blackImages.length;i++) {
 			BufferedImage blackImage = ImageIO.read(new URL(blackImages[i]));

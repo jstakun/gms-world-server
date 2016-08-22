@@ -172,7 +172,10 @@
               	infowindow.open(map, this);
           });
 
-          var mcOptions = {gridSize: 50, maxZoom: 18};
+          var styleOpts = [{textColor: 'white', url: '/images/markerclusterer/m1.png', textSize: 15, width: 53, height: 52}];
+          var mcOptions = {gridSize: 50, maxZoom: 18, styles: styleOpts};
+          //
+          
           //markers.push(flagmarker); //keep always on top
           mc = new MarkerClusterer(map, markers, mcOptions);       
 
