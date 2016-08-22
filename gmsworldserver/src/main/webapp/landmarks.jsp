@@ -172,8 +172,14 @@
               	infowindow.open(map, this);
           });
 
-          var styleOpts = [{textColor: 'white', url: '/images/markerclusterer/m1.png', textSize: 15, width: 53, height: 52}];
-          var mcOptions = {gridSize: 50, maxZoom: 18, styles: styleOpts};
+          var styleOpts = [
+          	{textColor: 'white', url: '/images/markerclusterer/m1.png', textSize: 15, width: 53, height: 52},
+          	{textColor: 'white', url: '/images/markerclusterer/m2.png', textSize: 15, width: 56, height: 55},
+          	{textColor: 'white', url: '/images/markerclusterer/m3.png', textSize: 16, width: 66, height: 65},
+          	{textColor: 'white', url: '/images/markerclusterer/m4.png', textSize: 17, width: 78, height: 77},
+          	{textColor: 'white', url: '/images/markerclusterer/m5.png', textSize: 18, width: 90, height: 89} 
+          ];
+          var mcOptions = {gridSize: 50, maxZoom: 18, imagePath: '/images/markerclusterer', styles: styleOpts};
           //
           
           //markers.push(flagmarker); //keep always on top
