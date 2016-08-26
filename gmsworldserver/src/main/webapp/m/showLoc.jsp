@@ -35,7 +35,7 @@
                 <h4>You've selected following location:</h4>
 
                 <a href="/showLocation/<%= HtmlUtils.encodeDouble(lat) %>/<%= HtmlUtils.encodeDouble(lon) %>/fullScreen">
-                	<img src="/image?lat=<%= lat%>&lng=<%= lon%>" alt="Location on Google Map" height="128" width="128"/><br/>
+                	<img src="/image?lat=<%= lat%>&lng=<%= lon%>" alt="Location on the map" height="128" width="128"/><br/>
                 </a>
                 
                 <p>

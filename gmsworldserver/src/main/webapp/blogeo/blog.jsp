@@ -76,7 +76,7 @@
                             <p>Description: <%= landmark.getDescription() %></p>
 
                             <p>
-                                <img src="/image?lat=<%= landmark.getLatitude()%>&lng=<%= landmark.getLongitude()%>" alt="Blog on Google Map" title="Blog location on the map" height="128" width="128"></img><br/>
+                                <img src="/image?lat=<%= landmark.getLatitude()%>&lng=<%= landmark.getLongitude()%>" alt="Blog on the map" title="Blog location on the map" height="128" width="128"></img><br/>
                             </p>
 
                         </div>

@@ -139,11 +139,14 @@
                             <li><a href="http://www.bouncycastle.org/java.html">BouncyCastle</a></li>
                             <li><a href="http://code.google.com/apis/gdata/">Google Data</a></li>
                             <li><a href="http://code.google.com/p/google-api-java-client/">Google Client</a></li>
+                            <li><a href="https://github.com/googlemaps/android-maps-utils">Google Maps Android API utility library</a></li>
                             <li><a href="http://code.google.com/p/guava-libraries/">Guava</a></li>
                             <li><a href="http://jscience.org/">JSR-275</a></li>
                             <li><a href="http://www.json.org">JSON</a></li>
                             <li><a href="http://kxml.sourceforge.net/">KXML</a></li>
-                            <li><a href="http://code.google.com/p/osmdroid/">Osmdroid</a></li>
+                            <li><a href="http://code.google.com/p/osmdroid/">OSM Droid</a></li>
+                            <li><a href="https://github.com/MKergall/osmbonuspack">OSM Bonus Pack</a></li>
+                            <li><a href="http://square.github.io/picasso/">Picasso</a></li>
                             <li><a href="https://github.com/fernandezpablo85/scribe-java">Scribe</a></li>
                             <li><a href="http://code.google.com/p/urlrewritefilter/">URL Rewrite</a></li>
                             <li><a href="http://code.google.com/p/zxing/">ZXing</a></li>

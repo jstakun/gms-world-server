@@ -46,7 +46,7 @@
             <h4><%=landmark.getDescription()%></h4>
 
             <a href="/showLandmark/<%=key%>/fullScreen">
-                <img src="/image?lat=<%=landmark.getLatitude()%>&lng=<%=landmark.getLongitude()%>" alt="Landmark on Google Map" height="128" width="128"/><br/>
+                <img src="/image?lat=<%=landmark.getLatitude()%>&lng=<%=landmark.getLongitude()%>" alt="Landmark on the map" height="128" width="128"/><br/>
             </a>
 
             <p>
