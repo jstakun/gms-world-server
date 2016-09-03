@@ -317,8 +317,14 @@
  					  checkoutDate = "0";
                   } else {
                 	  Cookies.set('checkoutDate', checkoutDate, '{ expires: 2, path: '/'}');	
-                  }         
-             	  window.location.replace("/hotelLandmark/" +  encodeDouble(lat) + "/" + encodeDouble(lng) + "/" + checkinDate + "/" + checkoutDate);   
+                  }   
+            	  //TODO add other params: rooms count, adults count, children count, children age
+                  if (document.getElementById("checkinNodate").checked) {
+                	  window.location.replace("/hotelLandmark/" +  encodeDouble(lat) + "/" + encodeDouble(lng));
+                  } else {      
+             	  	  window.location.replace("/hotelLandmark/" +  encodeDouble(lat) + "/" + encodeDouble(lng) + "/" + checkinDate + "/" + checkoutDate);   
+                  }
+                  //
               } else {
          		 window.location.replace("/newLandmark/" +  encodeDouble(lat) + "/" + encodeDouble(lng));
               }
@@ -367,6 +373,46 @@
 	    return (!str || 0 == str.length);
 	}
 
+	function setupChildrenAges() {
+		var count = document.getElementById("checkinChildren").value;
+		document.getElementById("checkinChildrenHeaderRow").innerHTML='';
+		document.getElementById("checkinChildrenRow0").innerHTML='';
+		document.getElementById("checkinChildrenRow1").innerHTML='';
+		document.getElementById("checkinChildrenRow2").innerHTML=''
+		if (count > 0) {
+            //checkinChildrenHeaderRow
+			document.getElementById("checkinChildrenHeaderRow").innerHTML='<td colspan=\"2\" align=\"left\">Ages of children at check-out</td>';
+			//checkinChildrenRow0
+			var rowCount = Math.min(count, 4);
+			var checkinChildrenRowText = '<td colspan=\"2\">'
+			for (i = 0; i < rowCount; i++) {
+				checkinChildrenRowText += addChildrenAgeRow(i);
+			}
+			checkinChildrenRowText += '</td>';
+			document.getElementById("checkinChildrenRow0").innerHTML=checkinChildrenRowText; 
+			if (count > 4) {
+				rowCount = Math.min(count, 8);
+				checkinChildrenRowText = '<td colspan=\"2\">'
+				for (i = 4; i < rowCount; i++) {
+					checkinChildrenRowText += addChildrenAgeRow(i);
+				}
+				checkinChildrenRowText += '</td>';
+				document.getElementById("checkinChildrenRow1").innerHTML=checkinChildrenRowText; 
+				if (count > 8) {
+					checkinChildrenRowText = '<td colspan=\"2\">'
+					for (i = 8; i < count; i++) {
+						checkinChildrenRowText += addChildrenAgeRow(i);
+					}
+					checkinChildrenRowText += '</td>';
+					document.getElementById("checkinChildrenRow2").innerHTML=checkinChildrenRowText; 
+				}
+			}
+		} 
+	}
+
+	function addChildrenAgeRow(pos) {
+		return "<input type=\"text\" id=\"checkinChildren" + pos + "Age\" size=\"2\">&nbsp;";
+	}
   </script>
   <script src="https://maps.googleapis.com/maps/api/js?libraries=places&callback=initialize" async defer> 
     //key=
@@ -377,7 +423,128 @@
 	<div id="map_canvas"></div>
     <div id="status" style="color:black;font-family:Roboto,Arial,sans-serif;font-size:16px;line-height:28px;padding-left:4px;padding-right:4px"></div>
     <div id="checkin" style="background-color:#fff;border:2px solid #fff;border-radius:3px;box-shadow:0 2px 6px rgba(0,0,0,.3);color:black;font-family:Roboto,Arial,sans-serif;font-size:16px;line-height:28px;padding-left:4px;padding-right:4px;margin-right:10px">
-    <table><tr><th colspan="2"><bean:message key="landmarks.checkin.dates" /></th></tr><tr><td><bean:message key="landmarks.checkin" /></td><td><input type="text" id="checkinDate" size="10"></td></tr><tr><td><bean:message key="landmarks.checkout" /></td><td><input type="text" id="checkoutDate" size="10"></td></tr></table>
+    	<table id="checkinTable">
+    		<tr>
+    			<th colspan="2"><bean:message key="landmarks.checkin.dates" /></th>
+    		</tr>
+    		<tr>
+    			<td><bean:message key="landmarks.checkin" /></td>
+    			<td><input type="text" id="checkinDate" size="10"></td>
+    		</tr>
+    		<tr>
+    			<td><bean:message key="landmarks.checkout" /></td>
+    			<td><input type="text" id="checkoutDate" size="10"></td>
+    		</tr>
+    		<tr>
+    			<td colspan="2"><input type="checkbox" id="checkinNodate" value="yes">&nbsp;I don't know date yet</td>
+    		</tr>
+    		<tr>
+    			<th colspan="2">Guests</th>
+    		</tr>
+    		<tr>
+    			<td>Adults</td>
+    			<td align="right">
+    				<select id="checkinAdults">
+  						<option value="1" selected="selected">1</option>
+  						<option value="2">2</option>
+  						<option value="3">3</option>
+  						<option value="4">4</option>
+  						<option value="5">5</option>
+  						<option value="6">6</option>
+  						<option value="7">7</option>
+  						<option value="8">8</option>
+  						<option value="9">9</option>
+  						<option value="10">10</option>
+  						<option value="11">11</option>
+  						<option value="12">12</option>
+  						<option value="13">13</option>
+  						<option value="14">14</option>
+  						<option value="15">15</option>
+  						<option value="16">16</option>
+  						<option value="17">17</option>
+  						<option value="18">18</option>
+  						<option value="19">19</option>
+  						<option value="20">20</option>
+  						<option value="21">21</option>
+  						<option value="22">22</option>
+  						<option value="23">23</option>
+  						<option value="24">24</option>
+  						<option value="25">25</option>
+  						<option value="26">26</option>
+  						<option value="27">27</option>
+  						<option value="28">28</option>
+  						<option value="29">29</option>
+  						<option value="30">30</option>
+					</select> 
+				</td>
+    		</tr>
+    		<tr>
+    			<td>Children</td>
+    			<td align="right">
+    				<select id="checkinChildren" onchange="setupChildrenAges()">
+  						<option value="0" selected="selected">0</option>
+  						<option value="1">1</option>
+  						<option value="2">2</option>
+  						<option value="3">3</option>
+  						<option value="4">4</option>
+  						<option value="5">5</option>
+  						<option value="6">6</option>
+  						<option value="7">7</option>
+  						<option value="8">8</option>
+  						<option value="9">9</option>
+  						<option value="10">10</option>
+					</select> 
+				</td>
+    		</tr>
+    		
+    		<!-- children age input rows -->
+    		<tr id="checkinChildrenHeaderRow"></tr>
+    		
+    		<tr id="checkinChildrenRow0"></tr>
+    		
+    		<tr id="checkinChildrenRow1"></tr>
+    		
+    		<tr id="checkinChildrenRow2"></tr>		
+    		<!--  -->
+    		
+    		<tr>
+    			<td>Rooms</td>
+    			<td align="right">
+    				<select id="checkinRooms">
+  						<option value="1" selected="selected">1</option>
+  						<option value="2">2</option>
+  						<option value="3">3</option>
+  						<option value="4">4</option>
+  						<option value="5">5</option>
+  						<option value="6">6</option>
+  						<option value="7">7</option>
+  						<option value="8">8</option>
+  						<option value="9">9</option>
+  						<option value="10">10</option>
+  						<option value="11">11</option>
+  						<option value="12">12</option>
+  						<option value="13">13</option>
+  						<option value="14">14</option>
+  						<option value="15">15</option>
+  						<option value="16">16</option>
+  						<option value="17">17</option>
+  						<option value="18">18</option>
+  						<option value="19">19</option>
+  						<option value="20">20</option>
+  						<option value="21">21</option>
+  						<option value="22">22</option>
+  						<option value="23">23</option>
+  						<option value="24">24</option>
+  						<option value="25">25</option>
+  						<option value="26">26</option>
+  						<option value="27">27</option>
+  						<option value="28">28</option>
+  						<option value="29">29</option>
+  						<option value="30">30</option>
+					</select> 
+				</td>
+    		</tr>
+     	</table>
     </div>
     <script type="text/javascript">
       $(function() {

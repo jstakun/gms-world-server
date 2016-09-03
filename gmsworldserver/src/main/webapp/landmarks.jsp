@@ -530,7 +530,20 @@
     <div id="map-canvas"></div>                                            
     <div id="status" style="color:black;font-family:Roboto,Arial,sans-serif;font-size:<%=fontSize%>;line-height:32px;padding-left:4px;padding-right:4px"></div>
     <div id="checkin" style="background-color:#fff;border:2px solid #fff;border-radius:3px;box-shadow:0 2px 6px rgba(0,0,0,.3);color:black;font-family:Roboto,Arial,sans-serif;font-size:<%=fontSize%>;line-height:28px;padding-left:4px;padding-right:4px;margin-right:10px">
-    <table><tr><th colspan="2"><bean:message key="landmarks.checkin.dates" /></th></tr><tr><td><bean:message key="landmarks.checkin" /></td><td><input type="text" id="checkinDate" size="10" value="<%= StringUtils.length(request.getParameter("checkin")) == 10 ? request.getParameter("checkin") : "" %>"></td></tr><tr><td><bean:message key="landmarks.checkout" /></td><td><input type="text" id="checkoutDate" size="10" value="<%= StringUtils.length(request.getParameter("checkout")) == 10 ? request.getParameter("checkout") : "" %>"></td></tr></table>
+    	<table>
+    		<tr>
+    			<th colspan="2"><bean:message key="landmarks.checkin.dates" /></th>
+    		</tr>
+    		<tr>
+    			<td><bean:message key="landmarks.checkin" /></td>
+    			<td><input type="text" id="checkinDate" size="10" value="<%= StringUtils.length(request.getParameter("checkin")) == 10 ? request.getParameter("checkin") : "" %>"></td>
+    		</tr>
+    		<tr>
+    			<td><bean:message key="landmarks.checkout" /></td>
+    			<td><input type="text" id="checkoutDate" size="10" value="<%= StringUtils.length(request.getParameter("checkout")) == 10 ? request.getParameter("checkout") : "" %>"></td>
+    		</tr>
+    		<!-- //TODO add rest of form from selectLandmark.jsp -->
+    	</table>
     </div>
     <script type="text/javascript">
       $(function() {

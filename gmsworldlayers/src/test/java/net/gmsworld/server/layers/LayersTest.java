@@ -79,15 +79,15 @@ public class LayersTest {
 		
 	   List<Object[]> data = new ArrayList<Object[]>();	
 	  
-	   data.add(new Object[]{LayerHelperFactory.getPicasaUtils()});
-	   data.add(new Object[]{LayerHelperFactory.getLastfmUtils()});
-	   data.add(new Object[]{LayerHelperFactory.getOsmXapiUtils()});
+	   //data.add(new Object[]{LayerHelperFactory.getPicasaUtils()});
+	   //data.add(new Object[]{LayerHelperFactory.getLastfmUtils()});
+	   //data.add(new Object[]{LayerHelperFactory.getOsmXapiUtils()});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getHotelsBookingUtils()});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getFreebaseUtils()});
-	   data.add(new Object[]{LayerHelperFactory.getInstagramUtils()});
-	   data.add(new Object[]{LayerHelperFactory.getPanoramioUtils()});
+	   //data.add(new Object[]{LayerHelperFactory.getInstagramUtils()});
+	   //data.add(new Object[]{LayerHelperFactory.getPanoramioUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getFlickrUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getYoutubeUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getExpediaUtils()});
@@ -98,10 +98,10 @@ public class LayersTest {
 	   //data.add(new Object[]{LayerHelperFactory.getEventfulUtils()});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getGrouponUtils()});
-	   //data.add(new Object[]{LayerHelperFactory.getCouponsUtils()});
+	   data.add(new Object[]{LayerHelperFactory.getCouponsUtils()});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getFoursquareUtils()});   
-	   //data.add(new Object[]{LayerHelperFactory.getYelpUtils()});
+	   data.add(new Object[]{LayerHelperFactory.getYelpUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getGooglePlacesUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getFacebookUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getFoursquareMerchantUtils()});
@@ -181,7 +181,7 @@ public class LayersTest {
 			
 			for (ExtendedLandmark landmark : landmarks) {
 				System.out.println(landmark.getName() + " :-> " + landmark.getDescription() + "---\n");
-				System.out.println(landmark.getThumbnail());
+				System.out.println(landmark.getThumbnail() + " " + landmark.getCategoryId() + "," + landmark.getSubCategoryId());
 				//System.out.println(landmark.getUrl());
 			}
 			

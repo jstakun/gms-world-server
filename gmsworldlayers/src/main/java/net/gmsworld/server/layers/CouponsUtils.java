@@ -173,7 +173,7 @@ public class CouponsUtils extends LayerHelper {
                     }
 
                     if (version >= 4) {
-                        String icon = deal.optString("showLogo"); //showImage
+                        String icon = deal.optString("showLogo"); //showImage, showLogo
                         if (StringUtils.isNotEmpty(icon)) {
                             desc.put("icon", icon);
                         }
@@ -299,7 +299,7 @@ public class CouponsUtils extends LayerHelper {
                     	landmark.setSubCategoryId(deal.getInt("subcategoryID"));
                     }
                      
-                    String icon = deal.optString("showLogo"); //showImage
+                    String icon = deal.optString("showLogo"); //showImage, showLogo
                     if (StringUtils.isNotEmpty(icon)) {
                        landmark.setThumbnail(icon);
                     }

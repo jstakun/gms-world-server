@@ -75,6 +75,11 @@
         OpenStreetMap tools for Android.<br/><br/>
         </li>
 
+		<li>        
+        <b>Picasso</b><br/>
+        Image downloading and caching library for Android. Copyright 2013 Square, Inc.<br/>
+        </li>
+			
         <li>
         <b>Microfloat</b><br/>
         Copyright (C) 2003, 2004 David Clausen.<br/><br/>
