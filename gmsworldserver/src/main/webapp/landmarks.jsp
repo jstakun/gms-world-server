@@ -95,6 +95,7 @@
 		}
         console.log('Opening ' + url + hotelUrlSuffix + '...')
         window.open(url + hotelUrlSuffix, '_blank');
+        //TODO add other params: rooms count, adults count, children count, children age
 	}
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?libraries=visualization"></script>

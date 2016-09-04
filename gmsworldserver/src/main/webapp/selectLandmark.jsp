@@ -376,49 +376,42 @@
 	function setupChildrenAges() {
 		var count = document.getElementById("checkinChildren").value;
 		document.getElementById("checkinChildrenHeaderRow").innerHTML='';
-		document.getElementById("checkinChildrenRow0").innerHTML='';
 		document.getElementById("checkinChildrenRow1").innerHTML='';
-		document.getElementById("checkinChildrenRow2").innerHTML=''
+		document.getElementById("checkinChildrenRow2").innerHTML='';
+		document.getElementById("checkinChildrenRow3").innerHTML=''
 		if (count > 0) {
             //checkinChildrenHeaderRow
-			document.getElementById("checkinChildrenHeaderRow").innerHTML='<td colspan=\"2\" align=\"left\">Ages of children at check-out</td>';
+			document.getElementById("checkinChildrenHeaderRow").innerHTML='<td colspan=\"2\" align=\"left\">Ages of children</td>';
 			//checkinChildrenRow0
-			var rowCount = Math.min(count, 4);
-			var checkinChildrenRowText = '<td colspan=\"2\">'
-			for (i = 0; i < rowCount; i++) {
-				checkinChildrenRowText += addChildrenAgeRow(i);
-			}
-			checkinChildrenRowText += '</td>';
-			document.getElementById("checkinChildrenRow0").innerHTML=checkinChildrenRowText; 
-			if (count > 4) {
-				rowCount = Math.min(count, 8);
-				checkinChildrenRowText = '<td colspan=\"2\">'
-				for (i = 4; i < rowCount; i++) {
+			var iter = 1;
+			for (k = 0; k < count; k += 4) {
+				var rowCount = Math.min(count, iter*4);
+				var checkinChildrenRowText = '<td colspan=\"2\">'
+				for (i = (iter-1)*4; i < rowCount; i++) {
 					checkinChildrenRowText += addChildrenAgeRow(i);
 				}
 				checkinChildrenRowText += '</td>';
-				document.getElementById("checkinChildrenRow1").innerHTML=checkinChildrenRowText; 
-				if (count > 8) {
-					checkinChildrenRowText = '<td colspan=\"2\">'
-					for (i = 8; i < count; i++) {
-						checkinChildrenRowText += addChildrenAgeRow(i);
-					}
-					checkinChildrenRowText += '</td>';
-					document.getElementById("checkinChildrenRow2").innerHTML=checkinChildrenRowText; 
-				}
+				document.getElementById("checkinChildrenRow" + iter).innerHTML=checkinChildrenRowText;
+				iter++; 
 			}
 		} 
 	}
 
 	function addChildrenAgeRow(pos) {
-		return "<input type=\"text\" id=\"checkinChildren" + pos + "Age\" size=\"2\">&nbsp;";
+		//return "<input type=\"text\" id=\"checkinChildren" + pos + "Age\" size=\"2\" maxlength=\"2\" pattern=\"([0-9][0-9])\">&nbsp;";
+		var res = "<select id=\"checkinChildren" + pos + "Age\">\n";
+		for (var i = 0;i < 18;i++) {
+			res += "<option value=\"" + i + "\">" + i + "</option>\n"
+		}
+		res += "</select>\n";
+		return res;
 	}
   </script>
   <script src="https://maps.googleapis.com/maps/api/js?libraries=places&callback=initialize" async defer> 
     //key=
   </script>
 </head>
-<body>
+<body onload="setupChildrenAges()">
     <input id="pac-input" class="controls" type="text" placeholder="<bean:message key="landmarks.search" />">
 	<div id="map_canvas"></div>
     <div id="status" style="color:black;font-family:Roboto,Arial,sans-serif;font-size:16px;line-height:28px;padding-left:4px;padding-right:4px"></div>
@@ -500,11 +493,11 @@
     		<!-- children age input rows -->
     		<tr id="checkinChildrenHeaderRow"></tr>
     		
-    		<tr id="checkinChildrenRow0"></tr>
-    		
     		<tr id="checkinChildrenRow1"></tr>
     		
-    		<tr id="checkinChildrenRow2"></tr>		
+    		<tr id="checkinChildrenRow2"></tr>
+    		
+    		<tr id="checkinChildrenRow3"></tr>		
     		<!--  -->
     		
     		<tr>
