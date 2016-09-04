@@ -84,15 +84,16 @@
 		if (document.getElementById("checkinDate") != null && document.getElementById("checkoutDate") != null) {
         	var checkinDate = document.getElementById("checkinDate").value;
         	if (!isEmpty(checkinDate) && checkinDate.length == 10) {
-       	 		 hotelUrlSuffix = "&checkin_year_month=" + checkinDate.substring(0, 7) + "&checkin_monthday=" + checkinDate.substring(8);  
+       	 		hotelUrlSuffix = "&checkin_year_month=" + checkinDate.substring(0, 7) + "&checkin_monthday=" + checkinDate.substring(8);  
 		     	Cookies.set('checkinDate', checkinDate, '{ expires: 2, path: '/'}');	
      		}
 	  		var checkoutDate = document.getElementById("checkoutDate").value; 
         	if (!isEmpty(checkoutDate) && checkoutDate.length == 10) {
-       	 		 hotelUrlSuffix += "&checkout_year_month=" + checkoutDate.substring(0, 7) + "&checkout_monthday=" + checkoutDate.substring(8);  
+       	 		hotelUrlSuffix += "&checkout_year_month=" + checkoutDate.substring(0, 7) + "&checkout_monthday=" + checkoutDate.substring(8);  
 	  		 	Cookies.set('checkoutDate', checkoutDate, '{ expires: 2, path: '/'}');	
         	} 	
 		}
+		//no_rooms=2&group_adults=2&group_children=2&age=5&age=9
         console.log('Opening ' + url + hotelUrlSuffix + '...')
         window.open(url + hotelUrlSuffix, '_blank');
         //TODO add other params: rooms count, adults count, children count, children age
@@ -524,6 +525,39 @@
 	      }
       }
 
+      function setupChildrenAges() {
+  		var count = document.getElementById("checkinChildren").value;
+  		document.getElementById("checkinChildrenHeaderRow").innerHTML='';
+  		document.getElementById("checkinChildrenRow1").innerHTML='';
+  		document.getElementById("checkinChildrenRow2").innerHTML='';
+  		document.getElementById("checkinChildrenRow3").innerHTML=''
+  		if (count > 0) {
+             //checkinChildrenHeaderRow
+  			 document.getElementById("checkinChildrenHeaderRow").innerHTML='<td colspan=\"2\" align=\"left\"><bean:message key="landmarks.children.ages" /></td>';
+  			 //checkinChildrenRow1,2,3
+  			 var iter = 1;
+  			 for (k = 0; k < count; k += 4) {
+  				var rowCount = Math.min(count, iter*4);
+  				var checkinChildrenRowText = '<td colspan=\"2\">'
+  				for (i = (iter-1)*4; i < rowCount; i++) {
+  					checkinChildrenRowText += addChildrenAgeRow(i);
+  				}
+  				checkinChildrenRowText += '</td>';
+  				document.getElementById("checkinChildrenRow" + iter).innerHTML=checkinChildrenRowText;
+  				iter++; 
+  			 }
+  		 } 
+  	 }
+
+  	 function addChildrenAgeRow(pos) {
+  		var res = "<select id=\"checkinChildren" + pos + "Age\">\n";
+  		for (var i = 0;i < 18;i++) {
+  			res += "<option value=\"" + i + "\">" + i + "</option>\n"
+  		}
+  		res += "</select>\n";
+  		return res;
+  	 }
+
       google.maps.event.addDomListener(window, 'load', initialize);
     </script>
   </head>
@@ -543,7 +577,115 @@
     			<td><bean:message key="landmarks.checkout" /></td>
     			<td><input type="text" id="checkoutDate" size="10" value="<%= StringUtils.length(request.getParameter("checkout")) == 10 ? request.getParameter("checkout") : "" %>"></td>
     		</tr>
-    		<!-- //TODO add rest of form from selectLandmark.jsp -->
+    		<tr>
+    			<td colspan="2"><input type="checkbox" id="checkinNodate" value="yes"><bean:message key="landmarks.checkin.nodate" /></td>
+    		</tr>
+    		<tr>
+    			<th colspan="2"><bean:message key="landmarks.guests" /></th>
+    		</tr>
+    		<tr>
+    			<td><bean:message key="landmarks.adults" /></td>
+    			<td align="right">
+    				<select id="checkinAdults">
+  						<option value="1" selected="selected">1</option>
+  						<option value="2">2</option>
+  						<option value="3">3</option>
+  						<option value="4">4</option>
+  						<option value="5">5</option>
+  						<option value="6">6</option>
+  						<option value="7">7</option>
+  						<option value="8">8</option>
+  						<option value="9">9</option>
+  						<option value="10">10</option>
+  						<option value="11">11</option>
+  						<option value="12">12</option>
+  						<option value="13">13</option>
+  						<option value="14">14</option>
+  						<option value="15">15</option>
+  						<option value="16">16</option>
+  						<option value="17">17</option>
+  						<option value="18">18</option>
+  						<option value="19">19</option>
+  						<option value="20">20</option>
+  						<option value="21">21</option>
+  						<option value="22">22</option>
+  						<option value="23">23</option>
+  						<option value="24">24</option>
+  						<option value="25">25</option>
+  						<option value="26">26</option>
+  						<option value="27">27</option>
+  						<option value="28">28</option>
+  						<option value="29">29</option>
+  						<option value="30">30</option>
+					</select> 
+				</td>
+    		</tr>
+    		<tr>
+    			<td><bean:message key="landmarks.children" /></td>
+    			<td align="right">
+    				<select id="checkinChildren" onchange="setupChildrenAges()">
+  						<option value="0" selected="selected">0</option>
+  						<option value="1">1</option>
+  						<option value="2">2</option>
+  						<option value="3">3</option>
+  						<option value="4">4</option>
+  						<option value="5">5</option>
+  						<option value="6">6</option>
+  						<option value="7">7</option>
+  						<option value="8">8</option>
+  						<option value="9">9</option>
+  						<option value="10">10</option>
+					</select> 
+				</td>
+    		</tr>
+    		
+    		<!-- children age input rows -->
+    		<tr id="checkinChildrenHeaderRow"></tr>
+    		
+    		<tr id="checkinChildrenRow1"></tr>
+    		
+    		<tr id="checkinChildrenRow2"></tr>
+    		
+    		<tr id="checkinChildrenRow3"></tr>		
+    		<!--  -->
+    		
+    		<tr>
+    			<td><bean:message key="landmarks.rooms" /></td>
+    			<td align="right">
+    				<select id="checkinRooms">
+  						<option value="1" selected="selected">1</option>
+  						<option value="2">2</option>
+  						<option value="3">3</option>
+  						<option value="4">4</option>
+  						<option value="5">5</option>
+  						<option value="6">6</option>
+  						<option value="7">7</option>
+  						<option value="8">8</option>
+  						<option value="9">9</option>
+  						<option value="10">10</option>
+  						<option value="11">11</option>
+  						<option value="12">12</option>
+  						<option value="13">13</option>
+  						<option value="14">14</option>
+  						<option value="15">15</option>
+  						<option value="16">16</option>
+  						<option value="17">17</option>
+  						<option value="18">18</option>
+  						<option value="19">19</option>
+  						<option value="20">20</option>
+  						<option value="21">21</option>
+  						<option value="22">22</option>
+  						<option value="23">23</option>
+  						<option value="24">24</option>
+  						<option value="25">25</option>
+  						<option value="26">26</option>
+  						<option value="27">27</option>
+  						<option value="28">28</option>
+  						<option value="29">29</option>
+  						<option value="30">30</option>
+					</select> 
+				</td>
+    		</tr>
     	</table>
     </div>
     <script type="text/javascript">

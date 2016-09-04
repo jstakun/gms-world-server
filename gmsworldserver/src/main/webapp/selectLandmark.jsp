@@ -381,8 +381,8 @@
 		document.getElementById("checkinChildrenRow3").innerHTML=''
 		if (count > 0) {
             //checkinChildrenHeaderRow
-			document.getElementById("checkinChildrenHeaderRow").innerHTML='<td colspan=\"2\" align=\"left\">Ages of children</td>';
-			//checkinChildrenRow0
+			document.getElementById("checkinChildrenHeaderRow").innerHTML='<td colspan=\"2\" align=\"left\"><bean:message key="landmarks.children.ages" /></td>';
+			//checkinChildrenRow1,2,3
 			var iter = 1;
 			for (k = 0; k < count; k += 4) {
 				var rowCount = Math.min(count, iter*4);
@@ -398,7 +398,6 @@
 	}
 
 	function addChildrenAgeRow(pos) {
-		//return "<input type=\"text\" id=\"checkinChildren" + pos + "Age\" size=\"2\" maxlength=\"2\" pattern=\"([0-9][0-9])\">&nbsp;";
 		var res = "<select id=\"checkinChildren" + pos + "Age\">\n";
 		for (var i = 0;i < 18;i++) {
 			res += "<option value=\"" + i + "\">" + i + "</option>\n"
@@ -429,13 +428,13 @@
     			<td><input type="text" id="checkoutDate" size="10"></td>
     		</tr>
     		<tr>
-    			<td colspan="2"><input type="checkbox" id="checkinNodate" value="yes">&nbsp;I don't know date yet</td>
+    			<td colspan="2"><input type="checkbox" id="checkinNodate" value="yes"><bean:message key="landmarks.checkin.nodate" /></td>
     		</tr>
     		<tr>
-    			<th colspan="2">Guests</th>
+    			<th colspan="2"><bean:message key="landmarks.guests" /></th>
     		</tr>
     		<tr>
-    			<td>Adults</td>
+    			<td><bean:message key="landmarks.adults" /></td>
     			<td align="right">
     				<select id="checkinAdults">
   						<option value="1" selected="selected">1</option>
@@ -472,7 +471,7 @@
 				</td>
     		</tr>
     		<tr>
-    			<td>Children</td>
+    			<td><bean:message key="landmarks.children" /></td>
     			<td align="right">
     				<select id="checkinChildren" onchange="setupChildrenAges()">
   						<option value="0" selected="selected">0</option>
@@ -501,7 +500,7 @@
     		<!--  -->
     		
     		<tr>
-    			<td>Rooms</td>
+    			<td><bean:message key="landmarks.rooms" /></td>
     			<td align="right">
     				<select id="checkinRooms">
   						<option value="1" selected="selected">1</option>
