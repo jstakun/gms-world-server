@@ -65,6 +65,7 @@ public class ShowLocationAction extends org.apache.struts.action.Action {
             	}
                 request.setAttribute("lat", StringUtil.formatCoordE6(lat));
                 request.setAttribute("lng", StringUtil.formatCoordE6(lng));
+               
                 String address = null;
                 if (!StringUtils.equals(request.getParameter("enabled"), "Hotels")) {
                 	AddressInfo ai = GeocodeHelperFactory.getMapQuestUtils().processReverseGeocode(lat, lng); 
@@ -78,6 +79,27 @@ public class ShowLocationAction extends org.apache.struts.action.Action {
                 
                 request.setAttribute("landmarkDesc", HtmlUtils.buildLocationDescV2(lat, lng, address, request.getLocale(), isMobile));
             	request.setAttribute("landmarkName", "'Selected location'");
+            	
+            	String[] checkinOptions = StringUtils.split(request.getParameter("checkinOptions"),",");
+            	if (checkinOptions != null && checkinOptions.length > 2) {
+            		request.setAttribute("checkinAdults", checkinOptions[0]);
+            		int checkinChildren = Integer.parseInt(checkinOptions[1]);
+            		request.setAttribute("checkinChildren", checkinOptions[1]);
+            		String checkinChildrenAges = "";
+            		for (int i=0;i<checkinChildren;i++) {
+            			checkinChildrenAges += checkinOptions[i+2] + ",";	
+            		}
+            		for (int i=checkinChildren;i<10;i++) {
+            			checkinChildrenAges += "0,";
+            		}
+            		request.setAttribute("checkinChildrenAges", checkinChildrenAges);
+            		request.setAttribute("checkinRooms", checkinOptions[checkinOptions.length-1]);
+            	} else {
+            		request.setAttribute("checkinAdults", "1");
+            		request.setAttribute("checkinChildren", "0");
+            		request.setAttribute("checkinRooms", "1");
+            	}
+            	
             } catch (Exception e) {
                 logger.log(Level.SEVERE, e.getMessage(), e);
             }

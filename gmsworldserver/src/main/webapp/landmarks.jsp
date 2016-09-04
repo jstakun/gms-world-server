@@ -81,7 +81,7 @@
 	function callHotelUrl(url) {
 		//checkin_monthday=21&checkin_year_month=2016-4&checkout_monthday=23&checkout_year_month=2016-4
 		var hotelUrlSuffix = "";
-		if (document.getElementById("checkinDate") != null && document.getElementById("checkoutDate") != null) {
+		if (document.getElementById("checkinNodate").checked == false && document.getElementById("checkinDate") != null && document.getElementById("checkoutDate") != null) {
         	var checkinDate = document.getElementById("checkinDate").value;
         	if (!isEmpty(checkinDate) && checkinDate.length == 10) {
        	 		hotelUrlSuffix = "&checkin_year_month=" + checkinDate.substring(0, 7) + "&checkin_monthday=" + checkinDate.substring(8);  
@@ -93,10 +93,18 @@
 	  		 	Cookies.set('checkoutDate', checkoutDate, '{ expires: 2, path: '/'}');	
         	} 	
 		}
+
 		//no_rooms=2&group_adults=2&group_children=2&age=5&age=9
+		hotelUrlSuffix += "&no_rooms=" + document.getElementById("checkinRooms").value;
+		hotelUrlSuffix += "&group_adults=" + document.getElementById("checkinAdults").value;
+        var childrenCount = document.getElementById("checkinChildren").value;
+        hotelUrlSuffix += "&group_children=" + childrenCount;  
+		for (var i = 0; i < childrenCount; i++) {
+			hotelUrlSuffix += "&age=" + document.getElementById("checkinChildren" + i + "Age").value;
+        }
+        
         console.log('Opening ' + url + hotelUrlSuffix + '...')
         window.open(url + hotelUrlSuffix, '_blank');
-        //TODO add other params: rooms count, adults count, children count, children age
 	}
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?libraries=visualization"></script>
@@ -525,6 +533,9 @@
 	      }
       }
 
+
+      var checkinChildrenAges = [<%= (String)request.getAttribute("checkinChildrenAges") %>];
+      
       function setupChildrenAges() {
   		var count = document.getElementById("checkinChildren").value;
   		document.getElementById("checkinChildrenHeaderRow").innerHTML='';
@@ -551,8 +562,13 @@
 
   	 function addChildrenAgeRow(pos) {
   		var res = "<select id=\"checkinChildren" + pos + "Age\">\n";
-  		for (var i = 0;i < 18;i++) {
-  			res += "<option value=\"" + i + "\">" + i + "</option>\n"
+  		var selected = checkinChildrenAges[pos];
+  		for (var i = 0;i < 18;i++) {  	  		
+  	  		if (i == selected) {
+  	  			res += "<option value=\"" + i + "\" selected=\"selected\">" + i + "</option>\n"
+  	  	  	} else {
+  				res += "<option value=\"" + i + "\">" + i + "</option>\n"
+  	  	  	}
   		}
   		res += "</select>\n";
   		return res;
@@ -561,7 +577,7 @@
       google.maps.event.addDomListener(window, 'load', initialize);
     </script>
   </head>
-  <body>
+  <body onload="setupChildrenAges()">
     <div id="map-canvas"></div>                                            
     <div id="status" style="color:black;font-family:Roboto,Arial,sans-serif;font-size:<%=fontSize%>;line-height:32px;padding-left:4px;padding-right:4px"></div>
     <div id="checkin" style="background-color:#fff;border:2px solid #fff;border-radius:3px;box-shadow:0 2px 6px rgba(0,0,0,.3);color:black;font-family:Roboto,Arial,sans-serif;font-size:<%=fontSize%>;line-height:28px;padding-left:4px;padding-right:4px;margin-right:10px">
@@ -578,7 +594,7 @@
     			<td><input type="text" id="checkoutDate" size="10" value="<%= StringUtils.length(request.getParameter("checkout")) == 10 ? request.getParameter("checkout") : "" %>"></td>
     		</tr>
     		<tr>
-    			<td colspan="2"><input type="checkbox" id="checkinNodate" value="yes"><bean:message key="landmarks.checkin.nodate" /></td>
+    			<td colspan="2"><input type="checkbox" id="checkinNodate" <%= StringUtils.length(request.getParameter("checkin")) != 10 ? "checked" : "" %>><bean:message key="landmarks.checkin.nodate" /></td>
     		</tr>
     		<tr>
     			<th colspan="2"><bean:message key="landmarks.guests" /></th>
@@ -587,36 +603,20 @@
     			<td><bean:message key="landmarks.adults" /></td>
     			<td align="right">
     				<select id="checkinAdults">
-  						<option value="1" selected="selected">1</option>
-  						<option value="2">2</option>
-  						<option value="3">3</option>
-  						<option value="4">4</option>
-  						<option value="5">5</option>
-  						<option value="6">6</option>
-  						<option value="7">7</option>
-  						<option value="8">8</option>
-  						<option value="9">9</option>
-  						<option value="10">10</option>
-  						<option value="11">11</option>
-  						<option value="12">12</option>
-  						<option value="13">13</option>
-  						<option value="14">14</option>
-  						<option value="15">15</option>
-  						<option value="16">16</option>
-  						<option value="17">17</option>
-  						<option value="18">18</option>
-  						<option value="19">19</option>
-  						<option value="20">20</option>
-  						<option value="21">21</option>
-  						<option value="22">22</option>
-  						<option value="23">23</option>
-  						<option value="24">24</option>
-  						<option value="25">25</option>
-  						<option value="26">26</option>
-  						<option value="27">27</option>
-  						<option value="28">28</option>
-  						<option value="29">29</option>
-  						<option value="30">30</option>
+<%
+	int selected = Integer.parseInt((String)request.getAttribute("checkinAdults"));
+	for (int i=1;i<=30;i++) {
+		if (i == selected) {
+%>
+  						<option value="<%= i%>" selected="selected"><%= i%></option>
+<%
+		} else {
+%>			
+						<option value="<%= i%>"><%= i%></option>
+<%			
+		}
+	}
+%>  						
 					</select> 
 				</td>
     		</tr>
@@ -624,18 +624,21 @@
     			<td><bean:message key="landmarks.children" /></td>
     			<td align="right">
     				<select id="checkinChildren" onchange="setupChildrenAges()">
-  						<option value="0" selected="selected">0</option>
-  						<option value="1">1</option>
-  						<option value="2">2</option>
-  						<option value="3">3</option>
-  						<option value="4">4</option>
-  						<option value="5">5</option>
-  						<option value="6">6</option>
-  						<option value="7">7</option>
-  						<option value="8">8</option>
-  						<option value="9">9</option>
-  						<option value="10">10</option>
-					</select> 
+    					<option value="0">0</option>
+<%
+	selected = Integer.parseInt((String)request.getAttribute("checkinChildren"));
+	for (int i=1;i<=10;i++) {
+		if (i == selected) {
+%>
+  						<option value="<%= i%>" selected="selected"><%= i%></option>
+<%
+		} else {
+%>			
+						<option value="<%= i%>"><%= i%></option>
+<%			
+		}
+	}
+%>  						</select> 
 				</td>
     		</tr>
     		
@@ -653,36 +656,20 @@
     			<td><bean:message key="landmarks.rooms" /></td>
     			<td align="right">
     				<select id="checkinRooms">
-  						<option value="1" selected="selected">1</option>
-  						<option value="2">2</option>
-  						<option value="3">3</option>
-  						<option value="4">4</option>
-  						<option value="5">5</option>
-  						<option value="6">6</option>
-  						<option value="7">7</option>
-  						<option value="8">8</option>
-  						<option value="9">9</option>
-  						<option value="10">10</option>
-  						<option value="11">11</option>
-  						<option value="12">12</option>
-  						<option value="13">13</option>
-  						<option value="14">14</option>
-  						<option value="15">15</option>
-  						<option value="16">16</option>
-  						<option value="17">17</option>
-  						<option value="18">18</option>
-  						<option value="19">19</option>
-  						<option value="20">20</option>
-  						<option value="21">21</option>
-  						<option value="22">22</option>
-  						<option value="23">23</option>
-  						<option value="24">24</option>
-  						<option value="25">25</option>
-  						<option value="26">26</option>
-  						<option value="27">27</option>
-  						<option value="28">28</option>
-  						<option value="29">29</option>
-  						<option value="30">30</option>
+<%
+	selected = Integer.parseInt((String)request.getAttribute("checkinRooms"));
+	for (int i=1;i<=30;i++) {
+		if (i == selected) {
+%>
+  						<option value="<%= i%>" selected="selected"><%= i%></option>
+<%
+		} else {
+%>			
+						<option value="<%= i%>"><%= i%></option>
+<%			
+		}
+	}
+%>  						
 					</select> 
 				</td>
     		</tr>

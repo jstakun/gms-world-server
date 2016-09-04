@@ -318,11 +318,17 @@
                   } else {
                 	  Cookies.set('checkoutDate', checkoutDate, '{ expires: 2, path: '/'}');	
                   }   
-            	  //TODO add other params: rooms count, adults count, children count, children age
+            	  var options = document.getElementById("checkinAdults").value + ",";
+            	  var childrenCount = document.getElementById("checkinChildren").value;
+				  options += childrenCount + ",";
+            	  for (var i = 0; i < childrenCount; i++) {
+				  		options += document.getElementById("checkinChildren" + i + "Age").value + ",";
+               	  }
+               	  options += document.getElementById("checkinRooms").value;
                   if (document.getElementById("checkinNodate").checked) {
-                	  window.location.replace("/hotelLandmark/" +  encodeDouble(lat) + "/" + encodeDouble(lng));
+                	  window.location.replace("/hotelLandmark/" +  encodeDouble(lat) + "/" + encodeDouble(lng) + "/" + options);
                   } else {      
-             	  	  window.location.replace("/hotelLandmark/" +  encodeDouble(lat) + "/" + encodeDouble(lng) + "/" + checkinDate + "/" + checkoutDate);   
+             	  	  window.location.replace("/hotelLandmark/" +  encodeDouble(lat) + "/" + encodeDouble(lng) + "/" + checkinDate + "/" + checkoutDate + "/" + options);   
                   }
                   //
               } else {
@@ -428,7 +434,7 @@
     			<td><input type="text" id="checkoutDate" size="10"></td>
     		</tr>
     		<tr>
-    			<td colspan="2"><input type="checkbox" id="checkinNodate" value="yes"><bean:message key="landmarks.checkin.nodate" /></td>
+    			<td colspan="2"><input type="checkbox" id="checkinNodate"><bean:message key="landmarks.checkin.nodate" /></td>
     		</tr>
     		<tr>
     			<th colspan="2"><bean:message key="landmarks.guests" /></th>
