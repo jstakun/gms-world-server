@@ -1,9 +1,13 @@
 package net.gmsworld.server.etl;
 
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Reader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,6 +52,7 @@ public class Processor {
 	private static final String HOTELS_GET_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/cache/hotels/_id/"; 
 	private static URL cachePostUrl;
 	private static ObjectMapper mapper = new ObjectMapper();
+	private static final String HOTELS_FILE = "/tmp/hotels.zip";
 	
 	//last count 900132
 	private static final int BATCH_SIZE = 2000; 
@@ -102,6 +107,21 @@ public class Processor {
 				reader = new FileReader(args[1]);
 				beanReader = new CsvBeanReader(reader, new CsvPreference.Builder(CsvPreference.TAB_PREFERENCE).surroundingSpacesNeedQuotes(true).build());
 				processFile(beanReader, dryrun, compare);
+			} else if (args[0].equals("web")) {
+				try {
+					downloadHotelsZip(args[1]);
+					zf = new ZipFile(HOTELS_FILE);
+					List<? extends ZipEntry> zipFiles = Collections.list(zf.entries());
+					for(ZipEntry ze : zipFiles) {
+						if (ze != null) {
+							reader = new InputStreamReader(zf.getInputStream(ze));
+							beanReader = new CsvBeanReader(reader, new CsvPreference.Builder(CsvPreference.TAB_PREFERENCE).surroundingSpacesNeedQuotes(true).build());
+							processFile(beanReader, dryrun, compare);
+						}
+					}	
+				} catch(IOException e) {
+					e.printStackTrace();
+				}
 			}
 		} finally {
 			if (zf != null) {
@@ -320,5 +340,37 @@ public class Processor {
 			equal = false;
 		}
 		return equal;
+	}
+	
+	private static void downloadHotelsZip(String zipurl) throws IOException {
+	    URL url = new URL(zipurl);
+	    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+	    System.out.println("Starting downloading file " + zipurl);
+	    // Check for errors
+	    int responseCode = con.getResponseCode();
+	    InputStream inputStream = null;
+	    if (responseCode == HttpURLConnection.HTTP_OK) {
+	    	System.out.println("File found");
+	        inputStream = con.getInputStream();
+	    } else {
+	    	System.out.println("File download failed with response code " + responseCode);
+	    }
+	    
+	    if (inputStream != null) {
+	    	OutputStream output = new FileOutputStream(HOTELS_FILE);
+
+	    	byte[] buffer = new byte[8 * 1024]; // 8 KB
+	    	int bytesRead;
+	    	int count = 0;
+	    	//expected ~ 646 000 000
+	    	while ((bytesRead = inputStream.read(buffer)) > 0) {
+	    		output.write(buffer, 0, bytesRead);
+	    		count += bytesRead;
+	    		System.out.println(count);
+	    	}
+
+	    	output.close();
+	    	inputStream.close();
+	    }
 	}
 }
