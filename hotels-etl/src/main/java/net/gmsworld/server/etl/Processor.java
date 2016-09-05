@@ -48,15 +48,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class Processor {
 	
 	private static final String HOTELS_POST_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/cache/multi/hotels"; 
-	//private static final String HOTELS_POST_URL = "http://cache-gmsworld.rhcloud.com/camel/v1/cache/multi/test"; 
 	private static final String HOTELS_GET_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/cache/hotels/_id/"; 
 	private static URL cachePostUrl;
 	private static ObjectMapper mapper = new ObjectMapper();
 	private static final String HOTELS_FILE = "/tmp/hotels.zip";
 	
-	//last count 900132
+	//last count 979545
 	private static final int BATCH_SIZE = 2000; 
-	//private static final int FIRST = 0;
 	
 	private static final String AID = "864525";
 	
@@ -152,17 +150,6 @@ public class Processor {
 		    int batchSize = 0;
 		    FeatureCollection featureCollection = new FeatureCollection();
 		    JuffrouBeanWrapper beanWrapper = new JuffrouBeanWrapper(BeanWrapperContext.create(HotelBean.class));
-		    
-		    /*if (FIRST > 0) {
-		    	for (int i=0;i<FIRST;i++) {
-		    		try {
-		    			beanReader.read(HotelBean.class, header, processors);
-		    		} catch (Exception e) {
-		    			
-		    		}
-		    	}
-		    }
-		    System.out.println("Skipped " + FIRST + " records.");*/
 		    
 		    while (true) {
 		    	try {
