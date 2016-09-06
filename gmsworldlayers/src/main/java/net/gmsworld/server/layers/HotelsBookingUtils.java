@@ -37,6 +37,8 @@ public class HotelsBookingUtils extends LayerHelper {
 	
 	private static final String HOTELS_CHEAPEST_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/cache/hotels/cheapest/nearby/"; 
 	
+	private static final String HOTELS_STARS_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/cache/hotels/stars/nearby/"; 
+	
 	private static final String HOTELS_ASYNC_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/cache/hotels/async/nearby/";
 	
 	private static final String HOTELS_CACHE_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/one/cache/_id/"; 
@@ -44,19 +46,26 @@ public class HotelsBookingUtils extends LayerHelper {
 	private static final String HOTELS_COUNTER_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/count/hotels/nearby/";
 	
 	@Override
-	protected List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int r, int version, int limit, int stringLimit, String callCacheFirst, String flexString2, Locale locale, boolean useCache) throws Exception {
+	protected List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int r, int version, int limit, int stringLimit, String callCacheFirst, String sortType, Locale locale, boolean useCache) throws Exception {
 		int normalizedRadius = r;
 		if (r < 1000) {
 			normalizedRadius = r * 1000;
 		}	
-		return loadLandmarksJackson(lat, lng, query, normalizedRadius, version, limit, stringLimit, callCacheFirst, flexString2, locale, useCache);
-		//return loadLandmarksJSON(lat, lng, query, normalizedRadius, version, limit, stringLimit, callCacheFirst, flexString2, locale, useCache);
+		return loadLandmarksJackson(lat, lng, query, normalizedRadius, version, limit, stringLimit, callCacheFirst, sortType, locale, useCache);
+		//return loadLandmarksJSON(lat, lng, query, normalizedRadius, version, limit, stringLimit, callCacheFirst, sortType, locale, useCache);
 	}
 	
-	/*private List<ExtendedLandmark> loadLandmarksJSON(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String callCacheFirst, String flexString2, Locale locale, boolean useCache) throws Exception {
+	/*private List<ExtendedLandmark> loadLandmarksJSON(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String callCacheFirst, String sortType, Locale locale, boolean useCache) throws Exception {
 		JSONArray hotels = null;
 		String lngStr = StringUtil.formatCoordE2(lng);
 		String latStr = StringUtil.formatCoordE2(lat);	
+		String hotelsUrlPrefix = HOTELS_PROVIDER_URL;
+		if (StringUtils.equalsIgnoreCase(sortType, "stars")) {
+			hotelsUrlPrefix = HOTELS_STARS_URL;
+		} else if (StringUtils.equalsIgnoreCase(sortType, "cheapest")) {
+			hotelsUrlPrefix = HOTELS_CHEAPEST_URL;
+		}
+		
 		//first call hotels cache
 		if (StringUtils.equals(callCacheFirst, "true")) {
 			String hotelsUrl = HOTELS_CACHE_URL + lngStr + "_" + latStr + "_" + radius + "_" + limit;
@@ -84,7 +93,7 @@ public class HotelsBookingUtils extends LayerHelper {
 		}
 		
 		if (hotels == null) {
-			String hotelsUrl = HOTELS_PROVIDER_URL + latStr + "/" + lngStr + "/" + radius + "/" + limit;			
+			String hotelsUrl = hotelsUrlPrefix + latStr + "/" + lngStr + "/" + radius + "/" + limit;			
 			logger.log(Level.INFO, "Calling: " + hotelsUrl);
 			String json = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), true);
 			if (StringUtils.startsWith(json, "[")) {
@@ -119,7 +128,7 @@ public class HotelsBookingUtils extends LayerHelper {
 		return landmarks;
 	}*/
 	
-	private List<ExtendedLandmark> loadLandmarksJackson(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String callCacheFirst, String flexString2, Locale locale, boolean useCache) throws Exception {
+	private List<ExtendedLandmark> loadLandmarksJackson(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String callCacheFirst, String sortType, Locale locale, boolean useCache) throws Exception {
 		FeatureCollection hotels = null;
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -128,6 +137,7 @@ public class HotelsBookingUtils extends LayerHelper {
 
 		//first call hotels cache
 		if (StringUtils.equals(callCacheFirst, "true")) {
+			//TODO save to cache with sort type
 			String hotelsUrl = HOTELS_CACHE_URL + lngStr + "_" + latStr + "_" + radius + "_" + limit;
 			logger.log(Level.INFO, "Calling: " + hotelsUrl);
 			String json = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), true);
@@ -150,7 +160,14 @@ public class HotelsBookingUtils extends LayerHelper {
 		}
 		
 		if (hotels == null) {
-			String hotelsUrl = HOTELS_PROVIDER_URL + latStr + "/" + lngStr + "/" + radius + "/" + limit;			
+			String hotelsUrlPrefix = HOTELS_PROVIDER_URL;
+			if (StringUtils.equalsIgnoreCase(sortType, "stars")) {
+				hotelsUrlPrefix = HOTELS_STARS_URL;
+			} else if (StringUtils.equalsIgnoreCase(sortType, "cheapest")) {
+				hotelsUrlPrefix = HOTELS_CHEAPEST_URL;
+			}
+			
+			String hotelsUrl = hotelsUrlPrefix + latStr + "/" + lngStr + "/" + radius + "/" + limit;			
 			//logger.log(Level.INFO, "Calling: " + hotelsUrl);
 			String json = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), true);
 			if (StringUtils.startsWith(json, "[")) {
@@ -448,32 +465,4 @@ public class HotelsBookingUtils extends LayerHelper {
 		
         return NumberUtils.getInt(hotelsCount, -1);
 	}
-	
-	/*private class ConcurrentHotelsProcessor implements Runnable {
-
-		private List<ExtendedLandmark> landmarks;
-		private JSONObject hotel;
-		private ThreadManager threadManager;
-		private String key;
-		private Locale locale;
-		
-		public ConcurrentHotelsProcessor(Locale locale, List<ExtendedLandmark> landmarks, ThreadManager threadManager, String key, JSONObject hotel) {
-			this.landmarks = landmarks;
-			this.threadManager = threadManager;
-			this.locale = locale;
-			this.hotel = hotel;
-			this.key = key;
-		}
-		
-		@Override
-		public void run() {
-			try {
-				landmarks.add(hotelToLandmark(hotel, locale));
-			} catch (Exception e) {
-				logger.log(Level.SEVERE, e.getMessage(), e);
-			} finally {
-				threadManager.take(key);
-			}
-		}
-	}*/
 }
