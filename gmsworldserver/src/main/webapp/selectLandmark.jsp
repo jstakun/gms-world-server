@@ -169,13 +169,13 @@
 	   topLocationsDiv.index = 3
 	   map.controls[google.maps.ControlPosition.RIGHT_TOP].push(topLocationsDiv);	   
 
-	   //checkin dates box
-	   var checkinDiv = document.getElementById('checkin');
+	   //sort box
+	   var sortDiv = document.getElementById('sort');
 	   if (hotelsMode == true) {
-	   		checkinDiv.index = 4
-	   		map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(checkinDiv);	   
+	   		sortDiv.index = 4
+	   		map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(sortDiv);	   
 	   } else {
-			checkinDiv.remove();
+		    sortDiv.remove();
 	   }
 	   
 	   //search box
@@ -306,30 +306,15 @@
 
          if (r == true) {
               if (hotelsMode == true) {
-            	  var checkinDate = document.getElementById("checkinDate").value;
-            	  if (isEmpty(checkinDate)) {
-            		  checkinDate = "0";
-                  } else {
-                	  Cookies.set('checkinDate', checkinDate, '{ expires: 2, path: '/'}');	
+            	  var options = "distance";
+                  var sortType = document.getElementsByName("sortType");
+                  for (var i=0;i<sortType.length;i++) {
+						if (sortType[i].checked) {
+							options = sortType[i].value;
+							break; 
+						}
                   }
-            	  var checkoutDate = document.getElementById("checkoutDate").value; 
-            	  if (isEmpty(checkoutDate)) {
- 					  checkoutDate = "0";
-                  } else {
-                	  Cookies.set('checkoutDate', checkoutDate, '{ expires: 2, path: '/'}');	
-                  }   
-            	  var options = document.getElementById("checkinAdults").value + ",";
-            	  var childrenCount = document.getElementById("checkinChildren").value;
-				  options += childrenCount + ",";
-            	  for (var i = 0; i < childrenCount; i++) {
-				  		options += document.getElementById("checkinChildren" + i + "Age").value + ",";
-               	  }
-               	  options += document.getElementById("checkinRooms").value;
-                  if (document.getElementById("checkinNodate").checked) {
-                	  window.location.replace("/hotelLandmark/" +  encodeDouble(lat) + "/" + encodeDouble(lng) + "/" + options);
-                  } else {      
-             	  	  window.location.replace("/hotelLandmark/" +  encodeDouble(lat) + "/" + encodeDouble(lng) + "/" + checkinDate + "/" + checkoutDate + "/" + options);   
-                  }
+                  window.location.replace("/hotelLandmark/" +  encodeDouble(lat) + "/" + encodeDouble(lng) + "/" + options);
                   //
               } else {
          		 window.location.replace("/newLandmark/" +  encodeDouble(lat) + "/" + encodeDouble(lng));
@@ -378,215 +363,31 @@
 	function isEmpty(str) {
 	    return (!str || 0 == str.length);
 	}
-
-	function setupChildrenAges() {
-		var count = document.getElementById("checkinChildren").value;
-		document.getElementById("checkinChildrenHeaderRow").innerHTML='';
-		document.getElementById("checkinChildrenRow1").innerHTML='';
-		document.getElementById("checkinChildrenRow2").innerHTML='';
-		document.getElementById("checkinChildrenRow3").innerHTML=''
-		if (count > 0) {
-            //checkinChildrenHeaderRow
-			document.getElementById("checkinChildrenHeaderRow").innerHTML='<td colspan=\"2\" align=\"left\"><bean:message key="landmarks.children.ages" /></td>';
-			//checkinChildrenRow1,2,3
-			var iter = 1;
-			for (k = 0; k < count; k += 4) {
-				var rowCount = Math.min(count, iter*4);
-				var checkinChildrenRowText = '<td colspan=\"2\">'
-				for (i = (iter-1)*4; i < rowCount; i++) {
-					checkinChildrenRowText += addChildrenAgeRow(i);
-				}
-				checkinChildrenRowText += '</td>';
-				document.getElementById("checkinChildrenRow" + iter).innerHTML=checkinChildrenRowText;
-				iter++; 
-			}
-		} 
-	}
-
-	function addChildrenAgeRow(pos) {
-		var res = "<select id=\"checkinChildren" + pos + "Age\">\n";
-		for (var i = 0;i < 18;i++) {
-			res += "<option value=\"" + i + "\">" + i + "</option>\n"
-		}
-		res += "</select>\n";
-		return res;
-	}
   </script>
-  <script src="https://maps.googleapis.com/maps/api/js?libraries=places&callback=initialize" async defer> 
-    //key=
-  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?libraries=places&callback=initialize" async defer></script>
 </head>
-<body onload="setupChildrenAges()">
+<body>
     <input id="pac-input" class="controls" type="text" placeholder="<bean:message key="landmarks.search" />">
 	<div id="map_canvas"></div>
     <div id="status" style="color:black;font-family:Roboto,Arial,sans-serif;font-size:16px;line-height:28px;padding-left:4px;padding-right:4px"></div>
-    <div id="checkin" style="background-color:#fff;border:2px solid #fff;border-radius:3px;box-shadow:0 2px 6px rgba(0,0,0,.3);color:black;font-family:Roboto,Arial,sans-serif;font-size:16px;line-height:28px;padding-left:4px;padding-right:4px;margin-right:10px">
-    	<table id="checkinTable">
+    <div id="sort" style="background-color:#fff;border:2px solid #fff;border-radius:3px;box-shadow:0 2px 6px rgba(0,0,0,.3);color:black;font-family:Roboto,Arial,sans-serif;font-size:16px;line-height:28px;padding-left:4px;padding-right:4px;margin-right:10px">
+    	<table>
     		<tr>
-    			<th colspan="2"><bean:message key="landmarks.checkin.dates" /></th>
+    			<th colspan="2"><bean:message key="landmarks.sortby" />:</th>
     		</tr>
     		<tr>
-    			<td><bean:message key="landmarks.checkin" /></td>
-    			<td><input type="text" id="checkinDate" size="10"></td>
+    			<td><input type="radio" name="sortType" value="distance,asc" checked></td>
+    			<td><bean:message key="landmarks.nearest" /></td>
     		</tr>
     		<tr>
-    			<td><bean:message key="landmarks.checkout" /></td>
-    			<td><input type="text" id="checkoutDate" size="10"></td>
+    			<td><input type="radio" name="sortType" value="cheapest"></td>
+    			<td><bean:message key="landmarks.nearest" /></td>
     		</tr>
     		<tr>
-    			<td colspan="2"><input type="checkbox" id="checkinNodate"><bean:message key="landmarks.checkin.nodate" /></td>
+    			<td><input type="radio" name="sortType" value="stars"></td>
+    			<td><bean:message key="landmarks.stars" /></td>
     		</tr>
-    		<tr>
-    			<th colspan="2"><bean:message key="landmarks.guests" /></th>
-    		</tr>
-    		<tr>
-    			<td><bean:message key="landmarks.adults" /></td>
-    			<td align="right">
-    				<select id="checkinAdults">
-  						<option value="1" selected="selected">1</option>
-  						<option value="2">2</option>
-  						<option value="3">3</option>
-  						<option value="4">4</option>
-  						<option value="5">5</option>
-  						<option value="6">6</option>
-  						<option value="7">7</option>
-  						<option value="8">8</option>
-  						<option value="9">9</option>
-  						<option value="10">10</option>
-  						<option value="11">11</option>
-  						<option value="12">12</option>
-  						<option value="13">13</option>
-  						<option value="14">14</option>
-  						<option value="15">15</option>
-  						<option value="16">16</option>
-  						<option value="17">17</option>
-  						<option value="18">18</option>
-  						<option value="19">19</option>
-  						<option value="20">20</option>
-  						<option value="21">21</option>
-  						<option value="22">22</option>
-  						<option value="23">23</option>
-  						<option value="24">24</option>
-  						<option value="25">25</option>
-  						<option value="26">26</option>
-  						<option value="27">27</option>
-  						<option value="28">28</option>
-  						<option value="29">29</option>
-  						<option value="30">30</option>
-					</select> 
-				</td>
-    		</tr>
-    		<tr>
-    			<td><bean:message key="landmarks.children" /></td>
-    			<td align="right">
-    				<select id="checkinChildren" onchange="setupChildrenAges()">
-  						<option value="0" selected="selected">0</option>
-  						<option value="1">1</option>
-  						<option value="2">2</option>
-  						<option value="3">3</option>
-  						<option value="4">4</option>
-  						<option value="5">5</option>
-  						<option value="6">6</option>
-  						<option value="7">7</option>
-  						<option value="8">8</option>
-  						<option value="9">9</option>
-  						<option value="10">10</option>
-					</select> 
-				</td>
-    		</tr>
-    		
-    		<!-- children age input rows -->
-    		<tr id="checkinChildrenHeaderRow"></tr>
-    		
-    		<tr id="checkinChildrenRow1"></tr>
-    		
-    		<tr id="checkinChildrenRow2"></tr>
-    		
-    		<tr id="checkinChildrenRow3"></tr>		
-    		<!--  -->
-    		
-    		<tr>
-    			<td><bean:message key="landmarks.rooms" /></td>
-    			<td align="right">
-    				<select id="checkinRooms">
-  						<option value="1" selected="selected">1</option>
-  						<option value="2">2</option>
-  						<option value="3">3</option>
-  						<option value="4">4</option>
-  						<option value="5">5</option>
-  						<option value="6">6</option>
-  						<option value="7">7</option>
-  						<option value="8">8</option>
-  						<option value="9">9</option>
-  						<option value="10">10</option>
-  						<option value="11">11</option>
-  						<option value="12">12</option>
-  						<option value="13">13</option>
-  						<option value="14">14</option>
-  						<option value="15">15</option>
-  						<option value="16">16</option>
-  						<option value="17">17</option>
-  						<option value="18">18</option>
-  						<option value="19">19</option>
-  						<option value="20">20</option>
-  						<option value="21">21</option>
-  						<option value="22">22</option>
-  						<option value="23">23</option>
-  						<option value="24">24</option>
-  						<option value="25">25</option>
-  						<option value="26">26</option>
-  						<option value="27">27</option>
-  						<option value="28">28</option>
-  						<option value="29">29</option>
-  						<option value="30">30</option>
-					</select> 
-				</td>
-    		</tr>
-     	</table>
+    	</table>
     </div>
-    <script type="text/javascript">
-      $(function() {
-	     var daysToAdd = 1;
-	     $.datepicker.setDefaults($.datepicker.regional['<%= request.getLocale().getLanguage() %>']);
-	     $("#checkinDate").datepicker({
-	        onSelect: function (selected) {
-	            var dtMax = new Date(selected);
-	            dtMax.setDate(dtMax.getDate() + daysToAdd); 
-	            var dd = dtMax.getDate();
-	            var mm = dtMax.getMonth() + 1;
-	            var y = dtMax.getFullYear();
-	            var dtFormatted = y + '-'+ mm + '-'+ dd;
-	            $("#checkoutDate").datepicker("option", "minDate", dtFormatted);
-	        }, minDate: 0, dateFormat: 'yy-mm-dd'
-	     });
-	    
-	     $("#checkoutDate").datepicker({
-	        onSelect: function (selected) {
-	            var dtMax = new Date(selected);
-	            dtMax.setDate(dtMax.getDate() - daysToAdd); 
-	            var dd = dtMax.getDate();
-	            var mm = dtMax.getMonth() + 1;
-	            var y = dtMax.getFullYear();
-	            var dtFormatted = y + '-'+ mm + '-'+ dd;
-	            $("#checkinDate").datepicker("option", "maxDate", dtFormatted)
-	        },  minDate: 1, dateFormat: 'yy-mm-dd'
-	     });                 
-      })
-      var checkinDate = Cookies.get('checkinDate');
-      if (!isEmpty(checkinDate)) {
- 		   document.getElementById('checkinDate').value = checkinDate;
-      } else {
-          var today = new Date();
-    	  document.getElementById('checkinDate').value = today.toISOString().substring(0, 10); 
-      }
-      var checkoutDate = Cookies.get('checkoutDate');
-      if (!isEmpty(checkoutDate)) {
- 		   document.getElementById('checkoutDate').value = checkoutDate;
-      } else {
-    	  var tomorrow = new Date();
-    	  tomorrow.setDate(tomorrow.getDate() + 1);  
-    	  document.getElementById('checkoutDate').value = tomorrow.toISOString().substring(0, 10); 
-      }
-    </script>
 </body>
 </html>

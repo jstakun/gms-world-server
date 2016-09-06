@@ -99,7 +99,6 @@ public class ShowLocationAction extends org.apache.struts.action.Action {
             		request.setAttribute("checkinChildren", "0");
             		request.setAttribute("checkinRooms", "1");
             	}
-            	
             } catch (Exception e) {
                 logger.log(Level.SEVERE, e.getMessage(), e);
             }
@@ -108,7 +107,7 @@ public class ShowLocationAction extends org.apache.struts.action.Action {
         if (StringUtils.isNotEmpty(request.getParameter("fullScreen")) && lat != null && lng != null) {
         	//load hotels layer in asynchronous mode 
 			if (StringUtils.contains(request.getParameter("enabled"), "Hotels")) {
-				LayerHelperFactory.getHotelsBookingUtils().loadHotelsAsync(lat, lng, RADIUS, HOTELS_LIMIT); 
+				LayerHelperFactory.getHotelsBookingUtils().loadHotelsAsync(lat, lng, RADIUS, HOTELS_LIMIT, request.getParameter("sortType")); 
 			}
         	if (isMobile) {
         		return mapping.findForward("landmarksMobile");

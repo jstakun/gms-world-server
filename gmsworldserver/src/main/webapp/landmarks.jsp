@@ -117,6 +117,7 @@
           currencycode,
           eurexchangerate,
           flagmarker,
+          sortType = '<%= request.getParameter("sortType") %>', 
           mapcenter = new google.maps.LatLng(<%= latitude %>, <%= longitude %>),
           hotelsOnly = true,
           layer_counter = 0,
@@ -161,6 +162,9 @@
                 	var script = document.createElement('script');
                     script.src = '<%= ConfigurationManager.SERVER_URL %>geoJsonProvider?layer=' + layers[i].name + '&lat=<%= latitude %>&lng=<%= longitude %>&callback=layers_callback'; 
         			//script.src = 'http://localhost:8080/geoJsonProvider?layer=' + layers[i].name + '&lat=<%= latitude %>&lng=<%= longitude %>&callback=layers_callback'; 
+        			if (layers[i].name == "Hotels") {
+        				script.src += '&sortType=' + sortType;
+            		}
         			document.getElementsByTagName('head')[0].appendChild(script);
               }	else {
                     excluded_layers++; 

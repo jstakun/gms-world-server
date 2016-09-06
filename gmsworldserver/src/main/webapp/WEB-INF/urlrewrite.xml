@@ -168,16 +168,20 @@
             <to>/browserLandmark.jsp?latitudeEnc=$1&amp;longitudeEnc=$2&amp;generatetoken=true</to>
     </rule>
      
-    <rule>
+    <!--rule>
             <from>^/hotelLandmark/([m-y]+)/([m-y]+)/([0-9,]+)$</from>
             <to>/showLocation.do?latitudeEnc=$1&amp;longitudeEnc=$2&amp;fullScreen=true&amp;enabled=Hotels&amp;checkinOptions=$3</to>
-    </rule>
+    </rule-->
     
     <rule>
-            <from>^/hotelLandmark/([m-y]+)/([m-y]+)/([0-9-]+)/([0-9-]+)/([0-9,]+)$</from>
-            <!--to>/browserLandmark.jsp?latitudeEnc=$1&amp;longitudeEnc=$2&amp;enabled=Hotels&amp;generatetoken=true</to-->
-            <to>/showLocation.do?latitudeEnc=$1&amp;longitudeEnc=$2&amp;fullScreen=true&amp;enabled=Hotels&amp;checkin=$3&amp;checkout=$4&amp;checkinOptions=$5</to>
+            <from>^/hotelLandmark/([m-y]+)/([m-y]+)/([a-z,]+)$</from>
+            <to>/showLocation.do?latitudeEnc=$1&amp;longitudeEnc=$2&amp;fullScreen=true&amp;enabled=Hotels&amp;sortType=$3</to>
     </rule>
+    
+    <!--rule>
+            <from>^/hotelLandmark/([m-y]+)/([m-y]+)/([0-9-]+)/([0-9-]+)/([0-9,]+)$</from>
+            <to>/showLocation.do?latitudeEnc=$1&amp;longitudeEnc=$2&amp;fullScreen=true&amp;enabled=Hotels&amp;checkin=$3&amp;checkout=$4&amp;checkinOptions=$5</to>
+    </rule-->
     
     <!-- selectLandmark.jsp rules -->
     
@@ -245,20 +249,6 @@
             <from>^/providers</from>
             <to>/m/urls.jsp</to>
     </rule>
-    
-    <!-- hotel booking -->
-    
-    <!-- rule>
-            <from>^/bookingProvider/([0-9.-]+)/([a-zA-Z]+)/([a-zA-Z0-9_-]+)$</from>
-            <to>/bookingProvider?key=$1&amp;cc=$2&amp;city=$3</to>
-    </rule>
-    
-    <rule>
-            <from>^/bookingProvider/([0-9.-]+)$</from>
-            <to>/bookingProvider?key=$1</to>
-    </rule-->
-    
-    <!-- -->
 
 </urlrewrite>
 

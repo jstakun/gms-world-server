@@ -35,11 +35,15 @@ public class HotelsBookingUtils extends LayerHelper {
 
 	private static final String HOTELS_PROVIDER_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/cache/hotels/nearby/"; 
 	
+	private static final String HOTELS_PROVIDER_ASYNC_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/cache/hotels/async/nearby/";
+	
 	private static final String HOTELS_CHEAPEST_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/cache/hotels/cheapest/nearby/"; 
+	
+	private static final String HOTELS_CHEAPEST_ASYNC_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/cache/hotels/async/cheapest/nearby/"; 
 	
 	private static final String HOTELS_STARS_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/cache/hotels/stars/nearby/"; 
 	
-	private static final String HOTELS_ASYNC_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/cache/hotels/async/nearby/";
+	private static final String HOTELS_STARS_ASYNC_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/cache/hotels/async/stars/nearby/"; 
 	
 	private static final String HOTELS_CACHE_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/one/cache/_id/"; 
 	
@@ -139,6 +143,11 @@ public class HotelsBookingUtils extends LayerHelper {
 		if (StringUtils.equals(callCacheFirst, "true")) {
 			//TODO save to cache with sort type
 			String hotelsUrl = HOTELS_CACHE_URL + lngStr + "_" + latStr + "_" + radius + "_" + limit;
+			if (StringUtils.equalsIgnoreCase(sortType, "stars")) {
+				hotelsUrl += "_stars";
+			} else if (StringUtils.equalsIgnoreCase(sortType, "cheapest")) {
+				hotelsUrl += "_cheapest";
+			}
 			logger.log(Level.INFO, "Calling: " + hotelsUrl);
 			String json = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), true);
 			if (StringUtils.startsWith(json, "[") && json.length() > 2) {
@@ -203,7 +212,7 @@ public class HotelsBookingUtils extends LayerHelper {
 		return landmarks;
 	}
 	
-	public String loadHotelsAsync(double lat, double lng, int r, int limit) {
+	public String loadHotelsAsync(double lat, double lng, int r, int limit, String sortType) {
 		int normalizedRadius = r;
 		if (r < 1000) {
 			normalizedRadius = r * 1000;
@@ -211,7 +220,13 @@ public class HotelsBookingUtils extends LayerHelper {
 		String lngStr = StringUtil.formatCoordE2(lng);
 		String latStr = StringUtil.formatCoordE2(lat);	
 		String id = lngStr + "_" + latStr + "_" + normalizedRadius + "_" + limit;	
-		String hotelsUrl = HOTELS_ASYNC_URL + latStr + "/" + lngStr + "/" + normalizedRadius + "/" + limit;
+		String hotelsUrlPrefix = HOTELS_PROVIDER_ASYNC_URL;
+		if (StringUtils.equalsIgnoreCase(sortType, "stars")) {
+			hotelsUrlPrefix = HOTELS_STARS_ASYNC_URL;
+		} else if (StringUtils.equalsIgnoreCase(sortType, "cheapest")) {
+			hotelsUrlPrefix = HOTELS_CHEAPEST_ASYNC_URL;
+		}
+		String hotelsUrl = hotelsUrlPrefix + latStr + "/" + lngStr + "/" + normalizedRadius + "/" + limit;
 		
 		try {
 			logger.log(Level.INFO, "Calling: " + hotelsUrl);

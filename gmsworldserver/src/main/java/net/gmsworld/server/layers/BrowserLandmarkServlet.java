@@ -83,7 +83,7 @@ public class BrowserLandmarkServlet extends HttpServlet {
     			
     			//load hotels layer in asynchronous mode 
     			if (StringUtils.equals(request.getParameter("hotelsMode"), "true")) {
-    				LayerHelperFactory.getHotelsBookingUtils().loadHotelsAsync(latitude, longitude, RADIUS, HOTELS_LIMIT); 
+    				LayerHelperFactory.getHotelsBookingUtils().loadHotelsAsync(latitude, longitude, RADIUS, HOTELS_LIMIT, request.getParameter("sortType")); 
     			}
     			
     			LandmarkPersistenceWebUtils.setFlex(l, request);
