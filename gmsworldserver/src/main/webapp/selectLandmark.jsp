@@ -381,7 +381,7 @@
     		</tr>
     		<tr>
     			<td><input type="radio" name="sortType" value="cheapest"></td>
-    			<td><bean:message key="landmarks.nearest" /></td>
+    			<td><bean:message key="landmarks.cheapest" /></td>
     		</tr>
     		<tr>
     			<td><input type="radio" name="sortType" value="stars"></td>

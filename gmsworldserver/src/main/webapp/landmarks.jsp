@@ -608,7 +608,10 @@
     			<td align="right">
     				<select id="checkinAdults">
 <%
-	int selected = Integer.parseInt((String)request.getAttribute("checkinAdults"));
+	Integer selected = (Integer)request.getAttribute("checkinAdults");
+	if (selected == null) {
+		selected = 1;
+	}
 	for (int i=1;i<=30;i++) {
 		if (i == selected) {
 %>
@@ -630,7 +633,10 @@
     				<select id="checkinChildren" onchange="setupChildrenAges()">
     					<option value="0">0</option>
 <%
-	selected = Integer.parseInt((String)request.getAttribute("checkinChildren"));
+    selected = (Integer)request.getAttribute("checkinChildren");
+    if (selected == null) {
+    	selected = 0;
+    }
 	for (int i=1;i<=10;i++) {
 		if (i == selected) {
 %>
@@ -646,7 +652,6 @@
 				</td>
     		</tr>
     		
-    		<!-- children age input rows -->
     		<tr id="checkinChildrenHeaderRow"></tr>
     		
     		<tr id="checkinChildrenRow1"></tr>
@@ -654,14 +659,16 @@
     		<tr id="checkinChildrenRow2"></tr>
     		
     		<tr id="checkinChildrenRow3"></tr>		
-    		<!--  -->
     		
     		<tr>
     			<td><bean:message key="landmarks.rooms" /></td>
     			<td align="right">
     				<select id="checkinRooms">
 <%
-	selected = Integer.parseInt((String)request.getAttribute("checkinRooms"));
+	selected = (Integer)request.getAttribute("checkinRooms");
+	if (selected == null) {
+		selected = 0;
+	}
 	for (int i=1;i<=30;i++) {
 		if (i == selected) {
 %>

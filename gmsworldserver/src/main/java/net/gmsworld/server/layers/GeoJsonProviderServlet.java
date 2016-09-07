@@ -72,14 +72,14 @@ public class GeoJsonProviderServlet extends HttpServlet {
 	        		layer = request.getParameter("layer"); 
 	        		Locale locale = request.getLocale();
 	        		String flexString = StringUtil.getLanguage(locale.getLanguage(), "en", 2);
-	        		String flexString2 = null;
+	        		String flexString2 = request.getParameter("sortType");
 	        		LayerHelper layerHelper = LayerHelperFactory.getByName(layer);
-	        		if (layerHelper != null) {
+	        		if (layerHelper != null && flexString2 == null) { //TODO add sortType to cache key 
 	        			logger.log(Level.INFO, "Searching geojson document in local in-memory cache...");
 	        			json = layerHelper.getGeoJson(lat, lng, layer, flexString);		
 	        		}
 			    
-	        		if (!StringUtils.startsWith(json, "{")) {
+	        		if (!StringUtils.startsWith(json, "{") && flexString2 == null) { //TODO add sortType to cache key
 	        			String latStr = StringUtil.formatCoordE2(lat);
 	        			String lngStr = StringUtil.formatCoordE2(lng);
 	        			logger.log(Level.INFO, "Searching geojson document in remote document cache...");
@@ -103,7 +103,6 @@ public class GeoJsonProviderServlet extends HttpServlet {
 						    	} 
 								limit = HOTELS_LIMIT;
 								flexString = "true";
-								flexString2 = request.getParameter("sortType");
 							} else if (StringUtils.equals(layer, Commons.FACEBOOK_LAYER) || StringUtils.equals(layer, Commons.FOURSQUARE_LAYER) || StringUtils.equals(layer, Commons.FOURSQUARE_MERCHANT_LAYER)) {
 						    	flexString = null;	
 							} else if (StringUtils.equals(layer, Commons.OSM_ATM_LAYER)) {

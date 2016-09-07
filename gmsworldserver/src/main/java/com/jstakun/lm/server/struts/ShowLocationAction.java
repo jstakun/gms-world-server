@@ -82,9 +82,9 @@ public class ShowLocationAction extends org.apache.struts.action.Action {
             	
             	String[] checkinOptions = StringUtils.split(request.getParameter("checkinOptions"),",");
             	if (checkinOptions != null && checkinOptions.length > 2) {
-            		request.setAttribute("checkinAdults", checkinOptions[0]);
+            		request.setAttribute("checkinAdults", Integer.parseInt(checkinOptions[0]));
             		int checkinChildren = Integer.parseInt(checkinOptions[1]);
-            		request.setAttribute("checkinChildren", checkinOptions[1]);
+            		request.setAttribute("checkinChildren", checkinChildren);
             		String checkinChildrenAges = "";
             		for (int i=0;i<checkinChildren;i++) {
             			checkinChildrenAges += checkinOptions[i+2] + ",";	
@@ -93,11 +93,11 @@ public class ShowLocationAction extends org.apache.struts.action.Action {
             			checkinChildrenAges += "0,";
             		}
             		request.setAttribute("checkinChildrenAges", checkinChildrenAges);
-            		request.setAttribute("checkinRooms", checkinOptions[checkinOptions.length-1]);
+            		request.setAttribute("checkinRooms", Integer.parseInt(checkinOptions[checkinOptions.length-1]));
             	} else {
-            		request.setAttribute("checkinAdults", "1");
-            		request.setAttribute("checkinChildren", "0");
-            		request.setAttribute("checkinRooms", "1");
+            		request.setAttribute("checkinAdults", 1);
+            		request.setAttribute("checkinChildren", 0);
+            		request.setAttribute("checkinRooms", 1);
             	}
             } catch (Exception e) {
                 logger.log(Level.SEVERE, e.getMessage(), e);
