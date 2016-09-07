@@ -376,7 +376,7 @@
     			<th colspan="2"><bean:message key="landmarks.sortby" />:</th>
     		</tr>
     		<tr>
-    			<td><input type="radio" name="sortType" value="distance,asc" checked></td>
+    			<td><input type="radio" name="sortType" value="distance" checked></td>
     			<td><bean:message key="landmarks.nearest" /></td>
     		</tr>
     		<tr>

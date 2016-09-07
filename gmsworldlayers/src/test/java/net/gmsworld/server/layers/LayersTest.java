@@ -185,7 +185,7 @@ public class LayersTest {
 				//System.out.println(landmark.getUrl());
 			}
 			
-			String key = layer.cacheGeoJson(landmarks, lat, lng, layer.getLayerName(), locale);
+			String key = layer.cacheGeoJson(landmarks, lat, lng, layer.getLayerName(), locale, null);
 			System.out.println(cacheProvider.getString(key));
 		} catch (Exception e) {
 			e.printStackTrace();

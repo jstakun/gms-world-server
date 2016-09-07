@@ -170,7 +170,7 @@ public abstract class LayerHelper {
         return StringUtils.join(params, "_");
     }
     
-    protected String cacheGeoJson(List<ExtendedLandmark> landmarks, double lat, double lng, String layer, Locale locale) {
+    protected String cacheGeoJson(List<ExtendedLandmark> landmarks, double lat, double lng, String layer, Locale locale, String flex) {
     	
     	/*{
   			"type": "Feature",
@@ -300,6 +300,9 @@ public abstract class LayerHelper {
 				}
 				featureCollection.setProperty("stats_price", prices);
 				featureCollection.setProperty("stats_stars", stars);
+				if (StringUtils.isNotEmpty(flex)) {
+					featureCollection.setProperty("sortType", flex);
+				}
 			}	
 
 			try {
@@ -309,11 +312,15 @@ public abstract class LayerHelper {
     			
     			if (!landmarks.isEmpty() && StringUtils.isNotEmpty(json)) {
     				logger.log(Level.INFO, "Saved geojson list to second level cache");
-    				cacheProvider.putToSecondLevelCache("geojson/" + latStr + "/" + lngStr, json);
+    				String key = "geojson/" + latStr + "/" + lngStr;
+    				cacheProvider.putToSecondLevelCache(key, json);
     			}
     			
     			if (cacheProvider != null) {
     				String key = "geojson_" + latStr + "_" + lngStr + "_" + layer + "_" + locale.getLanguage();
+    				if (StringUtils.isNotEmpty(flex)) {
+    					key += "_" + flex;
+    				}
     				logger.log(Level.INFO, "Saved geojson list to local in-memory cache with key: " + key);
     				cacheProvider.put(key, json, 1);
     			    return key;
@@ -325,10 +332,13 @@ public abstract class LayerHelper {
     	return null;
     }	
     
-    public String getGeoJson(double lat, double lng, String layer, String language) {
+    public String getGeoJson(double lat, double lng, String layer, String language, String flex) {
     	if (cacheProvider != null) {
     		String key = "geojson_" + StringUtil.formatCoordE2(lat) + "_" + StringUtil.formatCoordE2(lng) + "_" + layer + "_" + language;
-			return cacheProvider.getString(key);
+    		if (StringUtils.isNotEmpty(flex)) {
+				key += "_" + flex;
+			}
+    		return cacheProvider.getString(key);
     	} else {
     		return null;
     	}

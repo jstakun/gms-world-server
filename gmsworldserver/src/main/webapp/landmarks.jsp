@@ -598,7 +598,7 @@
     			<td><input type="text" id="checkoutDate" size="10" value="<%= StringUtils.length(request.getParameter("checkout")) == 10 ? request.getParameter("checkout") : "" %>"></td>
     		</tr>
     		<tr>
-    			<td colspan="2"><input type="checkbox" id="checkinNodate" <%= StringUtils.length(request.getParameter("checkin")) != 10 ? "checked" : "" %>><bean:message key="landmarks.checkin.nodate" /></td>
+    			<td colspan="2"><input type="checkbox" id="checkinNodate"><bean:message key="landmarks.checkin.nodate" /></td>
     		</tr>
     		<tr>
     			<th colspan="2"><bean:message key="landmarks.guests" /></th>

@@ -174,7 +174,7 @@
     </rule-->
     
     <rule>
-            <from>^/hotelLandmark/([m-y]+)/([m-y]+)/([a-z,]+)$</from>
+            <from>^/hotelLandmark/([m-y]+)/([m-y]+)/([a-z]+)$</from>
             <to>/showLocation.do?latitudeEnc=$1&amp;longitudeEnc=$2&amp;fullScreen=true&amp;enabled=Hotels&amp;sortType=$3</to>
     </rule>
     

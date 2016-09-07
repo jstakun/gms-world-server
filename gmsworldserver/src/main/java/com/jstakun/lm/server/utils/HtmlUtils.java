@@ -223,7 +223,7 @@ public class HtmlUtils {
 		ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource", locale);
 		
 		LayerHelper layerHelper = LayerHelperFactory.getByName(Commons.HOTELS_LAYER);
-		String json = layerHelper.getGeoJson(landmark.getLatitude(), landmark.getLongitude(), Commons.HOTELS_LAYER, locale.getLanguage());	
+		String json = layerHelper.getGeoJson(landmark.getLatitude(), landmark.getLongitude(), Commons.HOTELS_LAYER, locale.getLanguage(), "distance");	
 		String hotelsText = rb.getString("hotels.discover.nearby");
 		
 		if (StringUtils.startsWith(json, "{")) {

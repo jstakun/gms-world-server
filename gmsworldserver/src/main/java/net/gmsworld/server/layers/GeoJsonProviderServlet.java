@@ -74,16 +74,20 @@ public class GeoJsonProviderServlet extends HttpServlet {
 	        		String flexString = StringUtil.getLanguage(locale.getLanguage(), "en", 2);
 	        		String flexString2 = request.getParameter("sortType");
 	        		LayerHelper layerHelper = LayerHelperFactory.getByName(layer);
-	        		if (layerHelper != null && flexString2 == null) { //TODO add sortType to cache key 
+	        		if (layerHelper != null) { 
 	        			logger.log(Level.INFO, "Searching geojson document in local in-memory cache...");
-	        			json = layerHelper.getGeoJson(lat, lng, layer, flexString);		
+	        			json = layerHelper.getGeoJson(lat, lng, layer, flexString, flexString2);		
 	        		}
 			    
-	        		if (!StringUtils.startsWith(json, "{") && flexString2 == null) { //TODO add sortType to cache key
+	        		if (!StringUtils.startsWith(json, "{")) { //TODO add sortType to cache key
 	        			String latStr = StringUtil.formatCoordE2(lat);
 	        			String lngStr = StringUtil.formatCoordE2(lng);
 	        			logger.log(Level.INFO, "Searching geojson document in remote document cache...");
-	        			json = GoogleCacheProvider.getInstance().getFromSecondLevelCache("geojson/" + layer + "/" + latStr + "/" + lngStr + "/" + flexString);
+	        			String key = "geojson/" + layer + "/" + latStr + "/" + lngStr + "/" + flexString;
+	        			if (StringUtils.isNotEmpty(flexString2)) {
+	        				key += "/" + flexString2;
+	        			}
+	        			json = GoogleCacheProvider.getInstance().getFromSecondLevelCache(key);
 	        		}
 				
 					if (!StringUtils.startsWith(json, "{")  && layerHelper != null) {
@@ -93,8 +97,9 @@ public class GeoJsonProviderServlet extends HttpServlet {
 							int limit = DEFAULT_LIMIT;
 							if (StringUtils.equals(layer, Commons.HOTELS_LAYER)) {
 								try {
+									//if less that 30 hotels is range increase search radius
 									int hotelsInRangeCount = LayerHelperFactory.getHotelsBookingUtils().countNearbyHotels(lat, lng, RADIUS);
-									if (hotelsInRangeCount >= 0 && hotelsInRangeCount < 10) {
+									if (hotelsInRangeCount >= 0 && hotelsInRangeCount < 30) {
 										radius = 2 * RADIUS; //max 100
 									}
 									logger.log(Level.INFO, hotelsInRangeCount + " hotels in range.");
@@ -115,11 +120,11 @@ public class GeoJsonProviderServlet extends HttpServlet {
 							if (StringUtils.equals(layer, Commons.GROUPON_LAYER) || StringUtils.equals(layer, Commons.COUPONS_LAYER)) {
 								if (GeocodeUtils.isNorthAmericaLocation(lat, lng)) {
 									List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(lat, lng, null, radius, 1134, limit, StringUtil.getStringLengthLimit("l"), null, null, locale, true);
-					    			newkey = layerHelper.cacheGeoJson(landmarks, lat, lng, layer, locale);                       
+					    			newkey = layerHelper.cacheGeoJson(landmarks, lat, lng, layer, locale, flexString2);                       
 								}
 							} else {
 								List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(lat, lng, null, radius, 1134, limit, StringUtil.getStringLengthLimit("l"), flexString, flexString2, locale, true);
-				    			newkey = layerHelper.cacheGeoJson(landmarks, lat, lng, layer, locale);                          				    		
+				    			newkey = layerHelper.cacheGeoJson(landmarks, lat, lng, layer, locale, flexString2);                          				    		
 							}
 						
 							if (newkey != null) {
