@@ -214,7 +214,6 @@ public abstract class LayerHelper {
     				} else if (desc.contains("star_5")) {
     					desc = StringUtils.replace(desc, "star_5", "/images/star_5.png");
     				}	
-    				//desc += "<br/><a href=\"" + landmark.getUrl() + "\" target=\"_blank\">" + rb.getString("hotels.booking") + "</a>";
     				f.setProperty("desc", desc); //desc
     				int stars = StringUtils.countMatches(desc, "/images/star_blue.png");
     				String icon = "star_" + stars + ".png";

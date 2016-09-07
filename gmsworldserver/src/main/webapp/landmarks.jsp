@@ -107,7 +107,7 @@
         window.open(url + hotelUrlSuffix, '_blank');
 	}
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?libraries=visualization"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?libraries=visualization&key=AIzaSyBV6lc9-iuokxpE33Diwqxil26JzKFxg3o"></script>
     <script src="/js/marker.js"></script>
     <script src="/js/markerclusterer.js"></script>
     <script src="/js/js.cookie.js"></script>
@@ -160,8 +160,8 @@
           for (var i = 0; i < layers.length; i++) {
               if (layers[i].enabled == "true") {
                 	var script = document.createElement('script');
-                    script.src = '<%= ConfigurationManager.SERVER_URL %>geoJsonProvider?layer=' + layers[i].name + '&lat=<%= latitude %>&lng=<%= longitude %>&callback=layers_callback'; 
-        			//script.src = 'http://localhost:8080/geoJsonProvider?layer=' + layers[i].name + '&lat=<%= latitude %>&lng=<%= longitude %>&callback=layers_callback'; 
+                    //script.src = '<%= ConfigurationManager.SERVER_URL %>geoJsonProvider?layer=' + layers[i].name + '&lat=<%= latitude %>&lng=<%= longitude %>&callback=layers_callback'; 
+        			script.src = 'http://localhost:8080/geoJsonProvider?layer=' + layers[i].name + '&lat=<%= latitude %>&lng=<%= longitude %>&callback=layers_callback'; 
         			if (layers[i].name == "Hotels") {
         				script.src += '&sortType=' + sortType;
             		}
@@ -223,7 +223,7 @@
           		var desc = results.features[i].properties.desc;
                 var name = results.features[i].properties.name;
                 var price = results.features[i].properties.price;
-
+                
           		if (url == null || ismobile) {
 					url = results.features[i].properties.mobile_url
                 }
@@ -361,8 +361,8 @@
 
 		       	    //legend
 		        	var topLocationsDiv = document.createElement('div'); //scale
-		        	var text = '<img src=\'/images/layers/0stars_blue_32.png\' style=\'width:32px; height:32px; vertical-align: middle;\' title=\'Single room or apartment venue\'><span style=\'line-height:32px;\'>&nbsp;<bean:message key="hotels.single.venue" /></span><br/>' +
-			        		   '<img src=\'/images/layers/star_0_32.png\' style=\'width:32px; height:32px; vertical-align: middle;\'><span style=\'line-height:32px;\' title=\'Multiple rooms or apartments venue\'>&nbsp;<bean:message key="hotels.multiple.venue" /></span>'; 
+		        	var text = '<input type=\'checkbox\' id=\'singleVenueFilter\' checked onclick=\"filter()\"><img src=\'/images/layers/0stars_blue_32.png\' style=\'width:32px; height:32px; vertical-align: middle;\' title=\'Single room or apartment venue\'><span style=\'line-height:32px;\'>&nbsp;<bean:message key="hotels.single.venue" /></span><br/>' +
+			        		   '<input type=\'checkbox\' id=\'multiVenueFilter\' checked onclick=\"filter()\"><img src=\'/images/layers/star_0_32.png\' style=\'width:32px; height:32px; vertical-align: middle;\'><span style=\'line-height:32px;\' title=\'Multiple rooms or apartments venue\'>&nbsp;<bean:message key="hotels.multiple.venue" /></span>'; 
 		        	var topLocationsControl = new CenterControl(topLocationsDiv, 'left', text, '');
 		     	    topLocationsDiv.index = 3
 		     	    map.controls[google.maps.ControlPosition.RIGHT_TOP].push(topLocationsDiv);	
@@ -491,7 +491,11 @@
                		}    
                }
 
-               if (checkedStars && checkedPrice) {
+               var isSingleRoom = marker.icon.indexOf("stars_blue.png") >= 0;
+               var checkedRooms = ((isSingleRoom && document.getElementById('singleVenueFilter').checked) ||
+            		   			   (!isSingleRoom && document.getElementById('multiVenueFilter').checked));
+                       
+               if (checkedStars && checkedPrice && checkedRooms) {
             	   markersToAdd.push(marker);		
                }               
           }     
