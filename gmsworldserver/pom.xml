@@ -10,7 +10,7 @@
 
     <properties>
         <appengine.app.version>1</appengine.app.version>
-        <appengine.target.version>1.9.32</appengine.target.version>
+        <appengine.target.version>1.9.42</appengine.target.version>
         <appengine.gsc.client.version>0.4.1</appengine.gsc.client.version>
         <blogger.version>v3-rev50-1.21.0</blogger.version>
         <plus.version>v1-rev343-1.21.0</plus.version>

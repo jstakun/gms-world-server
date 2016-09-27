@@ -227,10 +227,10 @@
     </rule>
 
     <rule>
-            <from>/download/android/GMSClient3.apk</from>
-            <to>/download/android/208/GMSClient3.apk</to>
+            <from>/download/android/GMSClientNext.apk</from>
+            <to>/download/android/21/GMSClientNext.apk</to>
     </rule>
-
+    
     <!-- archive -->
     
     <rule>
