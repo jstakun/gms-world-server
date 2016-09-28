@@ -46,11 +46,10 @@ public class AuthnServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         JSONObject resp = new JSONObject();
         try {
-            String password = (String)request.getAttribute("password");
-            if (password != null) {
-           		resp.put("password", password);
-           		String key = TokenUtil.generateToken("lm", (String)request.getAttribute("username"));
-        		resp.put("gmsToken", key);   
+            String username = (String)request.getAttribute("username");
+            if (username != null) {
+           		String key = TokenUtil.generateToken("lm", username);
+        		resp.put(ConfigurationManager.GMS_TOKEN, key);   
            		String email = (String) request.getAttribute("email");
            		if (email != null) {
            			resp.put(ConfigurationManager.USER_EMAIL, email);

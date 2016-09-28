@@ -49,6 +49,7 @@ public class ConfigurationManager {
     public static final String GL_BIRTHDAY = "glBirthday";
     
     public static final String GMS_NAME = "gmsName";
+    public static final String GMS_TOKEN = "gmsToken";
     
     public static final String USER_EMAIL = "userEmail";
 
