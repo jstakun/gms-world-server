@@ -217,33 +217,6 @@ public class UserPersistenceUtils {
             }
     	} 
     	
-    	/*
-    	if (!auth) {
-    		User user = selectUserByLogin(username);
-        	if (user != null && password != null) {
-        		String passwordString = new String(password);
-        		if (user.getPassword().equals(passwordString)) {
-        			auth = true;
-        		} else if (password.length % 8 == 0) {
-            		try {
-            			byte[] pwd = CryptoTools.decrypt(password);
-            			if (new String(pwd).equals(user.getPassword())) {
-            				logger.log(Level.INFO, "User {0} authn success with encrypted password", username);
-            				auth = true;
-            			}
-                 	} catch (Exception e) {
-                       logger.log(Level.SEVERE, "User {0} authn failed with enc {1}", new Object[]{username, passwordString});
-                 	}
-            	} else if (Sha1.encode(user.getPassword()).equals(passwordString)) {
-        		 	logger.log(Level.INFO, "User {0} authn success with SHA", username);
-            		auth = true;
-        		} else {
-        			logger.log(Level.SEVERE, "User {0} authn failed with {1}", new Object[]{username, passwordString});
-        		}
-        	}
-    	}
-    	*/
-    	
     	if (!auth) {
     		String passwordString = new String(password);
         	if (password.length % 8 == 0) {
@@ -273,6 +246,9 @@ public class UserPersistenceUtils {
     		if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
     			JSONObject root = new JSONObject(gJson);
     			auth = root.optBoolean("auth", false);
+    			//TODO add request attributes
+    			//"email",
+    			//"name" = "firstname" + "lastname"
     		} else {
     			logger.log(Level.SEVERE, "Received following server response: " + gJson);
     		}
