@@ -133,7 +133,7 @@
        var latlngbounds = new google.maps.LatLngBounds();
 
        google.maps.event.addListener(map, 'click', function (e) {
-    	   proceedWithSelectedLocation(e.latLng.lat(), e.latLng.lng(), null); 
+    	   proceedWithSelectedLocation(e.latLng.lat(), e.latLng.lng(), null, false); 
        });
 
        //top header
@@ -203,7 +203,7 @@
     		    //map.setZoom(10);
                 //map.setCenter(places[0].geometry.location);
     		    //start hotels search in selected location
-    		    proceedWithSelectedLocation(places[0].geometry.location.lat(), places[0].geometry.location.lng(), places[0].name);
+    		    proceedWithSelectedLocation(places[0].geometry.location.lat(), places[0].geometry.location.lng(), places[0].name, true);
                 //
     		}
 
@@ -260,7 +260,7 @@
 		 console.log("Geolocation found!");
 		 var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 		 map.panTo(latlng);
-		 proceedWithSelectedLocation(position.coords.latitude, position.coords.longitude, null);   
+		 proceedWithSelectedLocation(position.coords.latitude, position.coords.longitude, null, false);   
      }
 
 	 function errorCallback(error) {
@@ -287,7 +287,7 @@
 		}
 	 } 
 
-	 function proceedWithSelectedLocation(lat, lng, name) {
+	 function proceedWithSelectedLocation(lat, lng, name, force) {
 		 var message = "";
 
          //map.panTo(e.latLng);
@@ -295,14 +295,19 @@
          if (name == null) {
 			  name = "<bean:message key="landmarks.location" />";
          }
-         	  	 
-         if (hotelsMode == true) {
-              message = "<bean:message key="hotels.confirmation" /> " + name + "?"; 
-         } else {
-         	  message = "<bean:message key="landmarks.confirmation" /> " + name + "?";
-         }
-         	 
-         var r = confirm(message);
+
+ 	  	 var r;
+
+ 	  	 if (force == false) {
+         	if (hotelsMode == true) {
+            	message = "<bean:message key="hotels.confirmation" /> " + name + "?"; 
+         	} else {
+         		message = "<bean:message key="landmarks.confirmation" /> " + name + "?";
+         	} 
+         	r = confirm(message);
+ 	  	 } else {
+			r = true;
+ 	 	 }
 
          if (r == true) {
               if (hotelsMode == true) {
@@ -342,7 +347,7 @@
 	    		    desc: desc
 	    		});   		
 	    	    google.maps.event.addListener(marker, 'click', function() {
-	    	    	proceedWithSelectedLocation(this.getPosition().lat(), this.getPosition().lng(), this.getTitle());   
+	    	    	proceedWithSelectedLocation(this.getPosition().lat(), this.getPosition().lng(), this.getTitle(), false);   
 	     		});          
 	     		console.log("Added marker " + markers[i].name + " to the map")
 	     }
