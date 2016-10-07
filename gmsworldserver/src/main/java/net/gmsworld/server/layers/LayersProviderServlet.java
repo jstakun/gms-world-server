@@ -331,8 +331,8 @@ public class LayersProviderServlet extends HttpServlet {
                 } else {
                 	if (Math.abs(latitudeMax - latitudeMin) < 10.0 && Math.abs(longitudeMax - longitudeMin) < 10.0) {
                 		String amenity = StringUtil.getStringParam(request.getParameter("amenity"), "atm");
-                		String bbox = StringUtil.formatCoordE6(longitudeMin) + "," + StringUtil.formatCoordE6(latitudeMin) + "," + 
-                				StringUtil.formatCoordE6(longitudeMax) + "," + StringUtil.formatCoordE6(latitudeMax);
+                		String bbox = StringUtil.formatCoordE6(latitudeMin) + "," + StringUtil.formatCoordE6(longitudeMin) + "," + 
+                				StringUtil.formatCoordE6(latitudeMax) + "," + StringUtil.formatCoordE6(longitudeMax);
                 		if (outFormat.equals(Format.BIN)) {
                     		List<ExtendedLandmark> landmarks = LayerHelperFactory.getOsmOverpassUtils().processBinaryRequest(0.0, 0.0, null, -1, 1, limit, stringLimit, amenity, bbox, l, true);
                     		LayerHelperFactory.getOsmOverpassUtils().serialize(landmarks, response.getOutputStream(), version);

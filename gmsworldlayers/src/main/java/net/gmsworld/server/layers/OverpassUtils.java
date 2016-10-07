@@ -30,7 +30,7 @@ public class OverpassUtils extends LayerHelper {
 	private String amenity;
 	private static final String dateFormat = "yyyy-MM-dd HH:mm:ss";
 	private static final String API_ENDPOINT = "http://overpass-api.de/api/interpreter?data="; 
-	//bbox South-West-North-East
+	//bbox South-West-North-East  minimum latitude, minimum longitude, maximum latitude, maximum longitude
 	
 	@Override
 	protected List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String amenity, String bbox, Locale locale, boolean useCache) throws Exception {
