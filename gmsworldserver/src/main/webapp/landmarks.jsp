@@ -545,27 +545,29 @@
       var checkinChildrenAges = [<%= (String)request.getAttribute("checkinChildrenAges") %>];
       
       function setupChildrenAges() {
-  		var count = document.getElementById("checkinChildren").value;
-  		document.getElementById("checkinChildrenHeaderRow").innerHTML='';
-  		document.getElementById("checkinChildrenRow1").innerHTML='';
-  		document.getElementById("checkinChildrenRow2").innerHTML='';
-  		document.getElementById("checkinChildrenRow3").innerHTML=''
-  		if (count > 0) {
-             //checkinChildrenHeaderRow
-  			 document.getElementById("checkinChildrenHeaderRow").innerHTML='<td colspan=\"2\" align=\"left\"><bean:message key="landmarks.children.ages" /></td>';
-  			 //checkinChildrenRow1,2,3
-  			 var iter = 1;
-  			 for (k = 0; k < count; k += 4) {
-  				var rowCount = Math.min(count, iter*4);
-  				var checkinChildrenRowText = '<td colspan=\"2\">'
-  				for (i = (iter-1)*4; i < rowCount; i++) {
-  					checkinChildrenRowText += addChildrenAgeRow(i);
-  				}
-  				checkinChildrenRowText += '</td>';
-  				document.getElementById("checkinChildrenRow" + iter).innerHTML=checkinChildrenRowText;
-  				iter++; 
-  			 }
-  		 } 
+   	  	if (document.getElementById("checkinChildren") != null) {
+			var count = document.getElementById("checkinChildren").value;
+  			document.getElementById("checkinChildrenHeaderRow").innerHTML='';
+  			document.getElementById("checkinChildrenRow1").innerHTML='';
+  			document.getElementById("checkinChildrenRow2").innerHTML='';
+  			document.getElementById("checkinChildrenRow3").innerHTML=''
+  			if (count > 0) {
+            	 //checkinChildrenHeaderRow
+  			 	document.getElementById("checkinChildrenHeaderRow").innerHTML='<td colspan=\"2\" align=\"left\"><bean:message key="landmarks.children.ages" /></td>';
+  			 	//checkinChildrenRow1,2,3
+  			 	var iter = 1;
+  			 	for (k = 0; k < count; k += 4) {
+  					var rowCount = Math.min(count, iter*4);
+  					var checkinChildrenRowText = '<td colspan=\"2\">'
+  					for (i = (iter-1)*4; i < rowCount; i++) {
+  						checkinChildrenRowText += addChildrenAgeRow(i);
+  					}
+  					checkinChildrenRowText += '</td>';
+  					document.getElementById("checkinChildrenRow" + iter).innerHTML=checkinChildrenRowText;
+  					iter++; 
+  			 	}
+  		    } 
+   		}
   	 }
 
   	 function addChildrenAgeRow(pos) {
