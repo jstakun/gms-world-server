@@ -121,11 +121,35 @@ public abstract class OverpassUtils extends LayerHelper {
                      if (StringUtils.isNotBlank(val)) {
                      	 address.setField(AddressInfo.CITY, val);
                      }
+                     val = tags.optString("addr:postcode");
+                     if (StringUtils.isNotBlank(val)) {
+                     	 address.setField(AddressInfo.POSTAL_CODE, val);
+                     }
+                     val = tags.optString("phone");
+                     if (StringUtils.isNotBlank(val)) {
+                     	 address.setField(AddressInfo.PHONE_NUMBER, val);
+                     } else {
+                    	 val = tags.optString("contact:phone");
+                    	 if (StringUtils.isNotBlank(val)) {
+                         	 address.setField(AddressInfo.PHONE_NUMBER, val);
+                         }
+                     }
+                     String cc = tags.optString("addr:country");
+                     if (StringUtils.isNotBlank(val)) {
+                    	 Locale l = new Locale("", cc.toUpperCase(Locale.US));
+                    	 String country = l.getDisplayCountry();
+                    	 if (country == null) {
+                    		 country = cc;
+                    	 }
+                    	 address.setField(AddressInfo.COUNTRY, country);
+                     }
                      
                      Map<String, String> tokens = new HashMap<String, String>();
                      for (String key : tags.keySet()) {
-                    	 if (!key.startsWith("addr:") && !key.equals("name") && !key.equals("amenity")) {
-                    		 tokens.put(key, tags.getString(key));
+                    	 if (key.equals("website") || key.equals("contact:website")) {
+                    		 tokens.put("homepage", tags.getString(key));
+                    	 } else if (!StringUtils.startsWithAny(key, new String[]{"addr:", "millennium:", "contact:", "name", "phone", "amenity"})) {
+                    	 	 tokens.put(key, tags.getString(key));
                     	 }
                      }
                 	 
