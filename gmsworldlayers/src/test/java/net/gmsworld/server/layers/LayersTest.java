@@ -2,7 +2,6 @@ package net.gmsworld.server.layers;
 
 import static org.junit.Assert.assertEquals;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -51,7 +50,7 @@ public class LayersTest {
 		//warsaw test
 		//lat = 52.25;
 		//lng = 20.95;
-		//bbox = "20.96,52.24,20.97,52.25"; //"51.25,19.95,53.25,21.95";
+		//bbox = "20.96,52.24,20.97,52.25"; //"51.25,19.95,53.25,21.95"; //
 		//locale = new Locale("pl",""); //"PL");
 		
 		//new york test
@@ -73,7 +72,7 @@ public class LayersTest {
 	}
 	
 	
-	@Parameters
+	//@Parameters
 	public static Collection<Object[]> staticLayers() {
 	   initLayerHelper();
 		
@@ -81,7 +80,7 @@ public class LayersTest {
 	  
 	   //data.add(new Object[]{LayerHelperFactory.getPicasaUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getLastfmUtils()});
-	   //data.add(new Object[]{LayerHelperFactory.getOsmXapiUtils()});
+	   data.add(new Object[]{LayerHelperFactory.getOsmOverpassUtils()});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getHotelsBookingUtils()});
 	   
@@ -98,10 +97,10 @@ public class LayersTest {
 	   //data.add(new Object[]{LayerHelperFactory.getEventfulUtils()});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getGrouponUtils()});
-	   data.add(new Object[]{LayerHelperFactory.getCouponsUtils()});
+	   //data.add(new Object[]{LayerHelperFactory.getCouponsUtils()});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getFoursquareUtils()});   
-	   data.add(new Object[]{LayerHelperFactory.getYelpUtils()});
+	   //data.add(new Object[]{LayerHelperFactory.getYelpUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getGooglePlacesUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getFacebookUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getFoursquareMerchantUtils()});
@@ -112,7 +111,7 @@ public class LayersTest {
 	   return data;
 	}
 	
-	//@Parameters
+	@Parameters
 	public static Collection<Object[]> dynamicLayers() {
 	   initLayerHelper();
 		

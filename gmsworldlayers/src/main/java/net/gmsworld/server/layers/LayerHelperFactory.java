@@ -33,8 +33,6 @@ public class LayerHelperFactory {
 
     private static final GrouponUtils grouponUtils = new GrouponUtils();
     
-    private static final HotwireUtils hotwireUtils = new HotwireUtils();
-
     private static final MeetupUtils meetupUtils = new MeetupUtils();
 
     private static final PicasaUtils picasaUtils = new PicasaUtils();
@@ -49,7 +47,7 @@ public class LayerHelperFactory {
 
     private static final EventfulUtils eventfulUtils = new EventfulUtils();
 
-    private static final OsmXapiUtils osmXapiUtils = new OsmXapiUtils();
+    private static final OverpassUtils osmOverpassUtils = new OverpassUtils();
 
     private static final GeonamesUtils geonamesUtils = new GeonamesUtils();
 
@@ -202,9 +200,9 @@ public class LayerHelperFactory {
     /**
      * @return the osmXapiUtils
      */
-    public static OsmXapiUtils getOsmXapiUtils() {
-    	osmXapiUtils.setCacheProvider(cacheProvider);
-    	return osmXapiUtils;
+    public static OverpassUtils getOsmOverpassUtils() {
+    	osmOverpassUtils.setCacheProvider(cacheProvider);
+    	return osmOverpassUtils;
     }
 
     /**
@@ -295,14 +293,6 @@ public class LayerHelperFactory {
     	return foursquareMerchantUtils;
     }
     
-    /**
-     * @return the hotwireUtils
-     */
-    public static HotwireUtils getHotwireUtils() {
-    	hotwireUtils.setCacheProvider(cacheProvider);
-    	return hotwireUtils;
-    }
-    
     public static LayerHelper getByName(String name) {
     	if (StringUtils.equals(name, Commons.COUPONS_LAYER)) {
     		return getCouponsUtils();
@@ -320,8 +310,6 @@ public class LayerHelperFactory {
     		return  getGooglePlacesUtils();
     	} else if (StringUtils.equals(name, Commons.GROUPON_LAYER)) {
         	return getGrouponUtils();
-    	} else if (StringUtils.equals(name, Commons.HOTWIRE_LAYER)) {
-    		return getHotwireUtils();
     	} else if (StringUtils.equals(name, Commons.MEETUP_LAYER)) {
     		return getMeetupUtils();
     	} else if (StringUtils.equals(name, Commons.PICASA_LAYER)) {
@@ -337,7 +325,7 @@ public class LayerHelperFactory {
     	} else if (StringUtils.equals(name, Commons.EVENTFUL_LAYER)) {
             return getEventfulUtils();
     	} else if (StringUtils.equals(name, Commons.OSM_ATM_LAYER) || StringUtils.equals(name, Commons.OSM_PARKING_LAYER)) {
-            return getOsmXapiUtils();
+            return getOsmOverpassUtils();
     	} else if (StringUtils.equals(name, Commons.WIKIPEDIA_LAYER)) {
             return getGeonamesUtils();
     	} else if (StringUtils.equals(name, Commons.LASTFM_LAYER)) {

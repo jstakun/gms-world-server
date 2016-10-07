@@ -268,13 +268,13 @@ public class LayersProviderServlet extends HttpServlet {
                 		}
                 	}	
                 }
-            } else if (StringUtils.contains(uri, "picasaProvider")) {
+            } else if (StringUtils.contains(uri, "picasaProvider")) { //TODO remove
                 if (request.getParameter("bbox") == null) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 } else {
                     String bbox = request.getParameter("bbox");
                     if (outFormat.equals(Format.BIN)) {
-                    	List<ExtendedLandmark> landmarks = LayerHelperFactory.getPicasaUtils().processBinaryRequest(0.0, 0.0, null, 0, version, limit, stringLimit, bbox, null, l, true);
+                    	List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>(); //LayerHelperFactory.getPicasaUtils().processBinaryRequest(0.0, 0.0, null, 0, version, limit, stringLimit, bbox, null, l, true);
                     	LayerHelperFactory.getPicasaUtils().serialize(landmarks, response.getOutputStream(), version);
                     	LayerHelperFactory.getPicasaUtils().cacheGeoJson(landmarks, latitude, longitude, Commons.PICASA_LAYER, l, null);
                     } else {
@@ -334,11 +334,11 @@ public class LayersProviderServlet extends HttpServlet {
                 		String bbox = StringUtil.formatCoordE6(longitudeMin) + "," + StringUtil.formatCoordE6(latitudeMin) + "," + 
                 				StringUtil.formatCoordE6(longitudeMax) + "," + StringUtil.formatCoordE6(latitudeMax);
                 		if (outFormat.equals(Format.BIN)) {
-                    		List<ExtendedLandmark> landmarks = LayerHelperFactory.getOsmXapiUtils().processBinaryRequest(0.0, 0.0, null, -1, 1, limit, stringLimit, amenity, bbox, l, true);
-                    		LayerHelperFactory.getOsmXapiUtils().serialize(landmarks, response.getOutputStream(), version);
-                    		LayerHelperFactory.getOsmXapiUtils().cacheGeoJson(landmarks, latitude, longitude, amenity, l, null);                      
+                    		List<ExtendedLandmark> landmarks = LayerHelperFactory.getOsmOverpassUtils().processBinaryRequest(0.0, 0.0, null, -1, 1, limit, stringLimit, amenity, bbox, l, true);
+                    		LayerHelperFactory.getOsmOverpassUtils().serialize(landmarks, response.getOutputStream(), version);
+                    		LayerHelperFactory.getOsmOverpassUtils().cacheGeoJson(landmarks, latitude, longitude, amenity, l, null);                      
                         } else {	
-                			outString = LayerHelperFactory.getOsmXapiUtils().processRequest(0.0, 0.0, null, -1, 1, limit, stringLimit, amenity, bbox).toString();
+                			outString = LayerHelperFactory.getOsmOverpassUtils().processRequest(0.0, 0.0, null, -1, 1, limit, stringLimit, amenity, bbox).toString();
                 		}
                 	} else {
                 		logger.log(Level.WARNING, "OSM API: Maximum bounding box area is 10.0 square degrees.");
@@ -356,12 +356,12 @@ public class LayersProviderServlet extends HttpServlet {
                 		outString = LayerHelperFactory.getGeonamesUtils().processRequest(latitude, longitude, null, radius, version, limit, stringLimit, language, null).toString();
                 	}	
                 }
-            } else if (StringUtils.contains(uri, "lastfmProvider")) {
+            } else if (StringUtils.contains(uri, "lastfmProvider")) { //TODO remove
                 if (HttpUtils.isEmptyAny(request, "latitude", "longitude", "radius")) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 } else {
                 	if (outFormat.equals(Format.BIN)) {
-                		List<ExtendedLandmark> landmarks = LayerHelperFactory.getLastfmUtils().processBinaryRequest(latitude, longitude, null, radius, version, limit, stringLimit, null, null, l, true);
+                		List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>(); //LayerHelperFactory.getLastfmUtils().processBinaryRequest(latitude, longitude, null, radius, version, limit, stringLimit, null, null, l, true);
                 		LayerHelperFactory.getLastfmUtils().serialize(landmarks, response.getOutputStream(), version);
                 		LayerHelperFactory.getLastfmUtils().cacheGeoJson(landmarks, latitude, longitude, Commons.LASTFM_LAYER, l, null);
                     } else {
@@ -420,7 +420,7 @@ public class LayersProviderServlet extends HttpServlet {
                         outString = LayerHelperFactory.getFoursquareMerchantUtils().processRequest(latitude, longitude, categoryid, radius * 1000, version, limit, stringLimit, token, language).toString();
                     }                                  
                 }
-            } else if (StringUtils.contains(uri, "expediaProvider")) {
+            } else if (StringUtils.contains(uri, "expediaProvider")) { //TODO remove?
                 if (HttpUtils.isEmptyAny(request, "latitude", "longitude", "radius")) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 } else {
@@ -461,7 +461,7 @@ public class LayersProviderServlet extends HttpServlet {
                 	   outString = LayerHelperFactory.getTwitterUtils().processRequest(latitude, longitude, null, radius, version, limit, stringLimit, language, null).toString();
                 	}   
                 }
-            } else if (StringUtils.contains(uri, "instagramProvider")) {
+            } else if (StringUtils.contains(uri, "instagramProvider")) { //TODO remove
             	if (HttpUtils.isEmptyAny(request, "lat", "lng", "radius") && HttpUtils.isEmptyAny(request, "latitude", "longitude", "radius")) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 } else {
@@ -473,11 +473,11 @@ public class LayersProviderServlet extends HttpServlet {
                 		outString = new JSONObject().put("ResultSet", landmarks).toString();
                 	}
                 }
-            } else if (StringUtils.contains(uri, "freebaseProvider")) {
+            } else if (StringUtils.contains(uri, "freebaseProvider")) { //TODO remove
             	if (HttpUtils.isEmptyAny(request, "lat", "lng", "radius") && HttpUtils.isEmptyAny(request, "latitude", "longitude", "radius")) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 } else {
-                	List<ExtendedLandmark> landmarks = LayerHelperFactory.getFreebaseUtils().processBinaryRequest(latitude, longitude, null, radius, version, limit, stringLimit, language, null, l, true);               	
+                	List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>(); //LayerHelperFactory.getFreebaseUtils().processBinaryRequest(latitude, longitude, null, radius, version, limit, stringLimit, language, null, l, true);               	
                 	if (outFormat.equals(Format.BIN)) {
                 		LayerHelperFactory.getFreebaseUtils().serialize(landmarks, response.getOutputStream(), version);
                 		LayerHelperFactory.getFreebaseUtils().cacheGeoJson(landmarks, latitude, longitude, Commons.FREEBASE_LAYER, l, null);                          
