@@ -76,7 +76,7 @@ public abstract class OverpassUtils extends LayerHelper {
 
 	@Override
 	protected String getLayerName() {
-		return null;
+		return null; //this needs to be implemented by super class
 	}
 	
 	private List<ExtendedLandmark> createCustomLandmarkList(String responseJson, Locale locale, String amenity) throws JSONException {
