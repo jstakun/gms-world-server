@@ -47,7 +47,9 @@ public class LayerHelperFactory {
 
     private static final EventfulUtils eventfulUtils = new EventfulUtils();
 
-    private static final OverpassUtils osmOverpassUtils = new OverpassUtils();
+    private static final OsmParkingsUtils osmParkingUtils = new OsmParkingsUtils();
+
+    private static final OsmAtmUtils osmAtmUtils = new OsmAtmUtils();
 
     private static final GeonamesUtils geonamesUtils = new GeonamesUtils();
 
@@ -198,11 +200,19 @@ public class LayerHelperFactory {
     }
 
     /**
-     * @return the osmXapiUtils
+     * @return the osmAtmUtils
      */
-    public static OverpassUtils getOsmOverpassUtils() {
-    	osmOverpassUtils.setCacheProvider(cacheProvider);
-    	return osmOverpassUtils;
+    public static OsmAtmUtils getOsmAtmUtils() {
+    	osmAtmUtils.setCacheProvider(cacheProvider);
+    	return osmAtmUtils;
+    }
+    
+    /**
+     * @return the osmParkingsUtils
+     */
+    public static OsmParkingsUtils getOsmParkingsUtils() {
+    	osmParkingUtils.setCacheProvider(cacheProvider);
+    	return osmParkingUtils;
     }
 
     /**
@@ -324,8 +334,10 @@ public class LayerHelperFactory {
             return getGmsUtils();
     	} else if (StringUtils.equals(name, Commons.EVENTFUL_LAYER)) {
             return getEventfulUtils();
-    	} else if (StringUtils.equals(name, Commons.OSM_ATM_LAYER) || StringUtils.equals(name, Commons.OSM_PARKING_LAYER)) {
-            return getOsmOverpassUtils();
+    	} else if (StringUtils.equals(name, Commons.OSM_ATM_LAYER)) { 
+            return getOsmAtmUtils();
+    	} else if (StringUtils.equals(name, Commons.OSM_PARKING_LAYER)) {
+    		return getOsmParkingsUtils();
     	} else if (StringUtils.equals(name, Commons.WIKIPEDIA_LAYER)) {
             return getGeonamesUtils();
     	} else if (StringUtils.equals(name, Commons.LASTFM_LAYER)) {

@@ -282,15 +282,15 @@ public class JSONUtils {
         //STATE
         //COUNTRY
         
-        if (address.getField(AddressInfo.STREET) != null) {
-            tokens.add(address.getField(AddressInfo.STREET));
+        if (StringUtils.isNotEmpty(address.getField(AddressInfo.STREET))) {
+        	tokens.add(address.getField(AddressInfo.STREET));
         }
         
         String line = "";
-        if (address.getField(AddressInfo.POSTAL_CODE) != null) {
-            line += address.getField(AddressInfo.POSTAL_CODE);
+        if (StringUtils.isNotEmpty(address.getField(AddressInfo.POSTAL_CODE))) {
+        	line += address.getField(AddressInfo.POSTAL_CODE);
         }
-        if (address.getField(AddressInfo.CITY) != null) {
+        if (StringUtils.isNotEmpty(address.getField(AddressInfo.CITY))) {
             if (line.length() > 0) {
                 line += " ";
             }
@@ -300,12 +300,12 @@ public class JSONUtils {
             tokens.add(line);
         }
         
-        if (address.getField(AddressInfo.STATE) != null) {
-            tokens.add(address.getField(AddressInfo.STATE));
+        if (StringUtils.isNotEmpty(address.getField(AddressInfo.STATE))) {
+        	tokens.add(address.getField(AddressInfo.STATE));
         }
         
-        if (address.getField(AddressInfo.COUNTRY) != null) {
-            tokens.add(address.getField(AddressInfo.COUNTRY));
+        if (StringUtils.isNotEmpty(address.getField(AddressInfo.COUNTRY))) {
+        	tokens.add(address.getField(AddressInfo.COUNTRY));
         }
     }
     
@@ -314,17 +314,17 @@ public class JSONUtils {
         //STREET
         //CITY, STATE POSTAL_CODE
         //COUNTRY
-        if (address.getField(AddressInfo.STREET) != null) {
+        if (StringUtils.isNotEmpty(address.getField(AddressInfo.STREET))) {
             tokens.add(address.getField(AddressInfo.STREET));
         }
     	
         String line = "";
-    	if (address.getField(AddressInfo.CITY) != null) {
+    	if (StringUtils.isNotEmpty(address.getField(AddressInfo.CITY))) {
             line += address.getField(AddressInfo.CITY);
         }
-    	if (address.getField(AddressInfo.STATE) != null) {
+    	if (StringUtils.isNotEmpty(address.getField(AddressInfo.STATE))) {
             line += ", " + address.getField(AddressInfo.STATE);
-            if (address.getField(AddressInfo.POSTAL_CODE) != null) {
+            if (StringUtils.isNotEmpty(address.getField(AddressInfo.POSTAL_CODE))) {
                 line += " " + address.getField(AddressInfo.POSTAL_CODE);
             }
     	}
@@ -332,7 +332,7 @@ public class JSONUtils {
             tokens.add(line);
         }
     	
-    	if (address.getField(AddressInfo.COUNTRY) != null) {
+    	if (StringUtils.isNotEmpty(address.getField(AddressInfo.COUNTRY))) {
             tokens.add(address.getField(AddressInfo.COUNTRY));
         }
     }
@@ -347,9 +347,9 @@ public class JSONUtils {
         } else {
         	formatOtherAddress(address, tokens);
         }
-        
+       
         if (!tokens.isEmpty()) {
-            return StringUtils.join(tokens, ", ");
+        	return StringUtils.join(tokens, ", ");
         } else {
             return "";
         }

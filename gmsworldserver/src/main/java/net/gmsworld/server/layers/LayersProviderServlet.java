@@ -333,12 +333,18 @@ public class LayersProviderServlet extends HttpServlet {
                 		String amenity = StringUtil.getStringParam(request.getParameter("amenity"), "atm");
                 		String bbox = StringUtil.formatCoordE6(latitudeMin) + "," + StringUtil.formatCoordE6(longitudeMin) + "," + 
                 				StringUtil.formatCoordE6(latitudeMax) + "," + StringUtil.formatCoordE6(longitudeMax);
+                		LayerHelper layerHelper = null;
+            			if (StringUtils.equals(amenity, "parking")) {
+            				layerHelper = LayerHelperFactory.getOsmParkingsUtils();
+            			} else {
+            				layerHelper = LayerHelperFactory.getOsmAtmUtils();
+            			}
+                		List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(0.0, 0.0, null, -1, 1, limit, stringLimit, amenity, bbox, l, true);
                 		if (outFormat.equals(Format.BIN)) {
-                    		List<ExtendedLandmark> landmarks = LayerHelperFactory.getOsmOverpassUtils().processBinaryRequest(0.0, 0.0, null, -1, 1, limit, stringLimit, amenity, bbox, l, true);
-                    		LayerHelperFactory.getOsmOverpassUtils().serialize(landmarks, response.getOutputStream(), version);
-                    		LayerHelperFactory.getOsmOverpassUtils().cacheGeoJson(landmarks, latitude, longitude, amenity, l, null);                      
+                			layerHelper.serialize(landmarks, response.getOutputStream(), version);
+                    		layerHelper.cacheGeoJson(landmarks, latitude, longitude, amenity, l, null);                      
                         } else {	
-                			outString = LayerHelperFactory.getOsmOverpassUtils().processRequest(0.0, 0.0, null, -1, 1, limit, stringLimit, amenity, bbox).toString();
+                        	outString = new JSONObject().put("ResultSet", landmarks).toString();
                 		}
                 	} else {
                 		logger.log(Level.WARNING, "OSM API: Maximum bounding box area is 10.0 square degrees.");

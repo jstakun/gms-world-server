@@ -48,16 +48,16 @@ public class LayersTest {
 	@Before
 	public void initialize() {
 		//warsaw test
-		//lat = 52.25;
-		//lng = 20.95;
-		//bbox = "20.96,52.24,20.97,52.25"; //"51.25,19.95,53.25,21.95"; //
-		//locale = new Locale("pl",""); //"PL");
+		lat = 52.25;
+		lng = 20.95;
+		bbox = "20.96,52.24,20.97,52.25"; //"51.25,19.95,53.25,21.95"; //
+		locale = new Locale("pl",""); //"PL");
 		
 		//new york test
-		lat = 40.71;
-		lng = -74.01;
-		bbox = "-74.060000,40.660000,-74.010000,40.710000";//"-75.01,39.71,-73.01,41.71";
-		locale = Locale.US;
+		//lat = 40.71;
+		//lng = -74.01;
+		//bbox = "-74.060000,40.660000,-74.010000,40.710000";//"-75.01,39.71,-73.01,41.71";
+		//locale = Locale.US;
 		
 		//lat = 30.21;
 		//lng = -97.77;
@@ -72,7 +72,7 @@ public class LayersTest {
 	}
 	
 	
-	//@Parameters
+	@Parameters
 	public static Collection<Object[]> staticLayers() {
 	   initLayerHelper();
 		
@@ -80,7 +80,8 @@ public class LayersTest {
 	  
 	   //data.add(new Object[]{LayerHelperFactory.getPicasaUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getLastfmUtils()});
-	   data.add(new Object[]{LayerHelperFactory.getOsmOverpassUtils()});
+	   data.add(new Object[]{LayerHelperFactory.getOsmParkingsUtils()});
+	   data.add(new Object[]{LayerHelperFactory.getOsmAtmUtils()});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getHotelsBookingUtils()});
 	   
@@ -111,7 +112,7 @@ public class LayersTest {
 	   return data;
 	}
 	
-	@Parameters
+	//@Parameters
 	public static Collection<Object[]> dynamicLayers() {
 	   initLayerHelper();
 		
@@ -145,6 +146,8 @@ public class LayersTest {
 			List<ExtendedLandmark> landmarks = null;
 			if (StringUtils.equals(layer.getLayerName(), Commons.OSM_ATM_LAYER)) {
 				landmarks = layer.processBinaryRequest(lat, lng, null, radius, apiLevel, limit, stringLength, "atm", null, locale, true);
+			} else if (StringUtils.equals(layer.getLayerName(), Commons.OSM_PARKING_LAYER)) {
+				landmarks = layer.processBinaryRequest(lat, lng, null, radius, apiLevel, limit, stringLength, "parking", null, locale, true);
 			} else if (StringUtils.equals(layer.getLayerName(), Commons.FOURSQUARE_MERCHANT_LAYER)) {
 			    landmarks = layer.processBinaryRequest(lat, lng, null, radius, apiLevel, limit, stringLength, Commons.getProperty(Property.FS_OAUTH_TOKEN), "1,2,3,4,5,6,7,8", locale, true);
 			} else if (StringUtils.equals(layer.getLayerName(), Commons.FOURSQUARE_LAYER)) {
@@ -180,8 +183,9 @@ public class LayersTest {
 			
 			for (ExtendedLandmark landmark : landmarks) {
 				System.out.println(landmark.getName() + " :-> " + landmark.getDescription() + "---\n");
-				System.out.println(landmark.getThumbnail() + " " + landmark.getCategoryId() + "," + landmark.getSubCategoryId());
+				//System.out.println(landmark.getThumbnail() + " " + landmark.getCategoryId() + "," + landmark.getSubCategoryId());
 				//System.out.println(landmark.getUrl());
+				System.out.println(landmark.getLayer());
 			}
 			
 			String key = layer.cacheGeoJson(landmarks, lat, lng, layer.getLayerName(), locale, null);
