@@ -334,6 +334,11 @@ public class LayersProviderServlet extends HttpServlet {
                 	double latitudeDiff = Math.abs(latitudeMax - latitudeMin);
                 	double longitudeDiff = Math.abs(longitudeMax - longitudeMin);
                 	if (latitudeDiff < 10d && longitudeDiff < 10d) {
+                		if (latitudeMin == 0d && latitudeMax == 0d && longitudeMin == 0d && longitudeMax == 0d) {
+                			logger.log(Level.WARNING, "Bounding box is zero. Changing to latitude and longitude");
+                			latitudeMin = latitudeMax = latitude;
+                			longitudeMin = longitudeMax = longitude;
+                		}
                 		if (latitudeDiff < 0.1) {
                 			latitudeMin -= 0.1;
                 			latitudeMax += 0.1;
@@ -408,6 +413,22 @@ public class LayersProviderServlet extends HttpServlet {
                     double minx = GeocodeUtils.getLongitude(request.getParameter("minx"));
                     double maxy = GeocodeUtils.getLatitude(request.getParameter("maxy"));
                     double maxx = GeocodeUtils.getLongitude(request.getParameter("maxx"));
+                    
+                    //minx, miny, maxx, maxy -> minimum longitude, latitude, maximum longitude and latitude,
+                    
+                    if (minx == 0d && maxx == 0d && miny == 0d && maxy == 0d) {
+            			logger.log(Level.WARNING, "Bounding box is zero. Changing to latitude and longitude");
+            			minx = maxx = longitude;
+            			miny = maxy = latitude;
+            		}
+                    if (Math.abs(maxx - minx) < 0.5) {
+            			minx -= 0.25;
+            			maxx += 0.25;
+            		}
+            		if (Math.abs(maxy - miny) < 0.5) {
+            			miny -= 0.25;
+            			maxy += 0.25;
+            		}
 
                     String bbox = "minx=" + minx + "&miny=" + miny + "&maxx=" + maxx + "&maxy=" + maxy;
                     //TODO remove
