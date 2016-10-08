@@ -273,6 +273,8 @@ public class LayersProviderServlet extends HttpServlet {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 } else {
                     String bbox = request.getParameter("bbox");
+                    //TODO remove
+                    logger.log(Level.INFO, "bbox: " + bbox + ", latitude: " + latitude + ", longitude: " + longitude);
                     if (outFormat.equals(Format.BIN)) {
                     	List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>(); //LayerHelperFactory.getPicasaUtils().processBinaryRequest(0.0, 0.0, null, 0, version, limit, stringLimit, bbox, null, l, true);
                     	LayerHelperFactory.getPicasaUtils().serialize(landmarks, response.getOutputStream(), version);
@@ -329,7 +331,17 @@ public class LayersProviderServlet extends HttpServlet {
                 if (HttpUtils.isEmptyAny(request, "latitudeMin", "longitudeMin", "latitudeMax", "longitudeMax")) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 } else {
-                	if (Math.abs(latitudeMax - latitudeMin) < 10.0 && Math.abs(longitudeMax - longitudeMin) < 10.0) {
+                	double latitudeDiff = Math.abs(latitudeMax - latitudeMin);
+                	double longitudeDiff = Math.abs(longitudeMax - longitudeMin);
+                	if (latitudeDiff < 10d && longitudeDiff < 10d) {
+                		if (latitudeDiff < 0.1) {
+                			latitudeMin -= 0.1;
+                			latitudeMax += 0.1;
+                		}
+                		if (longitudeDiff < 0.1) {
+                			longitudeMin -= 0.1;
+                			longitudeMax += 0.1;
+                		}
                 		String amenity = StringUtil.getStringParam(request.getParameter("amenity"), "atm");
                 		String bbox = StringUtil.formatCoordE6(latitudeMin) + "," + StringUtil.formatCoordE6(longitudeMin) + "," + 
                 				StringUtil.formatCoordE6(latitudeMax) + "," + StringUtil.formatCoordE6(longitudeMax);
@@ -339,6 +351,8 @@ public class LayersProviderServlet extends HttpServlet {
             			} else {
             				layerHelper = LayerHelperFactory.getOsmAtmUtils();
             			}
+            			//TODO remove
+            			logger.log(Level.INFO, "bbox: " + bbox + ", latitude: " + latitude + ", longitude: " + longitude + ", amenity: " + amenity);
                 		List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(0.0, 0.0, null, -1, 1, limit, stringLimit, amenity, bbox, l, true);
                 		if (outFormat.equals(Format.BIN)) {
                 			layerHelper.serialize(landmarks, response.getOutputStream(), version);
@@ -396,7 +410,9 @@ public class LayersProviderServlet extends HttpServlet {
                     double maxx = GeocodeUtils.getLongitude(request.getParameter("maxx"));
 
                     String bbox = "minx=" + minx + "&miny=" + miny + "&maxx=" + maxx + "&maxy=" + maxy;
-
+                    //TODO remove
+                    logger.log(Level.INFO, "bbox: " + bbox + ", latitude: " + latitude + ", longitude: " + longitude);
+                    
                     latitude = (miny + maxy) / 2;
                     longitude = (minx + maxy) / 2;
 

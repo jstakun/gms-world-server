@@ -148,7 +148,7 @@ public abstract class OverpassUtils extends LayerHelper {
                      for (String key : tags.keySet()) {
                     	 if (key.equals("website") || key.equals("contact:website")) {
                     		 tokens.put("homepage", tags.getString(key));
-                    	 } else if (!StringUtils.startsWithAny(key, new String[]{"addr:", "millennium:", "contact:", "name", "phone", "amenity"})) {
+                    	 } else if (!StringUtils.startsWithAny(key, new String[]{"addr:", "millennium:", "contact:", "gnis:", "name", "phone", "amenity"})) {
                     	 	 tokens.put(key, tags.getString(key));
                     	 }
                      }
