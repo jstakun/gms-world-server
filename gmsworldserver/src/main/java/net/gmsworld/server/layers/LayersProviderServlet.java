@@ -331,43 +331,36 @@ public class LayersProviderServlet extends HttpServlet {
                 if (HttpUtils.isEmptyAny(request, "latitudeMin", "longitudeMin", "latitudeMax", "longitudeMax")) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 } else {
-                	double latitudeDiff = Math.abs(latitudeMax - latitudeMin);
-                	double longitudeDiff = Math.abs(longitudeMax - longitudeMin);
-                	if (latitudeDiff < 10d && longitudeDiff < 10d) {
-                		if (latitudeMin == 0d && latitudeMax == 0d && longitudeMin == 0d && longitudeMax == 0d) {
-                			logger.log(Level.WARNING, "Bounding box is zero. Changing to latitude and longitude");
-                			latitudeMin = latitudeMax = latitude;
-                			longitudeMin = longitudeMax = longitude;
-                		}
-                		if (latitudeDiff < 0.1) {
-                			latitudeMin -= 0.1;
-                			latitudeMax += 0.1;
-                		}
-                		if (longitudeDiff < 0.1) {
-                			longitudeMin -= 0.1;
-                			longitudeMax += 0.1;
-                		}
-                		String amenity = StringUtil.getStringParam(request.getParameter("amenity"), "atm");
-                		String bbox = StringUtil.formatCoordE6(latitudeMin) + "," + StringUtil.formatCoordE6(longitudeMin) + "," + 
-                				StringUtil.formatCoordE6(latitudeMax) + "," + StringUtil.formatCoordE6(longitudeMax);
-                		LayerHelper layerHelper = null;
-            			if (StringUtils.equals(amenity, "parking")) {
-            				layerHelper = LayerHelperFactory.getOsmParkingsUtils();
-            			} else {
-            				layerHelper = LayerHelperFactory.getOsmAtmUtils();
-            			}
-            			//TODO remove
-            			logger.log(Level.INFO, "bbox: " + bbox + ", latitude: " + latitude + ", longitude: " + longitude + ", amenity: " + amenity);
-                		List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(0.0, 0.0, null, -1, 1, limit, stringLimit, amenity, bbox, l, true);
-                		if (outFormat.equals(Format.BIN)) {
-                			layerHelper.serialize(landmarks, response.getOutputStream(), version);
-                    		layerHelper.cacheGeoJson(landmarks, latitude, longitude, amenity, l, null);                      
-                        } else {	
-                        	outString = new JSONObject().put("ResultSet", landmarks).toString();
-                		}
+                	//double latitudeDiff = Math.abs(latitudeMax - latitudeMin);
+                	//double longitudeDiff = Math.abs(longitudeMax - longitudeMin);
+                	//if (latitudeDiff < 10d && longitudeDiff < 10d) {
+                	String bbox = null;	
+                	String amenity = StringUtil.getStringParam(request.getParameter("amenity"), "atm");
+            		if ((latitudeMin == 0d && latitudeMax == 0d && longitudeMin == 0d && longitudeMax == 0d) ||
+            		    (latitudeMin == 85d && latitudeMax == 85d && longitudeMin == -180d && longitudeMax == -180d)) {
+                		logger.log(Level.WARNING, "Bounding box is zero!");
                 	} else {
-                		logger.log(Level.WARNING, "OSM API: Maximum bounding box area is 10.0 square degrees.");
+                		bbox = StringUtil.formatCoordE6(latitudeMin) + "," + StringUtil.formatCoordE6(longitudeMin) + "," + 
+                			   StringUtil.formatCoordE6(latitudeMax) + "," + StringUtil.formatCoordE6(longitudeMax);
+                	}	
+                	LayerHelper layerHelper = null;
+            		if (StringUtils.equals(amenity, "parking")) {
+            			layerHelper = LayerHelperFactory.getOsmParkingsUtils();
+            		} else {
+            			layerHelper = LayerHelperFactory.getOsmAtmUtils();
+            		}
+            		//TODO remove
+            		logger.log(Level.INFO, "bbox: " + bbox + ", latitude: " + latitude + ", longitude: " + longitude + ", amenity: " + amenity);
+                	List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(latitude, longitude, null, -1, 1, limit, stringLimit, amenity, bbox, l, true);
+                	if (outFormat.equals(Format.BIN)) {
+                		layerHelper.serialize(landmarks, response.getOutputStream(), version);
+                    	layerHelper.cacheGeoJson(landmarks, latitude, longitude, amenity, l, null);                      
+                    } else {	
+                        outString = new JSONObject().put("ResultSet", landmarks).toString();
                 	}
+                	//} else {
+                	//	logger.log(Level.WARNING, "OSM API: Maximum bounding box area is 10.0 square degrees.");
+                	//}
                 }
             } else if (StringUtils.contains(uri, "geonamesProvider")) {
                 if (HttpUtils.isEmptyAny(request, "latitude", "longitude", "radius")) {
@@ -434,8 +427,10 @@ public class LayersProviderServlet extends HttpServlet {
                     //TODO remove
                     logger.log(Level.INFO, "bbox: " + bbox + ", latitude: " + latitude + ", longitude: " + longitude);
                     
-                    latitude = (miny + maxy) / 2;
-                    longitude = (minx + maxy) / 2;
+                    //if (latitude == 0d && longitude == 0d) {
+                    //	latitude = (miny + maxy) / 2;
+                    //	longitude = (minx + maxy) / 2;
+                    //}
 
                     if (outFormat.equals(Format.BIN)) {
                     	List<ExtendedLandmark> landmarks = LayerHelperFactory.getPanoramioUtils().processBinaryRequest(latitude, longitude, null, 0, version, limit, stringLimit, bbox, null, l, true);
