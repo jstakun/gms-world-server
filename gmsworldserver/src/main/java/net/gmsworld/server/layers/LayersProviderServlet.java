@@ -337,7 +337,7 @@ public class LayersProviderServlet extends HttpServlet {
                 	String bbox = null;	
                 	String amenity = StringUtil.getStringParam(request.getParameter("amenity"), "atm");
             		if ((latitudeMin == 0d && latitudeMax == 0d && longitudeMin == 0d && longitudeMax == 0d) ||
-            		    (latitudeMin == 85d && latitudeMax == 85d && longitudeMin == -180d && longitudeMax == -180d)) {
+            		    (latitudeMin == 85.05d && latitudeMax == 85.05d && longitudeMin == -180d && longitudeMax == -180d)) {
                 		logger.log(Level.WARNING, "Bounding box is zero!");
                 	} else {
                 		bbox = StringUtil.formatCoordE6(latitudeMin) + "," + StringUtil.formatCoordE6(longitudeMin) + "," + 
@@ -349,8 +349,7 @@ public class LayersProviderServlet extends HttpServlet {
             		} else {
             			layerHelper = LayerHelperFactory.getOsmAtmUtils();
             		}
-            		//TODO remove
-            		logger.log(Level.INFO, "bbox: " + bbox + ", latitude: " + latitude + ", longitude: " + longitude + ", amenity: " + amenity);
+            		//logger.log(Level.INFO, "bbox: " + bbox + ", latitude: " + latitude + ", longitude: " + longitude + ", amenity: " + amenity);
                 	List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(latitude, longitude, null, -1, 1, limit, stringLimit, amenity, bbox, l, true);
                 	if (outFormat.equals(Format.BIN)) {
                 		layerHelper.serialize(landmarks, response.getOutputStream(), version);
@@ -409,18 +408,28 @@ public class LayersProviderServlet extends HttpServlet {
                     
                     //minx, miny, maxx, maxy -> minimum longitude, latitude, maximum longitude and latitude,
                     
-                    if (minx == 0d && maxx == 0d && miny == 0d && maxy == 0d) {
+                    if ((minx == 0d && maxx == 0d && miny == 0d && maxy == 0d) ||
+                    	(miny == 85.05d && maxy == 85.05d && minx == -180d && maxx == -180d)) {
             			logger.log(Level.WARNING, "Bounding box is zero. Changing to latitude and longitude");
             			minx = maxx = longitude;
             			miny = maxy = latitude;
             		}
-                    if (Math.abs(maxx - minx) < 0.5) {
-            			minx -= 0.25;
-            			maxx += 0.25;
+                    
+                    if (Math.abs(maxx - minx) < 0.1) {
+            			if (minx > -180d) {
+            				minx -= 0.1;
+            			}
+            			if (maxx < 180d) {
+            				maxx += 0.1;
+            			}
             		}
-            		if (Math.abs(maxy - miny) < 0.5) {
-            			miny -= 0.25;
-            			maxy += 0.25;
+            		if (Math.abs(maxy - miny) < 0.1) {
+            			if (miny > 90d) {
+            				miny -= 0.1;
+            			}
+            			if (maxy < 90d) {
+            				maxy += 0.1;
+            			}
             		}
 
                     String bbox = "minx=" + minx + "&miny=" + miny + "&maxx=" + maxx + "&maxy=" + maxy;

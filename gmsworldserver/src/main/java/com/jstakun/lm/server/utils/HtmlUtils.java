@@ -222,17 +222,17 @@ public class HtmlUtils {
 		PrettyTime prettyTime = new PrettyTime(locale);
 		ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource", locale);
 		
-		LayerHelper layerHelper = LayerHelperFactory.getByName(Commons.HOTELS_LAYER);
+		String hotelsText = rb.getString("hotels.discover.nearby");		
+		//show hostels count
+		/*LayerHelper layerHelper = LayerHelperFactory.getByName(Commons.HOTELS_LAYER);
 		String json = layerHelper.getGeoJson(landmark.getLatitude(), landmark.getLongitude(), Commons.HOTELS_LAYER, locale.getLanguage(), "distance");	
-		String hotelsText = rb.getString("hotels.discover.nearby");
-		
 		if (StringUtils.startsWith(json, "{")) {
 			JSONObject layerJson = new JSONObject(json);
 			int layerSize = layerJson.getJSONArray("features").length();
 			if (layerSize > 0) {
 				hotelsText = String.format(rb.getString("hotels.discover.nearby.2"), layerSize);
 			}
-		}
+		}*/
 		
 		String userUrl = null;		
 		if (landmark.isSocial()) {
