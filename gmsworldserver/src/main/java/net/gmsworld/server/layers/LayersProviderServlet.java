@@ -346,11 +346,13 @@ public class LayersProviderServlet extends HttpServlet {
                 	LayerHelper layerHelper = null;
             		if (StringUtils.equals(amenity, "parking")) {
             			layerHelper = LayerHelperFactory.getOsmParkingsUtils();
+            		} else if (StringUtils.equals(amenity, "taxi")) {
+            			layerHelper = LayerHelperFactory.getOsmTaxiUtils();
             		} else {
             			layerHelper = LayerHelperFactory.getOsmAtmUtils();
             		}
             		//TODO remove
-            		logger.log(Level.INFO, "bbox: " + bbox + ", latitude: " + latitude + ", longitude: " + longitude + ", amenity: " + amenity);
+            		//logger.log(Level.INFO, "bbox: " + bbox + ", latitude: " + latitude + ", longitude: " + longitude + ", amenity: " + amenity);
                 	List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(latitude, longitude, null, -1, 1, limit, stringLimit, amenity, bbox, l, true);
                 	if (outFormat.equals(Format.BIN)) {
                 		layerHelper.serialize(landmarks, response.getOutputStream(), version);

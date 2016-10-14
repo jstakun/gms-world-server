@@ -61,7 +61,7 @@ public class LayerHelperFactory {
 
     private static final ExpediaUtils expediaUtils = new ExpediaUtils();
 
-    //private static final HotelsCombinedUtils hotelsCombinedUtils = new HotelsCombinedUtils();
+    private static final OsmTaxiUtils osmTaxiUtils = new OsmTaxiUtils();
     
     private static final HotelsBookingUtils hotelsBookingUtils = new HotelsBookingUtils();
     
@@ -214,6 +214,14 @@ public class LayerHelperFactory {
     	osmParkingUtils.setCacheProvider(cacheProvider);
     	return osmParkingUtils;
     }
+    
+    /**
+     * @return the osmTaxiUtils
+     */
+    public static OsmTaxiUtils getOsmTaxiUtils() {
+    	osmTaxiUtils.setCacheProvider(cacheProvider);
+    	return osmTaxiUtils;
+    }
 
     /**
      * @return the geonamesUtils
@@ -338,6 +346,8 @@ public class LayerHelperFactory {
             return getOsmAtmUtils();
     	} else if (StringUtils.equals(name, Commons.OSM_PARKING_LAYER)) {
     		return getOsmParkingsUtils();
+    	} else if (StringUtils.equals(name, Commons.OSM_TAXI_LAYER)) {
+    		return getOsmTaxiUtils();
     	} else if (StringUtils.equals(name, Commons.WIKIPEDIA_LAYER)) {
             return getGeonamesUtils();
     	} else if (StringUtils.equals(name, Commons.LASTFM_LAYER)) {

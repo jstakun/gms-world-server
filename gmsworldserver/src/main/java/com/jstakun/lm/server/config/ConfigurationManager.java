@@ -149,6 +149,8 @@ public final class ConfigurationManager {
     		return "instagram.png";
     	} else if (StringUtils.equals(layer, Commons.FREEBASE_LAYER)) {
     		return "freebase.png";
+    	} else if (StringUtils.equals(layer, Commons.OSM_TAXI_LAYER)) {
+    		return "taxi.png";
     	} else { 
     		return null;
     	}

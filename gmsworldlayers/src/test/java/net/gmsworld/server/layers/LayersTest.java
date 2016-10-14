@@ -82,6 +82,7 @@ public class LayersTest {
 	   //data.add(new Object[]{LayerHelperFactory.getLastfmUtils()});
 	   data.add(new Object[]{LayerHelperFactory.getOsmParkingsUtils()});
 	   data.add(new Object[]{LayerHelperFactory.getOsmAtmUtils()});
+	   data.add(new Object[]{LayerHelperFactory.getOsmTaxiUtils()});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getHotelsBookingUtils()});
 	   
@@ -148,6 +149,8 @@ public class LayersTest {
 				landmarks = layer.processBinaryRequest(lat, lng, null, radius, apiLevel, limit, stringLength, "atm", null, locale, true);
 			} else if (StringUtils.equals(layer.getLayerName(), Commons.OSM_PARKING_LAYER)) {
 				landmarks = layer.processBinaryRequest(lat, lng, null, radius, apiLevel, limit, stringLength, "parking", null, locale, true);
+			} else if (StringUtils.equals(layer.getLayerName(), Commons.OSM_TAXI_LAYER)) {
+				landmarks = layer.processBinaryRequest(lat, lng, null, radius, apiLevel, limit, stringLength, "taxi", null, locale, true);
 			} else if (StringUtils.equals(layer.getLayerName(), Commons.FOURSQUARE_MERCHANT_LAYER)) {
 			    landmarks = layer.processBinaryRequest(lat, lng, null, radius, apiLevel, limit, stringLength, Commons.getProperty(Property.FS_OAUTH_TOKEN), "1,2,3,4,5,6,7,8", locale, true);
 			} else if (StringUtils.equals(layer.getLayerName(), Commons.FOURSQUARE_LAYER)) {
