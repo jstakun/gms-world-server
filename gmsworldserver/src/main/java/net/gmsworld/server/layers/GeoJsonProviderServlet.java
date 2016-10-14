@@ -79,7 +79,7 @@ public class GeoJsonProviderServlet extends HttpServlet {
 	        			json = layerHelper.getGeoJson(lat, lng, layer, flexString, flexString2);		
 	        		}
 			    
-	        		if (!StringUtils.startsWith(json, "{")) { //TODO add sortType to cache key
+	        		if (!StringUtils.startsWith(json, "{")) { 
 	        			String latStr = StringUtil.formatCoordE2(lat);
 	        			String lngStr = StringUtil.formatCoordE2(lng);
 	        			logger.log(Level.INFO, "Searching geojson document in remote document cache...");
@@ -114,6 +114,8 @@ public class GeoJsonProviderServlet extends HttpServlet {
 								flexString = "atm";
 							} else if (StringUtils.equals(layer, Commons.OSM_PARKING_LAYER)) {
 								flexString = "parking";
+							} else if (StringUtils.equals(layer, Commons.OSM_TAXI_LAYER)) {
+								flexString = "taxi";
 							}
 						
 							String newkey = null;

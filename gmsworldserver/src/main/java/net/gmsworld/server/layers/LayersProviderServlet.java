@@ -351,7 +351,7 @@ public class LayersProviderServlet extends HttpServlet {
             		} else {
             			layerHelper = LayerHelperFactory.getOsmAtmUtils();
             		}
-            		//TODO remove
+            		//remove
             		//logger.log(Level.INFO, "bbox: " + bbox + ", latitude: " + latitude + ", longitude: " + longitude + ", amenity: " + amenity);
                 	List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(latitude, longitude, null, -1, 1, limit, stringLimit, amenity, bbox, l, true);
                 	if (outFormat.equals(Format.BIN)) {
@@ -437,8 +437,8 @@ public class LayersProviderServlet extends HttpServlet {
 
                     String bbox = "minx=" + minx + "&miny=" + miny + "&maxx=" + maxx + "&maxy=" + maxy;
                     
-                    //TODO remove
-                    logger.log(Level.INFO, "bbox: " + bbox + ", latitude: " + latitude + ", longitude: " + longitude);
+                    //remove
+                    //logger.log(Level.INFO, "bbox: " + bbox + ", latitude: " + latitude + ", longitude: " + longitude);
                     
                     //if (latitude == 0d && longitude == 0d) {
                     //	latitude = (miny + maxy) / 2;
