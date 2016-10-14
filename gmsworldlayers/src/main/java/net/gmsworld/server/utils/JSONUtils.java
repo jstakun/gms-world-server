@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.layers.LayerHelperFactory;
+import net.gmsworld.server.utils.memcache.CacheProvider;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
@@ -195,7 +196,8 @@ public class JSONUtils {
     
     public static Double getExchangeRate(String fromcc, String tocc) {
     	final String currencyUrl = "http://api.fixer.io/latest?base=" + fromcc;
-		Map<String, Double> ratesMap = LayerHelperFactory.getByName(Commons.HOTELS_LAYER).getCacheProvider().getObject(HashMap.class , currencyUrl);
+    	CacheProvider cacheProvider = LayerHelperFactory.getHotelsBookingUtils().getCacheProvider();
+		Map<String, Double> ratesMap = cacheProvider.getObject(HashMap.class, currencyUrl);
 		
 		if (ratesMap == null) {
 			ratesMap = new HashMap<String, Double>();
@@ -214,7 +216,7 @@ public class JSONUtils {
 							ratesMap.put(key, rates.getDouble(key));
 						}
 					}
-					LayerHelperFactory.getByName(Commons.HOTELS_LAYER).getCacheProvider().put(currencyUrl, ratesMap);
+					cacheProvider.put(currencyUrl, ratesMap);
 				} else {
 					logger.log(Level.WARNING, currencyUrl + " received following response from the server: " + resp);
 				}

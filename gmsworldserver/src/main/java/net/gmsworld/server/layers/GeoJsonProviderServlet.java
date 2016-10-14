@@ -20,6 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
+import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 
@@ -119,13 +120,14 @@ public class GeoJsonProviderServlet extends HttpServlet {
 							}
 						
 							String newkey = null;
+							int version = Integer.parseInt(ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.LM_VERSION, "1146"));
 							if (StringUtils.equals(layer, Commons.GROUPON_LAYER) || StringUtils.equals(layer, Commons.COUPONS_LAYER)) {
 								if (GeocodeUtils.isNorthAmericaLocation(lat, lng)) {
-									List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(lat, lng, null, radius, 1134, limit, StringUtil.getStringLengthLimit("l"), null, null, locale, true);
+									List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(lat, lng, null, radius, version, limit, StringUtil.getStringLengthLimit("l"), null, null, locale, true);
 					    			newkey = layerHelper.cacheGeoJson(landmarks, lat, lng, layer, locale, flexString2);                       
 								}
 							} else {
-								List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(lat, lng, null, radius, 1134, limit, StringUtil.getStringLengthLimit("l"), flexString, flexString2, locale, true);
+								List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(lat, lng, null, radius, version, limit, StringUtil.getStringLengthLimit("l"), flexString, flexString2, locale, true);
 				    			newkey = layerHelper.cacheGeoJson(landmarks, lat, lng, layer, locale, flexString2);                          				    		
 							}
 						
