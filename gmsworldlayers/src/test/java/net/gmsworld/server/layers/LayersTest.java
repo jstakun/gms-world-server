@@ -123,7 +123,7 @@ public class LayersTest {
 	   for (Method m : methods) {
 		   try {
 			   System.out.println("Checking method " + m.getName());
-			   if (!StringUtils.endsWithAny(m.getName(), new String[]{"getCacheProvider", "getByName", "getEnabledLayers"})) {
+			   if (!StringUtils.endsWithAny(m.getName(), new String[]{"getCacheProvider", "getByName", "getEnabledLayers", "getIcon"})) {
 				   System.out.println("Adding method " + m.getName() + " to test case");
 				   data.add(new Object[]{ m.invoke(null,(Object[])null) });
 			   }
@@ -147,7 +147,7 @@ public class LayersTest {
 		System.out.println("Enabled layers count: " +	enabledLayers.size());
 		
 		for (String layerName : enabledLayers) {
-			System.out.println(layerName + " layer is enabled");
+			System.out.println(layerName + " layer is enabled, icon: " + LayerHelperFactory.getIcon(layerName));
 		}		
 	}
 	

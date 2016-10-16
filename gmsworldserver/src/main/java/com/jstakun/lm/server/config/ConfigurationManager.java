@@ -1,10 +1,5 @@
 package com.jstakun.lm.server.config;
 
-import com.jstakun.lm.server.persistence.Config;
-import com.jstakun.lm.server.utils.memcache.CacheUtil;
-import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
-import com.jstakun.lm.server.utils.persistence.ConfigPersistenceUtils;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +9,10 @@ import java.util.logging.Logger;
 
 import net.gmsworld.server.config.Commons;
 
-import org.apache.commons.lang.StringUtils;
+import com.jstakun.lm.server.persistence.Config;
+import com.jstakun.lm.server.utils.memcache.CacheUtil;
+import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
+import com.jstakun.lm.server.utils.persistence.ConfigPersistenceUtils;
 
 /**
  *
@@ -95,7 +93,7 @@ public final class ConfigurationManager {
     	}
     }
     
-    public static String getLayerIcon(String layer) {
+    /*public static String getLayerIcon(String layer) {
  
     	if (StringUtils.equals(layer, Commons.FOURSQUARE_LAYER)) {
     		return "foursquare.png";
@@ -154,5 +152,5 @@ public final class ConfigurationManager {
     	} else { 
     		return null;
     	}
-    }
+    }*/
 }

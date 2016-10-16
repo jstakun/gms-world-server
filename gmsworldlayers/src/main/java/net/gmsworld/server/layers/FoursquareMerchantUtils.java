@@ -407,4 +407,8 @@ public class FoursquareMerchantUtils extends FoursquareUtils {
 	public String getLayerName() {
     	return Commons.FOURSQUARE_MERCHANT_LAYER;
     }
+	
+	public String getIcon() {
+		return "gift.png";
+	}
 }

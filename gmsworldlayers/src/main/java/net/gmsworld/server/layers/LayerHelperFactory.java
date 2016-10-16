@@ -376,12 +376,15 @@ public class LayerHelperFactory {
     		//TODO read layer from cache
 			List<Method> methods = getStaticGetMethods(LayerHelperFactory.class);
 			for (Method m : methods) {
-				if (!StringUtils.endsWithAny(m.getName(), new String[]{"getCacheProvider", "getByName", "getEnabledLayers", "getSearchUtils"})) {
-					LayerHelper layer = (LayerHelper)m.invoke(null,(Object[])null);
-					if (StringUtils.equals(layer.getLayerName(), name)) {
-						return layer;
+				if (!StringUtils.endsWithAny(m.getName(), new String[]{"getCacheProvider", "getByName", "getEnabledLayers", "getSearchUtils", "getIcon"})) {
+					Object o = m.invoke(null,(Object[])null);
+					if (o instanceof LayerHelper) {
+						LayerHelper layer = (LayerHelper) o;
+						if (StringUtils.equals(layer.getLayerName(), name)) {
+							return layer;
+						}
+						//TODO save layers to cache
 					}
-					//TODO save layers to cache
 				}
 			}
     	} catch (Exception e) {
@@ -395,7 +398,7 @@ public class LayerHelperFactory {
     		try {
     			List<Method> methods = getStaticGetMethods(LayerHelperFactory.class);
     			for (Method m : methods) {
-    				if (!StringUtils.endsWithAny(m.getName(), new String[]{"getCacheProvider", "getByName", "getEnabledLayers", "getSearchUtils"})) {
+    				if (!StringUtils.endsWithAny(m.getName(), new String[]{"getCacheProvider", "getByName", "getEnabledLayers", "getSearchUtils", "getIcon"})) {
     					LayerHelper layer = (LayerHelper)m.invoke(null,(Object[])null);
     					if (layer.isEnabled()) {
     						enabledLayers.add(layer.getLayerName());
@@ -422,6 +425,16 @@ public class LayerHelperFactory {
     		}
     	}
     	return enabledLayers;
+    }
+    
+    public static String getIcon(String name) {
+    	LayerHelper layer = getByName(name);
+    	if (layer != null) {
+    		return layer.getIcon();
+    	} else {
+    		logger.log(Level.WARNING, "No icon found for layer " + name);
+    		return null;
+    	}
     }
     
     private static List<Method> getStaticGetMethods(Class<?> clazz) {

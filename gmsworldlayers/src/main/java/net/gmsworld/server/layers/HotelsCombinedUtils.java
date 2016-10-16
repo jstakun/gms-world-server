@@ -263,6 +263,10 @@ public class HotelsCombinedUtils extends LayerHelper {
     	return Commons.HOTELS_LAYER;
     }
 	
+	public String getIcon() {
+		return "hotel.png";
+	}
+	
 	public boolean isEnabled() {
    		return false;
     }

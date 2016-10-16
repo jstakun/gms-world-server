@@ -224,4 +224,8 @@ public class GMSUtils extends LayerHelper {
 			return layer;
 		}
     }
+	
+	public String getIcon() {
+		return "gmsworld.png";
+	}
 }

@@ -308,4 +308,8 @@ public class McOpenApiUtils extends LayerHelper {
 	public String getLayerName() {
     	return Commons.MC_ATM_LAYER;
     }
+	
+	public String getIcon() {
+		return "mastercard.png";
+	}
 }

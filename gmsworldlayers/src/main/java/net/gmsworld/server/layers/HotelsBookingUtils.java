@@ -479,4 +479,8 @@ public class HotelsBookingUtils extends LayerHelper {
 		
         return NumberUtils.getInt(hotelsCount, -1);
 	}
+	
+	public String getIcon() {
+		return "hotel.png";
+	}
 }

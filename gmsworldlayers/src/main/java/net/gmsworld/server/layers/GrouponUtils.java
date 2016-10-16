@@ -607,5 +607,9 @@ public class GrouponUtils extends LayerHelper {
 	public String getLayerName() {
     	return Commons.GROUPON_LAYER;
     }
+	
+	public String getIcon() {
+		return "dollar.png";
+	}
 
 }

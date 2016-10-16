@@ -461,6 +461,10 @@ public class GooglePlacesUtils extends LayerHelper {
 		return Commons.GOOGLE_PLACES_LAYER;
 	}
 	
+	public String getIcon() {
+		return "google_plus.png";
+	}
+	
 	private static class VenueDetailsRetriever implements Runnable {
 
         private String placeid, language;

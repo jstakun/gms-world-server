@@ -354,4 +354,8 @@ public class CouponsUtils extends LayerHelper {
 	public String getLayerName() {
     	return Commons.COUPONS_LAYER;
     }
+	
+	public String getIcon() {
+		return "dollar.png";
+	}
 }

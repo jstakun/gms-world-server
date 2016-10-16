@@ -128,7 +128,7 @@
 <%
       for (String layer : net.gmsworld.server.layers.LayerHelperFactory.getEnabledLayers()) {
 %>
-{"name": "<%= layer %>", "icon" : "<%= com.jstakun.lm.server.config.ConfigurationManager.getLayerIcon(layer) %>", "enabled" : "<%= (StringUtils.containsIgnoreCase(enabled, layer) || (disabled != null && !StringUtils.containsIgnoreCase(disabled, layer)) || (disabled == null && enabled == null)) %>"},
+{"name": "<%= layer %>", "icon" : "<%= net.gmsworld.server.layers.LayerHelperFactory.getIcon(layer) %>", "enabled" : "<%= (StringUtils.containsIgnoreCase(enabled, layer) || (disabled != null && !StringUtils.containsIgnoreCase(disabled, layer)) || (disabled == null && enabled == null)) %>"},
 <%     
       }
 %>          

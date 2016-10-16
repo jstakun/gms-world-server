@@ -348,4 +348,8 @@ public abstract class LayerHelper {
     public boolean isEnabled() {
     	return true;
     }
+    
+    public String getIcon() {
+    	return getLayerName().toLowerCase() + ".png";
+    }
 }

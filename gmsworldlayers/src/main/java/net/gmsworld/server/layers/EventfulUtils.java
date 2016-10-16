@@ -287,4 +287,8 @@ public class EventfulUtils extends LayerHelper {
     public String getLayerName() {
     	return Commons.EVENTFUL_LAYER;
     }
+    
+    public String getIcon() {
+    	return "event.png";
+    }
 }

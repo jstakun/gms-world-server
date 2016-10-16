@@ -7,4 +7,8 @@ public class OsmParkingsUtils extends OverpassUtils {
 	public String getLayerName() {
 		return Commons.OSM_PARKING_LAYER;
 	}
+	
+	public String getIcon() {
+		return "parking.png";
+	}
 }

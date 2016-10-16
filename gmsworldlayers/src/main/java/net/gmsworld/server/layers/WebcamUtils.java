@@ -162,4 +162,8 @@ public class WebcamUtils extends LayerHelper {
 	public String getLayerName() {
 		return Commons.WEBCAM_LAYER;
 	}
+	
+	public String getIcon() {
+		return "webcam.png";
+	}
 }
