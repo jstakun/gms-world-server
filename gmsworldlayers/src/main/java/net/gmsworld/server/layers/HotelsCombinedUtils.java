@@ -262,8 +262,11 @@ public class HotelsCombinedUtils extends LayerHelper {
 	public String getLayerName() {
     	return Commons.HOTELS_LAYER;
     }
-		
 	
+	public boolean isEnabled() {
+   		return false;
+    }
+		
 	private class HotelToExtendedLandmarkFunction implements Function<Hotel, ExtendedLandmark> {
 
     	private String language;

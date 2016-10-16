@@ -1,7 +1,6 @@
 <%@ page contentType="text/html" pageEncoding="utf-8"%>
 <%@ page import="org.apache.commons.lang.StringUtils,
                 net.gmsworld.server.utils.NumberUtils,
-                net.gmsworld.server.config.Commons,
                 net.gmsworld.server.utils.StringUtil,
                 net.gmsworld.server.config.ConfigurationManager"%>
 <%@ taglib uri="http://struts.apache.org/tags-bean" prefix="bean"%>                                
@@ -127,7 +126,7 @@
 		  markers = [],
 	      layers = [
 <%
-      for (String layer : Commons.getLayers()) {
+      for (String layer : net.gmsworld.server.layers.LayerHelperFactory.getEnabledLayers()) {
 %>
 {"name": "<%= layer %>", "icon" : "<%= com.jstakun.lm.server.config.ConfigurationManager.getLayerIcon(layer) %>", "enabled" : "<%= (StringUtils.containsIgnoreCase(enabled, layer) || (disabled != null && !StringUtils.containsIgnoreCase(disabled, layer)) || (disabled == null && enabled == null)) %>"},
 <%     

@@ -1,11 +1,16 @@
 package net.gmsworld.server.layers;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ThreadFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import net.gmsworld.server.utils.memcache.CacheProvider;
 
 import org.apache.commons.lang.StringUtils;
-
-import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.utils.memcache.CacheProvider;
 
 /**
  *
@@ -13,9 +18,13 @@ import net.gmsworld.server.utils.memcache.CacheProvider;
  */
 public class LayerHelperFactory {
 	
+	private static final Logger logger = Logger.getLogger(LayerHelperFactory.class.getName());
+	
 	private static CacheProvider cacheProvider;
 	
 	private static ThreadFactory threadProvider;
+	
+	private static List<String> enabledLayers = new ArrayList<String>();
 	
 	private static final CouponsUtils couponsUtils = new CouponsUtils();
 
@@ -272,11 +281,6 @@ public class LayerHelperFactory {
     	return hotelsBookingUtils;
     }
     
-    //public static HotelsCombinedUtils getHotelsBookingUtils() {
-    //	hotelsCombinedUtils.setCacheProvider(cacheProvider);
-    //	return hotelsCombinedUtils;
-    //}
-    
     /**
      * @return the instagramUtils
      */
@@ -312,7 +316,7 @@ public class LayerHelperFactory {
     }
     
     public static LayerHelper getByName(String name) {
-    	if (StringUtils.equals(name, Commons.COUPONS_LAYER)) {
+    	/*if (StringUtils.equals(name, Commons.COUPONS_LAYER)) {
     		return getCouponsUtils();
     	} else if (StringUtils.equals(name, Commons.MC_ATM_LAYER)) {
     		return getMcOpenApiUtils();
@@ -366,8 +370,68 @@ public class LayerHelperFactory {
             return getFreebaseUtils();
     	} else {
     		return null;
-    	}
-    
+    	} */
+    	
+    	try {
+    		//TODO read layer from cache
+			List<Method> methods = getStaticGetMethods(LayerHelperFactory.class);
+			for (Method m : methods) {
+				if (!StringUtils.endsWithAny(m.getName(), new String[]{"getCacheProvider", "getByName", "getEnabledLayers", "getSearchUtils"})) {
+					LayerHelper layer = (LayerHelper)m.invoke(null,(Object[])null);
+					if (StringUtils.equals(layer.getLayerName(), name)) {
+						return layer;
+					}
+					//TODO save layers to cache
+				}
+			}
+    	} catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage(), e);
+		}
+    	return null;
     }
+    
+    public static List<String> getEnabledLayers() {
+    	if (enabledLayers.isEmpty()) {
+    		try {
+    			List<Method> methods = getStaticGetMethods(LayerHelperFactory.class);
+    			for (Method m : methods) {
+    				if (!StringUtils.endsWithAny(m.getName(), new String[]{"getCacheProvider", "getByName", "getEnabledLayers", "getSearchUtils"})) {
+    					LayerHelper layer = (LayerHelper)m.invoke(null,(Object[])null);
+    					if (layer.isEnabled()) {
+    						enabledLayers.add(layer.getLayerName());
+    					}
+    					//TODO save layers to cache
+    				}
+    			}
+    			
+    			/*for (Class<?> clazz : findLayerHelperSubclasses()) {
+    				if (!clazz.getName().equals("net.gmsworld.server.layers.SearchUtils") && !Modifier.isAbstract(clazz.getModifiers())) {
+    					logger.info("Processing class " + clazz.getName());
+    					Object instance = clazz.newInstance(); //use singleton
+    					Method isEnabled = clazz.getMethod("isEnabled");
+    					Boolean response = (Boolean) isEnabled.invoke(instance, (Object[])null);
+    					if (response) {
+    						Method layerName = clazz.getMethod("getLayerName");
+    						String name = (String) layerName.invoke(instance, (Object[])null);
+    						enabledLayers.add(name);
+    					}
+    				}
+    			}*/
+    		} catch (Exception e) {
+    			logger.log(Level.SEVERE, e.getMessage(), e);
+    		}
+    	}
+    	return enabledLayers;
+    }
+    
+    private static List<Method> getStaticGetMethods(Class<?> clazz) {
+	    List<Method> methods = new ArrayList<Method>();
+	    for (Method method : clazz.getMethods()) {
+	        if (Modifier.isStatic(method.getModifiers()) && method.getName().startsWith("get")) {
+	            methods.add(method);
+	        }
+	    }
+	    return methods;
+	}
 
 }

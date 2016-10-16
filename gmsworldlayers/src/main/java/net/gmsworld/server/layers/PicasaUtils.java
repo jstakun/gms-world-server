@@ -331,4 +331,8 @@ public class PicasaUtils extends LayerHelper {
     public String getLayerName() {
     	return Commons.PICASA_LAYER;
     }
+    
+    public boolean isEnabled() {
+   		return false;
+    }
 }

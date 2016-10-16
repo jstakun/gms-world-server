@@ -80,8 +80,8 @@ public class LayersTest {
 	  
 	   //data.add(new Object[]{LayerHelperFactory.getPicasaUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getLastfmUtils()});
-	   data.add(new Object[]{LayerHelperFactory.getOsmParkingsUtils()});
-	   data.add(new Object[]{LayerHelperFactory.getOsmAtmUtils()});
+	   //data.add(new Object[]{LayerHelperFactory.getOsmParkingsUtils()});
+	   //data.add(new Object[]{LayerHelperFactory.getOsmAtmUtils()});
 	   data.add(new Object[]{LayerHelperFactory.getOsmTaxiUtils()});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getHotelsBookingUtils()});
@@ -123,7 +123,7 @@ public class LayersTest {
 	   for (Method m : methods) {
 		   try {
 			   System.out.println("Checking method " + m.getName());
-			   if (!m.getName().equals("getCacheProvider") && !m.getName().equals("getByName")) {
+			   if (!StringUtils.endsWithAny(m.getName(), new String[]{"getCacheProvider", "getByName", "getEnabledLayers"})) {
 				   System.out.println("Adding method " + m.getName() + " to test case");
 				   data.add(new Object[]{ m.invoke(null,(Object[])null) });
 			   }
@@ -140,6 +140,16 @@ public class LayersTest {
 	
 	@Parameter
 	public LayerHelper layer;
+	
+	@Test
+	public void test2()  {
+		List<String> enabledLayers = LayerHelperFactory.getEnabledLayers();
+		System.out.println("Enabled layers count: " +	enabledLayers.size());
+		
+		for (String layerName : enabledLayers) {
+			System.out.println(layerName + " layer is enabled");
+		}		
+	}
 	
 	@Test
 	public void test() {

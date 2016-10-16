@@ -126,10 +126,15 @@
 		<version>${youtube.version}</version>
 	</dependency>
 	<dependency>
-			<groupId>com.google.apis</groupId>
-			<artifactId>google-api-services-urlshortener</artifactId>
-			<version>${shortener.version}</version>
-		</dependency>
+		<groupId>com.google.apis</groupId>
+		<artifactId>google-api-services-urlshortener</artifactId>
+		<version>${shortener.version}</version>
+	</dependency>	
+	<!-- dependency>
+        	<groupId>net.sf.extcos</groupId>
+        	<artifactId>extcos</artifactId>
+        	<version>0.4b</version>
+        </dependency-->
   </dependencies>
   
    <distributionManagement>

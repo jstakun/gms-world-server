@@ -311,4 +311,8 @@ public class ExpediaUtils extends LayerHelper {
 	public String getLayerName() {
     	return Commons.EXPEDIA_LAYER;
     }
+	
+	public boolean isEnabled() {
+   		return false;
+   }
 }

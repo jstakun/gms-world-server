@@ -196,7 +196,11 @@ public class FreebaseUtils extends LayerHelper {
 		   }
 	 }
 	
-  public String getLayerName() {
-	  return Commons.FREEBASE_LAYER;
-  }
+	public String getLayerName() {
+		return Commons.FREEBASE_LAYER;
+	}
+	
+	public boolean isEnabled() {
+   		return false;
+   }
 }

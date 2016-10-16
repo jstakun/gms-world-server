@@ -313,8 +313,7 @@ public class HotelsBookingUtils extends LayerHelper {
 		return cheapest;
 	}
 
-	@Override
-	protected String getLayerName() {
+	public String getLayerName() {
 		return Commons.HOTELS_LAYER;
 	}
 	

@@ -309,4 +309,8 @@ public class LastfmUtils extends LayerHelper {
 	public String getLayerName() {
     	return Commons.LASTFM_LAYER;
     }
+	
+	public boolean isEnabled() {
+   		return false;
+    }
 }
