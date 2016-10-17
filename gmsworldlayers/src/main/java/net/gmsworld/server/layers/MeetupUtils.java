@@ -156,7 +156,7 @@ public class MeetupUtils extends LayerHelper {
                         	address.setField(AddressInfo.COUNTRY, val);
                         }
                         val = venue.optString("phone");
-                        if (StringUtils.isNotEmpty(val)) {
+                        if (StringUtils.isNotEmpty(val) && val.matches(".*\\d+.*")) {
                         	address.setField(AddressInfo.PHONE_NUMBER, val);
                         }
                         if (venue.has("zip") && !venue.isNull("zip")) {

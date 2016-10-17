@@ -741,7 +741,10 @@ public class FoursquareUtils extends LayerHelper {
             if (contact.getFacebook() != null) {
             	tokens.put("facebook", contact.getFacebook());
             }
-            address.setField(AddressInfo.PHONE_NUMBER, contact.getPhone());
+            String phone = contact.getPhone();
+            if (phone != null && phone.matches(".*\\d+.*")) {
+            	address.setField(AddressInfo.PHONE_NUMBER, phone);
+            }
             if (contact.getTwitter() != null) {
             	tokens.put("twitter", contact.getTwitter());
             } 

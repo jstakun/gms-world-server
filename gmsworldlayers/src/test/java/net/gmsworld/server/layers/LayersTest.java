@@ -72,7 +72,7 @@ public class LayersTest {
 	}
 	
 	
-	@Parameters
+	//@Parameters
 	public static Collection<Object[]> staticLayers() {
 	   initLayerHelper();
 		
@@ -113,7 +113,7 @@ public class LayersTest {
 	   return data;
 	}
 	
-	//@Parameters
+	@Parameters
 	public static Collection<Object[]> dynamicLayers() {
 	   initLayerHelper();
 		
@@ -141,7 +141,7 @@ public class LayersTest {
 	@Parameter
 	public LayerHelper layer;
 	
-	@Test
+	//@Test
 	public void test2()  {
 		List<String> enabledLayers = LayerHelperFactory.getEnabledLayers();
 		System.out.println("Enabled layers count: " +	enabledLayers.size());

@@ -366,8 +366,9 @@ public class FoursquareMerchantUtils extends FoursquareUtils {
                                     }
                                 }
                                 
-                                if (contact.has("phone")) {
-                                	address.setField(AddressInfo.PHONE_NUMBER, contact.getString("phone"));
+                                String phone = contact.optString("phone");
+                                if (phone != null  && phone.matches(".*\\d+.*")) {
+                                	address.setField(AddressInfo.PHONE_NUMBER, phone);
                                 }
                                 
                                 JSONUtils.putOptValue(tokens, "homepage", venue, "url", false, stringLimit, false);

@@ -121,11 +121,11 @@ public abstract class OverpassUtils extends LayerHelper {
                      	 address.setField(AddressInfo.POSTAL_CODE, val);
                      }
                      val = tags.optString("phone");
-                     if (StringUtils.isNotBlank(val)) {
+                     if (StringUtils.isNotBlank(val) && val.matches(".*\\d+.*")) {
                      	 address.setField(AddressInfo.PHONE_NUMBER, val);
                      } else {
                     	 val = tags.optString("contact:phone");
-                    	 if (StringUtils.isNotBlank(val)) {
+                    	 if (StringUtils.isNotBlank(val) && val.matches(".*\\d+.*")) {
                          	 address.setField(AddressInfo.PHONE_NUMBER, val);
                          }
                      }

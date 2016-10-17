@@ -263,8 +263,8 @@ public class FacebookUtils extends LayerHelper {
                 	address.setField(AddressInfo.STATE, val);
                 }
                 val = pageDesc.remove("phone");
-                if (StringUtils.isNotEmpty(val)) {
-                    address.setField(AddressInfo.PHONE_NUMBER, val);
+                if (StringUtils.isNotEmpty(val) && val.matches(".*\\d+.*")) {
+                	address.setField(AddressInfo.PHONE_NUMBER, val);
                 }
                 
                 long creationDate = NumberUtils.getLong(pageDesc.remove("creation_date"), -1);

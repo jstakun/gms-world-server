@@ -524,7 +524,7 @@ public class GrouponUtils extends LayerHelper {
 
                                         addressInfo.setField(AddressInfo.CITY, location.getString("city"));
                                         String phone = location.optString("phoneNumber");
-                                        if (phone != null) {
+                                        if (phone != null && phone.matches(".*\\d+.*")) {
                                         	addressInfo.setField(AddressInfo.PHONE_NUMBER, phone);
                                         }
                                         addressInfo.setField(AddressInfo.POSTAL_CODE, location.getString("postalCode"));

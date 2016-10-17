@@ -316,62 +316,6 @@ public class LayerHelperFactory {
     }
     
     public static LayerHelper getByName(String name) {
-    	/*if (StringUtils.equals(name, Commons.COUPONS_LAYER)) {
-    		return getCouponsUtils();
-    	} else if (StringUtils.equals(name, Commons.MC_ATM_LAYER)) {
-    		return getMcOpenApiUtils();
-    	} else if (StringUtils.equals(name, Commons.FACEBOOK_LAYER)) {
-    		return getFacebookUtils();
-    	} else if (StringUtils.equals(name, Commons.FLICKR_LAYER)) {
-    		return getFlickrUtils();
-    	} else if (StringUtils.equals(name, Commons.FOURSQUARE_LAYER)) {
-    		return getFoursquareUtils();
-    	} else if (StringUtils.equals(name, Commons.FOURSQUARE_MERCHANT_LAYER)) {
-            return getFoursquareMerchantUtils();
-    	} else if (StringUtils.equals(name, Commons.GOOGLE_PLACES_LAYER)) {
-    		return  getGooglePlacesUtils();
-    	} else if (StringUtils.equals(name, Commons.GROUPON_LAYER)) {
-        	return getGrouponUtils();
-    	} else if (StringUtils.equals(name, Commons.MEETUP_LAYER)) {
-    		return getMeetupUtils();
-    	} else if (StringUtils.equals(name, Commons.PICASA_LAYER)) {
-        	return getPicasaUtils();
-    	} else if (StringUtils.equals(name, Commons.TWITTER_LAYER)) {
-        	return getTwitterUtils();
-    	} else if (StringUtils.equals(name, Commons.YELP_LAYER)) {
-        	return getYelpUtils();
-    	} else if (StringUtils.equals(name, Commons.YOUTUBE_LAYER)) {
-        	return getYoutubeUtils();
-    	} else if (StringUtils.equals(name, Commons.LM_SERVER_LAYER)) {
-            return getGmsUtils();
-    	} else if (StringUtils.equals(name, Commons.EVENTFUL_LAYER)) {
-            return getEventfulUtils();
-    	} else if (StringUtils.equals(name, Commons.OSM_ATM_LAYER)) { 
-            return getOsmAtmUtils();
-    	} else if (StringUtils.equals(name, Commons.OSM_PARKING_LAYER)) {
-    		return getOsmParkingsUtils();
-    	} else if (StringUtils.equals(name, Commons.OSM_TAXI_LAYER)) {
-    		return getOsmTaxiUtils();
-    	} else if (StringUtils.equals(name, Commons.WIKIPEDIA_LAYER)) {
-            return getGeonamesUtils();
-    	} else if (StringUtils.equals(name, Commons.LASTFM_LAYER)) {
-            return getLastfmUtils();
-    	} else if (StringUtils.equals(name, Commons.WEBCAM_LAYER)) {
-            return getWebcamUtils();
-    	} else if (StringUtils.equals(name, Commons.PANORAMIO_LAYER)) {
-            return getPanoramioUtils();
-    	} else if (StringUtils.equals(name, Commons.EXPEDIA_LAYER)) {
-            return getExpediaUtils();
-    	} else if (StringUtils.equals(name, Commons.HOTELS_LAYER)) {
-            return getHotelsBookingUtils(); 
-    	} else if (StringUtils.equals(name, Commons.INSTAGRAM_LAYER)) {
-            return getInstagramUtils();
-    	} else if (StringUtils.equals(name, Commons.FREEBASE_LAYER)) {
-            return getFreebaseUtils();
-    	} else {
-    		return null;
-    	} */
-    	
     	try {
     		//TODO read layer from cache
 			List<Method> methods = getStaticGetMethods(LayerHelperFactory.class);

@@ -262,7 +262,9 @@ public class CouponsUtils extends LayerHelper {
                     
                     AddressInfo address = new AddressInfo();
                     String phone = deal.getString("phone");
-                    address.setField(AddressInfo.PHONE_NUMBER, phone);
+                    if (phone.matches(".*\\d+.*")) {
+                    	address.setField(AddressInfo.PHONE_NUMBER, phone);
+                    }
                     address.setField(AddressInfo.STATE, deal.getString("state"));
                     address.setField(AddressInfo.CITY, deal.getString("city"));
                     address.setField(AddressInfo.POSTAL_CODE, deal.getString("ZIP"));

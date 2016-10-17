@@ -36,7 +36,7 @@ public class FBTest {
 	
 	@Test
 	public void testMyCheckins() throws UnsupportedEncodingException, ParseException {
-		List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getMyPlaces(1126, limit, StringUtil.XLARGE, token, Locale.UK, false);
+		List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getMyPlaces(1146, limit, StringUtil.XLARGE, token, Locale.UK, false);
 		printLandmarks(landmarks, "checkins");
 	}
 	

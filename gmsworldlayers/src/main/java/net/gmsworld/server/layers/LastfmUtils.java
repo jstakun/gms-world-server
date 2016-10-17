@@ -224,7 +224,7 @@ public class LastfmUtils extends LayerHelper {
         
         	AddressInfo address = new AddressInfo();
         	String val = venue.optString("phonenumber");
-        	if (StringUtils.isNotEmpty(val)) {
+        	if (StringUtils.isNotEmpty(val) && val.matches(".*\\d+.*")) {
         		address.setField(AddressInfo.PHONE_NUMBER, val);	
         	}
         	val = venue.optString("city");
