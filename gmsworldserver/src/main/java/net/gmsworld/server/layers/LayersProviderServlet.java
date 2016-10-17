@@ -52,8 +52,7 @@ public class LayersProviderServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String formatParam = StringUtil.getStringParam(request.getParameter("format"), "json");
         Format outFormat = null;
         PrintWriter outPrinter = null;
