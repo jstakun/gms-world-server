@@ -369,7 +369,8 @@
 		     	    //dates
 		     	    var checkinDiv = document.getElementById('checkin');
 		     	    checkinDiv.index = 4
-		     	    map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(checkinDiv);	
+		     	    map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(checkinDiv);
+		     	    checkinDiv.style.display = 'inline';	
 		     	     
 		     	    //filters
 		     	    var filtersDiv = document.createElement('div');
@@ -588,8 +589,8 @@
   </head>
   <body onload="setupChildrenAges()">
     <div id="map-canvas"></div>                                            
-    <div id="status" style="color:black;font-family:Roboto,Arial,sans-serif;font-size:<%=fontSize%>;line-height:32px;padding-left:4px;padding-right:4px"></div>
-    <div id="checkin" style="background-color:#fff;border:2px solid #fff;border-radius:3px;box-shadow:0 2px 6px rgba(0,0,0,.3);color:black;font-family:Roboto,Arial,sans-serif;font-size:<%=fontSize%>;line-height:28px;padding-left:4px;padding-right:4px;margin-right:10px">
+    <div id="status" style="color:black;font-family:Roboto,Arial,sans-serif;font-size:<%=fontSize%>;line-height:32px;padding-left:4px;padding-right:4px;"></div>
+    <div id="checkin" style="background-color:#fff;border:2px solid #fff;border-radius:3px;box-shadow:0 2px 6px rgba(0,0,0,.3);color:black;font-family:Roboto,Arial,sans-serif;font-size:<%=fontSize%>;line-height:28px;padding-left:4px;padding-right:4px;margin-right:10px;display:none;">
     	<table>
     		<tr>
     			<th colspan="2"><bean:message key="landmarks.checkin.dates" /></th>
