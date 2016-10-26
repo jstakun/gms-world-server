@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
@@ -48,8 +49,8 @@ public class Search2Servlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        LayerHelperFactory.setCacheProvider(GoogleCacheProvider.getInstance());
-        LayerHelperFactory.setThreadProvider(new GoogleThreadProvider());
+        LayerHelperFactory.getInstance().setCacheProvider(GoogleCacheProvider.getInstance());
+        LayerHelperFactory.getInstance().setThreadProvider(new GoogleThreadProvider());
     }
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -100,9 +101,9 @@ public class Search2Servlet extends HttpServlet {
                 logger.log(Level.INFO, "Searching for " + query);
                 
                 if (format.equals("json")) { 
-                	jsonResponse = LayerHelperFactory.getSearchUtils().processRequest(latitude, longitude, query, radius, version, limit, stringLimit, flexString, ftoken, locale);
+                	jsonResponse = ((SearchUtils)LayerHelperFactory.getInstance().getByName(Commons.SEARCH_LAYER)).processRequest(latitude, longitude, query, radius, version, limit, stringLimit, flexString, ftoken, locale);
                 } else {
-                	foundLandmarks = LayerHelperFactory.getSearchUtils().processBinaryRequest(latitude, longitude, query, radius, version, limit, stringLimit, flexString, ftoken, locale, false);
+                	foundLandmarks = LayerHelperFactory.getInstance().getByName(Commons.SEARCH_LAYER).processBinaryRequest(latitude, longitude, query, radius, version, limit, stringLimit, flexString, ftoken, locale, false);
                 }
             }
         } catch (Exception e) {
@@ -116,7 +117,7 @@ public class Search2Servlet extends HttpServlet {
         		}
         		out.close();
         	} else if (format.equals("bin")) {
-            	LayerHelperFactory.getSearchUtils().serialize(foundLandmarks, response.getOutputStream(), version);
+        		LayerHelperFactory.getInstance().getByName(Commons.SEARCH_LAYER).serialize(foundLandmarks, response.getOutputStream(), version);
         	}
         }
     }

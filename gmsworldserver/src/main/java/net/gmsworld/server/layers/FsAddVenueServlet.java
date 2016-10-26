@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.utils.HttpUtils;
 
 import org.apache.commons.lang.StringUtils;
@@ -25,7 +26,7 @@ public class FsAddVenueServlet extends HttpServlet {
 	@Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        LayerHelperFactory.setCacheProvider(GoogleCacheProvider.getInstance());
+        LayerHelperFactory.getInstance().setCacheProvider(GoogleCacheProvider.getInstance());
     }
 	/** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -50,7 +51,7 @@ public class FsAddVenueServlet extends HttpServlet {
     				catId = "4bf58dd8d48988d103941735"; //Home (private)
     			}
     			String ll = request.getParameter("ll");
-    			int responseCode = LayerHelperFactory.getFoursquareUtils().addVenue(accessToken, name, desc, catId, ll);
+    			int responseCode = ((FoursquareUtils)LayerHelperFactory.getInstance().getByName(Commons.FOURSQUARE_LAYER)).addVenue(accessToken, name, desc, catId, ll);
     			if (responseCode != HttpServletResponse.SC_OK) {
     				response.sendError(responseCode);
     			} else {

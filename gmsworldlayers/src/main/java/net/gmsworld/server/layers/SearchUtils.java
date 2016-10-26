@@ -54,9 +54,6 @@ public class SearchUtils extends LayerHelper {
     			threadManager.put(Commons.TWITTER_LAYER, threadProvider.newThread(new JSonSearchTask(lat, lng, query, null, language, Commons.TWITTER_LAYER, radius, dealLimit, limit, stringLimit, locale, isDeal, threadManager, jsonMap))); //
     		}
     		threadManager.put(Commons.MEETUP_LAYER, threadProvider.newThread(new JSonSearchTask(lat, lng, query, null, language, Commons.MEETUP_LAYER, radius, dealLimit, limit, stringLimit, locale, isDeal, threadManager, jsonMap))); //
-    		if (version >= 1094) {
-    			threadManager.put(Commons.FREEBASE_LAYER, threadProvider.newThread(new JSonSearchTask(lat, lng, query, null, language, Commons.FREEBASE_LAYER, radius, dealLimit, limit, stringLimit, locale, isDeal, threadManager, jsonMap)));
-        	}
     	}
 
     	if (!geocode && GeocodeUtils.isNorthAmericaLocation(lat, lng)) {
@@ -162,7 +159,7 @@ public class SearchUtils extends LayerHelper {
 
 			try {
 				if (layer.equals(Commons.COUPONS_LAYER)) {
-					json = LayerHelperFactory.getCouponsUtils().processRequest(latitude, longitude, query, radius, 4, dealLimit, stringLimit, "", language);
+					json = LayerHelperFactory.getInstance().getByName(Commons.COUPONS_LAYER).processRequest(latitude, longitude, query, radius, 4, dealLimit, stringLimit, "", language);
 				} else if (layer.equals(Commons.LOCAL_LAYER)) {
 					int appId;
 					if (isDeal) {
@@ -178,25 +175,25 @@ public class SearchUtils extends LayerHelper {
 						logger.log(Level.INFO, "Geocode service couldn't find this place.");
 					}
 				} else if (layer.equals(Commons.GROUPON_LAYER)) {
-					json = LayerHelperFactory.getGrouponUtils().processRequest(latitude, longitude, query, radius, 4, dealLimit, stringLimit, null, null);
+					json = LayerHelperFactory.getInstance().getByName(Commons.GROUPON_LAYER).processRequest(latitude, longitude, query, radius, 4, dealLimit, stringLimit, null, null);
 				} else if (layer.equals(Commons.FOURSQUARE_LAYER)) {
-					json = LayerHelperFactory.getFoursquareUtils().processRequest(latitude, longitude, query, radius * 1000, 3, limit, stringLimit, "browse", language);
+					json = LayerHelperFactory.getInstance().getByName(Commons.FOURSQUARE_LAYER).processRequest(latitude, longitude, query, radius * 1000, 3, limit, stringLimit, "browse", language);
 				} else if (layer.equals(Commons.FACEBOOK_LAYER)) {
-					json = LayerHelperFactory.getFacebookUtils().processRequest(latitude, longitude, query, radius * 1000, 2, limit, stringLimit, ftoken, null);
+					json = LayerHelperFactory.getInstance().getByName(Commons.FACEBOOK_LAYER).processRequest(latitude, longitude, query, radius * 1000, 2, limit, stringLimit, ftoken, null);
 				} else if (layer.equals(Commons.GOOGLE_PLACES_LAYER)) {
-					json = LayerHelperFactory.getGooglePlacesUtils().processRequest(latitude, longitude, query, radius * 1000, 2, limit, stringLimit, language, null);
+					json = LayerHelperFactory.getInstance().getByName(Commons.GOOGLE_PLACES_LAYER).processRequest(latitude, longitude, query, radius * 1000, 2, limit, stringLimit, language, null);
 				} else if (layer.equals(Commons.LM_SERVER_LAYER)) {
-					json = LayerHelperFactory.getGmsUtils().processRequest(latitude, longitude, query, radius, 4, limit, stringLimit, null, null);
+					json = LayerHelperFactory.getInstance().getByName(Commons.LM_SERVER_LAYER).processRequest(latitude, longitude, query, radius, 4, limit, stringLimit, null, null);
 				} else if (layer.equals(Commons.FLICKR_LAYER)) {
-					json = LayerHelperFactory.getFlickrUtils().processRequest(latitude, longitude, query, radius, 4, limit,stringLimit, null, null);
+					json = LayerHelperFactory.getInstance().getByName(Commons.FLICKR_LAYER).processRequest(latitude, longitude, query, radius, 4, limit,stringLimit, null, null);
 				} else if (layer.equals(Commons.EVENTFUL_LAYER)) {
-					json = LayerHelperFactory.getEventfulUtils().processRequest(latitude, longitude, query, radius, 4, limit, stringLimit, null, null);
+					json = LayerHelperFactory.getInstance().getByName(Commons.EVENTFUL_LAYER).processRequest(latitude, longitude, query, radius, 4, limit, stringLimit, null, null);
 				} else if (layer.equals(Commons.YELP_LAYER)) {
-					json = LayerHelperFactory.getYelpUtils().processRequest(latitude, longitude, query, radius * 1000, 2, limit, stringLimit, "false", language);
+					json = LayerHelperFactory.getInstance().getByName(Commons.YELP_LAYER).processRequest(latitude, longitude, query, radius * 1000, 2, limit, stringLimit, "false", language);
 				} else if (layer.equals(Commons.TWITTER_LAYER)) {
-					json = LayerHelperFactory.getTwitterUtils().processRequest(latitude, longitude, query, radius, 1, limit, stringLimit, language, null);
+					json = LayerHelperFactory.getInstance().getByName(Commons.TWITTER_LAYER).processRequest(latitude, longitude, query, radius, 1, limit, stringLimit, language, null);
 				} else if (layer.equals(Commons.MEETUP_LAYER)) {
-					json = LayerHelperFactory.getMeetupUtils().processRequest(latitude, longitude, query, radius, 1, limit, stringLimit, language, null);
+					json = LayerHelperFactory.getInstance().getByName(Commons.MEETUP_LAYER).processRequest(latitude, longitude, query, radius, 1, limit, stringLimit, language, null);
 				}
 			} catch (Exception e) {
 				logger.log(Level.SEVERE, e.getMessage(), e);
@@ -241,7 +238,7 @@ public class SearchUtils extends LayerHelper {
 
 			try {
 				if (layer.equals(Commons.COUPONS_LAYER)) {
-					landmarks = LayerHelperFactory.getCouponsUtils().processBinaryRequest(latitude, longitude, query, radius, 4, dealLimit, stringLimit, "", language, locale, true);
+					landmarks = LayerHelperFactory.getInstance().getByName(Commons.COUPONS_LAYER).processBinaryRequest(latitude, longitude, query, radius, 4, dealLimit, stringLimit, "", language, locale, true);
 				} else if (layer.equals(Commons.LOCAL_LAYER)) {
 					int appId;
 					if (isDeal) {
@@ -261,28 +258,26 @@ public class SearchUtils extends LayerHelper {
 						logger.log(Level.INFO, "Geocode service couldn't find this place.");
 					}
 				} else if (layer.equals(Commons.GROUPON_LAYER)) {
-					landmarks = LayerHelperFactory.getGrouponUtils().processBinaryRequest(latitude, longitude, query, radius, 4, dealLimit, stringLimit, null, null, locale, true);
+					landmarks = LayerHelperFactory.getInstance().getByName(Commons.GROUPON_LAYER).processBinaryRequest(latitude, longitude, query, radius, 4, dealLimit, stringLimit, null, null, locale, true);
 				} else if (layer.equals(Commons.FOURSQUARE_LAYER)) {
-					landmarks = LayerHelperFactory.getFoursquareUtils().processBinaryRequest(latitude, longitude, query, radius * 1000, 3, limit, stringLimit, "browse", language, locale, true);
+					landmarks = LayerHelperFactory.getInstance().getByName(Commons.FOURSQUARE_LAYER).processBinaryRequest(latitude, longitude, query, radius * 1000, 3, limit, stringLimit, "browse", language, locale, true);
 				} else if (layer.equals(Commons.FACEBOOK_LAYER)) {
-					landmarks = LayerHelperFactory.getFacebookUtils().processBinaryRequest(latitude, longitude, query, radius * 1000, 2, limit, stringLimit, ftoken, null, locale, true);
+					landmarks = LayerHelperFactory.getInstance().getByName(Commons.FACEBOOK_LAYER).processBinaryRequest(latitude, longitude, query, radius * 1000, 2, limit, stringLimit, ftoken, null, locale, true);
 				} else if (layer.equals(Commons.GOOGLE_PLACES_LAYER)) {
-					landmarks = LayerHelperFactory.getGooglePlacesUtils().processBinaryRequest(latitude, longitude, query, radius * 1000, 2, limit, stringLimit, language, null, locale, true);
+					landmarks = LayerHelperFactory.getInstance().getByName(Commons.GOOGLE_PLACES_LAYER).processBinaryRequest(latitude, longitude, query, radius * 1000, 2, limit, stringLimit, language, null, locale, true);
 				} else if (layer.equals(Commons.LM_SERVER_LAYER)) {
-					landmarks = LayerHelperFactory.getGmsUtils().processBinaryRequest(latitude, longitude, query, radius, 4, limit, stringLimit, null, null, locale, true);
+					landmarks = LayerHelperFactory.getInstance().getByName(Commons.LM_SERVER_LAYER).processBinaryRequest(latitude, longitude, query, radius, 4, limit, stringLimit, null, null, locale, true);
 				} else if (layer.equals(Commons.FLICKR_LAYER)) {
-					landmarks = LayerHelperFactory.getFlickrUtils().processBinaryRequest(latitude, longitude, query, radius, 4, limit, stringLimit, null, null, locale, true);
+					landmarks = LayerHelperFactory.getInstance().getByName(Commons.FLICKR_LAYER).processBinaryRequest(latitude, longitude, query, radius, 4, limit, stringLimit, null, null, locale, true);
 				} else if (layer.equals(Commons.EVENTFUL_LAYER)) {
-					landmarks = LayerHelperFactory.getEventfulUtils().processBinaryRequest(latitude, longitude, query, radius, 4, limit, stringLimit, null, null, locale, true);
+					landmarks = LayerHelperFactory.getInstance().getByName(Commons.EVENTFUL_LAYER).processBinaryRequest(latitude, longitude, query, radius, 4, limit, stringLimit, null, null, locale, true);
 				} else if (layer.equals(Commons.YELP_LAYER)) {
-					landmarks = LayerHelperFactory.getYelpUtils().processBinaryRequest(latitude, longitude, query,radius * 1000, 2, limit, stringLimit, "false", language, locale, true);
+					landmarks = LayerHelperFactory.getInstance().getByName(Commons.YELP_LAYER).processBinaryRequest(latitude, longitude, query,radius * 1000, 2, limit, stringLimit, "false", language, locale, true);
 				} else if (layer.equals(Commons.TWITTER_LAYER)) {
-					landmarks = LayerHelperFactory.getTwitterUtils().processBinaryRequest(latitude, longitude, query, radius, 1, limit, stringLimit, language, null, locale, true);
+					landmarks = LayerHelperFactory.getInstance().getByName(Commons.TWITTER_LAYER).processBinaryRequest(latitude, longitude, query, radius, 1, limit, stringLimit, language, null, locale, true);
 				} else if (layer.equals(Commons.MEETUP_LAYER)) {
-					landmarks = LayerHelperFactory.getMeetupUtils().processBinaryRequest(latitude, longitude, query, radius, 1, limit, stringLimit, language, null, locale, true);
-				} else if (layer.equals(Commons.FREEBASE_LAYER)) {
-					landmarks = LayerHelperFactory.getFreebaseUtils().processBinaryRequest(latitude, longitude, query, radius, 1, limit, stringLimit, language, null, locale, true);
-				}
+					landmarks = LayerHelperFactory.getInstance().getByName(Commons.MEETUP_LAYER).processBinaryRequest(latitude, longitude, query, radius, 1, limit, stringLimit, language, null, locale, true);
+				} 
 			} catch (Exception e) {
 				logger.log(Level.SEVERE, e.getMessage(), e);
 			} finally {
@@ -295,7 +290,7 @@ public class SearchUtils extends LayerHelper {
 	}
 	
     public String getLayerName() {
-    	return "Search";
+    	return Commons.SEARCH_LAYER;
     }
 
 }

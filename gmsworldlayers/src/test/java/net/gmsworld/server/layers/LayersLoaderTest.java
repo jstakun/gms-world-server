@@ -19,8 +19,8 @@ public class LayersLoaderTest {
 	@Test
 	public void test() {
 		
-		LayerHelperFactory.setCacheProvider(new MockCacheProvider());
-		LayerHelperFactory.setThreadProvider(new JvmThreadProvider());	
+		LayerHelperFactory.getInstance().setCacheProvider(new MockCacheProvider());
+		LayerHelperFactory.getInstance().setThreadProvider(new JvmThreadProvider());	
 		
 		List<String> layers = Arrays.asList(new String[]{Commons.FACEBOOK_LAYER, Commons.FOURSQUARE_LAYER, Commons.HOTELS_LAYER, 
 				Commons.YELP_LAYER, Commons.WIKIPEDIA_LAYER, Commons.EVENTFUL_LAYER,

@@ -19,8 +19,8 @@ import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 public class FBTest {
 	
 	static {
-		LayerHelperFactory.setCacheProvider(new MockCacheProvider());
-		LayerHelperFactory.setThreadProvider(new JvmThreadProvider());	
+		LayerHelperFactory.getInstance().setCacheProvider(new MockCacheProvider());
+		LayerHelperFactory.getInstance().setThreadProvider(new JvmThreadProvider());	
 	}
 	
 	String token = Commons.FB_TEST_TOKEN_FULL_0;
@@ -30,19 +30,19 @@ public class FBTest {
 
 	@Test
 	public void testMyFriends() throws UnsupportedEncodingException {		
-    	List<String> friends = LayerHelperFactory.getFacebookUtils().getMyFriends(token);
+    	List<String> friends = ((FacebookUtils)LayerHelperFactory.getInstance().getByName(Commons.FACEBOOK_LAYER)).getMyFriends(token);
 		System.out.println("Found " + friends.size() + " friends");
 	}
 	
 	@Test
 	public void testMyCheckins() throws UnsupportedEncodingException, ParseException {
-		List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getMyPlaces(1146, limit, StringUtil.XLARGE, token, Locale.UK, false);
+		List<ExtendedLandmark> landmarks = ((FacebookUtils)LayerHelperFactory.getInstance().getByName(Commons.FACEBOOK_LAYER)).getMyPlaces(1146, limit, StringUtil.XLARGE, token, Locale.UK, false);
 		printLandmarks(landmarks, "checkins");
 	}
 	
 	@Test
 	public void testMyPhotos() throws UnsupportedEncodingException, ParseException {
-		List<ExtendedLandmark> landmarks =	LayerHelperFactory.getFacebookUtils().getMyPhotos(1126, limit, StringUtil.XLARGE, token, Locale.UK, false);
+		List<ExtendedLandmark> landmarks =	((FacebookUtils)LayerHelperFactory.getInstance().getByName(Commons.FACEBOOK_LAYER)).getMyPhotos(1126, limit, StringUtil.XLARGE, token, Locale.UK, false);
 	    printLandmarks(landmarks, "photos");
 	}
 	
@@ -57,13 +57,13 @@ public class FBTest {
 
 	@Test
 	public void testUserTaggedPlaces() throws UnsupportedEncodingException, ParseException {	
-		List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().getMyTaggedPlaces(1126, limit, StringUtil.XLARGE, token, Locale.UK, false);
+		List<ExtendedLandmark> landmarks = ((FacebookUtils)LayerHelperFactory.getInstance().getByName(Commons.FACEBOOK_LAYER)).getMyTaggedPlaces(1126, limit, StringUtil.XLARGE, token, Locale.UK, false);
 		printLandmarks(landmarks, "tagged places");
 	}
 	
 	@Test
 	public void testPlaces() throws Exception {	
-		List<ExtendedLandmark> landmarks = LayerHelperFactory.getFacebookUtils().processBinaryRequest(lat, lng, null, 10, 1126, limit, StringUtil.XLARGE, null, null, Locale.UK, false);
+		List<ExtendedLandmark> landmarks = LayerHelperFactory.getInstance().getByName(Commons.FACEBOOK_LAYER).processBinaryRequest(lat, lng, null, 10, 1126, limit, StringUtil.XLARGE, null, null, Locale.UK, false);
 		printLandmarks(landmarks, "places around");
 	}
     

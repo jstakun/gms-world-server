@@ -76,7 +76,7 @@ public class CouponsUtils extends LayerHelper {
             if (StringUtils.isNotEmpty(couponsResponse)) {
                 Map<String, Map<String, String>> reviewsArray = new HashMap<String, Map<String, String>>();
                 try {
-                    reviewsArray = LayerHelperFactory.getYelpUtils().processReviewsRequest(lat, lng, query, radius * 1000, limit, true, language);
+                    reviewsArray = ((YelpUtils)LayerHelperFactory.getInstance().getByName(Commons.YELP_LAYER)).processReviewsRequest(lat, lng, query, radius * 1000, limit, true, language);
                 } catch (Exception e) {
                     logger.log(Level.SEVERE, null, e);
                 }
@@ -344,7 +344,7 @@ public class CouponsUtils extends LayerHelper {
         if (StringUtils.isNotEmpty(couponsResponse)) {
             Map<String, Map<String, String>> reviewsArray = new HashMap<String, Map<String, String>>();
             try {
-                reviewsArray = LayerHelperFactory.getYelpUtils().processReviewsRequest(lat, lng, query, radius * 1000, limit, true, language);
+                reviewsArray = ((YelpUtils)LayerHelperFactory.getInstance().getByName(Commons.YELP_LAYER)).processReviewsRequest(lat, lng, query, radius * 1000, limit, true, language);
             } catch (Exception e) {
                 logger.log(Level.SEVERE, e.getMessage(), e);
             }               

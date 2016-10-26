@@ -11,8 +11,10 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.layers.GeocodeHelperFactory;
 import net.gmsworld.server.layers.LayerHelperFactory;
+import net.gmsworld.server.layers.HotelsBookingUtils;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.StringUtil;
 
@@ -107,7 +109,7 @@ public class ShowLocationAction extends org.apache.struts.action.Action {
         if (StringUtils.isNotEmpty(request.getParameter("fullScreen")) && lat != null && lng != null) {
         	//load hotels layer in asynchronous mode 
 			if (StringUtils.contains(request.getParameter("enabled"), "Hotels")) {
-				LayerHelperFactory.getHotelsBookingUtils().loadHotelsAsync(lat, lng, RADIUS, HOTELS_LIMIT, request.getParameter("sortType")); 
+				((HotelsBookingUtils)LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)).loadHotelsAsync(lat, lng, RADIUS, HOTELS_LIMIT, request.getParameter("sortType")); 
 			}
         	if (isMobile) {
         		return mapping.findForward("landmarksMobile");

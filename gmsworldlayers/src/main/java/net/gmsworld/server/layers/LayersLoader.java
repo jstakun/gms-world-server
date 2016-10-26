@@ -65,7 +65,7 @@ public class LayersLoader {
 			List<ExtendedLandmark> landmarks = null;
 
 			try {				
-				LayerHelper layerHelper = LayerHelperFactory.getByName(layer);
+				LayerHelper layerHelper = LayerHelperFactory.getInstance().getByName(layer);
 				landmarks = layerHelper.processBinaryRequest(latitude, longitude, query, radius, version, limit, stringLimit, flex, flex2, locale, useCache);
 				layerHelper.cacheGeoJson(landmarks, latitude, longitude, layer, locale, null);
 			} catch (Exception e) {

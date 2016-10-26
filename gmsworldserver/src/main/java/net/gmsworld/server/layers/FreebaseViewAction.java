@@ -6,6 +6,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.gmsworld.server.config.Commons;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
@@ -20,7 +22,7 @@ public class FreebaseViewAction extends Action {
 	
 	public FreebaseViewAction() {
 		super();
-		LayerHelperFactory.setCacheProvider(GoogleCacheProvider.getInstance());
+		LayerHelperFactory.getInstance().setCacheProvider(GoogleCacheProvider.getInstance());
 	}
 	
     /**
@@ -41,7 +43,7 @@ public class FreebaseViewAction extends Action {
 
         if (StringUtils.isNotEmpty(mid)) {
         	request.setAttribute("mid", mid);
-        	FreebaseUtils freebaseUtils = LayerHelperFactory.getFreebaseUtils();
+        	FreebaseUtils freebaseUtils = (FreebaseUtils)LayerHelperFactory.getInstance().getByName(Commons.FREEBASE_LAYER);
         	List<String> filter = Arrays.asList("(all mid:/m/" + mid + ")");
         	List<ExtendedLandmark> landmarks = freebaseUtils.search(filter, null, 1, -1, request.getLocale());
         	if (!landmarks.isEmpty()) {

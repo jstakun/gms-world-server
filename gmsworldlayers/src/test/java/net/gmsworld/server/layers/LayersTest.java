@@ -2,8 +2,6 @@ package net.gmsworld.server.layers;
 
 import static org.junit.Assert.assertEquals;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -41,8 +39,8 @@ public class LayersTest {
 	
 	private static void initLayerHelper() {
 		cacheProvider = new MockCacheProvider(); 		   
-		LayerHelperFactory.setCacheProvider(cacheProvider);
-	    LayerHelperFactory.setThreadProvider(new JvmThreadProvider());	   
+		LayerHelperFactory.getInstance().setCacheProvider(cacheProvider);
+	    LayerHelperFactory.getInstance().setThreadProvider(new JvmThreadProvider());	   
 	}
 	
 	@Before
@@ -82,7 +80,7 @@ public class LayersTest {
 	   //data.add(new Object[]{LayerHelperFactory.getLastfmUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getOsmParkingsUtils()});
 	   //data.add(new Object[]{LayerHelperFactory.getOsmAtmUtils()});
-	   data.add(new Object[]{LayerHelperFactory.getOsmTaxiUtils()});
+	   data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.OSM_TAXI_LAYER)});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getHotelsBookingUtils()});
 	   
@@ -114,28 +112,10 @@ public class LayersTest {
 	}
 	
 	@Parameters
-	public static Collection<Object[]> dynamicLayers() {
+	public static Collection<LayerHelper> dynamicLayers() {
 	   initLayerHelper();
 		
-	   List<Object[]> data = new ArrayList<Object[]>();	
-	   
-	   List<Method> methods = getStaticGetMethods(LayerHelperFactory.class);
-	   for (Method m : methods) {
-		   try {
-			   System.out.println("Checking method " + m.getName());
-			   if (!StringUtils.endsWithAny(m.getName(), new String[]{"getCacheProvider", "getByName", "getEnabledLayers", "getIcon"})) {
-				   System.out.println("Adding method " + m.getName() + " to test case");
-				   data.add(new Object[]{ m.invoke(null,(Object[])null) });
-			   }
-		   } catch (Exception e) {
-			   e.printStackTrace();
-		   }
-		   System.out.println("Done");
-	   }
-	   
-	   System.out.println("Found " + data.size() + " layers.");
-	   
-	   return data;
+	   return LayerHelperFactory.getInstance().getAllLayers().values();	
 	}
 	
 	@Parameter
@@ -143,11 +123,11 @@ public class LayersTest {
 	
 	//@Test
 	public void test2()  {
-		List<String> enabledLayers = LayerHelperFactory.getEnabledLayers();
+		List<String> enabledLayers = LayerHelperFactory.getInstance().getEnabledLayers();
 		System.out.println("Enabled layers count: " +	enabledLayers.size());
 		
 		for (String layerName : enabledLayers) {
-			System.out.println(layerName + " layer is enabled, icon: " + LayerHelperFactory.getIcon(layerName));
+			System.out.println(layerName + " layer is enabled, icon: " + LayerHelperFactory.getInstance().getIcon(layerName));
 		}		
 	}
 	
@@ -208,7 +188,7 @@ public class LayersTest {
 		}
 	}
 
-	private static List<Method> getStaticGetMethods(Class<?> clazz) {
+	/*private static List<Method> getStaticGetMethods(Class<?> clazz) {
 	    List<Method> methods = new ArrayList<Method>();
 	    for (Method method : clazz.getMethods()) {
 	        if (Modifier.isStatic(method.getModifiers()) && method.getName().startsWith("get")) {
@@ -216,5 +196,5 @@ public class LayersTest {
 	        }
 	    }
 	    return methods;
-	}
+	}*/
 }

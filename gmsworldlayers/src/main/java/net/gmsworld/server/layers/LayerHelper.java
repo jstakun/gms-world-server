@@ -43,7 +43,7 @@ public abstract class LayerHelper {
     protected static final Logger logger = Logger.getLogger(LayerHelper.class.getName());
     protected ThreadFactory threadProvider = null;
     protected CacheProvider cacheProvider = null;
-    
+
     protected void setThreadProvider(ThreadFactory threadProvider){
 		this.threadProvider = threadProvider;
 	}

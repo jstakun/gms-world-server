@@ -16,6 +16,7 @@ import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.layers.GeocodeHelperFactory;
 import net.gmsworld.server.layers.LayerHelperFactory;
+import net.gmsworld.server.layers.HotelsBookingUtils;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.UrlUtils;
 import net.gmsworld.server.utils.persistence.Landmark;
@@ -252,9 +253,9 @@ public class NotificationUtils {
     	         logger.log(Level.SEVERE, e.getMessage(), e);
     	     } 
     		 if (StringUtils.equals(type, "Hotels")) {
-    			 hotelsCount = LayerHelperFactory.getHotelsBookingUtils().countNearbyHotels(latitude, longitude, HOTELS_RADIUS);
+    			 hotelsCount = ((HotelsBookingUtils)LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)).countNearbyHotels(latitude, longitude, HOTELS_RADIUS);
     			 if (hotelsCount > 0) {	
-    				 cheapestPrice = LayerHelperFactory.getHotelsBookingUtils().findCheapestHotel(latitude, longitude, HOTELS_RADIUS, 1);
+    				 cheapestPrice = ((HotelsBookingUtils)LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)).findCheapestHotel(latitude, longitude, HOTELS_RADIUS, 1);
     			 }
     		 }
     	}

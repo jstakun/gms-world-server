@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.gmsworld.server.config.ConfigurationManager;
-import net.gmsworld.server.layers.LayerHelperFactory;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.UrlUtils;
@@ -71,7 +70,7 @@ public class AddCommentServlet extends HttpServlet {
                  	   }
                 	}                	 
                 } else {
-                    landmark = LandmarkPersistenceUtils.selectLandmarkById(key, LayerHelperFactory.getCacheProvider());
+                    landmark = LandmarkPersistenceUtils.selectLandmarkById(key, GoogleCacheProvider.getInstance());
                 } 
                 
                 if (landmark != null) {

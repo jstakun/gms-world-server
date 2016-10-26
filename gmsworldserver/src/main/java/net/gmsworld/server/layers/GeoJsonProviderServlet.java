@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.layers.HotelsBookingUtils;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.StringUtil;
 
@@ -74,7 +75,7 @@ public class GeoJsonProviderServlet extends HttpServlet {
 	        		Locale locale = request.getLocale();
 	        		String flexString = StringUtil.getLanguage(locale.getLanguage(), "en", 2);
 	        		String flexString2 = request.getParameter("sortType");
-	        		LayerHelper layerHelper = LayerHelperFactory.getByName(layer);
+	        		LayerHelper layerHelper = LayerHelperFactory.getInstance().getByName(layer);
 	        		if (layerHelper != null) { 
 	        			logger.log(Level.INFO, "Searching geojson document in local in-memory cache...");
 	        			json = layerHelper.getGeoJson(lat, lng, layer, flexString, flexString2);		
@@ -99,7 +100,7 @@ public class GeoJsonProviderServlet extends HttpServlet {
 							if (StringUtils.equals(layer, Commons.HOTELS_LAYER)) {
 								try {
 									//if less that 30 hotels is range increase search radius
-									int hotelsInRangeCount = LayerHelperFactory.getHotelsBookingUtils().countNearbyHotels(lat, lng, RADIUS);
+									int hotelsInRangeCount = ((HotelsBookingUtils)LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)).countNearbyHotels(lat, lng, RADIUS);
 									if (hotelsInRangeCount >= 0 && hotelsInRangeCount < 30) {
 										radius = 2 * RADIUS; //max 100
 									}

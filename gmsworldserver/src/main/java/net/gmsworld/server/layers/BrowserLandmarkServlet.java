@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.layers.HotelsBookingUtils;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.persistence.Landmark;
 import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;
@@ -83,7 +84,7 @@ public class BrowserLandmarkServlet extends HttpServlet {
     			
     			//load hotels layer in asynchronous mode 
     			if (StringUtils.equals(request.getParameter("hotelsMode"), "true")) {
-    				LayerHelperFactory.getHotelsBookingUtils().loadHotelsAsync(latitude, longitude, RADIUS, HOTELS_LIMIT, request.getParameter("sortType")); 
+    				((HotelsBookingUtils)LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)).loadHotelsAsync(latitude, longitude, RADIUS, HOTELS_LIMIT, request.getParameter("sortType")); 
     			}
     			
     			LandmarkPersistenceWebUtils.setFlex(l, request);

@@ -126,9 +126,9 @@
 		  markers = [],
 	      layers = [
 <%
-      for (String layer : net.gmsworld.server.layers.LayerHelperFactory.getEnabledLayers()) {
+      for (String layer : net.gmsworld.server.layers.LayerHelperFactory.getInstance().getEnabledLayers()) {
 %>
-{"name": "<%= layer %>", "icon" : "<%= net.gmsworld.server.layers.LayerHelperFactory.getIcon(layer) %>", "enabled" : "<%= (StringUtils.containsIgnoreCase(enabled, layer) || (disabled != null && !StringUtils.containsIgnoreCase(disabled, layer)) || (disabled == null && enabled == null)) %>"},
+{"name": "<%= layer %>", "icon" : "<%= net.gmsworld.server.layers.LayerHelperFactory.getInstance().getIcon(layer) %>", "enabled" : "<%= (StringUtils.containsIgnoreCase(enabled, layer) || (disabled != null && !StringUtils.containsIgnoreCase(disabled, layer)) || (disabled == null && enabled == null)) %>"},
 <%     
       }
 %>          

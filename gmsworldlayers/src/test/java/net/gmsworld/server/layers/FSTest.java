@@ -1,7 +1,5 @@
 package net.gmsworld.server.layers;
 
-import static org.junit.Assert.*;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -26,8 +24,8 @@ import fi.foyt.foursquare.api.FoursquareApiException;
 public class FSTest {
 	
 	static {
-		LayerHelperFactory.setCacheProvider(new MockCacheProvider());
-		LayerHelperFactory.setThreadProvider(new JvmThreadProvider());	
+		LayerHelperFactory.getInstance().setCacheProvider(new MockCacheProvider());
+		LayerHelperFactory.getInstance().setThreadProvider(new JvmThreadProvider());	
 	}
 	
 	String token = Commons.FS_TEST_TOKEN_FULL_0;
@@ -47,19 +45,19 @@ public class FSTest {
 	
 	@Test
 	public void testExploreVenues() throws ParseException, JSONException, MalformedURLException, IOException, FoursquareApiException {	
-		List<ExtendedLandmark> landmarks = LayerHelperFactory.getFoursquareUtils().exploreVenuesToLandmark(lat, lng, null, 10, limit, StringUtil.XLARGE, 1138, token, locale, false);
+		List<ExtendedLandmark> landmarks = ((FoursquareUtils)LayerHelperFactory.getInstance().getByName(Commons.FOURSQUARE_LAYER)).exploreVenuesToLandmark(lat, lng, null, 10, limit, StringUtil.XLARGE, 1138, token, locale, false);
 		printLandmarks(landmarks, "explored venues");
 	}
 	
 	@Test
 	public void testMyCheckins() throws UnsupportedEncodingException, ParseException, JSONException, FoursquareApiException {	
-		List<ExtendedLandmark> landmarks = LayerHelperFactory.getFoursquareUtils().getFriendsCheckinsToLandmarks(lat, lng, limit, StringUtil.XLARGE, 1138, token, locale, false);
+		List<ExtendedLandmark> landmarks = ((FoursquareUtils)LayerHelperFactory.getInstance().getByName(Commons.FOURSQUARE_LAYER)).getFriendsCheckinsToLandmarks(lat, lng, limit, StringUtil.XLARGE, 1138, token, locale, false);
 		printLandmarks(landmarks, "checkins");
 	}
 	
 	@Test
 	public void testPlaces() throws Exception {	
-		List<ExtendedLandmark> landmarks = LayerHelperFactory.getFoursquareUtils().processBinaryRequest(lat, lng, null, 10, 1138, limit, StringUtil.XLARGE, "checkin", null, locale, false);
+		List<ExtendedLandmark> landmarks = LayerHelperFactory.getInstance().getByName(Commons.FOURSQUARE_LAYER).processBinaryRequest(lat, lng, null, 10, 1138, limit, StringUtil.XLARGE, "checkin", null, locale, false);
 		printLandmarks(landmarks, "places");
 	}
 }

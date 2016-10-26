@@ -267,21 +267,6 @@ public class LayersProviderServlet extends HttpServlet {
                 		}
                 	}	
                 }
-            } else if (StringUtils.contains(uri, "picasaProvider")) { //TODO remove
-                if (request.getParameter("bbox") == null) {
-                    response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-                } else {
-                    String bbox = request.getParameter("bbox");
-                    //TODO remove
-                    logger.log(Level.INFO, "bbox: " + bbox + ", latitude: " + latitude + ", longitude: " + longitude);
-                    if (outFormat.equals(Format.BIN)) {
-                    	List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>(); //LayerHelperFactory.getPicasaUtils().processBinaryRequest(0.0, 0.0, null, 0, version, limit, stringLimit, bbox, null, l, true);
-                    	LayerHelperFactory.getPicasaUtils().serialize(landmarks, response.getOutputStream(), version);
-                    	LayerHelperFactory.getPicasaUtils().cacheGeoJson(landmarks, latitude, longitude, Commons.PICASA_LAYER, l, null);
-                    } else {
-                    	outString = LayerHelperFactory.getPicasaUtils().processRequest(0.0, 0.0, null, 0, version, limit, stringLimit, bbox, null).toString();
-                    }
-                }
             } else if (StringUtils.contains(uri, "meetupProvider")) {
                 if (HttpUtils.isEmptyAny(request, "latitude", "longitude", "radius")) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -523,18 +508,6 @@ public class LayersProviderServlet extends HttpServlet {
                 		outString = new JSONObject().put("ResultSet", landmarks).toString();
                 	}
                 }
-            } else if (StringUtils.contains(uri, "freebaseProvider")) { //TODO remove
-            	if (HttpUtils.isEmptyAny(request, "lat", "lng", "radius") && HttpUtils.isEmptyAny(request, "latitude", "longitude", "radius")) {
-                    response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-                } else {
-                	List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>(); //LayerHelperFactory.getFreebaseUtils().processBinaryRequest(latitude, longitude, null, radius, version, limit, stringLimit, language, null, l, true);               	
-                	if (outFormat.equals(Format.BIN)) {
-                		LayerHelperFactory.getFreebaseUtils().serialize(landmarks, response.getOutputStream(), version);
-                		LayerHelperFactory.getFreebaseUtils().cacheGeoJson(landmarks, latitude, longitude, Commons.FREEBASE_LAYER, l, null);                          
-                    } else {
-                		outString = new JSONObject().put("ResultSet", landmarks).toString();
-                	}
-                }
             } else if (StringUtils.contains(uri, "fbCheckins")) {
             	if (HttpUtils.isEmptyAny(request,"lat","lng","token") && HttpUtils.isEmptyAny(request,"latitude","longitude","token")) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -608,7 +581,7 @@ public class LayersProviderServlet extends HttpServlet {
                     	outString = new JSONObject().put("ResultSet", landmarks).toString();
                     }
             	}
-            } else if (StringUtils.contains(uri, "qypeProvider") || StringUtils.contains(uri, "upcomingProvider") || StringUtils.contains(uri, "gowallaProvider") || StringUtils.contains(uri, "hotwireProvider")) {
+            } else if (StringUtils.endsWithAny(uri, new String[]{"qypeProvider", "upcomingProvider", "gowallaProvider", "picasaProvider", "freebaseProvider"})) {
             	logger.log(Level.WARNING, "Closed api request uri: {0}", uri);
             } else {
             	logger.log(Level.SEVERE, "Unexpected uri: {0}", uri);
@@ -657,8 +630,8 @@ public class LayersProviderServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        LayerHelperFactory.setCacheProvider(GoogleCacheProvider.getInstance());
-        LayerHelperFactory.setThreadProvider(new GoogleThreadProvider());
+        LayerHelperFactory.getInstance().setCacheProvider(GoogleCacheProvider.getInstance());
+        LayerHelperFactory.getInstance().setThreadProvider(new GoogleThreadProvider());
     }
 
     /** 

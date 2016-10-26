@@ -19,6 +19,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import com.jstakun.lm.server.utils.memcache.CacheAction;
+import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 
 /**
@@ -51,7 +52,7 @@ public class GetHeatMapAction extends org.apache.struts.action.Action {
         CacheAction heatMapCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
 			@Override
 			public Object executeAction() {
-				return LandmarkPersistenceUtils.getHeatMap(nDays, LayerHelperFactory.getGmsUtils().getCacheProvider());
+				return LandmarkPersistenceUtils.getHeatMap(nDays, GoogleCacheProvider.getInstance());
 			}
 		});
         Map<String, Integer> heatMapData = (Map<String, Integer>)heatMapCacheAction.getObjectFromCache(DateUtils.getDay(new Date()) + "_" + nDays + "_heatMap", CacheType.NORMAL);
