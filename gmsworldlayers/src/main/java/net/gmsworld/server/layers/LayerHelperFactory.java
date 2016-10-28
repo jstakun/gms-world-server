@@ -41,6 +41,8 @@ public class LayerHelperFactory {
     				new SubTypesScanner().filterResultsBy(
     						new FilterBuilder()
     							.include(LayerHelper.class.getName())
+    							.include(OverpassUtils.class.getName()) //TODO find way to search for indirect subclasses
+    							.include(FoursquareUtils.class.getName())
     				)
     		)
     		.filterInputsBy(

@@ -121,7 +121,7 @@ public class LayersTest {
 	@Parameter
 	public LayerHelper layer;
 	
-	//@Test
+	@Test
 	public void test2()  {
 		List<String> enabledLayers = LayerHelperFactory.getInstance().getEnabledLayers();
 		System.out.println("Enabled layers count: " +	enabledLayers.size());
@@ -131,7 +131,7 @@ public class LayersTest {
 		}		
 	}
 	
-	@Test
+	//@Test
 	public void test() {
 		try {
 			List<ExtendedLandmark> landmarks = null;

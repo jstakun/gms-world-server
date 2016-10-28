@@ -260,7 +260,7 @@ public class HotelsCombinedUtils extends LayerHelper {
 	}
 	
 	public String getLayerName() {
-    	return Commons.HOTELS_LAYER;
+    	return Commons.HOTELS_COMBINED_LAYER;
     }
 	
 	public String getIcon() {
