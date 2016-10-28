@@ -248,7 +248,8 @@ public class NotificationUtils {
     	
     	if (StringUtils.equals(service, Commons.FACEBOOK) || StringUtils.equals(service, Commons.TWITTER)) {
     		 try {
-    			 addressInfo = GeocodeHelperFactory.getMapQuestUtils().processReverseGeocode(latitude, longitude);
+    			 //addressInfo = GeocodeHelperFactory.getMapQuestUtils().processReverseGeocode(latitude, longitude);
+    			 addressInfo = GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(latitude, longitude);
     		 } catch (Exception e) {
     	         logger.log(Level.SEVERE, e.getMessage(), e);
     	     } 

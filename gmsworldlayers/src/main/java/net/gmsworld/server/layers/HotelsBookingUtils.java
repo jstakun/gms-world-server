@@ -141,7 +141,7 @@ public class HotelsBookingUtils extends LayerHelper {
 
 		//first call hotels cache
 		if (StringUtils.equals(callCacheFirst, "true")) {
-			//TODO save to cache with sort type
+			//save to cache with sort type
 			String hotelsUrl = HOTELS_CACHE_URL + lngStr + "_" + latStr + "_" + radius + "_" + limit;
 			if (StringUtils.equalsIgnoreCase(sortType, "stars")) {
 				hotelsUrl += "_stars";

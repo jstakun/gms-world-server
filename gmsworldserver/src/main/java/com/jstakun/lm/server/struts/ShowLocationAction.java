@@ -70,7 +70,8 @@ public class ShowLocationAction extends org.apache.struts.action.Action {
                
                 String address = null;
                 if (!StringUtils.equals(request.getParameter("enabled"), "Hotels")) {
-                	AddressInfo ai = GeocodeHelperFactory.getMapQuestUtils().processReverseGeocode(lat, lng); 
+                	//AddressInfo ai = GeocodeHelperFactory.getMapQuestUtils().processReverseGeocode(lat, lng); 
+                	AddressInfo ai = GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(lat, lng);
                 	if (ai != null) {
                 		address = ai.getField(AddressInfo.EXTENSION);
                 		if (StringUtils.isNotEmpty(address)) {

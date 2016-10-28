@@ -15,7 +15,7 @@ public class GeocodeHelperFactory {
 		return mapQuestUtils;
 	}
 	
-	protected static GoogleGeocodeUtils getGoogleGeocodeUtils() {
+	public static GoogleGeocodeUtils getGoogleGeocodeUtils() {
 		googleGeocodeUtils.setCacheProvider(cacheProvider);
 		return googleGeocodeUtils;
 	}

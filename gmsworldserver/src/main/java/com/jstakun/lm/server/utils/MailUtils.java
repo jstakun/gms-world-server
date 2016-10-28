@@ -52,7 +52,7 @@ public class MailUtils {
     }
 
     public static String sendLandmarkCreationNotification(String title, String body) {
-        //TODO stopped sending landmark creation notification mail to avoid over quota
+        //stopped sending landmark creation notification mail to avoid over quota
     	//String status = sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.ADMIN_MAIL, ConfigurationManager.ADMIN_NICK, title, body, "text/plain");
         String status = "ok";
     	logger.log(Level.INFO, title + "\n--------------------------------\n" + body);
