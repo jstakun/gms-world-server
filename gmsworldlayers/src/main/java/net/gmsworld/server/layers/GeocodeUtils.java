@@ -113,15 +113,7 @@ public class GeocodeUtils {
             if (gc != null) {
                 jsonResp = processGeocodeCache(gc);
             } else {
-                //search for landmark matching address
                 Landmark landmark = null;
-                /*String[] token = addr.split(",");
-                if (token.length > 1 && token[1].length() > 0) {
-                	List<Landmark> landmarks = LandmarkPersistenceUtils.selectLandmarkMatchingQuery(token[1], 1);
-                	if (!landmarks.isEmpty()) {
-                		landmark = landmarks.get(0);
-                	}
-                }*/
                 List<Landmark> landmarks = LandmarkPersistenceUtils.selectLandmarkMatchingQuery(addr, 1);
             	if (!landmarks.isEmpty()) {
             		landmark = landmarks.get(0);
@@ -129,16 +121,7 @@ public class GeocodeUtils {
                 if (landmark != null) {
                     jsonResp = processLandmark(landmark);
                 } else {
-                    JSONObject resp = GeocodeHelperFactory.getGoogleGeocodeUtils().processGeocode(addr, email, appId, true);
-                    try {
-                        if (resp.getString("status").equals("Error")) {
-                            logger.log(Level.INFO, "Search geocode response {0}", resp.toString());
-                            resp = GeocodeHelperFactory.getMapQuestUtils().processGeocode(addr, email, appId, true);
-                        }
-                    } catch (Exception e) {
-                        logger.log(Level.SEVERE, e.getMessage(), e);
-                    }
-                    jsonResp = resp.toString();
+                    jsonResp = processGeocode(addr, email, appId);
                 }
             }
         }
@@ -235,5 +218,18 @@ public class GeocodeUtils {
             }
         }
         return resp;
+    }
+    
+    private static String processGeocode(String address, String email, int appId) {
+    	JSONObject resp = GeocodeHelperFactory.getGoogleGeocodeUtils().processGeocode(address, email, appId, true);
+        try {
+            if (resp.getString("status").equals("Error")) {
+                logger.log(Level.INFO, "Search geocode response {0}", resp.toString());
+                resp = GeocodeHelperFactory.getMapQuestUtils().processGeocode(address, email, appId, true);
+            }
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+        }
+        return resp.toString();
     }
 }

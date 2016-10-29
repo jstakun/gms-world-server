@@ -247,12 +247,7 @@ public class NotificationUtils {
     	int hotelsCount = -1;
     	
     	if (StringUtils.equals(service, Commons.FACEBOOK) || StringUtils.equals(service, Commons.TWITTER)) {
-    		 try {
-    			 //addressInfo = GeocodeHelperFactory.getMapQuestUtils().processReverseGeocode(latitude, longitude);
-    			 addressInfo = GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(latitude, longitude);
-    		 } catch (Exception e) {
-    	         logger.log(Level.SEVERE, e.getMessage(), e);
-    	     } 
+    		 addressInfo = GeocodeHelperFactory.processReverseGeocode(latitude, longitude); 
     		 if (StringUtils.equals(type, "Hotels")) {
     			 hotelsCount = ((HotelsBookingUtils)LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)).countNearbyHotels(latitude, longitude, HOTELS_RADIUS);
     			 if (hotelsCount > 0) {	

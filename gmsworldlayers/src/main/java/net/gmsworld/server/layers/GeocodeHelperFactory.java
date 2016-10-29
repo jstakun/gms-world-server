@@ -1,8 +1,15 @@
 package net.gmsworld.server.layers;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.openlapi.AddressInfo;
+
 import net.gmsworld.server.utils.memcache.CacheProvider;
 
 public class GeocodeHelperFactory {
+	
+	private static final Logger logger = Logger.getLogger(GeocodeHelperFactory.class.getName());
 
 	private static final MapQuestUtils mapQuestUtils = new MapQuestUtils();
 	
@@ -10,12 +17,12 @@ public class GeocodeHelperFactory {
 	
 	private static CacheProvider cacheProvider;
 	
-	public static MapQuestUtils getMapQuestUtils() {
+	protected static MapQuestUtils getMapQuestUtils() {
 		mapQuestUtils.setCacheProvider(cacheProvider);
 		return mapQuestUtils;
 	}
 	
-	public static GoogleGeocodeUtils getGoogleGeocodeUtils() {
+	protected static GoogleGeocodeUtils getGoogleGeocodeUtils() {
 		googleGeocodeUtils.setCacheProvider(cacheProvider);
 		return googleGeocodeUtils;
 	}
@@ -24,7 +31,16 @@ public class GeocodeHelperFactory {
     	cacheProvider = cp;
     }
 	
-	public static CacheProvider getCacheProvider() {
-		return cacheProvider;
+	public static AddressInfo processReverseGeocode(double latitude, double longitude) {
+		 AddressInfo addressInfo = null;
+		 try {
+			 addressInfo = GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(latitude, longitude);
+			 if (addressInfo == null) {
+				 addressInfo = GeocodeHelperFactory.getMapQuestUtils().processReverseGeocode(latitude, longitude);
+			 }
+		 } catch (Exception e) {
+	         logger.log(Level.SEVERE, e.getMessage(), e);
+	     } 
+		 return addressInfo;
 	}
 }
