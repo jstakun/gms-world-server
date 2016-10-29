@@ -264,6 +264,11 @@
     <load-on-startup>1</load-on-startup>
   </servlet>
   <servlet>
+    <servlet-name>LayersProvider2Servlet</servlet-name>
+    <servlet-class>net.gmsworld.server.layers.LayersProvider2Servlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet>
     <servlet-name>ImageUploadServlet</servlet-name>
     <servlet-class>com.jstakun.lm.server.servlet.ImageUploadServlet</servlet-class>
   </servlet>
@@ -406,8 +411,6 @@
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>LayersProviderServlet</servlet-name>
-    <url-pattern>/facebookProvider,/services/facebookProvider,/s/facebookProvider</url-pattern>
-    <url-pattern>/foursquareProvider,/s/foursquareProvider,/services/foursquareProvider</url-pattern>
     <url-pattern>/yelpProvider,/services/yelpProvider,/s/yelpProvider</url-pattern>
     <url-pattern>/qypeProvider,/services/qypeProvider</url-pattern>
     <url-pattern>/googlePlacesProvider,/services/googlePlacesProvider,/s/googlePlacesProvider</url-pattern>
@@ -441,6 +444,11 @@
     <url-pattern>/services/fsCheckins,/s/fsCheckins</url-pattern>
     <url-pattern>/s/fbTagged</url-pattern>
     <url-pattern>/s/twFriends</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>LayersProvider2Servlet</servlet-name>
+    <url-pattern>/facebookProvider,/services/facebookProvider,/s/facebookProvider</url-pattern>
+    <url-pattern>/foursquareProvider,/s/foursquareProvider,/services/foursquareProvider</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>Search2Servlet</servlet-name>

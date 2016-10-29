@@ -2,6 +2,7 @@ package net.gmsworld.server.layers;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLDecoder;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
@@ -138,12 +140,108 @@ public class LayersProvider2Servlet extends HttpServlet {
             	 LayerHelper layerHelper = LayerHelperFactory.getInstance().getByURI(uri);
             	 if (layerHelper != null) {
             		 //TODO set layer specific params here
-            		 //String flexString = null;
-                     //String flexString2 = null;
-            		 //String query = null;
-                     //boolean useCache = true;
-                     //int radius = radiusInMeters;
-            		 //
+            		 //flexString, flexString2 , query, useCache, radius 
+            		 if (StringUtils.equals(layerHelper.getLayerName(), Commons.FACEBOOK_LAYER)) {
+            			 if (request.getParameter("distance") != null) {
+                     		radius = NumberUtils.getRadius(request.getParameter("distance"), 1, 6371) * 1000; //meters
+                     	}
+                     	 query = request.getParameter("q");
+                         if (StringUtils.isNotEmpty(request.getParameter("token"))) {
+                             flexString = URLDecoder.decode(request.getParameter("token"), "UTF-8");
+                         }
+            		 } else if (StringUtils.equals(layerHelper.getLayerName(), Commons.FOURSQUARE_LAYER)) {
+            			 flexString = "checkin"; 
+            			 flexString2 = language;
+            		 } else if (StringUtils.equals(layerHelper.getLayerName(), Commons.YELP_LAYER)) {
+            			 radius = NumberUtils.getRadius(request.getParameter("radius"), 1000, 40000);
+                         int deals = NumberUtils.getInt(request.getHeader("X-GMS-AppId"), 0);
+                         flexString = "false";
+                         if (deals == 1) {
+                        	 flexString = "true";
+                         }
+                         flexString2 = language;
+            		 } else if (StringUtils.equals(layerHelper.getLayerName(), Commons.GOOGLE_PLACES_LAYER)) {
+            			 flexString = language;
+            		 } else if (StringUtils.equals(layerHelper.getLayerName(), Commons.COUPONS_LAYER)) {
+            			 radius = radiusInKm;
+            			 flexString = "";
+                         if (StringUtils.isNotEmpty(request.getParameter("categoryid"))) {
+                        	 flexString = request.getParameter("categoryid");
+                         }
+            			 flexString2 = language;
+            		 } else if (StringUtils.equals(layerHelper.getLayerName(), Commons.GROUPON_LAYER)) {
+            			 radius = radiusInKm;
+            			 flexString = "";
+                         if (StringUtils.isNotEmpty(request.getParameter("categoryid"))) {
+                        	 flexString = request.getParameter("categoryid");
+                         }
+            		 } else if (StringUtils.equals(layerHelper.getLayerName(), Commons.MC_ATM_LAYER)) {
+            			 radius = radiusInKm;
+            		 } else if (StringUtils.equals(layerHelper.getLayerName(), Commons.MEETUP_LAYER)) {
+            			 radius = radiusInKm;
+            		 } else if (StringUtils.equals(layerHelper.getLayerName(), Commons.YOUTUBE_LAYER)) {
+            			 radius = radiusInKm;
+            		 } else if (StringUtils.equals(layerHelper.getLayerName(), Commons.WIKIPEDIA_LAYER)) {
+            			 radius = radiusInKm;
+            			 flexString = language;
+            		 } else if (StringUtils.equals(layerHelper.getLayerName(), Commons.WEBCAM_LAYER)) {
+            			 radius = radiusInKm;
+            		 } else if (StringUtils.equals(layerHelper.getLayerName(), Commons.FOURSQUARE_MERCHANT_LAYER)) {
+            			 if (StringUtils.isNotEmpty(request.getParameter("token"))) {
+                             flexString = URLDecoder.decode(request.getParameter("token"), "UTF-8");
+                         }
+            			 flexString2 = request.getParameter("categoryid");
+            		 } else if (StringUtils.equals(layerHelper.getLayerName(), Commons.EXPEDIA_LAYER)) {
+            			 radius = radiusInKm;
+            			 flexString = locale;
+            		 } else if (StringUtils.equals(layerHelper.getLayerName(), Commons.TWITTER_LAYER)) {
+            			 radius = radiusInKm;
+            			 flexString = language;
+            		 } else if (StringUtils.equals(layerHelper.getLayerName(), Commons.PANORAMIO_LAYER)) {
+            			 if (HttpUtils.isEmptyAny(request, "minx", "miny", "maxx", "maxy")) {
+                             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                         } else {
+                             double miny = GeocodeUtils.getLatitude(request.getParameter("miny"));
+                             double minx = GeocodeUtils.getLongitude(request.getParameter("minx"));
+                             double maxy = GeocodeUtils.getLatitude(request.getParameter("maxy"));
+                             double maxx = GeocodeUtils.getLongitude(request.getParameter("maxx"));
+                             
+                             //minx, miny, maxx, maxy -> minimum longitude, latitude, maximum longitude and latitude,
+                             
+                             if ((minx == 0d && maxx == 0d && miny == 0d && maxy == 0d) ||
+                             	(miny == 85.05d && maxy == 85.05d && minx == -180d && maxx == -180d)) {
+                     			logger.log(Level.WARNING, "Bounding box is zero. Changing to latitude and longitude");
+                     			minx = maxx = longitude;
+                     			miny = maxy = latitude;
+                     		 }
+                             
+                             if (Math.abs(maxx - minx) < 0.1) {
+                     			if (minx > -180d) {
+                     				minx -= 0.1;
+                     			}
+                     			if (maxx < 180d) {
+                     				maxx += 0.1;
+                     			}
+                     		}
+                     		if (Math.abs(maxy - miny) < 0.1) {
+                     			if (miny > -90d) {
+                     				miny -= 0.1;
+                     			}
+                     			if (maxy < 90d) {
+                     				maxy += 0.1;
+                     			}
+                     		}
+
+                            flexString = "minx=" + minx + "&miny=" + miny + "&maxx=" + maxx + "&maxy=" + maxy;
+                         }     
+            		 } else if (StringUtils.equals(layerHelper.getLayerName(), Commons.HOTELS_LAYER)) {
+            			 flexString = language;
+            			 useCache = false;
+            			 latitude = latitudeMin;
+            			 longitude = longitudeMin;
+            		 } 
+            		 //not for layer Flickr, Public, Eventful, OSM, Hotels, 
+            		 
             		 if (outFormat.equals(Format.BIN)) {
                  		List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(latitude, longitude, query, radius, version, limit, stringLimit, flexString, flexString2, l, useCache);               	
                  		layerHelper.serialize(landmarks, response.getOutputStream(), version);
