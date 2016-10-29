@@ -34,9 +34,9 @@ public class GeocodeHelperFactory {
 	public static AddressInfo processReverseGeocode(double latitude, double longitude) {
 		 AddressInfo addressInfo = null;
 		 try {
-			 addressInfo = GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(latitude, longitude);
+			 addressInfo = getGoogleGeocodeUtils().processReverseGeocode(latitude, longitude);
 			 if (addressInfo == null) {
-				 addressInfo = GeocodeHelperFactory.getMapQuestUtils().processReverseGeocode(latitude, longitude);
+				 addressInfo = getMapQuestUtils().processReverseGeocode(latitude, longitude);
 			 }
 		 } catch (Exception e) {
 	         logger.log(Level.SEVERE, e.getMessage(), e);

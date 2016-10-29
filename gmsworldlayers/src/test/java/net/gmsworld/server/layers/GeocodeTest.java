@@ -45,9 +45,9 @@ public class GeocodeTest {
     	if (!landmarks.isEmpty()) {
     		landmark = landmarks.get(0);
     	}
-        if (landmark != null) {
+    	GeocodeHelperFactory.setCacheProvider(new MockCacheProvider());
+    	if (landmark != null) {
         	System.out.println("Landmark: " + landmark.getLatitude() + "," + landmark.getLongitude());
-        	GeocodeHelperFactory.setCacheProvider(new MockCacheProvider());
         	String geocode = GeocodeHelperFactory.getMapQuestUtils().processReverseGeocode(landmark.getLatitude(),landmark.getLongitude()).getField(AddressInfo.EXTENSION);
         	System.out.println("Landmark geocode: " + geocode);
         } else {
@@ -77,6 +77,10 @@ public class GeocodeTest {
         
         ai = GeocodeHelperFactory.getMapQuestUtils().processReverseGeocode(41.54, 12.27);
         System.out.println("mapquest 4: " + ai.getField(AddressInfo.CITY) + " " + ai.getField(AddressInfo.COUNTRY) + " " + ai.getField(AddressInfo.EXTENSION));   
+	
+        ai = GeocodeHelperFactory.processReverseGeocode(39.457651,-0.400439);
+        System.out.println("generic 1: " + ai.getField(AddressInfo.CITY) + " " + ai.getField(AddressInfo.COUNTRY) + " " + ai.getField(AddressInfo.EXTENSION));
+        
 	}
 
 }
