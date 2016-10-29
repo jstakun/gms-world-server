@@ -160,7 +160,7 @@ public class LayersProviderServlet extends HttpServlet {
                 if (HttpUtils.isEmptyAny(request, "lat", "lng", "radius") && HttpUtils.isEmptyAny(request, "latitude", "longitude", "radius")) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 } else {
-                    radiusInKm = NumberUtils.getRadius(request.getParameter("radius"), 1000, 40000);
+                    radiusInMeters = NumberUtils.getRadius(request.getParameter("radius"), 1000, 40000);
                     int deals = NumberUtils.getInt(request.getHeader("X-GMS-AppId"), 0);
                     String hasDeals = "false";
                     if (deals == 1) {
