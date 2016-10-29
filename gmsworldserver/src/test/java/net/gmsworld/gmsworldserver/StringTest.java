@@ -1,7 +1,5 @@
 package net.gmsworld.gmsworldserver;
 
-import static org.junit.Assert.*;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 

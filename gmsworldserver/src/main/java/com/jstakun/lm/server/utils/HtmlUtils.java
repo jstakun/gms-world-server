@@ -18,9 +18,6 @@ import java.util.logging.Logger;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
-import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.layers.LayerHelper;
-import net.gmsworld.server.layers.LayerHelperFactory;
 import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.UrlUtils;
