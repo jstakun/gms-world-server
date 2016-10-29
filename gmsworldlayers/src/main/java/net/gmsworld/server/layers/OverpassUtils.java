@@ -162,4 +162,8 @@ public abstract class OverpassUtils extends LayerHelper {
     	
     	 return landmarks;
 	}	 
+	
+	public String getURI() {
+    	return "osmProvider";
+    }
 }

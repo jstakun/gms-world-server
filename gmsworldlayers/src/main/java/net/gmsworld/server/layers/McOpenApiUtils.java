@@ -312,4 +312,8 @@ public class McOpenApiUtils extends LayerHelper {
 	public String getIcon() {
 		return "mastercard.png";
 	}
+	
+	public String getURI() {
+		return "atmProvider";
+	}
 }

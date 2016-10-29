@@ -412,4 +412,8 @@ public class FoursquareMerchantUtils extends FoursquareUtils {
 	public String getIcon() {
 		return "gift.png";
 	}
+	
+	public String getURI() {
+		return "foursquareMerchant";
+	}
 }

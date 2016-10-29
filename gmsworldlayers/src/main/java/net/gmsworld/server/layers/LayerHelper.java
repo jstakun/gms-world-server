@@ -352,4 +352,8 @@ public abstract class LayerHelper {
     public String getIcon() {
     	return getLayerName().toLowerCase() + ".png";
     }
+    
+    public String getURI() {
+    	return getLayerName().toLowerCase() + "Provider";
+    }
 }

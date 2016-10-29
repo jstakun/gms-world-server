@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package net.gmsworld.server.layers;
 
 import java.net.URL;
@@ -165,5 +161,9 @@ public class WebcamUtils extends LayerHelper {
 	
 	public String getIcon() {
 		return "webcam.png";
+	}
+	
+	public String getURI() {
+		return "webcamProvider";
 	}
 }

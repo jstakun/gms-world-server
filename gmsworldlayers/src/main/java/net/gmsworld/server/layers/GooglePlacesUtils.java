@@ -465,6 +465,10 @@ public class GooglePlacesUtils extends LayerHelper {
 		return "google_plus.png";
 	}
 	
+	public String getURI() {
+		return "googlePlacesProvider";
+	}
+	
 	private static class VenueDetailsRetriever implements Runnable {
 
         private String placeid, language;

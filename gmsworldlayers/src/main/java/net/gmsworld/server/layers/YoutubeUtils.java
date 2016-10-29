@@ -444,4 +444,8 @@ public class YoutubeUtils extends LayerHelper {
 	public String getLayerName() {
 		return Commons.YOUTUBE_LAYER;
 	}
+	
+	public String getURI() {
+		return "youTubeProvider";
+	}
 }

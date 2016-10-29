@@ -177,4 +177,8 @@ public class GeonamesUtils extends LayerHelper {
 	public String getLayerName() {
 		 return Commons.WIKIPEDIA_LAYER;
 	}
+	
+	public String getURI() {
+		return "geonamesProvider";
+	}
 }

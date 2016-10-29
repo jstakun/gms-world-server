@@ -483,4 +483,8 @@ public class HotelsBookingUtils extends LayerHelper {
 	public String getIcon() {
 		return "hotel.png";
 	}
+	
+	public String getURI() {
+		return "hotelsProvider";
+	}
 }

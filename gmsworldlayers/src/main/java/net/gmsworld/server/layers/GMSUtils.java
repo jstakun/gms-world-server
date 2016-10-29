@@ -228,4 +228,8 @@ public class GMSUtils extends LayerHelper {
 	public String getIcon() {
 		return "gmsworld.png";
 	}
+	
+	public String getURI() {
+		return "downloadLandmark";
+	}
 }

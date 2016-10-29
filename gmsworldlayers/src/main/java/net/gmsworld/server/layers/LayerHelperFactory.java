@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 
 import net.gmsworld.server.utils.memcache.CacheProvider;
 
+import org.apache.commons.lang.StringUtils;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ClasspathHelper;
@@ -88,6 +89,15 @@ public class LayerHelperFactory {
 	public LayerHelper getByName(String name) {
     	return allLayers.get(name);
     }
+	
+	public LayerHelper getByURI(String uri) {
+		for (LayerHelper layer : allLayers.values()) {
+			if (StringUtils.contains(uri, layer.getURI())) {
+				return layer;
+			}
+		}
+		return null;
+	}
     
     public List<String> getEnabledLayers() {
     	return enabledLayers;

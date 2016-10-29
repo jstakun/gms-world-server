@@ -199,4 +199,8 @@ public class PanoramioUtils extends LayerHelper {
 	public String getLayerName() {
     	return Commons.PANORAMIO_LAYER;
     }
+	
+	public String getURI() {
+		return "panoramio2Provider";
+	}
 }
