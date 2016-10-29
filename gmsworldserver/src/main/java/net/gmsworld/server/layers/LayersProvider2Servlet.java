@@ -128,6 +128,7 @@ public class LayersProvider2Servlet extends HttpServlet {
              
              String flexString = null;
              String flexString2 = null;
+             String query = null;
              boolean useCache = true;
              int radius = radiusInMeters;
              
@@ -139,15 +140,16 @@ public class LayersProvider2Servlet extends HttpServlet {
             		 //TODO set layer specific params here
             		 //String flexString = null;
                      //String flexString2 = null;
+            		 //String query = null;
                      //boolean useCache = true;
                      //int radius = radiusInMeters;
             		 //
             		 if (outFormat.equals(Format.BIN)) {
-                 		List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(latitude, longitude, null, radius, version, limit, stringLimit, flexString, flexString2, l, useCache);               	
+                 		List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(latitude, longitude, query, radius, version, limit, stringLimit, flexString, flexString2, l, useCache);               	
                  		layerHelper.serialize(landmarks, response.getOutputStream(), version);
                  		layerHelper.cacheGeoJson(landmarks, latitude, longitude, layerHelper.getLayerName(), l, null);
                  	} else {
-                 		outString = layerHelper.processRequest(latitude, longitude, null, radius, version, limit, stringLimit, flexString, flexString2).toString();
+                 		outString = layerHelper.processRequest(latitude, longitude, query, radius, version, limit, stringLimit, flexString, flexString2).toString();
                  	}	
             	 }
              }
