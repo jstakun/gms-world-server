@@ -57,7 +57,8 @@ public abstract class LayerHelper {
 	}
     
     protected JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2) throws Exception {
-    	return null;
+    	List<ExtendedLandmark> landmarks = processBinaryRequest(lat, lng, query, radius, version, limit, stringLimit, flexString, flexString, Locale.US, true);
+    	return new JSONObject().put("ResultSet", landmarks);
     }
 
     protected List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale, boolean useCache) throws Exception {

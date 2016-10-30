@@ -332,12 +332,12 @@ public class LayersProviderServlet extends HttpServlet {
             			layerHelper = LayerHelperFactory.getInstance().getByName(Commons.OSM_ATM_LAYER);
             		}
             		//logger.log(Level.INFO, "bbox: " + bbox + ", latitude: " + latitude + ", longitude: " + longitude + ", amenity: " + amenity);
-                	List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(latitude, longitude, null, -1, 1, limit, stringLimit, amenity, bbox, l, true);
                 	if (outFormat.equals(Format.BIN)) {
-                		layerHelper.serialize(landmarks, response.getOutputStream(), version);
+                		List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(latitude, longitude, null, -1, 1, limit, stringLimit, amenity, bbox, l, true);
+                    	layerHelper.serialize(landmarks, response.getOutputStream(), version);
                     	layerHelper.cacheGeoJson(landmarks, latitude, longitude, amenity, l, null);                      
                     } else {	
-                        outString = new JSONObject().put("ResultSet", landmarks).toString();
+                    	outString = layerHelper.processRequest(latitude, longitude, null, -1, 1, limit, stringLimit, amenity, bbox).toString();
                 	}
                 }
             } else if (StringUtils.contains(uri, "geonamesProvider")) {
@@ -446,12 +446,12 @@ public class LayersProviderServlet extends HttpServlet {
                 if (HttpUtils.isEmptyAny(request, "latitudeMin", "longitudeMin")) { //, "latitudeMax", "longitudeMax")) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 } else {
-                	List<ExtendedLandmark> landmarks = LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER).processBinaryRequest(latitudeMin, longitudeMin, null, radiusInMeters, version, limit, stringLimit, language, null, l, false);
                 	if (outFormat.equals(Format.BIN)) {
+                		List<ExtendedLandmark> landmarks = LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER).processBinaryRequest(latitudeMin, longitudeMin, null, radiusInMeters, version, limit, stringLimit, language, null, l, false);
                     	LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER).serialize(landmarks, response.getOutputStream(), version);
                     	LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER).cacheGeoJson(landmarks, latitude, longitude, Commons.HOTELS_LAYER, l, "distance");                          
                     } else {
-                		outString = new JSONObject().put("ResultSet", landmarks).toString();
+                		outString = LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER).processRequest(latitudeMin, longitudeMin, null, radiusInMeters, version, limit, stringLimit, language, null).toString();
                     }
                 }
             } else if (StringUtils.contains(uri, "twitterProvider")) {
