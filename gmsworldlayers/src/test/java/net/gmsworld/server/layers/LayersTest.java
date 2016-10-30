@@ -70,7 +70,7 @@ public class LayersTest {
 	}
 	
 	
-	//@Parameters
+	@Parameters
 	public static Collection<Object[]> staticLayers() {
 	   initLayerHelper();
 		
@@ -111,7 +111,7 @@ public class LayersTest {
 	   return data;
 	}
 	
-	@Parameters
+	//@Parameters
 	public static Collection<LayerHelper> dynamicLayers() {
 	   initLayerHelper();
 		

@@ -139,8 +139,8 @@ public class LayersProvider2Servlet extends HttpServlet {
              } else {
             	 LayerHelper layerHelper = LayerHelperFactory.getInstance().getByURI(uri);
             	 if (layerHelper != null) {
-            		 //TODO set layer specific params here
-            		 //flexString, flexString2 , query, useCache, radius 
+            		 //set layer specific params here
+            		 //flexString, flexString2, query, useCache, radius, ...
             		 if (StringUtils.equals(layerHelper.getLayerName(), Commons.FACEBOOK_LAYER)) {
             			 if (request.getParameter("distance") != null) {
                      		radius = NumberUtils.getRadius(request.getParameter("distance"), 1, 6371) * 1000; //meters

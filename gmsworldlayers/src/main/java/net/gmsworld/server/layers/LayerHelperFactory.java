@@ -34,6 +34,10 @@ public class LayerHelperFactory {
 	private static final LayerHelperFactory instance = new LayerHelperFactory();
 	
 	private LayerHelperFactory() {
+		final Class<LayerHelper> parentClass = LayerHelper.class;
+		final String packageName = parentClass.getPackage().getName();
+		logger.info("Starting LayerHelperFactory scanner in package " + packageName);
+		
 		Reflections reflections = new Reflections(new ConfigurationBuilder()
     		.setUrls(
     				ClasspathHelper.forClass(LayerHelper.class)
@@ -41,18 +45,16 @@ public class LayerHelperFactory {
     		.setScanners(
     				new SubTypesScanner().filterResultsBy(
     						new FilterBuilder()
-    							.include(LayerHelper.class.getName())
-    							.include(OverpassUtils.class.getName()) //TODO find way to search for indirect subclasses
-    							.include(FoursquareUtils.class.getName())
+    							.includePackage(packageName)
     				)
     		)
     		.filterInputsBy(
     			new FilterBuilder()
-                	.includePackage("net.gmsworld.server.layers")
+                	.includePackage(packageName)
     		)
 		);
 
-		Set<Class<? extends LayerHelper>> matchingClasses = reflections.getSubTypesOf(LayerHelper.class);
+		Set<Class<? extends LayerHelper>> matchingClasses = reflections.getSubTypesOf(parentClass);
 		
 		for (Class<? extends LayerHelper> matchingClass : matchingClasses) {
 			if (!Modifier.isAbstract(matchingClass.getModifiers())) {
