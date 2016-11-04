@@ -225,8 +225,17 @@ public class CouponsUtils extends LayerHelper {
                     double save = 0, discount = 0;
                     if (deal.has("dealSavings") && !deal.isNull("dealSavings")
                             && deal.has("dealDiscountPercent") && !deal.isNull("dealDiscountPercent")) {
-                        save = deal.getDouble("dealSavings");
-                        discount = deal.getDouble("dealDiscountPercent") / 100d;
+                        Object o = deal.get("dealSavings");
+                        if (o instanceof Double) {
+                        	save = (double)o;
+                        } else {
+                        	try {
+                        		save = Double.valueOf((String)o).doubleValue();
+                        	} catch (Exception e) {
+                        		logger.log(Level.SEVERE, "Unexpected dealSavings value " + o);
+                        	}
+                        }
+                    	discount = deal.getDouble("dealDiscountPercent") / 100d;
                     }
                                     
                     String dealTypeStr = null;

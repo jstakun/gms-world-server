@@ -76,35 +76,10 @@ public class LayersTest {
 		
 	   List<Object[]> data = new ArrayList<Object[]>();	
 	  
-	   //data.add(new Object[]{LayerHelperFactory.getPicasaUtils()});
-	   //data.add(new Object[]{LayerHelperFactory.getLastfmUtils()});
-	   //data.add(new Object[]{LayerHelperFactory.getOsmParkingsUtils()});
-	   //data.add(new Object[]{LayerHelperFactory.getOsmAtmUtils()});
-	   data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.OSM_TAXI_LAYER)});
+	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.OSM_TAXI_LAYER)});
 	   
-	   //data.add(new Object[]{LayerHelperFactory.getHotelsBookingUtils()});
-	   
-	   //data.add(new Object[]{LayerHelperFactory.getFreebaseUtils()});
-	   //data.add(new Object[]{LayerHelperFactory.getInstagramUtils()});
-	   //data.add(new Object[]{LayerHelperFactory.getPanoramioUtils()});
-	   //data.add(new Object[]{LayerHelperFactory.getFlickrUtils()});
-	   //data.add(new Object[]{LayerHelperFactory.getYoutubeUtils()});
-	   //data.add(new Object[]{LayerHelperFactory.getExpediaUtils()});
-	   //data.add(new Object[]{LayerHelperFactory.getMcOpenApiUtils()});
-	   //data.add(new Object[]{LayerHelperFactory.getGeonamesUtils()});
-	   //data.add(new Object[]{LayerHelperFactory.getGmsUtils()});
-	   //data.add(new Object[]{LayerHelperFactory.getTwitterUtils()});
-	   //data.add(new Object[]{LayerHelperFactory.getEventfulUtils()});
-	   
-	   //data.add(new Object[]{LayerHelperFactory.getGrouponUtils()});
-	   //data.add(new Object[]{LayerHelperFactory.getCouponsUtils()});
-	   
-	   //data.add(new Object[]{LayerHelperFactory.getFoursquareUtils()});   
-	   //data.add(new Object[]{LayerHelperFactory.getYelpUtils()});
-	   //data.add(new Object[]{LayerHelperFactory.getGooglePlacesUtils()});
-	   //data.add(new Object[]{LayerHelperFactory.getFacebookUtils()});
-	   //data.add(new Object[]{LayerHelperFactory.getFoursquareMerchantUtils()});
-	   //data.add(new Object[]{LayerHelperFactory.getSearchUtils()});
+	   data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.COUPONS_LAYER)});
+	   data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.GROUPON_LAYER)});
 	   
 	   System.out.println("Found " + data.size() + " layers.");
 	   
@@ -121,7 +96,7 @@ public class LayersTest {
 	@Parameter
 	public LayerHelper layer;
 	
-	@Test
+	//@Test
 	public void test2()  {
 		List<String> enabledLayers = LayerHelperFactory.getInstance().getEnabledLayers();
 		System.out.println("Enabled layers count: " +	enabledLayers.size());
@@ -131,7 +106,7 @@ public class LayersTest {
 		}		
 	}
 	
-	//@Test
+	@Test
 	public void test() {
 		try {
 			List<ExtendedLandmark> landmarks = null;

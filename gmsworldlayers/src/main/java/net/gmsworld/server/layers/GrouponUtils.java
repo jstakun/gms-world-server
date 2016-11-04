@@ -508,17 +508,21 @@ public class GrouponUtils extends LayerHelper {
                                         QualifiedCoordinates qc = new QualifiedCoordinates(divlat, divlng, 0f, 0f, 0f);
 
                                         AddressInfo addressInfo = new AddressInfo();
-                                        //city, streetAddress1, streetAddress2,phoneNumber,postalCode,state
+                                        //city, streetAddress1, streetAddress2 ,phoneNumber, postalCode, state
                                         if (location.has("streetAddress1")) {
-                                            String address = location.getString("streetAddress1");
+                                        	String address = "";
+                                        	Object s = location.get("streetAddress1");
+                                        	if (s != null && s.toString().length() > 0) {
+                                        		address += s.toString();
+                                    		}
                                             if (address.length() > 0) {
-                                                if (location.has("streetAddress2")) {
-                                                    Object s = location.get("streetAddress2");
-                                                    if (s != null && s.toString().length() > 0) {
-                                                        address += ", " + s.toString();
-                                                    }
-                                                }
-                                                addressInfo.setField(AddressInfo.STREET, address);
+                                            	if (location.has("streetAddress2")) {
+                                            		s = location.get("streetAddress2");
+                                            		if (s != null && s.toString().length() > 0) {
+                                            			address += ", " + s.toString();
+                                            		}
+                                            	}
+                                            	addressInfo.setField(AddressInfo.STREET, address);
                                             }
                                         }
 
@@ -527,9 +531,15 @@ public class GrouponUtils extends LayerHelper {
                                         if (phone != null && phone.matches(".*\\d+.*")) {
                                         	addressInfo.setField(AddressInfo.PHONE_NUMBER, phone);
                                         }
-                                        addressInfo.setField(AddressInfo.POSTAL_CODE, location.getString("postalCode"));
-                                        addressInfo.setField(AddressInfo.STATE, location.getString("state"));
                                         
+                                        Object s = location.get("postalCode");
+                                        if (s != null && s.toString().length() > 0) {
+                                        	addressInfo.setField(AddressInfo.POSTAL_CODE, s.toString());
+                                        }
+                                        s = location.get("state");
+                                        if (s != null && s.toString().length() > 0) {	
+                                        	addressInfo.setField(AddressInfo.STATE, s.toString());
+                                        }
                                         ExtendedLandmark landmark = LandmarkFactory.getLandmark(title, null, qc, Commons.GROUPON_LAYER, addressInfo, start_date, null);
                              		    landmark.setUrl(url);
                              		    String desc = JSONUtils.buildLandmarkDesc(landmark, tokens, locale);

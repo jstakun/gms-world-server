@@ -116,7 +116,7 @@
           currencycode,
           eurexchangerate,
           flagmarker,
-          sortType = '<%= request.getParameter("sortType") %>', 
+          sortType = '<%= request.getParameter("sortType") != null ? request.getParameter("sortType") : "distance" %>', 
           mapcenter = new google.maps.LatLng(<%= latitude %>, <%= longitude %>),
           hotelsOnly = true,
           layer_counter = 0,
