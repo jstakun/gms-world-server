@@ -312,7 +312,7 @@ public abstract class LayerHelper {
     			
     			if (!landmarks.isEmpty() && StringUtils.isNotEmpty(json)) {
     				logger.log(Level.INFO, "Saved geojson list to second level cache");
-    				String key = "geojson/" + latStr + "/" + lngStr;
+    				String key = "geojson/" + latStr + "/" + lngStr + "/" + layer;
     				cacheProvider.putToSecondLevelCache(key, json);
     			}
     			

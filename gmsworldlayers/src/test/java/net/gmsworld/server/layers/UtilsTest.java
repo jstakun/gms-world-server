@@ -11,6 +11,7 @@ import java.util.Locale;
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.JSONUtils;
+import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.UrlUtils;
 
 import org.junit.Test;
@@ -38,6 +39,7 @@ public class UtilsTest {
 		System.out.println(d.getPrice() + " " + d.getCurrencyCode());
 	}
 	
+	@Test
 	public void stringTest() throws Exception {
 		//String original = "aáeéiíoóöőuúüű AÁEÉIÍOÓÖŐUÚÜŰ";
 		String original = "ążźćółęńś ĄŻŹĆÓŁĘŃŚ";
@@ -58,7 +60,7 @@ public class UtilsTest {
 		                + removed + " (" + asHex(removed) + ")");
 		}
 		
-		System.out.println("\nLocales:\n");
+		/*System.out.println("\nLocales:\n");
 		
 		for (Locale locale : Locale.getAvailableLocales()) {
 			System.out.println(locale.getCountry() + ": " + locale.getDisplayCountry());
@@ -68,10 +70,11 @@ public class UtilsTest {
 		
 		for (Currency currency : Currency.getAvailableCurrencies()) {
 			System.out.println(currency.getCurrencyCode() + ": " + currency.getDisplayName());
-		}
+		}*/
+		for (int i=0;i<50;i++)
+		System.out.println(StringUtil.formatCoordE2(13.3001));
 	}
 	
-	@Test
 	public void dateTest() {
 		long l = 1454963549623L; //21:32 PL
 		Date date = new Date(l);
