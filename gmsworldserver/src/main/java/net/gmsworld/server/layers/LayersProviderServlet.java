@@ -364,7 +364,7 @@ public class LayersProviderServlet extends HttpServlet {
                 		outString = LayerHelperFactory.getInstance().getByName(Commons.WEBCAM_LAYER).processRequest(latitude, longitude, null, radiusInKm, version, limit, stringLimit, null, null).toString();
                 	}	
                 }
-            } else if (StringUtils.contains(uri, "panoramio2Provider")) {
+            /*} else if (StringUtils.contains(uri, "panoramio2Provider")) {
                 if (HttpUtils.isEmptyAny(request, "minx", "miny", "maxx", "maxy")) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 } else {
@@ -411,7 +411,7 @@ public class LayersProviderServlet extends HttpServlet {
                     } else {	
                     	outString = LayerHelperFactory.getInstance().getByName(Commons.PANORAMIO_LAYER).processRequest(latitude, longitude, null, 0, version, limit, stringLimit, bbox, null).toString();
                     }	
-                }
+                }*/
             } else if (StringUtils.contains(uri, "foursquareMerchant")) {
                 if (HttpUtils.isEmptyAny(request, "lat", "lng") && HttpUtils.isEmptyAny(request, "latitude", "longitude")) { 
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -540,7 +540,7 @@ public class LayersProviderServlet extends HttpServlet {
                     }
             	}
             } else if (StringUtils.endsWithAny(uri, new String[]{"qypeProvider", "upcomingProvider", "gowallaProvider", 
-            		"picasaProvider", "freebaseProvider", "lastfmProvider", "instagramProvider"})) {
+            		"picasaProvider", "freebaseProvider", "lastfmProvider", "instagramProvider", "panoramio2Provider"})) {
             	logger.log(Level.WARNING, "Closed api request uri: {0}", uri);
             } else {
             	logger.log(Level.SEVERE, "Unexpected uri: {0}", uri);

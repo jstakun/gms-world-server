@@ -203,4 +203,8 @@ public class PanoramioUtils extends LayerHelper {
 	public String getURI() {
 		return "panoramio2Provider";
 	}
+	
+	public boolean isEnabled() {
+    	return false;
+    }
 }
