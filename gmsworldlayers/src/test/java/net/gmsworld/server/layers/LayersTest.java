@@ -78,8 +78,11 @@ public class LayersTest {
 	  
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.OSM_TAXI_LAYER)});
 	   
-	   data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.COUPONS_LAYER)});
-	   data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.GROUPON_LAYER)});
+	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.COUPONS_LAYER)});
+	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.GROUPON_LAYER)});
+	   
+	   data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.MC_ATM_LAYER)});
+	   
 	   
 	   System.out.println("Found " + data.size() + " layers.");
 	   

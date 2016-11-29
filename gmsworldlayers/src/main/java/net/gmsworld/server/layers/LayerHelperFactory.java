@@ -65,7 +65,7 @@ public class LayerHelperFactory {
 						enabledLayers.add(layer.getLayerName());
 					}
 					allLayers.put(layer.getLayerName(), layer);
-				} catch (Exception e) {
+				} catch (Throwable e) {
 					logger.log(Level.SEVERE, "Failed to create new instance for class " + matchingClass.getName(), e);
 				}			
 			}
