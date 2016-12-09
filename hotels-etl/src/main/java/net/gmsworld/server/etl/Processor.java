@@ -53,7 +53,7 @@ public class Processor {
 	private static ObjectMapper mapper = new ObjectMapper();
 	private static final String HOTELS_FILE = "/tmp/hotels.zip";
 	
-	//last count 1038551
+	//last count 1090472
 	private static final int BATCH_SIZE = 2000; 
 	
 	private static final String AID = "864525";
@@ -131,6 +131,7 @@ public class Processor {
 	private static void processFile(CsvBeanReader beanReader, boolean dryrun, boolean compare) throws IOException {
 		try {
 			final String[] header = beanReader.getHeader(true);
+			long startTime = System.currentTimeMillis();
 		    
 		    //filter columns
 		    List<String> columnsToMap = Arrays.asList("header_to_exclude");
@@ -204,7 +205,7 @@ public class Processor {
 		    	saveBatchToDb(featureCollection, dryrun);
     		}
 		    
-		    System.out.println("Processed " + count + " records with " + errors + " errors.");
+		    System.out.println("Processed " + count + " records with " + errors + " errors in " + (System.currentTimeMillis()-startTime) + " millis.");
 
 		} finally {
 			if (beanReader != null) {

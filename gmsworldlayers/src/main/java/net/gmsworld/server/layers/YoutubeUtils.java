@@ -186,11 +186,15 @@ public class YoutubeUtils extends LayerHelper {
     			thumbnail = snippet.getThumbnails().getMedium().getUrl();
     		}
     		
-    		QualifiedCoordinates qc = new QualifiedCoordinates(lat, lng, 0f, 0f, 0f);;
+    		QualifiedCoordinates qc = new QualifiedCoordinates(lat, lng, 0f, 0f, 0f);
     		if (video.getRecordingDetails() != null) {
     			GeoPoint location = video.getRecordingDetails().getLocation();
-    			if (location != null && location.getLatitude() != null && location.getLongitude() != null) {
-    				qc = new QualifiedCoordinates(location.getLatitude(), location.getLongitude(), 0f, 0f, 0f);
+    			if (location != null) {
+    				Double latitude = location.getLatitude();
+    				Double longitude = location.getLongitude();
+    				if (latitude != null && longitude != null) {
+    					qc = new QualifiedCoordinates(latitude, longitude, 0f, 0f, 0f);
+    				}
     			} 
     		}
     		ExtendedLandmark landmark = LandmarkFactory.getLandmark(title, null, qc, Commons.YOUTUBE_LAYER, new AddressInfo(), creationDate, null);

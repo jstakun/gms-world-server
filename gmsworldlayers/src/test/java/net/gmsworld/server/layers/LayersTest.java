@@ -46,15 +46,15 @@ public class LayersTest {
 	@Before
 	public void initialize() {
 		//warsaw test
-		//lat = 52.25;
-		//lng = 20.95;
-		//bbox = "20.96,52.24,20.97,52.25"; //"51.25,19.95,53.25,21.95"; //
+		lat = 52.25;
+		lng = 20.95;
+		bbox = "20.96,52.24,20.97,52.25"; //"51.25,19.95,53.25,21.95"; //
 		//locale = new Locale("pl",""); //"PL");
 		
 		//new york test
-		lat = 40.71;
-		lng = -74.01;
-		bbox = "-74.060000,40.660000,-74.010000,40.710000";//"-75.01,39.71,-73.01,41.71";
+		//lat = 40.71;
+		//lng = -74.01;
+		//bbox = "-74.060000,40.660000,-74.010000,40.710000";//"-75.01,39.71,-73.01,41.71";
 		locale = Locale.US;
 		
 		//lat = 30.21;
@@ -81,8 +81,9 @@ public class LayersTest {
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.COUPONS_LAYER)});
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.GROUPON_LAYER)});
 	   
-	   data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.MC_ATM_LAYER)});
+	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.MC_ATM_LAYER)});
 	   
+	   data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.YOUTUBE_LAYER)});
 	   
 	   System.out.println("Found " + data.size() + " layers.");
 	   
