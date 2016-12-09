@@ -79,8 +79,13 @@ public class ShowLocationAction extends org.apache.struts.action.Action {
                 	}
                 }
                 
-                request.setAttribute("landmarkDesc", HtmlUtils.buildLocationDescV2(lat, lng, address, request.getLocale(), isMobile));
-            	request.setAttribute("landmarkName", "'Selected location'");
+                String landmarkName = request.getParameter("landmarkName");
+            	if (StringUtils.isBlank(landmarkName)) {
+            		landmarkName = "Selected location";
+            	} 
+                request.setAttribute("landmarkName", "'" + landmarkName + "'");
+                
+                request.setAttribute("landmarkDesc", HtmlUtils.buildLocationDescV2(lat, lng, landmarkName, address, request.getLocale(), isMobile));
             	
             	String[] checkinOptions = StringUtils.split(request.getParameter("checkinOptions"),",");
             	if (checkinOptions != null && checkinOptions.length > 2) {

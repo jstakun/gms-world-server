@@ -319,7 +319,7 @@
 							break; 
 						}
                   }
-                  window.location.replace("/hotelLandmark/" +  encodeDouble(lat) + "/" + encodeDouble(lng) + "/" + options);
+                  window.location.replace("/hotelLandmark/" +  encodeDouble(lat) + "/" + encodeDouble(lng) + "/" + options + "/" + name);
                   //
               } else {
          		 window.location.replace("/newLandmark/" +  encodeDouble(lat) + "/" + encodeDouble(lng));

@@ -53,7 +53,7 @@ public class Processor {
 	private static ObjectMapper mapper = new ObjectMapper();
 	private static final String HOTELS_FILE = "/tmp/hotels.zip";
 	
-	//last count 1090472
+	//last count 1072120
 	private static final int BATCH_SIZE = 2000; 
 	
 	private static final String AID = "864525";
