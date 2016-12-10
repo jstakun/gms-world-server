@@ -317,7 +317,7 @@ public abstract class LayerHelper {
 							logger.log(Level.INFO, "Saving geojson list to second level cache");
 		    				String key = "geojson/" + latStr + "/" + lngStr + "/" + layer;
 		    				cacheProvider.putToSecondLevelCache(key, json);							
-						}}); 				
+						}}).start();		
     			}
     			
     			if (cacheProvider != null) {
