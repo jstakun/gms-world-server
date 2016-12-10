@@ -6,6 +6,7 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +23,7 @@ import org.json.JSONObject;
 
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.lm.server.config.ConfigurationManager;
+import com.jstakun.lm.server.utils.GoogleThreadProvider;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 
@@ -43,6 +45,13 @@ public class GeoJsonProviderServlet extends HttpServlet {
      */
     public GeoJsonProviderServlet() {
         super();
+    }
+    
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        LayerHelperFactory.getInstance().setCacheProvider(GoogleCacheProvider.getInstance());
+        LayerHelperFactory.getInstance().setThreadProvider(new GoogleThreadProvider());
     }
     
 	/**
@@ -75,12 +84,15 @@ public class GeoJsonProviderServlet extends HttpServlet {
 	        		Locale locale = request.getLocale();
 	        		String flexString = StringUtil.getLanguage(locale.getLanguage(), "en", 2);
 	        		String flexString2 = request.getParameter("sortType");
+	        		
+	        		//Searching geojson document in local in-memory cache
 	        		LayerHelper layerHelper = LayerHelperFactory.getInstance().getByName(layer);
 	        		if (layerHelper != null) { 
 	        			logger.log(Level.INFO, "Searching geojson document in local in-memory cache...");
 	        			json = layerHelper.getGeoJson(lat, lng, layer, flexString, flexString2);		
 	        		}
 			    
+	        		//Searching geojson document in remote document cache
 	        		if (!StringUtils.startsWith(json, "{")) { 
 	        			String latStr = StringUtil.formatCoordE2(lat);
 	        			String lngStr = StringUtil.formatCoordE2(lng);
@@ -91,7 +103,8 @@ public class GeoJsonProviderServlet extends HttpServlet {
 	        			}
 	        			json = GoogleCacheProvider.getInstance().getFromSecondLevelCache(key);
 	        		}
-				
+	        		
+	        		//Searching geojson document in layer provider
 					if (!StringUtils.startsWith(json, "{")  && layerHelper != null) {
 						try {
 							//layers specific code

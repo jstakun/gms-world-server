@@ -171,7 +171,7 @@ public abstract class LayerHelper {
         return StringUtils.join(params, "_");
     }
     
-    protected String cacheGeoJson(List<ExtendedLandmark> landmarks, double lat, double lng, String layer, Locale locale, String flex) {
+    protected String cacheGeoJson(List<ExtendedLandmark> landmarks, double lat, double lng, final String layer, Locale locale, String flex) {
     	
     	/*{
   			"type": "Feature",
@@ -306,14 +306,18 @@ public abstract class LayerHelper {
 			}	
 
 			try {
-    			String json = new ObjectMapper().writeValueAsString(featureCollection);
-    			String latStr = StringUtil.formatCoordE2(lat);
-    			String lngStr = StringUtil.formatCoordE2(lng);
+    			final String json = new ObjectMapper().writeValueAsString(featureCollection);
+    			final String latStr = StringUtil.formatCoordE2(lat);
+    			final String lngStr = StringUtil.formatCoordE2(lng);
     			
     			if (!landmarks.isEmpty() && StringUtils.isNotEmpty(json)) {
-    				logger.log(Level.INFO, "Saved geojson list to second level cache");
-    				String key = "geojson/" + latStr + "/" + lngStr + "/" + layer;
-    				cacheProvider.putToSecondLevelCache(key, json);
+    				threadProvider.newThread(new Runnable() {
+						@Override
+						public void run() {
+							logger.log(Level.INFO, "Saving geojson list to second level cache");
+		    				String key = "geojson/" + latStr + "/" + lngStr + "/" + layer;
+		    				cacheProvider.putToSecondLevelCache(key, json);							
+						}}); 				
     			}
     			
     			if (cacheProvider != null) {
