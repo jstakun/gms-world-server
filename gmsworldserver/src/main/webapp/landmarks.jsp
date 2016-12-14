@@ -222,6 +222,11 @@
           		var desc = results.features[i].properties.desc;
                 var name = results.features[i].properties.name;
                 var price = results.features[i].properties.price;
+                var cc = results.features[i].properties.cc;
+
+                if (cc == null) {
+					cc = currencycode;
+                }
                 
           		if (url == null || ismobile) {
 					url = results.features[i].properties.mobile_url
@@ -273,7 +278,7 @@
             		 map: map,
             		 icon: icon,
             		 price: price,
-            		 cc: currencycode,
+            		 cc: cc,
             		 url: url, 
             		 desc: descr,
             		 stars: stars,

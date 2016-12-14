@@ -70,6 +70,7 @@ public class GeoJsonProviderServlet extends HttpServlet {
 	
 	private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String json = null, layer = null;
+		int layerSize = 0;
 		try {
 			if (HttpUtils.isEmptyAny(request, "lat", "lng", "layer")) {
 				response.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -138,11 +139,13 @@ public class GeoJsonProviderServlet extends HttpServlet {
 							if (StringUtils.equals(layer, Commons.GROUPON_LAYER) || StringUtils.equals(layer, Commons.COUPONS_LAYER)) {
 								if (GeocodeUtils.isNorthAmericaLocation(lat, lng)) {
 									List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(lat, lng, null, radius, version, limit, StringUtil.getStringLengthLimit("l"), null, null, locale, true);
-					    			newkey = layerHelper.cacheGeoJson(landmarks, lat, lng, layer, locale, flexString2);                       
+					    			layerSize = landmarks.size();
+									newkey = layerHelper.cacheGeoJson(landmarks, lat, lng, layer, locale, flexString2);                       
 								}
 							} else {
 								List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(lat, lng, null, radius, version, limit, StringUtil.getStringLengthLimit("l"), flexString, flexString2, locale, true);
-				    			newkey = layerHelper.cacheGeoJson(landmarks, lat, lng, layer, locale, flexString2);                          				    		
+								layerSize = landmarks.size();
+								newkey = layerHelper.cacheGeoJson(landmarks, lat, lng, layer, locale, flexString2);                          				    		
 							}
 						
 							if (newkey != null) {
@@ -158,22 +161,14 @@ public class GeoJsonProviderServlet extends HttpServlet {
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
         } finally {
+        	//{"type":"FeatureCollection","properties":{"layer":"Layer"},"features":[]});
         	if (!StringUtils.startsWith(json, "{")) {      		
         		JSONObject resp = new JSONObject().
         				put("properties", new JSONObject().put("layer", layer)).
         				put("features", new JSONArray());
 				json = resp.toString();			
-			} else {
-				try {
-					//{"type":"FeatureCollection","properties":{"layer":"Layer"},"features":[]});
-					JSONObject layerJson = new JSONObject(json);
-					int layerSize = layerJson.getJSONArray("features").length();
-					String layerName = layerJson.getJSONObject("properties").getString("layer");
-					logger.log(Level.INFO, "Sending " + layerSize + " landmarks from layer " + layerName);
-				} catch (Exception e) {
-		            logger.log(Level.SEVERE, e.getMessage(), e);
-		        }
-			}
+			} 
+			logger.log(Level.INFO, "Sending " + layerSize + " landmarks from layer " + layer);
         	String callBackJavaScripMethodName = request.getParameter("callback");
         	if (StringUtils.isNotEmpty(callBackJavaScripMethodName)) {
         		json = callBackJavaScripMethodName + "("+ json + ");";

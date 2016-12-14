@@ -43,6 +43,8 @@ public abstract class LayerHelper {
     protected static final Logger logger = Logger.getLogger(LayerHelper.class.getName());
     protected ThreadFactory threadProvider = null;
     protected CacheProvider cacheProvider = null;
+    
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     protected void setThreadProvider(ThreadFactory threadProvider){
 		this.threadProvider = threadProvider;
@@ -190,7 +192,6 @@ public abstract class LayerHelper {
 		featureCollection.setProperty("language", locale.getLanguage());
 		String dealsCurrencyCode = null;
 		if (!landmarks.isEmpty()) {    		
-			//ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource", locale);
 			for (ExtendedLandmark landmark : landmarks) {
     			Feature f = new Feature();
     			Point p = new Point();
@@ -231,7 +232,12 @@ public abstract class LayerHelper {
     				f.setProperty("icon", icon); //icon
     				if (landmark.containsDeal()) {
     					f.setProperty("price", StringUtil.formatCoordE0(landmark.getDeal().getPrice())); //price
-    				    dealsCurrencyCode = landmark.getDeal().getCurrencyCode();
+    					f.setProperty("cc", landmark.getDeal().getCurrencyCode());
+    					if (dealsCurrencyCode == null) {
+    						dealsCurrencyCode = landmark.getDeal().getCurrencyCode();
+    					} else if (!StringUtils.equals(dealsCurrencyCode, landmark.getDeal().getCurrencyCode())) {
+    						logger.log(Level.SEVERE, "Different currency codes in single list: " + dealsCurrencyCode + "," + landmark.getDeal().getCurrencyCode());
+    					}
     				}
     				String thumbnail = landmark.getThumbnail(); 
     				if (thumbnail != null) {
@@ -269,12 +275,14 @@ public abstract class LayerHelper {
 				Map<Integer, Integer> prices = new HashMap<Integer, Integer>();
 				for (ExtendedLandmark landmark : landmarks) {
 					String desc = landmark.getDescription();
+					
 					int s = StringUtils.countMatches(desc, "star_blue");
 					if (stars.containsKey(s)) {
 						stars.put(s, stars.get(s)+1);
 					} else {
 						stars.put(s, 1);
 					}
+					
 					if (exchangeRate != null) {
 						s = 0;
 						if (landmark.containsDeal()) {
@@ -306,18 +314,21 @@ public abstract class LayerHelper {
 			}	
 
 			try {
-    			final String json = new ObjectMapper().writeValueAsString(featureCollection);
+    			final String json = objectMapper.writeValueAsString(featureCollection);
     			final String latStr = StringUtil.formatCoordE2(lat);
     			final String lngStr = StringUtil.formatCoordE2(lng);
     			
     			if (!landmarks.isEmpty() && StringUtils.isNotEmpty(json)) {
-    				threadProvider.newThread(new Runnable() {
+    				/*threadProvider.newThread(new Runnable() {
 						@Override
 						public void run() {
 							logger.log(Level.INFO, "Saving geojson list to second level cache");
 		    				String key = "geojson/" + latStr + "/" + lngStr + "/" + layer;
 		    				cacheProvider.putToSecondLevelCache(key, json);							
-						}}).start();		
+						}}).start();		*/
+    				logger.log(Level.INFO, "Saving geojson list to second level cache");
+    				String key = "geojson/" + latStr + "/" + lngStr + "/" + layer;
+    				cacheProvider.putToSecondLevelCache(key, json);					
     			}
     			
     			if (cacheProvider != null) {
