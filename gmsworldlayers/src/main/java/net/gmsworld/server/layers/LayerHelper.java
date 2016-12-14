@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -190,7 +191,6 @@ public abstract class LayerHelper {
 		featureCollection.setProperty("layer", layer);
 		featureCollection.setProperty("creationDate", new Date());
 		featureCollection.setProperty("language", locale.getLanguage());
-		String dealsCurrencyCode = null;
 		if (!landmarks.isEmpty()) {    		
 			for (ExtendedLandmark landmark : landmarks) {
     			Feature f = new Feature();
@@ -233,11 +233,6 @@ public abstract class LayerHelper {
     				if (landmark.containsDeal()) {
     					f.setProperty("price", StringUtil.formatCoordE0(landmark.getDeal().getPrice())); //price
     					f.setProperty("cc", landmark.getDeal().getCurrencyCode());
-    					if (dealsCurrencyCode == null) {
-    						dealsCurrencyCode = landmark.getDeal().getCurrencyCode();
-    					} else if (!StringUtils.equals(dealsCurrencyCode, landmark.getDeal().getCurrencyCode())) {
-    						logger.log(Level.SEVERE, "Different currency codes in single list: " + dealsCurrencyCode + "," + landmark.getDeal().getCurrencyCode());
-    					}
     				}
     				String thumbnail = landmark.getThumbnail(); 
     				if (thumbnail != null) {
@@ -258,21 +253,10 @@ public abstract class LayerHelper {
 						
 			//build stats and exchange rate for hotels
 			if (StringUtils.equals(layer, Commons.HOTELS_LAYER)) {
-				Double exchangeRate = null;
-				if (dealsCurrencyCode != null) {
-					featureCollection.setProperty("currencycode", dealsCurrencyCode);
-					if (!dealsCurrencyCode.equals("EUR")) {
-						exchangeRate = JSONUtils.getExchangeRate("EUR", dealsCurrencyCode);
-						if (exchangeRate != null) {
-							featureCollection.setProperty("eurexchangerate", exchangeRate);					
-						}
-					} else if (dealsCurrencyCode.equals("EUR")) {
-						exchangeRate = 1d;
-					}
-				}
-				
+				Map<String, Double> exchangeRates = new HashMap<String, Double>();
 				Map<Integer, Integer> stars = new HashMap<Integer, Integer>();
 				Map<Integer, Integer> prices = new HashMap<Integer, Integer>();
+				
 				for (ExtendedLandmark landmark : landmarks) {
 					String desc = landmark.getDescription();
 					
@@ -283,9 +267,17 @@ public abstract class LayerHelper {
 						stars.put(s, 1);
 					}
 					
-					if (exchangeRate != null) {
-						s = 0;
-						if (landmark.containsDeal()) {
+					s = 0;
+					if (landmark.containsDeal()) {
+						Double exchangeRate = 1d;
+						String cc = landmark.getDeal().getCurrencyCode();
+						if (!StringUtils.equals(cc, "EUR")) {
+							exchangeRate = JSONUtils.getExchangeRate("EUR", landmark.getDeal().getCurrencyCode());
+							if (exchangeRate != null) {
+								exchangeRates.put(landmark.getDeal().getCurrencyCode(), exchangeRate);
+							}
+						}
+						if (exchangeRate != null) {							
 							double eurvalue = landmark.getDeal().getPrice() / exchangeRate;
 							if (eurvalue < 50d) {
 								s = 1;
@@ -299,15 +291,36 @@ public abstract class LayerHelper {
 								s = 5;
 							}
 						}
-						if (prices.containsKey(s)) {
-							prices.put(s, prices.get(s)+1);
-						} else {
-							prices.put(s, 1);
+					}
+					if (prices.containsKey(s)) {
+						prices.put(s, prices.get(s)+1);
+					} else {
+						prices.put(s, 1);
+					}
+
+				}
+				try {
+					String language = locale.getLanguage();
+					String country = locale.getCountry();
+					if (StringUtils.isEmpty(country)) {
+						country = language;
+					}
+					Locale l = new Locale(language, country);
+					String cc = Currency.getInstance(l).getCurrencyCode();
+					featureCollection.setProperty("currencycode", cc);
+					if (!StringUtils.equals(cc, "EUR") && !exchangeRates.containsKey(cc)) {
+						Double exchangeRate = JSONUtils.getExchangeRate("EUR", cc);
+						if (exchangeRate != null) {
+							exchangeRates.put(cc, exchangeRate);
 						}
 					}
+				} catch (Exception e) {
+					logger.log(Level.SEVERE, e.getMessage(), e);
+					featureCollection.setProperty("currencycode", "EUR");
 				}
 				featureCollection.setProperty("stats_price", prices);
 				featureCollection.setProperty("stats_stars", stars);
+				featureCollection.setProperty("eurexchangerates", exchangeRates);
 				if (StringUtils.isNotEmpty(flex)) {
 					featureCollection.setProperty("sortType", flex);
 				}

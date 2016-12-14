@@ -83,7 +83,9 @@ public class LayersTest {
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.MC_ATM_LAYER)});
 	   
-	   data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.YOUTUBE_LAYER)});
+	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.YOUTUBE_LAYER)});
+	   
+	   data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)});
 	   
 	   System.out.println("Found " + data.size() + " layers.");
 	   

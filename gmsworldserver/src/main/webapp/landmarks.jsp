@@ -106,7 +106,7 @@
         window.open(url + hotelUrlSuffix, '_blank');
 	}
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?libraries=visualization"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?libraries=visualization&key=AIzaSyBRNM9dhi9JggBK_ZKgQjk_5_EPO_H3X7A"></script>
     <script src="/js/marker.js"></script>
     <script src="/js/markerclusterer.js"></script>
     <script src="/js/js.cookie.js"></script>
@@ -114,7 +114,7 @@
       var map,
           mc,
           currencycode,
-          eurexchangerate,
+          eurexchangerates,
           flagmarker,
           sortType = '<%= request.getParameter("sortType") != null ? request.getParameter("sortType") : "distance" %>', 
           mapcenter = new google.maps.LatLng(<%= latitude %>, <%= longitude %>),
@@ -159,8 +159,8 @@
           for (var i = 0; i < layers.length; i++) {
               if (layers[i].enabled == "true") {
                 	var script = document.createElement('script');
-                    script.src = '<%= ConfigurationManager.SERVER_URL %>geoJsonProvider?layer=' + layers[i].name + '&lat=<%= latitude %>&lng=<%= longitude %>&callback=layers_callback'; 
-        			//script.src = 'http://localhost:8080/geoJsonProvider?layer=' + layers[i].name + '&lat=<%= latitude %>&lng=<%= longitude %>&callback=layers_callback'; 
+                    //script.src = '<%= ConfigurationManager.SERVER_URL %>geoJsonProvider?layer=' + layers[i].name + '&lat=<%= latitude %>&lng=<%= longitude %>&callback=layers_callback'; 
+        			script.src = 'http://localhost:8080/geoJsonProvider?layer=' + layers[i].name + '&lat=<%= latitude %>&lng=<%= longitude %>&callback=layers_callback'; 
         			if (layers[i].name == "Hotels") {
         				script.src += '&sortType=' + sortType;
             		}
@@ -213,7 +213,7 @@
 
       function loadMarkers(results, image, ismobile) {
           currencycode = results.properties.currencycode;
-          eurexchangerate = results.properties.eurexchangerate;
+          eurexchangerates = results.properties.eurexchangerates;
           
     	  for (var i = 0; i < results.features.length; i++) {
           		var coords = results.features[i].geometry.coordinates;
@@ -388,8 +388,9 @@
 		     	               '<tr><td><input type=\"checkbox\" id=\"2s\" checked=\"checked\" onclick=\"filter()\"/></td><td><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/></td><td align=\'right\'>' + (results.properties['stats_stars']['2'] ? results.properties['stats_stars']['2'] : '0') + '</td></tr>' +
 		     	               '<tr><td><input type=\"checkbox\" id=\"1s\" checked=\"checked\" onclick=\"filter()\"/></td><td><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/></td><td align=\'right\'>' + (results.properties['stats_stars']['1'] ? results.properties['stats_stars']['1'] : '0') + '</td></tr>' +
 		     	               '<tr><td><input type=\"checkbox\" id=\"0s\" checked=\"checked\" onclick=\"filter()\"/></td><td><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/></td><td align=\'right\'>' + (results.properties['stats_stars']['0'] ? results.properties['stats_stars']['0'] : '0') + '</td></tr>';
-                    if (eurexchangerate) {
-                        var value = parseInt(eurexchangerate*50, 10);
+
+		     	    if (currencycode && eurexchangerates[currencycode]) {
+                        var value = parseInt(eurexchangerates[currencycode]*50, 10);
                     	text += '<tr><td colspan=\"2\"><b><bean:message key="hotels.price" /></b</td></tr>' + 
                                 '<tr><td><input type=\"checkbox\" id=\"1p\" checked=\"checked\" onclick=\"filter()\"/></td><td>0 ' + currencycode + ' - ' + value + ' ' + currencycode + '</td><td align=\'right\'>&nbsp;' + (results.properties['stats_price']['1'] ? results.properties['stats_price']['1'] : '0') + '</td></tr>' + 
                                 '<tr><td><input type=\"checkbox\" id=\"2p\" checked=\"checked\" onclick=\"filter()\"/></td><td>' + value + ' ' + currencycode + ' - ' + (value*2) + ' ' + currencycode + '</td><td align=\'right\'>&nbsp;' + (results.properties['stats_price']['2'] ? results.properties['stats_price']['2'] : '0') + '</td></tr>' +
@@ -397,6 +398,7 @@
                                 '<tr><td><input type=\"checkbox\" id=\"4p\" checked=\"checked\" onclick=\"filter()\"/></td><td>' + (value*3) + ' ' + currencycode + ' - ' + (value*4) + ' ' + currencycode + '</td><td align=\'right\'>&nbsp;' + (results.properties['stats_price']['4'] ? results.properties['stats_price']['4'] : '0') +'</td></tr>' +
                                 '<tr><td><input type=\"checkbox\" id=\"5p\" checked=\"checked\" onclick=\"filter()\"/></td><td>' + (value*4) + ' ' + currencycode + ' +</td><td align=\'right\'>&nbsp;' + (results.properties['stats_price']['5'] ? results.properties['stats_price']['5'] : '0') + '</td></tr>'; 
                     }
+                    //
            		    text += '</table>'; 
 		     	    var filtersControl = new CenterControl(filtersDiv, 'center', text, '');
 		     	    filtersDiv.index = 5
@@ -481,21 +483,21 @@
 
                var checkedPrice = true; 
 
-               if (eurexchangerate && marker.price) {
-               		var eurrate = (marker.price / eurexchangerate);
+               if (eurexchangerates[marker.cc] && marker.price) {
+               		var eurrate = (marker.price / eurexchangerates[marker.cc]);
                		if (eurrate < 50) {  
-            	   		checkedPrice = document.getElementById('1p').checked;
+               	   		checkedPrice = document.getElementById('1p').checked;
                		} else if (eurrate >= 50 && eurrate < 100) {  
-            	   		checkedPrice = document.getElementById('2p').checked;
+               	   		checkedPrice = document.getElementById('2p').checked;
                		} else if (eurrate >= 100 && eurrate < 150) {  
-            	   		checkedPrice = document.getElementById('3p').checked;
+                 		checkedPrice = document.getElementById('3p').checked;
                		} else if (eurrate >= 150 && eurrate < 200) {  
-            	   		checkedPrice = document.getElementById('4p').checked;
-              	 	} else if (eurrate >= 200) {  
-            	   		checkedPrice = document.getElementById('5p').checked; 
+                  		checkedPrice = document.getElementById('4p').checked;
+               	 	} else if (eurrate >= 200) {  
+                  		checkedPrice = document.getElementById('5p').checked; 
                		}    
                }
-
+               
                var isSingleRoom = marker.icon.indexOf("stars_blue.png") >= 0;
                var checkedRooms = ((isSingleRoom && document.getElementById('singleVenueFilter').checked) ||
             		   			   (!isSingleRoom && document.getElementById('multiVenueFilter').checked));

@@ -155,6 +155,9 @@ public class GeoJsonProviderServlet extends HttpServlet {
 						} catch (Exception e) {
 				    		logger.log(Level.SEVERE, e.getMessage(), e);
 				    	}
+					} else {
+						JSONObject layerJson = new JSONObject(json);
+						layerSize = layerJson.getJSONArray("features").length();
 					}
 	        	}
 			}	
