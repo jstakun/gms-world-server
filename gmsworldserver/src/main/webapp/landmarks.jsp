@@ -389,7 +389,7 @@
 		     	               '<tr><td><input type=\"checkbox\" id=\"1s\" checked=\"checked\" onclick=\"filter()\"/></td><td><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/></td><td align=\'right\'>' + (results.properties['stats_stars']['1'] ? results.properties['stats_stars']['1'] : '0') + '</td></tr>' +
 		     	               '<tr><td><input type=\"checkbox\" id=\"0s\" checked=\"checked\" onclick=\"filter()\"/></td><td><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/></td><td align=\'right\'>' + (results.properties['stats_stars']['0'] ? results.properties['stats_stars']['0'] : '0') + '</td></tr>';
 
-		     	    if (currencycode && eurexchangerates[currencycode]) {
+		     	    if (currencycode && eurexchangerates[currencycode] && (results.properties['stats_price']['1'] || results.properties['stats_price']['2'] || results.properties['stats_price']['3'] || results.properties['stats_price']['4'] || results.properties['stats_price']['5'])) {
                         var value = parseInt(eurexchangerates[currencycode]*50, 10);
                     	text += '<tr><td colspan=\"2\"><b><bean:message key="hotels.price" /></b</td></tr>' + 
                                 '<tr><td><input type=\"checkbox\" id=\"1p\" checked=\"checked\" onclick=\"filter()\"/></td><td>0 ' + currencycode + ' - ' + value + ' ' + currencycode + '</td><td align=\'right\'>&nbsp;' + (results.properties['stats_price']['1'] ? results.properties['stats_price']['1'] : '0') + '</td></tr>' + 
@@ -547,7 +547,6 @@
 			 Cookies.set('filter', filter, '{ expires: 365, path: '/'}');			
 	      }
       }
-
 
       var checkinChildrenAges = [<%= (String)request.getAttribute("checkinChildrenAges") %>];
       
