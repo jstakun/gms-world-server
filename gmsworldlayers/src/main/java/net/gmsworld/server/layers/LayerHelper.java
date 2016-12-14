@@ -317,6 +317,8 @@ public abstract class LayerHelper {
 				} catch (Exception e) {
 					logger.log(Level.SEVERE, e.getMessage(), e);
 					featureCollection.setProperty("currencycode", "EUR");
+				} finally {
+					exchangeRates.put("EUR", 1d);
 				}
 				featureCollection.setProperty("stats_price", prices);
 				featureCollection.setProperty("stats_stars", stars);
