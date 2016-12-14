@@ -106,7 +106,7 @@
         window.open(url + hotelUrlSuffix, '_blank');
 	}
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?libraries=visualization&key=AIzaSyBRNM9dhi9JggBK_ZKgQjk_5_EPO_H3X7A"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?libraries=visualization"></script>
     <script src="/js/marker.js"></script>
     <script src="/js/markerclusterer.js"></script>
     <script src="/js/js.cookie.js"></script>
@@ -159,8 +159,8 @@
           for (var i = 0; i < layers.length; i++) {
               if (layers[i].enabled == "true") {
                 	var script = document.createElement('script');
-                    //script.src = '<%= ConfigurationManager.SERVER_URL %>geoJsonProvider?layer=' + layers[i].name + '&lat=<%= latitude %>&lng=<%= longitude %>&callback=layers_callback'; 
-        			script.src = 'http://localhost:8080/geoJsonProvider?layer=' + layers[i].name + '&lat=<%= latitude %>&lng=<%= longitude %>&callback=layers_callback'; 
+                    script.src = '<%= ConfigurationManager.SERVER_URL %>geoJsonProvider?layer=' + layers[i].name + '&lat=<%= latitude %>&lng=<%= longitude %>&callback=layers_callback'; 
+        			//script.src = 'http://localhost:8080/geoJsonProvider?layer=' + layers[i].name + '&lat=<%= latitude %>&lng=<%= longitude %>&callback=layers_callback'; 
         			if (layers[i].name == "Hotels") {
         				script.src += '&sortType=' + sortType;
             		}

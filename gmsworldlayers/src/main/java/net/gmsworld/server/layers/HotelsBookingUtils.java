@@ -294,35 +294,32 @@ public class HotelsBookingUtils extends LayerHelper {
 			}
 			
 			/*
-			//build stats and exchange rate for hotels
-			dealsCurrencyCode = landmark.getDeal().getCurrencyCode();
-			if (StringUtils.equals(layer, Commons.HOTELS_LAYER)) {
-				Double exchangeRate = null;
-				if (dealsCurrencyCode != null) {
-					featureCollection.setProperty("currencycode", dealsCurrencyCode);
-					if (!dealsCurrencyCode.equals("EUR")) {
-						exchangeRate = JSONUtils.getExchangeRate("EUR", dealsCurrencyCode);
-						if (exchangeRate != null) {
-							featureCollection.setProperty("eurexchangerate", exchangeRate);					
-						}
-					} else if (dealsCurrencyCode.equals("EUR")) {
-						exchangeRate = 1d;
-					}
-				}
-				
+			//TODO build stats and exchange rate for hotels
+			    Map<String, Double> exchangeRates = new HashMap<String, Double>();
 				Map<Integer, Integer> stars = new HashMap<Integer, Integer>();
 				Map<Integer, Integer> prices = new HashMap<Integer, Integer>();
+				
 				for (ExtendedLandmark landmark : landmarks) {
 					String desc = landmark.getDescription();
+					
 					int s = StringUtils.countMatches(desc, "star_blue");
 					if (stars.containsKey(s)) {
 						stars.put(s, stars.get(s)+1);
 					} else {
 						stars.put(s, 1);
 					}
-					if (exchangeRate != null) {
-						s = 0;
-						if (landmark.containsDeal()) {
+					
+					s = 0;
+					if (landmark.containsDeal()) {
+						Double exchangeRate = 1d;
+						String cc = landmark.getDeal().getCurrencyCode();
+						if (!StringUtils.equals(cc, "EUR")) {
+							exchangeRate = JSONUtils.getExchangeRate("EUR", landmark.getDeal().getCurrencyCode());
+							if (exchangeRate != null) {
+								exchangeRates.put(landmark.getDeal().getCurrencyCode(), exchangeRate);
+							}
+						}
+						if (exchangeRate != null) {							
 							double eurvalue = landmark.getDeal().getPrice() / exchangeRate;
 							if (eurvalue < 50d) {
 								s = 1;
@@ -336,19 +333,39 @@ public class HotelsBookingUtils extends LayerHelper {
 								s = 5;
 							}
 						}
-						if (prices.containsKey(s)) {
-							prices.put(s, prices.get(s)+1);
-						} else {
-							prices.put(s, 1);
+					}
+					if (prices.containsKey(s)) {
+						prices.put(s, prices.get(s)+1);
+					} else {
+						prices.put(s, 1);
+					}
+
+				}
+				try {
+					String language = locale.getLanguage();
+					String country = locale.getCountry();
+					if (StringUtils.isEmpty(country)) {
+						country = language;
+					}
+					Locale l = new Locale(language, country);
+					String cc = Currency.getInstance(l).getCurrencyCode();
+					featureCollection.setProperty("currencycode", cc);
+					if (!StringUtils.equals(cc, "EUR") && !exchangeRates.containsKey(cc)) {
+						Double exchangeRate = JSONUtils.getExchangeRate("EUR", cc);
+						if (exchangeRate != null) {
+							exchangeRates.put(cc, exchangeRate);
 						}
 					}
+				} catch (Exception e) {
+					logger.log(Level.SEVERE, e.getMessage(), e);
+					featureCollection.setProperty("currencycode", "EUR");
 				}
 				featureCollection.setProperty("stats_price", prices);
 				featureCollection.setProperty("stats_stars", stars);
+				featureCollection.setProperty("eurexchangerates", exchangeRates);
 				if (StringUtils.isNotEmpty(flex)) {
 					featureCollection.setProperty("sortType", flex);
 				}
-			}
 			*/
 		}
 		logger.log(Level.INFO, "Processed " + size + " hotels in " + (System.currentTimeMillis()-start) + " millis.");
