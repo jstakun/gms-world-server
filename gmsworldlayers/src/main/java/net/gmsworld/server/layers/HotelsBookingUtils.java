@@ -19,6 +19,7 @@ import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.JSONUtils;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
+import net.gmsworld.server.utils.ThreadManager;
 
 import org.apache.commons.lang.StringUtils;
 import org.geojson.Feature;
@@ -288,124 +289,27 @@ public class HotelsBookingUtils extends LayerHelper {
             
             ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource", locale);
 			
-			for (int i=0; i<size; i++) {
-				try {
-					Feature hotel = hotels.getFeatures().get(i);
-					Map<String, Object> props = new HashMap<String, Object>();
-					props.put("name", hotel.getProperty("name"));
-					String url = hotel.getProperty("hotel_url");
-					props.put("url", url.replace("a_id", "aid"));
-					
-					Integer stars = hotel.getProperty("stars");
-					int s = stars.intValue();
-					if (starsMap.containsKey(s)) {
-						starsMap.put(s, starsMap.get(s)+1);
-					} else {
-						starsMap.put(s, 1);
-					}
-					
-					Integer nr = hotel.getProperty("nr_rooms");
-			        if (nr != null && nr > 1) {
-						props.put("icon", "star_" + s + ".png");
-					} else {
-						props.put("icon", s + "stars_blue.png");
-					}
-					
-			        props.put("thumbnail", hotel.getProperty("photo_url"));
-					
-			        String fromcc = hotel.getProperty("currencycode");
-			        Double rate = NumberUtils.getDouble(hotel.getProperty("minrate"));
-			        if (rate == null) {
-			        	rate = NumberUtils.getDouble(hotel.getProperty("maxrate"));
-			        }
-			        if (rate != null) {
-			        	if (tocc != null && fromcc != null && !StringUtils.equals(tocc, fromcc) && fromcc.length() == 3) {  		
-			        		Double toccrate = JSONUtils.getExchangeRate(fromcc, tocc);
-			        		if (toccrate != null) {
-			        			rate = rate * toccrate;
-			        		}
-			        	} 
+            //for (int i=0; i<size; i++) {
+			//	extendFeature(hotels.getFeatures().get(i), starsMap, pricesMap, exchangeRates, tocc, cal, rb, prettyTime, locale);			
+			//}
+			
+            //
+            final int chunkSize = 50;
+            int first = 0, last = chunkSize;
+            ThreadManager threadManager = new ThreadManager(threadProvider);          
+            while (first < size) {
+                if (last > size) {
+                    last = size;
+                }
 
-			        	props.put("price", StringUtil.formatCoordE0(rate));
-			        	if (tocc == null) {
-			        		tocc = fromcc;
-			        	} 
-			        	props.put("cc", tocc);
-			        	    		
-			        	s = 0;
-			        	Double exchangeRate = JSONUtils.getExchangeRate("EUR", tocc);
-			        	if (exchangeRate != null) {
-			        		exchangeRates.put(tocc, exchangeRate);
-			        		double eurvalue = rate / exchangeRate;
-			        		if (eurvalue < 50d) {
-			        			s = 1;
-			        		} else if (eurvalue >= 50d && eurvalue < 100d) {
-			        			s = 2;
-			        		} else if (eurvalue >= 100d && eurvalue < 150d) {
-			        			s = 3;
-			        		} else if (eurvalue >= 150d && eurvalue < 200d) {
-			        			s = 4;
-			        		} else if (eurvalue >= 200d) {
-			        			s = 5;
-			        		}
-			        	}
-			        	
-			        	if (pricesMap.containsKey(s)) {
-			        		pricesMap.put(s, pricesMap.get(s)+1);
-			        	} else {
-			        		pricesMap.put(s, 1);
-			        	}
-			        }
-		    		
-		    		String desc = "";
-		    		//stars
-		    		for (int j=0;j<stars;j++) {
-		    			desc += "<img src=\"/images/star_blue.png\" alt=\"*\"/>";
-		    		}
-		    		if (desc.length() > 0) {
-		    			desc += "<br/>";
-		    		}
-		    		//price
-		    		if (rate != null) {
-		    			Deal deal = new Deal(rate, -1, -1, null, tocc);
-		    			desc += JSONUtils.formatDeal(deal, locale, rb) + "<br/>";
-		    		}
-		    		//adres
-		    		AddressInfo address = new AddressInfo();
-		        	String value = hotel.getProperty("address");
-		        	if (StringUtils.isNotEmpty(value)) {
-		        		address.setField(AddressInfo.STREET, value);
-		        	}
-		        	value = hotel.getProperty("city_hotel");
-		        	if (StringUtils.isNotEmpty(value)) {
-		        		address.setField(AddressInfo.CITY, value);
-		        	}
-		        	
-		        	String cc = hotel.getProperty("cc1");
-		        	l = new Locale("", cc.toUpperCase(Locale.US));
-		        	country = l.getDisplayCountry();
-		        	if (country == null) {
-		        		country = cc;
-		        	}
-		        	address.setField(AddressInfo.COUNTRY, country);
-		        	
-		        	value = hotel.getProperty("zip");
-		        	if (StringUtils.isNotEmpty(value)) {
-		        		address.setField(AddressInfo.POSTAL_CODE, value);
-		        	}
-		    		desc += JSONUtils.formatAddress(address) + "<br/>";
-		    		//creation date
-		    		cal.setTimeInMillis((long)hotel.getProperty("creationDate"));
-		        	desc += String.format(rb.getString("Landmark.creation_date"), prettyTime.format(cal)) + "<br/>";
-		    		//no of rooms
-		    		desc += String.format(rb.getString("Landmark.no_rooms"), nr);
-		    		props.put("desc", desc); 
-		    		
-		    		hotel.setProperties(props);
-				} catch (Exception e) {
-					logger.log(Level.SEVERE, e.getMessage(), e);
-				}	
-			}
+                final String id = Integer.toString(first);
+                threadManager.put(id, new HotelsProcessor(threadManager, hotels.getFeatures().subList(first, last), id, starsMap, pricesMap, exchangeRates, tocc, cal, rb, prettyTime, locale));
+
+                first = last;
+                last += chunkSize;
+            }
+            threadManager.waitForThreads();
+            //
 			
 			//stats and exchange rate for hotels			    
 			hotels.setProperty("stats_price", pricesMap);
@@ -696,6 +600,121 @@ public class HotelsBookingUtils extends LayerHelper {
         return landmark;
     }
 	
+	private static void extendFeature(final Feature hotel, final Map<Integer, Integer> starsMap, final Map<Integer, Integer> pricesMap, final Map<String, Double> exchangeRates, 
+			String tocc, final Calendar cal, final ResourceBundle rb, final PrettyTime prettyTime, final Locale locale) {
+		final Map<String, Object> props = new HashMap<String, Object>();
+		props.put("name", hotel.getProperty("name"));
+		String url = hotel.getProperty("hotel_url");
+		props.put("url", url.replace("a_id", "aid"));
+		
+		Integer stars = hotel.getProperty("stars");
+		int s = stars.intValue();
+		if (starsMap.containsKey(s)) {
+			starsMap.put(s, starsMap.get(s)+1);
+		} else {
+			starsMap.put(s, 1);
+		}
+		
+		Integer nr = hotel.getProperty("nr_rooms");
+        if (nr != null && nr > 1) {
+			props.put("icon", "star_" + s + ".png");
+		} else {
+			props.put("icon", s + "stars_blue.png");
+		}
+		
+        props.put("thumbnail", hotel.getProperty("photo_url"));
+		
+        String fromcc = hotel.getProperty("currencycode");
+        Double rate = NumberUtils.getDouble(hotel.getProperty("minrate"));
+        if (rate == null) {
+        	rate = NumberUtils.getDouble(hotel.getProperty("maxrate"));
+        }
+        if (rate != null) {
+        	if (tocc != null && fromcc != null && !StringUtils.equals(tocc, fromcc) && fromcc.length() == 3) {  		
+        		Double toccrate = JSONUtils.getExchangeRate(fromcc, tocc);
+        		if (toccrate != null) {
+        			rate = rate * toccrate;
+        		}
+        	} 
+
+        	props.put("price", StringUtil.formatCoordE0(rate));
+        	if (tocc == null) {
+        		tocc = fromcc;
+        	} 
+        	props.put("cc", tocc);
+        	    		
+        	s = 0;
+        	Double exchangeRate = JSONUtils.getExchangeRate("EUR", tocc);
+        	if (exchangeRate != null) {
+        		exchangeRates.put(tocc, exchangeRate);
+        		double eurvalue = rate / exchangeRate;
+        		if (eurvalue < 50d) {
+        			s = 1;
+        		} else if (eurvalue >= 50d && eurvalue < 100d) {
+        			s = 2;
+        		} else if (eurvalue >= 100d && eurvalue < 150d) {
+        			s = 3;
+        		} else if (eurvalue >= 150d && eurvalue < 200d) {
+        			s = 4;
+        		} else if (eurvalue >= 200d) {
+        			s = 5;
+        		}
+        	}
+        	
+        	if (pricesMap.containsKey(s)) {
+        		pricesMap.put(s, pricesMap.get(s)+1);
+        	} else {
+        		pricesMap.put(s, 1);
+        	}
+        }
+		
+		String desc = "";
+		//stars
+		for (int j=0;j<stars;j++) {
+			desc += "<img src=\"/images/star_blue.png\" alt=\"*\"/>";
+		}
+		if (desc.length() > 0) {
+			desc += "<br/>";
+		}
+		//price
+		if (rate != null) {
+			Deal deal = new Deal(rate, -1, -1, null, tocc);
+			desc += JSONUtils.formatDeal(deal, locale, rb) + "<br/>";
+		}
+		//adres
+		AddressInfo address = new AddressInfo();
+    	String value = hotel.getProperty("address");
+    	if (StringUtils.isNotEmpty(value)) {
+    		address.setField(AddressInfo.STREET, value);
+    	}
+    	value = hotel.getProperty("city_hotel");
+    	if (StringUtils.isNotEmpty(value)) {
+    		address.setField(AddressInfo.CITY, value);
+    	}
+    	
+    	String cc = hotel.getProperty("cc1");
+    	Locale l = new Locale("", cc.toUpperCase(Locale.US));
+    	String country = l.getDisplayCountry();
+    	if (country == null) {
+    		country = cc;
+    	}
+    	address.setField(AddressInfo.COUNTRY, country);
+    	
+    	value = hotel.getProperty("zip");
+    	if (StringUtils.isNotEmpty(value)) {
+    		address.setField(AddressInfo.POSTAL_CODE, value);
+    	}
+		desc += JSONUtils.formatAddress(address) + "<br/>";
+		//creation date
+		cal.setTimeInMillis((long)hotel.getProperty("creationDate"));
+    	desc += String.format(rb.getString("Landmark.creation_date"), prettyTime.format(cal)) + "<br/>";
+		//no of rooms
+		desc += String.format(rb.getString("Landmark.no_rooms"), nr);
+		props.put("desc", desc); 
+		
+		hotel.setProperties(props);
+	}
+	
 	public int countNearbyHotels(double lat, double lng, int r) {
 		int normalizedRadius = r;
 		String hotelsCount = null;
@@ -719,5 +738,48 @@ public class HotelsBookingUtils extends LayerHelper {
 	
 	public String getURI() {
 		return "hotelsProvider";
+	}
+	
+	private static final class HotelsProcessor implements Runnable {
+
+		private Map<Integer, Integer> starsMap;
+		private Map<Integer, Integer> pricesMap;
+		private Map<String, Double> exchangeRates; 
+		private String tocc;
+		private Calendar cal;
+		private ResourceBundle rb;
+		private PrettyTime prettyTime;
+		private Locale locale;
+		private List<Feature> features;
+		private String id;
+		private ThreadManager threadManager;
+		
+		public HotelsProcessor(final ThreadManager threadManager, final List<Feature> features, final String id, final Map<Integer, Integer> starsMap, final Map<Integer, Integer> pricesMap, final Map<String, Double> exchangeRates, 
+				String tocc, final Calendar cal, final ResourceBundle rb, final PrettyTime prettyTime, final Locale locale) {
+			this.cal = cal;
+			this.exchangeRates = exchangeRates;
+			this.locale = locale;
+			this.prettyTime = prettyTime;
+			this.pricesMap = pricesMap;
+			this.rb = rb;
+			this.starsMap = starsMap;
+			this.tocc = tocc;
+			this.features = features;
+			this.id = id;
+			this.threadManager = threadManager;
+		}
+		
+		@Override
+		public void run() {
+			try {
+				for (Feature feature : features) {
+					extendFeature(feature, starsMap, pricesMap, exchangeRates, tocc, cal, rb, prettyTime, locale);			
+				}
+			} catch (Exception e) {
+				logger.log(Level.SEVERE, e.getMessage(), e);
+			} finally {
+				threadManager.take(id);
+			}
+		}	
 	}
 }

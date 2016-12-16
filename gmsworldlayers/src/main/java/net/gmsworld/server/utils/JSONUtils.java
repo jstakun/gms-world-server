@@ -43,6 +43,7 @@ public class JSONUtils {
 
     private static final Logger logger = Logger.getLogger(JSONUtils.class.getName());
     private static final Tidy tidy = new Tidy();
+    private static final Object exchangeRetesSemafor = new Object();
 
     static {
         tidy.setPrintBodyOnly(true);
@@ -202,23 +203,24 @@ public class JSONUtils {
 		if (ratesMap == null) {
 			ratesMap = new HashMap<String, Double>();
 			try {
-				logger.log(Level.INFO, "Calling " + currencyUrl + "...");
-				String resp = HttpUtils.processFileRequest(new URL(currencyUrl));			
-				
-				if (StringUtils.startsWith(resp, "{")) {
-					JSONObject root = new JSONObject(resp);
-					if (root.has("error")) {
-						logger.log(Level.WARNING, "Currency " + fromcc + " response error: " + root.getString("error"));
-					} else {
-						JSONObject rates = root.getJSONObject("rates");
-						for (Iterator<String> keys=rates.keys();keys.hasNext();) {
-							String key = keys.next();
-							ratesMap.put(key, rates.getDouble(key));
+				synchronized (exchangeRetesSemafor) {
+					logger.log(Level.INFO, "Calling " + currencyUrl + "...");
+					String resp = HttpUtils.processFileRequest(new URL(currencyUrl));							
+					if (StringUtils.startsWith(resp, "{")) {
+						JSONObject root = new JSONObject(resp);
+						if (root.has("error")) {
+							logger.log(Level.WARNING, "Currency " + fromcc + " response error: " + root.getString("error"));
+						} else {
+							JSONObject rates = root.getJSONObject("rates");
+							for (Iterator<String> keys=rates.keys();keys.hasNext();) {
+								String key = keys.next();
+								ratesMap.put(key, rates.getDouble(key));
+							}
 						}
+						cacheProvider.put(currencyUrl, ratesMap);
+					} else {
+						logger.log(Level.WARNING, currencyUrl + " received following response from the server: " + resp);
 					}
-					cacheProvider.put(currencyUrl, ratesMap);
-				} else {
-					logger.log(Level.WARNING, currencyUrl + " received following response from the server: " + resp);
 				}
 			} catch (Exception e) {
 				logger.log(Level.SEVERE, e.getMessage(), e);

@@ -28,7 +28,7 @@ import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 public class LayersTest {
 	
 	private static final int apiLevel = 1115;
-	private static final int limit = 30; //max 1000
+	private static final int limit = 1000; //min 30, max 1000
 	private static final int radius = 50000; 
 	private static final int stringLength = StringUtil.XLARGE;
 	
@@ -151,25 +151,29 @@ public class LayersTest {
 			
 			assertEquals("Layer " + layer.getLayerName() + " size is " + landmarks.size(), limit, landmarks.size());
 			
-			for (ExtendedLandmark landmark : landmarks) {
-				System.out.println(landmark.getName() + " :-> " + landmark.getDescription() + "---\n");
+			//for (ExtendedLandmark landmark : landmarks) {
+				//System.out.println(landmark.getName() + " :-> " + landmark.getDescription() + "---\n");
 				//System.out.println(landmark.getThumbnail() + " " + landmark.getCategoryId() + "," + landmark.getSubCategoryId());
 				//System.out.println(landmark.getUrl());
-				System.out.println(landmark.getLayer());
-			}
+				//System.out.println(landmark.getLayer());
+			//}
 			
 			String key = layer.cacheGeoJson(landmarks, lat, lng, layer.getLayerName(), locale, null);
-			System.out.println(cacheProvider.getString(key));
+			//System.out.println(cacheProvider.getString(key));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	@Test
-	public void hotelsTest() throws Exception {
+	public void hotelsTest() {
 		//LayerHelperFactory.getHotelsBookingUtils().loadHotelsAsync(lat, lng, radius, limit);  
-		String hotels = ((HotelsBookingUtils)LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)).extendFeatureCollection(lat, lng, radius, limit, "stars", locale);
-		System.out.println(hotels);
+		try {
+			String hotels = ((HotelsBookingUtils)LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)).extendFeatureCollection(lat, lng, radius, limit, "stars", locale);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		//System.out.println(hotels);
 		//System.out.println("Hotels in radius: " + LayerHelperFactory.getHotelsBookingUtils().countNearbyHotels(lat, lng, radius));
 		//System.out.println("Cheapest hotel price: " + LayerHelperFactory.getHotelsBookingUtils().findCheapestHotel(lat, lng, radius, 1));			
 	}
