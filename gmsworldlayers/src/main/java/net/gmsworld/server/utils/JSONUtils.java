@@ -165,7 +165,7 @@ public class JSONUtils {
         }
     }
     
-    public static void formatCurrency(Deal deal, String language, String country, String layer) {
+    public static void formatCurrency(Deal deal, String language, String country) {
     	
     	String fromcc = deal.getCurrencyCode();
     	String tocc = null;
@@ -228,7 +228,7 @@ public class JSONUtils {
 		return ratesMap.get(tocc);		
     }
     
-    private static String formatDeal(Deal deal, Locale locale, ResourceBundle rb) {
+    public static String formatDeal(Deal deal, Locale locale, ResourceBundle rb) {
         String result = "";
         String currencyCode = deal.getCurrencyCode();
         NumberFormat pf = NumberFormat.getPercentInstance(locale);
@@ -389,7 +389,7 @@ public class JSONUtils {
         
         //System.out.println("P: " + deal.getPrice() + ", D: " + deal.getDiscount() + ", S: " + deal.getSave());
         if (landmark.containsDeal()) {
-        	formatCurrency(landmark.getDeal(), locale.getLanguage(), locale.getCountry(), landmark.getLayer());
+        	formatCurrency(landmark.getDeal(), locale.getLanguage(), locale.getCountry());
             String priceFormatted = formatDeal(landmark.getDeal(), locale, rb);
             if (StringUtils.isNotEmpty(priceFormatted)) {
                 result.add(priceFormatted);

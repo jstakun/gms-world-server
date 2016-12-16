@@ -2,12 +2,14 @@ package net.gmsworld.server.layers;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 
 import net.gmsworld.server.config.Commons;
@@ -24,7 +26,9 @@ import org.geojson.FeatureCollection;
 import org.geojson.Point;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.ocpsoft.prettytime.PrettyTime;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jstakun.gms.android.deals.Deal;
@@ -218,7 +222,11 @@ public class HotelsBookingUtils extends LayerHelper {
 		return landmarks;
 	}
 	
-	public String extendProperties(double lat, double lng, int radius, int limit, String sortType, Locale locale) throws Exception {
+	public String extendFeatureCollection(double lat, double lng, int r, int limit, String sortType, Locale locale) throws Exception {
+		int normalizedRadius = r;
+		if (r < 1000) {
+			normalizedRadius = r * 1000;
+		}
 		FeatureCollection hotels = null;
 		String lngStr = StringUtil.formatCoordE2(lng);
 		String latStr = StringUtil.formatCoordE2(lat);	
@@ -230,9 +238,10 @@ public class HotelsBookingUtils extends LayerHelper {
 			hotelsUrlPrefix = HOTELS_CHEAPEST_URL;
 		}
 		
-		String hotelsUrl = hotelsUrlPrefix + latStr + "/" + lngStr + "/" + radius + "/" + limit;			
-		//logger.log(Level.INFO, "Calling: " + hotelsUrl);
+		String hotelsUrl = hotelsUrlPrefix + latStr + "/" + lngStr + "/" + normalizedRadius + "/" + limit;			
+		logger.log(Level.INFO, "Calling: " + hotelsUrl);
 		String json = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), true);
+		//logger.log(Level.INFO, "--------------------------- Received response: " + json);
 		if (StringUtils.startsWith(json, "[")) {
     		try {
     			json = "{\"type\": \"FeatureCollection\", \"features\":" + json + "}";
@@ -253,126 +262,184 @@ public class HotelsBookingUtils extends LayerHelper {
 		}
 		
 		if (size > 0) {
+			
+		    Map<String, Double> exchangeRates = new HashMap<String, Double>();
+		    exchangeRates.put("EUR", 1d);
+			Map<Integer, Integer> starsMap = new HashMap<Integer, Integer>();
+			Map<Integer, Integer> pricesMap = new HashMap<Integer, Integer>();
+			
 			hotels.setProperty("layer", Commons.HOTELS_LAYER);
 			hotels.setProperty("creationDate", new Date());
 			hotels.setProperty("language", locale.getLanguage());
+			
+			String language = locale.getLanguage();
+        	String country = locale.getCountry();
+        	if (StringUtils.isEmpty(country)) {
+        		country = language;
+        	}
+        	Locale l = new Locale(language, country);
+        	String tocc = Currency.getInstance(l).getCurrencyCode();
+        	if (tocc != null) {
+        		hotels.setProperty("currencycode", tocc);
+        	}
+        	
+        	Calendar cal = Calendar.getInstance();
+            PrettyTime prettyTime = new PrettyTime(locale); 
+            
+            ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource", locale);
+			
 			for (int i=0; i<size; i++) {
 				try {
 					Feature hotel = hotels.getFeatures().get(i);
 					Map<String, Object> props = new HashMap<String, Object>();
+					props.put("name", hotel.getProperty("name"));
 					String url = hotel.getProperty("hotel_url");
 					props.put("url", url.replace("a_id", "aid"));
-					Double stars = hotel.getProperty("stars");
-			        Integer nr = hotel.getProperty("nr_rooms");
-			        if (nr != null && nr > 1) {
-						props.put("icon", "star_" + stars.intValue() + ".png");
+					
+					Integer stars = hotel.getProperty("stars");
+					int s = stars.intValue();
+					if (starsMap.containsKey(s)) {
+						starsMap.put(s, starsMap.get(s)+1);
 					} else {
-						props.put("icon", stars.intValue() + "stars_blue.png");
+						starsMap.put(s, 1);
 					}
-					props.put("thumbnail", hotel.getProperty("photo_url"));
-					String fromcc = hotel.getProperty("currencycode");
+					
+					Integer nr = hotel.getProperty("nr_rooms");
+			        if (nr != null && nr > 1) {
+						props.put("icon", "star_" + s + ".png");
+					} else {
+						props.put("icon", s + "stars_blue.png");
+					}
+					
+			        props.put("thumbnail", hotel.getProperty("photo_url"));
+					
+			        String fromcc = hotel.getProperty("currencycode");
 			        Double rate = NumberUtils.getDouble(hotel.getProperty("minrate"));
 			        if (rate == null) {
 			        	rate = NumberUtils.getDouble(hotel.getProperty("maxrate"));
 			        }
-			        Currency currency = Currency.getInstance(locale);
-		    		String tocc = currency.getCurrencyCode();	    		
-		    		if (tocc != null && fromcc != null && !StringUtils.equals(tocc, fromcc) && fromcc.length() == 3) {  		
-		        		Double toccrate = JSONUtils.getExchangeRate(fromcc, tocc);
-		    			if (toccrate != null) {
-		    				props.put("price", rate * toccrate);
-		    			}
-		    		} else {
-		    			props.put("price", rate);
+			        if (rate != null) {
+			        	if (tocc != null && fromcc != null && !StringUtils.equals(tocc, fromcc) && fromcc.length() == 3) {  		
+			        		Double toccrate = JSONUtils.getExchangeRate(fromcc, tocc);
+			        		if (toccrate != null) {
+			        			rate = rate * toccrate;
+			        		}
+			        	} 
+
+			        	props.put("price", StringUtil.formatCoordE0(rate));
+			        	if (tocc == null) {
+			        		tocc = fromcc;
+			        	} 
+			        	props.put("cc", tocc);
+			        	    		
+			        	s = 0;
+			        	Double exchangeRate = JSONUtils.getExchangeRate("EUR", tocc);
+			        	if (exchangeRate != null) {
+			        		exchangeRates.put(tocc, exchangeRate);
+			        		double eurvalue = rate / exchangeRate;
+			        		if (eurvalue < 50d) {
+			        			s = 1;
+			        		} else if (eurvalue >= 50d && eurvalue < 100d) {
+			        			s = 2;
+			        		} else if (eurvalue >= 100d && eurvalue < 150d) {
+			        			s = 3;
+			        		} else if (eurvalue >= 150d && eurvalue < 200d) {
+			        			s = 4;
+			        		} else if (eurvalue >= 200d) {
+			        			s = 5;
+			        		}
+			        	}
+			        	
+			        	if (pricesMap.containsKey(s)) {
+			        		pricesMap.put(s, pricesMap.get(s)+1);
+			        	} else {
+			        		pricesMap.put(s, 1);
+			        	}
+			        }
+		    		
+		    		String desc = "";
+		    		//stars
+		    		for (int j=0;j<stars;j++) {
+		    			desc += "<img src=\"/images/star_blue.png\" alt=\"*\"/>";
 		    		}
-		    		//TODO				
-					//f.setProperty("desc", desc); //desc
+		    		if (desc.length() > 0) {
+		    			desc += "<br/>";
+		    		}
+		    		//price
+		    		if (rate != null) {
+		    			Deal deal = new Deal(rate, -1, -1, null, tocc);
+		    			desc += JSONUtils.formatDeal(deal, locale, rb) + "<br/>";
+		    		}
+		    		//adres
+		    		AddressInfo address = new AddressInfo();
+		        	String value = hotel.getProperty("address");
+		        	if (StringUtils.isNotEmpty(value)) {
+		        		address.setField(AddressInfo.STREET, value);
+		        	}
+		        	value = hotel.getProperty("city_hotel");
+		        	if (StringUtils.isNotEmpty(value)) {
+		        		address.setField(AddressInfo.CITY, value);
+		        	}
+		        	
+		        	String cc = hotel.getProperty("cc1");
+		        	l = new Locale("", cc.toUpperCase(Locale.US));
+		        	country = l.getDisplayCountry();
+		        	if (country == null) {
+		        		country = cc;
+		        	}
+		        	address.setField(AddressInfo.COUNTRY, country);
+		        	
+		        	value = hotel.getProperty("zip");
+		        	if (StringUtils.isNotEmpty(value)) {
+		        		address.setField(AddressInfo.POSTAL_CODE, value);
+		        	}
+		    		desc += JSONUtils.formatAddress(address) + "<br/>";
+		    		//creation date
+		    		cal.setTimeInMillis((long)hotel.getProperty("creationDate"));
+		        	desc += String.format(rb.getString("Landmark.creation_date"), prettyTime.format(cal)) + "<br/>";
+		    		//no of rooms
+		    		desc += String.format(rb.getString("Landmark.no_rooms"), nr);
+		    		props.put("desc", desc); 
+		    		
 		    		hotel.setProperties(props);
 				} catch (Exception e) {
 					logger.log(Level.SEVERE, e.getMessage(), e);
 				}	
 			}
 			
-			/*
-			//TODO build stats and exchange rate for hotels
-			    Map<String, Double> exchangeRates = new HashMap<String, Double>();
-				Map<Integer, Integer> stars = new HashMap<Integer, Integer>();
-				Map<Integer, Integer> prices = new HashMap<Integer, Integer>();
-				
-				for (ExtendedLandmark landmark : landmarks) {
-					String desc = landmark.getDescription();
-					
-					int s = StringUtils.countMatches(desc, "star_blue");
-					if (stars.containsKey(s)) {
-						stars.put(s, stars.get(s)+1);
-					} else {
-						stars.put(s, 1);
-					}
-					
-					s = 0;
-					if (landmark.containsDeal()) {
-						Double exchangeRate = 1d;
-						String cc = landmark.getDeal().getCurrencyCode();
-						if (!StringUtils.equals(cc, "EUR")) {
-							exchangeRate = JSONUtils.getExchangeRate("EUR", landmark.getDeal().getCurrencyCode());
-							if (exchangeRate != null) {
-								exchangeRates.put(landmark.getDeal().getCurrencyCode(), exchangeRate);
-							}
-						}
-						if (exchangeRate != null) {							
-							double eurvalue = landmark.getDeal().getPrice() / exchangeRate;
-							if (eurvalue < 50d) {
-								s = 1;
-							} else if (eurvalue >= 50d && eurvalue < 100d) {
-								s = 2;
-							} else if (eurvalue >= 100d && eurvalue < 150d) {
-								s = 3;
-							} else if (eurvalue >= 150d && eurvalue < 200d) {
-								s = 4;
-							} else if (eurvalue >= 200d) {
-								s = 5;
-							}
-						}
-					}
-					if (prices.containsKey(s)) {
-						prices.put(s, prices.get(s)+1);
-					} else {
-						prices.put(s, 1);
-					}
-
-				}
-				try {
-					String language = locale.getLanguage();
-					String country = locale.getCountry();
-					if (StringUtils.isEmpty(country)) {
-						country = language;
-					}
-					Locale l = new Locale(language, country);
-					String cc = Currency.getInstance(l).getCurrencyCode();
-					featureCollection.setProperty("currencycode", cc);
-					if (!StringUtils.equals(cc, "EUR") && !exchangeRates.containsKey(cc)) {
-						Double exchangeRate = JSONUtils.getExchangeRate("EUR", cc);
-						if (exchangeRate != null) {
-							exchangeRates.put(cc, exchangeRate);
-						}
-					}
-				} catch (Exception e) {
-					logger.log(Level.SEVERE, e.getMessage(), e);
-					featureCollection.setProperty("currencycode", "EUR");
-				}
-				featureCollection.setProperty("stats_price", prices);
-				featureCollection.setProperty("stats_stars", stars);
-				featureCollection.setProperty("eurexchangerates", exchangeRates);
-				if (StringUtils.isNotEmpty(flex)) {
-					featureCollection.setProperty("sortType", flex);
-				}
-			*/
+			//stats and exchange rate for hotels			    
+			hotels.setProperty("stats_price", pricesMap);
+			hotels.setProperty("stats_stars", starsMap);
+			hotels.setProperty("eurexchangerates", exchangeRates);
+			if (StringUtils.isNotEmpty(sortType)) {
+				hotels.setProperty("sortType", sortType);
+			}
 		}
 		logger.log(Level.INFO, "Processed " + size + " hotels in " + (System.currentTimeMillis()-start) + " millis.");
 				
 		if (hotels != null) {
-			//TODO cache result		
-			return objectMapper.writeValueAsString(hotels);
+			String hotelsJson = null;
+			try {
+    			hotelsJson = objectMapper.writeValueAsString(hotels);
+    			
+    			if (size > 0 && StringUtils.isNotEmpty(json)) {
+    				logger.log(Level.INFO, "Saving geojson list to second level cache");
+    				String key = "geojson/" + latStr + "/" + lngStr + "/" + Commons.HOTELS_LAYER;
+    				cacheProvider.putToSecondLevelCache(key, json);					
+    			}
+    			
+    			if (cacheProvider != null) {
+    				String key = "geojson_" + latStr + "_" + lngStr + "_" + Commons.HOTELS_LAYER + "_" + locale.getLanguage();
+    				if (StringUtils.isNotEmpty(sortType)) {
+    					key += "_" + sortType;
+    				}
+    				logger.log(Level.INFO, "Saved geojson list to local in-memory cache with key: " + key);
+    				cacheProvider.put(key, json, 1);
+    			}
+			} catch (JsonProcessingException e) {
+    			logger.log(Level.SEVERE, e.getMessage(), e);
+			} 
+			return hotelsJson;
 		} else {
 			return null;
 		}

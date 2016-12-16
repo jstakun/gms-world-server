@@ -35,7 +35,7 @@ public class UtilsTest {
 		d.setCurrencyCode("PLN");
 		d.setPrice(123.99);
 		
-		JSONUtils.formatCurrency(d, "en", "us", Commons.HOTELS_LAYER);
+		JSONUtils.formatCurrency(d, "en", "us");
 		System.out.println(d.getPrice() + " " + d.getCurrencyCode());
 	}
 	

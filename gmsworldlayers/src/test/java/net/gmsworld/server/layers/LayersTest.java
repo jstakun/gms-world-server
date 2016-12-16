@@ -62,11 +62,7 @@ public class LayersTest {
 		//bbox = "-97.79,30.16,-97.74,30.26"; 
 		
 		//lat = 46.782499;
-		//lng = 23.558828;
-		
-		//LayerHelperFactory.getHotelsBookingUtils().loadHotelsAsync(lat, lng, radius, limit);  
-		//System.out.println("Hotels in radius: " + LayerHelperFactory.getHotelsBookingUtils().countNearbyHotels(lat, lng, radius));
-		//System.out.println("Cheapest hotel price: " + LayerHelperFactory.getHotelsBookingUtils().findCheapestHotel(lat, lng, radius, 1));
+		//lng = 23.558828;	
 	}
 	
 	
@@ -169,6 +165,15 @@ public class LayersTest {
 		}
 	}
 
+	@Test
+	public void hotelsTest() throws Exception {
+		//LayerHelperFactory.getHotelsBookingUtils().loadHotelsAsync(lat, lng, radius, limit);  
+		String hotels = ((HotelsBookingUtils)LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)).extendFeatureCollection(lat, lng, radius, limit, "stars", locale);
+		System.out.println(hotels);
+		//System.out.println("Hotels in radius: " + LayerHelperFactory.getHotelsBookingUtils().countNearbyHotels(lat, lng, radius));
+		//System.out.println("Cheapest hotel price: " + LayerHelperFactory.getHotelsBookingUtils().findCheapestHotel(lat, lng, radius, 1));			
+	}
+	
 	/*private static List<Method> getStaticGetMethods(Class<?> clazz) {
 	    List<Method> methods = new ArrayList<Method>();
 	    for (Method method : clazz.getMethods()) {
