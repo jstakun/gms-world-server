@@ -5,7 +5,8 @@
                  com.jstakun.lm.server.utils.HtmlUtils,
                  net.gmsworld.server.utils.UrlUtils,
                  org.apache.commons.lang.StringUtils,
-         		java.util.List"%>
+                 java.util.Calendar,
+         		 java.util.List"%>
 <div id="footer-outer" class="clear"><div id="footer-wrap">
 
         <div class="col-a">
@@ -114,7 +115,7 @@
 <div id="footer-bottom">
 
     <p class="bottom-left">
-        &copy; 2010-16 <strong>GMS World</strong>&nbsp; &nbsp; &nbsp;
+        &copy; 2010-<%= Calendar.getInstance().get(Calendar.YEAR) %> <strong>GMS World</strong>&nbsp; &nbsp; &nbsp;
         <a href="http://www.bluewebtemplates.com/" title="Website Templates">website templates</a> by <a href="http://www.styleshout.com/">styleshout</a>
     </p>
 

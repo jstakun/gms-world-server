@@ -77,11 +77,11 @@ public class GeoJsonProviderServlet extends HttpServlet {
 			} else {
 				OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
 	        	logger.log(Level.INFO, "User agent device type: " + os.getDeviceType().getName());
-	        	if (!os.getDeviceType().equals(DeviceType.UNKNOWN)) {
+	        	layer = request.getParameter("layer"); 
+        		if (!os.getDeviceType().equals(DeviceType.UNKNOWN)) {
 	        		response.setContentType("text/javascript;charset=UTF-8");
 	        		double lat = GeocodeUtils.getLatitude(request.getParameter("lat"));
 	        		double lng =  GeocodeUtils.getLongitude(request.getParameter("lng"));
-	        		layer = request.getParameter("layer"); 
 	        		Locale locale = request.getLocale();
 	        		String flexString = StringUtil.getLanguage(locale.getLanguage(), "en", 2);
 	        		String flexString2 = request.getParameter("sortType");
