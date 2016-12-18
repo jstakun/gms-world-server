@@ -110,7 +110,8 @@
                     zoomControl: true,
                 	zoomControlOptions: {
                     	position: google.maps.ControlPosition.RIGHT_BOTTOM
-                	},       
+                	},
+                	scaleControl: true,       
                 	//streetViewControl: false,                                  
        };
 
