@@ -106,7 +106,7 @@
         window.open(url + hotelUrlSuffix, '_blank');
 	}
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?libraries=visualization"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?libraries=visualization&key=AIzaSyBRNM9dhi9JggBK_ZKgQjk_5_EPO_H3X7A"></script>
     <script src="/js/marker.js"></script>
     <script src="/js/markerclusterer.js"></script>
     <script src="/js/js.cookie.js"></script>
@@ -153,6 +153,7 @@
             	zoomControlOptions: {
                 	position: google.maps.ControlPosition.RIGHT_BOTTOM
             	},       
+            	scaleControl: true,
             	//streetViewControl: false, 
           });
 
@@ -306,11 +307,12 @@
       }
 
       window.layers_callback = function(results) {
-           if (results.properties != null) {
-          		var layer = results.properties.layer;
+    	   if (results.properties != null) {
+                var layer = results.properties.layer;
     	  		for (var i = 0; i < layers.length; i++) {
-          			 if (layer == layers[i].name && layers[i].enabled == "true") {
-                    		var image = '/images/layers/' + layers[i].icon; 
+    	  			 console.log('c');
+    	  			 if (layer == layers[i].name && layers[i].enabled == "true") {
+                 		    var image = '/images/layers/' + layers[i].icon; 
                     		console.log("Received " + results.features.length + " landmarks from layer " + layer);
           	  				loadMarkers(results, image, <%= isMobile %>);
                             if (layer != "Hotels") {
@@ -319,7 +321,9 @@
                             mc.repaint();
           			 }	   
            		} 
-      	   }
+      	   } else {
+          	   console.log('Wrong response format: results.properties=' + results.properties);   
+      	   }	   
            layer_counter++;
 		   console.log("Loaded markers from (" + layer_counter + "/" + layers.length + ") layers!");
 		   if ((layer_counter + excluded_layers) == layers.length && marker_counter > 1) {

@@ -279,7 +279,12 @@ public class HotelsBookingUtils extends LayerHelper {
         		country = language;
         	}
         	Locale l = new Locale(language, country);
-        	String tocc = Currency.getInstance(l).getCurrencyCode();
+        	String tocc = null;
+        	try {
+        		tocc = Currency.getInstance(l).getCurrencyCode();
+        	} catch (Exception e) {
+        		logger.log(Level.SEVERE, e.getMessage(), e);
+        	}
         	if (tocc != null) {
         		hotels.setProperty("currencycode", tocc);
         	}
@@ -326,10 +331,10 @@ public class HotelsBookingUtils extends LayerHelper {
 			try {
     			hotelsJson = objectMapper.writeValueAsString(hotels);
     			
-    			if (size > 0 && StringUtils.isNotEmpty(json)) {
+    			if (size > 0 && StringUtils.isNotEmpty(hotelsJson)) {
     				logger.log(Level.INFO, "Saving geojson list to second level cache");
     				String key = "geojson/" + latStr + "/" + lngStr + "/" + Commons.HOTELS_LAYER;
-    				cacheProvider.putToSecondLevelCache(key, json);					
+    				cacheProvider.putToSecondLevelCache(key, hotelsJson);					
     			}
     			
     			if (cacheProvider != null) {
@@ -338,7 +343,7 @@ public class HotelsBookingUtils extends LayerHelper {
     					key += "_" + sortType;
     				}
     				logger.log(Level.INFO, "Saved geojson list to local in-memory cache with key: " + key);
-    				cacheProvider.put(key, json, 1);
+    				cacheProvider.put(key, hotelsJson, 1);
     			}
 			} catch (JsonProcessingException e) {
     			logger.log(Level.SEVERE, e.getMessage(), e);
