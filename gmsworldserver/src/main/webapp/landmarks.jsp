@@ -310,7 +310,6 @@
     	   if (results.properties != null) {
                 var layer = results.properties.layer;
     	  		for (var i = 0; i < layers.length; i++) {
-    	  			 console.log('c');
     	  			 if (layer == layers[i].name && layers[i].enabled == "true") {
                  		    var image = '/images/layers/' + layers[i].icon; 
                     		console.log("Received " + results.features.length + " landmarks from layer " + layer);
