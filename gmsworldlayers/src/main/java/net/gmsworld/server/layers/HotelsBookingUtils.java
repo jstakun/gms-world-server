@@ -289,11 +289,11 @@ public class HotelsBookingUtils extends LayerHelper {
             
             ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource", locale);
 			
-            //for (int i=0; i<size; i++) {
-			//	extendFeature(hotels.getFeatures().get(i), starsMap, pricesMap, exchangeRates, tocc, cal, rb, prettyTime, locale);			
-			//}
+            for (int i=0; i<size; i++) {
+				extendFeature(hotels.getFeatures().get(i), starsMap, pricesMap, exchangeRates, tocc, cal, rb, prettyTime, locale);			
+			}
 			
-            //
+            /*
             final int chunkSize = 50;
             int first = 0, last = chunkSize;
             ThreadManager threadManager = new ThreadManager(threadProvider);          
@@ -309,7 +309,7 @@ public class HotelsBookingUtils extends LayerHelper {
                 last += chunkSize;
             }
             threadManager.waitForThreads();
-            //
+            */
 			
 			//stats and exchange rate for hotels			    
 			hotels.setProperty("stats_price", pricesMap);
@@ -607,7 +607,16 @@ public class HotelsBookingUtils extends LayerHelper {
 		String url = hotel.getProperty("hotel_url");
 		props.put("url", url.replace("a_id", "aid"));
 		
-		Integer stars = hotel.getProperty("stars");
+		Integer stars = null;
+		Object starsObj = hotel.getProperty("stars");
+		if (starsObj instanceof Integer) {
+			stars = (Integer)starsObj;
+		} else if (starsObj instanceof Double) {
+			stars = ((Double)starsObj).intValue();
+		} else {
+			stars = 0;
+		}
+		
 		int s = stars.intValue();
 		if (starsMap.containsKey(s)) {
 			starsMap.put(s, starsMap.get(s)+1);

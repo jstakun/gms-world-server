@@ -126,7 +126,8 @@ public class HttpUtils {
             httpResponseStatuses.put(fileUrl.toExternalForm(), responseCode);
 
             if (responseCode == HttpServletResponse.SC_OK) {
-                is = conn.getInputStream();   
+                is = conn.getInputStream(); 
+                logger.log(Level.INFO, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString()});
             } else if (responseCode >= 400 ){
                 is = conn.getErrorStream();
                 logger.log(Level.SEVERE, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString()});   
@@ -136,7 +137,7 @@ public class HttpUtils {
             	logger.log(Level.INFO, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString()});
             }
             
-            if (is != null) {
+            if (responseCode != HttpServletResponse.SC_NO_CONTENT && is != null) {
             	file = IOUtils.toString(is, "UTF-8");
             	int length = file.length();
             	if (length > 0) {
@@ -144,7 +145,7 @@ public class HttpUtils {
             	}
             }
             
-            logger.log(Level.INFO, "Request processed with status " + responseCode + " in " + (System.currentTimeMillis()-start) + " millis.");
+            logger.log(Level.INFO, "Request with status " + responseCode + " processed in " + (System.currentTimeMillis()-start) + " millis.");
             
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
