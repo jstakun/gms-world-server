@@ -41,11 +41,12 @@
                     {
                     zoom: 12,
                     center: latlng,
-                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                    mapTypeId: google.maps.MapTypeId.ROADMAP,
+                    scaleControl: true
                 };
 
                 var image = '/images/flagblue.png';
-                var map = new google.maps.Map(document.getElementById("map_canvas"),myOptions);
+                var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 
                 var contentString = <%= HtmlUtils.buildGeocodeDescV2(gc, request.getAttribute("address"), request.getLocale(), isMobile) %>
 

@@ -299,9 +299,9 @@ public abstract class LayerHelper {
 					}
 
 				}
+				String language = locale.getLanguage();
+				String country = locale.getCountry();
 				try {
-					String language = locale.getLanguage();
-					String country = locale.getCountry();
 					if (StringUtils.isEmpty(country)) {
 						country = language;
 					}
@@ -315,7 +315,7 @@ public abstract class LayerHelper {
 						}
 					}
 				} catch (Exception e) {
-					logger.log(Level.SEVERE, e.getMessage(), e);
+					logger.log(Level.SEVERE, "Error for: " + country + "," + language, e);
 					featureCollection.setProperty("currencycode", "EUR");
 				} finally {
 					exchangeRates.put("EUR", 1d);

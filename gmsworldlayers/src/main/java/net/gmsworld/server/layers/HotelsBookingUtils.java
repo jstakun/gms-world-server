@@ -283,7 +283,7 @@ public class HotelsBookingUtils extends LayerHelper {
         	try {
         		tocc = Currency.getInstance(l).getCurrencyCode();
         	} catch (Exception e) {
-        		logger.log(Level.SEVERE, e.getMessage(), e);
+        		logger.log(Level.SEVERE, "Error for: " + country + "," + language, e);
         	}
         	if (tocc != null) {
         		hotels.setProperty("currencycode", tocc);
@@ -294,27 +294,27 @@ public class HotelsBookingUtils extends LayerHelper {
             
             ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource", locale);
 			
-            for (int i=0; i<size; i++) {
-				extendFeature(hotels.getFeatures().get(i), starsMap, pricesMap, exchangeRates, tocc, cal, rb, prettyTime, locale);			
-			}
-			
-            /*
-            final int chunkSize = 50;
-            int first = 0, last = chunkSize;
-            ThreadManager threadManager = new ThreadManager(threadProvider);          
-            while (first < size) {
-                if (last > size) {
-                    last = size;
-                }
+            if (size <= 100) {
+            	for (int i=0; i<size; i++) {
+            		extendFeature(hotels.getFeatures().get(i), starsMap, pricesMap, exchangeRates, tocc, cal, rb, prettyTime, locale);			
+            	}
+            } else {
+            	final int chunkSize = 50;
+            	int first = 0, last = chunkSize;
+            	ThreadManager threadManager = new ThreadManager(threadProvider);          
+            	while (first < size) {
+            		if (last > size) {
+            			last = size;
+            		}
 
-                final String id = Integer.toString(first);
-                threadManager.put(id, new HotelsProcessor(threadManager, hotels.getFeatures().subList(first, last), id, starsMap, pricesMap, exchangeRates, tocc, cal, rb, prettyTime, locale));
+            		final String id = Integer.toString(first);
+            		threadManager.put(id, new HotelsProcessor(threadManager, hotels.getFeatures().subList(first, last), id, starsMap, pricesMap, exchangeRates, tocc, cal, rb, prettyTime, locale));
 
-                first = last;
-                last += chunkSize;
+            		first = last;
+            		last += chunkSize;
+            	}
+            	threadManager.waitForThreads();
             }
-            threadManager.waitForThreads();
-            */
 			
 			//stats and exchange rate for hotels			    
 			hotels.setProperty("stats_price", pricesMap);

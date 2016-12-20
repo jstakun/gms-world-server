@@ -49,10 +49,11 @@
                     {
                     zoom: 3,
                     center: latlng,
-                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                    mapTypeId: google.maps.MapTypeId.ROADMAP,
+                    scaleControl: true
                 };
 
-                var map = new google.maps.Map(document.getElementById("map_canvas"),myOptions);
+                var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 
                 var pointArray = new google.maps.MVCArray(landmarks);
 
