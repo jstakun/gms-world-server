@@ -68,6 +68,15 @@ public class ShowLocationAction extends org.apache.struts.action.Action {
                 request.setAttribute("lat", StringUtil.formatCoordE6(lat));
                 request.setAttribute("lng", StringUtil.formatCoordE6(lng));
                
+                String zoom = request.getParameter("zoom");
+                if (zoom != null) {
+                	try {
+                		request.setAttribute("zoom", Integer.parseInt(zoom));
+                	} catch (Exception e) {
+                		
+                	}
+                }
+                
                 String address = null;
                 if (!StringUtils.equals(request.getParameter("enabled"), "Hotels")) {
                 	AddressInfo ai = GeocodeHelperFactory.processReverseGeocode(lat, lng);

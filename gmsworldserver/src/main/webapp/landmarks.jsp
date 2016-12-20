@@ -47,6 +47,11 @@
 	if (isMobile) {
     	fontSize = "24px";
 	}
+	
+	Integer zoom = (Integer)request.getAttribute("zoom");
+	if (zoom == null) {
+		zoom = 12;
+	}
 %>
 <!DOCTYPE html>
 <html>
@@ -132,11 +137,10 @@
 <%     
       }
 %>          
-      	   ];
-
+      	  ];
       function initialize() {
     	  map = new google.maps.Map(document.getElementById('map-canvas'), {
-      			zoom: 12,
+      			zoom: <%= zoom %>,
         		center: mapcenter,
         		mapTypeId: google.maps.MapTypeId.ROADMAP,  //TERRAIN, SATELLITE, HYBRID
         		mapTypeControl: true,

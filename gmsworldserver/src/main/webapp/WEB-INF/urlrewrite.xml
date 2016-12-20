@@ -164,29 +164,19 @@
     <!-- browserLandmark.jsp rules -->
     
     <rule>
-            <from>^/newLandmark/([m-y]+)/([m-y]+)$</from>
-            <to>/browserLandmark.jsp?latitudeEnc=$1&amp;longitudeEnc=$2&amp;generatetoken=true</to>
+            <from>^/newLandmark/([m-y]+)/([m-y]+)/([0-9]+)$</from>
+            <to>/browserLandmark.jsp?latitudeEnc=$1&amp;longitudeEnc=$2&amp;zoom=$3&amp;generatetoken=true</to>
     </rule>
      
-    <!--rule>
-            <from>^/hotelLandmark/([m-y]+)/([m-y]+)/([0-9,]+)$</from>
-            <to>/showLocation.do?latitudeEnc=$1&amp;longitudeEnc=$2&amp;fullScreen=true&amp;enabled=Hotels&amp;checkinOptions=$3</to>
-    </rule-->
-    
     <rule>
-            <from>^/hotelLandmark/([m-y]+)/([m-y]+)/([a-z]+)$</from>
-            <to>/showLocation.do?latitudeEnc=$1&amp;longitudeEnc=$2&amp;fullScreen=true&amp;enabled=Hotels&amp;sortType=$3</to>
+            <from>^/hotelLandmark/([m-y]+)/([m-y]+)/([a-z]+)/([0-9]+)$</from>
+            <to>/showLocation.do?latitudeEnc=$1&amp;longitudeEnc=$2&amp;fullScreen=true&amp;enabled=Hotels&amp;sortType=$3&amp;zoom=$4</to>
     </rule>
     
     <rule>
-            <from>^/hotelLandmark/([m-y]+)/([m-y]+)/([a-z]+)/(.*)$</from>
-            <to>/showLocation.do?latitudeEnc=$1&amp;longitudeEnc=$2&amp;fullScreen=true&amp;enabled=Hotels&amp;sortType=$3&amp;landmarkName=$4</to>
+            <from>^/hotelLandmark/([m-y]+)/([m-y]+)/([a-z]+)/([0-9]+)/(.*)$</from>
+            <to>/showLocation.do?latitudeEnc=$1&amp;longitudeEnc=$2&amp;fullScreen=true&amp;enabled=Hotels&amp;sortType=$3&amp;zoom=$4&amp;landmarkName=$5</to>
     </rule>
-    
-    <!--rule>
-            <from>^/hotelLandmark/([m-y]+)/([m-y]+)/([0-9-]+)/([0-9-]+)/([0-9,]+)$</from>
-            <to>/showLocation.do?latitudeEnc=$1&amp;longitudeEnc=$2&amp;fullScreen=true&amp;enabled=Hotels&amp;checkin=$3&amp;checkout=$4&amp;checkinOptions=$5</to>
-    </rule-->
     
     <!-- selectLandmark.jsp rules -->
     

@@ -320,10 +320,10 @@
 							break; 
 						}
                   }
-                  window.location.replace("/hotelLandmark/" +  encodeDouble(lat) + "/" + encodeDouble(lng) + "/" + options + "/" + name);
+                  window.location.replace("/hotelLandmark/" +  encodeDouble(lat) + "/" + encodeDouble(lng) + "/" + options + "/" + map.getZoom() + "/" + name);
                   //
               } else {
-         		 window.location.replace("/newLandmark/" +  encodeDouble(lat) + "/" + encodeDouble(lng));
+         		 window.location.replace("/newLandmark/" +  encodeDouble(lat) + "/" + encodeDouble(lng) + "/" + map.getZoom());
               }
          } else {
          	     //                	 

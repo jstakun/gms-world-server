@@ -1,20 +1,14 @@
 package com.jstakun.lm.server.utils.memcache;
 
-import java.net.URL;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import net.gmsworld.server.utils.memcache.CacheProvider;
 
 import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 
-import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.config.Commons.Property;
-import net.gmsworld.server.utils.HttpUtils;
-import net.gmsworld.server.utils.memcache.CacheProvider;
-
 public class GoogleCacheProvider implements CacheProvider {
 
-	private static final Logger logger = Logger.getLogger(GoogleCacheProvider.class.getName());
+	//private static final Logger logger = Logger.getLogger(GoogleCacheProvider.class.getName());
 	
 	private static GoogleCacheProvider instance = new GoogleCacheProvider();
 	
@@ -59,24 +53,25 @@ public class GoogleCacheProvider implements CacheProvider {
 	
 	@Override
 	public void putToSecondLevelCache(String key, String value) {
-		try {
+		/*try {
 			URL cacheUrl = new URL("http://cache-gmsworld.rhcloud.com/rest/cache/" + key);
 			String resp = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, "POST", null, value, "application/json; charset=utf-8", Commons.getProperty(Property.RH_GMS_USER));
 			logger.log(Level.INFO, "Cache response: " + resp);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
-		}
+		}*/
+		CacheUtil.put(key, value, CacheType.LONG);
 	}
 	
 	@Override
 	public String getFromSecondLevelCache(String key) {
-		try {
+		/*try {
 			URL cacheUrl = new URL("http://cache-gmsworld.rhcloud.com/rest/cache/" + key);
 			return HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, Commons.getProperty(Property.RH_GMS_USER), false);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
-			return null;
-		}
+		}*/
+		return CacheUtil.getString(key);
 	}
 
 	@Override
