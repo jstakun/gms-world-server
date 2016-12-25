@@ -236,7 +236,7 @@ public class GrouponUtils extends LayerHelper {
                                         jsonObject.put("lat", MathUtils.normalizeE6(location.getDouble("lat")));
                                         jsonObject.put("lng", MathUtils.normalizeE6(location.getDouble("lng")));
 
-                                        //city, streetAddress1, streetAddress2,phoneNumber,postalCode,state
+                                        //city, streetAddress1, streetAddress2, phoneNumber, postalCode, state
                                         if (location.has("streetAddress1")) {
                                             String address = location.getString("streetAddress1");
                                             if (address.length() > 0) {
@@ -512,15 +512,16 @@ public class GrouponUtils extends LayerHelper {
                                         if (location.has("streetAddress1")) {
                                         	String address = "";
                                         	Object s = location.get("streetAddress1");
-                                        	if (s != null && s.toString().length() > 0) {
+                                        	if (StringUtils.isNotEmpty(s.toString())) {
                                         		address += s.toString();
                                     		}
                                             if (address.length() > 0) {
                                             	if (location.has("streetAddress2")) {
                                             		s = location.get("streetAddress2");
-                                            		if (s != null && s.toString().length() > 0) {
+                                            		if (StringUtils.isNotEmpty(s.toString()) && !StringUtils.equals(s.toString(), "null")) {
                                             			address += ", " + s.toString();
                                             		}
+                                            		System.out.println(s);
                                             	}
                                             	addressInfo.setField(AddressInfo.STREET, address);
                                             }

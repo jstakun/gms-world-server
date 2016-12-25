@@ -815,8 +815,7 @@ public class FoursquareUtils extends LayerHelper {
             if (i % 5 == 4 || i == (venueIds.size() - 1)) {
                 //call foursquare
             	
-                threadManager.put(multiRequest, new VenueDetailsRetriever(threadManager, attrs,
-                        locale, urlPrefix.toString(), multiRequest, venueId, stringLimit));
+                threadManager.put(new VenueDetailsRetriever(attrs, locale, urlPrefix.toString(), multiRequest, venueId, stringLimit));
 
                 multiRequest = "";
             }
@@ -882,14 +881,11 @@ public class FoursquareUtils extends LayerHelper {
 
     private static class VenueDetailsRetriever implements Runnable {
 
-        private ThreadManager threadManager;
         private Map<String, Map<String, String>> attrs;
         private String locale, urlPrefix, multiRequest, venueId;
         private int stringLimit;
 
-        public VenueDetailsRetriever(ThreadManager threadManager, Map<String, Map<String, String>> attrs,
-                String locale, String urlPrefix, String multiRequest, String venueId, int stringLimit) {
-            this.threadManager = threadManager;
+        public VenueDetailsRetriever(Map<String, Map<String, String>> attrs, String locale, String urlPrefix, String multiRequest, String venueId, int stringLimit) {
             this.attrs = attrs;
             this.locale = locale;
             this.urlPrefix = urlPrefix;
@@ -1030,9 +1026,7 @@ public class FoursquareUtils extends LayerHelper {
                 }
             } catch (Exception ex) {
                 logger.log(Level.SEVERE, "FoursquareUtils.VenueDetailsRetriever execption:", ex);
-            } finally {
-                threadManager.take(multiRequest);
-            }
+            } 
         }
     }
 }

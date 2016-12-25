@@ -305,12 +305,7 @@ public class FacebookUtils extends LayerHelper {
                 if (last > pages.size()) {
                     last = pages.size();
                 }
-
-                String pageIds = StringUtils.join(pages.subList(first, last), ",");
-
-                threadManager.put(pageIds, new VenueDetailsRetriever(threadManager, pageDescs,
-                        facebookClient, pages.subList(first, last), stringLength));
-
+                threadManager.put(new VenueDetailsRetriever(pageDescs, facebookClient, pages.subList(first, last), stringLength));
                 first = last;
                 last += 50;
             }
@@ -556,15 +551,12 @@ public class FacebookUtils extends LayerHelper {
     
     private static class VenueDetailsRetriever implements Runnable {
 
-        private ThreadManager threadManager;
         private FacebookClient facebookClient;
         private Map<String, Map<String, String>> pageDescs;
         private int stringLimit;
         private List<String> pageIds;
 
-        public VenueDetailsRetriever(ThreadManager threadManager, Map<String, Map<String, String>> pageDescs,
-                FacebookClient facebookClient, List<String> pageIds, int stringLimit) {
-            this.threadManager = threadManager;
+        public VenueDetailsRetriever(Map<String, Map<String, String>> pageDescs, FacebookClient facebookClient, List<String> pageIds, int stringLimit) {
             this.pageDescs = pageDescs;
             this.facebookClient = facebookClient;
             this.pageIds = pageIds;
@@ -619,9 +611,7 @@ public class FacebookUtils extends LayerHelper {
             	}
             } catch (Exception e) {
                 logger.log(Level.SEVERE, "FacebookUtils.readFacebookPlacesDetails() exception", e);
-            } finally {
-            	threadManager.take(StringUtils.join(pageIds, ","));
-            }
+            } 
         }
     }
 }

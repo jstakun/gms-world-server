@@ -308,7 +308,7 @@ public class HotelsBookingUtils extends LayerHelper {
             		}
 
             		final String id = Integer.toString(first);
-            		threadManager.put(id, new HotelsProcessor(threadManager, hotels.getFeatures().subList(first, last), id, starsMap, pricesMap, exchangeRates, tocc, cal, rb, prettyTime, locale));
+            		threadManager.put(new HotelsProcessor(hotels.getFeatures().subList(first, last), starsMap, pricesMap, exchangeRates, tocc, cal, rb, prettyTime, locale));
 
             		first = last;
             		last += chunkSize;
@@ -765,10 +765,8 @@ public class HotelsBookingUtils extends LayerHelper {
 		private PrettyTime prettyTime;
 		private Locale locale;
 		private List<Feature> features;
-		private String id;
-		private ThreadManager threadManager;
 		
-		public HotelsProcessor(final ThreadManager threadManager, final List<Feature> features, final String id, final Map<Integer, Integer> starsMap, final Map<Integer, Integer> pricesMap, final Map<String, Double> exchangeRates, 
+		public HotelsProcessor(final List<Feature> features, final Map<Integer, Integer> starsMap, final Map<Integer, Integer> pricesMap, final Map<String, Double> exchangeRates, 
 				String tocc, final Calendar cal, final ResourceBundle rb, final PrettyTime prettyTime, final Locale locale) {
 			this.cal = cal;
 			this.exchangeRates = exchangeRates;
@@ -779,8 +777,6 @@ public class HotelsBookingUtils extends LayerHelper {
 			this.starsMap = starsMap;
 			this.tocc = tocc;
 			this.features = features;
-			this.id = id;
-			this.threadManager = threadManager;
 		}
 		
 		@Override
@@ -791,9 +787,7 @@ public class HotelsBookingUtils extends LayerHelper {
 				}
 			} catch (Exception e) {
 				logger.log(Level.SEVERE, e.getMessage(), e);
-			} finally {
-				threadManager.take(id);
-			}
+			} 
 		}	
 	}
 }

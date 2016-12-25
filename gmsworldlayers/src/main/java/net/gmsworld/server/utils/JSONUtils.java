@@ -207,6 +207,7 @@ public class JSONUtils {
 					ratesMap = new HashMap<String, Double>();
 					try {
 						logger.log(Level.INFO, "Calling " + currencyUrl + "...");
+						//TODO set connection timeout to 10 sec
 						String resp = HttpUtils.processFileRequest(new URL(currencyUrl));							
 						if (StringUtils.startsWith(resp, "{")) {
 							JSONObject root = new JSONObject(resp);

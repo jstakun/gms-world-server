@@ -1,7 +1,7 @@
 package net.gmsworld.server.utils;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -23,8 +23,8 @@ public class ThreadManager {
     private Condition notFull = lock.newCondition();
     private Condition notEmpty = lock.newCondition();
     
-    private Map<String, Thread> threads = new ConcurrentHashMap<String, Thread>(capacity);
-	
+    private List<Thread> threads = new CopyOnWriteArrayList<Thread>();
+    
     private ThreadFactory threadFactory;
     
     public ThreadManager(ThreadFactory threadFactory) {
@@ -36,51 +36,45 @@ public class ThreadManager {
         long startTime = System.currentTimeMillis();
 
         while (System.currentTimeMillis() - startTime < WAIT_LIMIT) {
-            logger.log(Level.INFO, "Threads size {0}", threads.size());
+            logger.log(Level.INFO, "Active threads count {0}", threads.size());
 
             if (threads.isEmpty()) {
                 logger.log(Level.INFO, "Finished in {0} ms", (System.currentTimeMillis() - startTime));
                 break;
             } else {
-                try {
-                    Thread.sleep(100L);
-                } catch (InterruptedException ie) {
+            	for (Thread t : threads) {
+                	if (!t.isAlive()) {
+                		lock.lock();
+                		try {
+                    		boolean removed = threads.remove(t);
+                    		logger.log(Level.INFO, "Finished thread " + t.getId() + ": " + removed);
+                    		notFull.signal();
+                		} finally {
+                            lock.unlock();
+                        }
+                	}
                 }
+            	if (!threads.isEmpty()) {
+            		try {
+            			Thread.sleep(100L);
+            		} catch (InterruptedException ie) {
+            		}
+            	}
             }
         }
     }
     
-    public void put(String key, Runnable r) {
-    	Thread t = threadFactory.newThread(r);
-        
+    public void put(Runnable r) {
+    	Thread t = threadFactory.newThread(r);      
         lock.lock();
         try {
             while(threads.size() == capacity) {
                 notFull.await();
             }
             t.start();
-    		threads.put(key, t);
+    		threads.add(t);
             notEmpty.signal();
         } catch (InterruptedException e) {
-        	logger.log(Level.SEVERE, e.getMessage());
-        } finally {
-            lock.unlock();
-        }
-    }
-    
-    //public Map<String, Thread> getThreads() {
-    //	return threads;
-    //}
-    
-    public void take(String key) {
-    	lock.lock();
-        try {
-            while(threads.isEmpty()) {
-                notEmpty.await();
-            }
-            threads.remove(key);
-            notFull.signal();
-        } catch (InterruptedException e) { 
         	logger.log(Level.SEVERE, e.getMessage());
         } finally {
             lock.unlock();
