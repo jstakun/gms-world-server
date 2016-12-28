@@ -60,7 +60,7 @@ public class UtilsTest {
 		                + removed + " (" + asHex(removed) + ")");
 		}
 		
-		/*System.out.println("\nLocales:\n");
+		System.out.println("\nLocales:\n");
 		
 		for (Locale locale : Locale.getAvailableLocales()) {
 			System.out.println(locale.getCountry() + ": " + locale.getDisplayCountry());
@@ -68,11 +68,15 @@ public class UtilsTest {
 		
 		System.out.println("\nCurrencies:\n");
 		
+		String validCurrencies = "";
 		for (Currency currency : Currency.getAvailableCurrencies()) {
 			System.out.println(currency.getCurrencyCode() + ": " + currency.getDisplayName());
-		}*/
-		for (int i=0;i<50;i++)
-		System.out.println(StringUtil.formatCoordE2(13.3001));
+			Double ex = JSONUtils.getExchangeRate(currency.getCurrencyCode(), "EUR");
+			if (ex != null) {
+				validCurrencies += "\"" + currency.getCurrencyCode() + "\","; 
+			}
+		}
+		System.out.println(validCurrencies);
 	}
 	
 	public void dateTest() {

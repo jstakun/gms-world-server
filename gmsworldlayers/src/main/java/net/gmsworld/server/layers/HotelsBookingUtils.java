@@ -242,7 +242,6 @@ public class HotelsBookingUtils extends LayerHelper {
 		String hotelsUrl = hotelsUrlPrefix + latStr + "/" + lngStr + "/" + normalizedRadius + "/" + limit;			
 		logger.log(Level.INFO, "Calling: " + hotelsUrl);
 		String json = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), true);
-		//logger.log(Level.INFO, "--------------------------- Received response: " + json);
 		if (StringUtils.startsWith(json, "[")) {
     		try {
     			json = "{\"type\": \"FeatureCollection\", \"features\":" + json + "}";
@@ -307,7 +306,6 @@ public class HotelsBookingUtils extends LayerHelper {
             			last = size;
             		}
 
-            		final String id = Integer.toString(first);
             		threadManager.put(new HotelsProcessor(hotels.getFeatures().subList(first, last), starsMap, pricesMap, exchangeRates, tocc, cal, rb, prettyTime, locale));
 
             		first = last;
@@ -607,7 +605,7 @@ public class HotelsBookingUtils extends LayerHelper {
 	
 	private static void extendFeature(final Feature hotel, final Map<Integer, Integer> starsMap, final Map<Integer, Integer> pricesMap, final Map<String, Double> exchangeRates, 
 			String tocc, final Calendar cal, final ResourceBundle rb, final PrettyTime prettyTime, final Locale locale) {
-		final Map<String, Object> props = new HashMap<String, Object>();
+		final Map<String, Object> props = hotel.getProperties(); //new HashMap<String, Object>();
 		props.put("name", hotel.getProperty("name"));
 		String url = hotel.getProperty("hotel_url");
 		props.put("url", url.replace("a_id", "aid"));

@@ -199,7 +199,17 @@ public class JSONUtils {
     	final String currencyUrl = "http://api.fixer.io/latest?base=" + fromcc;
     	CacheProvider cacheProvider = LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER).getCacheProvider();
 		Map<String, Double> ratesMap = cacheProvider.getObject(HashMap.class, currencyUrl);
-		
+		if (ratesMap == null) {
+			return null;
+		} else {
+			return ratesMap.get(tocc);
+		}
+    }
+    
+    /*public static Double getExchangeRate(String fromcc, String tocc) {
+    	final String currencyUrl = "http://api.fixer.io/latest?base=" + fromcc;
+    	CacheProvider cacheProvider = LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER).getCacheProvider();
+		Map<String, Double> ratesMap = cacheProvider.getObject(HashMap.class, currencyUrl);
 		if (ratesMap == null) {
 			synchronized (exchangeRetesSemafor) {
 				ratesMap = cacheProvider.getObject(HashMap.class, currencyUrl);
@@ -229,10 +239,9 @@ public class JSONUtils {
 					}
 				}
 			} 
-		}
-		
+		}	
 		return ratesMap.get(tocc);		
-    }
+    }*/
     
     public static String formatDeal(Deal deal, Locale locale, ResourceBundle rb) {
         String result = "";

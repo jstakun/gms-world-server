@@ -52,9 +52,7 @@ public class LayersProvider2Servlet extends HttpServlet {
         LayerHelperFactory.getInstance().setCacheProvider(GoogleCacheProvider.getInstance());
         LayerHelperFactory.getInstance().setThreadProvider(new GoogleThreadProvider());
     }
-    
-    
-    
+       
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	 String formatParam = StringUtil.getStringParam(request.getParameter("format"), "json");
          Format outFormat = null;

@@ -28,7 +28,7 @@ import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 public class LayersTest {
 	
 	private static final int apiLevel = 1115;
-	private static final int limit = 30; //min 30, max 1000
+	private static final int limit = 1000; //min 30, max 1000
 	private static final int radius = 50000; 
 	private static final int stringLength = StringUtil.XLARGE;
 	
@@ -75,7 +75,7 @@ public class LayersTest {
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.OSM_TAXI_LAYER)});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.COUPONS_LAYER)});
-	   data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.GROUPON_LAYER)});
+	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.GROUPON_LAYER)});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.MC_ATM_LAYER)});
 	   
@@ -83,7 +83,7 @@ public class LayersTest {
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.FACEBOOK_LAYER)});
 	   
-	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)});
+	   data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)});
 	   
 	   System.out.println("Found " + data.size() + " layers.");
 	   
@@ -156,15 +156,15 @@ public class LayersTest {
 			//assertNotNull(landmarks);
 			//assertEquals("Found " + size + " landmarks", limit, size);
 			
-			for (ExtendedLandmark landmark : landmarks) {
-				System.out.println(landmark.getName() + " :-> " + landmark.getDescription() + "---\n");
+			//for (ExtendedLandmark landmark : landmarks) {
+				//System.out.println(landmark.getName() + " :-> " + landmark.getDescription() + "---\n");
 				//System.out.println(landmark.getThumbnail() + " " + landmark.getCategoryId() + "," + landmark.getSubCategoryId());
 				//System.out.println(landmark.getUrl());
 				//System.out.println(landmark.getLayer());
-			}
+			//}
 			
 			String key = layer.cacheGeoJson(landmarks, lat, lng, layer.getLayerName(), locale, null);
-			System.out.println(cacheProvider.getString(key));
+			//System.out.println(cacheProvider.getString(key));
 			
 			assertEquals("Layer " + layer.getLayerName() + " is empty!", false, landmarks.isEmpty());
 			assertEquals("Layer " + layer.getLayerName() + " size is " + landmarks.size(), limit, landmarks.size());		
@@ -173,12 +173,12 @@ public class LayersTest {
 		}
 	}
 
-	//@Test
+	@Test
 	public void hotelsTest() {
 		//LayerHelperFactory.getHotelsBookingUtils().loadHotelsAsync(lat, lng, radius, limit);  
 		try {
 			String hotels = ((HotelsBookingUtils)LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)).extendFeatureCollection(lat, lng, radius, limit, "stars", locale);
-			System.out.println(hotels);
+			//System.out.println(hotels);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -24,6 +24,11 @@
     <description>Red Hat OpenShift public cloud health check</description>
     <schedule>every 60 minutes</schedule>
   </cron>
+  <cron>
+    <url>/cron/taskExecute?action=currency</url>
+    <description>Load currencies to cache</description>
+    <schedule>every 4 hours</schedule>
+  </cron>
 </cronentries>
 
 

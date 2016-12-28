@@ -16,9 +16,10 @@ import java.util.logging.Logger;
 public class ThreadManager {
 	
 	private static final long WAIT_LIMIT = 30 * 1000; //30 sec
+	private static final long SLEEP_LIMIT = 200;
+	private static final int capacity = 50;
     private static final Logger logger = Logger.getLogger(ThreadManager.class.getName());
     
-    private static final int capacity = 50;
     private Lock lock = new ReentrantLock();
     private Condition notFull = lock.newCondition();
     private Condition notEmpty = lock.newCondition();
@@ -56,7 +57,7 @@ public class ThreadManager {
                 }
             	if (!threads.isEmpty()) {
             		try {
-            			Thread.sleep(100L);
+            			Thread.sleep(SLEEP_LIMIT);
             		} catch (InterruptedException ie) {
             		}
             	}
