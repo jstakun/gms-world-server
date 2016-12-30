@@ -111,7 +111,7 @@
         window.open(url + hotelUrlSuffix, '_blank');
 	}
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?libraries=visualization&key=AIzaSyBRNM9dhi9JggBK_ZKgQjk_5_EPO_H3X7A"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?libraries=visualization"></script>
     <script src="/js/marker.js"></script>
     <script src="/js/markerclusterer.js"></script>
     <script src="/js/js.cookie.js"></script>
@@ -586,7 +586,7 @@
   		return res;
   	 }
 
-     //google.maps.event.addDomListener(window, 'load', setupChildrenAges);
+     //google.maps.event.addDomListener(window, 'load', initialize);
     </script>
   </head>
   <body onload="initialize();setupChildrenAges()">
