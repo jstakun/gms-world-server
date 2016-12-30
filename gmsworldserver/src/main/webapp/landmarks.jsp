@@ -691,19 +691,21 @@
     </div>
     <script type="text/javascript">
      $.each(layers, function(index, layer) { 
-        if (layer.enabled == "true") {    		
+        if (layer.enabled == "true") {  
+        	var data = {};
+        	data['lat'] = "<%= latitude %>";
+ 	    	data['lng'] = "<%= longitude %>";
+ 	    	data['layer'] = layer.name;
+ 	    	if (layer.name == "Hotels") {
+ 	    		data['sortType'] = sortType;
+ 	    	}
   			$.ajax({
  				dataType: "json",
  				url: "/geoJsonProvider",
- 				data: {
- 	    			lat: "<%= latitude %>",
- 	    			lng: "<%= longitude %>",
- 	    			layer: layer.name,
- 	    			sortType: sortType
- 				},
-   			beforeSend: function(xhr) {
-       			xhr.setRequestHeader("Accept-Encoding", "gzip, deflate");
-   			}})
+ 				data: data,
+   				beforeSend: function(xhr) {
+       				xhr.setRequestHeader("Accept-Encoding", "gzip, deflate");
+   				}})
  				.done(function(results) {
  					loadLayer(results);
  				})
