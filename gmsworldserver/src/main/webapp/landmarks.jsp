@@ -111,7 +111,7 @@
         window.open(url + hotelUrlSuffix, '_blank');
 	}
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?libraries=visualization"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?libraries=visualization&key=AIzaSyBRNM9dhi9JggBK_ZKgQjk_5_EPO_H3X7A"></script>
     <script src="/js/marker.js"></script>
     <script src="/js/markerclusterer.js"></script>
     <script src="/js/js.cookie.js"></script>
@@ -138,6 +138,7 @@
       }
 %>          
       	  ];
+      	  
       function initialize() {
     	  map = new google.maps.Map(document.getElementById('map-canvas'), {
       			zoom: <%= zoom %>,
@@ -160,20 +161,6 @@
             	scaleControl: true,
             	//streetViewControl: false, 
           });
-
-          for (var i = 0; i < layers.length; i++) {
-              if (layers[i].enabled == "true") {
-                	var script = document.createElement('script');
-                    script.src = '<%= ConfigurationManager.SERVER_URL %>geoJsonProvider?layer=' + layers[i].name + '&lat=<%= latitude %>&lng=<%= longitude %>&callback=layers_callback'; 
-        			//script.src = 'http://localhost:8080/geoJsonProvider?layer=' + layers[i].name + '&lat=<%= latitude %>&lng=<%= longitude %>&callback=layers_callback'; 
-        			if (layers[i].name == "Hotels") {
-        				script.src += '&sortType=' + sortType;
-            		}
-        			document.getElementsByTagName('head')[0].appendChild(script);
-              }	else {
-                    excluded_layers++; 
-              }
-          }
 
           var contentString = <%= landmarkDesc %>;
           
@@ -310,18 +297,20 @@
 	  		}
       }
 
-      window.layers_callback = function(results) {
+      function loadLayer(results) {
     	   if (results.properties != null) {
                 var layer = results.properties.layer;
     	  		for (var i = 0; i < layers.length; i++) {
     	  			 if (layer == layers[i].name && layers[i].enabled == "true") {
-                 		    var image = '/images/layers/' + layers[i].icon; 
-                    		console.log("Received " + results.features.length + " landmarks from layer " + layer);
-          	  				loadMarkers(results, image, <%= isMobile %>);
-                            if (layer != "Hotels") {
-								hotelsOnly = false;
-                            }
-                            mc.repaint();
+                 		  var image = '/images/layers/' + layers[i].icon; 
+                    	  console.log("Received " + results.features.length + " landmarks from layer " + layer);
+                    	  if (layer != "Hotels") {
+							  hotelsOnly = false;
+                       	  }
+                       	  if (results.features.length > 0) {
+          	  				  loadMarkers(results, image, <%= isMobile %>);
+                           	  mc.repaint();
+    	  			 	  }
           			 }	   
            		} 
       	   } else {
@@ -597,10 +586,10 @@
   		return res;
   	 }
 
-      google.maps.event.addDomListener(window, 'load', initialize);
+     //google.maps.event.addDomListener(window, 'load', setupChildrenAges);
     </script>
   </head>
-  <body onload="setupChildrenAges()">
+  <body onload="initialize();setupChildrenAges()">
     <div id="map-canvas"></div>                                            
     <div id="status" style="color:black;font-family:Roboto,Arial,sans-serif;font-size:<%=fontSize%>;line-height:32px;padding-left:4px;padding-right:4px;"></div>
     <div id="checkin" style="background-color:#fff;border:2px solid #fff;border-radius:3px;box-shadow:0 2px 6px rgba(0,0,0,.3);color:black;font-family:Roboto,Arial,sans-serif;font-size:<%=fontSize%>;line-height:28px;padding-left:4px;padding-right:4px;margin-right:10px;display:none;">
@@ -669,16 +658,11 @@
 	}
 %>  						</select> 
 				</td>
-    		</tr>
-    		
+    		</tr>   		
     		<tr id="checkinChildrenHeaderRow"></tr>
-    		
     		<tr id="checkinChildrenRow1"></tr>
-    		
     		<tr id="checkinChildrenRow2"></tr>
-    		
     		<tr id="checkinChildrenRow3"></tr>		
-    		
     		<tr>
     			<td><bean:message key="landmarks.rooms" /></td>
     			<td align="right">
@@ -706,7 +690,32 @@
     	</table>
     </div>
     <script type="text/javascript">
-      $(function() {
+     $.each(layers, function(index, layer) { 
+        if (layer.enabled == "true") {    		
+  			$.ajax({
+ 				dataType: "json",
+ 				url: "/geoJsonProvider",
+ 				data: {
+ 	    			lat: "<%= latitude %>",
+ 	    			lng: "<%= longitude %>",
+ 	    			layer: layer.name,
+ 	    			sortType: sortType
+ 				},
+   			beforeSend: function(xhr) {
+       			xhr.setRequestHeader("Accept-Encoding", "gzip, deflate");
+   			}})
+ 				.done(function(results) {
+ 					loadLayer(results);
+ 				})
+ 				.error(function(jqXHR, textStatus, errorThrown){ /* assign handler */
+ 		    		console.log("API call error: " + textStatus + ", " + errorThrown);
+ 			});
+	     } else {
+            excluded_layers++; 
+        }
+     });   		
+
+     $(function() {
 	     var daysToAdd = 1;
 	     $.datepicker.setDefaults($.datepicker.regional['<%= request.getLocale().getLanguage() %>']);
 	     $("#checkinDate").datepicker({
@@ -733,6 +742,7 @@
 	        },  minDate: 1, dateFormat: 'yy-mm-dd'
 	     });                 
       })
+  
       var checkinDate = Cookies.get('checkinDate');
       if (!isEmpty(checkinDate)) {
  		   document.getElementById('checkinDate').value = checkinDate;

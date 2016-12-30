@@ -6,17 +6,17 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.layers.GeocodeHelperFactory;
+import net.gmsworld.server.layers.HotelsBookingUtils;
+import net.gmsworld.server.layers.LayerHelperFactory;
+import net.gmsworld.server.utils.HttpUtils;
+import net.gmsworld.server.utils.StringUtil;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-
-import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.layers.GeocodeHelperFactory;
-import net.gmsworld.server.layers.LayerHelperFactory;
-import net.gmsworld.server.layers.HotelsBookingUtils;
-import net.gmsworld.server.utils.HttpUtils;
-import net.gmsworld.server.utils.StringUtil;
 
 import com.jstakun.lm.server.utils.HtmlUtils;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
@@ -125,6 +125,7 @@ public class ShowLocationAction extends org.apache.struts.action.Action {
 			if (StringUtils.contains(request.getParameter("enabled"), "Hotels")) {
 				((HotelsBookingUtils)LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)).loadHotelsAsync(lat, lng, RADIUS, HOTELS_LIMIT, request.getParameter("sortType")); 
 			}
+			
         	if (isMobile) {
         		return mapping.findForward("landmarksMobile");
         	} else {
