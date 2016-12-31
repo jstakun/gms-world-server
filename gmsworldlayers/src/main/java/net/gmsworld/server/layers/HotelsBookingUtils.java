@@ -400,11 +400,14 @@ public class HotelsBookingUtils extends LayerHelper {
 			}			
 			if (StringUtils.isNotEmpty(currencycode) && minrate != null) {
 				if (!StringUtils.endsWithAny(currencycode, new String[]{"USD", "GBP", "EUR"})) {
-					Double exchangeRate = JSONUtils.getExchangeRate("EUR", currencycode);
-					if (exchangeRate != null) {
-						minrate = minrate / exchangeRate;
-						currencycode = "EUR";
-					}
+					Map<String, Double> ratesMap = cacheProvider.getObject(HashMap.class, "http://api.fixer.io/latest?base=EUR");
+	        		if (ratesMap != null) {
+	        			Double exchangeRate = ratesMap.get(currencycode);
+	        			if (exchangeRate != null) {
+	        				minrate = minrate / exchangeRate;
+	        				currencycode = "EUR";
+	        			}
+	        		}
 				}
 				
 				response = Math.round(minrate) + " " + currencycode;
@@ -603,7 +606,7 @@ public class HotelsBookingUtils extends LayerHelper {
         return landmark;
     }
 	
-	private static void extendFeature(final Feature hotel, final Map<Integer, Integer> starsMap, final Map<Integer, Integer> pricesMap, final Map<String, Double> exchangeRates, 
+	private void extendFeature(final Feature hotel, final Map<Integer, Integer> starsMap, final Map<Integer, Integer> pricesMap, final Map<String, Double> exchangeRates, 
 			String tocc, final Calendar cal, final ResourceBundle rb, final PrettyTime prettyTime, final Locale locale) {
 		final Map<String, Object> props = hotel.getProperties(); //new HashMap<String, Object>();
 		props.put("name", hotel.getProperty("name"));
@@ -642,10 +645,13 @@ public class HotelsBookingUtils extends LayerHelper {
         	rate = NumberUtils.getDouble(hotel.getProperty("maxrate"));
         }
         if (rate != null) {
-        	if (tocc != null && fromcc != null && !StringUtils.equals(tocc, fromcc) && fromcc.length() == 3) {  		
-        		Double toccrate = JSONUtils.getExchangeRate(fromcc, tocc);
-        		if (toccrate != null) {
-        			rate = rate * toccrate;
+        	if (tocc != null && fromcc != null && !StringUtils.equals(tocc, fromcc) && fromcc.length() == 3) {  	
+        		Map<String, Double> ratesMap = cacheProvider.getObject(HashMap.class, "http://api.fixer.io/latest?base=" + fromcc);
+        		if (ratesMap != null) {
+        			Double toccrate = ratesMap.get(tocc);
+        			if (toccrate != null) {
+            			rate = rate * toccrate;
+            		}
         		}
         	} 
 
@@ -656,23 +662,25 @@ public class HotelsBookingUtils extends LayerHelper {
         	props.put("cc", tocc);
         	    		
         	s = 0;
-        	Double exchangeRate = JSONUtils.getExchangeRate("EUR", tocc);
-        	if (exchangeRate != null) {
-        		exchangeRates.put(tocc, exchangeRate);
-        		double eurvalue = rate / exchangeRate;
-        		if (eurvalue < 50d) {
-        			s = 1;
-        		} else if (eurvalue >= 50d && eurvalue < 100d) {
-        			s = 2;
-        		} else if (eurvalue >= 100d && eurvalue < 150d) {
-        			s = 3;
-        		} else if (eurvalue >= 150d && eurvalue < 200d) {
-        			s = 4;
-        		} else if (eurvalue >= 200d) {
-        			s = 5;
-        		}
-        	}
-        	
+        	Map<String, Double> ratesMap = cacheProvider.getObject(HashMap.class, "http://api.fixer.io/latest?base=EUR");
+    		if (ratesMap != null) {
+    			Double exchangeRate = ratesMap.get(tocc);
+    			if (exchangeRate != null) {
+    				exchangeRates.put(tocc, exchangeRate);
+    				double eurvalue = rate / exchangeRate;
+    				if (eurvalue < 50d) {
+    					s = 1;
+    				} else if (eurvalue >= 50d && eurvalue < 100d) {
+    					s = 2;
+    				} else if (eurvalue >= 100d && eurvalue < 150d) {
+    					s = 3;
+    				} else if (eurvalue >= 150d && eurvalue < 200d) {
+    					s = 4;
+    				} else if (eurvalue >= 200d) {
+    					s = 5;
+    				}
+    			}
+    		}
         	if (pricesMap.containsKey(s)) {
         		pricesMap.put(s, pricesMap.get(s)+1);
         	} else {
@@ -752,7 +760,7 @@ public class HotelsBookingUtils extends LayerHelper {
 		return "hotelsProvider";
 	}
 	
-	private static final class HotelsProcessor implements Runnable {
+	private final class HotelsProcessor implements Runnable {
 
 		private Map<Integer, Integer> starsMap;
 		private Map<Integer, Integer> pricesMap;
@@ -779,13 +787,21 @@ public class HotelsBookingUtils extends LayerHelper {
 		
 		@Override
 		public void run() {
+			long start = System.currentTimeMillis();
 			try {
-				for (Feature feature : features) {
-					extendFeature(feature, starsMap, pricesMap, exchangeRates, tocc, cal, rb, prettyTime, locale);			
+				for (int i=0;i<features.size();i++) {
+				//for (Feature feature : features) {
+					long s = System.currentTimeMillis();
+					extendFeature(features.get(i), starsMap, pricesMap, exchangeRates, tocc, cal, rb, prettyTime, locale);	
+					long time = System.currentTimeMillis()-s;
+			        if (time > 50) {
+			        	logger.log(Level.INFO, "Processed hotel " + i + " in " + time + " millis");
+			        }
 				}
 			} catch (Exception e) {
 				logger.log(Level.SEVERE, e.getMessage(), e);
 			} 
+			logger.log(Level.INFO, "Processed " + features.size() + " hotels in " + (System.currentTimeMillis()-start) + " millis");
 		}	
 	}
 }

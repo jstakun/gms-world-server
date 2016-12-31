@@ -272,10 +272,13 @@ public abstract class LayerHelper {
 						Double exchangeRate = 1d;
 						String cc = landmark.getDeal().getCurrencyCode();
 						if (!StringUtils.equals(cc, "EUR")) {
-							exchangeRate = JSONUtils.getExchangeRate("EUR", landmark.getDeal().getCurrencyCode());
-							if (exchangeRate != null) {
-								exchangeRates.put(landmark.getDeal().getCurrencyCode(), exchangeRate);
-							}
+							Map<String, Double> ratesMap = cacheProvider.getObject(HashMap.class, "http://api.fixer.io/latest?base=EUR");
+			        		if (ratesMap != null) {
+			        			exchangeRate = ratesMap.get(landmark.getDeal().getCurrencyCode());
+			        			if (exchangeRate != null) {
+			        				exchangeRates.put(landmark.getDeal().getCurrencyCode(), exchangeRate);
+			        			}
+			        		}
 						}
 						if (exchangeRate != null) {							
 							double eurvalue = landmark.getDeal().getPrice() / exchangeRate;
@@ -309,10 +312,13 @@ public abstract class LayerHelper {
 					String cc = Currency.getInstance(l).getCurrencyCode();
 					featureCollection.setProperty("currencycode", cc);
 					if (!StringUtils.equals(cc, "EUR") && !exchangeRates.containsKey(cc)) {
-						Double exchangeRate = JSONUtils.getExchangeRate("EUR", cc);
-						if (exchangeRate != null) {
-							exchangeRates.put(cc, exchangeRate);
-						}
+						Map<String, Double> ratesMap = cacheProvider.getObject(HashMap.class, "http://api.fixer.io/latest?base=EUR");
+		        		if (ratesMap != null) {
+		        			Double exchangeRate = ratesMap.get(cc);
+		        			if (exchangeRate != null) {
+		        				exchangeRates.put(cc, exchangeRate);
+		        			}
+		        		}
 					}
 				} catch (Exception e) {
 					logger.log(Level.SEVERE, "Error for: " + country + "," + language, e);

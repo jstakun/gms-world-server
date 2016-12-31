@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 public class ThreadManager {
 	
 	private static final long WAIT_LIMIT = 30 * 1000; //30 sec
-	private static final long SLEEP_LIMIT = 200;
+	private static final long SLEEP_LIMIT = 100;
 	private static final int capacity = 50;
     private static final Logger logger = Logger.getLogger(ThreadManager.class.getName());
     
@@ -47,8 +47,8 @@ public class ThreadManager {
                 	if (!t.isAlive()) {
                 		lock.lock();
                 		try {
-                    		boolean removed = threads.remove(t);
-                    		logger.log(Level.INFO, "Finished thread " + t.getId() + ": " + removed);
+                    		threads.remove(t);
+                    		logger.log(Level.INFO, "Finished thread " + t.getId());
                     		notFull.signal();
                 		} finally {
                             lock.unlock();

@@ -8,15 +8,10 @@ import java.util.Currency;
 import java.util.Date;
 import java.util.Locale;
 
-import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.utils.DateUtils;
-import net.gmsworld.server.utils.JSONUtils;
-import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.UrlUtils;
 
 import org.junit.Test;
-
-import com.jstakun.gms.android.deals.Deal;
 
 public class UtilsTest {
 
@@ -28,15 +23,6 @@ public class UtilsTest {
 		System.out.println("Short url #2: " + shortUrl2);
 		assertNotEquals("Shortening url 1 failed!", longUrl, shortUrl1);
 		assertNotEquals("Shortening url 2 failed!", longUrl, shortUrl2);
-	}
-	
-	public void currencyTest() {
-		Deal d = new Deal();
-		d.setCurrencyCode("PLN");
-		d.setPrice(123.99);
-		
-		JSONUtils.formatCurrency(d, "en", "us");
-		System.out.println(d.getPrice() + " " + d.getCurrencyCode());
 	}
 	
 	@Test
@@ -71,10 +57,6 @@ public class UtilsTest {
 		String validCurrencies = "";
 		for (Currency currency : Currency.getAvailableCurrencies()) {
 			System.out.println(currency.getCurrencyCode() + ": " + currency.getDisplayName());
-			Double ex = JSONUtils.getExchangeRate(currency.getCurrencyCode(), "EUR");
-			if (ex != null) {
-				validCurrencies += "\"" + currency.getCurrencyCode() + "\","; 
-			}
 		}
 		System.out.println(validCurrencies);
 	}

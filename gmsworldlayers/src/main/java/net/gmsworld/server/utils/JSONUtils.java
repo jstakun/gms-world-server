@@ -2,7 +2,6 @@ package net.gmsworld.server.utils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.net.URL;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -43,7 +42,7 @@ public class JSONUtils {
 
     private static final Logger logger = Logger.getLogger(JSONUtils.class.getName());
     private static final Tidy tidy = new Tidy();
-    private static final Object exchangeRetesSemafor = new Object();
+    //private static final Object exchangeRetesSemafor = new Object();
 
     static {
         tidy.setPrintBodyOnly(true);
@@ -166,7 +165,7 @@ public class JSONUtils {
         }
     }
     
-    public static void formatCurrency(Deal deal, String language, String country) {
+    private static void formatCurrency(Deal deal, String language, String country, String layer) {
     	
     	String fromcc = deal.getCurrencyCode();
     	String tocc = null;
@@ -187,7 +186,7 @@ public class JSONUtils {
     	}
     	
     	if (tocc != null && fromcc != null && !StringUtils.equals(tocc, fromcc) && fromcc.length() == 3) {  		
-    		Double toccrate = getExchangeRate(fromcc, tocc);
+    		Double toccrate = getExchangeRate(fromcc, tocc, layer);
 			if (toccrate != null) {
 				deal.setCurrencyCode(tocc);
 				deal.setPrice(deal.getPrice() * toccrate);
@@ -195,9 +194,9 @@ public class JSONUtils {
     	}  	
     }
     
-    public static Double getExchangeRate(String fromcc, String tocc) {
+    private static Double getExchangeRate(String fromcc, String tocc, String layer) {
     	final String currencyUrl = "http://api.fixer.io/latest?base=" + fromcc;
-    	CacheProvider cacheProvider = LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER).getCacheProvider();
+    	CacheProvider cacheProvider = LayerHelperFactory.getInstance().getByName(layer).getCacheProvider();
 		Map<String, Double> ratesMap = cacheProvider.getObject(HashMap.class, currencyUrl);
 		if (ratesMap == null) {
 			return null;
@@ -205,43 +204,6 @@ public class JSONUtils {
 			return ratesMap.get(tocc);
 		}
     }
-    
-    /*public static Double getExchangeRate(String fromcc, String tocc) {
-    	final String currencyUrl = "http://api.fixer.io/latest?base=" + fromcc;
-    	CacheProvider cacheProvider = LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER).getCacheProvider();
-		Map<String, Double> ratesMap = cacheProvider.getObject(HashMap.class, currencyUrl);
-		if (ratesMap == null) {
-			synchronized (exchangeRetesSemafor) {
-				ratesMap = cacheProvider.getObject(HashMap.class, currencyUrl);
-				if (ratesMap == null) {
-					ratesMap = new HashMap<String, Double>();
-					try {
-						logger.log(Level.INFO, "Calling " + currencyUrl + "...");
-						//TODO set connection timeout to 10 sec
-						String resp = HttpUtils.processFileRequest(new URL(currencyUrl));							
-						if (StringUtils.startsWith(resp, "{")) {
-							JSONObject root = new JSONObject(resp);
-							if (root.has("error")) {
-								logger.log(Level.WARNING, "Currency " + fromcc + " response error: " + root.getString("error"));
-							} else {
-								JSONObject rates = root.getJSONObject("rates");
-								for (Iterator<String> keys=rates.keys();keys.hasNext();) {
-									String key = keys.next();
-									ratesMap.put(key, rates.getDouble(key));
-								}
-							}
-							cacheProvider.put(currencyUrl, ratesMap);
-						} else {
-							logger.log(Level.WARNING, currencyUrl + " received following response from the server: " + resp);
-						}
-					} catch (Exception e) {
-						logger.log(Level.SEVERE, e.getMessage(), e);
-					}
-				}
-			} 
-		}	
-		return ratesMap.get(tocc);		
-    }*/
     
     public static String formatDeal(Deal deal, Locale locale, ResourceBundle rb) {
         String result = "";
@@ -404,7 +366,7 @@ public class JSONUtils {
         
         //System.out.println("P: " + deal.getPrice() + ", D: " + deal.getDiscount() + ", S: " + deal.getSave());
         if (landmark.containsDeal()) {
-        	formatCurrency(landmark.getDeal(), locale.getLanguage(), locale.getCountry());
+        	formatCurrency(landmark.getDeal(), locale.getLanguage(), locale.getCountry(),  landmark.getLayer());
             String priceFormatted = formatDeal(landmark.getDeal(), locale, rb);
             if (StringUtils.isNotEmpty(priceFormatted)) {
                 result.add(priceFormatted);

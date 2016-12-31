@@ -693,9 +693,9 @@
      $.each(layers, function(index, layer) { 
         if (layer.enabled == "true") {  
         	var data = {};
-        	data['lat'] = "<%= latitude %>";
+        	data['layer'] = layer.name;
+ 	    	data['lat'] = "<%= latitude %>";
  	    	data['lng'] = "<%= longitude %>";
- 	    	data['layer'] = layer.name;
  	    	if (layer.name == "Hotels") {
  	    		data['sortType'] = sortType;
  	    	}

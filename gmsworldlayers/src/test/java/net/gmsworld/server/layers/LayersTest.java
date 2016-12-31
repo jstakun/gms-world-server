@@ -72,7 +72,7 @@ public class LayersTest {
 		
 	   List<Object[]> data = new ArrayList<Object[]>();	
 	  
-	   data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.OSM_TAXI_LAYER)});
+	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.OSM_TAXI_LAYER)});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.COUPONS_LAYER)});
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.GROUPON_LAYER)});
@@ -83,7 +83,7 @@ public class LayersTest {
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.FACEBOOK_LAYER)});
 	   
-	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)});
+	   data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)});
 	   
 	   System.out.println("Found " + data.size() + " layers.");
 	   
