@@ -254,15 +254,16 @@ public class JSONUtils {
         return result;
     }
     
-    private static void formatOtherAddress(AddressInfo address, List<String> tokens) {
+    private static String formatOtherAddress(AddressInfo address) {
     	//Other
         //STREET
         //POSTAL_CODE CITY
         //STATE
         //COUNTRY
+    	String result = "";
         
         if (StringUtils.isNotEmpty(address.getField(AddressInfo.STREET))) {
-        	tokens.add(address.getField(AddressInfo.STREET));
+        	result += address.getField(AddressInfo.STREET);
         }
         
         String line = "";
@@ -276,25 +277,36 @@ public class JSONUtils {
             line += address.getField(AddressInfo.CITY);
         }
         if (line.length() > 0) {
-            tokens.add(line);
+        	if (result.length() > 0) {
+            	result += ", ";
+            }
+    		result += line;
         }
         
         if (StringUtils.isNotEmpty(address.getField(AddressInfo.STATE))) {
-        	tokens.add(address.getField(AddressInfo.STATE));
+        	if (result.length() > 0) {
+            	result += ", ";
+            }
+    		result += address.getField(AddressInfo.STATE);
         }
         
         if (StringUtils.isNotEmpty(address.getField(AddressInfo.COUNTRY))) {
-        	tokens.add(address.getField(AddressInfo.COUNTRY));
+        	if (result.length() > 0) {
+            	result += ", ";
+            }
+    		result += address.getField(AddressInfo.COUNTRY);
         }
+        return result;
     }
     
-    private static void formatUSAddress(AddressInfo address, List<String> tokens) {
+    private static String formatUSAddress(AddressInfo address) {
     	//US
         //STREET
         //CITY, STATE POSTAL_CODE
         //COUNTRY
+    	String result = "";
         if (StringUtils.isNotEmpty(address.getField(AddressInfo.STREET))) {
-            tokens.add(address.getField(AddressInfo.STREET));
+            result += address.getField(AddressInfo.STREET);
         }
     	
         String line = "";
@@ -308,30 +320,28 @@ public class JSONUtils {
             }
     	}
     	if (line.length() > 0) {
-            tokens.add(line);
+            if (result.length() > 0) {
+            	result += ", ";
+            }
+    		result += line;
         }
     	
     	if (StringUtils.isNotEmpty(address.getField(AddressInfo.COUNTRY))) {
-            tokens.add(address.getField(AddressInfo.COUNTRY));
+    		if (result.length() > 0) {
+            	result += ", ";
+            }
+    		result += address.getField(AddressInfo.COUNTRY);
         }
+    	
+    	return result;
     }
     
     public static String formatAddress(AddressInfo address) {
-        List<String> tokens = new ArrayList<String>();
-        
-        //logger.log(Level.INFO, "Formatting address with locale " + locale.getCountry() + "_" + locale.getLanguage() );
-        
         if (StringUtils.equalsIgnoreCase(address.getField(AddressInfo.COUNTRY),"US")) {
-        	formatUSAddress(address, tokens);
+        	return formatUSAddress(address);
         } else {
-        	formatOtherAddress(address, tokens);
-        }
-       
-        if (!tokens.isEmpty()) {
-        	return StringUtils.join(tokens, ", ");
-        } else {
-            return "";
-        }
+        	return formatOtherAddress(address);
+        }       
     }
     
     private static void putOptValue(List<String> vector, String resource, String property, Map<String, String> tokens, java.util.Locale l, ResourceBundle rb) {

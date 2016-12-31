@@ -608,6 +608,8 @@ public class HotelsBookingUtils extends LayerHelper {
 	
 	private void extendFeature(final Feature hotel, final Map<Integer, Integer> starsMap, final Map<Integer, Integer> pricesMap, final Map<String, Double> exchangeRates, 
 			String tocc, final Calendar cal, final ResourceBundle rb, final PrettyTime prettyTime, final Locale locale) {
+		long start = System.currentTimeMillis();
+		final long timeLimit = 500;
 		final Map<String, Object> props = hotel.getProperties(); //new HashMap<String, Object>();
 		props.put("name", hotel.getProperty("name"));
 		String url = hotel.getProperty("hotel_url");
@@ -638,7 +640,7 @@ public class HotelsBookingUtils extends LayerHelper {
 		}
 		
         props.put("thumbnail", hotel.getProperty("photo_url"));
-		
+
         String fromcc = hotel.getProperty("currencycode");
         Double rate = NumberUtils.getDouble(hotel.getProperty("minrate"));
         if (rate == null) {
@@ -687,7 +689,13 @@ public class HotelsBookingUtils extends LayerHelper {
         		pricesMap.put(s, 1);
         	}
         }
-		
+		//-----------------------------
+        long end = System.currentTimeMillis();
+        if (end - start > timeLimit) {
+    		logger.log(Level.WARNING, "End of section 1 in " + (end - start) + " millis");
+        }
+        start = end;
+        
 		String desc = "";
 		//stars
 		for (int j=0;j<stars;j++) {
@@ -701,7 +709,13 @@ public class HotelsBookingUtils extends LayerHelper {
 			Deal deal = new Deal(rate, -1, -1, null, tocc);
 			desc += JSONUtils.formatDeal(deal, locale, rb) + "<br/>";
 		}
-		//adres
+		//-----------------------------
+        end = System.currentTimeMillis();
+        if (end - start > timeLimit) {
+    		logger.log(Level.WARNING, "End of section 2 in " + (end - start) + " millis");
+        }
+        start = end;
+		//address
 		AddressInfo address = new AddressInfo();
     	String value = hotel.getProperty("address");
     	if (StringUtils.isNotEmpty(value)) {
@@ -725,6 +739,12 @@ public class HotelsBookingUtils extends LayerHelper {
     		address.setField(AddressInfo.POSTAL_CODE, value);
     	}
 		desc += JSONUtils.formatAddress(address) + "<br/>";
+		//-----------------------------
+        end = System.currentTimeMillis();
+        if (end - start > timeLimit) {
+    		logger.log(Level.WARNING, "End of section 3 in " + (end - start) + " millis");
+        }
+        start = end;
 		//creation date
 		cal.setTimeInMillis((long)hotel.getProperty("creationDate"));
     	desc += String.format(rb.getString("Landmark.creation_date"), prettyTime.format(cal)) + "<br/>";
@@ -733,6 +753,11 @@ public class HotelsBookingUtils extends LayerHelper {
 		props.put("desc", desc); 
 		
 		hotel.setProperties(props);
+		//-----------------------------
+		end = System.currentTimeMillis();
+		if (end - start > timeLimit) {
+			logger.log(Level.WARNING, "End of section 4 in " + (end - start) + " millis");
+		}        
 	}
 	
 	public int countNearbyHotels(double lat, double lng, int r) {
@@ -787,21 +812,15 @@ public class HotelsBookingUtils extends LayerHelper {
 		
 		@Override
 		public void run() {
-			long start = System.currentTimeMillis();
+			//long start = System.currentTimeMillis();
 			try {
-				for (int i=0;i<features.size();i++) {
-				//for (Feature feature : features) {
-					long s = System.currentTimeMillis();
-					extendFeature(features.get(i), starsMap, pricesMap, exchangeRates, tocc, cal, rb, prettyTime, locale);	
-					long time = System.currentTimeMillis()-s;
-			        if (time > 50) {
-			        	logger.log(Level.INFO, "Processed hotel " + i + " in " + time + " millis");
-			        }
+				for (Feature feature : features) {
+					extendFeature(feature, starsMap, pricesMap, exchangeRates, tocc, cal, rb, prettyTime, locale);	
 				}
 			} catch (Exception e) {
 				logger.log(Level.SEVERE, e.getMessage(), e);
 			} 
-			logger.log(Level.INFO, "Processed " + features.size() + " hotels in " + (System.currentTimeMillis()-start) + " millis");
+			//logger.log(Level.INFO, "Processed " + features.size() + " hotels in " + (System.currentTimeMillis()-start) + " millis");
 		}	
 	}
 }
