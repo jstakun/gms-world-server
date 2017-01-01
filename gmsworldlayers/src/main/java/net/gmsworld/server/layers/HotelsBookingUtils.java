@@ -689,12 +689,13 @@ public class HotelsBookingUtils extends LayerHelper {
         		pricesMap.put(s, 1);
         	}
         }
-		//-----------------------------
+		
         long end = System.currentTimeMillis();
         if (end - start > timeLimit) {
     		logger.log(Level.WARNING, "End of section 1 in " + (end - start) + " millis");
         }
         start = end;
+        //-------------------------------------2------------------------------------------
         
 		String desc = "";
 		//stars
@@ -709,13 +710,15 @@ public class HotelsBookingUtils extends LayerHelper {
 			Deal deal = new Deal(rate, -1, -1, null, tocc);
 			desc += JSONUtils.formatDeal(deal, locale, rb) + "<br/>";
 		}
-		//-----------------------------
-        end = System.currentTimeMillis();
+		
+		end = System.currentTimeMillis();
         if (end - start > timeLimit) {
     		logger.log(Level.WARNING, "End of section 2 in " + (end - start) + " millis");
         }
         start = end;
-		//address
+        //-------------------------------------3------------------------------------------
+        
+        //address
 		AddressInfo address = new AddressInfo();
     	String value = hotel.getProperty("address");
     	if (StringUtils.isNotEmpty(value)) {
@@ -739,13 +742,15 @@ public class HotelsBookingUtils extends LayerHelper {
     		address.setField(AddressInfo.POSTAL_CODE, value);
     	}
 		desc += JSONUtils.formatAddress(address) + "<br/>";
-		//-----------------------------
-        end = System.currentTimeMillis();
+		
+		end = System.currentTimeMillis();
         if (end - start > timeLimit) {
     		logger.log(Level.WARNING, "End of section 3 in " + (end - start) + " millis");
         }
         start = end;
-		//creation date
+        //----------------------------------------4------------------------------------------
+        
+        //creation date
 		cal.setTimeInMillis((long)hotel.getProperty("creationDate"));
     	desc += String.format(rb.getString("Landmark.creation_date"), prettyTime.format(cal)) + "<br/>";
 		//no of rooms
