@@ -29,17 +29,7 @@ public class WelcomeAction extends org.apache.struts.action.Action {
     public ActionForward execute(ActionMapping mapping, ActionForm form,
             HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
-		CacheAction newestLandmarksAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
-			@Override
-			public Object executeAction() {
-				return LandmarkPersistenceUtils.selectNewestLandmarks();
-			}
-		});
-				
-		List<Landmark> landmarkList = newestLandmarksAction.getListFromCache(Landmark.class, "newestLandmarks", CacheType.FAST);
-        request.setAttribute("newestLandmarkList", landmarkList);   
-        
-        //handle different request urls
+		//handle different request urls
         //http://m.
         //http://www.
 		//http://hotels.
@@ -49,11 +39,24 @@ public class WelcomeAction extends org.apache.struts.action.Action {
         logger.log(Level.INFO, "Received request to " + request.getRequestURL() + " from locale " + request.getLocale().toString());
         
         String url = request.getRequestURL().toString();
-        if (StringUtils.startsWith(url, "http://hotels.") || StringUtils.contains(url, "hotelsonmap.net")) {
+        if (request.getHeader("User-Agent").contains("python-requests/2.9.1") || request.getHeader("User-Agent").contains("https://www.letsencrypt.org")) {
+        	logger.log(Level.WARNING, "Verification request received!");
+        	return mapping.findForward("verify");
+        } else if (StringUtils.startsWith(url, "http://hotels.") || StringUtils.contains(url, "hotelsonmap.net")) {
         	return mapping.findForward("hotels");
         } else if (StringUtils.startsWith(url, "http://landmarks.")) {
         	return mapping.findForward("landmarks");
         } else {
+        	CacheAction newestLandmarksAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
+    			@Override
+    			public Object executeAction() {
+    				return LandmarkPersistenceUtils.selectNewestLandmarks();
+    			}
+    		});
+    				
+    		List<Landmark> landmarkList = newestLandmarksAction.getListFromCache(Landmark.class, "newestLandmarks", CacheType.FAST);
+            request.setAttribute("newestLandmarkList", landmarkList);   
+            
         	OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
         	if (os.getDeviceType().equals(DeviceType.MOBILE)) {
         		return mapping.findForward("mobile");

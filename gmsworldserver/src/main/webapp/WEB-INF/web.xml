@@ -514,6 +514,10 @@
     <servlet-name>HotelsBookingServlet</servlet-name>
     <url-pattern>/bookingProvider</url-pattern>
   </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>PanoramioProviderServlet</servlet-name>
+    <url-pattern>/.well-known/acme-challenge/*</url-pattern>
+  </servlet-mapping>
   <session-config>
     <session-timeout>30</session-timeout>
   </session-config>

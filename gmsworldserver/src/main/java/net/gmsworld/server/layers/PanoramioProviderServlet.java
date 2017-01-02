@@ -39,13 +39,23 @@ public class PanoramioProviderServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/json;charset=UTF-8");
-        PrintWriter out = response.getWriter();
+    	PrintWriter out = response.getWriter();
         try {
-            if (HttpUtils.isEmptyAny(request,"bbox","zoom","max")) {
+        	if (request.getRequestURI().contains("IShUqHcjbXAf3oWCR07fcFn5FrjwKRGtPPya8rjABpE")) {
+        		response.sendRedirect("/letsencrypt.txt");
+        	} else if (request.getRequestURI().contains("WUZdet-FD16vxROc0xzDYBuj2qPNZEg35J_hDu1mmGY")) {
+        		response.sendRedirect("/letsencrypt.hotels.txt");	
+        	} else if (request.getRequestURI().contains("ON_w8jth_D0LMQGcUaQ9qFgerVQFqDuPfQd9ZM8H7Ys")) {
+        		response.sendRedirect("/letsencrypt.landmarks.txt");           		
+        	} else if (request.getRequestURI().contains("7apCfZz8fDq_XWcpx9FQgPkk7EWhSeUEG-uyJ2JhAXc")) {
+        		response.sendRedirect("/letsencrypt.m.txt");           		
+        	} else if (request.getRequestURI().contains("hmxZYg5PNur7LbXvVmmnUCpc2kHMLO-kkty1Rgn8kek")) {
+        		response.sendRedirect("/letsencrypt.www.txt");           		
+        	} else if (HttpUtils.isEmptyAny(request,"bbox","zoom","max")) {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             } else {
-                String bbox = request.getParameter("bbox");
+            	response.setContentType("text/json;charset=UTF-8");
+            	String bbox = request.getParameter("bbox");
                 String zoom = request.getParameter("zoom");
                 //String max = request.getParameter("max");
                 String max = "30";
@@ -63,7 +73,7 @@ public class PanoramioProviderServlet extends HttpServlet {
                 String output = JSONUtils.getJsonArrayObject(parser.getJSonArray());
 
                 out.print(output);
-            }
+            }        	
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

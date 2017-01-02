@@ -274,7 +274,8 @@ public class HtmlUtils {
     		String[] date = DateUtils.getShortMonthYearString(i).split("-");
     	    resp += "<li><a href=\"/archive/" + date[1] + "/" + date[0] + "\">" + DateUtils.getLongMonthYearString(i) + "</a></li>\n";
     	}
-    	resp += "<li><a href=\"/archive/2015\">January 2015</a></li>\n" +
+    	resp += "<li><a href=\"/archive/2016\">January 2016</a></li>\n" +
+    			"<li><a href=\"/archive/2015\">January 2015</a></li>\n" +
     			"<li><a href=\"/archive/2014\">January 2014</a></li>\n";
     	return resp;
     }
