@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.ConfigurationManager;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -167,7 +168,7 @@ public class HttpUtils {
             HttpURLConnection conn = (HttpURLConnection) fileUrl.openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
-            conn.setRequestProperty("User-Agent", "http://www.gms-world.net HTTP client");
+            conn.setRequestProperty("User-Agent", "GMS World HTTP client " + ConfigurationManager.SERVER_URL);
 
             conn.connect();
             int responseCode = conn.getResponseCode();
