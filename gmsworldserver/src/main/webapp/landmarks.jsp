@@ -162,21 +162,6 @@
             	//streetViewControl: false, 
           });
 
-          var contentString = <%= landmarkDesc %>;
-          
-          flagmarker = new google.maps.Marker({
-  				position: mapcenter,
-  				map: map,
-  				desc: contentString,
-  				icon: '/images/flagblue.png',
-  				title: <%= landmarkName %>,
-  	  	  });
-
-          google.maps.event.addListener(flagmarker, 'click', function() {
-        	    infowindow.setContent(this.desc);
-              	infowindow.open(map, this);
-          });
-
           var styleOpts = [
           	{textColor: 'white', url: '/images/markerclusterer/m1.png', textSize: 15, width: 53, height: 52},
           	{textColor: 'white', url: '/images/markerclusterer/m2.png', textSize: 15, width: 56, height: 55},
@@ -187,9 +172,25 @@
           var mcOptions = {gridSize: 50, maxZoom: 18, imagePath: '/images/markerclusterer', styles: styleOpts};
           //
           
+          var contentString = <%= landmarkDesc %>;
+          
+          flagmarker = new google.maps.Marker({
+  				position: mapcenter,
+  				map: map,
+  				desc: contentString,
+  				icon: '/images/flagblue.png',
+  				title: <%= landmarkName %>,
+  	  	  });
+
           //markers.push(flagmarker); //keep always on top
           mc = new MarkerClusterer(map, markers, mcOptions);       
+          
+          google.maps.event.addListener(flagmarker, 'click', function() {
+        	    infowindow.setContent(this.desc);
+              	infowindow.open(map, this);
+          });
 
+          
           <% if (hotelsMode) { %>
           var message = '<bean:message key="hotels.wait" />';
           <% } else { %>
@@ -586,10 +587,10 @@
   		return res;
   	 }
 
-     //google.maps.event.addDomListener(window, 'load', initialize);
+     google.maps.event.addDomListener(window, 'load', initialize);
     </script>
   </head>
-  <body onload="initialize();setupChildrenAges()">
+  <body onload="setupChildrenAges()">
     <div id="map-canvas"></div>                                            
     <div id="status" style="color:black;font-family:Roboto,Arial,sans-serif;font-size:<%=fontSize%>;line-height:32px;padding-left:4px;padding-right:4px;"></div>
     <div id="checkin" style="background-color:#fff;border:2px solid #fff;border-radius:3px;box-shadow:0 2px 6px rgba(0,0,0,.3);color:black;font-family:Roboto,Arial,sans-serif;font-size:<%=fontSize%>;line-height:28px;padding-left:4px;padding-right:4px;margin-right:10px;display:none;">
