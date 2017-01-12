@@ -91,7 +91,7 @@ public class ImageServlet extends HttpServlet {
 		if (imageUrl != null) {
 			logger.log(Level.INFO, "Loading image " + imageUrl);			
             response.setContentType("image/jpg");
-			response.sendRedirect(imageUrl);
+            response.sendRedirect(imageUrl);
 		} else {
 			response.setContentType("image/png");
 			imageUrl = "/images/location.png";

@@ -32,6 +32,7 @@ import org.ocpsoft.prettytime.PrettyTime;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 import com.jstakun.gms.android.deals.Deal;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
@@ -61,6 +62,8 @@ public class HotelsBookingUtils extends LayerHelper {
 	static {
 		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 	}
+	
+	private static final ObjectReader featureCollectionReader = objectMapper.reader(FeatureCollection.class);
 	
 	@Override
 	protected List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int r, int version, int limit, int stringLimit, String callCacheFirst, String sortType, Locale locale, boolean useCache) throws Exception {
@@ -164,13 +167,13 @@ public class HotelsBookingUtils extends LayerHelper {
 			if (StringUtils.startsWith(json, "[") && json.length() > 2) {
 	    		try {
 	    			json = json.substring(1, json.length()-1);
-	    			hotels = objectMapper.readValue(json, FeatureCollection.class);
+	    			hotels = featureCollectionReader.readValue(json);
 	    		} catch (Exception e) {
 	    			logger.log(Level.SEVERE, e.getMessage(), e);
 	    		}
 			} else if (StringUtils.startsWith(json, "{") && json.length() > 2) {
 				try {
-	    			hotels = objectMapper.readValue(json, FeatureCollection.class);
+	    			hotels = featureCollectionReader.readValue(json);
 	    		} catch (Exception e) {
 	    			logger.log(Level.SEVERE, e.getMessage(), e);
 	    		}
@@ -193,7 +196,7 @@ public class HotelsBookingUtils extends LayerHelper {
 			if (StringUtils.startsWith(json, "[")) {
 	    		try {
 	    			json = "{\"type\": \"FeatureCollection\", \"features\":" + json + "}";
-	    			hotels = objectMapper.readValue(json, FeatureCollection.class);
+	    			hotels = featureCollectionReader.readValue(json);
 	    		} catch (Exception e) {
 	    			logger.log(Level.SEVERE, e.getMessage(), e);
 	    		}
@@ -245,7 +248,7 @@ public class HotelsBookingUtils extends LayerHelper {
 		if (StringUtils.startsWith(json, "[")) {
     		try {
     			json = "{\"type\": \"FeatureCollection\", \"features\":" + json + "}";
-    			hotels = objectMapper.readValue(json, FeatureCollection.class);
+    			hotels = featureCollectionReader.readValue(json);
     		} catch (Exception e) {
     			logger.log(Level.SEVERE, e.getMessage(), e);
     		}

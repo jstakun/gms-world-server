@@ -77,12 +77,15 @@ public class CacheUtil {
 	}
 	
 	public static <T> T getObject(Class<T> type, String key) {
-		Object o = getCache().get(key);
-		if (o != null && type.isAssignableFrom(o.getClass())) {
-			return type.cast(o);
-	    } else {
-	    	return null;
-	    }
+		try {
+			Object o = getCache().get(key);
+			if (o != null && type.isAssignableFrom(o.getClass())) {
+				return type.cast(o);
+			} 
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage(), e);
+		}
+		return null;
 	}
 	
 	public static <T> List<T> getList(Class<T> type, String key) {
