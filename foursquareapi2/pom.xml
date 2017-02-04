@@ -29,7 +29,7 @@
         <dependency>
         	<groupId>org.json</groupId>
         	<artifactId>json</artifactId>
-        	<version>20131018</version>
+        	<version>20160810</version>
         </dependency>
     </dependencies>
 
@@ -37,12 +37,12 @@
   <repository>
      <id>deployment</id>
      <name>Internal Releases</name>
-     <url>http://localhost:8081/nexus/content/repositories/releases/</url>
+     <url>http://192.168.122.1:8081/repository/maven-releases/</url>
   </repository>
   <snapshotRepository>
      <id>deployment</id>
      <name>Internal Releases</name>
-     <url>http://localhost:8081/nexus/content/repositories/snapshots/</url>
+     <url>http://192.168.122.1:8081/repository/maven-snapshots/</url>
   </snapshotRepository>
 </distributionManagement> 
 

@@ -6,12 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.logging.Level;
-
-import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.config.Commons.Property;
-import net.gmsworld.server.utils.HttpUtils;
-import net.gmsworld.server.utils.JSONUtils;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
@@ -23,86 +17,30 @@ import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.openlapi.AddressInfo;
 import com.openlapi.QualifiedCoordinates;
 
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.utils.HttpUtils;
+import net.gmsworld.server.utils.JSONUtils;
+
 /**
  *
  * @author jstakun
  */
 public class WebcamUtils extends LayerHelper {
 
-    @Override
-	public JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2) throws Exception {
-        String key = getCacheKey(getClass(), "processRequest", lat, lng, query, radius, version, limit, stringLimit, flexString, flexString2);
-        JSONObject json = null;
-        String output = cacheProvider.getString(key);
-
-        if (output == null) {
-            URL webcamUrl = new URL("http://api.webcams.travel/rest?"
-                    + "method=wct.webcams.list_nearby&devid=" + Commons.getProperty(Property.WEBCAM_API_KEY)
-                    + "&lat=" + lat + "&lng=" + lng + "&radius=" + radius
-                    + "&unit=km&format=json&per_page=" + limit);
-
-            String webcamResponse = HttpUtils.processFileRequest(webcamUrl);
-
-            json = createCustomJsonWebcamList(webcamResponse, stringLimit, version);
-            if (json.getJSONArray("ResultSet").length() > 0) {
-                cacheProvider.put(key, json.toString());
-                logger.log(Level.INFO, "Adding WC landmark list to cache with key {0}", key);
-            }
-
-        } else {
-            logger.log(Level.INFO, "Reading WC landmark list from cache with key {0}", key);
-            json = new JSONObject(output);
-        }
-
-        return json;
-    }
-
-    private static JSONObject createCustomJsonWebcamList(String webcamJson, int stringLimit, int version) throws JSONException {
-        ArrayList<Map<String, Object>> jsonArray = new ArrayList<Map<String, Object>>();
-
-        if (StringUtils.startsWith(webcamJson,"{")) {
-            JSONObject jsonRoot = new JSONObject(webcamJson);
-            JSONObject webcams = jsonRoot.getJSONObject("webcams");
-            int count = webcams.getInt("count");
-            if (count > 0) {
-                JSONArray items = webcams.getJSONArray("webcam");
-                int size = items.length();
-                for (int i = 0; i < size; i++) {
-                    JSONObject webcam = items.getJSONObject(i);
-
-                    Map<String, Object> jsonObject = new HashMap<String, Object>();
-
-                    jsonObject.put("name", webcam.getString("title"));
-                    jsonObject.put("lat", webcam.getString("latitude"));
-                    jsonObject.put("lng", webcam.getString("longitude"));
-                    jsonObject.put("url", webcam.getString("url"));
-
-                    Map<String, String> desc = new HashMap<String, String>();
-
-                    JSONUtils.putOptValue(desc, "city", webcam, "city", false, stringLimit, false);
-                    JSONUtils.putOptValue(desc, "country", webcam, "country", false, stringLimit, false);
-                    desc.put("creationDate", Long.toString(webcam.getLong("last_update") * 1000));
-                    if (version > 1) {
-                        desc.put("icon", webcam.getString("thumbnail_url"));
-                    }
-                    jsonObject.put("desc", desc);
-
-                    jsonArray.add(jsonObject);
-                }
-            }
-        }
-
-        JSONObject json = new JSONObject().put("ResultSet", jsonArray);
-        return json;
-    }
-
 	@Override
 	public List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale, boolean useCache) throws Exception {
-		URL webcamUrl = new URL("http://api.webcams.travel/rest?"
-	                    + "method=wct.webcams.list_nearby&devid=" + Commons.getProperty(Property.WEBCAM_API_KEY)
-	                    + "&lat=" + lat + "&lng=" + lng + "&radius=" + radius
-	                    + "&unit=km&format=json&per_page=" + limit);
-	    String webcamResponse = HttpUtils.processFileRequest(webcamUrl);
+		//normalize radius to max 250
+		int normalizedRadius = radius;
+		if (normalizedRadius > 1000) {
+			normalizedRadius = normalizedRadius /1000;
+		}
+		if (normalizedRadius > 250) {
+			normalizedRadius = 250;
+		}
+		String url = "https://webcamstravel.p.mashape.com/webcams/list/nearby=" + lat + "," + lng + "," + normalizedRadius + "/limit=" + limit + "?show=webcams:basic,image,location,url&lang=" + locale.getLanguage();
+		URL webcamUrl = new URL(url);
+	    String webcamResponse = HttpUtils.processFileRequest(webcamUrl, "X-Mashape-Key", Commons.getProperty(Property.MASHAPE_KEY));
 	    return createLandmarksWebcamList(webcamResponse, stringLimit, locale);        
 	}
 	
@@ -111,44 +49,57 @@ public class WebcamUtils extends LayerHelper {
 
         if (StringUtils.startsWith(webcamJson,"{")) {
             JSONObject jsonRoot = new JSONObject(webcamJson);
-            JSONObject webcams = jsonRoot.getJSONObject("webcams");
-            int count = webcams.getInt("count");
-            if (count > 0) {
-                JSONArray items = webcams.getJSONArray("webcam");
-                int size = items.length();
-                for (int i = 0; i < size; i++) {
-                    JSONObject webcam = items.getJSONObject(i);
+            if (StringUtils.equals(jsonRoot.getString("status") ,"OK")) {
+            	JSONObject result = jsonRoot.getJSONObject("result");
+            	int total = result.getInt("total");
+            	if (total > 0) {
+            		JSONArray webcams  = result.getJSONArray("webcams");
+            		int size = webcams.length();
+            		for (int i = 0; i < size; i++) {
+            			JSONObject webcam = webcams.getJSONObject(i);
 
-                    String name = webcam.getString("title");
-                    double lat = webcam.getDouble("latitude");
-                    double lng = webcam.getDouble("longitude");
-                    String url = webcam.getString("url");
+            			System.out.println(webcam);
+            			
+            			String name = webcam.getString("title");
+            			
+            			JSONObject location = webcam.getJSONObject("location");
+            			double lat = location.getDouble("latitude");
+            			double lng = location.getDouble("longitude");
+            			QualifiedCoordinates qc = new QualifiedCoordinates(lat, lng, 0f, 0f, 0f);
+            			
+            			JSONObject jurl = webcam.getJSONObject("url");
+            			String url = jurl.getJSONObject("current").getString("mobile");
+            			
+            			Map<String, String> tokens = new HashMap<String, String>();
 
-                    Map<String, String> tokens = new HashMap<String, String>();
-
-                    AddressInfo address = new AddressInfo();
-                    String val = webcam.optString("city");
-                    if (val != null) {
-                    	address.setField(AddressInfo.CITY, val);	
-                    }
-                    val = webcam.optString("country");
-                    if (val != null) {
-                    	address.setField(AddressInfo.COUNTRY, val);	
-                    }
+            			AddressInfo address = new AddressInfo();
+            			String val = location.optString("city");
+            			if (val != null) {
+            				address.setField(AddressInfo.CITY, val);	
+            			}
+            			val = location.optString("country");
+            			if (val != null) {
+            				address.setField(AddressInfo.COUNTRY, val);	
+            			}
+            			val = location.optString("region");
+            			if (val != null) {
+            				address.setField(AddressInfo.STATE, val);	
+            			}
                     
-                    long creationDate = webcam.getLong("last_update") * 1000;
+            			JSONObject image = webcam.getJSONObject("image");
+            			long creationDate = image.getLong("update") * 1000;
                     
-                    QualifiedCoordinates qc = new QualifiedCoordinates(lat, lng, 0f, 0f, 0f);
-                    ExtendedLandmark landmark = LandmarkFactory.getLandmark(name, null, qc, Commons.WEBCAM_LAYER, address, creationDate, null);
-                    landmark.setUrl(url); 
+            			ExtendedLandmark landmark = LandmarkFactory.getLandmark(name, null, qc, Commons.WEBCAM_LAYER, address, creationDate, null);
+            			landmark.setUrl(url); 
                     
-                    landmark.setThumbnail(webcam.getString("thumbnail_url"));
+            			landmark.setThumbnail(image.getJSONObject("current").getString("thumbnail"));
                     
-                    String description = JSONUtils.buildLandmarkDesc(landmark, tokens, locale);
-                    landmark.setDescription(description);
+            			String description = JSONUtils.buildLandmarkDesc(landmark, tokens, locale);
+            			landmark.setDescription(description);
     				
-                    landmarks.add(landmark);
-                }
+            			landmarks.add(landmark);
+            		}
+            	}
             }
         }
 

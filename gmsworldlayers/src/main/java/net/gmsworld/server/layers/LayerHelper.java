@@ -18,11 +18,6 @@ import java.util.logging.Logger;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 
-import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.utils.JSONUtils;
-import net.gmsworld.server.utils.StringUtil;
-import net.gmsworld.server.utils.memcache.CacheProvider;
-
 import org.apache.commons.lang.StringUtils;
 import org.geojson.Feature;
 import org.geojson.FeatureCollection;
@@ -34,6 +29,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.openlapi.AddressInfo;
+
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.utils.StringUtil;
+import net.gmsworld.server.utils.memcache.CacheProvider;
 
 /**
  *

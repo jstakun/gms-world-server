@@ -227,7 +227,7 @@ public class CouponsUtils extends LayerHelper {
                             && deal.has("dealDiscountPercent") && !deal.isNull("dealDiscountPercent")) {
                         Object o = deal.get("dealSavings");
                         if (o instanceof Double) {
-                        	save = (double)o;
+                        	save = (Double)o;
                         } else {
                         	try {
                         		save = Double.valueOf((String)o).doubleValue();

@@ -7,7 +7,7 @@
   	<dependency>
   		<groupId>net.gms-world</groupId>
   		<artifactId>gmsworldlayers</artifactId>
-  		<version>0.0.4.21</version>
+  		<version>0.0.4.23</version>
   	</dependency>
   	<dependency>
 		<groupId>net.sf.supercsv</groupId>

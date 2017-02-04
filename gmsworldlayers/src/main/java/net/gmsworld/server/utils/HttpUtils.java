@@ -39,38 +39,42 @@ public class HttpUtils {
     private static final Map<String, Integer> httpResponseStatuses = new HashMap<String, Integer>();
 
     public static String processFileRequestWithLocale(URL fileUrl, String locale) throws IOException {
-        return processFileRequest(fileUrl, false, null, null, "GET", locale, null, null, null, false);
+        return processFileRequest(fileUrl, false, null, null, "GET", locale, null, null, null, false, null, null);
     }
 
     public static String processFileRequestWithAuthn(URL fileUrl, String authn) throws IOException {
-        return processFileRequest(fileUrl, true, null, authn, "GET", null, null, null, null, false);
+        return processFileRequest(fileUrl, true, null, authn, "GET", null, null, null, null, false, null, null);
     }
     
     public static String processFileRequestWithBasicAuthn(URL fileUrl, String authn, boolean compress) throws IOException {
-        return processFileRequest(fileUrl, true, authn, null, "GET", null, null, null, null, compress);
+        return processFileRequest(fileUrl, true, authn, null, "GET", null, null, null, null, compress, null, null);
     }
 
     public static String processFileRequest(URL fileUrl) throws IOException {
-        return processFileRequest(fileUrl, false, null, null, "GET", null, null, null, null, false);
+        return processFileRequest(fileUrl, false, null, null, "GET", null, null, null, null, false, null, null);
+    }
+    
+    public static String processFileRequest(URL fileUrl, String headerName, String headerValue) throws IOException {
+        return processFileRequest(fileUrl, false, null, null, "GET", null, null, null, null, false, headerName, headerValue);
     }
 
     public static String processFileRequest(URL fileUrl, String method, String accept, String content) throws IOException {
-        return processFileRequest(fileUrl, false, null, null, method, null, accept, content, null, false);
+        return processFileRequest(fileUrl, false, null, null, method, null, accept, content, null, false, null, null);
     }
     
     public static String processFileRequest(URL fileUrl, String method, String accept, String content, String contentType) throws IOException {
-        return processFileRequest(fileUrl, false, null, null, method, null, accept, content, contentType, false);
+        return processFileRequest(fileUrl, false, null, null, method, null, accept, content, contentType, false, null, null);
     }
     
     public static String processFileRequestWithBasicAuthn(URL fileUrl, String method, String accept, String urlParams, String authn) throws IOException {
-        return processFileRequest(fileUrl, true, authn, null, method, null, accept, urlParams, null, false);
+        return processFileRequest(fileUrl, true, authn, null, method, null, accept, urlParams, null, false, null, null);
     }
     
     public static String processFileRequestWithBasicAuthn(URL fileUrl, String method, String accept, String urlParams, String contentType, String authn) throws IOException {
-        return processFileRequest(fileUrl, true, authn, null, method, null, accept, urlParams, contentType, false);
+        return processFileRequest(fileUrl, true, authn, null, method, null, accept, urlParams, contentType, false, null, null);
     }
 
-    private static String processFileRequest(URL fileUrl, boolean authn, String userpassword, String authnOther, String method, String locale, String accept, String content, String contentType, boolean compress) throws IOException {
+    private static String processFileRequest(URL fileUrl, boolean authn, String userpassword, String authnOther, String method, String locale, String accept, String content, String contentType, boolean compress, String customHeaderName, String customHeaderValue) throws IOException {
         InputStream is = null;
         String file = null;
         long start = System.currentTimeMillis();
@@ -99,6 +103,10 @@ public class HttpUtils {
 
             if (StringUtils.isNotEmpty(accept)) {
                 conn.setRequestProperty("Accept", accept);
+            }
+            
+            if (StringUtils.isNotEmpty(customHeaderName) && StringUtils.isNotEmpty(customHeaderValue)) {
+            	conn.setRequestProperty(customHeaderName, customHeaderValue);
             }
             
             if (content != null) {

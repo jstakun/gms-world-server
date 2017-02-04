@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.gms-world</groupId>
   <artifactId>gmsworldlayers</artifactId>
-  <version>0.0.4.22</version>
+  <version>0.0.4.23</version>
   
   <properties>
       <google.http.client.version>1.22.0</google.http.client.version>
@@ -69,10 +69,15 @@
   		<version>${google.http.client.version}</version>
   	</dependency>
   	<dependency>
-  		<groupId>com.mastercard</groupId>
-  		<artifactId>mcapi</artifactId>
-  		<version>1.0</version>
-  	</dependency>
+    <groupId>com.mastercard.api</groupId>
+    <artifactId>locations</artifactId>
+    <version>1.0.3</version>
+</dependency>
+<dependency>
+    <groupId>org.apache.httpcomponents</groupId>
+    <artifactId>httpclient</artifactId>
+    <version>4.5.2</version>
+</dependency>
   	<dependency>
   		<groupId>org.twitter4j</groupId>
   		<artifactId>twitter4j-core</artifactId>
@@ -141,12 +146,12 @@
   <repository>
      <id>deployment</id>
      <name>Internal Releases</name>
-     <url>http://localhost:8081/nexus/content/repositories/releases/</url>
+     <url>http://192.168.122.1:8081/repository/maven-releases/</url>
   </repository>
   <snapshotRepository>
      <id>deployment</id>
      <name>Internal Releases</name>
-     <url>http://localhost:8081/nexus/content/repositories/snapshots/</url>
+     <url>http://192.168.122.1:8081/repository/maven-snapshots/</url>
   </snapshotRepository>
 </distributionManagement> 
 </project>

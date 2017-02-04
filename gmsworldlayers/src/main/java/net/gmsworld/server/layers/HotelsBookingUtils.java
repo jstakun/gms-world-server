@@ -754,7 +754,7 @@ public class HotelsBookingUtils extends LayerHelper {
         //----------------------------------------4------------------------------------------
         
         //creation date
-		cal.setTimeInMillis((long)hotel.getProperty("creationDate"));
+		cal.setTimeInMillis((Long)hotel.getProperty("creationDate"));
     	desc += String.format(rb.getString("Landmark.creation_date"), prettyTime.format(cal)) + "<br/>";
 		//no of rooms
 		desc += String.format(rb.getString("Landmark.no_rooms"), nr);
