@@ -142,9 +142,9 @@ public class McOpenApiUtils extends LayerHelper {
                 
                 String addr = (String)addressMap.get("Line1");
                 String line2 =  (String)addressMap.get("Line2");
-                if (StringUtils.isNotEmpty(addr) && line2 != null) {
+                if (StringUtils.isNotEmpty(addr) && StringUtils.isNotEmpty(line2)) {
                     addr += "\n" + line2;
-                } else if (StringUtils.isEmpty(addr) && line2 != null) {
+                } else if (StringUtils.isEmpty(addr) && StringUtils.isNotEmpty(line2)) {
                     addr = line2;
                 }
                 if (StringUtils.isNotEmpty(addr)) {

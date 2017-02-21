@@ -58,8 +58,6 @@ public class WebcamUtils extends LayerHelper {
             		for (int i = 0; i < size; i++) {
             			JSONObject webcam = webcams.getJSONObject(i);
 
-            			System.out.println(webcam);
-            			
             			String name = webcam.getString("title");
             			
             			JSONObject location = webcam.getJSONObject("location");
