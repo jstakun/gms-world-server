@@ -60,11 +60,14 @@ public class LayerHelperFactory {
 			if (!Modifier.isAbstract(matchingClass.getModifiers())) {
 				try {
 					LayerHelper layer = matchingClass.newInstance();
-					logger.info("Found layer " + layer.getLayerName() + " class " + matchingClass.getName());
+					String layerName = layer.getLayerName();
+					logger.info("Found layer " + layerName + " class " + matchingClass.getName());
 					if (layer.isEnabled()) {
-						enabledLayers.add(layer.getLayerName());
+						enabledLayers.add(layerName);
+						allLayers.put(layerName, layer);
+					} else if (! allLayers.containsKey(layerName)) {
+						allLayers.put(layerName, layer);
 					}
-					allLayers.put(layer.getLayerName(), layer);
 				} catch (Throwable e) {
 					logger.log(Level.SEVERE, "Failed to create new instance for layer class " + matchingClass.getName(), e);
 				}			

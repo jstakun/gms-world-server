@@ -40,7 +40,7 @@ public class McOpenApiUtils extends LayerHelper {
     		String keyPassword = new String(CryptoTools.decrypt(Base64.decode(Commons.getProperty(Property.mcopenapi_ksPwd).getBytes())));
     	
     		ApiConfig.setAuthentication(new OAuthAuthentication(consumerKey, is, keyAlias, keyPassword));
-    	
+    		
     		ApiConfig.setDebug(false);
     		ApiConfig.setSandbox(false);    
 
@@ -103,7 +103,7 @@ public class McOpenApiUtils extends LayerHelper {
     		map.set("PageOffset", "0");
          
     		return ATMLocations.query(map);
-    	} catch (Exception e) {
+    	} catch (Throwable e) {
     		logger.log(Level.SEVERE, e.getMessage(), e);
     	}
     	return null;
@@ -190,4 +190,8 @@ public class McOpenApiUtils extends LayerHelper {
 	public String getURI() {
 		return "atmProvider";
 	}
+	
+	 public boolean isEnabled() {
+	    	return false;
+	    }
 }
