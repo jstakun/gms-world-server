@@ -221,6 +221,10 @@
     <servlet-name>ServiceLogAnalyticsServlet</servlet-name>
     <servlet-class>com.jstakun.lm.server.servlet.ServiceLogAnalyticsServlet</servlet-class>
   </servlet>
+   <servlet>
+    <servlet-name>LetsEncryptAuthServlet</servlet-name>
+    <servlet-class>com.jstakun.lm.server.servlet.LetsEncryptAuthServlet</servlet-class>
+  </servlet>
   <servlet>
     <servlet-name>PanoramioProviderServlet</servlet-name>
     <servlet-class>net.gmsworld.server.layers.PanoramioProviderServlet</servlet-class>
@@ -515,7 +519,7 @@
     <url-pattern>/bookingProvider</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-    <servlet-name>PanoramioProviderServlet</servlet-name>
+    <servlet-name>LetsEncryptAuthServlet</servlet-name>
     <url-pattern>/.well-known/acme-challenge/*</url-pattern>
   </servlet-mapping>
   <session-config>

@@ -39,7 +39,7 @@ public class WelcomeAction extends org.apache.struts.action.Action {
         logger.log(Level.INFO, "Received request to " + request.getRequestURL() + " from locale " + request.getLocale().toString());
         
         String url = request.getRequestURL().toString();
-        if (request.getHeader("User-Agent").contains("python-requests/2.9.1") || request.getHeader("User-Agent").contains("https://www.letsencrypt.org")) {
+        if (request.getHeader("User-Agent").contains("python-requests") || request.getHeader("User-Agent").contains("https://www.letsencrypt.org")) {
         	logger.log(Level.WARNING, "Verification request received!");
         	return mapping.findForward("verify");
         } else if (StringUtils.startsWith(url, "http://hotels.") || StringUtils.contains(url, "hotelsonmap.net")) {
