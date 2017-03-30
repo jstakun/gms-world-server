@@ -47,7 +47,7 @@
 
                 <p class="image-section">
                 	<a href="/showLocation/<%= HtmlUtils.encodeDouble(lat) %>/<%= HtmlUtils.encodeDouble(lon) %>/fullScreen">
-                		<img src="<%= ImageUtils.getImageUrl(lat.doubleValue(), lon.doubleValue(), "640x256", 10, true, ConfigurationManager.MAP_PROVIDER.OSM_MAPS) %>" alt="Landmark on the map" height="256" width="640"/><br/>
+                		<img src="<%= ImageUtils.getImageUrl(lat.doubleValue(), lon.doubleValue(), "640x256", 10, true, ConfigurationManager.MAP_PROVIDER.OSM_MAPS, request.isSecure()) %>" alt="Landmark on the map" height="256" width="640"/><br/>
                 	</a>
                 </p>
                 
