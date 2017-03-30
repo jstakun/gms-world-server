@@ -17,7 +17,7 @@
         </p>
         <p>
             <a href="http://appengine.google.com" target="_blank">
-            	<img src="http://code.google.com/appengine/images/appengine-noborder-120x30.gif" alt="Powered by Google App Engine" title="Powered by Google App Engine"/>
+            	<img src="/images/appengine-noborder-120x30.gif" alt="Powered by Google App Engine" title="Powered by Google App Engine"/>
             </a>
         </p>
         

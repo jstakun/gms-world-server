@@ -42,7 +42,7 @@ public class ShowImageAction extends org.apache.struts.action.Action {
 
         final String key = (String) request.getParameter("key");
 
-        Screenshot s = FileUtils.getScreenshot(key, false);
+        Screenshot s = FileUtils.getScreenshot(key, false, request.isSecure());
         
         if (s != null) {
         	AddressInfo ai = GeocodeHelperFactory.processReverseGeocode(s.getLatitude(),s.getLongitude());

@@ -112,11 +112,18 @@ public class FileUtils {
 	}
 	
 	//"http://storage.googleapis.com/" + bucketName + "/" + fileName;
-	public static String getImageUrlV2(String fileName, boolean thumbnail) {
+	public static String getImageUrlV2(String fileName, boolean thumbnail, boolean isSecure) {
 		String bucketName = AppIdentityServiceFactory.getAppIdentityService().getDefaultGcsBucketName();
 		BlobKey bk = getCloudStorageBlobKey(bucketName, fileName);
 		if (bk != null) {
-			return getImageUrl(bk, thumbnail);
+			String imageUrl = getImageUrl(bk, thumbnail);
+			if (isSecure && StringUtils.startsWith(imageUrl, "http://")) {
+				return StringUtils.replace(imageUrl, "http://", "https://");
+			} else if (!isSecure && StringUtils.startsWith(imageUrl, "https://")) {
+				return StringUtils.replace(imageUrl, "https://", "http://");
+			} else {
+				return imageUrl;
+			}
 		} else {
 			return null;
 		}
@@ -129,7 +136,7 @@ public class FileUtils {
 	    return bk;
 	} 
 	
-	public static Screenshot getScreenshot(final String key, boolean thumbnail) {
+	public static Screenshot getScreenshot(final String key, boolean thumbnail, boolean isSecure) {
 		Screenshot s = null;
     	if (StringUtils.isNotEmpty(key)) {
             CacheAction screenshotCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
@@ -141,7 +148,7 @@ public class FileUtils {
         	s = (Screenshot) screenshotCacheAction.getObjectFromCache(key, CacheType.NORMAL);
         	if (s != null) {
         		try {
-                	s.setUrl(FileUtils.getImageUrlV2(s.getFilename(), thumbnail));
+                	s.setUrl(FileUtils.getImageUrlV2(s.getFilename(), thumbnail, isSecure));
                 } catch (Exception e) {
                 	logger.log(Level.SEVERE, "FileUtils.getScreenshot() exception", e);
                 }
