@@ -63,7 +63,7 @@ public class ImageUtilsTest {
 	
 	@Test
 	public void loadImage() throws IOException {
-		byte[] image = ImageUtils.loadImage(52.25, 20.95, "128x128", 9, net.gmsworld.server.config.ConfigurationManager.MAP_PROVIDER.OSM_MAPS); 
+		byte[] image = ImageUtils.loadImage(52.25, 20.95, "128x128", 9, net.gmsworld.server.config.ConfigurationManager.MAP_PROVIDER.OSM_MAPS, true); 
 		if (image != null) {
         	System.out.println("Image size " + image.length);
         }

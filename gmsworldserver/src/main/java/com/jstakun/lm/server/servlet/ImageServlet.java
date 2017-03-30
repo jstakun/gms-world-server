@@ -68,7 +68,7 @@ public class ImageServlet extends HttpServlet {
 				String image = "landmark_" + StringUtil.formatCoordE6(lat) + "_" + StringUtil.formatCoordE6(lng) + ".jpg";
 				imageUrl = FileUtils.getImageUrlV2(image, thumbnail, request.isSecure());
 				if (imageUrl == null) {					
-					imageUrl = ImageUtils.getImageUrl(lat, lng, "128x128", 9, thumbnail, ConfigurationManager.MAP_PROVIDER.OSM_MAPS);
+					imageUrl = ImageUtils.getImageUrl(lat, lng, "128x128", 9, thumbnail, ConfigurationManager.MAP_PROVIDER.OSM_MAPS, request.isSecure());
 				}
 			} catch (Exception e) {
 				logger.log(Level.SEVERE, e.getMessage(), e);

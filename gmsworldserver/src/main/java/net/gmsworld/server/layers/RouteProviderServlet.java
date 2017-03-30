@@ -90,7 +90,7 @@ public class RouteProviderServlet extends HttpServlet {
                 			}
                 			logger.log(Level.INFO, "Path has " + path.size() + " points");
                     
-                			byte[] pathImage = ImageUtils.loadPath(path, "640x256");
+                			byte[] pathImage = ImageUtils.loadPath(path, "640x256", request.isSecure());
                 			String pathKey = "path_" + StringUtil.formatCoordE6(lat_start) + "_" + StringUtil.formatCoordE6(lng_start) + "_" + StringUtil.formatCoordE6(lat_end) + "_" + StringUtil.formatCoordE6(lng_end);
                 			FileUtils.saveFileV2(pathKey + ".jpg", pathImage, lat_start, lng_start);
                 			

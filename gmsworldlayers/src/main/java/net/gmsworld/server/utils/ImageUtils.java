@@ -71,10 +71,14 @@ public class ImageUtils {
 		return isBlack;
 	}
 	
-	private static String getGoogleMapsImageUrl(double latitude, double longitude, String size, int zoom, boolean anonymous) {
+	private static String getGoogleMapsImageUrl(double latitude, double longitude, String size, int zoom, boolean anonymous, boolean isSecure) {
 		String lat = StringUtil.formatCoordE6(latitude);
 		String lng = StringUtil.formatCoordE6(longitude);
-		String mapsUrl = "http://maps.google.com/maps/api/staticmap?center=" + lat + "," + lng + "&zoom=" + zoom + "&size=" + size + "&markers=icon:http://gms-world.appspot.com/images/flagblue.png|" + lat + "," + lng; 
+		String prefix = "http";
+		if (isSecure) {
+			prefix = "https";
+		}
+		String mapsUrl = prefix + "://maps.google.com/maps/api/staticmap?center=" + lat + "," + lng + "&zoom=" + zoom + "&size=" + size + "&markers=icon:http://www.gms-world.net/images/flagblue.png|" + lat + "," + lng; 
 		if (!anonymous) {
 			mapsUrl += "&key=" + Commons.getProperty(Commons.Property.GOOGLE_API_KEY);
 		}
@@ -83,19 +87,24 @@ public class ImageUtils {
 	
 	private static String getOpenStreetMapsImageUrl(double latitude, double longitude, String size, int zoom) {
 		String coords = latitude+","+longitude;
+		//TODO add ssl support
 	    return "http://staticmap.openstreetmap.de/staticmap.php?center="+coords+"&zoom="+zoom+"&size="+size+"&maptype=mapnik&markers="+coords+",red-pushpin";
 	}
 	
-	public static String getImageUrl(double latitude, double longitude, String size, int zoom, boolean anonymous, ConfigurationManager.MAP_PROVIDER mapProvider) {
+	public static String getImageUrl(double latitude, double longitude, String size, int zoom, boolean anonymous, ConfigurationManager.MAP_PROVIDER mapProvider, boolean isSecure) {
 		if (mapProvider == ConfigurationManager.MAP_PROVIDER.GOOGLE_MAPS) {
-			return getGoogleMapsImageUrl(latitude, longitude, size, zoom, anonymous);
+			return getGoogleMapsImageUrl(latitude, longitude, size, zoom, anonymous, isSecure);
 		} else { //ConfigurationManager.MAP_PROVIDER.OSM_MAPS
 			return getOpenStreetMapsImageUrl(latitude, longitude, size, zoom);
 		}
 	}
 	
-	public static String getRouteUrl(List<Double[]> path, String size, boolean anonymous) throws UnsupportedEncodingException {
-		String mapsUrl = "http://maps.google.com/maps/api/staticmap?size=" + size; 
+	public static String getRouteUrl(List<Double[]> path, String size, boolean anonymous, boolean isSecure) throws UnsupportedEncodingException {
+		String prefix = "http";
+		if (isSecure) {
+			prefix = "https";
+		}
+		String mapsUrl = prefix + "://maps.google.com/maps/api/staticmap?size=" + size; 
 		if (!anonymous) {
 			mapsUrl += "&key=" + Commons.getProperty(Commons.Property.GOOGLE_API_KEY);
 		}
@@ -117,11 +126,11 @@ public class ImageUtils {
 		return out.toByteArray();
 	}
 	
-	public static byte[] loadImage(double latitude, double longitude, String size, int zoom, ConfigurationManager.MAP_PROVIDER mapProvider) throws IOException {
-		return loadImage(getImageUrl(latitude, longitude, size, zoom, false, mapProvider));
+	public static byte[] loadImage(double latitude, double longitude, String size, int zoom, ConfigurationManager.MAP_PROVIDER mapProvider, boolean isSecure) throws IOException {
+		return loadImage(getImageUrl(latitude, longitude, size, zoom, false, mapProvider, isSecure));
 	}
 	
-	public static byte[] loadPath(List<Double[]> path, String size) throws IOException {
-		return loadImage(getRouteUrl(path, size, false));
+	public static byte[] loadPath(List<Double[]> path, String size, boolean isSecure) throws IOException {
+		return loadImage(getRouteUrl(path, size, false, isSecure));
 	}
 }
