@@ -210,7 +210,7 @@
     </rule>
     
     <rule>
-            <from>^/showRoute/([a-zA-Z0-9@_-.%]+)$</from>
+            <from>^/showRoute/(.+)$</from>
             <to>/showRoute.do?route=$1</to>
     </rule>
 

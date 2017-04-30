@@ -5,28 +5,31 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="" %>
+<%@page import="java.lang.String" %>
+<%
+       String route = (String) request.getAttribute("route");
+%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
     <head>
         <%@ include file="/WEB-INF/jspf/head_small.jspf" %>
         <title>Route Full Screen Map</title>
-        <% if (gc != null) {%>
+        <% if (route != null) {%>
         <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
         <style type="text/css">
             html, body {width: 100%; height: 100%}
             body {margin-top: 0px; margin-right: 0px; margin-left: 0px; margin-bottom: 0px}
         </style>
-        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false">
+        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=visualization">
         </script>
         <script type="text/javascript">
             function initialize()
             {
-                var latlng = new google.maps.LatLng(<%= gc.getLatitude()%>,<%= gc.getLongitude()%>);
+                //var latlng = new google.maps.LatLng(52.25, 20.95);
+                var bounds = new google.maps.LatLngBounds();
                 var myOptions =
                     {
                     zoom: 12,
-                    center: latlng,
                     mapTypeId: google.maps.MapTypeId.ROADMAP,
                     scaleControl: true
                 };
@@ -34,33 +37,54 @@
                 var image = '/images/flagblue.png';
                 var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 
-                var contentString = <%= HtmlUtils.buildGeocodeDescV2(gc, request.getAttribute("address"), request.getLocale(), isMobile) %>
+                var script = document.createElement('script');
 
-                var infowindow = new google.maps.InfoWindow(
-                {
-                    content: contentString
-                });
-                
-                var marker = new google.maps.Marker(
-                {
-                    position: latlng,
-                    title:"<%= StringEscapeUtils.escapeJavaScript(gc.getLocation())%>",
-                    map: map,
-                    icon: image
-                });
+                script.src = '/routeProvider?route=<%= route %>&callback=loadRoute';
+                document.getElementsByTagName('head')[0].appendChild(script);
 
-                google.maps.event.addListener(marker, 'click', function() {
-                    infowindow.open(map,marker);
-                });
+                window.loadRoute = function(results) {
+                    var geometry = results.features[0].geometry;
+                    var pathCoords = [];   
+                    
+                    for (var i = 0; i < geometry.coordinates.length; i++) {
+                      var coords = geometry.coordinates[i];
+                      var latlng = new google.maps.LatLng(coords[0], coords[1]);
+                      pathCoords.push(latlng);
+                      bounds.extend(latlng);
+                      if (i==0 || i == geometry.coordinates.length-1) {
+                    	  var marker = new google.maps.Marker({
+                              position: latlng,
+                              map: map
+                           });		
+                      }
+                      console.log('Loading point ' + coords[0] + "," + coords[1]);
+                    }
+                    
+                    if (pathCoords.length > 0) {
+                    	var routePath = new google.maps.Polyline({
+                            path: pathCoords,
+                            geodesic: true,
+                            strokeColor: '#FF0000',
+                            strokeOpacity: 1.0,
+                            strokeWeight: 4
+                         });
+                        map.fitBounds(bounds);
+                        map.setCenter(bounds.getCenter()); 
+                    	routePath.setMap(map);						
+                    } else {
+                        console.log('Route path is empty!');
+                        window.alert('Route path is empty!'); 
+                    }  
+                 }
             }
         </script>
         <% }%>
     </head>
     <body onLoad="initialize()">
-        <% if (gc != null) {%>
+        <% if (route != null) {%>
         <div id="map_canvas" style="width:100%; height:100%"></div>
         <% } else {%>
-        No landmark selected
+        No route selected
         <% }%>
     </body>
 </html>

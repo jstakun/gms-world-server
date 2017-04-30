@@ -139,6 +139,7 @@
     <url-pattern>/showImage/*</url-pattern>
     <url-pattern>/showUser/*</url-pattern>
     <url-pattern>/services/browserLandmark</url-pattern>
+    <url-pattern>/routeProvider</url-pattern>
   </filter-mapping>
   <filter-mapping>
     <filter-name>ServicesAuthorizationFilter</filter-name>
@@ -468,7 +469,7 @@
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>RouteProviderServlet</servlet-name>
-    <url-pattern>/services/routeProvider,/s/routeProvider</url-pattern>
+    <url-pattern>/routeProvider,/services/routeProvider,/s/routeProvider</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>TaskExecuteServlet</servlet-name>
