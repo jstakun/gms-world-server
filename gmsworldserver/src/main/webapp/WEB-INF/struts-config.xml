@@ -147,6 +147,7 @@
           <action path="/showRoute" type="com.jstakun.lm.server.struts.ShowRouteAction">
             <forward name="success" path="/route.jsp"/>
             <forward name="mobile" path="/m/route.jsp"/>
+            <forward name="fullScreen" path="/fullScreenRouteMap.jsp"/>
          </action>
          <action path="/freebaseView" type="net.gmsworld.server.layers.FreebaseViewAction">
             <forward name="mobile" path="/m/freebase.jsp"/>

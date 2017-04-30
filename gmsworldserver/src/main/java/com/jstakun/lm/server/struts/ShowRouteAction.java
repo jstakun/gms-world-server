@@ -40,22 +40,31 @@ public class ShowRouteAction extends org.apache.struts.action.Action {
      */
     @Override
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
-
+    	String route = request.getParameter("route");
+    	
     	try {
-			final double lat_start = Double.valueOf(request.getParameter("lat_start")).doubleValue();
-			final double lng_start = Double.valueOf(request.getParameter("lng_start")).doubleValue();
-			final double lat_end = Double.valueOf(request.getParameter("lat_end")).doubleValue();
-			final double lng_end = Double.valueOf(request.getParameter("lng_end")).doubleValue();    	    
-			request.setAttribute("routeQueryString", "lat_start=" + lat_start + "&lng_start=" + lng_start + "&lat_end=" + lat_end + "&lng_end=" + lng_end + "&thumbnail=false");
+    		if (route != null) {
+    				request.setAttribute("route", route);
+    		} else {
+    				final double lat_start = Double.valueOf(request.getParameter("lat_start")).doubleValue();
+    				final double lng_start = Double.valueOf(request.getParameter("lng_start")).doubleValue();
+    				final double lat_end = Double.valueOf(request.getParameter("lat_end")).doubleValue();
+    				final double lng_end = Double.valueOf(request.getParameter("lng_end")).doubleValue();    	    
+    				request.setAttribute("routeQueryString", "lat_start=" + lat_start + "&lng_start=" + lng_start + "&lat_end=" + lat_end + "&lng_end=" + lng_end + "&thumbnail=false");
+    		}
     	} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage());
 		}
 		     
-        OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
-        if (os.getDeviceType().equals(DeviceType.MOBILE)) {
-            return mapping.findForward("mobile");
-        } else {
-            return mapping.findForward("success");
-        }
+    	if (route != null) {
+    		return mapping.findForward("fullScreen");
+    	} else {
+    		OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
+    		if (os.getDeviceType().equals(DeviceType.MOBILE)) {
+    			return mapping.findForward("mobile");
+    		} else {
+    			return mapping.findForward("success");
+    		}
+    	}
     }
 }

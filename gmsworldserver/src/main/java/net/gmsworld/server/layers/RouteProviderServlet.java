@@ -54,9 +54,9 @@ public class RouteProviderServlet extends HttpServlet {
         response.setContentType("text/json;charset=UTF-8");
         PrintWriter out = response.getWriter();
         try {
-            if (HttpUtils.isEmptyAny(request, "lat_start", "lng_start", "lat_end", "lng_end", "type", "username")) {
+            if (HttpUtils.isEmptyAny(request, "lat_start", "lng_start", "lat_end", "lng_end", "type", "username") && HttpUtils.isEmptyAny(request, "route")) {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-            } else {
+            } else if (!HttpUtils.isEmptyAny(request, "lat_start", "lng_start", "lat_end", "lng_end", "type", "username")) {
                 String username = request.getParameter("username");
                 String type = request.getParameter("type");
                 double lat_start = NumberUtils.getDouble(request.getParameter("lat_start"), 0d);
@@ -108,7 +108,13 @@ public class RouteProviderServlet extends HttpServlet {
                 	}
                     
                     out.print(route.toString());
-                }
+                } 
+            } else if (!HttpUtils.isEmptyAny(request, "route")) {
+                 //Load route from cache
+            	JSONObject route = RoutesUtils.loadFromCache(request.getParameter("route"));
+            	if (route != null) {
+            		out.println(route.toString());
+            	}
             }
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
@@ -139,7 +145,7 @@ public class RouteProviderServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-         //TODO handle json route upload
+         //json route upload
     	if (HttpUtils.isEmptyAny(request, "route")) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
         } else {
