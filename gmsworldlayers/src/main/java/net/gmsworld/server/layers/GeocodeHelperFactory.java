@@ -17,7 +17,7 @@ public class GeocodeHelperFactory {
 	
 	private static CacheProvider cacheProvider;
 	
-	protected static MapQuestUtils getMapQuestUtils() {
+	public static MapQuestUtils getMapQuestUtils() {
 		mapQuestUtils.setCacheProvider(cacheProvider);
 		return mapQuestUtils;
 	}
@@ -29,6 +29,10 @@ public class GeocodeHelperFactory {
 	
 	public static void setCacheProvider(CacheProvider cp) {
     	cacheProvider = cp;
+    }
+	
+	public static CacheProvider getCacheProvider() {
+    	return cacheProvider;
     }
 	
 	public static AddressInfo processReverseGeocode(double latitude, double longitude) {

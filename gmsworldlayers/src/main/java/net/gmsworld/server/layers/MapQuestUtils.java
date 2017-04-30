@@ -197,7 +197,7 @@ public class MapQuestUtils extends GeocodeHelper {
 	}
 
 	@Override
-	public JSONObject getRoute(double lat_start, double lng_start, double lat_end, double lng_end, String type, String username) throws IOException {
+	public JSONObject getRoute(String lat_start, String lng_start, String lat_end, String lng_end, String type, String username) throws IOException {
 		JSONObject response = null; 
 		String key = getRouteKey(MapQuestUtils.class, lat_start, lng_start, lat_end, lng_end, type, username);
 		String output = cacheProvider.getString(key);

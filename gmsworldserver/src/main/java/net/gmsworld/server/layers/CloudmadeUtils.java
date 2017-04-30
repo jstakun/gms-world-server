@@ -32,7 +32,7 @@ public class CloudmadeUtils extends GeocodeHelper {
     private static final Logger logger = Logger.getLogger(CloudmadeUtils.class.getName());
     private static final char[] delim = new char[]{',',' '};
 
-    protected JSONObject getRoute(double lat_start, double lng_start, double lat_end, double lng_end, String type, String username) throws Exception {
+    protected JSONObject getRoute(String lat_start, String lng_start, String lat_end, String lng_end, String type, String username) throws Exception {
     	String key = getRouteKey(CloudmadeUtils.class, lat_start, lng_start, lat_end, lng_end, type, username);		
         String output = cacheProvider.getString(key);     
         String token = cacheProvider.getString(Commons.getProperty(Property.CLOUDMADE_TOKEN_KEY) + "_" + username);

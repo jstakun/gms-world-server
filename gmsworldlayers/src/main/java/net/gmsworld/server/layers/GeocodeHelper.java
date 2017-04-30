@@ -22,17 +22,17 @@ public abstract class GeocodeHelper {
 	
 	protected abstract AddressInfo processReverseGeocode(double lat, double lng) throws Exception;
 	
-	protected abstract JSONObject getRoute(double lat_start, double lng_start, double lat_end, double lng_end, String type, String username) throws Exception;
+	protected abstract JSONObject getRoute(String lat_start, String lng_start, String lat_end, String lng_end, String type, String username) throws Exception;
 
-    protected static String getRouteKey(Class<?> clazz, double lat_start, double lng_start, double lat_end, double lng_end, String type, String username) {
+    protected static String getRouteKey(Class<?> clazz, String lat_start, String lng_start, String lat_end, String lng_end, String type, String username) {
     	List<String> params = new ArrayList<String>(7);
 
         params.add(clazz.getName());
         
-        params.add(StringUtil.formatCoordE2(lat_start));
-        params.add(StringUtil.formatCoordE2(lng_start));
-        params.add(StringUtil.formatCoordE2(lat_end));
-        params.add(StringUtil.formatCoordE2(lng_end));
+        params.add(lat_start);
+        params.add(lng_start);
+        params.add(lat_end);
+        params.add(lng_end);
         
         params.add(type);
         params.add(username);

@@ -151,7 +151,7 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
 	}
 
 	@Override
-	protected JSONObject getRoute(double lat_start, double lng_start, double lat_end, double lng_end, String type, String username) throws Exception {
+	protected JSONObject getRoute(String lat_start, String lng_start, String lat_end, String lng_end, String type, String username) throws Exception {
 		throw new Exception("Service not implemented");
 	}
 	
