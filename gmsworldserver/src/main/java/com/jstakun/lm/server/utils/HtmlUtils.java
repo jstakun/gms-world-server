@@ -64,7 +64,7 @@ public class HtmlUtils {
 	}
 	
 	public static String getHotelLandmarkUrl(double lat, double lng) {
-		return "/hotelLandmark/" + encodeDouble(lat) + "/" + encodeDouble(lng);
+		return "/hotelLandmark/" + encodeDouble(lat) + "/" + encodeDouble(lng) + "/distance/12";
 	}
 	
 	public static String getHotelLandmarkUrl(String lat, String lng) {
