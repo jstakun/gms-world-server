@@ -112,14 +112,18 @@ public class RouteProviderServlet extends HttpServlet {
             } else if (!HttpUtils.isEmptyAny(request, "route")) {
                  //Load route from cache
             	JSONObject route = RoutesUtils.loadFromCache(request.getParameter("route"));
+            	String json = null;
             	if (route != null) {
-            		String json = route.toString();
-            		String callBackJavaScripMethodName = request.getParameter("callback");
-            		if (StringUtils.isNotEmpty(callBackJavaScripMethodName)) {
-                		json = callBackJavaScripMethodName + "("+ json + ");";
-                	}
-            		out.println(json);
+            		json = route.toString();
+            	}	else {
+            		json = "{\"features\":[]}";
             	}
+            		
+            	String callBackJavaScripMethodName = request.getParameter("callback");
+            	if (StringUtils.isNotEmpty(callBackJavaScripMethodName)) {
+                		json = callBackJavaScripMethodName + "("+ json + ");";
+                }
+            	out.println(json);
             }
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage(), e);

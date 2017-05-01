@@ -43,23 +43,28 @@
                 document.getElementsByTagName('head')[0].appendChild(script);
 
                 window.loadRoute = function(results) {
-                    var geometry = results.features[0].geometry;
-                    var pathCoords = [];   
-                    
-                    for (var i = 0; i < geometry.coordinates.length; i++) {
-                      var coords = geometry.coordinates[i];
-                      var latlng = new google.maps.LatLng(coords[0], coords[1]);
-                      pathCoords.push(latlng);
-                      bounds.extend(latlng);
-                      if (i==0 || i == geometry.coordinates.length-1) {
-                    	  var marker = new google.maps.Marker({
-                              position: latlng,
-                              map: map
-                           });		
-                      }
-                      console.log('Loading point ' + coords[0] + "," + coords[1]);
+                	 var pathCoords = [];   
+
+                     if (results != null && results.features != null && results.features.length > 0) {
+                	 	var geometry = results.features[0].geometry;
+
+                        for (var i = 0; i < geometry.coordinates.length; i++) {
+                      		var coords = geometry.coordinates[i];
+                      		var latlng = new google.maps.LatLng(coords[0], coords[1]);
+                     		pathCoords.push(latlng);
+                     		bounds.extend(latlng);
+                      		if (i==0 || i == geometry.coordinates.length-1) {
+                    	  		var marker = new google.maps.Marker({
+                              		position: latlng,
+                             	 	map: map
+                           		});		
+                      		}
+                      		console.log('Loading point ' + coords[0] + "," + coords[1]);
+                    	}
+                    } else {
+                    	console.log('No routes found in results: ' + JSON.stringify(results));
                     }
-                    
+                     
                     if (pathCoords.length > 0) {
                     	var routePath = new google.maps.Polyline({
                             path: pathCoords,
@@ -73,7 +78,8 @@
                     	routePath.setMap(map);						
                     } else {
                         console.log('Route path is empty!');
-                        window.alert('Route path is empty!'); 
+                        window.alert('No route found. You\'ll be redirected to main page!'); 
+                        window.location='https://www.gms-world.net/';
                     }  
                  }
             }
