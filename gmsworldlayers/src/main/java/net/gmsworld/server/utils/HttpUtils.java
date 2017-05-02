@@ -9,6 +9,7 @@ import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -126,7 +127,7 @@ public class HttpUtils {
                 conn.setDoInput(true);
                 conn.setDoOutput(true);
                 //Send request
-                IOUtils.write(content, conn.getOutputStream());
+                IOUtils.write(content, conn.getOutputStream(), Charset.forName("UTF-8"));
             } else {
                 conn.connect();
             }

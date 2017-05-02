@@ -51,7 +51,7 @@ public class RouteProviderServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("text/json;charset=UTF-8");
+        response.setContentType("application/json;charset=UTF-8");
         PrintWriter out = response.getWriter();
         try {
             if (HttpUtils.isEmptyAny(request, "lat_start", "lng_start", "lat_end", "lng_end", "type", "username") && HttpUtils.isEmptyAny(request, "route")) {
@@ -103,7 +103,7 @@ public class RouteProviderServlet extends HttpServlet {
                 	
                 	if (route != null) {
                 		route.put("_id", pathKey + "_" + username + "_" + type);
-                		RoutesUtils.cache(route);
+                		RoutesUtils.cache(route.toString());
                 		//GoogleCacheProvider.getInstance().putToSecondLevelCache(pathKey, output.toString());
                 	}
                     
@@ -158,9 +158,19 @@ public class RouteProviderServlet extends HttpServlet {
     	if (HttpUtils.isEmptyAny(request, "route")) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
         } else {
-        	try {
-        		JSONObject route = new JSONObject(request.getParameter("route"));
-        		RoutesUtils.cache(route);
+        	PrintWriter out = response.getWriter();
+    		try {
+        		String routeStr = request.getParameter("route");
+        		if (StringUtils.startsWith(routeStr, "{")) {
+        			String resp = RoutesUtils.cache(routeStr);
+        			if (resp != null) {
+        				out.println(resp);
+        				out.close();
+        			}
+        		} else {
+        			logger.log(Level.WARNING, "Wrong json format: " + routeStr);
+        	 		response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+        		}
         	} catch (Exception e) {
         		logger.log(Level.SEVERE, e.getMessage(), e);
         		 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

@@ -57,14 +57,16 @@ public class RoutesUtils {
                 		}	
                 }
 	            
-	            public static void cache(JSONObject route) {
+	            public static String cache(String route) {
+	            	String resp = null;
 	            	try {
 	            		URL cacheUrl = new URL("http://hotels-gmsworldatoso.rhcloud.com/camel/v1/cache/routes");
-	            		String resp = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, "POST", null, route.toString(), "application/json; charset=utf-8", Commons.getProperty(Property.RH_GMS_USER));
+	            		resp = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, "POST", null, route, "application/json; charset=utf-8", Commons.getProperty(Property.RH_GMS_USER));
 	            		logger.log(Level.INFO, "Cache response: " + resp);
 	            	} catch (Exception e) {
 	            		logger.log(Level.SEVERE, e.getMessage(), e);
 	            	}
+	            	return resp;
                 }
 	            
 	            public static JSONObject loadFromCache(String routeId) {

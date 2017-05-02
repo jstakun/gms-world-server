@@ -25,7 +25,6 @@
         <script type="text/javascript">
             function initialize()
             {
-                //var latlng = new google.maps.LatLng(52.25, 20.95);
                 var bounds = new google.maps.LatLngBounds();
                 var myOptions =
                     {
@@ -56,7 +55,8 @@
                       		if (i==0 || i == geometry.coordinates.length-1) {
                     	  		var marker = new google.maps.Marker({
                               		position: latlng,
-                             	 	map: map
+                             	 	map: map,
+                             	 	title: results.features[0].properties.description
                            		});		
                       		}
                       		console.log('Loading point ' + coords[0] + "," + coords[1]);
