@@ -42,31 +42,52 @@
                 document.getElementsByTagName('head')[0].appendChild(script);
 
                 window.loadRoute = function(results) {
-                	 var pathCoords = [];   
+                	 var pathCoords = [];
+                	 var description = '';   
 
                      if (results != null && results.features != null && results.features.length > 0) {
-                	 	var geometry = results.features[0].geometry;
-
+                         //geojson       
+                 	 	var geometry = results.features[0].geometry;
+                        description = results.features[0].properties.description;        
                         for (var i = 0; i < geometry.coordinates.length; i++) {
                       		var coords = geometry.coordinates[i];
                       		var latlng = new google.maps.LatLng(coords[0], coords[1]);
                      		pathCoords.push(latlng);
                      		bounds.extend(latlng);
-                      		if (i==0 || i == geometry.coordinates.length-1) {
-                    	  		var marker = new google.maps.Marker({
-                              		position: latlng,
-                             	 	map: map,
-                             	 	title: results.features[0].properties.description
-                           		});		
-                      		}
                       		console.log('Loading point ' + coords[0] + "," + coords[1]);
                     	}
+                    } else if (results != null && results.route_geometry != null && results.route_geometry.length > 0) {
+                        //mapquest  
+                    	var seconds= results.route_summary.total_time
+                        var time = new Date(seconds * 1000).toISOString().substr(11, 8); 
+                    	var length = results.route_summary.total_distance / 1000; //km
+                    	var avg = length / (results.route_summary.total_time / 3600);
+                    	description = "Route lenght: " + length.toFixed(2) + " km, Average speed: " +  avg.toFixed(2) + " km/h, Estimated time: " + time;        
+                        for (var i = 0; i < results.route_geometry.length; i++) {
+                      		var coords = results.route_geometry[i];
+                      		var latlng = new google.maps.LatLng(coords[0], coords[1]);
+                     		pathCoords.push(latlng);
+                     		bounds.extend(latlng);
+                      		console.log('Loading point ' + coords[0] + "," + coords[1]);
+                    	}    
                     } else {
                     	console.log('No routes found in results: ' + JSON.stringify(results));
                     }
-                     
+
                     if (pathCoords.length > 0) {
-                    	var routePath = new google.maps.Polyline({
+                    	var startMarker = new google.maps.Marker({
+                          		position: pathCoords[0],
+                         	 	map: map,
+                         	 	title: description
+                       	});
+
+                    	var endMarker = new google.maps.Marker({
+                      		position: pathCoords[pathCoords.length-1],
+                     	 	map: map,
+                     	 	title: description
+                   	    });
+                       			
+                  		var routePath = new google.maps.Polyline({
                             path: pathCoords,
                             geodesic: true,
                             strokeColor: '#FF0000',
