@@ -311,7 +311,11 @@
  	 	 }
 
          if (r == true) {
-              if (hotelsMode == true) {
+        	 var zoom = map.getZoom();
+             if (zoom < 12) {
+					zoom = 12;
+             }
+             if (hotelsMode == true) {
             	  var options = "distance";
                   var sortType = document.getElementsByName("sortType");
                   for (var i=0;i<sortType.length;i++) {
@@ -319,11 +323,11 @@
 							options = sortType[i].value;
 							break; 
 						}
-                  }
-                  window.location.replace("/hotelLandmark/" +  encodeDouble(lat) + "/" + encodeDouble(lng) + "/" + options + "/" + map.getZoom() + "/" + name);
+                  }     
+                  window.location.replace("/hotelLandmark/" +  encodeDouble(lat) + "/" + encodeDouble(lng) + "/" + options + "/" + zoom + "/" + name);
                   //
               } else {
-         		 window.location.replace("/newLandmark/" +  encodeDouble(lat) + "/" + encodeDouble(lng) + "/" + map.getZoom());
+         		 window.location.replace("/newLandmark/" +  encodeDouble(lat) + "/" + encodeDouble(lng) + "/" + zoom);
               }
          } else {
          	     //                	 
