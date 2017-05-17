@@ -49,7 +49,8 @@ public class TokenServlet extends HttpServlet {
         	String scope = (String)request.getParameter("scope");
         	if (scope != null) {
         		String key = TokenUtil.generateToken(scope, null);
-        		resp.put("gmsToken", key);   			
+        		resp.put("gmsToken", key);   		
+        		resp.put("scope", scope);
         	} else {
         		resp.put("message", "Missing scope parameter!");          	
         	}

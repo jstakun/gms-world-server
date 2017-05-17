@@ -20,7 +20,7 @@
             html, body {width: 100%; height: 100%}
             body {margin-top: 0px; margin-right: 0px; margin-left: 0px; margin-bottom: 0px}
         </style>
-        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=visualization">
+        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyD_bSG1hQY2x8dfUTeSegTqfIChsvLzUJI">
         </script>
         <script type="text/javascript">
             function initialize()
@@ -78,13 +78,15 @@
                     	var startMarker = new google.maps.Marker({
                           		position: pathCoords[0],
                          	 	map: map,
-                         	 	title: description
+                         	 	title: description,
+                         	 	icon: '/images/route-start.png'
                        	});
 
                     	var endMarker = new google.maps.Marker({
                       		position: pathCoords[pathCoords.length-1],
                      	 	map: map,
-                     	 	title: description
+                     	 	title: description,
+                     	 	icon: '/images/route-end.png'
                    	    });
                        			
                   		var routePath = new google.maps.Polyline({
