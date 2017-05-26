@@ -140,6 +140,34 @@ public class NotificationsServlet extends HttpServlet {
                 		response.setStatus(HttpServletResponse.SC_ACCEPTED);
                 		reply = new JSONObject().put("status", "accepted"); 
                 	}	
+                } else if (StringUtils.equals(type, "t_dl")) {
+                	 //telegram
+                	if (appId == 2  && StringUtils.startsWith(request.getRequestURI(), "/s/")) {
+                		String message = request.getParameter("message");
+                		long telegramId = NumberUtils.getLong(request.getParameter("chatId"), -1L);
+                		if (telegramId > 0 && StringUtils.isNotEmpty(message)) {
+                			TelegramUtils.sendTelegram(Long.toString(telegramId), message);
+                		} else {
+                			logger.log(Level.WARNING, "Wrong message to chat " + telegramId); 	
+                		}
+                	}  else {
+                		logger.log(Level.WARNING, "Wrong application " + appId);
+                	}
+                } else if (StringUtils.equals(type, "m_dl")) {
+                	 //mail
+                	if (appId == 2 && StringUtils.startsWith(request.getRequestURI(), "/s/")) {
+                		String message = request.getParameter("message");
+                		String title = request.getParameter("title");
+                		String emailTo = request.getParameter("emailTo");
+                		if (StringUtils.isNotEmpty(emailTo) && (StringUtils.isNotEmpty(title) || StringUtils.isNotEmpty(message))) {
+                			//AwsSesUtils.sendEmail(emailTo, message, title);
+                			 MailUtils.sendDeviceLocatorMessage(emailTo, message, title);
+                		} else {
+                			logger.log(Level.WARNING, "Wrong email to  " + emailTo);
+                		}
+                	} else {
+                		logger.log(Level.WARNING, "Wrong application " + appId);
+                	}
                 }
                 out.print(reply.toString());
             }

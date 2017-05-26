@@ -50,6 +50,10 @@ public class MailUtils {
     public static void sendEmailingMessage(String toA, String nick, String message) {
         sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "Message from Landmark Manager", message, "text/html");
     }
+    
+    public static void sendDeviceLocatorMessage(String toA, String message, String title) {
+    	sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, toA, title, message, "text/plain");
+    }
 
     public static String sendLandmarkCreationNotification(String title, String body) {
         //stopped sending landmark creation notification mail to avoid over quota
@@ -82,7 +86,7 @@ public class MailUtils {
         try {
             String link = ConfigurationManager.SERVER_URL + "verify.do?k=" + URLEncoder.encode(key, "UTF-8") + "&s=1";
             is = context.getResourceAsStream("/WEB-INF/emails/verification.html");
-            String message = String.format(IOUtils.toString(is), nick, link);
+            String message = String.format(IOUtils.toString(is, "UTF-8"), nick, link);
             sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "Welcome to GMS World", message, "text/html");
         } catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
@@ -104,7 +108,7 @@ public class MailUtils {
             if (StringUtils.isEmpty(nick)) {
             	nick = "GMS World User";
             }
-            String message = String.format(IOUtils.toString(is), nick);
+            String message = String.format(IOUtils.toString(is, "UTF-8"), nick);
             sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "GMS World Registration", message, "text/html");
         } catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
@@ -123,7 +127,7 @@ public class MailUtils {
         InputStream is = null;
         try {
             is = context.getResourceAsStream("/WEB-INF/emails/login.html");
-            String message = String.format(IOUtils.toString(is), nick, layer);
+            String message = String.format(IOUtils.toString(is, "UTF-8"), nick, layer);
             sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "GMS World Login", message, "text/html");
         } catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
@@ -143,7 +147,7 @@ public class MailUtils {
         String status = null;
         try {
             is = context.getResourceAsStream("/WEB-INF/emails/landmark.html");
-            String message = String.format(IOUtils.toString(is), userUrl, nick, landmarkUrl, landmarkUrl);
+            String message = String.format(IOUtils.toString(is, "UTF-8"), userUrl, nick, landmarkUrl, landmarkUrl);
             status = sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "Message from GMS World", message, "text/html");
             //remove after tests
             //sendMail(SUPPORT_MAIL, ADMIN_NICK, ADMIN_MAIL, ADMIN_NICK, "Copy of message to " + toA, message, "text/html");
@@ -197,7 +201,7 @@ public class MailUtils {
         InputStream is = null;
         try {
             is = context.getResourceAsStream("/WEB-INF/emails/engage.html");
-            String message = IOUtils.toString(is);
+            String message = IOUtils.toString(is, "UTF-8");
             
             String excluded = com.jstakun.lm.server.config.ConfigurationManager.getParam(ConfigurationManager.EXCLUDED, "");
             String[] excludedList = StringUtils.split(excluded, "|");
