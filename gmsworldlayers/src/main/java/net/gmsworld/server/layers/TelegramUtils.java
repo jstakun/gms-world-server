@@ -17,9 +17,9 @@ public class TelegramUtils {
 	
 	public static void sendTelegram(final String telegramId, final String message) throws IOException {
         if (StringUtils.isNotEmpty(telegramId)) {
-        	String urlStr = "https://api.telegram.org/bot" + Commons.getProperty(Property.TELEGRAM_TOKEN) + "/sendMessage?text=" + message + "&chat_id=" + telegramId; 
+        	String urlStr = "https://api.telegram.org/bot" + Commons.getProperty(Property.TELEGRAM_TOKEN) + "/sendMessage"; 
         	URL url = new URL(urlStr);
-            String response = HttpUtils.processFileRequest(url, "POST", null, null);
+            String response = HttpUtils.processFileRequest(url, "POST", null, "text=" + message + "&chat_id=" + telegramId);
             Integer responseCode = HttpUtils.getResponseCode(urlStr);
             if (responseCode != 200) {
             	logger.log(Level.SEVERE,  "Received following server response: " + responseCode + " - " + response);

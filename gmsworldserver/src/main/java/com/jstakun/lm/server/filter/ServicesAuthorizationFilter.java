@@ -59,27 +59,36 @@ public class ServicesAuthorizationFilter implements Filter {
             String authHeader = httpRequest.getHeader("Authorization");
             boolean auth = false;
             boolean noservice = false;
+            String token = null;
+            
+            if (StringUtils.isNotEmpty(authHeader)) {
+            	if (StringUtils.startsWith(authHeader, "Basic")) {
+            		byte[] username = null;
+            		byte[] password = null;
 
-            if (authHeader != null) {
-            	byte[] username = null;
-                byte[] password = null;
+            		byte[][] unPw = userPass(authHeader);
+            		if (unPw != null) {
+            			username = unPw[0];
+            			password = unPw[1];
+            		}
 
-                byte[][] unPw = userPass(authHeader);
-                if (unPw != null) {
-                    username = unPw[0];
-                    password = unPw[1];
-                }
-
-                if (username != null) {
-                    String usr = new String(username);
-                    request.setAttribute("username", usr);                   
-                    auth = UserPersistenceUtils.login(usr, password);
-                }
+            		if (username != null) {
+            			String usr = new String(username);
+            			request.setAttribute("username", usr);                   
+            			auth = UserPersistenceUtils.login(usr, password);
+            		}
+            	} else if (StringUtils.startsWith(authHeader, "Bearer")) {
+            		token = getToken(authHeader);
+            	}
             }
             
             //>= 1101, 101
             if (!auth) {
-            	authHeader = httpRequest.getHeader(Commons.TOKEN_HEADER);
+            	if (token != null) {
+            		authHeader = token;
+            	} else {
+            		authHeader = httpRequest.getHeader(Commons.TOKEN_HEADER);
+            	}
             	String scope = httpRequest.getHeader(Commons.SCOPE_HEADER);
             	if (authHeader != null && scope != null) {
             		try {
@@ -181,6 +190,19 @@ public class ServicesAuthorizationFilter implements Filter {
         return (sb.toString());
     }
 
+    private static String getToken(String authorization) {
+    	String token = null;
+    	StringTokenizer st = new StringTokenizer(authorization);
+        if (st.hasMoreTokens()) {
+        	//Bearer: <token>
+   		 	 String bearer = st.nextToken();
+        	 if (bearer.equalsIgnoreCase("Bearer:") && st.hasMoreTokens()) {
+                 token = st.nextToken();
+        	 }
+        }
+        return token;
+    }
+    
     private static byte[][] userPass(String authorization) {
         StringTokenizer st = new StringTokenizer(authorization);
         if (st.hasMoreTokens()) {

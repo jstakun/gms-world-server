@@ -116,6 +116,9 @@ public class NotificationsServlet extends HttpServlet {
                         //DA
                         String version = ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.DA_VERSION, "0");
                         reply.put("value", version);
+                    } else if (appId  == 2) {
+                    	//DL
+                    	reply.put("value", "0");
                     }
                 } else if (StringUtils.equals(type, "u")) {
                 	//engagement
