@@ -196,7 +196,7 @@ public class ServicesAuthorizationFilter implements Filter {
         if (st.hasMoreTokens()) {
         	//Bearer: <token>
    		 	 String bearer = st.nextToken();
-        	 if (bearer.equalsIgnoreCase("Bearer:") && st.hasMoreTokens()) {
+        	 if (bearer.equalsIgnoreCase("Bearer") && st.hasMoreTokens()) {
                  token = st.nextToken();
         	 }
         }
