@@ -17,7 +17,7 @@ public class ConfigurationManager {
     public static final String NOTIFICATIONS_INTERVAL = "notificationsInterval"; //notifications interval
     public static final String LM_VERSION = "lmVersion"; //LM app version
     public static final String DA_VERSION = "daVersion"; //DA app version
-    public static final String DL_VERSION = "ddVersion"; //DL app version
+    public static final String DL_VERSION = "dlVersion"; //DL app version
     public static final String EXCLUDED = "excluded";//list of email addresses excluded from engagement message
     public static final String CLOSED_URLS = "closed";//temporary closed urls
     public static final String IP_TOTAL_LIMIT = "totalLimit"; //total call limit from ip

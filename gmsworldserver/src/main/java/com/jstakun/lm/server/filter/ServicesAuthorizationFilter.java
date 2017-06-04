@@ -105,9 +105,9 @@ public class ServicesAuthorizationFilter implements Filter {
             		} catch (JSONException e) {
                 		logger.log(Level.SEVERE, e.getMessage(), e);
                 	}
-            	} else if (StringUtils.contains(httpRequest.getRequestURI(), "crashReport")) {
-            		auth = true; //TODO temporary solution, will be removed
-            	}
+            	} //else if (StringUtils.contains(httpRequest.getRequestURI(), "crashReport")) {
+            		//auth = true; 
+            	//}
             }        
 
             if (auth) {
