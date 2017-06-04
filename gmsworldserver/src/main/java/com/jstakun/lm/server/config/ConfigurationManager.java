@@ -76,6 +76,8 @@ public final class ConfigurationManager {
     		return "Deals Anywhere";
     	} else if (appId == Commons.BROWSER_ID) {
     		return "Web Browser";
+    	} else if (appId == Commons.DL_ID) {
+    		return "Device Locator";
     	} else {	
     		return "Unknown application";
     	}
