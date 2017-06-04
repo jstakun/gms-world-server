@@ -48,7 +48,14 @@
                      if (results != null && results.features != null && results.features.length > 0) {
                          //geojson       
                  	 	var geometry = results.features[0].geometry;
-                        description = results.features[0].properties.description;        
+                 	 	if (results.features[0].properties.time != null && results.features[0].properties.distance != null) {
+                 	 		var time = new Date(results.features[0].properties.time).toISOString().substr(11, 8); 
+                        	var length = results.features[0].properties.distance / 1000; //km
+                        	var avg = length / ((results.features[0].properties.time / 1000) / 3600);
+                        	description = "Route length: " + length.toFixed(2) + " km, Average speed: " +  avg.toFixed(2) + " km/h, Estimated time: " + time;
+                        } else {
+                        	description = results.features[0].properties.description;
+                        }        
                         for (var i = 0; i < geometry.coordinates.length; i++) {
                       		var coords = geometry.coordinates[i];
                       		var latlng = new google.maps.LatLng(coords[0], coords[1]);
@@ -62,7 +69,7 @@
                         var time = new Date(seconds * 1000).toISOString().substr(11, 8); 
                     	var length = results.route_summary.total_distance / 1000; //km
                     	var avg = length / (results.route_summary.total_time / 3600);
-                    	description = "Route lenght: " + length.toFixed(2) + " km, Average speed: " +  avg.toFixed(2) + " km/h, Estimated time: " + time;        
+                    	description = "Route length: " + length.toFixed(2) + " km, Average speed: " +  avg.toFixed(2) + " km/h, Estimated time: " + time;        
                         for (var i = 0; i < results.route_geometry.length; i++) {
                       		var coords = results.route_geometry[i];
                       		var latlng = new google.maps.LatLng(coords[0], coords[1]);

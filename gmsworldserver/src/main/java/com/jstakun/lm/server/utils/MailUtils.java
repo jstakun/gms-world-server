@@ -52,7 +52,7 @@ public class MailUtils {
     }
     
     public static void sendDeviceLocatorMessage(String toA, String message, String title) {
-    	sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, toA, title, message, "text/plain");
+    	sendMail(ConfigurationManager.DL_MAIL, ConfigurationManager.ADMIN_NICK, toA, toA, title, message, "text/plain");
     }
 
     public static String sendLandmarkCreationNotification(String title, String body) {
