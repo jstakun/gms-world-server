@@ -54,9 +54,11 @@ public class ConfigurationManager {
     public static final String USER_EMAIL = "userEmail";
 
 	public static final String SUPPORT_MAIL = "support@gms-world.net";
-	public static final String DL_MAIL = "device_locator@gms-world.net";
-	public static final String ADMIN_MAIL = "jstakun.appspot@gmail.com";
 	public static final String ADMIN_NICK = "GMS World Administrator";
-	
+    public static final String DL_MAIL = "device-locator@gms-world.net";
+    public static final String LM_MAIL = "landmark-manager@gms-world.net";
+    public static final String DL_NICK = "Device Locator Administrator";
+    public static final String LM_NICK = "Landmark Manager Administrator";
+    
 	public static enum MAP_PROVIDER {OSM_MAPS, GOOGLE_MAPS};
 }

@@ -48,11 +48,11 @@ public class MailUtils {
     }
 
     public static void sendEmailingMessage(String toA, String nick, String message) {
-        sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "Message from Landmark Manager", message, "text/html");
+        sendMail(ConfigurationManager.LM_MAIL, ConfigurationManager.LM_NICK, toA, nick, "Message from Landmark Manager", message, "text/html");
     }
     
     public static void sendDeviceLocatorMessage(String toA, String message, String title) {
-    	sendMail(ConfigurationManager.DL_MAIL, ConfigurationManager.ADMIN_NICK, toA, toA, title, message, "text/plain");
+    	sendMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, toA, title, message, "text/plain");
     }
 
     public static String sendLandmarkCreationNotification(String title, String body) {
@@ -78,7 +78,7 @@ public class MailUtils {
             message += "<br/>Number of users last week: " + recentlyCreated.get(entry.getKey()) + ".<br/><br/>";
         }
         //System.out.println(message);
-        sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.ADMIN_MAIL, ConfigurationManager.ADMIN_NICK, title, message, "text/html");
+        sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, title, message, "text/html");
     }
 
     public static void sendVerificationRequest(String toA, String nick, String key, ServletContext context) {
@@ -166,11 +166,11 @@ public class MailUtils {
     }
     
     public static void sendUserCreationNotification(String body) {
-        sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.ADMIN_MAIL, ConfigurationManager.ADMIN_NICK, "New user", body, "text/plain");
+        sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "New user", body, "text/plain");
     }
     
     public static void sendBlackScreenshotNotification(String body) {
-        sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.ADMIN_MAIL, ConfigurationManager.ADMIN_NICK, "Black screenshot", body, "text/plain");
+        sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "Black screenshot", body, "text/plain");
     }
 
     public static void sendCrashReport(String title, String body) {
@@ -178,7 +178,7 @@ public class MailUtils {
     }
 
     public static void sendContactMessage(String fromA, String nick, String subject, String body) {
-        sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.ADMIN_MAIL, ConfigurationManager.ADMIN_NICK, subject, "Message from: " + nick + " " + fromA + "\n" + body, "text/plain");
+        sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, subject, "Message from: " + nick + " " + fromA + "\n" + body, "text/plain");
     }
 
     public static boolean isValidEmailAddress(String aEmailAddress) {
@@ -194,7 +194,7 @@ public class MailUtils {
         }
         String message = "New search query has been executed: " + query + "\nDeals: "
                 + isDeal + "\nResponse contains " + counter + " landmarks.\nCheck it out: " + url;
-        sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.ADMIN_MAIL, ConfigurationManager.ADMIN_NICK, "New search with " + counter + " results", message, "text/plain");
+        sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "New search with " + counter + " results", message, "text/plain");
     }
     
     public static void sendEngagementMessage(String toA, ServletContext context) {
@@ -206,12 +206,12 @@ public class MailUtils {
             String excluded = com.jstakun.lm.server.config.ConfigurationManager.getParam(ConfigurationManager.EXCLUDED, "");
             String[] excludedList = StringUtils.split(excluded, "|");
             if (StringUtils.indexOfAny(toA, excludedList) >= 0) {
-               //sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.ADMIN_MAIL, ConfigurationManager.ADMIN_NICK, "Copy of excluded engagement message to " + toA, message, "text/html");
+               //sendMail(ConfigurationManager.LM_MAIL, ConfigurationManager.LM_NICK, ConfigurationManager.ADMIN_MAIL, ConfigurationManager.ADMIN_NICK, "Copy of excluded engagement message to " + toA, message, "text/html");
                logger.log(Level.INFO, "Skipped sending engagement message to " + toA);
             } else {
-               sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, "Landmark Manager User", "Message from Landmark Manager", message, "text/html");
+               sendMail(ConfigurationManager.LM_MAIL, ConfigurationManager.LM_NICK, toA, "Landmark Manager User", "Message from Landmark Manager", message, "text/html");
                //TODO remove after tests
-               sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.ADMIN_MAIL, ConfigurationManager.ADMIN_NICK, "Copy of engagement message to " + toA, message, "text/html");
+               sendMail(ConfigurationManager.LM_MAIL, ConfigurationManager.LM_NICK, ConfigurationManager.LM_MAIL, ConfigurationManager.LM_NICK, "Copy of engagement message to " + toA, message, "text/html");
             }
         } catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);

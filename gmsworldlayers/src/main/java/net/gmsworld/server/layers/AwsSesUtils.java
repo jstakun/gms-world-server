@@ -24,6 +24,6 @@ public class AwsSesUtils {
         sesClient.sendEmail(new SendEmailRequest().
                 withDestination(new Destination().withToAddresses(email)).
                 withMessage(new Message().withBody(new Body().withText(new Content().withData(message))).withSubject(new Content().withData(title))).
-                withSource(ConfigurationManager.ADMIN_MAIL));
+                withSource(ConfigurationManager.SUPPORT_MAIL));
 	}
 }
