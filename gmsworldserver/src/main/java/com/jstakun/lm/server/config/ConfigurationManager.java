@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang.StringUtils;
+
 import net.gmsworld.server.config.Commons;
 
 import com.jstakun.lm.server.persistence.Config;
@@ -63,6 +65,13 @@ public final class ConfigurationManager {
     		return defaultValue;
     	}
     }    
+    
+    public static void setParam(String key, String value) {
+    	if (StringUtils.isNotEmpty(key)) {
+    			ConfigPersistenceUtils.persistConfig(key, value);
+    	}
+    	refreshConfig();
+    }
     
     public static Map<String, String> getConfiguration() {
     	refreshConfig();

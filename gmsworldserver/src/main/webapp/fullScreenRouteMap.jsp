@@ -108,7 +108,7 @@
                     	routePath.setMap(map);						
                     } else {
                         console.log('Route path is empty!');
-                        window.alert('No route found. You\'ll be redirected to main page!'); 
+                        window.alert('No route has been downloaded. You\'ll be redirected to main page!'); 
                         window.location='https://www.gms-world.net/';
                     }  
                  }

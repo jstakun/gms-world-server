@@ -95,8 +95,7 @@ public class RouteProviderServlet extends HttpServlet {
                 		    		put("imageUrl", imageUrl).build();  
                 			
                 		NotificationUtils.createRouteCreationNotificationTask(params);
-                		
-                		
+                		            		
                 	} catch (Exception e) {
                 		logger.log(Level.SEVERE, e.getMessage(), e);
                 	}
@@ -117,8 +116,8 @@ public class RouteProviderServlet extends HttpServlet {
             		json = route.toString();
             	}	else {
             		json = "{\"features\":[]}";
+            		//response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             	}
-            		
             	String callBackJavaScripMethodName = request.getParameter("callback");
             	if (StringUtils.isNotEmpty(callBackJavaScripMethodName)) {
                 		json = callBackJavaScripMethodName + "("+ json + ");";
