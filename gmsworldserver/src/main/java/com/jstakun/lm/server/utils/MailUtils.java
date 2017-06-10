@@ -207,9 +207,7 @@ public class MailUtils {
             is = context.getResourceAsStream("/WEB-INF/emails/engage.html");
             String message = IOUtils.toString(is, "UTF-8");
             
-            String excluded = com.jstakun.lm.server.config.ConfigurationManager.getParam(ConfigurationManager.EXCLUDED, "");
-            String[] excludedList = StringUtils.split(excluded, "|");
-            if (StringUtils.indexOfAny(toA, excludedList) >= 0) {
+            if (com.jstakun.lm.server.config.ConfigurationManager.listContainsValue(ConfigurationManager.EXCLUDED, toA)) {
                //sendMail(ConfigurationManager.LM_MAIL, ConfigurationManager.LM_NICK, ConfigurationManager.ADMIN_MAIL, ConfigurationManager.ADMIN_NICK, "Copy of excluded engagement message to " + toA, message, "text/html");
                logger.log(Level.INFO, "Skipped sending engagement message to " + toA);
             } else {

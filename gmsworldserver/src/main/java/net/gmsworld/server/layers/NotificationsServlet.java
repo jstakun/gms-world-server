@@ -189,8 +189,7 @@ public class NotificationsServlet extends HttpServlet {
 						String message = request.getParameter("message");
 						String title = request.getParameter("title");
 						String emailTo = request.getParameter("emailTo");
-						if (StringUtils.isNotEmpty(emailTo)
-								&& (StringUtils.isNotEmpty(title) || StringUtils.isNotEmpty(message))) {
+						if (StringUtils.isNotEmpty(emailTo) && (StringUtils.isNotEmpty(title) || StringUtils.isNotEmpty(message))) {
 							//check if email is on white list
 							String whitelistStr = ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST, "");
 				            String[] whitelist = StringUtils.split(whitelistStr, "|");
@@ -210,8 +209,13 @@ public class NotificationsServlet extends HttpServlet {
 					if (appId == Commons.DL_ID && StringUtils.startsWith(request.getRequestURI(), "/s/")) {
 						long telegramId = NumberUtils.getLong(request.getParameter("chatId"), -1L);
 						if (telegramId > 0) {
-							TelegramUtils.sendTelegram(Long.toString(telegramId), "We've received Device Locator registration request for your chat. If this is correct please send us back "
-									+ "\"/register\" command message, otherwise please ignore this message.");
+							if (ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, Long.toString(telegramId))) {
+								TelegramUtils.sendTelegram(Long.toString(telegramId), "You've been already registered to Device Locator notifications.\n"
+										+ "You can unregister at any time by sending /unregister command message.");
+							} else {
+								TelegramUtils.sendTelegram(Long.toString(telegramId), "We've received Device Locator registration request for your chat. If this is correct please send us back "
+									+ "/register command message, otherwise please ignore this message.");
+							}
 						} else {
 							logger.log(Level.WARNING, "Wrong chat id " + telegramId);
 						}
@@ -249,10 +253,8 @@ public class NotificationsServlet extends HttpServlet {
 						long telegramId= messageJson.getJSONObject("chat").getLong("id");
 						if (StringUtils.equals(message, "/register")) {
 							//add chat id to white list
-							String whitelistStr = ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, "");
-							String[] whitelist = StringUtils.split(whitelistStr, "|");
-							if (StringUtils.indexOfAny(Long.toString(telegramId), whitelist) < 0) {
-								List<String> whitelistList = new ArrayList<String>(Arrays.asList(whitelist));
+							if (!ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, Long.toString(telegramId))) {
+								List<String> whitelistList = new ArrayList<String>(Arrays.asList(ConfigurationManager.getArray(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST)));
 								whitelistList.add(Long.toString(telegramId));
 								ConfigurationManager.setParam(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST,  StringUtils.join(whitelistList, "|"));
 				            } else {
@@ -262,10 +264,8 @@ public class NotificationsServlet extends HttpServlet {
 									+ "You can unregister at any time by sending /unregister command message.");
 						} else if (StringUtils.equals(message, "/unregister")) {
 							//remove chat id from white list
-							String whitelistStr = ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, "");
-							String[] whitelist = StringUtils.split(whitelistStr, "|");
-							if (StringUtils.indexOfAny(Long.toString(telegramId), whitelist) >= 0) {
-								List<String> whitelistList =  new ArrayList<String>(Arrays.asList(whitelist));
+							if (ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, Long.toString(telegramId))) {
+								List<String> whitelistList = new ArrayList<String>(Arrays.asList(ConfigurationManager.getArray(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST)));
 								if (whitelistList.remove(Long.toString(telegramId))) {
 									ConfigurationManager.setParam(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST,  StringUtils.join(whitelistList, "|"));
 								} else {

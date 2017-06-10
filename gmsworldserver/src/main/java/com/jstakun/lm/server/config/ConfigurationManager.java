@@ -66,6 +66,15 @@ public final class ConfigurationManager {
     	}
     }    
     
+    public static String[] getArray(String key) {
+    	String listStr = getParam(key, "");
+		return StringUtils.split(listStr, "|");
+    }
+    
+    public static boolean listContainsValue(String key, String value) {
+    	return (StringUtils.indexOfAny(value, getArray(key)) >= 0);
+    }
+    
     public static void setParam(String key, String value) {
     	if (StringUtils.isNotEmpty(key)) {
     			ConfigPersistenceUtils.persistConfig(key, value);
