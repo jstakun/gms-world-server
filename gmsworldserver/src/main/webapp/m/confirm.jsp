@@ -31,8 +31,8 @@
  <%
     } else if (step.equals("2")) {
  %>
-                <h3>Account Registration Confirmation</h3>
-                Thank you for registration. Your account is now active.
+                <h3>Account/Email Registration Confirmation</h3>
+                Thank you for your registration. Your account/email is now active.
  <%
     } else if (step.equals("3")) {
  %>
