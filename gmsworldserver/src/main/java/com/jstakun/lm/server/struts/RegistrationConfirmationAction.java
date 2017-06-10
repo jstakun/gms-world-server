@@ -54,16 +54,14 @@ public class RegistrationConfirmationAction extends Action {
             HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         Boolean confirm = Boolean.FALSE;
+        if (StringUtils.equals(request.getParameter("s"), "1")) {
+            confirm = Boolean.TRUE;
+        }
         boolean result = false;
         
         if (!HttpUtils.isEmptyAny(request, "k", "s")) {
             String login = URLDecoder.decode(request.getParameter("k"),"UTF-8");
-            String s = request.getParameter("s");
-
-            if (s.equals("1")) {
-                confirm = Boolean.TRUE;
-            }
-
+            
             result = UserPersistenceUtils.confirmUserRegistration(login);
             if (result) {
                User user = UserPersistenceUtils.selectUserByLogin(login);
@@ -71,12 +69,9 @@ public class RegistrationConfirmationAction extends Action {
                     MailUtils.sendRegistrationNotification(user.getEmail(), user.getLogin(), getServlet().getServletContext());
                }
             }
-        } else if (!HttpUtils.isEmptyAny(request, "s", "e")) {
-        	String email = request.getParameter("e");
-        	String s = request.getParameter("s");
-            if (s.equals("1")) {
-                confirm = Boolean.TRUE;
-            }
+        } else if (!HttpUtils.isEmptyAny(request, "s", "m")) {
+        	String email = request.getParameter("m");
+       
         	if (!ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST,  email)) {
 				List<String> whitelistList = new ArrayList<String>(Arrays.asList(ConfigurationManager.getArray(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST)));
 				whitelistList.add(email);
