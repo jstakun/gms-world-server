@@ -17,11 +17,13 @@ import com.google.appengine.api.datastore.Key;
 
 @NamedQueries({
 	@NamedQuery(name = "Config.findAll", query = "select c from Config c"),
+	@NamedQuery(name = "Config.findByKey", query = "select c from Config c where c.key = :key"),
 })	
 
 public class Config {
 	
 	public static final String CONFIG_FINDALL = "Config.findAll";
+	public static final String CONFIG_FINDBYKEY= "Config.findByKey";
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,6 +41,10 @@ public class Config {
 	public String getValue()
 	{
 		return value;
+	}
+	
+	public void setValue(String v) {
+		this.value = v;
 	}
 
 	public Config(String key, String value)

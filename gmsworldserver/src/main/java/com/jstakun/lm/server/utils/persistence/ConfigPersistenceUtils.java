@@ -20,14 +20,22 @@ public class ConfigPersistenceUtils {
 
    public static void persistConfig(String key, String value) {
         EntityManager pm = EMF.get().createEntityManager();
-
         try {
-            pm.persist(new Config(key, value));
+        	Config c = findByKey(key, pm);
+        	if (c == null) {
+            	c = new Config(key, value);
+            } else {
+            	c.setValue(value);
+            }
+        	pm.getTransaction().begin();
+            pm.persist(c);
             pm.flush();
         } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.getMessage(), ex);
+            pm.getTransaction().rollback();
         } finally {
-            pm.close();
+            pm.getTransaction().commit();
+        	pm.close();
         }
     }
 
@@ -36,4 +44,10 @@ public class ConfigPersistenceUtils {
 	    TypedQuery<Config> query = pm.createNamedQuery(Config.CONFIG_FINDALL, Config.class);
         return query.getResultList(); 
     }
+   
+   private static Config findByKey(String key, EntityManager pm) {
+	   TypedQuery<Config> query = pm.createNamedQuery(Config.CONFIG_FINDBYKEY, Config.class);
+	   query.setParameter("key", key);
+	   return query.getSingleResult();
+   }
 }
