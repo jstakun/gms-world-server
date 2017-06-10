@@ -191,9 +191,7 @@ public class NotificationsServlet extends HttpServlet {
 						String emailTo = request.getParameter("emailTo");
 						if (StringUtils.isNotEmpty(emailTo) && (StringUtils.isNotEmpty(title) || StringUtils.isNotEmpty(message))) {
 							//check if email is on white list
-							String whitelistStr = ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST, "");
-				            String[] whitelist = StringUtils.split(whitelistStr, "|");
-				            if (StringUtils.indexOfAny(emailTo, whitelist) >= 0) {
+							if (ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST, emailTo)) {
 				            	MailUtils.sendDeviceLocatorMessage(emailTo, message, title);
 				            } else {
 				            	logger.log(Level.WARNING, "Email address " + emailTo + " is not on whitelist!");
