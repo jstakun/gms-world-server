@@ -209,8 +209,8 @@ public class NotificationsServlet extends HttpServlet {
 								TelegramUtils.sendTelegram(Long.toString(telegramId), "You've been already registered to Device Locator notifications.\n"
 										+ "You can unregister at any time by sending /unregister command message.");
 							} else {
-								TelegramUtils.sendTelegram(Long.toString(telegramId), "We've received Device Locator registration request for your chat. If this is correct please send us back "
-									+ "/register command message, otherwise please ignore this message.");
+								TelegramUtils.sendTelegram(Long.toString(telegramId), "We've received Device Locator registration request from you.\n"
+										+ "If this is correct please send us back /register command message, otherwise please ignore this message.");
 							}
 						} else {
 							logger.log(Level.WARNING, "Wrong chat id " + telegramId);
