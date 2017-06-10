@@ -71,8 +71,12 @@ public class RegistrationConfirmationAction extends Action {
                     MailUtils.sendRegistrationNotification(user.getEmail(), user.getLogin(), getServlet().getServletContext());
                }
             }
-        } else if (!HttpUtils.isEmptyAny(request, "e")) {
+        } else if (!HttpUtils.isEmptyAny(request, "s", "e")) {
         	String email = request.getParameter("e");
+        	String s = request.getParameter("s");
+            if (s.equals("1")) {
+                confirm = Boolean.TRUE;
+            }
         	if (!ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST,  email)) {
 				List<String> whitelistList = new ArrayList<String>(Arrays.asList(ConfigurationManager.getArray(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST)));
 				whitelistList.add(email);
@@ -80,6 +84,7 @@ public class RegistrationConfirmationAction extends Action {
             } else {
             	logger.log(Level.WARNING, "Email address " + email + " already exists in the whitelist!");
             }
+        	result = true;
         }
 
         if (result) {
