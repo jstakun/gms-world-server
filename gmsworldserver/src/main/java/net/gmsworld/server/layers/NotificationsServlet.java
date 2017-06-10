@@ -255,11 +255,11 @@ public class NotificationsServlet extends HttpServlet {
 								List<String> whitelistList = new ArrayList<String>(Arrays.asList(whitelist));
 								whitelistList.add(Long.toString(telegramId));
 								ConfigurationManager.setParam(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST,  StringUtils.join(whitelistList, "|"));
-								TelegramUtils.sendTelegram(Long.toString(telegramId), "You've been registered to Device Locator notifications.\nYou can unregisted at any time by sending "
-										+ "\"/unregister\" command message.");
 				            } else {
 				            	logger.log(Level.WARNING, "Telegram chat id " + telegramId + " already exists in the whitelist!");
 				            }								
+							TelegramUtils.sendTelegram(Long.toString(telegramId), "You've been registered to Device Locator notifications.\n"
+									+ "You can unregister at any time by sending /unregister command message.");
 						} else if (StringUtils.equals(message, "/unregister")) {
 							//remove chat id from white list
 							String whitelistStr = ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, "");
