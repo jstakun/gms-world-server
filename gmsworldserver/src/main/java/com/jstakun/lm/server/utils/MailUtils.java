@@ -111,7 +111,7 @@ public class MailUtils {
             String link = ConfigurationManager.SERVER_URL + "verify.do?m=" + URLEncoder.encode(toA, "UTF-8") + "&s=1";
             is = context.getResourceAsStream("/WEB-INF/emails/verification-dl.html");
             String message = String.format(IOUtils.toString(is, "UTF-8"), link);
-            sendMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator email verification", message, "text/html");
+            sendMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html");
         } catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
         } finally {
