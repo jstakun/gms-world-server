@@ -105,6 +105,26 @@ public class MailUtils {
         }
     }
     
+    public static void sendDlVerificationRequest(String toA, String nick, ServletContext context) {
+        InputStream is = null;
+        try {
+            String link = ConfigurationManager.SERVER_URL + "verify.do?m=" + URLEncoder.encode(toA, "UTF-8");
+            is = context.getResourceAsStream("/WEB-INF/emails/verification-dl.html");
+            String message = String.format(IOUtils.toString(is, "UTF-8"), link);
+            sendMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator email verification", message, "text/html");
+        } catch (IOException ex) {
+            logger.log(Level.SEVERE, null, ex);
+        } finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException ex) {
+                    logger.log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+    }
+    
     public static void sendRegistrationNotification(String toA, String nick, ServletContext context) {
         InputStream is = null;
         try {
@@ -114,6 +134,25 @@ public class MailUtils {
             }
             String message = String.format(IOUtils.toString(is, "UTF-8"), nick);
             sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "GMS World Registration", message, "text/html");
+        } catch (IOException ex) {
+            logger.log(Level.SEVERE, null, ex);
+        } finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException ex) {
+                    logger.log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+    }
+    
+    public static void sendDlRegistrationNotification(String toA, String nick, ServletContext context) {
+        InputStream is = null;
+        try {
+            is = context.getResourceAsStream("/WEB-INF/emails/notification-dl.html");
+            String message = IOUtils.toString(is, "UTF-8");
+            sendMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html");
         } catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
         } finally {

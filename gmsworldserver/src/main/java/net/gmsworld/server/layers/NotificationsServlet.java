@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -224,10 +225,9 @@ public class NotificationsServlet extends HttpServlet {
 						String email = request.getParameter("email");
 						if (StringUtils.isNotEmpty(email)) {
 							if (ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST, email)) {
-								MailUtils.sendDeviceLocatorMessage(email, "Your email address is already registered to Device Locator notifications.\nPlease let us know at any time if you want to be unregistered.\n\nBest Regards\nDevice Locator Administrator", "Message from Device Locator");
+								MailUtils.sendDlRegistrationNotification(email, email, this.getServletContext());
 							} else {
-								//send registration request email to DL_MAIL
-								MailUtils.sendDeviceLocatorRegistrationRequest(email);
+								MailUtils.sendDlVerificationRequest(email, email, this.getServletContext());
 							}
 						} else {
 							logger.log(Level.WARNING, "Wrong email  " + email);
