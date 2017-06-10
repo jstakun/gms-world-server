@@ -170,9 +170,7 @@ public class NotificationsServlet extends HttpServlet {
 						long telegramId = NumberUtils.getLong(request.getParameter("chatId"), -1L);
 						if (telegramId > 0 && StringUtils.isNotEmpty(message)) {
 							// check if chat id is on white list
-							String whitelistStr = ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, "");
-				            String[] whitelist = StringUtils.split(whitelistStr, "|");
-				            if (StringUtils.indexOfAny(Long.toString(telegramId), whitelist) >= 0) {
+							if (ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, Long.toString(telegramId))) {
 				            	TelegramUtils.sendTelegram(Long.toString(telegramId), message);
 				            } else {
 				            	logger.log(Level.WARNING, "Telegram chat id " + telegramId + " is not on whitelist!");
