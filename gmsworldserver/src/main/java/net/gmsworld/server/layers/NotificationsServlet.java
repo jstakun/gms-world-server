@@ -221,14 +221,18 @@ public class NotificationsServlet extends HttpServlet {
 					// mail
 					if (appId == Commons.DL_ID && StringUtils.startsWith(request.getRequestURI(), "/s/")) {
 						String email = request.getParameter("email");
-						if (StringUtils.isNotEmpty(email)) {
+						String user = request.getParameter("user");
+						if (StringUtils.isNotEmpty(email) && StringUtils.isNotEmpty(user)) {
 							if (ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST, email)) {
 								MailUtils.sendDlRegistrationNotification(email, email, this.getServletContext());
 							} else {
-								MailUtils.sendDlVerificationRequest(email, email, this.getServletContext());
+								List<String> whitelistList = new ArrayList<String>(Arrays.asList(ConfigurationManager.getArray(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST)));
+								whitelistList.add(user + ":" + email );
+								ConfigurationManager.setParam(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST,  StringUtils.join(whitelistList, "|"));
+								MailUtils.sendDlVerificationRequest(email, email, user, this.getServletContext());
 							}
 						} else {
-							logger.log(Level.WARNING, "Wrong email  " + email);
+							logger.log(Level.WARNING, "Wrong email  " + email + " or user " + user);
 						}
 					} else {
 						logger.log(Level.WARNING, "Wrong application " + appId);

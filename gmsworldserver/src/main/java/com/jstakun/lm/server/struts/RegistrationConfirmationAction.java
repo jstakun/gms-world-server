@@ -69,11 +69,13 @@ public class RegistrationConfirmationAction extends Action {
                     MailUtils.sendRegistrationNotification(user.getEmail(), user.getLogin(), getServlet().getServletContext());
                }
             }
-        } else if (!HttpUtils.isEmptyAny(request, "s", "m")) {
+        } else if (!HttpUtils.isEmptyAny(request, "s", "m", "u")) {
         	String email = request.getParameter("m");
-       
+        	String user = request.getParameter("u");
+            
         	if (!ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST,  email)) {
 				List<String> whitelistList = new ArrayList<String>(Arrays.asList(ConfigurationManager.getArray(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST)));
+				whitelistList.remove(user + ":" + email);
 				whitelistList.add(email);
 				ConfigurationManager.setParam(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST,  StringUtils.join(whitelistList, "|"));
             } else {
