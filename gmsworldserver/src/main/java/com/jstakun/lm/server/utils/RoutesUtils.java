@@ -73,7 +73,7 @@ public class RoutesUtils {
 	            	JSONObject response = null;
 	            	String reply = null;
 	            	try {
-	            		URL cacheUrl = new URL("http://hotels-gmsworldatoso.rhcloud.com/camel/v1/one/routes/_id/" + routeId);
+	            		URL cacheUrl = new URL("http://hotels-gmsworldatoso.rhcloud.com/camel/v1/one/routes/name/" + routeId);
 	            		reply = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, "GET", null, null, "application/json; charset=utf-8", Commons.getProperty(Property.RH_GMS_USER));
 	            		if (HttpUtils.getResponseCode(cacheUrl.toString()) == 200 && StringUtils.startsWith(reply, "{")) {
 	            			response = new JSONObject(reply);
