@@ -101,7 +101,7 @@ public class RouteProviderServlet extends HttpServlet {
                 	}
                 	
                 	if (route != null) {
-                		route.put("_id", pathKey + "_" + username + "_" + type);
+                		route.put("name", pathKey + "_" + username + "_" + type);
                 		RoutesUtils.cache(route.toString());
                 		//GoogleCacheProvider.getInstance().putToSecondLevelCache(pathKey, output.toString());
                 	}

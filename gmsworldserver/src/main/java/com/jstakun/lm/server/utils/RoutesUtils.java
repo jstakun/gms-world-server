@@ -78,7 +78,14 @@ public class RoutesUtils {
 	            		if (HttpUtils.getResponseCode(cacheUrl.toString()) == 200 && StringUtils.startsWith(reply, "{")) {
 	            			response = new JSONObject(reply);
 	            		} else {
-	            			logger.log(Level.SEVERE, "Cache response: -" + reply + "-");	
+	            			logger.log(Level.SEVERE, "Received following response from " + cacheUrl.toString() + ": -" + reply + "-");
+	            			cacheUrl = new URL("http://hotels-gmsworldatoso.rhcloud.com/camel/v1/one/routes/_id/" + routeId);
+		            		reply = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, "GET", null, null, "application/json; charset=utf-8", Commons.getProperty(Property.RH_GMS_USER));
+		            		if (HttpUtils.getResponseCode(cacheUrl.toString()) == 200 && StringUtils.startsWith(reply, "{")) {
+		            			response = new JSONObject(reply);
+		            		} else {
+		            			logger.log(Level.SEVERE, "Received following response from " + cacheUrl.toString() + ": -" + reply + "-");
+		            		}	
 	            		}
 	            	} catch (Exception e) {
 	            		logger.log(Level.SEVERE, e.getMessage() + " from response: " +  reply, e);
