@@ -253,7 +253,7 @@ public class NotificationsServlet extends HttpServlet {
 						JSONObject messageJson = jsonObject.getJSONObject("message");
 						String message = messageJson.getString("text");
 						long telegramId= messageJson.getJSONObject("chat").getLong("id");
-						if (StringUtils.equals(message, "/register")) {
+						if (StringUtils.equalsIgnoreCase(message, "/register") || StringUtils.equalsIgnoreCase(message, "register")) {
 							//add chat id to white list
 							if (!ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, Long.toString(telegramId))) {
 								List<String> whitelistList = new ArrayList<String>(Arrays.asList(ConfigurationManager.getArray(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST)));
@@ -264,7 +264,7 @@ public class NotificationsServlet extends HttpServlet {
 				            }								
 							TelegramUtils.sendTelegram(Long.toString(telegramId), "You've been registered to Device Locator notifications.\n"
 									+ "You can unregister at any time by sending /unregister command message.");
-						} else if (StringUtils.equals(message, "/unregister")) {
+						} else if (StringUtils.equalsIgnoreCase(message, "/unregister") || StringUtils.equalsIgnoreCase(message, "unregister")) {
 							//remove chat id from white list
 							if (ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, Long.toString(telegramId))) {
 								List<String> whitelistList = new ArrayList<String>(Arrays.asList(ConfigurationManager.getArray(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST)));
@@ -277,6 +277,8 @@ public class NotificationsServlet extends HttpServlet {
 				            } else {
 				            	logger.log(Level.WARNING, "Telegram chat id " + telegramId + " doesn't exists in the whitelist!");
 				            }
+						} else if (StringUtils.equalsIgnoreCase(message, "/getmyid") || StringUtils.equalsIgnoreCase(message, "getmyid")) { 
+							 TelegramUtils.sendTelegram(Long.toString(telegramId), "Your Telegram Chat ID is: " + telegramId);
 						} else {
 							 TelegramUtils.sendTelegram(Long.toString(telegramId), "I've received unrecognised message " + message);
 						}
