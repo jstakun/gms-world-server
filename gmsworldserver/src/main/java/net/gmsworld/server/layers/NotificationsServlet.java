@@ -252,35 +252,35 @@ public class NotificationsServlet extends HttpServlet {
 						JSONObject jsonObject = new JSONObject(jb.toString());
 						JSONObject messageJson = jsonObject.getJSONObject("message");
 						String message = messageJson.getString("text");
-						long telegramId= messageJson.getJSONObject("chat").getLong("id");
+						String telegramId= Long.toString(messageJson.getJSONObject("chat").getLong("id"));
 						if (StringUtils.equalsIgnoreCase(message, "/register") || StringUtils.equalsIgnoreCase(message, "register")) {
 							//add chat id to white list
-							if (!ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, Long.toString(telegramId))) {
+							if (!ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, telegramId)) {
 								List<String> whitelistList = new ArrayList<String>(Arrays.asList(ConfigurationManager.getArray(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST)));
-								whitelistList.add(Long.toString(telegramId));
+								whitelistList.add(telegramId);
 								ConfigurationManager.setParam(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST,  StringUtils.join(whitelistList, "|"));
 				            } else {
 				            	logger.log(Level.WARNING, "Telegram chat id " + telegramId + " already exists in the whitelist!");
 				            }								
-							TelegramUtils.sendTelegram(Long.toString(telegramId), "You've been registered to Device Locator notifications.\n"
+							TelegramUtils.sendTelegram(telegramId, "You've been registered to Device Locator notifications.\n"
 									+ "You can unregister at any time by sending /unregister command message.");
 						} else if (StringUtils.equalsIgnoreCase(message, "/unregister") || StringUtils.equalsIgnoreCase(message, "unregister")) {
 							//remove chat id from white list
-							if (ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, Long.toString(telegramId))) {
+							if (ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, telegramId)) {
 								List<String> whitelistList = new ArrayList<String>(Arrays.asList(ConfigurationManager.getArray(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST)));
-								if (whitelistList.remove(Long.toString(telegramId))) {
+								if (whitelistList.remove(telegramId)) {
 									ConfigurationManager.setParam(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST,  StringUtils.join(whitelistList, "|"));
 								} else {
 									logger.log(Level.SEVERE, "Unable to remove Telegram chat id " + telegramId + " from the whitelist!");
 								}
-								TelegramUtils.sendTelegram(Long.toString(telegramId), "You've been unregistered from Device Locator notifications.");
+								TelegramUtils.sendTelegram(telegramId, "You've been unregistered from Device Locator notifications.");
 				            } else {
 				            	logger.log(Level.WARNING, "Telegram chat id " + telegramId + " doesn't exists in the whitelist!");
 				            }
 						} else if (StringUtils.equalsIgnoreCase(message, "/getmyid") || StringUtils.equalsIgnoreCase(message, "getmyid")) { 
-							 TelegramUtils.sendTelegram(Long.toString(telegramId), "Your Telegram Chat ID is: " + telegramId);
+							 TelegramUtils.sendTelegram(telegramId, telegramId);
 						} else {
-							 TelegramUtils.sendTelegram(Long.toString(telegramId), "I've received unrecognised message " + message);
+							 TelegramUtils.sendTelegram(telegramId, "I've received unrecognised message " + message);
 						}
 					} catch (Exception e) {
 						logger.log(Level.SEVERE, e.getMessage(), e);
