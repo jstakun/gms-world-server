@@ -10,7 +10,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
     <head>
-        <title>Download Landmark Manager</title>
+        <title>Download GMS World mobile applications</title>
          <%@ include file="/WEB-INF/jspf/head.jspf" %>
     </head>
 
@@ -40,7 +40,7 @@
                         Check in at places you are visiting, find daily deals, book hotel, find route and many more...
                   </p>
                 <p>
-                    <b>Download Landmark Manager</b> application for your smartphone:
+                    <b>Download Landmark Manager</b> for your smartphone:
                 </p>
                 <p>
                     <ul>
@@ -68,7 +68,7 @@
                     </ul>
                 </p>
                 <p>
-                    <b>Download Deals Anywhere</b> application for your smartphone:
+                    <b>Download Deals Anywhere</b>  for your smartphone:
                 </p>
                 <p>
                     <ul>
@@ -78,6 +78,17 @@
                             <a href="http://www.amazon.com/gp/product/B00AKICNG6">Amazon Appstore</a>.
                             <i>Please note Android application is in Public Beta.</i><br/>
                             <img src="/images/qr_android_da.png" alt="Deals Anywhere Android download link QR Code" width="200" height="200"/>
+                        </li>
+                    </ul>
+                </p>
+                <p>
+                    <b>Download Device Locator</b>  for your smartphone:
+                </p>
+                <p>
+                    <ul>
+                        <li>
+                            <a href="/download/android/device-locator.apk">Android</a>.
+                           <i>Please note Android application is in Public Beta.</i><br/>
                         </li>
                     </ul>
                 </p>
