@@ -215,7 +215,12 @@
     </rule>
 
     <!-- download rules -->
-
+    
+     <rule>
+            <from>^/d</from>
+            <to>/download.jsp</to>
+    </rule> 
+  
     <rule>
             <from>/download/j2me/LandmarkManager.jar</from>
             <to>/download/j2me/108/LandmarkManager.jar</to>
