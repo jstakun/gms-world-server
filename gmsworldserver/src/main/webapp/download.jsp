@@ -45,7 +45,7 @@
                 <p>
                     <ul>
                         <li>
-                            <a href="/download/android/GMSClientNext.apk">Android</a>.
+                            <a href="https://github.com/jstakun/gms-world-client/raw/master/GMSClientNew/GMSClientNext.apk">Android</a>.
                             Find Landmark Manager at <a href="http://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui">Google Play</a>,
                             <a href="http://www.amazon.com/gp/product/B004X2NR7O">Amazon Appstore</a> or <a href="http://apps.opera.com/landmark_manager.html">Opera Mobile Store</a>.
                             <i>Please note Android application is in Public Beta.</i><br/>
@@ -73,7 +73,7 @@
                 <p>
                     <ul>
                         <li>
-                            <a href="/download/android/DealsAnywhereNext.apk">Android</a>.
+                            <a href="https://github.com/jstakun/gms-world-client/raw/master/DealsAnywhereNext/DealsAnywhereNext.apk">Android</a>.
                             Find Deals Anywhere at <a href="http://market.android.com/details?id=com.jstakun.gms.android.ui.deals">Google Play</a> or
                             <a href="http://www.amazon.com/gp/product/B00AKICNG6">Amazon Appstore</a>.
                             <i>Please note Android application is in Public Beta.</i><br/>
@@ -87,7 +87,7 @@
                 <p>
                     <ul>
                         <li>
-                            <a href="/download/android/device-locator.apk">Android</a>.
+                            <a href="https://github.com/jstakun/device-locator/raw/master/app/app-release.apk">Android</a>.
                            <i>Please note Android application is in Public Beta.</i><br/>
                         </li>
                     </ul>

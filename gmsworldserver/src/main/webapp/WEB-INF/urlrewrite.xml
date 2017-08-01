@@ -226,10 +226,10 @@
             <to>/download/blackberry/106/LandmarkManagerUIMIDlet.cod</to>
     </rule>
 
-    <rule>
+    <!-- rule>
             <from>/download/android/GMSClientNext.apk</from>
             <to>/download/android/21/GMSClientNext.apk</to>
-    </rule>
+    </rule-->
     
     <!-- archive -->
     
