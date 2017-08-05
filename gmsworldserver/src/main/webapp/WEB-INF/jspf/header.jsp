@@ -25,7 +25,7 @@
                 <li<%= current.equals("hotels") ? " id=\"current\"" : "" %>><a href="http://www.hotelsonmap.net">Hotels</a></li>
                 <li<%= current.equals("landmarks") ? " id=\"current\"" : "" %>><a href="/landmarks">Landmarks</a></li>
                 <li<%= current.equals("home") ? " id=\"current\"" : "" %>><a href="/index.jsp">Home</a></li>
-                <li<%= current.equals("download") ? " id=\"current\"" : "" %>><a href="/download.jsp">Download</a></li>
+                <li<%= current.equals("download") ? " id=\"current\"" : "" %>><a href="/d">Download</a></li>
                 <li<%= current.equals("register") ? " id=\"current\"" : "" %>><a href="/register.jsp">Register</a></li>
                 <li><a href="http://blog.gms-world.net">Blog</a></li>
                 <li<%= current.equals("archive") ? " id=\"current\"" : "" %>><a href="/archive.do">Archives</a></li>

@@ -214,6 +214,18 @@
             <to>/showRoute.do?route=$1</to>
     </rule>
 
+     <!-- mobile shortcuts -->
+    
+    <rule>
+            <from>^/providers</from>
+            <to>/m/urls.jsp</to>
+    </rule>
+    
+     <rule>
+            <from>^/dl</from>
+            <to>/m/dl.jsp</to>
+    </rule>
+    
     <!-- download rules -->
     
      <rule>
@@ -248,17 +260,5 @@
             <to>/archive.do?year=$1&amp;month=01</to>
     </rule>
     
-    <!-- mobile shortcuts -->
-    
-    <rule>
-            <from>^/providers</from>
-            <to>/m/urls.jsp</to>
-    </rule>
-    
-     <rule>
-            <from>^/dl</from>
-            <to>/m/dl.jsp</to>
-    </rule>
-
 </urlrewrite>
 

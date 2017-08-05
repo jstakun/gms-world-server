@@ -279,6 +279,8 @@ public class NotificationsServlet extends HttpServlet {
 				            }
 						} else if (StringUtils.equalsIgnoreCase(message, "/getmyid") || StringUtils.equalsIgnoreCase(message, "getmyid")) { 
 							 TelegramUtils.sendTelegram(telegramId, telegramId);
+							 TelegramUtils.sendTelegram(telegramId, "Please click on message above containing your chat id and select copy. Then come back to Device Locator and "
+							 		+ "paste your chat id to Telegram Messenger chat id form field. If you are lucky your chat id will be pasted automatically :)");
 						} else {
 							 TelegramUtils.sendTelegram(telegramId, "I've received unrecognised message " + message);
 						}
