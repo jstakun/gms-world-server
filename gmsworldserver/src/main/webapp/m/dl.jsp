@@ -39,6 +39,7 @@
            <li><b>Mutedl</b> - mute device audio<br/>Usage: Mutedl&lt;security pin&gt;<br/>Example (assuming your security pin is 1234): <b>Mutedl1234</b><br/></li>
            <li><b>Normaldl</b> - restore normal device audio setting (turn off  mute)<br/>Usage: Normaldl&lt;security pin&gt;<br/>Example (assuming your security pin is 1234): <b>Normaldl1234</b><br/></li>
            <li><b>Calldl</b> -  call sender. Device should initiate phone call to you<br/>Usage: Calldl&lt;security pin&gt;<br/>Example (assuming your security pin is 1234): <b>Calldl1234</b><br/></li>
+           <li><b>Nofitydl</b> - set or change who should be notified by location tracking service<br/>Usage: Notifydl&lt;security pin&gt; x  where x is p:y for phone number, m:y for email address or t:y for Telegram chat id. You could set all parameters separately or together. Email address and Telegram chat id are subject for validation by it's owners.<br/>Example (assuming your security pin is 1234, phone number is 123456789, email address is name@domain.com and Telegram chat id is 987654321): <b>Notifydl1234 p:123456789 m:name@domain.com t:987654321</b><br/></li>
     	</ul> 
        
     	</article>

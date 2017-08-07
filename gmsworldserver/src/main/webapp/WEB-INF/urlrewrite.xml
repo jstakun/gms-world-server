@@ -10,6 +10,11 @@
 -->
 <urlrewrite>
 
+    <rule>
+        <from>^/$</from>
+        <to>/welcome.do</to>
+    </rule>
+
     <!-- blogeo rules -->
 
     <rule>
@@ -222,14 +227,14 @@
     </rule>
     
      <rule>
-            <from>^/dl</from>
+            <from>^/dl$</from>
             <to>/m/dl.jsp</to>
     </rule>
     
     <!-- download rules -->
     
      <rule>
-            <from>^/d</from>
+            <from>^/d$</from>
             <to>/download.jsp</to>
     </rule> 
   
