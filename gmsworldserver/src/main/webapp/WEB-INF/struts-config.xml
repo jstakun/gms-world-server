@@ -157,7 +157,6 @@
             <forward name="mobile" path="/m/main.jsp"/>
             <forward name="hotels" path="/selectLandmark.jsp?hotels=true"/>
             <forward name="landmarks" path="/selectLandmark.jsp"/>
-            <forward name="verify" path="/letsencrypt.txt"/>
         </action>
     </action-mappings>
     <controller locale="false"/>

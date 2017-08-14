@@ -10,6 +10,16 @@
 -->
 <urlrewrite>
 
+    <!--  Let's Encrypt -->
+    
+    <rule>
+    	<condition name="user-agent">.*Let's Encrypt.*https://www.letsencrypt.org.*</condition>
+    	<from>.*</from>
+    	<to>/.well-known/acme-challenge/naked.domain</to>
+    </rule>
+
+    <!-- main page -->
+    
     <rule>
         <from>^/$</from>
         <to>/welcome.do</to>
