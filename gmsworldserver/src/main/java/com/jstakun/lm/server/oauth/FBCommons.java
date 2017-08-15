@@ -7,6 +7,8 @@ import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
@@ -15,6 +17,7 @@ import net.gmsworld.server.layers.FacebookUtils;
 import net.gmsworld.server.utils.DateUtils;
 
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONObject;
 
 import com.google.common.collect.ImmutableMap;
 import com.jstakun.lm.server.social.NotificationUtils;
@@ -31,6 +34,8 @@ public final class FBCommons {
 	private static final String outf = "yyyyMMdd";
     private static final String redirect_uri = ConfigurationManager.SSL_SERVER_URL + "fbauth";
     private static final String SCOPE = "email,publish_actions,user_tagged_places,user_posts,user_photos";
+    
+    private static final Logger logger = Logger.getLogger(FBCommons.class.getName());
     
     protected static String getLoginRedirectURL() {
         //display=touch
@@ -54,20 +59,27 @@ public final class FBCommons {
             String result = readURL(url);
             String accessToken = null;
             int expires = -1;
-            String[] pairs = result.split("&");
-            for (String pair : pairs) {
-                String[] kv = pair.split("=");
-                if (kv.length != 2) {
-                    throw new RuntimeException("Unexpected auth response");
-                } else {
-                    if (kv[0].equals("access_token")) {
-                        accessToken = kv[1];
-                    }
-                    if (kv[0].equals("expires")) {
-                        expires = Integer.parseInt(kv[1]);
-                    }
-                }
+            if (result.startsWith("{")) {
+            	JSONObject reply = new JSONObject(result);
+            	accessToken = reply.optString("access_token");
+            	expires = reply.optInt("expires_in", -1);
+            } else {
+            	String[] pairs = result.split("&");
+            	for (String pair : pairs) {
+                	String[] kv = pair.split("=");
+                	if (kv.length == 2) {
+                    	if (kv[0].equals("access_token")) {
+                        	accessToken = kv[1];
+                    	}
+                    	if (kv[0].equals("expires")) {
+                        	expires = Integer.parseInt(kv[1]);
+                    	}
+                	} else{
+                		logger.log(Level.WARNING, "Unexpected token: " + pair);
+                	}
+            	}
             }
+            
             if (accessToken != null) {
                 userData = getMyData(accessToken);
                 userData.put("token", accessToken);
