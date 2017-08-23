@@ -15,7 +15,7 @@
     <rule>
     	<condition name="user-agent">.*Let's Encrypt.*https://www.letsencrypt.org.*</condition>
     	<from>^/</from>
-    	<to>/.well-known/acme-challenge/naked.domain</to>
+    	<to>/.well-known/acme-challenge/naked-domain</to>
     </rule>
 
     <!-- main page -->
