@@ -343,12 +343,12 @@
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>OAuthServlet</servlet-name>
-    <url-pattern>/fbauth</url-pattern>
-    <url-pattern>/twauth</url-pattern>
-    <url-pattern>/lnauth</url-pattern>
-    <url-pattern>/glauth</url-pattern>
-    <url-pattern>/fsauth</url-pattern>
-    <url-pattern>/cbauth</url-pattern>
+    <url-pattern>/fbauth,/s/fbauth</url-pattern>
+    <url-pattern>/twauth,/s/twauth</url-pattern>
+    <url-pattern>/lnauth,/s/lnauth</url-pattern>
+    <url-pattern>/glauth,/s/glauth</url-pattern>
+    <url-pattern>/fsauth,/s/fsauth</url-pattern>
+    <url-pattern>/cbauth,/s/cbauth</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>OAuthLoginServlet</servlet-name>
@@ -634,6 +634,7 @@
       <web-resource-name>SocialAuth</web-resource-name>
       <url-pattern>/fsauth</url-pattern>
       <url-pattern>/lnauth</url-pattern>
+      <url-pattern>/twauth</url-pattern>
       <url-pattern>/glauth</url-pattern>
       <url-pattern>/fbauth</url-pattern>
       <url-pattern>/cbauth</url-pattern>

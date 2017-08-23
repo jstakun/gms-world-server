@@ -37,7 +37,7 @@ import com.jstakun.lm.server.utils.TokenUtil;
 public final class GlCommons {
 	
     private static final String SCOPE = "https://www.googleapis.com/auth/blogger https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/userinfo.email";// https://www.googleapis.com/auth/plus.stream.write";
-    protected static final String CALLBACK_URI = ConfigurationManager.SSL_SERVER_URL + "glauth";
+    protected static final String CALLBACK_URI = ConfigurationManager.SSL_SERVER_URL + "s/glauth";
     //public static final String BLOGGER_SCOPE = "http://www.blogger.com/feeds/";
     //public static final String POSTS_FEED_URI_SUFFIX = "/posts/default";
     //public static final String METAFEED_URL = "http://www.blogger.com/feeds/default/blogs";

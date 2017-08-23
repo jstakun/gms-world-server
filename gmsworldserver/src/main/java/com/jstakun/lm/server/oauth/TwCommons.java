@@ -31,7 +31,7 @@ import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
  * @author jstakun
  */
 public final class TwCommons {
-    protected static final String CALLBACK_URL = ConfigurationManager.SERVER_URL + "twauth";
+    protected static final String CALLBACK_URL = ConfigurationManager.SSL_SERVER_URL + "s/twauth";
     
     protected static String getAuthorizationUrl() throws TwitterException {
     	Twitter twitter = new TwitterFactory().getInstance();

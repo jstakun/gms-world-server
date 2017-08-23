@@ -105,9 +105,15 @@ public class ServicesAuthorizationFilter implements Filter {
             		} catch (JSONException e) {
                 		logger.log(Level.SEVERE, e.getMessage(), e);
                 	}
-            	} //else if (StringUtils.contains(httpRequest.getRequestURI(), "crashReport")) {
-            		//auth = true; 
-            	//}
+            	} else if (StringUtils.contains(httpRequest.getRequestURI(), "crashReport") ||
+            			StringUtils.contains(httpRequest.getRequestURI(), "fbauth") ||
+            			StringUtils.contains(httpRequest.getRequestURI(), "twauth") ||
+            			StringUtils.contains(httpRequest.getRequestURI(), "glauth") ||
+            			StringUtils.contains(httpRequest.getRequestURI(), "fsauth") ||
+            			StringUtils.contains(httpRequest.getRequestURI(), "lnauth"))  {  //TODO fix
+            		logger.log(Level.INFO, authHeader   + " " + scope);
+            		auth = true; 
+            	}
             }        
 
             if (auth) {
