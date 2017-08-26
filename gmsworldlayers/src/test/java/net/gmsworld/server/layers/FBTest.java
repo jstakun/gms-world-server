@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Locale;
 
 import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.JvmThreadProvider;
 import net.gmsworld.server.utils.StringUtil;
@@ -23,7 +24,7 @@ public class FBTest {
 		LayerHelperFactory.getInstance().setThreadProvider(new JvmThreadProvider());	
 	}
 	
-	String token = Commons.FB_TEST_TOKEN_FULL_0;
+	String token = Commons.getProperty(Property.FB_TEST_TOKEN_FULL_0);
 	double lat = 52.25;
 	double lng = 20.95;
 	int limit = 30;

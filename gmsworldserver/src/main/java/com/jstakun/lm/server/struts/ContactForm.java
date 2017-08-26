@@ -9,6 +9,7 @@ import com.jstakun.lm.server.utils.MailUtils;
 import javax.servlet.http.HttpServletRequest;
 
 import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.HttpUtils;
 
 import org.apache.commons.lang.StringUtils;
@@ -49,7 +50,7 @@ public class ContactForm extends DynaValidatorForm {
         //Re-Captcha verification
         String uresponse = request.getParameter("g-recaptcha-response");
         String remoteAddr = request.getRemoteAddr();
-        String urlParams = "secret=" + Commons.RECAPTCHA_PRIVATE_KEY +"&response=" + uresponse + "&remoteip=" + remoteAddr;
+        String urlParams = "secret=" + Commons.getProperty(Property.RECAPTCHA_PRIVATE_KEY) +"&response=" + uresponse + "&remoteip=" + remoteAddr;
         
         try {
  			String response = HttpUtils.processFileRequest(new URL("https://www.google.com/recaptcha/api/siteverify"), "POST", null, urlParams);

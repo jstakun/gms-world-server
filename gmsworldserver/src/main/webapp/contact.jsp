@@ -77,7 +77,7 @@
                         </p>
                         
                         <p>
-  							<div class="g-recaptcha" data-sitekey="<%= Commons.RECAPTCHA_PUBLIC_KEY %>"></div>
+  							<div class="g-recaptcha" data-sitekey="<%=  Commons.getProperty(Commons.Property.RECAPTCHA_PUBLIC_KEY) %>"></div>
                         </p>
                         
                         <p class="no-border">

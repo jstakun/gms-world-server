@@ -1,6 +1,7 @@
 package com.jstakun.lm.server.personalization;
 
 import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.HttpUtils;
 
 import java.io.IOException;
@@ -31,7 +32,7 @@ public class RapleafUtil {
             if (StringUtils.isNotEmpty(lastname)) {
                 sb.append("last=").append(URLEncoder.encode(lastname, "UTF-8")).append("&");
             }
-            sb.append("email=").append(URLEncoder.encode(email, "UTF-8")).append("&api_key=").append(Commons.RAPLEAF_API_KEY).append("&show_available");
+            sb.append("email=").append(URLEncoder.encode(email, "UTF-8")).append("&api_key=").append(Commons.getProperty(Property.RAPLEAF_API_KEY)).append("&show_available");
 
             URL url = new URL(sb.toString());
             String resp = HttpUtils.processFileRequest(url);

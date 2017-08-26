@@ -203,10 +203,10 @@ public class UserPersistenceUtils {
     public static boolean login(String username, byte[] password) {
     	boolean auth = false;
     	
-    	if (StringUtils.equals(username, Commons.DEFAULT_USERNAME)) {      
+    	if (StringUtils.equals(username, Commons.getProperty(Property.DEFAULT_USERNAME))) {      
         	try {                  		
         		String pwdStr = Base64.encode(password);
-        		if (StringUtils.equals(pwdStr, Commons.DEFAULT_PASSWORD)) {
+        		if (StringUtils.equals(pwdStr, Commons.getProperty(Property.DEFAULT_PASSWORD))) {
         			logger.log(Level.INFO, "User default authn succeded!");
         			auth = true;
         		} else {
