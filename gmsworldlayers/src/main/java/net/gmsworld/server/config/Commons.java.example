@@ -35,6 +35,41 @@ public final class Commons {
 	    public static final String EXPEDIA_LAYER = "Expedia";
 	    public static final String QYPE_LAYER = "Qype";
 	    public static final String HOTWIRE_LAYER = "Hotwire";
+	    
+	    public static final String APP_HEADER = "X-GMS-AppId";
+	public static final String TOKEN_HEADER = "X-GMS-Token";
+	public static final String SCOPE_HEADER = "X-GMS-Scope";
+	public static final String APP_VERSION_HEADER = "X-GMS-AppVersionId";
+	public static final String USE_COUNT_HEADER = "X-GMS-UseCount";
+	public static final String MYPOS_KEY_HEADER = "X-GMS-MyPos-Key";
+	public static final String LAT_HEADER = "X-GMS-Lat";
+	public static final String LNG_HEADER = "X-GMS-Lng";
+
+	public static final String SOCIAL = "Social";
+	public static final int BLOGEO = 0;
+	public static final int LANDMARK = 1;
+	public static final int MY_POS = 2;
+	public static final int LOGIN = 3;
+	public static final int SERVER = 4;
+	public static final int CHECKIN = 5;
+	public static final int ROUTE = 6;
+	public static final int SCREENSHOT = 7;
+	public static final int HOTELS = 8;
+
+	public static final String GOOGLE_PLUS = "gg";
+	public static final String GOOGLE = "gl";
+	public static final String LINKEDIN = "ln";
+	public static final String TWITTER = "tw";
+	public static final String FACEBOOK = "fb";
+	public static final String FOURSQUARE = "fs";
+	public static final String GMS_WORLD = "gms";
+
+	public static final String MAIL = "m";
+	public static final long FIVE_MINS = 0x493e0L;
+	public static final int LM_ID = 0;
+	public static final int DA_ID = 1;
+	public static final int DL_ID = 2;
+	public static final int BROWSER_ID = 10;
 	
     private Commons() {};
     
@@ -55,22 +90,34 @@ public final class Commons {
 		GL_PLUS_KEY, GL_PLUS_SECRET, gl_plus_token, gl_plus_refresh, GOOGLE_API_KEY, //
 		GEONAMES_USERNAME, //
 		GROUPON_CLIENT_ID, //
-		INSTAGRAM_CLIENT_ID, //
+		INSTAGRAM_ACCESS_TOKEN, //
 		LASTFM_API_KEY, //
 		HOTWIRE_KEY, //
+		MASHAPE_KEY, //
 		mcopenapi_ksPwd, mcopenapi_keyAlias, mcopenapi_prodConsumerKey, mcopenapi_privKeyFile, //
 		MEETUP_API_KEY, //
 		TW_TOKEN, TW_SECRET, TW_CONSUMER_KEY, TW_CONSUMER_SECRET, //
 		WEBCAM_API_KEY, //
 		YELP_Consumer_Key, YELP_Consumer_Secret, YELP_Token, YELP_Token_Secret, YELP_ywsid, //
 		YOUTUBE_API_KEY, //
-		RH_GMS_USER, RH_ACCOUNT //
+		RH_GMS_USER, RH_ACCOUNT, //
 		CB_API_KEY, CB_API_SECRET, //
-		GROUPON_AFFILIATE_ID, MAPQUEST_APPKEY
+		GROUPON_AFFILIATE_ID, MAPQUEST_APPKEY, //
+		AWS_ACCESS_KEY, AWS_ACCESS_SECRET, //
+		TELEGRAM_TOKEN,
+		RAPLEAF_API_KEY , 
+		RECAPTCHA_PRIVATE_KEY , RECAPTCHA_PUBLIC_KEY ,
+		DEFAULT_USERNAME, DEFAULT_PASSWORD, 
+		FB_TEST_TOKEN_FULL_0 , FB_GMS_WORLD_PAGE_TOKEN , FS_TEST_TOKEN_FULL_0, 
+		RH_TEST_TOKEN, RH_TEST_SCOPE 
 	};
 	
 	public static String getProperty(Property property) {
-		return props.get(property.name());
-	}   
+		String val = props.get(property.name());
+		if (val == null) {
+			val = System.getenv(property.name());
+		} 
+		return val;
+	}
 }
 
