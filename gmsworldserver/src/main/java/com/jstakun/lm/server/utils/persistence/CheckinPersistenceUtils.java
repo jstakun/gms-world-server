@@ -17,11 +17,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.HttpUtils;
 
+import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.persistence.Checkin;
 
 /**
@@ -38,7 +38,7 @@ public class CheckinPersistenceUtils {
     public static boolean persistCheckin(String username, String venueId, int landmarkKey, Integer type) {
     	boolean result = true;
     	try {
-        	String landmarksUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "addItem?";
+        	String landmarksUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "addItem?";
         	String params = "username=" + username + "&itemType=" + type + "&type=checkin";
         	if (landmarkKey > 0) {
         		params += "&landmarkId=" + landmarkKey;
@@ -62,7 +62,7 @@ public class CheckinPersistenceUtils {
     	List<Checkin> results = new ArrayList<Checkin>();
         
     	try {
-        	String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "itemProvider";
+        	String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "itemProvider";
         	String params = "type=checkin&landmarkId=" + landmarkid;			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
         	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));

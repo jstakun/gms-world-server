@@ -26,11 +26,13 @@ public final class ConfigurationManager {
     public static final String CONFIG = "config";
     public static final String GMS_WORLD_PAGE_TOKEN = "gmsWorldPageToken";
     public static final String GMS_WORLD_ACCESS_TOKEN = "gmsWorldAccessToken";
+    public static final String GMS_LANDMARK_URL = "gmsLandmarkUrl";
     private static final String LM_GOOGLE_PLAY_URL = "https://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui";
     private static final String DA_GOOGLE_PLAY_URL = "https://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui.deals";
     private static final String BROWSER_URL = "http://www.gms-world.net/landmarks";
     public static final String BOOKING_URL = "http://www.booking.com/city/%s/%s.html?aid=864525";
     public static final String HOTELS_URL = "http://www.hotelsonmap.net/";
+    public static final String RHCLOUD_SERVER_URL = "https://landmarks-gmsworld.rhcloud.com/actions/";
     
     public static void populateConfig()
     {

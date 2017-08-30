@@ -17,10 +17,10 @@ import org.json.JSONObject;
 
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
-import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.HttpUtils;
 
+import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.persistence.Screenshot;
 import com.jstakun.lm.server.utils.FileUtils;
 
@@ -37,7 +37,7 @@ public class ScreenshotPersistenceUtils {
     	String key = null;
     	
         try {
-        	String landmarksUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "addItem";
+        	String landmarksUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "addItem";
         	String params = "filename=" + filename + "&latitude=" + latitude + "&longitude=" + longitude + "&type=screenshot";
         	if (username != null) {
         		params += "&username=" + username;
@@ -92,7 +92,7 @@ public class ScreenshotPersistenceUtils {
     	 int result = 0;
     	 
     	 try {
-         	String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "itemProvider";
+         	String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "itemProvider";
          	String params = "type=screenshot&ndays=" + ndays;			 
          	//logger.log(Level.INFO, "Calling: " + gUrl);
          	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
@@ -179,7 +179,7 @@ public class ScreenshotPersistenceUtils {
     {
     	Screenshot s = null;
     	try {
-        	String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "itemProvider";
+        	String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "itemProvider";
         	String params = "type=screenshot&id=" + k;			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
         	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));

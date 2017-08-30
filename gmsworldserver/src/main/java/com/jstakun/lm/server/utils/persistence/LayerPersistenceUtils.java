@@ -18,13 +18,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.JSONUtils;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;
 
+import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.persistence.Layer;
 import com.jstakun.lm.server.utils.memcache.CacheAction;
 import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
@@ -94,7 +94,7 @@ public class LayerPersistenceUtils {
             pm.close();
         }*/
     	try {
-        	String landmarksUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "addItem";
+        	String landmarksUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "addItem";
         	String params = "name=" + name + "&desc=" + URLEncoder.encode(desc, "UTF-8") + 
         			        "&formatted=" + URLEncoder.encode(formatted, "UTF-8") + "&type=layer" +
         			        "&e=" + enabled + "&m=" + manageable + "&c=" + checkinable;
@@ -152,7 +152,7 @@ public class LayerPersistenceUtils {
 			public Object executeAction() {
 				try {
 					List<Layer> layers = new ArrayList<Layer>();
-					String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "itemProvider";
+					String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "itemProvider";
 					String params = "type=layer";			 
 					//logger.log(Level.INFO, "Calling: " + gUrl);
 					String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
@@ -195,7 +195,7 @@ public class LayerPersistenceUtils {
     		jsonObject.put("name", name);
     		jsonObject.put("desc", layer.getDesc());
     		jsonObject.put("formatted", layer.getFormatted());
-    		jsonObject.put("iconURI", ConfigurationManager.SERVER_URL + "images/" + layer.getName() + ".png");
+    		jsonObject.put("iconURI", ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "images/" + layer.getName() + ".png");
     		jsonObject.put("manageable", layer.isManageable());
     		jsonObject.put("enabled", layer.isEnabled());
     		jsonObject.put("checkinable", layer.isCheckinable());
@@ -220,7 +220,7 @@ public class LayerPersistenceUtils {
     		jsonObject.put("name", name);
     		jsonObject.put("desc", layer.getDesc());
     		jsonObject.put("formatted", layer.getFormatted());
-    		jsonObject.put("iconURI", ConfigurationManager.SERVER_URL + "images/" + name + ".png");
+    		jsonObject.put("iconURI", ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "images/" + name + ".png");
     		jsonObject.put("manageable", layer.isManageable());
     		jsonObject.put("enabled", layer.isEnabled());
     		jsonObject.put("checkinable", layer.isCheckinable());

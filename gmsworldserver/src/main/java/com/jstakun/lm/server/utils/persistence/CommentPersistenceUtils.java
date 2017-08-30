@@ -19,11 +19,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.HttpUtils;
 
+import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.persistence.Comment;
 
 /**
@@ -46,7 +46,7 @@ public class CommentPersistenceUtils implements Serializable {
             pm.close();
         }*/
     	try {
-        	String landmarksUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "addItem";
+        	String landmarksUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "addItem";
         	String params = "username=" + username + "&landmarkId=" + landmarkKey + "&message=" + URLEncoder.encode(message, "UTF-8") + "&type=comment";
         	//logger.log(Level.INFO, "Calling: " + landmarksUrl);
         	String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
@@ -75,7 +75,7 @@ public class CommentPersistenceUtils implements Serializable {
         }*/
     	
     	try {
-        	String gUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "itemProvider";
+        	String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "itemProvider";
         	String params = "type=comment&landmarkId=" + landmarkKey;			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
         	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));

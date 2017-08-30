@@ -14,7 +14,6 @@ import java.util.logging.Level;
 
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
-import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.JSONUtils;
 import net.gmsworld.server.utils.NumberUtils;
@@ -41,21 +40,23 @@ import com.openlapi.QualifiedCoordinates;
 
 public class HotelsBookingUtils extends LayerHelper {
 
-	private static final String HOTELS_PROVIDER_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/cache/hotels/nearby/"; 
+	private static final String HOTELS_URL = "http://hotels-gmsworldatoso.rhcloud.com/";
+   
+	private static final String HOTELS_PROVIDER_URL = HOTELS_URL + "camel/v1/cache/hotels/nearby/"; 
 	
-	private static final String HOTELS_PROVIDER_ASYNC_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/cache/hotels/async/nearby/";
+	private static final String HOTELS_PROVIDER_ASYNC_URL = HOTELS_URL + "camel/v1/cache/hotels/async/nearby/";
 	
-	private static final String HOTELS_CHEAPEST_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/cache/hotels/cheapest/nearby/"; 
+	private static final String HOTELS_CHEAPEST_URL = HOTELS_URL + "camel/v1/cache/hotels/cheapest/nearby/"; 
 	
-	private static final String HOTELS_CHEAPEST_ASYNC_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/cache/hotels/async/cheapest/nearby/"; 
+	private static final String HOTELS_CHEAPEST_ASYNC_URL = HOTELS_URL + "camel/v1/cache/hotels/async/cheapest/nearby/"; 
 	
-	private static final String HOTELS_STARS_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/cache/hotels/stars/nearby/"; 
+	private static final String HOTELS_STARS_URL = HOTELS_URL + "camel/v1/cache/hotels/stars/nearby/"; 
 	
-	private static final String HOTELS_STARS_ASYNC_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/cache/hotels/async/stars/nearby/"; 
+	private static final String HOTELS_STARS_ASYNC_URL = HOTELS_URL + "camel/v1/cache/hotels/async/stars/nearby/"; 
 	
-	private static final String HOTELS_CACHE_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/one/cache/_id/"; 
+	private static final String HOTELS_CACHE_URL = HOTELS_URL + "camel/v1/one/cache/_id/"; 
 	
-	private static final String HOTELS_COUNTER_URL = ConfigurationManager.HOTELS_PROVIDER_URL + "camel/v1/count/hotels/nearby/";
+	private static final String HOTELS_COUNTER_URL = HOTELS_URL + "camel/v1/count/hotels/nearby/";
 	
 	private static final ObjectMapper objectMapper = new ObjectMapper();
 	

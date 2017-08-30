@@ -7,19 +7,19 @@ import java.util.logging.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
+import com.jstakun.lm.server.config.ConfigurationManager;
+
 import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.HttpUtils;
 
 public class TokenUtil {
 
-	private static final String TOKEN_URL = ConfigurationManager.RHCLOUD_SERVER_URL + "generateToken?scope=";       
 	private static final Logger logger = Logger.getLogger(TokenUtil.class.getName());
 	
 	public static String generateToken(String scope, String user) throws Exception {
 		if (scope != null) {
-    		String tokenUrl = TOKEN_URL + scope;
+    		String tokenUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "generateToken?scope="+ scope;
     		if (user != null) {
     			tokenUrl += "&user=" + user;
     		}
@@ -38,7 +38,7 @@ public class TokenUtil {
 	}
 	
 	public static int isTokenValid(String token, String scope) throws Exception {
-		String tokenUrl = ConfigurationManager.RHCLOUD_SERVER_URL + "isValidToken?scope=" + scope + "&key=" + token;
+		String tokenUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "isValidToken?scope=" + scope + "&key=" + token;
 		String tokenJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(tokenUrl), Commons.getProperty(Property.RH_GMS_USER), false);		
 		if (StringUtils.startsWith(tokenJson, "{")) {
 			JSONObject root = new JSONObject(tokenJson);
