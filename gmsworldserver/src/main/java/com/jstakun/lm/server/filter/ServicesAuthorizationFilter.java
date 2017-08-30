@@ -2,7 +2,6 @@ package com.jstakun.lm.server.filter;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
@@ -17,16 +16,13 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.config.Commons.Property;
-import net.gmsworld.server.utils.HttpUtils;
-
 import org.apache.commons.lang.StringUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import com.google.gdata.util.common.util.Base64;
+import com.jstakun.lm.server.utils.TokenUtil;
 import com.jstakun.lm.server.utils.persistence.UserPersistenceUtils;
+
+import net.gmsworld.server.config.Commons;
 
 /**
  *
@@ -92,17 +88,15 @@ public class ServicesAuthorizationFilter implements Filter {
             	String scope = httpRequest.getHeader(Commons.SCOPE_HEADER);
             	if (authHeader != null && scope != null) {
             		try {
-            			String tokenUrl = net.gmsworld.server.config.ConfigurationManager.RHCLOUD_SERVER_URL + "isValidToken?scope=" + scope + "&key=" + authHeader;
-            			String tokenJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(tokenUrl), Commons.getProperty(Property.RH_GMS_USER), false);		
-        				if (StringUtils.startsWith(tokenJson, "{")) {
-        					JSONObject root = new JSONObject(tokenJson);
-        					auth = root.getBoolean("output");
-        				} else if (tokenJson == null || StringUtils.contains(tokenJson, "503 Service Temporarily Unavailable")) {
-        				    noservice = true;
-        				} else {
-        					logger.log(Level.SEVERE, "Received following server response {0}", tokenJson);
-        				}
-            		} catch (JSONException e) {
+            			int isTokenValid = TokenUtil.isTokenValid(authHeader, scope);
+            			if (isTokenValid == 1) {
+            				auth = true;
+            			} else if (isTokenValid == 0) {
+            				auth = false;
+            			} else if (isTokenValid == -1){
+            				noservice = true;
+            			}
+            		} catch (Exception e) {
                 		logger.log(Level.SEVERE, e.getMessage(), e);
                 	}
             	} else if (StringUtils.contains(httpRequest.getRequestURI(), "crashReport") ||

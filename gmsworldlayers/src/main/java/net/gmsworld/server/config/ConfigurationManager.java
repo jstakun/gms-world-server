@@ -4,7 +4,7 @@ public class ConfigurationManager {
 
 	public static final String SERVER_URL = "http://www.gms-world.net/";
     public static final String SSL_SERVER_URL = "https://www.gms-world.net/";//;"https://gms-world.appspot.com/";
-    public static final String RHCLOUD_SERVER_URL = "https://landmarks-gmsworld.rhcloud.com/actions/";
+    public static final String RHCLOUD_SERVER_URL = "https://openapi-landmarks.a3c1.starter-us-west-1.openshiftapps.com/actions/";//"https://landmarks-gmsworld.rhcloud.com/actions/";
     public static final String HOTELS_PROVIDER_URL = "http://hotels-gmsworldatoso.rhcloud.com/";
     public static final String ON = "1";
     public static final String OFF = "0";
