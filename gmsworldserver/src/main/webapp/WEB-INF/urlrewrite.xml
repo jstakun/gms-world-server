@@ -182,6 +182,11 @@
             <from>^/newLandmark/([m-y]+)/([m-y]+)/([0-9]+)$</from>
             <to>/browserLandmark.jsp?latitudeEnc=$1&amp;longitudeEnc=$2&amp;zoom=$3&amp;generatetoken=true</to>
     </rule>
+    
+    <rule>
+            <from>^/hotelLandmark/([m-y]+)/([m-y]+)$</from>
+            <to>/showLocation.do?latitudeEnc=$1&amp;longitudeEnc=$2&amp;fullScreen=true&amp;enabled=Hotels&amp;sortType=cheapest&amp;zoom=12</to>
+    </rule> 
      
     <rule>
             <from>^/hotelLandmark/([m-y]+)/([m-y]+)/([a-z]+)/([0-9]+)$</from>
