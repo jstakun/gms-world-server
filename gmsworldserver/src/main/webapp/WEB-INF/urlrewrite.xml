@@ -150,7 +150,7 @@
     <!-- heatMap rules -->
 
     <rule>
-            <from>^/heatMap</from>
+            <from>^/heatMap$</from>
             <to>/getHeatMap.do</to>
     </rule>
     
@@ -201,7 +201,7 @@
     <!-- selectLandmark.jsp rules -->
     
     <rule>
-            <from>^/landmarks</from>
+            <from>^/landmarks$</from>
             <to>/selectLandmark.jsp</to>
     </rule>
     
@@ -211,14 +211,14 @@
     </rule>
     
     <rule>
-            <from>^/hotels</from>
+            <from>^/hotels$</from>
             <to>/selectLandmark.jsp?hotels=true</to>
     </rule>
     
     <!-- myposLandmark.jsp rules -->
     
     <rule>
-            <from>^/share</from>
+            <from>^/share$</from>
             <to>/myposLandmark.jsp</to>
     </rule>
     
@@ -237,7 +237,7 @@
      <!-- mobile shortcuts -->
     
     <rule>
-            <from>^/providers</from>
+            <from>^/providers$</from>
             <to>/m/urls.jsp</to>
     </rule>
     

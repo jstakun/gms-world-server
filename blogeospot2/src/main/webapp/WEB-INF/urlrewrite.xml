@@ -15,5 +15,10 @@
             <to type="redirect">https://landmarks-gmsworld.rhcloud.com/$1</to>
     </rule>
    
+   <!--rule>
+            <from>^/layers/(.*)$</from>
+            <to type="redirect">https://openapi-landmarks.a3c1.starter-us-west-1.openshiftapps.com/$1</to>
+    </rule-->
+   
 </urlrewrite>
 
