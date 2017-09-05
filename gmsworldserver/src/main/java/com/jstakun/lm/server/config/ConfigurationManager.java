@@ -32,7 +32,7 @@ public final class ConfigurationManager {
     private static final String BROWSER_URL = "http://www.gms-world.net/landmarks";
     public static final String BOOKING_URL = "http://www.booking.com/city/%s/%s.html?aid=864525";
     public static final String HOTELS_URL = "http://www.hotelsonmap.net/";
-    public static final String RHCLOUD_SERVER_URL = "https://landmarks-gmsworld.rhcloud.com/actions/";//"https://openapi-landmarks.a3c1.starter-us-west-1.openshiftapps.com/actions/";//
+    public static final String RHCLOUD_SERVER_URL = "https://landmarks-gmsworld.rhcloud.com/actions/";//"https://openapi-landmarks.b9ad.pro-us-east-1.openshiftapps.com/actions/";//
     
     public static void populateConfig()
     {

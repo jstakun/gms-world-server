@@ -32,7 +32,7 @@ import net.gmsworld.server.utils.memcache.CacheProvider;
 public class LandmarkPersistenceUtils {
 
     private static final Logger logger = Logger.getLogger(LandmarkPersistenceUtils.class.getName());
-    private static final String RHCLOUD_SERVER_URL = "https://openapi-landmarks.a3c1.starter-us-west-1.openshiftapps.com/actions/";//"https://landmarks-gmsworld.rhcloud.com/actions/";
+    private static final String RHCLOUD_SERVER_URL = "https://landmarks-gmsworld.rhcloud.com/actions/";//"https://openapi-landmarks.b9ad.pro-us-east-1.openshiftapps.com/actions/"; //
     
     public static Map<String, String> persistLandmark(String name, String description, double latitude, double longitude, double altitude, String username, Date validityDate, String layer, String email, String flex) {
 
