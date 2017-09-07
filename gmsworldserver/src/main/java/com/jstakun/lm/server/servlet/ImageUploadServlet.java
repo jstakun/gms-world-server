@@ -69,7 +69,7 @@ public class ImageUploadServlet extends HttpServlet {
 
 			if (CacheUtil.containsKey(cacheKey)) {
 				logger.log(Level.WARNING, "This screenshot is similar to newest: " + cacheKey);
-			} else if (!Double.isNaN(lat) && !Double.isNaN(lng) && isMultipart) {
+			} else if (((!Double.isNaN(lat) && !Double.isNaN(lng)) || (StringUtils.isNotEmpty(bucketName) && silent)) && isMultipart) {
 
 				ServletFileUpload upload = new ServletFileUpload();
 				upload.setSizeMax(ONE_MB); // 1 MB
@@ -170,7 +170,8 @@ public class ImageUploadServlet extends HttpServlet {
 				out.print(output);
 				logger.log(Level.INFO, output);
 			} else {
-				logger.log(Level.WARNING, "Latitude is NaN: " + Double.isNaN(lat) +  ", Longitude is NaN: " + Double.isNaN(lng) + ", Is multipart: " + isMultipart);
+				logger.log(Level.WARNING, "Latitude is NaN: " + Double.isNaN(lat) +  ", Longitude is NaN: " + Double.isNaN(lng) + ", "
+						+ "Is multipart: " + isMultipart + ", Bucket name: " + bucketName);
 				response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 			}
 		} catch (Exception e) {
