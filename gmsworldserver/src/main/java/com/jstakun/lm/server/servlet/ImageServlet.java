@@ -66,7 +66,7 @@ public class ImageServlet extends HttpServlet {
 				final double lat = Double.valueOf(request.getParameter("lat")).doubleValue();
 				final double lng = Double.valueOf(request.getParameter("lng")).doubleValue();
 				String image = "landmark_" + StringUtil.formatCoordE6(lat) + "_" + StringUtil.formatCoordE6(lng) + ".jpg";
-				imageUrl = FileUtils.getImageUrlV2(image, thumbnail, request.isSecure());
+				imageUrl = FileUtils.getImageUrlV2(null, image, thumbnail, request.isSecure());
 				if (imageUrl == null) {					
 					imageUrl = ImageUtils.getImageUrl(lat, lng, "128x128", 9, thumbnail, ConfigurationManager.MAP_PROVIDER.OSM_MAPS, request.isSecure());
 				}
@@ -82,7 +82,7 @@ public class ImageServlet extends HttpServlet {
 				final double lng_end = Double.valueOf(request.getParameter("lng_end")).doubleValue();
 			
 				String image = "path_" + StringUtil.formatCoordE6(lat_start) + "_" + StringUtil.formatCoordE6(lng_start) + "_" + StringUtil.formatCoordE6(lat_end) + "_" + StringUtil.formatCoordE6(lng_end) + ".jpg";
-				imageUrl = FileUtils.getImageUrlV2(image, thumbnail, request.isSecure());
+				imageUrl = FileUtils.getImageUrlV2(null, image, thumbnail, request.isSecure());
 			} catch (Exception e) {
 				logger.log(Level.SEVERE, e.getMessage(), e);
 			}	

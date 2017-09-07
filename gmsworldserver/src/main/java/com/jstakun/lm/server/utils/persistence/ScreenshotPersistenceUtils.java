@@ -122,7 +122,7 @@ public class ScreenshotPersistenceUtils {
     public static boolean deleteScreenshot(String filename, int id) {
     	boolean deleted = false;
     	try {
-    		if (FileUtils.deleteFileV2(filename)) {
+    		if (FileUtils.deleteFileV2(null, filename)) {
     			String gUrl = "http://landmarks-gmsworld.rhcloud.com/actions/itemProvider"; 
     			String params = "type=screenshot&id=" + id + "&action=remove";
     			String response = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));

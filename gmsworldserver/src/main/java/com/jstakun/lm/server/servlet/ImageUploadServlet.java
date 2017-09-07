@@ -64,7 +64,8 @@ public class ImageUploadServlet extends HttpServlet {
 			boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 			String myPosKey = request.getHeader(Commons.MYPOS_KEY_HEADER);
 			String cacheKey = "screenshot_" + StringUtil.formatCoordE2(lat) + "_" + StringUtil.formatCoordE2(lng);
-			boolean silent = StringUtils.equals(request.getParameter("silent"), "true");
+			boolean silent = StringUtils.equals(request.getHeader("X-GMS-Silent"), "true");
+			String bucketName =  request.getHeader("X-GMS-BucketName");
 
 			if (CacheUtil.containsKey(cacheKey)) {
 				logger.log(Level.WARNING, "This screenshot is similar to newest: " + cacheKey);
@@ -99,14 +100,13 @@ public class ImageUploadServlet extends HttpServlet {
 								output = "Image is black.";
 							} else {
 
-								FileUtils.saveFileV2(null, itemName, screenshot, lat, lng);
+								FileUtils.saveFileV2(bucketName, itemName, screenshot, lat, lng);
 
 								if (!silent) {
 									String username = StringUtil.getUsername(request.getAttribute("username"),
 											request.getHeader("username"));
 
-									String key = ScreenshotPersistenceUtils.persistScreenshot(username, lat, lng,
-											itemName);
+									String key = ScreenshotPersistenceUtils.persistScreenshot(username, lat, lng, itemName);
 
 									if (key != null) {
 										String imageUrl = ConfigurationManager.SERVER_URL + "image/" + key;
@@ -149,11 +149,13 @@ public class ImageUploadServlet extends HttpServlet {
 											output = "Image upload failed!";
 										}
 										//
+									} else {
+										output = "Key is empty!";
+										logger.log(Level.SEVERE, "Key is empty!");
+										logger.log(Level.INFO, "Deleted file " + FileUtils.deleteFileV2(bucketName, itemName));
 									}
 								} else {
-									output = "Key is empty!";
-									logger.log(Level.SEVERE, "Key is empty!");
-									logger.log(Level.INFO, "Deleted file " + FileUtils.deleteFileV2(itemName));
+									output = UrlUtils.getShortUrl(FileUtils.getImageUrlV2(bucketName, itemName, false, true));
 								}
 							}
 						} else {
@@ -168,6 +170,7 @@ public class ImageUploadServlet extends HttpServlet {
 				out.print(output);
 				logger.log(Level.INFO, output);
 			} else {
+				logger.log(Level.WARNING, "Latitude is NaN: " + Double.isNaN(lat) +  ", Longitude is NaN: " + Double.isNaN(lng) + ", Is multipart: " + isMultipart);
 				response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 			}
 		} catch (Exception e) {

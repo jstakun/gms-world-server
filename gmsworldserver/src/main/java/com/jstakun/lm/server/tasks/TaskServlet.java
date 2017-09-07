@@ -96,7 +96,7 @@ public class TaskServlet extends HttpServlet {
                 double longitude = NumberUtils.getDouble(request.getParameter("longitude"), -200d);
                 if (latitude > -200d && longitude > -200d) {
                 	String image = "landmark_" + StringUtil.formatCoordE6(latitude) + "_" + StringUtil.formatCoordE6(longitude) + ".jpg";
-        			String imageUrl = FileUtils.getImageUrlV2(image, true, request.isSecure());
+        			String imageUrl = FileUtils.getImageUrlV2(null, image, true, request.isSecure());
         			if (imageUrl == null) {					
         				byte[] thumbnail = ImageUtils.loadImage(latitude, longitude, "128x128", 9, net.gmsworld.server.config.ConfigurationManager.MAP_PROVIDER.OSM_MAPS, request.isSecure()); 
         				if (thumbnail != null && thumbnail.length > 0) {

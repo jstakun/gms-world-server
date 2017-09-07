@@ -82,8 +82,10 @@ public class FileUtils {
         writeChannel.close();
 	}
 	
-	public static boolean deleteFileV2(String fileName) throws IOException {
-		String bucketName = AppIdentityServiceFactory.getAppIdentityService().getDefaultGcsBucketName();
+	public static boolean deleteFileV2(String bucketName, String fileName) throws IOException {
+		if (bucketName == null) {
+			bucketName = AppIdentityServiceFactory.getAppIdentityService().getDefaultGcsBucketName();
+		}
 		GcsService gcsService = GcsServiceFactory.createGcsService();
         GcsFilename filename = new GcsFilename(bucketName, fileName);
         return gcsService.delete(filename);
@@ -114,8 +116,10 @@ public class FileUtils {
 	}
 	
 	//"http://storage.googleapis.com/" + bucketName + "/" + fileName;
-	public static String getImageUrlV2(String fileName, boolean thumbnail, boolean isSecure) {
-		String bucketName = AppIdentityServiceFactory.getAppIdentityService().getDefaultGcsBucketName();
+	public static String getImageUrlV2(String bucketName, String fileName, boolean thumbnail, boolean isSecure) {
+		if (bucketName == null) {
+			bucketName = AppIdentityServiceFactory.getAppIdentityService().getDefaultGcsBucketName();
+		}
 		BlobKey bk = getCloudStorageBlobKey(bucketName, fileName);
 		if (bk != null) {
 			String imageUrl = getImageUrl(bk, thumbnail);
@@ -150,7 +154,7 @@ public class FileUtils {
         	s = (Screenshot) screenshotCacheAction.getObjectFromCache(key, CacheType.NORMAL);
         	if (s != null) {
         		try {
-                	s.setUrl(FileUtils.getImageUrlV2(s.getFilename(), thumbnail, isSecure));
+                	s.setUrl(FileUtils.getImageUrlV2(null, s.getFilename(), thumbnail, isSecure));
                 } catch (Exception e) {
                 	logger.log(Level.SEVERE, "FileUtils.getScreenshot() exception", e);
                 }
