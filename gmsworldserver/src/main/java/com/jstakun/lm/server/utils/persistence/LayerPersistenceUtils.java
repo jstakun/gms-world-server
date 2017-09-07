@@ -195,7 +195,7 @@ public class LayerPersistenceUtils {
     		jsonObject.put("name", name);
     		jsonObject.put("desc", layer.getDesc());
     		jsonObject.put("formatted", layer.getFormatted());
-    		jsonObject.put("iconURI", ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "images/" + layer.getName() + ".png");
+    		jsonObject.put("iconURI", net.gmsworld.server.config.ConfigurationManager.SERVER_URL + "images/" + layer.getName() + ".png");
     		jsonObject.put("manageable", layer.isManageable());
     		jsonObject.put("enabled", layer.isEnabled());
     		jsonObject.put("checkinable", layer.isCheckinable());
@@ -220,7 +220,7 @@ public class LayerPersistenceUtils {
     		jsonObject.put("name", name);
     		jsonObject.put("desc", layer.getDesc());
     		jsonObject.put("formatted", layer.getFormatted());
-    		jsonObject.put("iconURI", ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "images/" + name + ".png");
+    		jsonObject.put("iconURI",  net.gmsworld.server.config.ConfigurationManager.SERVER_URL + "images/" + name + ".png");
     		jsonObject.put("manageable", layer.isManageable());
     		jsonObject.put("enabled", layer.isEnabled());
     		jsonObject.put("checkinable", layer.isCheckinable());

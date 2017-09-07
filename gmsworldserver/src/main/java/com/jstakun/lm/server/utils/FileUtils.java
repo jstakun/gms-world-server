@@ -65,9 +65,11 @@ public class FileUtils {
         writeChannel.close();
 	}*/
 	
-	public static void saveFileV2(String fileName, byte[] file, double lat, double lng) throws IOException {
-		String bucketName = AppIdentityServiceFactory.getAppIdentityService().getDefaultGcsBucketName();
-		GcsService gcsService = GcsServiceFactory.createGcsService();
+	public static void saveFileV2(String bucketName, String fileName, byte[] file, double lat, double lng) throws IOException {
+        if (bucketName == null) {			
+        	 bucketName = AppIdentityServiceFactory.getAppIdentityService().getDefaultGcsBucketName();
+        }
+        GcsService gcsService = GcsServiceFactory.createGcsService();
         GcsFilename filename = new GcsFilename(bucketName, fileName);
         GcsFileOptions options = new GcsFileOptions.Builder()
             .mimeType("image/jpeg")

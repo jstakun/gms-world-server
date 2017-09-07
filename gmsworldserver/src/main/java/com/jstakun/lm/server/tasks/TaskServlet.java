@@ -100,7 +100,7 @@ public class TaskServlet extends HttpServlet {
         			if (imageUrl == null) {					
         				byte[] thumbnail = ImageUtils.loadImage(latitude, longitude, "128x128", 9, net.gmsworld.server.config.ConfigurationManager.MAP_PROVIDER.OSM_MAPS, request.isSecure()); 
         				if (thumbnail != null && thumbnail.length > 0) {
-        					FileUtils.saveFileV2(image, thumbnail, latitude, longitude);
+        					FileUtils.saveFileV2(null, image, thumbnail, latitude, longitude);
         				} else {
         					response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         				}

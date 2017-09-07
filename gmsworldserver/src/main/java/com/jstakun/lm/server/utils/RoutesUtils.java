@@ -53,7 +53,7 @@ public class RoutesUtils {
                 			logger.log(Level.INFO, "Path has " + path.size() + " points");
                     
                 			byte[] pathImage = ImageUtils.loadPath(path, "640x256", isSecure);
-                			FileUtils.saveFileV2(key + ".jpg", pathImage, lat, lng);
+                			FileUtils.saveFileV2(null, key + ".jpg", pathImage, lat, lng);
                 		}	
                 }
 	            

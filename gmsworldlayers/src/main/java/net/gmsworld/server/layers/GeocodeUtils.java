@@ -73,12 +73,12 @@ public class GeocodeUtils {
 
         try {
         	
-             Validate.isTrue(!(lat > 85.0 || lat < 5.0), "Latitude must be in [5, 85]  but was ", lat);
-             Validate.isTrue(!(lng < -170.0 || lng > -50.0), "Longitude must be in [-170, -50] but was ", lng);
+             Validate.isTrue(!(lat > 85.0 || lat < 5.0), "Latitude must be in [5, 85]  but was " + lat);
+             Validate.isTrue(!(lng < -170.0 || lng > -50.0), "Longitude must be in [-170, -50] but was " + lng);
 
              isNA = true;
         } catch (Exception ex) {
-        	logger.log(Level.WARNING, ex.getMessage(), ex);
+        	logger.log(Level.WARNING, ex.getMessage());
         }
 
         return isNA;
