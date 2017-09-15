@@ -166,8 +166,8 @@ public class NotificationsServlet extends HttpServlet {
 					// telegram
 					if (appId == Commons.DL_ID && StringUtils.startsWith(request.getRequestURI(), "/s/")) {
 						String message = request.getParameter("message");
-						long telegramId = NumberUtils.getLong(request.getParameter("chatId"), -1L);
-						if (telegramId > 0 && StringUtils.isNotEmpty(message)) {
+						long telegramId = NumberUtils.getLong(request.getParameter("chatId"), 0L);
+						if (telegramId != 0 && StringUtils.isNotEmpty(message)) {
 							// check if chat id is on white list
 							if (ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, Long.toString(telegramId))) {
 				            	TelegramUtils.sendTelegram(Long.toString(telegramId), message);
@@ -202,14 +202,17 @@ public class NotificationsServlet extends HttpServlet {
 				} else if (StringUtils.equals(type, "register_t")) {
 					// telegram
 					if (appId == Commons.DL_ID && StringUtils.startsWith(request.getRequestURI(), "/s/")) {
-						long telegramId = NumberUtils.getLong(request.getParameter("chatId"), -1L);
-						if (telegramId > 0) {
+						long telegramId = NumberUtils.getLong(request.getParameter("chatId"), 0L);
+						if (telegramId != 0) {
 							if (ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, Long.toString(telegramId))) {
 								TelegramUtils.sendTelegram(Long.toString(telegramId), "You've been already registered to Device Locator notifications.\n"
 										+ "You can unregister at any time by sending /unregister command message.");
-							} else {
+							} else if (telegramId > 0) {
 								TelegramUtils.sendTelegram(Long.toString(telegramId), "We've received Device Locator registration request from you.\n"
 										+ "If this is correct please send us back /register command message, otherwise please ignore this message.");
+							} else if (telegramId < 0) {
+								TelegramUtils.sendTelegram(Long.toString(telegramId), "We've received Device Locator registration request from you.\n Your ID seems to be Channel ID."
+										+ "If this is correct please contact us via email at: device-locator@gms-world.net and send your Channel ID: " + telegramId + ", otherwise please ignore this message.");
 							}
 						} else {
 							logger.log(Level.WARNING, "Wrong chat id " + telegramId);

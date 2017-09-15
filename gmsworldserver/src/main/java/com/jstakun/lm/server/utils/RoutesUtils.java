@@ -22,6 +22,8 @@ public class RoutesUtils {
     			private static final int LIMIT = 64;
 				
     			private static final Logger logger = Logger.getLogger(RoutesUtils.class.getName());
+    			
+    			private static final String HOTELS_URL =  "http://openapi-hotels.b9ad.pro-us-east-1.openshiftapps.com/";//"http://hotels-gmsworldatoso.rhcloud.com/"
 	
 	            public static JSONObject getFromServer(String lat_start, String lng_start, String lat_end, String lng_end, String type, String username) {
                 	JSONObject route = null;
@@ -60,7 +62,7 @@ public class RoutesUtils {
 	            public static String cache(String route) {
 	            	String resp = null;
 	            	try {
-	            		URL cacheUrl = new URL("http://hotels-gmsworldatoso.rhcloud.com/camel/v1/cache/routes");
+	            		URL cacheUrl = new URL(HOTELS_URL + "camel/v1/cache/routes");
 	            		resp = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, "POST", null, route, "application/json; charset=utf-8", Commons.getProperty(Property.RH_GMS_USER));
 	            		logger.log(Level.INFO, "Cache response: " + resp);
 	            	} catch (Exception e) {
@@ -73,13 +75,13 @@ public class RoutesUtils {
 	            	JSONObject response = null;
 	            	String reply = null;
 	            	try {
-	            		URL cacheUrl = new URL("http://hotels-gmsworldatoso.rhcloud.com/camel/v1/one/routes/name/" + routeId);
+	            		URL cacheUrl = new URL(HOTELS_URL + "camel/v1/one/routes/name/" + routeId);
 	            		reply = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, "GET", null, null, "application/json; charset=utf-8", Commons.getProperty(Property.RH_GMS_USER));
 	            		if (HttpUtils.getResponseCode(cacheUrl.toString()) == 200 && StringUtils.startsWith(reply, "{")) {
 	            			response = new JSONObject(reply);
 	            		} else {
 	            			logger.log(Level.SEVERE, "Received following response from " + cacheUrl.toString() + ": -" + reply + "-");
-	            			cacheUrl = new URL("http://hotels-gmsworldatoso.rhcloud.com/camel/v1/one/routes/_id/" + routeId);
+	            			cacheUrl = new URL(HOTELS_URL + "camel/v1/one/routes/_id/" + routeId);
 		            		reply = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, "GET", null, null, "application/json; charset=utf-8", Commons.getProperty(Property.RH_GMS_USER));
 		            		if (HttpUtils.getResponseCode(cacheUrl.toString()) == 200 && StringUtils.startsWith(reply, "{")) {
 		            			response = new JSONObject(reply);

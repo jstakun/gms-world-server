@@ -29,9 +29,9 @@
     	
     	<ul>
     	   <li><b>Locatedl</b> - share current device location<br/>Usage: Locatedl&lt;security pin&gt;<br/>Example (assuming your security pin is 1234): <b>Locatedl1234</b><br/></li>
-    	   <li><b>Startdl</b> - start device location tracking and start/continue location recoding<br/>Usage: Startdl&lt;security pin&gt;.<br/>Example (assuming your security pin is 1234): <b>Startdl1234</b><br/></li>
+    	   <li><b>Startdl</b> - start device location tracking and start location recoding<br/>Usage: Startdl&lt;security pin&gt;<br/>Example (assuming your security pin is 1234): <b>Startdl1234</b><br/></li>
            <li><b>Stopdl</b> - stop device location tracking <br/>Usage: Stopdl&lt;security pin&gt;<br/>Example (assuming your security pin is 1234): <b>Stopdl1234</b><br/></li>
-           <li><b>Resetdl</b> - start device location tracking and start/reset location recoding<br/>Usage: Resetdl&lt;security pin&gt;<br/>Example (assuming your security pin is 1234): <b>Resetdl1234</b><br/></li>
+           <li><b>Resumedl</b> - start device location tracking and resume location recoding<br/>Usage: Resumedl&lt;security pin&gt;.<br/>Example (assuming your security pin is 1234): <b>Resumedl1234</b><br/></li>
            <li><b>Routedl</b> - send currently recorded locations route to the GMS World. In response you'll receive link to your route map web page<br/>Usage: Routedl&lt;security pin&gt;<br/>Example (assuming your security pin is 1234): <b>Routedl1234</b><br/></li> 
            <li><b>Gpshighdl</b> - set high GPS accuracy for device location tracking service (this will faster consume device battery)<br/>Usage: Gpshighdl&lt;security pin&gt;<br/>Example (assuming your security pin is 1234): <b>Gpshighdl1234</b><br/></li>
            <li><b>Gpsbalancedl</b> - set balanced GSP accuracy for device location tracking service (this will slower consume device battery)<br/>Usage: Gpsbalanceddl&lt;security pin&gt;. <br/>Example (assuming your security pin is 1234): <b>Gpsbalancedl1234</b><br/></li>
