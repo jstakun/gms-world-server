@@ -30,7 +30,7 @@ import net.gmsworld.server.utils.HttpUtils;
 public class GeocodeCachePersistenceUtils {
 
     private static final Logger logger = Logger.getLogger(GeocodeCachePersistenceUtils.class.getName());
-    private static final String RHCLOUD_SERVER_URL = "https://landmarks-gmsworld.rhcloud.com/actions/";//"https://openapi-landmarks.b9ad.pro-us-east-1.openshiftapps.com/actions/";//
+    private static final String RHCLOUD_SERVER_URL = "https://openapi-landmarks.b9ad.pro-us-east-1.openshiftapps.com/actions/";//"https://landmarks-gmsworld.rhcloud.com/actions/";//
     
     public static void persistGeocode(String location, int status, String message, double latitude, double longitude) {
         /*String loc = StringUtils.replace(location, "\n", " ");
