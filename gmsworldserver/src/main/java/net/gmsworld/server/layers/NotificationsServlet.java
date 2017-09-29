@@ -171,11 +171,14 @@ public class NotificationsServlet extends HttpServlet {
 							// check if chat id is on white list
 							if (ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, Long.toString(telegramId))) {
 				            	TelegramUtils.sendTelegram(Long.toString(telegramId), message);
+				            	reply = new JSONObject().put("status", "sent");
 				            } else {
 				            	logger.log(Level.WARNING, "Telegram chat id " + telegramId + " is not on whitelist!");
+				            	reply = new JSONObject().put("status", "unverified");
 				            }
 						} else {
 							logger.log(Level.WARNING, "Wrong message to chat " + telegramId);
+							reply = new JSONObject().put("status", "failed");
 						}
 					} else {
 						logger.log(Level.WARNING, "Wrong application " + appId);
@@ -190,11 +193,14 @@ public class NotificationsServlet extends HttpServlet {
 							//check if email is on white list
 							if (ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST, emailTo)) {
 				            	MailUtils.sendDeviceLocatorMessage(emailTo, message, title);
+				            	reply = new JSONObject().put("status", "sent");	
 				            } else {
 				            	logger.log(Level.WARNING, "Email address " + emailTo + " is not on whitelist!");
+				            	reply = new JSONObject().put("status", "unverified");
 				            }
 						} else {
 							logger.log(Level.WARNING, "Wrong email to  " + emailTo);
+							reply = new JSONObject().put("status", "failed");
 						}
 					} else {
 						logger.log(Level.WARNING, "Wrong application " + appId);
@@ -207,12 +213,15 @@ public class NotificationsServlet extends HttpServlet {
 							if (ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, Long.toString(telegramId))) {
 								TelegramUtils.sendTelegram(Long.toString(telegramId), "You've been already registered to Device Locator notifications.\n"
 										+ "You can unregister at any time by sending /unregister command message.");
+								reply = new JSONObject().put("status", "registered");
 							} else if (telegramId > 0) {
 								TelegramUtils.sendTelegram(Long.toString(telegramId), "We've received Device Locator registration request from you.\n"
 										+ "If this is correct please send us back /register command message, otherwise please ignore this message.");
+								reply = new JSONObject().put("status", "unverified");
 							} else if (telegramId < 0) {
 								TelegramUtils.sendTelegram(Long.toString(telegramId), "We've received Device Locator registration request from you.\n Your ID seems to be Channel ID."
 										+ "If this is correct please contact us via email at: device-locator@gms-world.net and send your Channel ID: " + telegramId + ", otherwise please ignore this message.");
+								reply = new JSONObject().put("status", "unverified");
 							}
 						} else {
 							logger.log(Level.WARNING, "Wrong chat id " + telegramId);
@@ -228,11 +237,13 @@ public class NotificationsServlet extends HttpServlet {
 						if (StringUtils.isNotEmpty(email) && StringUtils.isNotEmpty(user)) {
 							if (ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST, email)) {
 								MailUtils.sendDlRegistrationNotification(email, email, this.getServletContext());
+								reply = new JSONObject().put("status", "registered");
 							} else {
 								List<String> whitelistList = new ArrayList<String>(Arrays.asList(ConfigurationManager.getArray(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST)));
 								whitelistList.add(user + ":" + email );
 								ConfigurationManager.setParam(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST,  StringUtils.join(whitelistList, "|"));
 								MailUtils.sendDlVerificationRequest(email, email, user, this.getServletContext());
+								reply = new JSONObject().put("status", "unverified");
 							}
 						} else {
 							logger.log(Level.WARNING, "Wrong email  " + email + " or user " + user);
