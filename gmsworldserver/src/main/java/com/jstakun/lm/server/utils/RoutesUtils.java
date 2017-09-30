@@ -23,13 +23,13 @@ public class RoutesUtils {
 				
     			private static final Logger logger = Logger.getLogger(RoutesUtils.class.getName());
     			
-    			private static final String BACKEND_URL =  "http://openapi-hotels.b9ad.pro-us-east-1.openshiftapps.com/";//"http://hotels-gmsworldatoso.rhcloud.com/"
+    			private static final String BACKEND_URL =  "https://hotels-api.b9ad.pro-us-east-1.openshiftapps.com";//"http://openapi-hotels.b9ad.pro-us-east-1.openshiftapps.com";//"http://hotels-gmsworldatoso.rhcloud.com/"
     			
-    			private static final String ROUTES_URL = BACKEND_URL + "camel/v1/cache/routes";
+    			private static final String ROUTES_URL = BACKEND_URL + "/camel/v1/cache/features/routes";
 	
-    			private static final String ROUTE_URL_NAME = BACKEND_URL + "camel/v1/one/routes/name/";
+    			private static final String ROUTE_URL_NAME = BACKEND_URL + "/camel/v1/one/routes/name/";
     			
-    			private static final String ROUTE_URL_ID = BACKEND_URL + "camel/v1/one/routes/_id/" ;
+    			private static final String ROUTE_URL_ID = BACKEND_URL + "/camel/v1/getById/routes/"; //"/camel/v1/one/routes/_id/" ;
     							
 	            public static JSONObject getFromServer(String lat_start, String lng_start, String lat_end, String lng_end, String type, String username) {
                 	JSONObject route = null;
@@ -65,12 +65,16 @@ public class RoutesUtils {
                 		}	
                 }
 	            
-	            public static String cache(String route) {
-	            	String resp = null;
+	            public static String[] cache(String route) {
+	            	String[] resp = new String[2];
 	            	try {
-	            		URL cacheUrl = new URL(ROUTES_URL);
-	            		resp = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, "POST", null, route, "application/json; charset=utf-8", Commons.getProperty(Property.RH_GMS_USER));
-	            		logger.log(Level.INFO, "Cache response: " + resp);
+	            		URL cacheUrl = new URL(ROUTES_URL + "?user_key=" + Commons.getProperty(Property.RH_API_KEY));
+	            		resp[0] = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, "POST", null, route, "application/json; charset=utf-8", Commons.getProperty(Property.RH_GMS_USER));
+	            		Integer responseCode= HttpUtils.getResponseCode(cacheUrl.toString());
+	            		if (responseCode != null) {
+	            			resp[1] = responseCode.toString(); 
+	            		}
+	            		logger.log(Level.INFO, "Cache response: " + resp[1] + ": " + resp[0]);
 	            	} catch (Exception e) {
 	            		logger.log(Level.SEVERE, e.getMessage(), e);
 	            	}
@@ -81,13 +85,13 @@ public class RoutesUtils {
 	            	JSONObject response = null;
 	            	String reply = null;
 	            	try {
-	            		URL cacheUrl = new URL(ROUTE_URL_NAME + routeId);
+	            		URL cacheUrl = new URL(ROUTE_URL_NAME + routeId + "?user_key=" + Commons.getProperty(Property.RH_API_KEY));
 	            		reply = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, "GET", null, null, "application/json; charset=utf-8", Commons.getProperty(Property.RH_GMS_USER));
 	            		if (HttpUtils.getResponseCode(cacheUrl.toString()) == 200 && StringUtils.startsWith(reply, "{")) {
 	            			response = new JSONObject(reply);
 	            		} else {
 	            			logger.log(Level.SEVERE, "Received following response from " + cacheUrl.toString() + ": -" + reply + "-");
-	            			cacheUrl = new URL(ROUTE_URL_ID  + routeId);
+	            			cacheUrl = new URL(ROUTE_URL_ID  + routeId + "?user_key=" + Commons.getProperty(Property.RH_API_KEY));
 		            		reply = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, "GET", null, null, "application/json; charset=utf-8", Commons.getProperty(Property.RH_GMS_USER));
 		            		if (HttpUtils.getResponseCode(cacheUrl.toString()) == 200 && StringUtils.startsWith(reply, "{")) {
 		            			response = new JSONObject(reply);

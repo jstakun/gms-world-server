@@ -74,6 +74,10 @@ public class HttpUtils {
     public static String processFileRequestWithBasicAuthn(URL fileUrl, String method, String accept, String urlParams, String contentType, String authn) throws IOException {
         return processFileRequest(fileUrl, true, authn, null, method, null, accept, urlParams, contentType, false, null, null);
     }
+    
+    public static String processFileRequestWithBasicAuthn(URL fileUrl, String method, String accept, String urlParams, String contentType, String authn, String headerName, String headerValue) throws IOException {
+        return processFileRequest(fileUrl, true, authn, null, method, null, accept, urlParams, contentType, false, headerName, headerValue);
+    }
 
     private static String processFileRequest(URL fileUrl, boolean authn, String userpassword, String authnOther, String method, String locale, String accept, String content, String contentType, boolean compress, String customHeaderName, String customHeaderValue) throws IOException {
         InputStream is = null;
