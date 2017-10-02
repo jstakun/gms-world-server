@@ -40,23 +40,23 @@ import com.openlapi.QualifiedCoordinates;
 
 public class HotelsBookingUtils extends LayerHelper {
 
-	private static final String HOTELS_URL =  "http://openapi-hotels.b9ad.pro-us-east-1.openshiftapps.com/";//"http://hotels-gmsworldatoso.rhcloud.com/";
+	private static final String HOTELS_URL =  "https://hotels-api.b9ad.pro-us-east-1.openshiftapps.com"; //"http://openapi-hotels.b9ad.pro-us-east-1.openshiftapps.com";
    
-	private static final String HOTELS_PROVIDER_URL = HOTELS_URL + "camel/v1/cache/hotels/nearby/"; 
+	private static final String HOTELS_PROVIDER_URL = HOTELS_URL + "/camel/v1/cache/hotels/nearby/"; 
 	
-	private static final String HOTELS_PROVIDER_ASYNC_URL = HOTELS_URL + "camel/v1/cache/hotels/async/nearby/";
+	private static final String HOTELS_PROVIDER_ASYNC_URL = HOTELS_URL + "/camel/v1/cache/hotels/async/nearby/";
 	
-	private static final String HOTELS_CHEAPEST_URL = HOTELS_URL + "camel/v1/cache/hotels/cheapest/nearby/"; 
+	private static final String HOTELS_CHEAPEST_URL = HOTELS_URL + "/camel/v1/cache/hotels/cheapest/nearby/"; 
 	
-	private static final String HOTELS_CHEAPEST_ASYNC_URL = HOTELS_URL + "camel/v1/cache/hotels/async/cheapest/nearby/"; 
+	private static final String HOTELS_CHEAPEST_ASYNC_URL = HOTELS_URL + "/camel/v1/cache/hotels/async/cheapest/nearby/"; 
 	
-	private static final String HOTELS_STARS_URL = HOTELS_URL + "camel/v1/cache/hotels/stars/nearby/"; 
+	private static final String HOTELS_STARS_URL = HOTELS_URL + "/camel/v1/cache/hotels/stars/nearby/"; 
 	
-	private static final String HOTELS_STARS_ASYNC_URL = HOTELS_URL + "camel/v1/cache/hotels/async/stars/nearby/"; 
+	private static final String HOTELS_STARS_ASYNC_URL = HOTELS_URL + "/camel/v1/cache/hotels/async/stars/nearby/"; 
 	
-	private static final String HOTELS_CACHE_URL = HOTELS_URL + "camel/v1/one/cache/_id/"; 
+	private static final String HOTELS_CACHE_URL = HOTELS_URL + "/camel/v1/getById/cache/"; 
 	
-	private static final String HOTELS_COUNTER_URL = HOTELS_URL + "camel/v1/count/hotels/nearby/";
+	private static final String HOTELS_COUNTER_URL = HOTELS_URL + "/camel/v1/count/hotels/nearby/";
 	
 	private static final ObjectMapper objectMapper = new ObjectMapper();
 	
@@ -73,82 +73,8 @@ public class HotelsBookingUtils extends LayerHelper {
 			normalizedRadius = r * 1000;
 		}	
 		return loadLandmarksJackson(lat, lng, query, normalizedRadius, version, limit, stringLimit, callCacheFirst, sortType, locale, useCache);
-		//return loadLandmarksJSON(lat, lng, query, normalizedRadius, version, limit, stringLimit, callCacheFirst, sortType, locale, useCache);
 	}
-	
-	/*private List<ExtendedLandmark> loadLandmarksJSON(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String callCacheFirst, String sortType, Locale locale, boolean useCache) throws Exception {
-		JSONArray hotels = null;
-		String lngStr = StringUtil.formatCoordE2(lng);
-		String latStr = StringUtil.formatCoordE2(lat);	
-		String hotelsUrlPrefix = HOTELS_PROVIDER_URL;
-		if (StringUtils.equalsIgnoreCase(sortType, "stars")) {
-			hotelsUrlPrefix = HOTELS_STARS_URL;
-		} else if (StringUtils.equalsIgnoreCase(sortType, "cheapest")) {
-			hotelsUrlPrefix = HOTELS_CHEAPEST_URL;
-		}
-		
-		//first call hotels cache
-		if (StringUtils.equals(callCacheFirst, "true")) {
-			String hotelsUrl = HOTELS_CACHE_URL + lngStr + "_" + latStr + "_" + radius + "_" + limit;
-			//logger.log(Level.INFO, "Calling: " + hotelsUrl);
-			String json = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), true);
-			if (StringUtils.startsWith(StringUtils.trim(json), "[")) {
-	    		try {
-	    			JSONArray root = new JSONArray(json);
-	    			if (root.length() > 0) {
-	    				hotels = root.getJSONObject(0).getJSONArray("features");
-	    			}
-	    		} catch (Exception e) {
-	    			logger.log(Level.SEVERE, e.getMessage(), e);
-	    		}
-			} else if (StringUtils.startsWith(StringUtils.trim(json), "{")) {
-	    		try {
-	    			JSONObject root = new JSONObject(json);
-	    			hotels = root.optJSONArray("features");
-	    		} catch (Exception e) {
-	    			logger.log(Level.SEVERE, e.getMessage(), e);
-	    		}
-			} else {
-				logger.log(Level.WARNING, "Received following hotels cache server response " + json);
-			}	
-		}
-		
-		if (hotels == null) {
-			String hotelsUrl = hotelsUrlPrefix + latStr + "/" + lngStr + "/" + radius + "/" + limit;			
-			logger.log(Level.INFO, "Calling: " + hotelsUrl);
-			String json = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), true);
-			if (StringUtils.startsWith(json, "[")) {
-	    		try {
-	    			hotels = new JSONArray(json);
-	       		} catch (Exception e) {
-	    			logger.log(Level.SEVERE, e.getMessage(), e);
-	    		}
-			} else {
-				logger.log(Level.WARNING, "Received following server response " + json);
-			}
-		}
-		long start = System.currentTimeMillis();
-		logger.log(Level.INFO, "Processing hotels list with JSON...");
-		
-		int size = 0;
-		if (hotels != null) {
-			size = hotels.length();
-		}
-		
-		List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>(size);
-		if (size > 0) {
-			for (int i=0; i<size; i++) {
-				try {
-					landmarks.add(hotelToLandmark(hotels.getJSONObject(i), locale));
-				} catch (Exception e) {
-					logger.log(Level.SEVERE, e.getMessage(), e);
-				}	
-			}
-		}
-		logger.log(Level.INFO, "Processed " + landmarks.size() + " hotels in " + (System.currentTimeMillis()-start) + " millis.");
-		return landmarks;
-	}*/
-	
+
 	private List<ExtendedLandmark> loadLandmarksJackson(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String callCacheFirst, String sortType, Locale locale, boolean useCache) throws Exception {
 		FeatureCollection hotels = null;
 		String lngStr = StringUtil.formatCoordE2(lng);
@@ -157,7 +83,7 @@ public class HotelsBookingUtils extends LayerHelper {
 		//first call hotels cache
 		if (StringUtils.equals(callCacheFirst, "true")) {
 			//save to cache with sort type
-			String hotelsUrl = HOTELS_CACHE_URL + lngStr + "_" + latStr + "_" + radius + "_" + limit;
+			String hotelsUrl = HOTELS_CACHE_URL + lngStr + "_" + latStr + "_" + radius + "_" + limit + "?user_key=" + Commons.getProperty(Property.RH_HOTELS_API_KEY);
 			if (StringUtils.equalsIgnoreCase(sortType, "stars")) {
 				hotelsUrl += "_stars";
 			} else if (StringUtils.equalsIgnoreCase(sortType, "cheapest")) {
@@ -191,7 +117,7 @@ public class HotelsBookingUtils extends LayerHelper {
 				hotelsUrlPrefix = HOTELS_CHEAPEST_URL;
 			}
 			
-			String hotelsUrl = hotelsUrlPrefix + latStr + "/" + lngStr + "/" + radius + "/" + limit;			
+			String hotelsUrl = hotelsUrlPrefix + latStr + "/" + lngStr + "/" + radius + "/" + limit + "?user_key=" + Commons.getProperty(Property.RH_HOTELS_API_KEY);			
 			//logger.log(Level.INFO, "Calling: " + hotelsUrl);
 			String json = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), true);
 			if (StringUtils.startsWith(json, "[")) {
@@ -243,7 +169,7 @@ public class HotelsBookingUtils extends LayerHelper {
 			hotelsUrlPrefix = HOTELS_CHEAPEST_URL;
 		}
 		
-		String hotelsUrl = hotelsUrlPrefix + latStr + "/" + lngStr + "/" + normalizedRadius + "/" + limit;			
+		String hotelsUrl = hotelsUrlPrefix + latStr + "/" + lngStr + "/" + normalizedRadius + "/" + limit + "?user_key=" + Commons.getProperty(Property.RH_HOTELS_API_KEY);			
 		logger.log(Level.INFO, "Calling: " + hotelsUrl);
 		String json = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), true);
 		if (StringUtils.startsWith(json, "[")) {
@@ -370,7 +296,7 @@ public class HotelsBookingUtils extends LayerHelper {
 		} else if (StringUtils.equalsIgnoreCase(sortType, "cheapest")) {
 			hotelsUrlPrefix = HOTELS_CHEAPEST_ASYNC_URL;
 		}
-		String hotelsUrl = hotelsUrlPrefix + latStr + "/" + lngStr + "/" + normalizedRadius + "/" + limit;
+		String hotelsUrl = hotelsUrlPrefix + latStr + "/" + lngStr + "/" + normalizedRadius + "/" + limit + "?user_key=" + Commons.getProperty(Property.RH_HOTELS_API_KEY);
 		
 		try {
 			logger.log(Level.INFO, "Calling: " + hotelsUrl);
@@ -429,7 +355,7 @@ public class HotelsBookingUtils extends LayerHelper {
 		}	
 		String lngStr = StringUtil.formatCoordE2(lng);
 		String latStr = StringUtil.formatCoordE2(lat);	
-		String hotelsUrl = HOTELS_CHEAPEST_URL + latStr + "/" + lngStr + "/" + normalizedRadius + "/" + limit;
+		String hotelsUrl = HOTELS_CHEAPEST_URL + latStr + "/" + lngStr + "/" + normalizedRadius + "/" + limit + "?user_key=" + Commons.getProperty(Property.RH_HOTELS_API_KEY);
 		JSONObject cheapest = null;
 		
 		try {
@@ -463,73 +389,7 @@ public class HotelsBookingUtils extends LayerHelper {
 	public String getLayerName() {
 		return Commons.HOTELS_LAYER;
 	}
-	
-	/*private static ExtendedLandmark hotelToLandmark(JSONObject hotel, Locale locale) {
-		JSONArray coords = hotel.getJSONObject("geometry").getJSONArray("coordinates");
-    	QualifiedCoordinates qc = new QualifiedCoordinates(coords.getDouble(1), coords.getDouble(0), 0f, 0f, 0f); 
-    	
-    	JSONObject props = hotel.getJSONObject("properties");
-    	AddressInfo address = new AddressInfo();
-    	if (!props.isNull("address")) {
-    		address.setField(AddressInfo.STREET, props.getString("address"));
-    	}
-    	address.setField(AddressInfo.CITY, props.getString("city_hotel"));
-    	
-    	String cc = props.getString("cc1");
-    	Locale l = new Locale("", cc.toUpperCase(Locale.US));
-    	String country = l.getDisplayCountry();
-    	if (country == null) {
-    		country = cc;
-    	}
-    	address.setField(AddressInfo.COUNTRY, country);
-    	if (!props.isNull("zip")) {
-    		address.setField(AddressInfo.POSTAL_CODE, props.getString("zip"));
-    	}
-    	
-        long creationDate = props.getLong("creationDate");
-        
-    	ExtendedLandmark landmark = LandmarkFactory.getLandmark(props.getString("name"), null, qc, Commons.HOTELS_LAYER, address,  creationDate, null);
-    	landmark.setUrl(props.getString("hotel_url"));
-        
-    	int rs = props.getInt("review_score");
-    	int rn = props.getInt("review_nr");
-    	
-    	if (rs != 1 || rn != 1) {
-    		landmark.setRating(rs);
-    		landmark.setNumberOfReviews(rn);
-        }
-        
-        landmark.setCategoryId(7);
-        landmark.setSubCategoryId(129);
-        
-        Map<String, String> tokens = new HashMap<String, String>();
-        
-        String currencycode = props.getString("currencycode");
-        if (!props.isNull("minrate")) {
-            Deal deal = new Deal(props.getDouble("minrate"), -1, -1, null, currencycode);
-            landmark.setDeal(deal);
-        } else if (!props.isNull("maxrate")) {
-        	Deal deal = new Deal(props.getDouble("maxrate"), -1, -1, null, currencycode);
-        	landmark.setDeal(deal);       	
-        }
-        
-        tokens.put("maxRating", "10");
-        tokens.put("star_rating", Double.toString(props.getDouble("stars")));
-        
-        int nr = props.getInt("nr_rooms");
-        if (nr > 0) {
-        	tokens.put("no_rooms", Integer.toString(nr));
-        }
-        address.setField(AddressInfo.EXTENSION, Integer.toString(nr));
-
-        landmark.setThumbnail(props.getString("photo_url"));
-        
-        String desc = JSONUtils.buildLandmarkDesc(landmark, tokens, locale);
-        landmark.setDescription(desc);
-
-        return landmark;
-    }*/
-	
+		
 	private static ExtendedLandmark hotelToLandmark(Feature hotel, Locale locale) {
 		Point g = (Point)hotel.getGeometry();
 		QualifiedCoordinates qc = new QualifiedCoordinates(g.getCoordinates().getLatitude(), g.getCoordinates().getLongitude(), 0f, 0f, 0f); 
@@ -777,7 +637,7 @@ public class HotelsBookingUtils extends LayerHelper {
 		}
 		
 		try {
-			String hotelsUrl = HOTELS_COUNTER_URL + StringUtil.formatCoordE2(lat) + "/" + StringUtil.formatCoordE2(lng) + "/" + normalizedRadius;			
+			String hotelsUrl = HOTELS_COUNTER_URL + StringUtil.formatCoordE2(lat) + "/" + StringUtil.formatCoordE2(lng) + "/" + normalizedRadius + "?user_key=" + Commons.getProperty(Property.RH_HOTELS_API_KEY);			
 			hotelsCount = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), false);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
