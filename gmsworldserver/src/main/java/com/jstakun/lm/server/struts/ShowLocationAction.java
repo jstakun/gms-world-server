@@ -123,7 +123,7 @@ public class ShowLocationAction extends org.apache.struts.action.Action {
         if (StringUtils.isNotEmpty(request.getParameter("fullScreen")) && lat != null && lng != null) {
         	//load hotels layer in asynchronous mode 
 			if (StringUtils.contains(request.getParameter("enabled"), "Hotels")) {
-				((HotelsBookingUtils)LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)).loadHotelsAsync(lat, lng, RADIUS, HOTELS_LIMIT, request.getParameter("sortType")); 
+				((HotelsBookingUtils)LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)).loadHotelsAsync(lat, lng, RADIUS, HOTELS_LIMIT, request.getParameter("sortType"), true); 
 			}
 			
         	if (isMobile) {

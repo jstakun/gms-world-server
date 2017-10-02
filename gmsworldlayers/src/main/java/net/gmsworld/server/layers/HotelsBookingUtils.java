@@ -81,7 +81,7 @@ public class HotelsBookingUtils extends LayerHelper {
 		String latStr = StringUtil.formatCoordE2(lat);	
 
 		//first call hotels cache
-		if (StringUtils.equals(callCacheFirst, "true")) {
+		if (useCache) {
 			//save to cache with sort type
 			String hotelsUrl = HOTELS_CACHE_URL + lngStr + "_" + latStr + "_" + radius + "_" + limit + "?user_key=" + Commons.getProperty(Property.RH_HOTELS_API_KEY);
 			if (StringUtils.equalsIgnoreCase(sortType, "stars")) {
@@ -282,7 +282,7 @@ public class HotelsBookingUtils extends LayerHelper {
 		}
 	}
 	
-	public String loadHotelsAsync(double lat, double lng, int r, int limit, String sortType) {
+	public String loadHotelsAsync(double lat, double lng, int r, int limit, String sortType, boolean useCache) {
 		int normalizedRadius = r;
 		if (r < 1000) {
 			normalizedRadius = r * 1000;
@@ -293,25 +293,38 @@ public class HotelsBookingUtils extends LayerHelper {
 		String hotelsUrlPrefix = HOTELS_PROVIDER_ASYNC_URL;
 		if (StringUtils.equalsIgnoreCase(sortType, "stars")) {
 			hotelsUrlPrefix = HOTELS_STARS_ASYNC_URL;
+			id += "_stars";
 		} else if (StringUtils.equalsIgnoreCase(sortType, "cheapest")) {
 			hotelsUrlPrefix = HOTELS_CHEAPEST_ASYNC_URL;
+			id += "_cheapest";
 		}
 		String hotelsUrl = hotelsUrlPrefix + latStr + "/" + lngStr + "/" + normalizedRadius + "/" + limit + "?user_key=" + Commons.getProperty(Property.RH_HOTELS_API_KEY);
 		
-		try {
-			logger.log(Level.INFO, "Calling: " + hotelsUrl);
-			HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), false);
-		    Integer responseCode = HttpUtils.getResponseCode(hotelsUrl);
-			if (responseCode != null && responseCode >= 400) {
-		    	id = null;
-		    	logger.log(Level.SEVERE, "Received following server response code {0}", responseCode);
-		    } else if (responseCode != null) {
-		    	//logger.log(Level.INFO, "Received following server response code {0}", responseCode);
-		    } else {
-		    	logger.log(Level.WARNING, "No response code found"); 
-		    }
-		} catch (Exception e) {
-			logger.log(Level.SEVERE, e.getMessage(), e);
+		boolean isCached = false;
+		if (useCache && cacheProvider != null) {
+			isCached = cacheProvider.containsKey(id);
+		}
+		
+		if (!isCached) {
+			try {
+				logger.log(Level.INFO, "Calling: " + hotelsUrl);
+				HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), false);
+				Integer responseCode = HttpUtils.getResponseCode(hotelsUrl);
+				if (responseCode != null && responseCode >= 400) {
+					id = null;
+					logger.log(Level.SEVERE, "Received following server response code {0}", responseCode);
+				} else if (responseCode != null && responseCode == 200) {
+					 if ( cacheProvider != null) {
+						 cacheProvider.put(id, "1");
+					 }
+				} else if (responseCode == null ){
+					logger.log(Level.WARNING, "No response code found"); 
+				}
+			} catch (Exception e) {
+				logger.log(Level.SEVERE, e.getMessage(), e);
+			}
+		} else {
+			logger.log(Level.INFO, hotelsUrl + " exists in cache");
 		}
 		
 		return id;
