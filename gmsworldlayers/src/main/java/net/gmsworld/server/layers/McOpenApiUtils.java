@@ -34,9 +34,9 @@ public class McOpenApiUtils extends LayerHelper {
 
     public McOpenApiUtils() {
     	try {
-    		InputStream is = getClass().getResourceAsStream(Commons.getProperty(Property.mcopenapi_privKeyFile));
-    		String consumerKey = Commons.getProperty(Property.mcopenapi_prodConsumerKey);
     		String keyAlias = Commons.getProperty(Property.mcopenapi_keyAlias);
+    		InputStream is = getClass().getResourceAsStream("/" + keyAlias + ".p12"); //getClass().getResourceAsStream(Commons.getProperty(Property.mcopenapi_privKeyFile));
+    		String consumerKey = Commons.getProperty(Property.mcopenapi_prodConsumerKey);
     		String keyPassword = new String(CryptoTools.decrypt(Base64.decode(Commons.getProperty(Property.mcopenapi_ksPwd).getBytes())));
     	
     		ApiConfig.setAuthentication(new OAuthAuthentication(consumerKey, is, keyAlias, keyPassword));
@@ -60,7 +60,7 @@ public class McOpenApiUtils extends LayerHelper {
          
         if (response != null ){
         	totalCount = Integer.parseInt(response.get("Atms.TotalCount").toString());
-        	System.out.println("Found " + totalCount + " atms");
+        	//System.out.println("Found " + totalCount + " atms");
         	createExtendedLandmarkList(response, landmarks, locale);
         	offset += 25;
   		    while (offset < limit && offset < totalCount) {
@@ -171,8 +171,7 @@ public class McOpenApiUtils extends LayerHelper {
                 
                 landmark.setThumbnail(thumbnail);
 				
-                landmarks.add(landmark);
-                        
+                landmarks.add(landmark);        
             }
         }
 		

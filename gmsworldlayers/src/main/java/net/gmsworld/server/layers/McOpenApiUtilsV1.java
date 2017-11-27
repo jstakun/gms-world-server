@@ -56,7 +56,8 @@ public class McOpenApiUtilsV1 extends LayerHelper {
 
     public McOpenApiUtilsV1() {
     	if (privateKey == null) {
-    		InputStream stream = getClass().getResourceAsStream(Commons.getProperty(Property.mcopenapi_privKeyFile));
+    		String keyAlias = Commons.getProperty(Property.mcopenapi_keyAlias);
+    		InputStream stream = getClass().getResourceAsStream("/" + keyAlias + ".p12"); //getClass().getResourceAsStream(Commons.getProperty(Property.mcopenapi_privKeyFile));
     		setPrivateKey(stream);	
     	}
     }
