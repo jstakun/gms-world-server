@@ -54,7 +54,8 @@ public class ConfigurationManager {
     
     public static final String USER_EMAIL = "userEmail";
 
-	public static final String SUPPORT_MAIL = "support@gms-world.net";
+    public static final String SUPPORT_MAIL = "support@gms-world.net";
+    public static final String NOREPLY_MAIL = "no-reply@gms-world.net";
 	public static final String ADMIN_NICK = "GMS World Administrator";
     public static final String DL_MAIL = "device-locator@gms-world.net";
     public static final String LM_MAIL = "landmark-manager@gms-world.net";

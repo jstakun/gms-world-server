@@ -14,14 +14,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.config.Commons.Property;
-import net.gmsworld.server.utils.DateUtils;
-import net.gmsworld.server.utils.HttpUtils;
-import net.gmsworld.server.utils.ImageUtils;
-import net.gmsworld.server.utils.NumberUtils;
-import net.gmsworld.server.utils.StringUtil;
-
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
@@ -30,6 +22,12 @@ import com.jstakun.lm.server.utils.FileUtils;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.jstakun.lm.server.utils.persistence.ScreenshotPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.ServiceLogPersistenceUtils;
+
+import net.gmsworld.server.utils.DateUtils;
+import net.gmsworld.server.utils.HttpUtils;
+import net.gmsworld.server.utils.ImageUtils;
+import net.gmsworld.server.utils.NumberUtils;
+import net.gmsworld.server.utils.StringUtil;
 
 /**
  *
@@ -40,8 +38,6 @@ public class TaskServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(TaskServlet.class.getName());
 	
-	private static final String domainName = "gmsworld";
-
 	private static final String[] currencies = {"EUR", "HUF","MXN","SEK","CHF","ILS","ZAR","MYR","CAD",
 		"TRY","DKK","SGD","BRL","USD","IDR","RON","KRW","NOK","HKD","CZK","AUD","PHP",
 		"CNY","HRK","BGN","NZD","JPY","INR","PLN","GBP","THB","RUB"};
@@ -77,17 +73,13 @@ public class TaskServlet extends HttpServlet {
                     logger.log(Level.INFO, "Wrong parameter entity: {0}", entity);
                 }
              } else if (StringUtils.equalsIgnoreCase(action, "rhcloud")) {
-                Integer status = rhcloudHealthCheck("hotels", "http://hotels-gmsworld.rhcloud.com/snoop.jsp");
+                Integer status = rhcloudHealthCheck("hotels", "https://hotels-api.b9ad.pro-us-east-1.openshiftapps.com/camel");
                 if (status == null || status > 299) {
                 	logger.log(Level.SEVERE, "Received hotels status code " + status);
                 }
-                status = rhcloudHealthCheck("landmarks", "http://landmarks-gmsworld.rhcloud.com/snoop.jsp");
+                status = rhcloudHealthCheck("landmarks", "https://openapi-landmarks.b9ad.pro-us-east-1.openshiftapps.com/");
                 if (status == null || status > 299) {
                 	logger.log(Level.SEVERE, "Received landmarks status code " + status);
-                }
-                rhcloudHealthCheck("cache", "http://cache-gmsworld.rhcloud.com/snoop.jsp");
-                if (status == null || status > 299) {
-                	logger.log(Level.SEVERE, "Received cache status code " + status);
                 }
                 logger.log(Level.INFO, "Done");
              } else if (StringUtils.equalsIgnoreCase(action, "loadImage")) {
@@ -166,14 +158,6 @@ public class TaskServlet extends HttpServlet {
     	Integer status = HttpUtils.getResponseCode(rhcloudUrl.toExternalForm()); 
     	if (status != null && status == 503) {
     		logger.log(Level.SEVERE, "Received Service Unavailable error response!");
-    		logger.log(Level.INFO, "Trying to start the application {0}...", appname);
-    		URL apiUrl = new URL("https://openshift.redhat.com/broker/rest/domains/" + domainName + "/applications/" + appname + "/events");
-        	String response = HttpUtils.processFileRequestWithBasicAuthn(apiUrl, "POST", "application/json", "event=start", Commons.getProperty(Property.RH_ACCOUNT));
-        	status = HttpUtils.getResponseCode(apiUrl.toExternalForm());
-        	if (status != null && status != 200) {
-        		logger.log(Level.SEVERE, "Received server response code " + status);
-        	}
-        	logger.log(Level.INFO, "Received following server response: {0}", response);
     	} else {
     		logger.log(Level.INFO, "Received server response code " + status);
     	}
