@@ -40,7 +40,7 @@ import com.openlapi.QualifiedCoordinates;
 
 public class HotelsBookingUtils extends LayerHelper {
 
-	private static final String HOTELS_URL =  "https://hotels-api.b9ad.pro-us-east-1.openshiftapps.com"; //"http://openapi-hotels.b9ad.pro-us-east-1.openshiftapps.com";
+	private static final String HOTELS_URL =  "https://hotels-api.b9ad.pro-us-east-1.openshiftapps.com"; 
    
 	private static final String HOTELS_PROVIDER_URL = HOTELS_URL + "/camel/v1/cache/hotels/nearby/"; 
 	

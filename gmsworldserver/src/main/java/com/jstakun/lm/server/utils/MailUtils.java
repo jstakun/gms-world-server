@@ -2,6 +2,7 @@ package com.jstakun.lm.server.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.Map;
@@ -20,7 +21,10 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 
+import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.ConfigurationManager;
+import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.utils.HttpUtils;
 
 /**
  *
@@ -46,13 +50,36 @@ public class MailUtils {
             return null;
         }
     }
+    
+    private static String sendRemoteMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType)  {
+    	 final String MAILER_SERVER_URL = "https://openapi-landmarks.b9ad.pro-us-east-1.openshiftapps.com/actions/emailer"; 
+    	 
+    	 String params = "from=" + fromA +
+    	                                "&password=" + Commons.getProperty(Property.RH_MAILER_PWD) +
+    			                        "&to=" + toA + 
+    			                        "&subject=" + subject +
+    			                        "&body=" + content +
+    			                        "&fromNick=" + fromP +
+    			                        "&toNick=" + toP; 
+    	 
+    	 try {
+    		 HttpUtils.processFileRequestWithBasicAuthn(new URL(MAILER_SERVER_URL), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
+    		 Integer responseCode = HttpUtils.getResponseCode(MAILER_SERVER_URL);
+    		 logger.log(Level.INFO, "Received response code: " + responseCode);
+    		 return Integer.toString(responseCode);
+    	 } catch (Exception e) {
+    		 logger.log(Level.SEVERE, e.getMessage(), e);
+    		 return null;
+    	 }
+    }
 
     public static void sendEmailingMessage(String toA, String nick, String message) {
         sendMail(ConfigurationManager.LM_MAIL, ConfigurationManager.LM_NICK, toA, nick, "Message from Landmark Manager", message, "text/html");
     }
     
     public static void sendDeviceLocatorMessage(String toA, String message, String title) {
-    	sendMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, toA, title, message, "text/plain");
+    	//sendMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, toA, title, message, "text/plain");
+    	sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, toA, title, message, "text/plain");
     }
     
     public static void sendDeviceLocatorRegistrationRequest(String email) {
