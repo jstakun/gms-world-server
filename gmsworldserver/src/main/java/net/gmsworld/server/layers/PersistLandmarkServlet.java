@@ -91,7 +91,7 @@ public class PersistLandmarkServlet extends HttpServlet {
     			}
                 l.setLayer(layer);
                
-                String u = StringUtil.getUsername(request.getAttribute("username"),request.getParameter("username"));
+                String u = StringUtil.getUsername(request.getAttribute("username"), request.getParameter("username"));
                 if (u != null && u.length() % 4 == 0) {
                 	try {
                 		u = new String(Base64.decode(u));
@@ -99,9 +99,13 @@ public class PersistLandmarkServlet extends HttpServlet {
                 			//from version 1086, 86 username is Base64 encoded string
                 	}
                 }	
+                //logger.log(Level.INFO, "New landmark created by " + u);
                 l.setUsername(u);
                 
                 String socialIds = request.getParameter("socialIds");
+                //if (StringUtils.isNotEmpty(socialIds)) {
+                //	logger.log(Level.INFO, "User social ids: " + socialIds);
+                //}
                 
                 boolean anonymous = StringUtil.getStringParam(request.getParameter("anonymous"), "1").equals("0");
                 if (!anonymous) {

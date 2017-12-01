@@ -87,7 +87,7 @@ public class MailUtils {
     }
 
     public static String sendLandmarkCreationNotification(String title, String body) {
-        return sendRemoteMail(ConfigurationManager.NOREPLY_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, title, body, "text/plain");
+        return sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, title, body, "text/plain");
     }
 
     public static void sendList(String title, Map<String, Collection<String>> stringMap, Map<String, Integer> recentlyCreated) {
@@ -269,12 +269,12 @@ public class MailUtils {
             String message = IOUtils.toString(is, "UTF-8");
             
             if (com.jstakun.lm.server.config.ConfigurationManager.listContainsValue(ConfigurationManager.EXCLUDED, toA)) {
-               sendRemoteMail(ConfigurationManager.NOREPLY_MAIL, ConfigurationManager.LM_NICK, ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "Copy of excluded engagement message to " + toA, message, "text/html");
+               sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.LM_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, "Copy of excluded engagement message to " + toA, message, "text/html");
                logger.log(Level.INFO, "Skipped sending engagement message to " + toA);
             } else {
                sendMail(ConfigurationManager.LM_MAIL, ConfigurationManager.LM_NICK, toA, "Landmark Manager User", "Message from Landmark Manager", message, "text/html");
-               //TODO remove after tests
-               sendRemoteMail(ConfigurationManager.NOREPLY_MAIL, ConfigurationManager.LM_NICK, ConfigurationManager.LM_MAIL, ConfigurationManager.LM_NICK, "Copy of engagement message to " + toA, message, "text/html");
+               //remove after tests
+               sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.LM_NICK,  "jstakun.appspot@gmail.com", ConfigurationManager.LM_NICK, "Copy of engagement message to " + toA, message, "text/html");
             }
         } catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
