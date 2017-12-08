@@ -114,14 +114,14 @@ public class LayersProvider2Servlet extends HttpServlet {
 
              double latitudeMin = GeocodeUtils.getLatitude(request.getParameter("latitudeMin"));
              double longitudeMin = GeocodeUtils.getLongitude(request.getParameter("longitudeMin"));
-             double latitudeMax = GeocodeUtils.getLatitude(request.getParameter("latitudeMax"));
-             double longitudeMax = GeocodeUtils.getLongitude(request.getParameter("longitudeMax"));
+             //double latitudeMax = GeocodeUtils.getLatitude(request.getParameter("latitudeMax"));
+             //double longitudeMax = GeocodeUtils.getLongitude(request.getParameter("longitudeMax"));
 
-             String layer = StringUtil.getStringParam(request.getParameter("layer"), "Public");
+             //String layer = StringUtil.getStringParam(request.getParameter("layer"), "Public");
              int radiusInKm = NumberUtils.getRadius(request.getParameter("radius"), 3, 100);
              int radiusInMeters = radiusInKm * 1000;
              int limit = NumberUtils.getInt(request.getParameter("limit"), 30);
-             int dealLimit = NumberUtils.getInt(request.getParameter("dealLimit"), 300);
+             //int dealLimit = NumberUtils.getInt(request.getParameter("dealLimit"), 300);
              int stringLimit = StringUtil.getStringLengthLimit(request.getParameter("display"));
              
              String uri = request.getRequestURI();

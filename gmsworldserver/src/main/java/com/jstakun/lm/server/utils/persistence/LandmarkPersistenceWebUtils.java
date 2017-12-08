@@ -149,6 +149,7 @@ public class LandmarkPersistenceWebUtils {
     	int useCount = NumberUtils.getInt(request.getHeader(Commons.USE_COUNT_HEADER), 1);
 		int appId = NumberUtils.getInt(request.getHeader(Commons.APP_HEADER), -1);
 		int version = NumberUtils.getInt(request.getHeader(Commons.APP_VERSION_HEADER), -1);
+		String deviceId = request.getHeader("X-GMS-DeviceId");
     	
     	JSONObject flex = new JSONObject();
 		flex.put("useCount", useCount);
@@ -157,6 +158,9 @@ public class LandmarkPersistenceWebUtils {
 		}
 		if (version > 0) {
 			flex.put("version", version);
+		}
+		if (deviceId != null) {
+			flex.put("deviceId", deviceId);
 		}
 		//flex.putOpt("cc", addressInfo.getField(AddressInfo.COUNTRY_CODE));
 		//flex.putOpt("city", addressInfo.getField(AddressInfo.CITY));

@@ -77,17 +77,28 @@ public class NotificationsServlet extends HttpServlet {
 				int appId = NumberUtils.getInt(request.getHeader(Commons.APP_HEADER), -1);
 				JSONObject reply = new JSONObject();
 
-				String latStr = request.getParameter("lat");
-				String lngStr = request.getParameter("lng");
-				if (StringUtils.isNotEmpty(latStr) && StringUtils.isNotEmpty(lngStr)) {
+				Double latitude = null;
+	            if (request.getParameter("lat") != null) {
+	                 latitude = GeocodeUtils.getLatitude(request.getParameter("lat"));
+	            } else if (request.getHeader(Commons.LAT_HEADER) != null) {
+	                 latitude = GeocodeUtils.getLatitude(request.getParameter(Commons.LAT_HEADER));
+	            }
+	            
+	            Double longitude = null;
+	            if (request.getParameter("lng") != null) {
+	                 longitude = GeocodeUtils.getLongitude(request.getParameter("lng"));
+	            } else if (request.getHeader(Commons.LNG_HEADER) != null) {
+	                 longitude = GeocodeUtils.getLongitude(Commons.LNG_HEADER);
+	            }
+	            
+				if (latitude != null && longitude != null && latitude != 90d && longitude != 180d) {
 					try {
 						Landmark l = new Landmark();
-						l.setLatitude(GeocodeUtils.getLatitude(latStr));
-						l.setLongitude(GeocodeUtils.getLongitude(lngStr));
-						logger.log(Level.INFO, "User location is " + latStr + "," + lngStr);
-						// persist location
-
+						l.setLatitude(latitude);
+						l.setLongitude(longitude);
+						//logger.log(Level.INFO, "User location is " + Double.toString(latitude) + "," + Double.toString(longitude));
 						l.setName(Commons.MY_POSITION_LAYER);
+						
 						boolean isSimilarToNewest = LandmarkPersistenceWebUtils.isSimilarToNewest(l);
 						if (!isSimilarToNewest) {
 							String u = StringUtil.getUsername(request.getAttribute("username"),
@@ -116,9 +127,9 @@ public class NotificationsServlet extends HttpServlet {
 					} catch (Exception e) {
 						logger.log(Level.SEVERE, e.getMessage(), e);
 					}
-				} else {
-					logger.log(Level.INFO, "No user location provided");
-				}
+				} //else {
+					//logger.log(Level.INFO, "No user location provided");
+				//}
 
 				if (StringUtils.equals(type, "v")) {
 					// check for version
