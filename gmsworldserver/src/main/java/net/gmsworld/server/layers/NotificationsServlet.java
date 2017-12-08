@@ -111,6 +111,12 @@ public class NotificationsServlet extends HttpServlet {
 									// encoded string
 								}
 							}
+							if (u == null) {
+								throw new Exception("Username can't be null!");
+							} else {
+								logger.log(Level.INFO, "Username is " + u);
+							}
+				            
 							l.setUsername(u);
 							String socialIds = request.getParameter("socialIds");
 
