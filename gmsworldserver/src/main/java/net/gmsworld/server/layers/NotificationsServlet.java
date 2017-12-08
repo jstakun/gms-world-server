@@ -81,14 +81,14 @@ public class NotificationsServlet extends HttpServlet {
 	            if (request.getParameter("lat") != null) {
 	                 latitude = GeocodeUtils.getLatitude(request.getParameter("lat"));
 	            } else if (request.getHeader(Commons.LAT_HEADER) != null) {
-	                 latitude = GeocodeUtils.getLatitude(request.getParameter(Commons.LAT_HEADER));
+	                 latitude = GeocodeUtils.getLatitude(request.getHeader(Commons.LAT_HEADER));
 	            }
 	            
 	            Double longitude = null;
 	            if (request.getParameter("lng") != null) {
 	                 longitude = GeocodeUtils.getLongitude(request.getParameter("lng"));
 	            } else if (request.getHeader(Commons.LNG_HEADER) != null) {
-	                 longitude = GeocodeUtils.getLongitude(Commons.LNG_HEADER);
+	                 longitude = GeocodeUtils.getLongitude(request.getHeader(Commons.LNG_HEADER));
 	            }
 	            
 				if (latitude != null && longitude != null && latitude != 90d && longitude != 180d) {
