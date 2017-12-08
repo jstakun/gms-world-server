@@ -197,7 +197,8 @@ public class Landmark implements Serializable {
     	return StringUtils.equalsIgnoreCase(getName(), l.getName()) && 
     			Math.abs(getLatitude() - l.getLatitude()) < 0.02d &&
     			Math.abs(getLongitude() - l.getLongitude()) < 0.02d &&
-    			StringUtils.equals(getLayer(), l.getLayer());
+    			StringUtils.equals(getLayer(), l.getLayer()) &&
+    			StringUtils.equals(getUsername(), l.getUsername());
     }
     
     public boolean isSocial() {

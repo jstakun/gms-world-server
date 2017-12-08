@@ -37,12 +37,10 @@ public class LandmarkPersistenceWebUtils {
    
     public static boolean isSimilarToNewest(Landmark l) {
     	boolean isSimilarToNewest = false;
-    	String name = l.getName();
-    	String lat = StringUtil.formatCoordE2(l.getLatitude());
-    	String lng = StringUtil.formatCoordE2(l.getLongitude());
-        if (CacheUtil.containsKey(name + "_" + lat + "_" + lng)) {
+    	final String key =  l.getName() + "_" + StringUtil.formatCoordE2(l.getLatitude()) + "_" + StringUtil.formatCoordE2(l.getLongitude()) + "_" + l.getUsername();
+        if (CacheUtil.containsKey(key)) {
         	isSimilarToNewest = true;
-        	logger.log(Level.WARNING, "This landmark is similar to newest: " + name + "_" + lat + "_" + lng);
+        	logger.log(Level.WARNING, "This landmark is similar to newest: " + key);
         } else {
         	CacheAction newestLandmarksAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
         		@Override
@@ -56,16 +54,16 @@ public class LandmarkPersistenceWebUtils {
         		Landmark newestLandmark = landmarkList.get(0);
         		logger.log(Level.INFO, "Newest landmark: " + newestLandmark.getName() + ", " + newestLandmark.getLatitude() + ", " + newestLandmark.getLongitude());
         		if (l.compare(newestLandmark)) {
-        			logger.log(Level.WARNING, "This landmark is similar to newest: " + name + ", " + lat + ", " + lng);
+        			logger.log(Level.WARNING, "This landmark is similar to newest: " + key);
         			isSimilarToNewest = true;
         		} else {
-        			logger.log(Level.INFO, "This landmark is not similar to newest: " + name + ", " + lat + ", " + lng);
+        			logger.log(Level.INFO, "This landmark is not similar to newest: " + key);
         		}
         	}
         }
         
         if (!isSimilarToNewest) {
-        	CacheUtil.put(name + "_" + lat + "_" + lng, "1", CacheType.LANDMARK);
+        	CacheUtil.put(key, "1", CacheType.LANDMARK);
         }
         
         return isSimilarToNewest;

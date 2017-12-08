@@ -99,25 +99,24 @@ public class NotificationsServlet extends HttpServlet {
 						//logger.log(Level.INFO, "User location is " + Double.toString(latitude) + "," + Double.toString(longitude));
 						l.setName(Commons.MY_POSITION_LAYER);
 						
-						boolean isSimilarToNewest = LandmarkPersistenceWebUtils.isSimilarToNewest(l);
-						if (!isSimilarToNewest) {
-							String u = StringUtil.getUsername(request.getAttribute("username"),
-									request.getParameter("username"));
-							if (u != null && u.length() % 4 == 0) {
-								try {
-									u = new String(Base64.decode(u));
-								} catch (Exception e) {
-									// from version 1086, 86 username is Base64
-									// encoded string
-								}
+						String u = StringUtil.getUsername(request.getAttribute("username"),
+								request.getParameter("username"));
+						if (u != null && u.length() % 4 == 0) {
+							try {
+								u = new String(Base64.decode(u));
+							} catch (Exception e) {
+								// from version 1086, 86 username is Base64
+								// encoded string
 							}
-							if (u == null) {
-								throw new Exception("Username can't be null!");
-							} else {
-								logger.log(Level.INFO, "Username is " + u);
-							}
-				            
-							l.setUsername(u);
+						}
+						if (u == null) {
+							throw new Exception("Username can't be null!");
+						} //else {
+						//	logger.log(Level.INFO, "Username is " + u);
+						//}
+						l.setUsername(u);
+						
+						if (!LandmarkPersistenceWebUtils.isSimilarToNewest(l)) {
 							String socialIds = request.getParameter("socialIds");
 
 							LandmarkPersistenceWebUtils.setFlex(l, request);
