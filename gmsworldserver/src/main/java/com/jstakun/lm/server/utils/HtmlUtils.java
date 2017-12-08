@@ -233,9 +233,9 @@ public class HtmlUtils {
 		
 		String userUrl = null;		
 		if (landmark.isSocial()) {
-			userUrl = URLEncoder.encode("/blogeo/" + landmark.getUsername(), "UTF-8");
+			userUrl = "/blogeo/" + URLEncoder.encode(landmark.getUsername(), "UTF-8");
 		} else {
-			userUrl = URLEncoder.encode("/showUser/" + landmark.getUsername(), "UTF-8");
+			userUrl = "/showUser/" + URLEncoder.encode( landmark.getUsername(), "UTF-8");
 		}
 		String layerUrl = "/showLayer/" + landmark.getLayer();
 		String bookingUrl = "/showLandmark/" + landmark.getId() + "?enabled=Hotels&fullScreenLandmarkMap=true";
