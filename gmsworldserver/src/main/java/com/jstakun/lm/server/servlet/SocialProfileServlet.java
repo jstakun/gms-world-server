@@ -53,9 +53,9 @@ public class SocialProfileServlet extends HttpServlet {
                     		//from version 1086, 86 uid is Base64 encoded string
                     	}
                 	}
-                	if (UserPersistenceUtils.userExists(uid)) {
+                	//if (UserPersistenceUtils.userExists(uid)) {
                 		response.sendRedirect("/showUser/" + uid);
-                	} else {
+                	/*} else {
                 		out.println("<html>");
                 		out.println("<head>");
                 		out.println("<title>GMS World - user social profile</title>");
@@ -64,7 +64,7 @@ public class SocialProfileServlet extends HttpServlet {
                 		out.println("Sorry. We couldn't find user profile social address for uid: " + uid);
                 		out.println("</body>");
                 		out.println("</html>");
-                	}	
+                	}*/	
                 }
             }
         } finally {

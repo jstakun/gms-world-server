@@ -61,12 +61,16 @@
                     scaleControl: true,
                 };
 
-                var image = '/images/flagblue.png';
+                //var image = '/images/flagblue.png';
                 var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-
+                
                 for (index in landmarks) {
                     var landmark = landmarks[index];
-                    setMarker(map, landmark, image);
+                    if (index == 0) {
+                    	setMarker(map, landmark, '/images/flagred.png'); 
+                    } else {  
+                    	setMarker(map, landmark,  '/images/flagblue.png');
+                    }
                 }
             }
 
@@ -75,7 +79,7 @@
                      Landmark landmark = landmarkList.get(i);%>
                     ['<%=StringEscapeUtils.escapeJavaScript(landmark.getName())%>', <%=landmark.getLatitude()%>, <%=landmark.getLongitude()%>,
                         '<span style="font-family:Cursive;font-size:14px;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;">' +
-                            '<img src="/images/flagblue.png"/><br/>' +
+                            '<img src="/images/flag<% if (i == 0)  out.print("red"); else out.print("blue"); %>.png"/><br/>' +
                             'Name: <%=StringEscapeUtils.escapeJavaScript(landmark.getName())%>,<br/>' +
                             'Description: <%=StringEscapeUtils.escapeJavaScript(landmark.getDescription())%>,<br/>' +
                             'Latitude: <%=StringUtil.formatCoordE6(landmark.getLatitude())%>, Longitude: <%=StringUtil.formatCoordE6(landmark.getLongitude())%>,<br/>' +
