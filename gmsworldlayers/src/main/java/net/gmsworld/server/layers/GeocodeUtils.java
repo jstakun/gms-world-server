@@ -46,7 +46,7 @@ public class GeocodeUtils {
         double latitude = 90.0;
         if (StringUtils.isNotEmpty(latitudeString)) {
             try {
-                double l = Double.parseDouble(latitudeString);
+                double l = Double.parseDouble(latitudeString.replace(',', '.'));
                 Validate.isTrue(!(l > 90.0 || l < -90.0), "Latitude must be in [-90, 90]  but was ", l);
                 latitude = MathUtils.normalizeE6(l);
             } finally {
@@ -59,7 +59,7 @@ public class GeocodeUtils {
         double longitude = 180.0;
         if (StringUtils.isNotEmpty(longitudeString)) {
             try {
-                double l = Double.parseDouble(longitudeString);
+                double l = Double.parseDouble(longitudeString.replace(',', '.'));
                 Validate.isTrue(!(l > 180.0 || l < -180.0), "Longitude must be in [-180, 180] but was ", l);
                 longitude = MathUtils.normalizeE6(l);
             } finally {

@@ -26,6 +26,11 @@ public class UtilsTest {
 	}
 	
 	@Test
+	public void geocodeTest() {
+		System.out.println(GeocodeUtils.getLatitude("52,23455"));
+		System.out.println(GeocodeUtils.getLatitude("52.23455"));
+	}
+	
 	public void stringTest() throws Exception {
 		//String original = "aáeéiíoóöőuúüű AÁEÉIÍOÓÖŐUÚÜŰ";
 		String original = "ążźćółęńś ĄŻŹĆÓŁĘŃŚ";
@@ -68,11 +73,11 @@ public class UtilsTest {
 		System.out.println(DateUtils.getFormattedDateTime(new Locale("pl"), date));		
 	}
 	
-	
-	
 	private static String asHex(String arg) {
 		return Integer.toHexString(arg.charAt(0));
 	}
+	
+	
 	
 
 }
