@@ -71,7 +71,7 @@ public class ShowUserAction extends org.apache.struts.action.Action {
 		            }
 				}
 			});
-        	Integer count = countCacheAction.getIntFromCache(user + "_count_key", CacheType.NORMAL);
+        	Integer count = countCacheAction.getIntFromCache(user + "_count_key", CacheType.LANDMARK);
         	
         	request.setAttribute("user", user);
 
@@ -87,7 +87,7 @@ public class ShowUserAction extends org.apache.struts.action.Action {
     					return LandmarkPersistenceUtils.selectLandmarksByUserAndLayer(user, null, first, nextCandidate);
     				}
     			});
-                userLandmarks = userLandmarksCacheAction.getListFromCache(Landmark.class, user + "_" + first + "_" + nextCandidate, CacheType.NORMAL);
+                userLandmarks = userLandmarksCacheAction.getListFromCache(Landmark.class, user + "_" + first + "_" + nextCandidate, CacheType.LANDMARK);
                 
                 request.setAttribute("userLandmarks", userLandmarks);
 
