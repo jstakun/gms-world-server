@@ -48,7 +48,7 @@
     	fontSize = "24px";
 	}
 	
-	Integer zoom = (Integer)request.getAttribute("zoom");
+    Integer zoom = (Integer)request.getAttribute("zoom");
 	if (zoom == null) {
 		zoom = 12;
 	}
@@ -128,6 +128,7 @@
  		  marker_counter = 1,
 		  excluded_layers = 0,
 		  infowindow = new google.maps.InfoWindow(),   
+		  bounds  = new google.maps.LatLngBounds();
 		  markers = [],
 	      layers = [
 <%
@@ -217,6 +218,8 @@
                 var price = results.features[i].properties.price;
                 var cc = results.features[i].properties.cc;
 
+                bounds.extend(latLng);
+                
                 if (cc == null) {
 					cc = currencycode;
                 }
@@ -418,6 +421,8 @@
 			     	} else {
 		     	    	console.log('no filter cookie set');
 			     	}
+
+		     	   map.fitBounds(bounds); 
 			    }	 
 			} else if ((layer_counter + excluded_layers) == layers.length && marker_counter == 1) {
 				<% if (hotelsMode) { %>

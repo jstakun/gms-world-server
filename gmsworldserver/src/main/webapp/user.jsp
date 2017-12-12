@@ -17,7 +17,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
     <head>
-        <title>User Landmarks</title>
+        <title>User or Device Landmarks</title>
         <%@ include file="/WEB-INF/jspf/head.jspf" %>
     </head>
 
@@ -40,7 +40,7 @@
                 <!-- main -->
                 <div id="main">
 
-                <h3>Landmarks created by user
+                <h3>Landmarks created by 
 <%
     if (StringUtil.isSocialUser(user))
     {
@@ -59,7 +59,7 @@
 
                  <br/>
                  <p>
-                     <a href="/showUser/<%= user %>/fullScreen">See user landmarks on the map</a>
+                     <a href="/showUser/<%= user %>/fullScreen">See this landmarks on the map</a>
                  </p>
 
                 <jsp:include page="/WEB-INF/jspf/navigation.jsp">

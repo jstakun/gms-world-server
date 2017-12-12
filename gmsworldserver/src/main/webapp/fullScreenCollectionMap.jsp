@@ -63,15 +63,21 @@
 
                 //var image = '/images/flagblue.png';
                 var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+
+                var bounds  = new google.maps.LatLngBounds();
                 
                 for (index in landmarks) {
                     var landmark = landmarks[index];
                     if (index == 0) {
-                    	setMarker(map, landmark, '/images/flagred.png'); 
+                    	setMarker(map, landmark, '/images/flagred.png', bounds); 
                     } else {  
-                    	setMarker(map, landmark,  '/images/flagblue.png');
+                    	setMarker(map, landmark,  '/images/flagblue.png', bounds);
                     }
                 }
+                
+                map.fitBounds(bounds);      
+
+                map.panToBounds(bounds);   
             }
 
             var landmarks = [
@@ -93,8 +99,10 @@
             %>
                 ];
 
-                function setMarker(map, landmark, image) {
+                function setMarker(map, landmark, image, bounds) {
                     var myLatLng = new google.maps.LatLng(landmark[1], landmark[2]);
+
+                    bounds.extend(myLatLng);
 
                     var infowindow = new google.maps.InfoWindow(
                     {

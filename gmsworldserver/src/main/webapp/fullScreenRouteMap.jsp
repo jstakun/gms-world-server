@@ -104,7 +104,8 @@
                             strokeWeight: 4
                          });
                         map.fitBounds(bounds);
-                        map.setCenter(bounds.getCenter()); 
+                        //map.setCenter(bounds.getCenter());
+                        map.panToBounds(bounds); 
                     	routePath.setMap(map);						
                     } else {
                         console.log('Route path is empty!');
