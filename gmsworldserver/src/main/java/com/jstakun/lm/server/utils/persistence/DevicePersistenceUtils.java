@@ -24,7 +24,8 @@ public class DevicePersistenceUtils {
 		    String deviceJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(deviceUrl), Commons.getProperty(Property.RH_GMS_USER), false);		
 		    if (StringUtils.startsWith(deviceJson, "{")) {
 			   JSONObject root = new JSONObject(deviceJson);
-			   if (root.getLong("imei") == imei) {
+			   JSONObject output = root.optJSONObject("output");
+			   if (output != null && output.getLong("imei") == imei) {
 				   return 1;   
 			   } else {
 				   logger.log(Level.SEVERE, "Oops! wrong imei returned!");
@@ -55,7 +56,8 @@ public class DevicePersistenceUtils {
 		    String deviceJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(deviceUrl), Commons.getProperty(Property.RH_GMS_USER), false);		
 		    if (StringUtils.startsWith(deviceJson, "{")) {
 			   JSONObject root = new JSONObject(deviceJson);
-			   if (root.getLong("imei") == imei) {
+			   JSONObject output = root.optJSONObject("output");
+			   if (output != null && output.getLong("imei") == imei) {
 				   return 1;   
 			   } else {
 				   logger.log(Level.SEVERE, "Oops! wrong imei returned!");
