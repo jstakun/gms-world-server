@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 
 import com.google.gdata.util.common.util.Base64;
-import com.jstakun.lm.server.utils.TokenUtil;
+import com.jstakun.lm.server.utils.persistence.TokenPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.UserPersistenceUtils;
 
 import net.gmsworld.server.config.Commons;
@@ -88,7 +88,7 @@ public class ServicesAuthorizationFilter implements Filter {
             	String scope = httpRequest.getHeader(Commons.SCOPE_HEADER);
             	if (authHeader != null && scope != null) {
             		try {
-            			int isTokenValid = TokenUtil.isTokenValid(authHeader, scope);
+            			int isTokenValid = TokenPersistenceUtils.isTokenValid(authHeader, scope);
             			if (isTokenValid == 1) {
             				auth = true;
             			} else if (isTokenValid == 0) {

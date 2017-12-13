@@ -329,6 +329,10 @@
     <servlet-name>HotelsBookingServlet</servlet-name>
     <servlet-class>net.gmsworld.server.layers.HotelsBookingServlet</servlet-class>
   </servlet>
+  <servlet>
+    <servlet-name>DeviceManagerServlet</servlet-name>
+    <servlet-class>net.gmsworld.server.layers.DeviceManagerServlet</servlet-class>
+  </servlet>
   <servlet-mapping>
     <servlet-name>action</servlet-name>
     <url-pattern>*.do</url-pattern>
@@ -522,6 +526,10 @@
   <servlet-mapping>
     <servlet-name>LetsEncryptAuthServlet</servlet-name>
     <url-pattern>/.well-known/acme-challenge/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>DeviceManagerServlet</servlet-name>
+    <url-pattern>/s/deviceManager</url-pattern>
   </servlet-mapping>
   <session-config>
     <session-timeout>30</session-timeout>

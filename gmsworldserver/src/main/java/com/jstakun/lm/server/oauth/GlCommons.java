@@ -28,7 +28,7 @@ import net.gmsworld.server.utils.HttpUtils;
 
 import com.jstakun.lm.server.social.GooglePlusUtils;
 import com.jstakun.lm.server.social.NotificationUtils;
-import com.jstakun.lm.server.utils.TokenUtil;
+import com.jstakun.lm.server.utils.persistence.TokenPersistenceUtils;
 
 /**
  *
@@ -82,7 +82,7 @@ public final class GlCommons {
             	userData.put(ConfigurationManager.GL_EXPIRES_IN, Long.toString(expires_in));
             }
            
-            String key = TokenUtil.generateToken("lm", userData.get(ConfigurationManager.GL_USERNAME) + "@" + Commons.GOOGLE_PLUS);
+            String key = TokenPersistenceUtils.generateToken("lm", userData.get(ConfigurationManager.GL_USERNAME) + "@" + Commons.GOOGLE_PLUS);
             userData.put("gmsToken", key); 
             
             Map<String, String> params = new ImmutableMap.Builder<String, String>().

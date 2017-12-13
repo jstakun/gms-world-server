@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 
-import com.jstakun.lm.server.utils.TokenUtil;
+import com.jstakun.lm.server.utils.persistence.TokenPersistenceUtils;
 
 /**
  * Servlet implementation class TokenServlet
@@ -49,7 +49,7 @@ public class TokenServlet extends HttpServlet {
         	String scope = (String)request.getParameter("scope");
         	if (scope != null) {
         		String user = (String)request.getParameter("user");
-        		String key = TokenUtil.generateToken(scope, user);
+        		String key = TokenPersistenceUtils.generateToken(scope, user);
         		resp.put("gmsToken", key);   		
         		resp.put("scope", scope);
         	} else {

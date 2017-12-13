@@ -17,7 +17,7 @@ import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.HttpUtils;
 
 import com.jstakun.lm.server.social.NotificationUtils;
-import com.jstakun.lm.server.utils.TokenUtil;
+import com.jstakun.lm.server.utils.persistence.TokenPersistenceUtils;
 
 /**
  *
@@ -62,7 +62,7 @@ public final class LnCommons {
         	{
         		userData = getUserDate(accessToken);
         	
-        		String key = TokenUtil.generateToken("lm", userData.get(ConfigurationManager.LN_USERNAME) + "@" + Commons.LINKEDIN);
+        		String key = TokenPersistenceUtils.generateToken("lm", userData.get(ConfigurationManager.LN_USERNAME) + "@" + Commons.LINKEDIN);
         		userData.put("gmsToken", key); 
         	
         		userData.put("token", accessToken);

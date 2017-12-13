@@ -19,7 +19,7 @@ import org.json.JSONObject;
 
 import net.gmsworld.server.config.ConfigurationManager;
 import com.jstakun.lm.server.utils.MailUtils;
-import com.jstakun.lm.server.utils.TokenUtil;
+import com.jstakun.lm.server.utils.persistence.TokenPersistenceUtils;
 
 /**
  *
@@ -48,7 +48,7 @@ public class AuthnServlet extends HttpServlet {
         try {
             String username = (String)request.getAttribute("username");
             if (username != null) {
-           		String key = TokenUtil.generateToken("lm", username);
+           		String key = TokenPersistenceUtils.generateToken("lm", username);
         		resp.put(ConfigurationManager.GMS_TOKEN, key);   
            		String email = (String) request.getAttribute("email");
            		if (email != null) {

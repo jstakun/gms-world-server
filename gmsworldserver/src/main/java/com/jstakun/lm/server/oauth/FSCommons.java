@@ -18,7 +18,7 @@ import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.StringUtil;
 
 import com.jstakun.lm.server.social.NotificationUtils;
-import com.jstakun.lm.server.utils.TokenUtil;
+import com.jstakun.lm.server.utils.persistence.TokenPersistenceUtils;
 
 import fi.foyt.foursquare.api.FoursquareApi;
 import fi.foyt.foursquare.api.Result;
@@ -61,7 +61,7 @@ public final class FSCommons {
 				if (!userData.isEmpty()) {
 					userData.put("token", accessToken);
 					
-					String key = TokenUtil.generateToken("lm", userData.get(ConfigurationManager.FS_USERNAME) + "@" + Commons.FOURSQUARE);
+					String key = TokenPersistenceUtils.generateToken("lm", userData.get(ConfigurationManager.FS_USERNAME) + "@" + Commons.FOURSQUARE);
 					userData.put("gmsToken", key); 
 
 					Map<String, String> params = new ImmutableMap.Builder<String, String>().

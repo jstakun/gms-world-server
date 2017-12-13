@@ -1,4 +1,4 @@
-package com.jstakun.lm.server.utils;
+package com.jstakun.lm.server.utils.persistence;
 
 import java.net.URL;
 import java.util.logging.Level;
@@ -13,9 +13,9 @@ import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.HttpUtils;
 
-public class TokenUtil {
+public class TokenPersistenceUtils {
 
-	private static final Logger logger = Logger.getLogger(TokenUtil.class.getName());
+	private static final Logger logger = Logger.getLogger(TokenPersistenceUtils.class.getName());
 	
 	public static String generateToken(String scope, String user) throws Exception {
 		if (scope != null) {

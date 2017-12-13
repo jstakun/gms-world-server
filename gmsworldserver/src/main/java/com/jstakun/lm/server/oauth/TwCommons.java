@@ -22,9 +22,9 @@ import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.config.ConfigurationManager;
 
 import com.jstakun.lm.server.social.NotificationUtils;
-import com.jstakun.lm.server.utils.TokenUtil;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
+import com.jstakun.lm.server.utils.persistence.TokenPersistenceUtils;
 
 /**
  *
@@ -62,7 +62,7 @@ public final class TwCommons {
 			userData.put(ConfigurationManager.TWEET_USERNAME, me.getScreenName());
 			userData.put(ConfigurationManager.TWEET_NAME, me.getName());
 
-			String key = TokenUtil.generateToken("lm", me.getScreenName() + "@" + Commons.TWITTER);
+			String key = TokenPersistenceUtils.generateToken("lm", me.getScreenName() + "@" + Commons.TWITTER);
     		userData.put("gmsToken", key); 
 			
     		Map<String, String> params = new ImmutableMap.Builder<String, String>().

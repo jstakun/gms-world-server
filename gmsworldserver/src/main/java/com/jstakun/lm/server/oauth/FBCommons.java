@@ -21,7 +21,7 @@ import org.json.JSONObject;
 
 import com.google.common.collect.ImmutableMap;
 import com.jstakun.lm.server.social.NotificationUtils;
-import com.jstakun.lm.server.utils.TokenUtil;
+import com.jstakun.lm.server.utils.persistence.TokenPersistenceUtils;
 import com.restfb.FacebookClient;
 import com.restfb.types.User;
 
@@ -87,7 +87,7 @@ public final class FBCommons {
                 	userData.put(ConfigurationManager.FB_EXPIRES_IN, Integer.toString(expires));
                 }                 
                 
-                String key = TokenUtil.generateToken("lm", userData.get(ConfigurationManager.FB_USERNAME) + "@" + Commons.FACEBOOK);
+                String key = TokenPersistenceUtils.generateToken("lm", userData.get(ConfigurationManager.FB_USERNAME) + "@" + Commons.FACEBOOK);
                 userData.put("gmsToken", key); 
                 
                 Map<String, String> params = new ImmutableMap.Builder<String, String>().
