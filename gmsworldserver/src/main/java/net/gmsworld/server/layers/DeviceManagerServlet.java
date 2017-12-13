@@ -42,9 +42,9 @@ public final class DeviceManagerServlet extends HttpServlet {
 		         Integer pin = Integer.valueOf(request.getParameter("pin"));		
 		         int status = DevicePersistenceUtils.isDeviceRegistered(imei, pin);
 		         if (status == 1) {
-		        	  out.println("{\"status\":\"verified\"}");
+		        	  out.print("{\"status\":\"verified\"}");
 		         } else {
-		        	 out.println("{\"status\":\"not-verified\"}");
+		        	  out.print("{\"status\":\"not-verified\"}");
 		         }
 			}
 		} catch (Exception e) {
@@ -70,10 +70,10 @@ public final class DeviceManagerServlet extends HttpServlet {
 		         String username = request.getParameter("username");
 		         int status = DevicePersistenceUtils.setupDevice(imei, pin, username, token);
 		         if (status == 1) {
-		        	  out.println("{\"status\":\"ok\"}");
+		        	  out.print("{\"status\":\"ok\"}");
 		         } else {
-		        	 out.println("{\"status\":\"error\"}");
-		        	 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		        	  out.print("{\"status\":\"error\"}");
+		        	  response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		         }
 			}
 		} catch (Exception e) {
@@ -83,5 +83,5 @@ public final class DeviceManagerServlet extends HttpServlet {
 			out.close();
 		}
 	}
-
+ 
 }
