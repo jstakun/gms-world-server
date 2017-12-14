@@ -75,6 +75,10 @@ public class HttpUtils {
         return processFileRequest(fileUrl, true, authn, null, method, null, accept, urlParams, contentType, false, null, null);
     }
     
+    public static String processFileRequestWithOtherAuthn(URL fileUrl, String method, String accept, String urlParams, String contentType, String authn) throws IOException {
+        return processFileRequest(fileUrl, true, null, authn, method, null, accept, urlParams, contentType, false, null, null);
+    }
+    
     public static String processFileRequestWithBasicAuthn(URL fileUrl, String method, String accept, String urlParams, String contentType, String authn, String headerName, String headerValue) throws IOException {
         return processFileRequest(fileUrl, true, authn, null, method, null, accept, urlParams, contentType, false, headerName, headerValue);
     }
@@ -92,13 +96,15 @@ public class HttpUtils {
             
             conn.setRequestProperty("User-Agent", "http://www.gms-world.net HTTP client");
 
-            if (authn && userpassword != null) {
-                //username : password
-                String encodedAuthorization = Base64.encode(userpassword.getBytes());
-                conn.setRequestProperty("Authorization", "Basic " + encodedAuthorization);
-            } else if (authn && authnOther != null) {
-                conn.setRequestProperty("Authorization", authnOther);
-            }
+            if (authn) {
+            	if (StringUtils.isNotEmpty(userpassword)) {
+            		//username : password
+            		String encodedAuthorization = Base64.encode(userpassword.getBytes());
+            		conn.setRequestProperty("Authorization", "Basic " + encodedAuthorization);
+            	} else if (StringUtils.isNotEmpty(authnOther)) {
+            		conn.setRequestProperty("Authorization", authnOther);
+            	}
+            }	
 
             if (StringUtils.isNotEmpty(locale)) {
                 conn.setRequestProperty("Accept-Language", locale);
@@ -113,7 +119,7 @@ public class HttpUtils {
             if (StringUtils.isNotEmpty(customHeaderName) && StringUtils.isNotEmpty(customHeaderValue)) {
             	conn.setRequestProperty(customHeaderName, customHeaderValue);
             }
-            
+             
             if (content != null) {
                 conn.setRequestProperty("Content-Length", Integer.toString(content.getBytes().length));
                 //conn.setRequestProperty("Content-Language", "en-US");
@@ -127,6 +133,9 @@ public class HttpUtils {
                 if (compress) {
                 	conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
                 }
+                
+                //Map<String, List<String>> props = conn.getRequestProperties();
+                //logger.log(Level.INFO, props.toString());
                 
                 conn.setDoInput(true);
                 conn.setDoOutput(true);

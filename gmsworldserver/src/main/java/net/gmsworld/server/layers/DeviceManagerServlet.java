@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.jstakun.lm.server.utils.persistence.DevicePersistenceUtils;
 
 import net.gmsworld.server.utils.HttpUtils;
@@ -68,12 +70,18 @@ public final class DeviceManagerServlet extends HttpServlet {
 		         Integer pin = Integer.valueOf(request.getParameter("pin"));		
 		         String token = request.getParameter("token");
 		         String username = request.getParameter("username");
-		         int status = DevicePersistenceUtils.setupDevice(imei, pin, username, token);
-		         if (status == 1) {
-		        	  out.print("{\"status\":\"ok\"}");
+		         String command = request.getParameter("command");
+		         int status;
+		         if (StringUtils.isNotEmpty(command)) {
+		        	 status = DevicePersistenceUtils.sendCommand(imei, pin, command);
 		         } else {
-		        	  out.print("{\"status\":\"error\"}");
-		        	  response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		        	 status = DevicePersistenceUtils.setupDevice(imei, pin, username, token);
+		         }	 
+		         if (status == 1) {
+		        	 out.print("{\"status\":\"ok\"}");
+		         } else {
+		        	 out.print("{\"status\":\"error\"}");
+		        	 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		         }
 			}
 		} catch (Exception e) {

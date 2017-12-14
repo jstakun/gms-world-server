@@ -35,8 +35,8 @@ public class WelcomeAction extends org.apache.struts.action.Action {
 		//http://hotels.
         //http://landmarks.
         //http://hotelsonmap.net
-        
-        logger.log(Level.INFO, "Received request to " + request.getRequestURL() + " from locale " + request.getLocale().toString());
+		
+		logger.log(Level.INFO, "Received request to " + request.getRequestURL() + " from locale " + request.getLocale().toString());
         
         String url = request.getRequestURL().toString();
         

@@ -7,4 +7,6 @@
     <system-properties>
         <property name="java.util.logging.config.file" value="WEB-INF/logging.properties" />
     </system-properties>
+    <url-stream-handler>urlfetch</url-stream-handler>
+    <runtime>java8</runtime>
 </appengine-web-app>

@@ -8,10 +8,10 @@ import java.util.Currency;
 import java.util.Date;
 import java.util.Locale;
 
+import org.junit.Test;
+
 import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.UrlUtils;
-
-import org.junit.Test;
 
 public class UtilsTest {
 
@@ -76,8 +76,4 @@ public class UtilsTest {
 	private static String asHex(String arg) {
 		return Integer.toHexString(arg.charAt(0));
 	}
-	
-	
-	
-
 }
