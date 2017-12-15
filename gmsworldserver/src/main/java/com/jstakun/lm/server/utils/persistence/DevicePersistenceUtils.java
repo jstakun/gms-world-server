@@ -87,11 +87,15 @@ public class DevicePersistenceUtils {
 			   JSONObject output = root.optJSONObject("output");
 			   if (output != null && output.getLong("imei") == imei) {
 				   String token = output.getString("token");
-				   URL url = new URL("https://fcm.googleapis.com/v1/projects/" + Commons.getProperty(Property.FCM_PROJECT) + "/messages:send");
-				   String data = "{\"message\":{\"token\":\"" + token + "\",\"data\":{\"command\": \"" + command + "\",\"pin\": " + pin + ",\"imei\": " + imei + "}}}";
-				   String response = HttpUtils.processFileRequestWithOtherAuthn(url, "POST", "application/json", data, "application/json", "Bearer " + getAccessToken());
-				   logger.log(Level.INFO, response);
-				   return 1;
+				   String url = "https://fcm.googleapis.com/v1/projects/" + Commons.getProperty(Property.FCM_PROJECT) + "/messages:send";
+				   String data = "{\"message\":{\"token\":\"" + token + "\",\"data\":{\"command\": \"" + command + "\",\"pin\":\"" + pin + "\",\"imei\":\"" + imei + "\"}}}";
+				   String response = HttpUtils.processFileRequestWithOtherAuthn(new URL(url), "POST", "application/json", data, "application/json", "Bearer " + getAccessToken());
+				   logger.log(Level.INFO, "Received following response: " + response);
+				   if (HttpUtils.getResponseCode(url) == 200) {
+					   return 1;
+				   } else {
+					   return -1;
+				   }
 			   } else {
 				   logger.log(Level.SEVERE, "Oops! wrong imei returned!");
 				   return -1;
