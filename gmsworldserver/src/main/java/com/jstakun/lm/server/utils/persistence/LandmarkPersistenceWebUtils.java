@@ -43,7 +43,6 @@ public class LandmarkPersistenceWebUtils {
         	logger.log(Level.WARNING, "This landmark is similar to newest: " + key);
         } else {
         	CacheAction newestLandmarksAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
-        		@Override
         		public Object executeAction() {
         			return net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils.selectNewestLandmarks();
         		}

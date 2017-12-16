@@ -49,7 +49,6 @@ public class GetHeatMapAction extends org.apache.struts.action.Action {
         boolean inBackground = StringUtils.endsWithIgnoreCase(request.getParameter("inBackground"), "true");
 
         CacheAction heatMapCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
-			@Override
 			public Object executeAction() {
 				return LandmarkPersistenceUtils.getHeatMap(nDays, GoogleCacheProvider.getInstance());
 			}

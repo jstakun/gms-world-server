@@ -20,12 +20,10 @@ public class GoogleCacheProvider implements CacheProvider {
 		return instance;
 	}
 	
-	@Override
 	public void put(String key, Object value) {
 		CacheUtil.put(key, value, CacheType.NORMAL);
 	}
 	
-	@Override
 	public void put(String key, Object value, int options) {
 		if (options == -1) {
 			CacheUtil.put(key, value, CacheType.FAST);
@@ -36,22 +34,18 @@ public class GoogleCacheProvider implements CacheProvider {
 		}
 	}
 
-	@Override
 	public String getString(String key) {
 		return CacheUtil.getString(key);
 	}
 
-	@Override
 	public Object getObject(String key) {
 		return CacheUtil.getObject(key);
 	}
 
-	@Override
 	public boolean containsKey(String key) {
 		return CacheUtil.containsKey(key);
 	}
 	
-	@Override
 	public void putToSecondLevelCache(String key, String value) {
 		/*try {
 			URL cacheUrl = new URL("http://cache-gmsworld.rhcloud.com/rest/cache/" + key);
@@ -63,7 +57,6 @@ public class GoogleCacheProvider implements CacheProvider {
 		CacheUtil.put(key, value, CacheType.LONG);
 	}
 	
-	@Override
 	public String getFromSecondLevelCache(String key) {
 		/*try {
 			URL cacheUrl = new URL("http://cache-gmsworld.rhcloud.com/rest/cache/" + key);
@@ -74,12 +67,10 @@ public class GoogleCacheProvider implements CacheProvider {
 		return CacheUtil.getString(key);
 	}
 
-	@Override
 	public <T> T getObject(Class<T> type, String key) {
 		return CacheUtil.getObject(type, key);
 	}
 		
-	@Override
 	public <T> List<T> getList(Class<T> type, String key) {
 		return CacheUtil.getList(type, key);
 	}

@@ -73,7 +73,7 @@ public class CouponsUtils extends LayerHelper {
             URL couponsUrl = new URL(url);
             String couponsResponse = HttpUtils.processFileRequest(couponsUrl);
             //System.out.println(couponsResponse);
-            if (StringUtils.isNotEmpty(couponsResponse)) {
+            if (StringUtils.startsWith(couponsResponse, "["))  {
                 Map<String, Map<String, String>> reviewsArray = new HashMap<String, Map<String, String>>();
                 try {
                     reviewsArray = ((YelpUtils)LayerHelperFactory.getInstance().getByName(Commons.YELP_LAYER)).processReviewsRequest(lat, lng, query, radius * 1000, limit, true, language);
@@ -87,7 +87,7 @@ public class CouponsUtils extends LayerHelper {
                     logger.log(Level.INFO, "Adding COU landmark list to cache with key {0}", key);
                 }
             } else {
-                //System.out.println("Coupons response is empty: " + couponsResponse);
+                logger.log(Level.WARNING, "Received following response: " + couponsResponse);
                 json = new JSONObject().put("ResultSet", new ArrayList<Object>());
             }
         } else {
@@ -350,15 +350,17 @@ public class CouponsUtils extends LayerHelper {
         URL couponsUrl = new URL(url);
         String couponsResponse = HttpUtils.processFileRequest(couponsUrl);
         //System.out.println(couponsResponse);
-        if (StringUtils.isNotEmpty(couponsResponse)) {
+        if (StringUtils.startsWith(couponsResponse, "[")) {
             Map<String, Map<String, String>> reviewsArray = new HashMap<String, Map<String, String>>();
             try {
-                reviewsArray = ((YelpUtils)LayerHelperFactory.getInstance().getByName(Commons.YELP_LAYER)).processReviewsRequest(lat, lng, query, radius * 1000, limit, true, language);
+                reviewsArray = ((YelpUtils)LayerHelperFactory.getInstance().getByName(Commons.YELP_LAYER)).processReviewsRequest(lat, lng, query, radius * 1000, limit, true, locale.toString());
             } catch (Exception e) {
                 logger.log(Level.SEVERE, e.getMessage(), e);
             }               
             landmarks = createCustomLandmarksCouponsList(couponsResponse.trim(), reviewsArray, stringLimit, locale);               
-        } 
+        }  else {
+            logger.log(Level.WARNING, "Received following response: " + couponsResponse);
+        }
         return landmarks;
 	}
 	

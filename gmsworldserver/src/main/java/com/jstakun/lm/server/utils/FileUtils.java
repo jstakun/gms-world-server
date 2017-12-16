@@ -146,7 +146,6 @@ public class FileUtils {
 		Screenshot s = null;
     	if (StringUtils.isNotEmpty(key)) {
             CacheAction screenshotCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
-				@Override
 				public Object executeAction() {
 					return ScreenshotPersistenceUtils.selectScreenshot(key);
 				}

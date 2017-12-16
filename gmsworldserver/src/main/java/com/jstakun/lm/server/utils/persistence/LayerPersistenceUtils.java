@@ -63,7 +63,6 @@ public class LayerPersistenceUtils {
     public static List<Layer> listAllLayers(final int version) {
     	final String key = LayerPersistenceUtils.class.getName() + "_listAllLayers_" + version;
     	CacheAction layersCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
-			@Override
 			public Object executeAction() {
 				List<Layer> allLayers = getAllLayers();
 				if (allLayers != null) {
@@ -125,7 +124,6 @@ public class LayerPersistenceUtils {
         }*/
     	final String key = "layer_" + name;
     	CacheAction layersCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
-			@Override
 			public Object executeAction() {
 				List<Layer> allLayers = getAllLayers();
 	    		for (Layer l : allLayers) {
@@ -148,7 +146,6 @@ public class LayerPersistenceUtils {
     private static List<Layer> getAllLayers() {
     	final String key = LayerPersistenceUtils.class.getName() + "_getAllLayers";
     	CacheAction layersCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
-			@Override
 			public Object executeAction() {
 				try {
 					List<Layer> layers = new ArrayList<Layer>();
