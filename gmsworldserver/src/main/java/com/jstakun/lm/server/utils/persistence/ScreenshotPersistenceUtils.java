@@ -47,7 +47,7 @@ public class ScreenshotPersistenceUtils {
         	logger.log(Level.INFO, "Received response: " + landmarksJson);
         	if (StringUtils.startsWith(StringUtils.trim(landmarksJson), "{")) {
         		JSONObject resp = new JSONObject(landmarksJson);
-        		key = resp.getString("id");
+        		key = resp.optString("id");
         	}	
         } catch (Exception e) {
         	logger.log(Level.SEVERE, e.getMessage(), e);

@@ -11,29 +11,24 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 
-import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.config.Commons.Property;
-import net.gmsworld.server.utils.AuthUtils;
-import net.gmsworld.server.utils.HttpUtils;
-import net.gmsworld.server.utils.JSONUtils;
-import net.gmsworld.server.utils.NumberUtils;
-import net.gmsworld.server.utils.StringUtil;
-import net.gmsworld.server.utils.ThreadManager;
-
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.gdata.client.authn.oauth.OAuthException;
-import com.google.gdata.client.authn.oauth.OAuthHmacSha1Signer;
-import com.google.gdata.client.authn.oauth.OAuthParameters;
-import com.google.gdata.client.authn.oauth.OAuthUtil;
-import com.jstakun.gms.android.deals.Deal;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.openlapi.AddressInfo;
 import com.openlapi.QualifiedCoordinates;
+
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.utils.HttpUtils;
+import net.gmsworld.server.utils.JSONUtils;
+import net.gmsworld.server.utils.NumberUtils;
+import net.gmsworld.server.utils.StringUtil;
+import net.gmsworld.server.utils.ThreadManager;
 
 /**
  *
@@ -61,7 +56,7 @@ public class YelpUtils extends LayerHelper {
 
         		while (offset < normalizedLimit) {
         			threadManager.put(new VenueDetailsRetriever(venueArray, lat, lng, query, normalizedRadius, offset, isDeal, stringLimit, language, "json", null));
-        			offset += 20;
+        			offset += 50;
         		}
 
         		threadManager.waitForThreads();
@@ -88,25 +83,13 @@ public class YelpUtils extends LayerHelper {
         }
     }
 
-    private String processRequest(double latitude, double longitude, String query, int radius, boolean hasDeals, int offset, String language) throws OAuthException, IOException {
+    private String processRequest(double latitude, double longitude, String query, int radius, boolean hasDeals, int offset, String locale) throws OAuthException, IOException {
     	String responseBody = null;
     	
     	if (!cacheProvider.containsKey(USAGE_LIMIT_MARKER)) {
     	
-    		OAuthHmacSha1Signer hmacSigner = new OAuthHmacSha1Signer();
-    		OAuthParameters parameters = new OAuthParameters();
-    		parameters.setOAuthConsumerKey(Commons.getProperty(Property.YELP_Consumer_Key));
-    		parameters.setOAuthConsumerSecret(Commons.getProperty(Property.YELP_Consumer_Secret));
-    		parameters.setOAuthToken(Commons.getProperty(Property.YELP_Token));
-    		parameters.setOAuthTokenSecret(Commons.getProperty(Property.YELP_Token_Secret));
-    		parameters.setOAuthTimestamp(Long.toString(System.currentTimeMillis()));
-    		int nonce = (int) (Math.random() * 1e8);
-    		parameters.setOAuthNonce(Integer.toString(nonce));
-    		parameters.setOAuthSignatureMethod("HMAC-SHA1");
-
-    		//sort: Sort mode: 0=Best matched (default), 1=Distance, 2=Highest Rated
-    		String urlString = "http://api.yelp.com/v2/search?ll=" + StringUtil.formatCoordE6(latitude) + "," + StringUtil.formatCoordE6(longitude) + "&radius_filter=" + radius; // + "&sort=1";
-
+    		String urlString = "https://api.yelp.com/v3/businesses/search?" + "latitude=" + StringUtil.formatCoordE6(latitude) + "&longitude=" + StringUtil.formatCoordE6(longitude)  + "&radius=" + radius + "&limit=50";
+    		
     		if (StringUtils.isNotEmpty(query)) {
     			urlString += "&term=" + URLEncoder.encode(query, "UTF-8");
     		}
@@ -116,21 +99,17 @@ public class YelpUtils extends LayerHelper {
     		}
         
     		if (hasDeals) {
-    			urlString += "&deals_filter=true";
+    			urlString += "&attributes=deals";
     		}
         
-    		if (StringUtils.isNotEmpty(language)) {
-    			urlString += "&lang=" + language + "&cc=" + language;
+    		if (StringUtils.isNotEmpty(locale)) {
+    			urlString += "&locale=" + locale;
     		}
 
     		//System.out.println("Calling: " + urlString);
 
-    		String baseString = OAuthUtil.getSignatureBaseString(urlString, "GET", parameters.getBaseParameters());
-    		String signature = hmacSigner.getSignature(baseString, parameters);
-    		parameters.addCustomBaseParameter("oauth_signature", signature);
-
-    		responseBody = HttpUtils.processFileRequestWithAuthn(new URL(urlString), AuthUtils.buildAuthHeaderString(parameters));
-
+      		responseBody = HttpUtils.processFileRequestWithAuthn(new URL(urlString), "Bearer " + Commons.getProperty(Property.YELP_API_KEY));
+    		
     		//System.out.println(responseBody);
     	}
 
@@ -141,23 +120,23 @@ public class YelpUtils extends LayerHelper {
         int total = 0;
         if (StringUtils.startsWith(yelpJson, "{")) {
             JSONObject jsonRoot = new JSONObject(yelpJson);
-            if (jsonRoot.has("total")) {
-                total = jsonRoot.getInt("total");
+            if (jsonRoot.has("businesses")) {
+            	JSONArray businesses = jsonRoot.getJSONArray("businesses");
+                total = businesses.length(); 
                 if (total > 0) {
-                    //System.out.println("total: " + total);
-                    JSONArray businesses = jsonRoot.getJSONArray("businesses");
-                    for (int i = 0; i < businesses.length(); i++) {
+                   //System.out.println("total: " + total);
+                   for (int i = 0; i < businesses.length(); i++) {
                         JSONObject business = businesses.getJSONObject(i);
 
                         Map<String, Object> jsonObject = new HashMap<String, Object>();
 
                         JSONObject location = business.getJSONObject("location");
-                        JSONObject coordinate = location.getJSONObject("coordinate");
+                        JSONObject coordinates = business.getJSONObject("coordinates");
 
                         jsonObject.put("name", business.getString("name"));
-                        jsonObject.put("lat", Double.toString(coordinate.getDouble("latitude")));
-                        jsonObject.put("lng", Double.toString(coordinate.getDouble("longitude")));
-                        jsonObject.put("url", business.getString("mobile_url"));
+                        jsonObject.put("lat", Double.toString(coordinates.getDouble("latitude")));
+                        jsonObject.put("lng", Double.toString(coordinates.getDouble("longitude")));
+                        jsonObject.put("url", business.getString("url"));
 
                         Map<String, String> desc = new HashMap<String, String>();
 
@@ -193,11 +172,9 @@ public class YelpUtils extends LayerHelper {
                         String category = "";
                         JSONArray categories = business.optJSONArray("categories");
                         if (categories != null && categories.length() > 0) {
-                        	String[] categoryCodes = new String[categories.length()];
                         	for (int j = 0; j < categories.length() ; j++) {
-                        		JSONArray cat = categories.getJSONArray(j);
-                        		category += cat.getString(0);
-                        		categoryCodes[j] = cat.getString(1);
+                        		JSONObject cat = categories.getJSONObject(j);
+                        		category += cat.getString("title");
                         		if (j <  categories.length()-1) {
                         			category += ", ";
                         		}
@@ -205,18 +182,18 @@ public class YelpUtils extends LayerHelper {
                         	if (StringUtils.isNotEmpty(category)) {
                         		desc.put("category", category);
                         	}
-                        	if (hasDeals) {
+                        	/*if (hasDeals) {
                         		String[] categoryCode = YelpCategoryMapping.findMapping(categoryCodes);
                         		jsonObject.put("categoryID", categoryCode[0]);
                         		String subcat = categoryCode[1];
                         		if (StringUtils.isNotEmpty(subcat)) {
                         			jsonObject.put("subcategoryID", subcat);
                         		}
-                        	}
+                        	}*/
                         }
                         
                         //deals
-                        JSONArray deals = business.optJSONArray("deals");
+                        /*JSONArray deals = business.optJSONArray("deals");
                         if (deals != null && deals.length() > 0) {
                         	for (int d = 0; d < deals.length(); d++) {
                                 JSONObject deal = deals.getJSONObject(d);
@@ -249,7 +226,7 @@ public class YelpUtils extends LayerHelper {
                                 double discount = 100 - (price / original_price * 100);
                                 desc.put("discount", Double.toString(discount) + "%");
                         	}     
-                        }
+                        }*/
                                               
                         jsonObject.put("desc", desc);
                         jsonArray.add(jsonObject);
@@ -266,11 +243,10 @@ public class YelpUtils extends LayerHelper {
         int total = 0;
         if (StringUtils.startsWith(yelpJson, "{")) {
             JSONObject jsonRoot = new JSONObject(yelpJson);
-            if (jsonRoot.has("total")) {
-                total = jsonRoot.getInt("total");
+            if (jsonRoot.has("businesses")) {
+            	JSONArray businesses = jsonRoot.getJSONArray("businesses");
+                total = businesses.length();
                 if (total > 0) {
-                    //System.out.println("total: " + total);
-                    JSONArray businesses = jsonRoot.getJSONArray("businesses");
                     for (int i = 0; i < businesses.length(); i++) {
                         JSONObject business = businesses.getJSONObject(i);
 
@@ -315,7 +291,7 @@ public class YelpUtils extends LayerHelper {
 
     		while (offset < limit) {
     			threadManager.put(new ReviewDetailsRetriever(reviewsArray, latitude, longitude, query, normalizedRadius, offset, hasDeals, language));
-    			offset += 20;
+    			offset += 50;
     		}
 
     		threadManager.waitForThreads();
@@ -345,9 +321,8 @@ public class YelpUtils extends LayerHelper {
         		int offset = 0;
 
         		while (offset < normalizedLimit) {
-        			threadManager.put(new VenueDetailsRetriever(landmarks,
-                        lat, lng, query, normalizedRadius, offset, isDeal, stringLimit, language, "bin", locale));
-        			offset += 20;
+        			threadManager.put(new VenueDetailsRetriever(landmarks, lat, lng, query, normalizedRadius, offset, isDeal, stringLimit, language, "bin", locale));
+        			offset += 50;
         		}
 
         		threadManager.waitForThreads();
@@ -366,29 +341,29 @@ public class YelpUtils extends LayerHelper {
         int total = 0;
         if (StringUtils.startsWith(yelpJson, "{")) {
             JSONObject jsonRoot = new JSONObject(yelpJson);
-            if (jsonRoot.has("total")) {
-                total = jsonRoot.getInt("total");
+            if (jsonRoot.has("businesses")) {
+                //total = jsonRoot.optInt("total");
+                JSONArray businesses = jsonRoot.getJSONArray("businesses");
+                total = businesses.length();
                 if (total > 0) {
                     //System.out.println("total: " + total);
-                    JSONArray businesses = jsonRoot.getJSONArray("businesses");
+                    
                     for (int i = 0; i < businesses.length(); i++) {
                         JSONObject business = businesses.getJSONObject(i);
+                        System.out.println(business);
+                        JSONObject coordinates= business.optJSONObject("coordinates");
 
-                        JSONObject location = business.getJSONObject("location");
-                        
-                        JSONObject coordinate = location.optJSONObject("coordinate");
-
-                        if (coordinate != null) {
+                        if (coordinates != null) {
                         	String name = business.getString("name");
-                        	String url = business.getString("mobile_url");
+                        	String url = business.getString("url");
 
-                        	QualifiedCoordinates qc = new QualifiedCoordinates(coordinate.getDouble("latitude"), coordinate.getDouble("longitude"), 0f, 0f, 0f);
+                        	QualifiedCoordinates qc = new QualifiedCoordinates(coordinates.getDouble("latitude"), coordinates.getDouble("longitude"), 0f, 0f, 0f);
              		   
                         	AddressInfo address = new AddressInfo();
                         	if (business.has("display_phone") && !business.isNull("display_phone")) {
                         		address.setField(AddressInfo.PHONE_NUMBER, business.getString("display_phone"));
                         	}
-                        
+                        	JSONObject location = business.getJSONObject("location");
                         	if (location.has("display_address")) {
                         		JSONArray displayAddressArray = location.getJSONArray("display_address");
                         		String display_address = "";
@@ -424,11 +399,9 @@ public class YelpUtils extends LayerHelper {
                         	String category = "";
                         	JSONArray categories = business.optJSONArray("categories");
                         	if (categories != null && categories.length() > 0) {
-                        		String[] categoryCodes = new String[categories.length()];
                         		for (int j = 0; j < categories.length() ; j++) {
-                        			JSONArray cat = categories.getJSONArray(j);
-                        			category += cat.getString(0);
-                        			categoryCodes[j] = cat.getString(1);
+                        			JSONObject cat = categories.getJSONObject(j);
+                        			category += cat.getString("title");
                         			if (j <  categories.length()-1) {
                         				category += ", ";
                         			}
@@ -436,18 +409,20 @@ public class YelpUtils extends LayerHelper {
                         		if (StringUtils.isNotEmpty(category)) {
                         			tokens.put("category", category);
                         		}
-                        		if (hasDeals) {
-                        			String[] categoryCode = YelpCategoryMapping.findMapping(categoryCodes);
-                        			landmark.setCategoryId(Integer.valueOf(categoryCode[0]).intValue());
-                        			String subcat = categoryCode[1];
-                        			if (StringUtils.isNotEmpty(subcat)) {
-                        				landmark.setSubCategoryId(Integer.valueOf(subcat).intValue());
-                        			}
-                        		}
+                        		
+                        		//not available in api v3
+                        		//if (hasDeals) {
+                        		//	String[] categoryCode = YelpCategoryMapping.findMapping(categoryCodes);
+                        		//	landmark.setCategoryId(Integer.valueOf(categoryCode[0]).intValue());
+                        		//	String subcat = categoryCode[1];
+                        		//	if (StringUtils.isNotEmpty(subcat)) {
+                        		//		landmark.setSubCategoryId(Integer.valueOf(subcat).intValue());
+                        		//	}
+                        		//}
                         	}
                         
                         	//deals
-                        	JSONArray deals = business.optJSONArray("deals");
+                        	/*JSONArray deals = business.optJSONArray("deals");
                         	if (deals != null && deals.length() > 0) {
                         		for (int d = 0; d < deals.length(); d++) {
                         			JSONObject deal = deals.getJSONObject(d);
@@ -487,7 +462,7 @@ public class YelpUtils extends LayerHelper {
                                 	dealObj.setEndDate(endDate);
                                 	landmark.setDeal(dealObj);
                         		}     
-                        	}
+                        	}*/
                         
                         	landmark.setDescription(JSONUtils.buildLandmarkDesc(landmark, tokens, locale));
                                               
@@ -583,7 +558,7 @@ public class YelpUtils extends LayerHelper {
             try {
             	String key = LOCATION_UNAVAILABILITY_MARKER + "_" + StringUtil.formatCoordE2(latitude) + "_" + StringUtil.formatCoordE2(longitude);
             	if (!cacheProvider.containsKey(key)) { 
-            		String responseBody = processRequest(latitude, longitude, query, radius, hasDeals, offset, language);
+            		String responseBody = processRequest(latitude, longitude, query, radius, hasDeals, offset, locale.toString());
             		if (format.equals("bin")) {
             			createCustomLandmarkYelpList(responseBody, (List<ExtendedLandmark>)venueArray, latitude, longitude, stringLimit, hasDeals, locale);
             		} else {

@@ -54,7 +54,6 @@ public class ShowLayerAction extends org.apache.struts.action.Action {
         if (layer != null) {
             //int count = LandmarkPersistenceUtils.selectLandmarksByUserAndLayerCount(null, layer);
         	CacheAction countCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
-				@Override
 				public Object executeAction() {
 					Browser browser = Browser.parseUserAgentString(request.getHeader("User-Agent"));
 		            if (browser.getGroup() == Browser.BOT || browser.getGroup() == Browser.BOT_MOBILE || browser.getGroup() == Browser.UNKNOWN) {
@@ -73,7 +72,6 @@ public class ShowLayerAction extends org.apache.struts.action.Action {
             	final int nextCandidate = first + INTERVAL;
                 //layerLandmarks = LandmarkPersistenceUtils.selectLandmarksByUserAndLayer(null, layer, first, nextCandidate);
             	CacheAction userLandmarksCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
-    				@Override
     				public Object executeAction() {
     					return LandmarkPersistenceUtils.selectLandmarksByUserAndLayer(null, layer, first, nextCandidate);
     				}

@@ -3,6 +3,7 @@ package net.gmsworld.server.layers;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
@@ -196,9 +197,9 @@ public class LayersProviderServlet extends HttpServlet {
                             categoryid = request.getParameter("categoryid");
                         }
                     	if (outFormat.equals(Format.BIN)) {
-                    		List<ExtendedLandmark> landmarks = LayerHelperFactory.getInstance().getByName(Commons.COUPONS_LAYER).processBinaryRequest(latitude, longitude, null, radiusInKm, version, dealLimit, stringLimit, categoryid, language, l, true);
-                    		LayerHelperFactory.getInstance().getByName(Commons.COUPONS_LAYER).serialize(landmarks, response.getOutputStream(), version);
-                    		LayerHelperFactory.getInstance().getByName(Commons.COUPONS_LAYER).cacheGeoJson(landmarks, latitude, longitude, Commons.COUPONS_LAYER, l, null);
+                    		List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>(); //LayerHelperFactory.getInstance().getByName(Commons.COUPONS_LAYER).processBinaryRequest(latitude, longitude, null, radiusInKm, version, dealLimit, stringLimit, categoryid, language, l, true);
+                    		//LayerHelperFactory.getInstance().getByName(Commons.COUPONS_LAYER).serialize(landmarks, response.getOutputStream(), version);
+                    		//LayerHelperFactory.getInstance().getByName(Commons.COUPONS_LAYER).cacheGeoJson(landmarks, latitude, longitude, Commons.COUPONS_LAYER, l, null);
                     	} else {
                     		outString = LayerHelperFactory.getInstance().getByName(Commons.COUPONS_LAYER).processRequest(latitude, longitude, null, radiusInKm, version, dealLimit, stringLimit, categoryid, language).toString();
                     	}	                        

@@ -64,7 +64,6 @@ public class ShowLandmarkAction extends Action {
             	  logger.log(Level.INFO, "Searching for key: " + key);
             	    
             	  CacheAction landmarkCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
-        				@Override
         				public Object executeAction() {
         					Browser browser = Browser.parseUserAgentString(request.getHeader("User-Agent"));
         		            if (browser.getGroup() == Browser.BOT || browser.getGroup() == Browser.BOT_MOBILE || browser.getGroup() == Browser.UNKNOWN) {
@@ -88,7 +87,6 @@ public class ShowLandmarkAction extends Action {
             		   isFullScreenLandmark = (System.currentTimeMillis() - landmark.getCreationDate().getTime() < CacheUtil.LONG_CACHE_LIMIT) || StringUtils.isNotEmpty(request.getParameter("fullScreenLandmarkMap"));
              	    
                        CacheAction commentsCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
-            				@Override
             				public Object executeAction() {
             					return CommentPersistenceUtils.selectCommentsByLandmark(key);
             				}
@@ -100,7 +98,6 @@ public class ShowLandmarkAction extends Action {
                         
                        if (!landmark.isSocial()) {
                            CacheAction checkinCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
-                				@Override
                 				public Object executeAction() {
                 					return CheckinPersistenceUtils.selectCheckinsByLandmark(key);
                 				}

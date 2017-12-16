@@ -60,7 +60,6 @@ public class ShowUserAction extends org.apache.struts.action.Action {
 
         if (StringUtils.isNotEmpty(user)) {
         	CacheAction countCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
-				@Override
 				public Object executeAction() {
 					Browser browser = Browser.parseUserAgentString(request.getHeader("User-Agent"));
 		            if (browser.getGroup() == Browser.BOT || browser.getGroup() == Browser.BOT_MOBILE || browser.getGroup() == Browser.UNKNOWN) {
@@ -82,7 +81,6 @@ public class ShowUserAction extends org.apache.struts.action.Action {
                 //System.out.println("User: " + user + ", count: " + count + " , next: " + nextCandidate);
 
                 CacheAction userLandmarksCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
-    				@Override
     				public Object executeAction() {
     					return LandmarkPersistenceUtils.selectLandmarksByUserAndLayer(user, null, first, nextCandidate);
     				}

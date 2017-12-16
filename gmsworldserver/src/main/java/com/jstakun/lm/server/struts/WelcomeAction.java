@@ -46,7 +46,6 @@ public class WelcomeAction extends org.apache.struts.action.Action {
         	return mapping.findForward("landmarks");
         } else {
         	CacheAction newestLandmarksAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
-    			@Override
     			public Object executeAction() {
     				return LandmarkPersistenceUtils.selectNewestLandmarks();
     			}
