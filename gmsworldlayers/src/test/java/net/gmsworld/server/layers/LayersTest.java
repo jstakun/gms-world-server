@@ -188,7 +188,7 @@ public class LayersTest {
 		//LayerHelperFactory.getHotelsBookingUtils().loadHotelsAsync(lat, lng, radius, limit);  
 		try {
 			String hotels = ((HotelsBookingUtils)LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)).extendFeatureCollection(lat, lng, radius, limit, "stars", locale);
-			//System.out.println(hotels);
+			System.out.println(hotels);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
