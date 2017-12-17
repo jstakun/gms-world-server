@@ -77,7 +77,7 @@ public class DevicePersistenceUtils {
 	   }
 	}
 
-	public static int sendCommand(Long imei, Integer pin, String command) throws Exception {
+	public static int sendCommand(Long imei, Integer pin, String command, String args) throws Exception {
 		if (imei != null && pin != null) {
 		    String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "getDevice?" + 
 	                 "imei="+  imei + "&pin=" + pin;
@@ -88,7 +88,11 @@ public class DevicePersistenceUtils {
 			   if (output != null && output.getLong("imei") == imei) {
 				   String token = output.getString("token");
 				   String url = "https://fcm.googleapis.com/v1/projects/" + Commons.getProperty(Property.FCM_PROJECT) + "/messages:send";
-				   String data = "{\"message\":{\"token\":\"" + token + "\",\"data\":{\"command\": \"" + command + "\",\"pin\":\"" + pin + "\",\"imei\":\"" + imei + "\"}}}";
+				   String data = "{\"message\":{\"token\":\"" + token + "\",\"data\":{\"command\": \"" + command + "\",\"pin\":\"" + pin + "\",\"imei\":\"" + imei + "\"";
+					if (StringUtils.isNotEmpty(args)) {
+						data  += ",\"args\":\"" + args + "\"";
+					}
+					data += "}}}";
 				   String response = HttpUtils.processFileRequestWithOtherAuthn(new URL(url), "POST", "application/json", data, "application/json", "Bearer " + getAccessToken());
 				   logger.log(Level.INFO, "Received following response: " + response);
 				   if (HttpUtils.getResponseCode(url) == 200) {

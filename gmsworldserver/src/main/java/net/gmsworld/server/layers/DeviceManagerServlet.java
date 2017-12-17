@@ -71,9 +71,10 @@ public final class DeviceManagerServlet extends HttpServlet {
 		         String token = request.getParameter("token");
 		         String username = request.getParameter("username");
 		         String command = request.getParameter("command");
+		         String args = request.getParameter("args");
 		         int status;
 		         if (StringUtils.isNotEmpty(command)) {
-		        	 status = DevicePersistenceUtils.sendCommand(imei, pin, command);
+		        	 status = DevicePersistenceUtils.sendCommand(imei, pin, command, args);
 		         } else {
 		        	 status = DevicePersistenceUtils.setupDevice(imei, pin, username, token);
 		         }	 

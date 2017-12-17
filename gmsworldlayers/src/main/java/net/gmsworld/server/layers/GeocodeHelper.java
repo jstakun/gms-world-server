@@ -9,7 +9,6 @@ import org.json.JSONObject;
 
 import com.openlapi.AddressInfo;
 
-import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.memcache.CacheProvider;
 
 public abstract class GeocodeHelper {
