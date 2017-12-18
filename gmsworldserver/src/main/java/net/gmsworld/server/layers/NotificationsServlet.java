@@ -267,7 +267,8 @@ public class NotificationsServlet extends HttpServlet {
 					} else {
 						logger.log(Level.WARNING, "Wrong application " + appId);
 					}
-				} else if (StringUtils.equals(type, Commons.getProperty(Property.TELEGRAM_TOKEN))) {
+				}  //TODO moved to Telegram servlet
+				   else if (StringUtils.equals(type, Commons.getProperty(Property.TELEGRAM_TOKEN))) {
 					StringBuffer jb = new StringBuffer();
 					String line = null;
 					try {

@@ -287,5 +287,12 @@
             <to>/archive.do?year=$1&amp;month=01</to>
     </rule>
     
+    <!--  telegram -->
+    
+    <rule>
+            <from>^/telegram/([a-zA-Z0-9:-]+)$</from>
+            <to>/telegram?type=$1</to>
+    </rule>
+    
 </urlrewrite>
 
