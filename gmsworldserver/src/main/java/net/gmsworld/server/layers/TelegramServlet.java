@@ -119,14 +119,14 @@ public class TelegramServlet extends HttpServlet {
 					JSONObject messageJson = jsonObject.getJSONObject("message");
 					String message = messageJson.getString("text");
 					String telegramId= Long.toString(messageJson.getJSONObject("chat").getLong("id"));
-					//imei command pin args
+					//command imei pin args
 					String[] tokens = StringUtils.split(message, " ");
 					String reply = "Command sent";
 					if (tokens.length >= 3) {
 						try {
-							Long imei = Long.valueOf(tokens[0]);
+							String command = tokens[0];
+							Long imei = Long.valueOf(tokens[1]);
 							Integer pin = Integer.valueOf(tokens[2]);		
-							String command = tokens[1];
 							String args = tokens.length > 3 ? tokens[3] : null;
 							int status = DevicePersistenceUtils.sendCommand(imei, pin, command, args);
 							if (status == -1) {
@@ -139,7 +139,9 @@ public class TelegramServlet extends HttpServlet {
 						reply = "Wrong command";
 					}
 					TelegramUtils.sendTelegram(telegramId, reply);
-				}	
+				}	else {
+					logger.log(Level.SEVERE, "Received wrong paramter: " + type);
+				}
 			} 
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);

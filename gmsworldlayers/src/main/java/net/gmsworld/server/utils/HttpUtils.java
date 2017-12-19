@@ -111,7 +111,7 @@ public class HttpUtils {
             }
 
             conn.setRequestProperty("Accept-Charset", "utf-8");
-
+  
             if (StringUtils.isNotEmpty(accept)) {
                 conn.setRequestProperty("Accept", accept);
             }
@@ -147,17 +147,19 @@ public class HttpUtils {
             
             int responseCode = conn.getResponseCode();
             httpResponseStatuses.put(fileUrl.toExternalForm(), responseCode);
+            
+            final String urlSafe = fileUrl.toString().split("?")[0];
 
             if (responseCode == HttpServletResponse.SC_OK) {
                 is = conn.getInputStream(); 
-                logger.log(Level.INFO, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString()});
+                logger.log(Level.INFO, "Received http status code {0} for url {1}", new Object[]{responseCode, urlSafe});
             } else if (responseCode >= 400 ){
                 is = conn.getErrorStream();
-                logger.log(Level.SEVERE, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString()});   
+                logger.log(Level.SEVERE, "Received http status code {0} for url {1}", new Object[]{responseCode, urlSafe});   
             } else if (responseCode >= 300 && responseCode < 400) {
-            	logger.log(Level.WARNING, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString()});   
+            	logger.log(Level.WARNING, "Received http status code {0} for url {1}", new Object[]{responseCode, urlSafe});   
             } else if (responseCode > 200) {
-            	logger.log(Level.INFO, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString()});
+            	logger.log(Level.INFO, "Received http status code {0} for url {1}", new Object[]{responseCode, urlSafe});
             }
             
             if (responseCode != HttpServletResponse.SC_NO_CONTENT && is != null) {
@@ -210,11 +212,11 @@ public class HttpUtils {
                 }
                 logger.log(Level.INFO, "Received " + conn.getContentType() + " image having " + total + " bytes");
             } else if (responseCode >= 400 ){
-                logger.log(Level.SEVERE, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString()});   
+                logger.log(Level.SEVERE, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString().split("?")[0]});   
             } else if (responseCode >= 300 && responseCode < 400) {
-            	logger.log(Level.WARNING, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString()});   
+            	logger.log(Level.WARNING, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString().split("?")[0]});   
             } else if (responseCode > 200) {
-            	logger.log(Level.INFO, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString()});
+            	logger.log(Level.INFO, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString().split("?")[0]});
             }
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
@@ -280,13 +282,13 @@ public class HttpUtils {
         		} else {
         			logger.log(Level.SEVERE, "Object stream is null");
         		}
-                logger.log(Level.INFO, "Received " + conn.getContentType() + " file has " + size + " landmarks");
+                logger.log(Level.INFO, "Received " + conn.getContentType() + " file having " + size + " landmarks");
             } else if (responseCode >= 400 ){
-                logger.log(Level.SEVERE, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString()});   
+                logger.log(Level.SEVERE, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString().split("?")[0]});   
             } else if (responseCode >= 300 && responseCode < 400) {
-            	logger.log(Level.WARNING, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString()});   
+            	logger.log(Level.WARNING, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString().split("?")[0]});   
             } else if (responseCode > 200) {
-            	logger.log(Level.INFO, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString()});
+            	logger.log(Level.INFO, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString().split("?")[0]});
             }
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
