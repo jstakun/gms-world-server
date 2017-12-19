@@ -157,7 +157,7 @@ public class LayersProvider2Servlet extends HttpServlet {
                          if (deals == 1) {
                         	 flexString = "true";
                          }
-                         flexString2 = language;
+                         flexString2 = locale;
             		 } else if (StringUtils.equals(layerHelper.getLayerName(), Commons.GOOGLE_PLACES_LAYER)) {
             			 flexString = language;
             		 } else if (StringUtils.equals(layerHelper.getLayerName(), Commons.COUPONS_LAYER)) {

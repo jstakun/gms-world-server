@@ -40,10 +40,10 @@ public class YelpUtils extends LayerHelper {
 	private static final String LOCATION_UNAVAILABILITY_MARKER = "YelpLocationUnavailabilityMarker";	
 	
     @Override
-	public JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String hasDeals, String language) throws Exception {
+	public JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String hasDeals, String locale) throws Exception {
         int normalizedRadius = NumberUtils.normalizeNumber(radius, 1000, 40000);
         int normalizedLimit = NumberUtils.normalizeNumber(limit, 20, 100);
-        String key = getCacheKey(getClass(), "processRequest", lat, lng, query, normalizedRadius, version, normalizedLimit, stringLimit, hasDeals, language);
+        String key = getCacheKey(getClass(), "processRequest", lat, lng, query, normalizedRadius, version, normalizedLimit, stringLimit, hasDeals, locale);
 
         String cachedResponse = cacheProvider.getString(key);
         if (cachedResponse == null) {
@@ -55,7 +55,7 @@ public class YelpUtils extends LayerHelper {
         		int offset = 0;
 
         		while (offset < normalizedLimit) {
-        			threadManager.put(new VenueDetailsRetriever(venueArray, lat, lng, query, normalizedRadius, offset, isDeal, stringLimit, language, "json", null));
+        			threadManager.put(new VenueDetailsRetriever(venueArray, lat, lng, query, normalizedRadius, offset, isDeal, stringLimit, locale, "json", null));
         			offset += 50;
         		}
 
@@ -102,8 +102,10 @@ public class YelpUtils extends LayerHelper {
     			urlString += "&attributes=deals";
     		}
         
-    		if (StringUtils.isNotEmpty(locale)) {
+    		if (StringUtils.isNotEmpty(locale) && locale.length() == 5 && locale.indexOf('_') == 2) {
     			urlString += "&locale=" + locale;
+    		} else {
+    			logger.log(Level.WARNING, "Wrong locale " + locale);
     		}
 
     		//System.out.println("Calling: " + urlString);
@@ -305,7 +307,7 @@ public class YelpUtils extends LayerHelper {
     @Override
 	public List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String hasDeals, String language, Locale locale, boolean useCache) throws Exception {
 		if (language == null) {
-			language = locale.getLanguage();
+			language =  StringUtil.getLanguage(locale.getLanguage() + "_" + locale.getCountry(), "en_US", 5);
 		}
     	int normalizedRadius = NumberUtils.normalizeNumber(radius, 1000, 40000);
         int normalizedLimit = NumberUtils.normalizeNumber(limit, 20, 100);
@@ -558,7 +560,7 @@ public class YelpUtils extends LayerHelper {
             try {
             	String key = LOCATION_UNAVAILABILITY_MARKER + "_" + StringUtil.formatCoordE2(latitude) + "_" + StringUtil.formatCoordE2(longitude);
             	if (!cacheProvider.containsKey(key)) { 
-            		String responseBody = processRequest(latitude, longitude, query, radius, hasDeals, offset, locale.toString());
+            		String responseBody = processRequest(latitude, longitude, query, radius, hasDeals, offset, language);
             		if (format.equals("bin")) {
             			createCustomLandmarkYelpList(responseBody, (List<ExtendedLandmark>)venueArray, latitude, longitude, stringLimit, hasDeals, locale);
             		} else {

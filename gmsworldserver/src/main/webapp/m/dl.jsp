@@ -41,6 +41,7 @@
            <li><b>Calldl</b> -  call sender. Device should initiate phone call to SMS sender number<br/>Usage: Calldl&lt;security pin&gt;<br/>Example (assuming your security pin is 1234): <b>Calldl1234</b><br/></li>
            <li><b>Nofitydl</b> - set or change who should be notified by location tracking service<br/>Usage: Notifydl&lt;security pin&gt; x  where x is p:y for phone number, m:y for email address or t:y for Telegram chat id. You could set all parameters separately or together. Email address and Telegram chat id are subject for validation by it's owners.<br/>Example (assuming your security pin is 1234, phone number is 123456789, email address is name@domain.com and Telegram chat id is 987654321): <b>Notifydl1234 p:123456789 m:name@domain.com t:987654321</b><br/></li>
     	   <li><b>Photodl</b> -  take photo with front camera. You'll receive link to photo image. This command requires enabled failed login service and camera permissions using application action menu<br/>Usage: Photodl&lt;security pin&gt;<br/>Example (assuming your security pin is 1234): <b>Photodl1234</b><br/></li>
+    	   <li><b>Pingdl</b> - send test message to check connectivity<br/>Usage: Pingdl&lt;security pin&gt;<br/>Example (assuming your security pin is 1234): <b>Pingdl1234</b><br/></li>  
     	</ul> 
        
     	</article>
