@@ -281,7 +281,7 @@ public class YelpUtils extends LayerHelper {
         return total;
     }
 
-    public Map<String, Map<String, String>> processReviewsRequest(double latitude, double longitude, String query, int radius, int limit, boolean hasDeals, String language) throws JSONException, IOException, OAuthException {
+    public Map<String, Map<String, String>> processReviewsRequest(double latitude, double longitude, String query, int radius, int limit, boolean hasDeals, String locale) throws JSONException, IOException, OAuthException {
         
     	Map<String, Map<String, String>> reviewsArray = new HashMap<String, Map<String, String>>();
     	
@@ -292,7 +292,7 @@ public class YelpUtils extends LayerHelper {
     		int offset = 0;
 
     		while (offset < limit) {
-    			threadManager.put(new ReviewDetailsRetriever(reviewsArray, latitude, longitude, query, normalizedRadius, offset, hasDeals, language));
+    			threadManager.put(new ReviewDetailsRetriever(reviewsArray, latitude, longitude, query, normalizedRadius, offset, hasDeals, locale));
     			offset += 50;
     		}
 
@@ -501,12 +501,12 @@ public class YelpUtils extends LayerHelper {
 
 		private Map<String, Map<String, String>> reviewsArray;
         private double latitude, longitude;
-        private String query, language;
+        private String query, locale;
         private int radius, offset;
         private boolean hasDeals;
 
         public ReviewDetailsRetriever(Map<String, Map<String, String>> reviewsArray,
-                double latitude, double longitude, String query, int radius, int offset, boolean hasDeals, String language) {
+                double latitude, double longitude, String query, int radius, int offset, boolean hasDeals, String locale) {
             this.reviewsArray = reviewsArray;
             this.latitude = latitude;
             this.longitude = longitude;
@@ -514,14 +514,14 @@ public class YelpUtils extends LayerHelper {
             this.radius = radius;
             this.offset = offset;
             this.hasDeals = hasDeals;
-            this.language = language;
+            this.locale = locale;
         }
 
         public void run() {
             try {
             	String key = LOCATION_UNAVAILABILITY_MARKER + "_" + StringUtil.formatCoordE2(latitude) + "_" + StringUtil.formatCoordE2(longitude);
             	if (!cacheProvider.containsKey(key)) { 
-            		String responseBody = processRequest(latitude, longitude, query, radius, hasDeals, offset, language);
+            		String responseBody = processRequest(latitude, longitude, query, radius, hasDeals, offset, locale);
             		createCustomJsonReviewsList(responseBody, latitude, longitude, reviewsArray);
             	} else {
             		logger.log(Level.INFO, "Yelp api is unavailable from this location.");

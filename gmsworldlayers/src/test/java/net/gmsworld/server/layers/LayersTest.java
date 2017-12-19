@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
@@ -194,6 +195,16 @@ public class LayersTest {
 		}
 		//System.out.println("Hotels in radius: " + LayerHelperFactory.getHotelsBookingUtils().countNearbyHotels(lat, lng, radius));
 		//System.out.println("Cheapest hotel price: " + LayerHelperFactory.getHotelsBookingUtils().findCheapestHotel(lat, lng, radius, 1));			
+	}
+	
+	//@Test
+	public void reviewsTest() {
+		try {
+			Map<?,?> reviews = ((YelpUtils)LayerHelperFactory.getInstance().getByName(Commons.YELP_LAYER)).processReviewsRequest(lat, lng, null, radius, limit, false, locale.toString());
+			System.out.println(reviews);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/*private static List<Method> getStaticGetMethods(Class<?> clazz) {
