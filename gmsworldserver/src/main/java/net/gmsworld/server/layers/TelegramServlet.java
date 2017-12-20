@@ -71,12 +71,12 @@ public class TelegramServlet extends HttpServlet {
 						JSONObject messageJson = jsonObject.optJSONObject("message");
 						if (messageJson != null) {
 							String message = messageJson.getString("text");
-							String telegramId= Long.toString(messageJson.getJSONObject("chat").getLong("id"));
+							Long telegramId= messageJson.getJSONObject("chat").getLong("id");
 							if (StringUtils.equalsIgnoreCase(message, "/register") || StringUtils.equalsIgnoreCase(message, "register")) {
 								//add chat id to white list
-								if (!ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, telegramId)) {
+								if (!ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, Long.toString(telegramId))) {
 									List<String> whitelistList = new ArrayList<String>(Arrays.asList(ConfigurationManager.getArray(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST)));
-									whitelistList.add(telegramId);
+									whitelistList.add(Long.toString(telegramId));
 									ConfigurationManager.setParam(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST,  StringUtils.join(whitelistList, "|"));
 								} else {
 									logger.log(Level.WARNING, "Telegram chat id " + telegramId + " already exists in the whitelist!");
@@ -85,7 +85,7 @@ public class TelegramServlet extends HttpServlet {
 									+ "You can unregister at any time by sending /unregister command message.");
 							} else if (StringUtils.equalsIgnoreCase(message, "/unregister") || StringUtils.equalsIgnoreCase(message, "unregister")) {
 								//remove chat id from white list
-								if (ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, telegramId)) {
+								if (ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, Long.toString(telegramId))) {
 									List<String> whitelistList = new ArrayList<String>(Arrays.asList(ConfigurationManager.getArray(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST)));
 									if (whitelistList.remove(telegramId)) {
 										ConfigurationManager.setParam(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST,  StringUtils.join(whitelistList, "|"));
@@ -97,7 +97,7 @@ public class TelegramServlet extends HttpServlet {
 									logger.log(Level.WARNING, "Telegram chat id " + telegramId + " doesn't exists in the whitelist!");
 								}
 							} else if (StringUtils.equalsIgnoreCase(message, "/getmyid") || StringUtils.equalsIgnoreCase(message, "getmyid")) { 
-								TelegramUtils.sendTelegram(telegramId, telegramId);
+								TelegramUtils.sendTelegram(telegramId, Long.toString(telegramId));
 								TelegramUtils.sendTelegram(telegramId, "Please click on message above containing your chat id and select copy. Then come back to Device Locator and "
 							 		+ "paste your chat id to Telegram Messenger chat id form field. If you are lucky your chat id will be pasted automatically :)");
 							} else {
@@ -123,7 +123,7 @@ public class TelegramServlet extends HttpServlet {
 					JSONObject messageJson = jsonObject.optJSONObject("message");
 					if (messageJson != null) {
 						String message = messageJson.getString("text");
-						String telegramId= Long.toString(messageJson.getJSONObject("chat").getLong("id"));
+						Long telegramId= messageJson.getJSONObject("chat").getLong("id");
 						//command imei pin args
 						String[] tokens = StringUtils.split(message, " ");
 						String reply = "";

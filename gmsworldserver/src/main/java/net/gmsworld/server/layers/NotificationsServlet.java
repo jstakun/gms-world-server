@@ -184,7 +184,11 @@ public class NotificationsServlet extends HttpServlet {
 						if (telegramId != 0 && StringUtils.isNotEmpty(message)) {
 							// check if chat id is on white list
 							if (ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, Long.toString(telegramId))) {
-				            	TelegramUtils.sendTelegram(Long.toString(telegramId), message);
+				            	TelegramUtils.sendTelegram(telegramId, message);
+				            	//TODO testing send location
+				            	if (latitude != null && longitude != null && latitude != 90d && longitude != 180d) {
+				            		TelegramUtils.sendLocationTelegram(telegramId, latitude, longitude);
+				            	}
 				            	reply = new JSONObject().put("status", "sent");
 				            } else {
 				            	logger.log(Level.WARNING, "Telegram chat id " + telegramId + " is not on whitelist!");
@@ -225,15 +229,15 @@ public class NotificationsServlet extends HttpServlet {
 						long telegramId = NumberUtils.getLong(request.getParameter("chatId"), 0L);
 						if (telegramId != 0) {
 							if (ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, Long.toString(telegramId))) {
-								TelegramUtils.sendTelegram(Long.toString(telegramId), "You've been already registered to Device Locator notifications.\n"
+								TelegramUtils.sendTelegram(telegramId, "You've been already registered to Device Locator notifications.\n"
 										+ "You can unregister at any time by sending /unregister command message.");
 								reply = new JSONObject().put("status", "registered");
 							} else if (telegramId > 0) {
-								TelegramUtils.sendTelegram(Long.toString(telegramId), "We've received Device Locator registration request from you.\n"
+								TelegramUtils.sendTelegram(telegramId, "We've received Device Locator registration request from you.\n"
 										+ "If this is correct please send us back /register command message, otherwise please ignore this message.");
 								reply = new JSONObject().put("status", "unverified");
 							} else if (telegramId < 0) {
-								TelegramUtils.sendTelegram(Long.toString(telegramId), "We've received Device Locator registration request from you.\n Your ID seems to be Channel ID."
+								TelegramUtils.sendTelegram(telegramId, "We've received Device Locator registration request from you.\n Your ID seems to be Channel ID."
 										+ "If this is correct please contact us via email at: device-locator@gms-world.net and send your Channel ID: " + telegramId + ", otherwise please ignore this message.");
 								reply = new JSONObject().put("status", "unverified");
 							}
