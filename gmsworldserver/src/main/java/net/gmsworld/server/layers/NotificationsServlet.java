@@ -1,6 +1,5 @@
 package net.gmsworld.server.layers;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DateFormat;
@@ -27,7 +26,6 @@ import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceWebUtils;
 
 import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
@@ -267,58 +265,7 @@ public class NotificationsServlet extends HttpServlet {
 					} else {
 						logger.log(Level.WARNING, "Wrong application " + appId);
 					}
-				}  //TODO moved to Telegram servlet
-				   else if (StringUtils.equals(type, Commons.getProperty(Property.TELEGRAM_TOKEN))) {
-					StringBuffer jb = new StringBuffer();
-					String line = null;
-					try {
-						BufferedReader reader = request.getReader();
-						while ((line = reader.readLine()) != null)
-							jb.append(line);
-					} catch (Exception e) {
-						logger.log(Level.SEVERE, e.getMessage(), e);
-					}
-
-					try {
-						JSONObject jsonObject = new JSONObject(jb.toString());
-						JSONObject messageJson = jsonObject.getJSONObject("message");
-						String message = messageJson.getString("text");
-						String telegramId= Long.toString(messageJson.getJSONObject("chat").getLong("id"));
-						if (StringUtils.equalsIgnoreCase(message, "/register") || StringUtils.equalsIgnoreCase(message, "register")) {
-							//add chat id to white list
-							if (!ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, telegramId)) {
-								List<String> whitelistList = new ArrayList<String>(Arrays.asList(ConfigurationManager.getArray(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST)));
-								whitelistList.add(telegramId);
-								ConfigurationManager.setParam(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST,  StringUtils.join(whitelistList, "|"));
-				            } else {
-				            	logger.log(Level.WARNING, "Telegram chat id " + telegramId + " already exists in the whitelist!");
-				            }								
-							TelegramUtils.sendTelegram(telegramId, "You've been registered to Device Locator notifications.\n"
-									+ "You can unregister at any time by sending /unregister command message.");
-						} else if (StringUtils.equalsIgnoreCase(message, "/unregister") || StringUtils.equalsIgnoreCase(message, "unregister")) {
-							//remove chat id from white list
-							if (ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, telegramId)) {
-								List<String> whitelistList = new ArrayList<String>(Arrays.asList(ConfigurationManager.getArray(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST)));
-								if (whitelistList.remove(telegramId)) {
-									ConfigurationManager.setParam(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST,  StringUtils.join(whitelistList, "|"));
-								} else {
-									logger.log(Level.SEVERE, "Unable to remove Telegram chat id " + telegramId + " from the whitelist!");
-								}
-								TelegramUtils.sendTelegram(telegramId, "You've been unregistered from Device Locator notifications.");
-				            } else {
-				            	logger.log(Level.WARNING, "Telegram chat id " + telegramId + " doesn't exists in the whitelist!");
-				            }
-						} else if (StringUtils.equalsIgnoreCase(message, "/getmyid") || StringUtils.equalsIgnoreCase(message, "getmyid")) { 
-							 TelegramUtils.sendTelegram(telegramId, telegramId);
-							 TelegramUtils.sendTelegram(telegramId, "Please click on message above containing your chat id and select copy. Then come back to Device Locator and "
-							 		+ "paste your chat id to Telegram Messenger chat id form field. If you are lucky your chat id will be pasted automatically :)");
-						} else {
-							 TelegramUtils.sendTelegram(telegramId, "I've received unrecognised message " + message);
-						}
-					} catch (Exception e) {
-						logger.log(Level.SEVERE, e.getMessage(), e);
-					}
-				}
+				} 
 				out.print(reply.toString());
 			}
 		} catch (Exception e) {
