@@ -138,7 +138,7 @@ public class TelegramServlet extends HttpServlet {
 								String args = tokens.length > 3 ? tokens[3] : null;
 								int status = DevicePersistenceUtils.sendCommand(imei, pin, command, args);
 								if (status == -1) {
-									reply = "Failed to send command";
+									reply = "Failed to send command " + command + " to device " + imei;
 								} else {
 									reply = "Command " +  command + " sent to device " + imei + ". It is up to cloud when it will be delivered!";
 								}

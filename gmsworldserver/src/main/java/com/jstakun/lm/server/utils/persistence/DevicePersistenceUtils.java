@@ -1,14 +1,12 @@
 package com.jstakun.lm.server.utils.persistence;
 
 import java.net.URL;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.jstakun.lm.server.config.ConfigurationManager;
 
 import net.gmsworld.server.config.Commons;
@@ -78,48 +76,29 @@ public class DevicePersistenceUtils {
 	}
 
 	public static int sendCommand(Long imei, Integer pin, String command, String args) throws Exception {
-		if (imei != null && pin != null) {
-		    String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "getDevice?" + 
-	                 "imei="+  imei + "&pin=" + pin;
-		    String deviceJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(deviceUrl), Commons.getProperty(Property.RH_GMS_USER), false);		
-		    if (StringUtils.startsWith(deviceJson, "{")) {
-			   JSONObject root = new JSONObject(deviceJson);
-			   JSONObject output = root.optJSONObject("output");
-			   if (output != null && output.getLong("imei") == imei) {
-				   String token = output.getString("token");
-				   String url = "https://fcm.googleapis.com/v1/projects/" + Commons.getProperty(Property.FCM_PROJECT) + "/messages:send";
-				   String data = "{\"message\":{\"token\":\"" + token + "\",\"data\":{\"command\": \"" + command + "\",\"pin\":\"" + pin + "\",\"imei\":\"" + imei + "\"";
-					if (StringUtils.isNotEmpty(args)) {
-						data  += ",\"args\":\"" + args + "\"";
-					}
-					data += "}}}";
-				   String response = HttpUtils.processFileRequestWithOtherAuthn(new URL(url), "POST", "application/json", data, "application/json", "Bearer " + getAccessToken());
-				   logger.log(Level.INFO, "Received following response: " + response);
-				   if (HttpUtils.getResponseCode(url) == 200) {
-					   return 1;
-				   } else {
-					   return -1;
-				   }
-			   } else {
-				   logger.log(Level.SEVERE, "Oops! wrong imei returned!");
+		if (imei != null && pin != null && command != null) {
+		    String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "commandDevice?" + 
+	                 "imei="+  imei + "&pin=" + pin + "&command=" + command;
+		    if (StringUtils.isNotEmpty(args)) {
+		    	deviceUrl += "&args=" + args;
+		    }
+		    String deviceJson = null;
+		    try {
+			    deviceJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(deviceUrl), Commons.getProperty(Property.RH_GMS_USER), false);		
+			    JSONObject root = new JSONObject(deviceJson);
+			    if (root.optString("name") != null ) {
+			       return 1;
+			    } else {
+				   logger.log(Level.SEVERE, "Received following server response {0}", deviceJson);
 				   return -1;
-			   }
-		   } else if (deviceJson == null || StringUtils.contains(deviceJson, "503 Service Temporarily Unavailable")) {
-		       return -1;
-		   } else {
-			   logger.log(Level.SEVERE, "Received following server response {0}", deviceJson);
-			   return -1;
-		  }
+			    }
+		    } catch (Exception e) {
+		    	logger.log(Level.SEVERE, "Received following server response {0} {1} ", new Object[]{HttpUtils.getResponseCode(deviceUrl), deviceJson});
+		    	return -1; 
+		    }
 	   } else {
-		   logger.log(Level.SEVERE, "Imei and pin can't be null!");
+		   logger.log(Level.SEVERE, "Imei, pin and command can't be null!");
 		   return -1;
 	   }	
-	}
-	
-	private static String getAccessToken() throws Exception {
-		  GoogleCredential googleCredential = GoogleCredential.fromStream(DevicePersistenceUtils.class.getResourceAsStream("/fcm.json"))
-		      .createScoped(Arrays.asList("https://www.googleapis.com/auth/firebase.messaging"));
-		  googleCredential.refreshToken();
-		  return googleCredential.getAccessToken();
 	}
 }
