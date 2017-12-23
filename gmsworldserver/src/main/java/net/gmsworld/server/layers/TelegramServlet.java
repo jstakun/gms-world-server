@@ -87,7 +87,7 @@ public class TelegramServlet extends HttpServlet {
 								//remove chat id from white list
 								if (ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, Long.toString(telegramId))) {
 									List<String> whitelistList = new ArrayList<String>(Arrays.asList(ConfigurationManager.getArray(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST)));
-									if (whitelistList.remove(telegramId)) {
+									if (whitelistList.remove(Long.toString(telegramId))) {
 										ConfigurationManager.setParam(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST,  StringUtils.join(whitelistList, "|"));
 									} else {
 										logger.log(Level.SEVERE, "Unable to remove Telegram chat id " + telegramId + " from the whitelist!");
@@ -127,11 +127,14 @@ public class TelegramServlet extends HttpServlet {
 						//command imei pin args
 						String[] tokens = StringUtils.split(message, " ");
 						String reply = "";
-						if (tokens.length >= 3) {
+						if (tokens.length >= 3 && StringUtils.isAlpha(tokens[0]) && StringUtils.isNumeric(tokens[1]) && StringUtils.isNumeric(tokens[2])) {
 							try {
 								String command = tokens[0];
 								if (command.startsWith("/")) {
 									command = command.substring(1);
+								}
+								if (! command.endsWith("dlt")) {
+									command += "dlt";
 								}
 								Long imei = Long.valueOf(tokens[1]);
 								Integer pin = Integer.valueOf(tokens[2]);		

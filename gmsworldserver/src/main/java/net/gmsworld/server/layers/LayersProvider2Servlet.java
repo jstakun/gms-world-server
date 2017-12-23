@@ -283,8 +283,8 @@ public class LayersProvider2Servlet extends HttpServlet {
          	} else {
          		if (outPrinter != null) {
          			outPrinter.print(outString);
+         			outPrinter.close();
          		}
-         		outPrinter.close();
          	} 
          }    
     }

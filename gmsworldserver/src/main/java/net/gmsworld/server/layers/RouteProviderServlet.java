@@ -162,11 +162,11 @@ public class RouteProviderServlet extends HttpServlet {
         		String routeStr = request.getParameter("route");
         		if (StringUtils.startsWith(routeStr, "{")) {
         			String[] resp = RoutesUtils.cache(routeStr);
-        			if (!StringUtils.equals(resp[1], "200")) {
+        			if (! StringUtils.equals(resp[1], "200")) {
         				logger.log(Level.SEVERE, "Server error", resp[1] + ": " + resp[0]);
         				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, resp[0]);
         			} else if (resp[0] != null) {
-        				out.println(resp);
+        				out.println(resp[0]);
         				out.close();
         			}
         		} else {

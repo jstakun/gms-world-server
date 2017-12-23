@@ -334,9 +334,9 @@ public class CouponsUtils extends LayerHelper {
 
 	@Override
 	public List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String categoryid, String language, Locale locale, boolean useCache) throws Exception {
-		if (language == null) {
-			language = locale.getLanguage();
-		}
+		//if (language == null) {
+		//	language = locale.getLanguage();
+		//}
 		List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();    
 		String url = "http://api.8coupons.com/v1/getdeals?key=" + Commons.getProperty(Property.COUPONS_KEY) + "&lat=" + lat + "&lon=" + lng + "&mileradius=" + radius + "&limit=" + limit + "&orderby=date"; //popular, radius, date
             
