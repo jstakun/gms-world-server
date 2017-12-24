@@ -122,34 +122,32 @@ public class TelegramServlet extends HttpServlet {
 					JSONObject jsonObject = new JSONObject(jb.toString());
 					JSONObject messageJson = jsonObject.optJSONObject("message");
 					if (messageJson != null) {
-						String message = messageJson.getString("text");
 						Long telegramId= messageJson.getJSONObject("chat").getLong("id");
 						//command imei pin args
-						String[] tokens = StringUtils.split(message, " ");
+						String[] tokens = StringUtils.split(messageJson.getString("text"), " ");
 						String reply = "";
 						if (tokens.length >= 3 && StringUtils.isAlpha(tokens[0]) && StringUtils.isNumeric(tokens[1]) && StringUtils.isNumeric(tokens[2])) {
 							try {
 								String command = tokens[0];
+								Long imei = Long.valueOf(tokens[1]);
+								Integer pin = Integer.valueOf(tokens[2]);		
+								String args = tokens.length > 3 ? tokens[3] : null;
+								reply = "Command " +  command + " has been sent to the device " + imei; // + ". It is up to cloud when it will be delivered!";
 								if (StringUtils.startsWith(command, "/")) {
 									command = command.substring(1);
 								}
 								if (! StringUtils.endsWithIgnoreCase(command, "dlt")) {
 									command += "dlt";
 								}
-								Long imei = Long.valueOf(tokens[1]);
-								Integer pin = Integer.valueOf(tokens[2]);		
-								String args = tokens.length > 3 ? tokens[3] : null;
 								int status = DevicePersistenceUtils.sendCommand(imei, pin, command, args);
 								if (status == -1) {
-									reply = "Failed to send command " + command + " to device " + imei;
-								} else {
-									reply = "Command " +  command + " sent to device " + imei + ". It is up to cloud when it will be delivered!";
-								}
+									reply = "Failed to send command " + command + " to the device " + imei;
+								} 
 							} catch (Exception e) {
 								reply = "Failed to send command: " + e.getMessage();
 							}
 						} else {
-							reply = "Wrong command";
+							reply = "Invalid command!";
 						}
 						TelegramUtils.sendTelegram(telegramId, reply);
 					} else {
