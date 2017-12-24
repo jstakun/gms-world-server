@@ -130,10 +130,10 @@ public class TelegramServlet extends HttpServlet {
 						if (tokens.length >= 3 && StringUtils.isAlpha(tokens[0]) && StringUtils.isNumeric(tokens[1]) && StringUtils.isNumeric(tokens[2])) {
 							try {
 								String command = tokens[0];
-								if (command.startsWith("/")) {
+								if (StringUtils.startsWith(command, "/")) {
 									command = command.substring(1);
 								}
-								if (! command.endsWith("dlt")) {
+								if (! StringUtils.endsWithIgnoreCase(command, "dlt")) {
 									command += "dlt";
 								}
 								Long imei = Long.valueOf(tokens[1]);
