@@ -82,9 +82,9 @@ public class DevicePersistenceUtils {
 		if (command != null && pin != null) {
 			String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "commandDevice?" + 
 					"command=" + command + "&pin=" + pin;
-			if (imei != null && pin != null) {
-				deviceUrl += "&imei="+  imei + "&pin=" + pin;
-			} else if (username != null && name != null && pin != null) {
+			if (imei != null) {
+				deviceUrl += "&imei="+  imei;
+			} else if (username != null && name != null) {
 				deviceUrl += "&username=" + username + "&name=" + name ;
 			} else if (imei == null && (username == null || name == null)) {
 				logger.log(Level.SEVERE, "Imei and name or username can't be null!");
