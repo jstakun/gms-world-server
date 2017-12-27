@@ -43,12 +43,15 @@ public class DevicePersistenceUtils {
 	   }
 	}
 	
-	public static int setupDevice(Long imei, Integer pin, String username, String token) throws Exception {
+	public static int setupDevice(Long imei, Integer pin, String name, String username, String token) throws Exception {
 		if (imei != null && pin != null) {
 		    String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "setupDevice?" + 
 	                 "imei="+  imei + "&pin=" + pin;
 		    if (StringUtils.isNotEmpty(username)) {
 		    	deviceUrl += "&username=" + username;
+		    }
+		    if (StringUtils.isNotEmpty(name)) {
+		    	deviceUrl += "&name=" + name;
 		    }
 		    if (StringUtils.isNotEmpty(token)) {
 		    	deviceUrl += "&token=" + token;
@@ -75,10 +78,18 @@ public class DevicePersistenceUtils {
 	   }
 	}
 
-	public static int sendCommand(Long imei, Integer pin, String command, String args) throws Exception {
-		if (imei != null && pin != null && command != null) {
-		    String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "commandDevice?" + 
-	                 "imei="+  imei + "&pin=" + pin + "&command=" + command;
+	public static int sendCommand(Long imei, Integer pin, String name, String username, String command, String args) throws Exception {
+		if (command != null && pin != null) {
+			String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "commandDevice?" + 
+					"command=" + command + "&pin=" + pin;
+			if (imei != null && pin != null) {
+				deviceUrl += "&imei="+  imei + "&pin=" + pin;
+			} else if (username != null && name != null && pin != null) {
+				deviceUrl += "&username=" + username + "&name=" + name ;
+			} else if (imei == null && (username == null || name == null)) {
+				logger.log(Level.SEVERE, "Imei and name or username can't be null!");
+				return -1;
+			}
 		    if (StringUtils.isNotEmpty(args)) {
 		    	deviceUrl += "&args=" + args;
 		    }
@@ -97,7 +108,7 @@ public class DevicePersistenceUtils {
 		    	return -1; 
 		    }
 	   } else {
-		   logger.log(Level.SEVERE, "Imei, pin and command can't be null!");
+		   logger.log(Level.SEVERE, "Command and pin can't be null!");
 		   return -1;
 	   }	
 	}

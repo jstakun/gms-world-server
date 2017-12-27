@@ -123,23 +123,52 @@ public class TelegramServlet extends HttpServlet {
 					JSONObject messageJson = jsonObject.optJSONObject("message");
 					if (messageJson != null) {
 						Long telegramId= messageJson.getJSONObject("chat").getLong("id");
-						//command imei pin args
+						//command imei pin args 
+						//command name pin username args 
 						String[] tokens = StringUtils.split(messageJson.getString("text"), " ");
 						String reply = "";
-						if (tokens.length >= 3 && StringUtils.isAlpha(tokens[0]) && StringUtils.isNumeric(tokens[1]) && StringUtils.isNumeric(tokens[2])) {
+						if (tokens.length >= 3 && StringUtils.isAlpha(tokens[0]) && StringUtils.isNumeric(tokens[2])) {
 							try {
 								String command = tokens[0];
-								Long imei = Long.valueOf(tokens[1]);
-								Integer pin = Integer.valueOf(tokens[2]);		
-								String args = tokens.length > 3 ? tokens[3] : null;
-								reply = "Command " +  command + " has been sent to the device " + imei; // + ". It is up to cloud when it will be delivered!";
+								
+								Long imei = null;
+								String name = null;
+								if (StringUtils.isNumeric(tokens[1])) {
+									imei = Long.valueOf(tokens[1]);
+								} else {
+									name = tokens[1];
+								}
+								
+								Integer pin = Integer.valueOf(tokens[2]);	
+								
+								int argsIndex = 3;
+								String username = null;
+								if (imei == null) {
+									argsIndex = 4;
+									username = tokens[3];
+								}
+								
+								String args = null; 
+								if (tokens.length == argsIndex+1) {
+									 args = tokens[argsIndex];
+								} else if (tokens.length > argsIndex+1) {
+									StringUtils.join(Arrays.copyOfRange(tokens, argsIndex, tokens.length-1), " ");
+								}
+								
+								if (imei != null) {
+									reply = "Command " +  command + " has been sent to the device " + imei; // + ". It is up to cloud when it will be delivered to the device!";
+								} else {
+									reply = "Command " +  command + " has been sent to the device " + name; // + ". It is up to cloud when it will be delivered to the device!";
+								}
+								
 								if (StringUtils.startsWith(command, "/")) {
 									command = command.substring(1);
 								}
 								if (! StringUtils.endsWithIgnoreCase(command, "dlt")) {
 									command += "dlt";
 								}
-								int status = DevicePersistenceUtils.sendCommand(imei, pin, command, args);
+								
+								int status = DevicePersistenceUtils.sendCommand(imei, pin, name, username, command, args);
 								if (status == -1) {
 									reply = "Failed to send command " + command + " to the device " + imei;
 								} 
