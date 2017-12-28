@@ -170,7 +170,11 @@ public class TelegramServlet extends HttpServlet {
 								
 								int status = DevicePersistenceUtils.sendCommand(imei, pin, name, username, command, args);
 								if (status == -1) {
-									reply = "Failed to send command " + command + " to the device " + imei;
+									if (imei != null) {
+										reply = "Failed to send command " + command.substring(0, command.length()-3) + " to the device " + imei;
+									} else {
+										reply = "Failed to send command " + command.substring(0, command.length()-3) + " to the device " + name;
+									}
 								} 
 							} catch (Exception e) {
 								reply = "Failed to send command: " + e.getMessage();
