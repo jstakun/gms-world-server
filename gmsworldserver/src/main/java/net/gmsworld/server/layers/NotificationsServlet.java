@@ -185,7 +185,6 @@ public class NotificationsServlet extends HttpServlet {
 							// check if chat id is on white list
 							if (ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, Long.toString(telegramId))) {
 				            	TelegramUtils.sendTelegram(telegramId, message);
-				            	//TODO testing send location
 				            	if (latitude != null && longitude != null && latitude != 90d && longitude != 180d) {
 				            		TelegramUtils.sendLocationTelegram(telegramId, latitude, longitude);
 				            	}
@@ -233,13 +232,21 @@ public class NotificationsServlet extends HttpServlet {
 										+ "You can unregister at any time by sending /unregister command message.");
 								reply = new JSONObject().put("status", "registered");
 							} else if (telegramId > 0) {
-								TelegramUtils.sendTelegram(telegramId, "We've received Device Locator registration request from you.\n"
+								Integer responseCode = TelegramUtils.sendTelegram(telegramId, "We've received Device Locator registration request from you.\n"
 										+ "If this is correct please send us back /register command message, otherwise please ignore this message.");
-								reply = new JSONObject().put("status", "unverified");
+								if (responseCode != null && responseCode == 200) {
+									reply = new JSONObject().put("status", "unverified");
+								} else {
+									response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+								}
 							} else if (telegramId < 0) {
-								TelegramUtils.sendTelegram(telegramId, "We've received Device Locator registration request from you.\n Your ID seems to be Channel ID."
+								Integer responseCode = TelegramUtils.sendTelegram(telegramId, "We've received Device Locator registration request from this Channel.\n"
 										+ "If this is correct please contact us via email at: device-locator@gms-world.net and send your Channel ID: " + telegramId + ", otherwise please ignore this message.");
-								reply = new JSONObject().put("status", "unverified");
+								if (responseCode != null && responseCode == 200) {
+									reply = new JSONObject().put("status", "unverified");
+								} else {
+									response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+								}
 							}
 						} else {
 							logger.log(Level.WARNING, "Wrong chat id " + telegramId);

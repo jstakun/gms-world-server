@@ -13,27 +13,31 @@ public class TelegramUtils {
 	
 	private static final Logger logger = Logger.getLogger(TelegramUtils.class.getName());
 	
-	public static void sendTelegram(final Long telegramId, final String message) throws IOException {
-        if (telegramId != null) {
+	public static Integer sendTelegram(final Long telegramId, final String message) throws IOException {
+		Integer responseCode = null;
+		if (telegramId != null) {
         	String urlStr = "https://api.telegram.org/bot" + Commons.getProperty(Property.TELEGRAM_TOKEN) + "/sendMessage"; 
         	URL url = new URL(urlStr);
             String response = HttpUtils.processFileRequest(url, "POST", null, "text=" + message + "&chat_id=" + telegramId);
-            Integer responseCode = HttpUtils.getResponseCode(urlStr);
+            responseCode = HttpUtils.getResponseCode(urlStr);
             if (responseCode != 200) {
             	logger.log(Level.SEVERE,  "Received following server response: " + responseCode + " - " + response);
             }
         }
+		return responseCode;
     }
 	
-	public static void sendLocationTelegram(final Long telegramId, final Double latitude, final Double longitude) throws IOException {
-        if (telegramId != null) {
+	public static Integer sendLocationTelegram(final Long telegramId, final Double latitude, final Double longitude) throws IOException {
+		Integer responseCode = null;
+		if (telegramId != null) {
         	String urlStr = "https://api.telegram.org/bot" + Commons.getProperty(Property.TELEGRAM_TOKEN) + "/sendLocation"; 
         	URL url = new URL(urlStr);
             String response = HttpUtils.processFileRequest(url, "POST", null, "latitude=" + latitude + "&longitude=" + longitude + "&chat_id=" + telegramId);
-            Integer responseCode = HttpUtils.getResponseCode(urlStr);
+            responseCode = HttpUtils.getResponseCode(urlStr);
             if (responseCode != 200) {
             	logger.log(Level.SEVERE,  "Received following server response: " + responseCode + " - " + response);
             }
         }
+		return responseCode;
     }
 }
