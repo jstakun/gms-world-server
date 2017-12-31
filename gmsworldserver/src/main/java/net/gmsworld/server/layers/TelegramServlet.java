@@ -83,10 +83,10 @@ public class TelegramServlet extends HttpServlet {
 								}		
 								if (telegramId > 0) {
 									TelegramUtils.sendTelegram(telegramId, "You've been registered to Device Locator notifications.\n"
-									+ "You can unregister at any time by sending /unregister command message.");
+									+ "You can unregister at any time by sending /unregister command message to @device_locator_bot");
 								} else if (telegramId < 0) {
 									TelegramUtils.sendTelegram(telegramId, "You've been registered to Device Locator notifications.\n"
-											+ "You can unregister at any time by sending /unregister " + telegramId +  " command message.");
+											+ "You can unregister at any time by sending /unregister " + telegramId +  " command message to @device_locator_bot");
 								}
 							} else if (StringUtils.startsWithIgnoreCase(message, "/unregister") || StringUtils.startsWithIgnoreCase(message, "unregister")) {
 								//remove chat or channel id from white list

@@ -461,7 +461,7 @@ public class LandmarkPersistenceUtils {
    			logger.log(Level.INFO, "Received response: " + gJson);
    			if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
    				JSONObject count = new JSONObject(gJson);
-   				result = count.getInt("count");     
+   				result = count.optInt("count", 0);     
    			} else {
    				logger.log(Level.SEVERE, "Received following server response: " + gJson);
    			}

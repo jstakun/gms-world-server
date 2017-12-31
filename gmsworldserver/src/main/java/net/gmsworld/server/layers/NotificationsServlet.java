@@ -190,7 +190,7 @@ public class NotificationsServlet extends HttpServlet {
 				            	}
 				            	reply = new JSONObject().put("status", "sent");
 				            } else {
-				            	logger.log(Level.WARNING, "Telegram chat id " + telegramId + " is not on whitelist!");
+				            	logger.log(Level.WARNING, "Telegram chat or channel Id " + telegramId + " is not on whitelist!");
 				            	reply = new JSONObject().put("status", "unverified");
 				            }
 						} else {
@@ -228,8 +228,13 @@ public class NotificationsServlet extends HttpServlet {
 						long telegramId = NumberUtils.getLong(request.getParameter("chatId"), 0L);
 						if (telegramId != 0) {
 							if (ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, Long.toString(telegramId))) {
-								TelegramUtils.sendTelegram(telegramId, "You've been already registered to Device Locator notifications.\n"
-										+ "You can unregister at any time by sending /unregister command message.");
+								if (telegramId > 0) {
+									TelegramUtils.sendTelegram(telegramId, "You've been already registered to Device Locator notifications.\n"
+										+ "You can unregister at any time by sending /unregister command message to @device_locator_bot");
+								} else {
+									TelegramUtils.sendTelegram(telegramId, "You've been already registered to Device Locator notifications.\n"
+											+ "You can unregister at any time by sending /unregister " + telegramId + " command message to @device_locator_bot");
+								}
 								reply = new JSONObject().put("status", "registered");
 							} else if (telegramId > 0) {
 								Integer responseCode = TelegramUtils.sendTelegram(telegramId, "We've received Device Locator registration request from you.\n"

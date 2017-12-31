@@ -39,7 +39,7 @@ public class ImageUploadServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(ImageUploadServlet.class.getName());
-	private static final int ONE_MB = 1024 * 1024;
+	private static final int EIGHT_MB = 8 * 1024 * 1024;
 
 	/**
 	 * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -72,7 +72,7 @@ public class ImageUploadServlet extends HttpServlet {
 			} else if (((!Double.isNaN(lat) && !Double.isNaN(lng)) || (StringUtils.isNotEmpty(bucketName) && silent)) && isMultipart) {
 
 				ServletFileUpload upload = new ServletFileUpload();
-				upload.setSizeMax(ONE_MB); // 1 MB
+				upload.setSizeMax(EIGHT_MB); // 8 MB
 
 				FileItemIterator iter = upload.getItemIterator(request);
 

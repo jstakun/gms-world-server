@@ -21,7 +21,11 @@
                 Double centerLat = 0.0;
                 Double centerLon = 0.0;
                 if (request.getAttribute("heatMapData") != null) {
-                    heatMapData = (Map<String, Integer>) request.getAttribute("heatMapData");
+                	try {
+                    	heatMapData = (Map<String, Integer>) request.getAttribute("heatMapData");
+                	} catch (Exception e) {
+                		
+                	}
                 }
                 if (request.getAttribute("centerLat") != null) {
                     centerLat = (Double) request.getAttribute("centerLat");
