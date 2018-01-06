@@ -30,7 +30,7 @@
     	<ul>
     	   <li><b>Locatedl</b> - send current device GPS location<br/>Usage: Locatedl&lt;security pin&gt;<br/>Example (assuming your security pin is 1234): <b>Locatedl1234</b><br/></li>
     	   <li><b>Pingdl</b> - send test message to check connectivity with the device<br/>Usage: Pingdl&lt;security pin&gt;<br/>Example (assuming your security pin is 1234): <b>Pingdl1234</b><br/></li>  
-    	   <li><b>Ringdl</b> - start playing ring tone on the device.<font color="red">Send this command again to stop playing ring tone!</font><br/>Usage: Ringdl&lt;security pin&gt;<br/>Example (assuming your security pin is 1234): <b>Ringdl1234</b><br/></li>  
+    	   <li><b>Ringdl</b> - start playing ring tone on the device. <font color="red">Send this command again to stop playing ring tone!</font><br/>Usage: Ringdl&lt;security pin&gt;<br/>Example (assuming your security pin is 1234): <b>Ringdl1234</b><br/></li>  
            <li><b>Calldl</b> -  call sender. Device should initiate phone call to SMS sender number<br/>Usage: Calldl&lt;security pin&gt;<br/>Example (assuming your security pin is 1234): <b>Calldl1234</b><br/></li>
     	   <li><b>Photodl</b> -  take photo with front camera. You'll receive link to photo image. This command requires enabled failed login service and camera permissions using application action menu<br/>Usage: Photodl&lt;security pin&gt;<br/>Example (assuming your security pin is 1234): <b>Photodl1234</b><br/></li>
     	   <li><b>Startdl</b> - start device location tracking and location recoding<br/>Usage: Startdl&lt;security pin&gt;<br/>Example (assuming your security pin is 1234): <b>Startdl1234</b><br/></li>

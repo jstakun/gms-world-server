@@ -66,7 +66,11 @@ public class MailUtils {
     		 HttpUtils.processFileRequestWithBasicAuthn(new URL(MAILER_SERVER_URL), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
     		 Integer responseCode = HttpUtils.getResponseCode(MAILER_SERVER_URL);
     		 logger.log(Level.INFO, "Received response code: " + responseCode);
-    		 return Integer.toString(responseCode);
+    		 if (responseCode != null) {
+    			 return Integer.toString(responseCode);
+    		 } else {
+    			 return null;
+    		 }
     	 } catch (Exception e) {
     		 logger.log(Level.SEVERE, e.getMessage(), e);
     		 return null;
