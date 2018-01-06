@@ -20,7 +20,7 @@ public class TelegramUtils {
         	URL url = new URL(urlStr);
             String response = HttpUtils.processFileRequest(url, "POST", null, "text=" + message + "&chat_id=" + telegramId);
             responseCode = HttpUtils.getResponseCode(urlStr);
-            if (responseCode != 200) {
+            if (responseCode == null || responseCode != 200) {
             	logger.log(Level.SEVERE,  "Received following server response: " + responseCode + " - " + response);
             }
         }
