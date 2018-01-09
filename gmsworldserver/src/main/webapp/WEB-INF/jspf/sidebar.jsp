@@ -28,7 +28,7 @@
         </p>
         
         <p>
-            <a href="https://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui" target="_blank">
+            <a href="https://play.google.com/store/apps/developer?id=GMS+World" target="_blank">
   				<img alt="Get it on Google Play" title="Get it on Google Play" src="/images/en_generic_rgb_wo_60.png" />
 			</a>
         </p>

@@ -88,6 +88,7 @@
                     <ul>
                         <li>
                             <a href="https://github.com/jstakun/device-locator/raw/master/app/app-release.apk">Android</a>.
+                            Find Device Locator at <a href="http://market.android.com/details?id=net.gmsworld.devicelocator">Google Play</a>.
                            <i>Please note Android application is in Public Beta.</i><br/>
                         </li>
                     </ul>
