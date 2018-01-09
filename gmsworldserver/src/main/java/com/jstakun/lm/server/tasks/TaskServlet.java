@@ -23,6 +23,8 @@ import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.jstakun.lm.server.utils.persistence.ScreenshotPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.ServiceLogPersistenceUtils;
 
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.ImageUtils;
@@ -73,12 +75,14 @@ public class TaskServlet extends HttpServlet {
                     logger.log(Level.INFO, "Wrong parameter entity: {0}", entity);
                 }
              } else if (StringUtils.equalsIgnoreCase(action, "rhcloud")) {
-                Integer status = rhcloudHealthCheck("hotels", "https://hotels-api.b9ad.pro-us-east-1.openshiftapps.com/camel");
+                Integer status = rhcloudHealthCheck("hotels", "http://openapi-hotels.b9ad.pro-us-east-1.openshiftapps.com/camel/v1/ping");
                 if (status == null || status > 299) {
+                	//TODO restart hotels db and hotels app server
                 	logger.log(Level.SEVERE, "Received hotels status code " + status);
                 }
                 status = rhcloudHealthCheck("landmarks", "https://openapi-landmarks.b9ad.pro-us-east-1.openshiftapps.com/");
                 if (status == null || status > 299) {
+                	//TODO restart landmarks app server
                 	logger.log(Level.SEVERE, "Received landmarks status code " + status);
                 }
                 logger.log(Level.INFO, "Done");
@@ -154,7 +158,7 @@ public class TaskServlet extends HttpServlet {
     private Integer rhcloudHealthCheck(String appname, String healthCheckUrl) throws IOException {
     	logger.log(Level.INFO, "Checking if {0} app is running...", appname);
     	URL rhcloudUrl = new URL(healthCheckUrl);
-    	HttpUtils.processFileRequest(rhcloudUrl);
+    	HttpUtils.processFileRequestWithAuthn(rhcloudUrl, Commons.getProperty(Property.RH_GMS_USER));
     	Integer status = HttpUtils.getResponseCode(rhcloudUrl.toExternalForm()); 
     	if (status != null && status == 503) {
     		logger.log(Level.SEVERE, "Received Service Unavailable error response!");

@@ -22,6 +22,10 @@ public class TelegramUtils {
             responseCode = HttpUtils.getResponseCode(urlStr);
             if (responseCode == null || responseCode != 200) {
             	logger.log(Level.SEVERE,  "Received following server response: " + responseCode + " - " + response);
+            	if (responseCode != null && responseCode == 400) {
+            		logger.log(Level.SEVERE, "Telegram chat or channel id: " + telegramId + ", message: " + message);
+            		
+            	}
             }
         }
 		return responseCode;
@@ -34,8 +38,11 @@ public class TelegramUtils {
         	URL url = new URL(urlStr);
             String response = HttpUtils.processFileRequest(url, "POST", null, "latitude=" + latitude + "&longitude=" + longitude + "&chat_id=" + telegramId);
             responseCode = HttpUtils.getResponseCode(urlStr);
-            if (responseCode != 200) {
+            if (responseCode == null || responseCode != 200) {
             	logger.log(Level.SEVERE,  "Received following server response: " + responseCode + " - " + response);
+            	if (responseCode != null && responseCode == 400) {
+            		logger.log(Level.SEVERE, "Telegram chat or channel id: " + telegramId + ", lat: " + latitude + ", lng: " + longitude);           		
+            	}
             }
         }
 		return responseCode;
