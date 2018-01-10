@@ -76,6 +76,10 @@ public class MailUtils {
     		 return null;
     	 }
     }
+    
+    public static void sendAdminMail(String message) {
+    	sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "Admin message", message, "text/html");
+    }
 
     public static void sendEmailingMessage(String toA, String nick, String message) {
         sendMail(ConfigurationManager.LM_MAIL, ConfigurationManager.LM_NICK, toA, nick, "Message from Landmark Manager", message, "text/html");

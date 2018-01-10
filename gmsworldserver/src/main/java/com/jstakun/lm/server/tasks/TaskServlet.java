@@ -19,12 +19,11 @@ import org.json.JSONObject;
 
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.utils.FileUtils;
+import com.jstakun.lm.server.utils.RHCloudUtils;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.jstakun.lm.server.utils.persistence.ScreenshotPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.ServiceLogPersistenceUtils;
 
-import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.ImageUtils;
@@ -68,26 +67,14 @@ public class TaskServlet extends HttpServlet {
                     logger.log(Level.INFO, "Deleted {0} logs.", count);
                 } else if (StringUtils.equalsIgnoreCase(entity, "screenshot")) {
                   	int ndays = NumberUtils.getInt(ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.SCREENSHOT_OLDER_THAN_DAYS, "90"), 90);
-                    //removed on 02/07/14
-                  	//Date nDaysAgo = DateUtils.getDayInPast(ndays, true);
-                    //long count = ScreenshotPersistenceUtils.deleteScreenshotsOlderThanDate(nDaysAgo);
                     long count = ScreenshotPersistenceUtils.deleteScreenshotsOlderThanDate(ndays);
                     logger.log(Level.INFO, "Deleted {0} screenshots.", count);
                 } else {
                     logger.log(Level.INFO, "Wrong parameter entity: {0}", entity);
                 }
              } else if (StringUtils.equalsIgnoreCase(action, "rhcloud")) {
-                Integer status = rhcloudHealthCheck("hotels", "http://openapi-hotels.b9ad.pro-us-east-1.openshiftapps.com/camel/v1/ping");
-                if (status == null || status > 299) {
-                	//TODO restart hotels db and hotels app server
-                	logger.log(Level.SEVERE, "Received hotels status code " + status);
-                }
-                status = rhcloudHealthCheck("landmarks", "https://openapi-landmarks.b9ad.pro-us-east-1.openshiftapps.com/");
-                if (status == null || status > 299) {
-                	//TODO restart landmarks app server
-                	logger.log(Level.SEVERE, "Received landmarks status code " + status);
-                }
-                logger.log(Level.INFO, "Done");
+               RHCloudUtils.rhcloudHealthCheck();
+               logger.log(Level.INFO, "Done");
              } else if (StringUtils.equalsIgnoreCase(action, "loadImage")) {
                 //save map image thumbnail
                 double latitude = NumberUtils.getDouble(request.getParameter("latitude"), -200d);
@@ -155,19 +142,6 @@ public class TaskServlet extends HttpServlet {
     @Override
     public String getServletInfo() {
         return "Cron Tasks Servlet";
-    }
-    
-    private Integer rhcloudHealthCheck(String appname, String healthCheckUrl) throws IOException {
-    	logger.log(Level.INFO, "Checking if {0} app is running...", appname);
-    	URL rhcloudUrl = new URL(healthCheckUrl);
-    	HttpUtils.processFileRequestWithBasicAuthn(rhcloudUrl, Commons.getProperty(Property.RH_GMS_USER), true);
-    	Integer status = HttpUtils.getResponseCode(rhcloudUrl.toExternalForm()); 
-    	if (status != null && status == 503) {
-    		logger.log(Level.SEVERE, "Received Service Unavailable error response!");
-    	} else {
-    		logger.log(Level.INFO, "Received server response code " + status);
-    	}
-    	return status;
     }
     
     private void loadCurrency(String fromcc) {
