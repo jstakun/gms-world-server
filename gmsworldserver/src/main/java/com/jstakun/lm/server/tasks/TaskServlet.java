@@ -56,7 +56,9 @@ public class TaskServlet extends HttpServlet {
             String entity = request.getParameter("entity");
             String action = request.getParameter("action");
             
-            logger.log(Level.INFO, "Running " + request.getRequestURI() + "?" + request.getQueryString());
+            if (request.getQueryString() != null) {
+            	logger.log(Level.INFO, "Running " + request.getRequestURI() + "?" + request.getQueryString());
+            }
             
             if (StringUtils.equalsIgnoreCase(action, "purge")) {
                 if (StringUtils.equalsIgnoreCase(entity, "log")) {
@@ -158,7 +160,7 @@ public class TaskServlet extends HttpServlet {
     private Integer rhcloudHealthCheck(String appname, String healthCheckUrl) throws IOException {
     	logger.log(Level.INFO, "Checking if {0} app is running...", appname);
     	URL rhcloudUrl = new URL(healthCheckUrl);
-    	HttpUtils.processFileRequestWithAuthn(rhcloudUrl, Commons.getProperty(Property.RH_GMS_USER));
+    	HttpUtils.processFileRequestWithBasicAuthn(rhcloudUrl, Commons.getProperty(Property.RH_GMS_USER), true);
     	Integer status = HttpUtils.getResponseCode(rhcloudUrl.toExternalForm()); 
     	if (status != null && status == 503) {
     		logger.log(Level.SEVERE, "Received Service Unavailable error response!");

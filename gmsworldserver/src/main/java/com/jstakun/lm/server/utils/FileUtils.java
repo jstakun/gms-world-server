@@ -44,27 +44,6 @@ public class FileUtils {
         return fileService.getBlobKey(file);
 	}*/	
 	
-	/*public static void saveFileV2(String fileName, InputStream is, double lat, double lng) throws IOException {
-		String bucketName = AppIdentityServiceFactory.getAppIdentityService().getDefaultGcsBucketName();
-		GcsService gcsService = GcsServiceFactory.createGcsService();
-        GcsFilename filename = new GcsFilename(bucketName, fileName);
-        GcsFileOptions options = new GcsFileOptions.Builder()
-            .mimeType("image/jpeg")
-            .acl("public-read")
-            .addUserMetadata("lat", Double.toString(lat))
-            .addUserMetadata("lng", Double.toString(lng))
-            .build();
-        GcsOutputChannel writeChannel = gcsService.createOrReplace(filename, options);
-        
-        int nRead;
-        byte[] data = new byte[8192];
-        while ((nRead = is.read(data, 0, data.length)) != -1) {
-            writeChannel.write(ByteBuffer.wrap(data, 0, nRead));
-        }
-        
-        writeChannel.close();
-	}*/
-	
 	public static void saveFileV2(String bucketName, String fileName, byte[] file, double lat, double lng) throws IOException {
         if (bucketName == null) {			
         	 bucketName = AppIdentityServiceFactory.getAppIdentityService().getDefaultGcsBucketName();

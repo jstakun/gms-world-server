@@ -39,11 +39,11 @@
             </a>	
         </p>
         
-        <p>
+        <!--p>
             <a href="http://apps.opera.com/badge.php?a=c&v=dark&did=7629&pid=36609" target="_blank">
             	<img src="https://apps.opera.com/badge.php?a=s&v=dark&did=7629&pid=36609" width="173" height="55" alt="Get it on Opera Mobile Store" title="Get in on Opera Mobile Store"/>
             </a>  
-        </p>
+        </p-->
         
         <p>
             <a href="https://store.yandex.com/" target="_blank">
