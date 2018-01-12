@@ -85,7 +85,7 @@ public class TwitterUtils {
                                 	update.setMedia("landmark.jpg", is);
                             	}
                             } catch (Exception e) {
-                            	logger.log(Level.SEVERE, "Failed to load landmark.", e);
+                            	logger.log(Level.WARNING, "Failed to load image " + imageUrl, e);
                             }
                         }
                 }

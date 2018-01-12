@@ -64,6 +64,7 @@ public class FileUtils {
 	public static boolean deleteFileV2(String bucketName, String fileName) throws IOException {
 		if (bucketName == null) {
 			bucketName = AppIdentityServiceFactory.getAppIdentityService().getDefaultGcsBucketName();
+			//logger.log(Level.INFO, "Deleting file from bucket " + bucketName);
 		}
 		GcsService gcsService = GcsServiceFactory.createGcsService();
         GcsFilename filename = new GcsFilename(bucketName, fileName);

@@ -122,14 +122,16 @@ public class ScreenshotPersistenceUtils {
     public static boolean deleteScreenshot(String filename, int id) {
     	boolean deleted = false;
     	try {
-    		if (FileUtils.deleteFileV2(null, filename)) {
-    			String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "itemProvider";
-             	String params = "type=screenshot&id=" + id + "&action=remove";
-    			String response = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
-    			logger.log(Level.INFO, "Deleting screenshot " + id + " response: " + response);
-    			deleted = true;    
-    		} else {
+    		if (!FileUtils.deleteFileV2(null, filename)) {
     			logger.log(Level.SEVERE, "Failed to delete file {0} from screeshot {1}", new Object[] {filename, id});
+    		}
+    		String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "itemProvider";
+            String params = "type=screenshot&id=" + id + "&action=remove";
+    		String response = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
+    		logger.log(Level.INFO, "Deleting screenshot " + id + " response: " + response);
+    		Integer responseCode = HttpUtils.getResponseCode(gUrl);
+    		if (responseCode != null && responseCode == 200) {
+    			deleted = true;    
     		}
     	} catch (Exception e) {
         	logger.log(Level.SEVERE, e.getMessage(), e);
