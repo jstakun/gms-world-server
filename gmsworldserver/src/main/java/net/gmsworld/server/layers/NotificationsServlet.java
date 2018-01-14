@@ -22,6 +22,7 @@ import org.json.JSONObject;
 import com.google.gdata.util.common.util.Base64;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.utils.MailUtils;
+import com.jstakun.lm.server.utils.RoutesUtils;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceWebUtils;
 
@@ -73,6 +74,7 @@ public class NotificationsServlet extends HttpServlet {
 			} else {
 				String type = request.getParameter("type");
 				int appId = NumberUtils.getInt(request.getHeader(Commons.APP_HEADER), -1);
+				String routeId = request.getHeader(" X-GMS-RouteId");
 				JSONObject reply = new JSONObject();
 
 				Double latitude = null;
@@ -89,8 +91,8 @@ public class NotificationsServlet extends HttpServlet {
 	                 longitude = GeocodeUtils.getLongitude(request.getHeader(Commons.LNG_HEADER));
 	            }
 	            
-				if (GeocodeUtils.isValidLatitude(latitude) && GeocodeUtils.isValidLongitude(longitude)) {
-					//TODO skip dl route points X-GMS-RouteId
+	            //create new landmark but skip dl route points
+				if (StringUtils.isEmpty(routeId) && GeocodeUtils.isValidLatitude(latitude) && GeocodeUtils.isValidLongitude(longitude)) {
 					try {
 						Landmark l = new Landmark();
 						l.setLatitude(latitude);
@@ -132,6 +134,11 @@ public class NotificationsServlet extends HttpServlet {
 				} //else {
 					//logger.log(Level.INFO, "No user location provided");
 				//}
+				
+				//add route point to cache
+				if (StringUtils.isNotEmpty(routeId) && GeocodeUtils.isValidLatitude(latitude) && GeocodeUtils.isValidLongitude(longitude)) {
+        			RoutesUtils.addRoutePointToCache(routeId, latitude, longitude);
+        		}
 
 				if (StringUtils.equals(type, "v")) {
 					// check for version
@@ -183,8 +190,7 @@ public class NotificationsServlet extends HttpServlet {
 							// check if chat id is on white list
 							if (ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, Long.toString(telegramId))) {
 				            	TelegramUtils.sendTelegram(telegramId, message);
-				            	if (latitude != null && longitude != null && latitude != 90d && longitude != 180d) {
-				            		//TODO save location from header X-GMS-RouteId to route cache
+				            	if (GeocodeUtils.isValidLatitude(latitude) && GeocodeUtils.isValidLongitude(longitude)) {
 				            		TelegramUtils.sendLocationTelegram(telegramId, latitude, longitude);
 				            	}
 				            	reply = new JSONObject().put("status", "sent");

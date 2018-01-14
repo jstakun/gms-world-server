@@ -16,6 +16,8 @@
         <title>See your recorded route on the map</title>
         <% if (route != null) {%>
         <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+        <!-- TODO temporal solution -->
+        <meta http-equiv="refresh" content="30">
         <style type="text/css">
             html, body {width: 100%; height: 100%}
             body {margin-top: 0px; margin-right: 0px; margin-left: 0px; margin-bottom: 0px}
@@ -109,7 +111,7 @@
                     	routePath.setMap(map);						
                     } else {
                         console.log('Route path is empty!');
-                        window.alert('No route has been downloaded. You\'ll be redirected to main page!'); 
+                        window.alert('Route has not been found. You\'ll be redirected to GMS World main page!'); 
                         window.location='https://www.gms-world.net/';
                     }  
                  }
