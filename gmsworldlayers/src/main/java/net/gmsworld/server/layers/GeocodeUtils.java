@@ -67,6 +67,32 @@ public class GeocodeUtils {
         }
         return longitude;
     }
+    
+    protected static boolean isValidLatitude(Double latitude) {
+    	if (latitude != null) {
+    		try {
+    			Validate.isTrue(!(latitude > 90.0 || latitude < -90.0), "Latitude must be in [-90, 90]  but was ", latitude);
+    		} catch (Exception e) {
+    			return false;
+    		}
+    		return true;
+    	} else {
+    		return false;
+    	}
+    }
+    
+    protected static boolean isValidLongitude(Double longitude) {
+    	if (longitude != null) {
+    		try {
+    			Validate.isTrue(!(longitude > 180.0 || longitude < -180.0), "Longitude must be in [-180, 180] but was ", longitude);
+    		} catch (Exception e) {
+    			return false;
+    		}
+    		return true;
+    	} else {
+    		return false;
+    	}
+    }
 
     protected static boolean isNorthAmericaLocation(double lat, double lng) {
     	boolean isNA = false;

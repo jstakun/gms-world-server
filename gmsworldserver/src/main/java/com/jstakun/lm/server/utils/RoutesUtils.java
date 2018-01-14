@@ -82,6 +82,7 @@ public class RoutesUtils {
                 }
 	            
 	            public static JSONObject loadFromCache(String routeId) {
+	            	//TODO check first if route is cached
 	            	JSONObject response = null;
 	            	String reply = null;
 	            	try {

@@ -13,7 +13,7 @@
 <html>
     <head>
         <%@ include file="/WEB-INF/jspf/head_small.jspf" %>
-        <title>Route Full Screen Map</title>
+        <title>See your recorded route on the map</title>
         <% if (route != null) {%>
         <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
         <style type="text/css">

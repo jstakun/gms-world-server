@@ -24,7 +24,7 @@
     %>
     <head>
         <%@ include file="/WEB-INF/jspf/head_small.jspf" %>
-        <title>Landmark Full Screen Map</title>
+        <title>GMS World landmarks on the map</title>
         <% if (landmark != null) {%>
         <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
         <style type="text/css">

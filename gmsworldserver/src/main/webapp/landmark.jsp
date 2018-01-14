@@ -19,7 +19,7 @@
 <html xmlns="http://www.cw3.org/1999/xhtml" xml:lang="en" lang="en">
     <head>
         <%@ include file="/WEB-INF/jspf/head.jspf" %>
-        <title>GMS World - Landmark Details</title>
+        <title>GMS World landmark details</title>
     </head>
     <body>
         <jsp:include page="/WEB-INF/jspf/header.jsp"/>

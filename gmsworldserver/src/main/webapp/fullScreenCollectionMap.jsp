@@ -38,7 +38,7 @@
     %>
     <head>
         <%@ include file="/WEB-INF/jspf/head_small.jspf" %>
-        <title>Landmark List Full Screen Map</title>
+        <title>GMS World landmarks on the map</title>
         <%
         	if (landmarkList != null) {
         %>

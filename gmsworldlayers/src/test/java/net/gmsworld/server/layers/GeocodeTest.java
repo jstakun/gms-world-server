@@ -80,7 +80,14 @@ public class GeocodeTest {
 	
         ai = GeocodeHelperFactory.processReverseGeocode(39.457651,-0.400439);
         System.out.println("generic 1: " + ai.getField(AddressInfo.CITY) + " " + ai.getField(AddressInfo.COUNTRY) + " " + ai.getField(AddressInfo.EXTENSION));
+     
+        System.out.println(GeocodeUtils.isValidLatitude(99d));
         
+        System.out.println(GeocodeUtils.isValidLongitude(199d));
+        
+        System.out.println(GeocodeUtils.isValidLatitude(89d));
+        
+        System.out.println(GeocodeUtils.isValidLongitude(179d));
 	}
 
 }
