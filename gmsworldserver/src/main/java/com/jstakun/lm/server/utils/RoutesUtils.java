@@ -102,11 +102,13 @@ public class RoutesUtils {
 	        	   try {
 	        		   URL cacheUrl = new URL(ROUTE_URL_NAME + routeId + "?user_key=" + Commons.getProperty(Property.RH_ROUTES_API_KEY));
 	        		   reply = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, "GET", null, null, "application/json; charset=utf-8", Commons.getProperty(Property.RH_GMS_USER));
-	        		   if (HttpUtils.getResponseCode(cacheUrl.toString()) != 200 || !StringUtils.startsWith(reply, "{")) {
+	        		   Integer responseCode = HttpUtils.getResponseCode(cacheUrl.toString());
+	        		   if (responseCode == null || responseCode != 200 || !StringUtils.startsWith(reply, "{")) {
 	        			   logger.log(Level.SEVERE, "Received following response from " + cacheUrl.toString() + ": -" + reply + "-");
 	        			   cacheUrl = new URL(ROUTE_URL_ID  + routeId + "?user_key=" + Commons.getProperty(Property.RH_ROUTES_API_KEY));
 	        			   reply = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, "GET", null, null, "application/json; charset=utf-8", Commons.getProperty(Property.RH_GMS_USER));
-	        			   if (HttpUtils.getResponseCode(cacheUrl.toString()) != 200 || !StringUtils.startsWith(reply, "{")) {
+	        			   responseCode = HttpUtils.getResponseCode(cacheUrl.toString());
+	        	           if (responseCode == null || responseCode != 200 || !StringUtils.startsWith(reply, "{")) {
 	        				   logger.log(Level.SEVERE, "Received following response from " + cacheUrl.toString() + ": -" + reply + "-");
 	        			   }	
 	        		   }
@@ -126,10 +128,11 @@ public class RoutesUtils {
 	    		 Feature f = new Feature();
 	    		 f.setGeometry(new LineString());
 	    		 f.setProperty("description", "Currently recorder route...");
+	    		 f.setProperty("name", routeId);
 	    		 fc.add(f);
 	    	 }
 	    	 LineString ls = (LineString) fc.getFeatures().get(0).getGeometry();
-    		 ls.add(new LngLatAlt(longitude, latitude));
+    		 ls.add(new LngLatAlt(latitude, longitude));
     		 //logger.log(Level.INFO, "Adding to cache new route: " + routeId + ":" + fc.toString());
 	    	 CacheUtil.put(routeId, fc, CacheType.LONG);
 	     }

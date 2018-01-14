@@ -105,9 +105,13 @@
                             strokeOpacity: 1.0,
                             strokeWeight: 4
                          });
-                        map.fitBounds(bounds);
-                        //map.setCenter(bounds.getCenter());
-                        map.panToBounds(bounds); 
+
+                  		if (pathCoords.length > 1) {
+                        	map.fitBounds(bounds);
+                        	map.panToBounds(bounds);
+                  		} else {
+                  		    map.setCenter(bounds.getCenter());	
+                        } 
                     	routePath.setMap(map);						
                     } else {
                         console.log('Route path is empty!');
