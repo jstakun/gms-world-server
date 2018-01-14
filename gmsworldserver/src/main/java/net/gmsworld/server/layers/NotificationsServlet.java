@@ -104,8 +104,7 @@ public class NotificationsServlet extends HttpServlet {
 							try {
 								u = new String(Base64.decode(u));
 							} catch (Exception e) {
-								// from version 1086, 86 username is Base64
-								// encoded string
+								// from version 1086, 86 username is Base64 encoded string
 							}
 						}
 						if (u == null) {
@@ -137,17 +136,18 @@ public class NotificationsServlet extends HttpServlet {
 				if (StringUtils.equals(type, "v")) {
 					// check for version
 					reply.put("type", type);
-					if (appId == 0) {
+					if (appId == Commons.LM_ID) {
 						// LM
 						String version = ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.LM_VERSION, "0");
 						reply.put("value", version);
-					} else if (appId == 1) {
+					} else if (appId == Commons.DA_ID) {
 						// DA
 						String version = ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.DA_VERSION, "0");
 						reply.put("value", version);
-					} else if (appId == 2) {
+					} else if (appId == Commons.DL_ID) {
 						// DL
-						reply.put("value", "0");
+						String version = ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.DL_VERSION, "0");
+						reply.put("value", version);
 					}
 				} else if (StringUtils.equals(type, "u")) {
 					// engagement
