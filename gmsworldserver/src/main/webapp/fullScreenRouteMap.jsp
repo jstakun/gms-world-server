@@ -60,10 +60,10 @@
                         }        
                         for (var i = 0; i < geometry.coordinates.length; i++) {
                       		var coords = geometry.coordinates[i];
-                      		var latlng = new google.maps.LatLng(coords[0], coords[1]);
+                      		var latlng = new google.maps.LatLng(coords[1], coords[0]);
                      		pathCoords.push(latlng);
                      		bounds.extend(latlng);
-                      		console.log('Loading point ' + coords[0] + "," + coords[1]);
+                      		console.log("Loading coordinate latitude: "" + coords[1] + ", longitude: " + coords[0]);
                     	}
                     } else if (results != null && results.route_geometry != null && results.route_geometry.length > 0) {
                         //mapquest  

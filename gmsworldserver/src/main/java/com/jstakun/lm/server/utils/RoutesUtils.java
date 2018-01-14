@@ -132,7 +132,7 @@ public class RoutesUtils {
 	    		 fc.add(f);
 	    	 }
 	    	 LineString ls = (LineString) fc.getFeatures().get(0).getGeometry();
-    		 ls.add(new LngLatAlt(latitude, longitude));
+    		 ls.add(new LngLatAlt(longitude, latitude));
     		 //logger.log(Level.INFO, "Adding to cache new route: " + routeId + ":" + fc.toString());
 	    	 CacheUtil.put(routeId, fc, CacheType.LONG);
 	     }
