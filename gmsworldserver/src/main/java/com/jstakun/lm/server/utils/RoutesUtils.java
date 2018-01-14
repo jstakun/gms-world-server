@@ -15,6 +15,7 @@ import org.geojson.LngLatAlt;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 
@@ -87,31 +88,25 @@ public class RoutesUtils {
 	           return resp;
          }
 	            
-	     public static JSONObject loadFromCache(String routeId) {
+	     public static String loadFromCache(String routeId) {
 	           //check first if route is cached
-	           JSONObject response = null;
 	           String reply = null;
 	           if (CacheUtil.containsKey(routeId)) {
 	        	   FeatureCollection fc = (FeatureCollection) CacheUtil.getObject(routeId);
-	        	   reply = fc.toString();
-	        	   if (StringUtils.startsWith(reply, "{")) {
-    				   response = new JSONObject(reply);
-    			   } else {
-    				   logger.log(Level.SEVERE, "Received following object from cache " + reply + "-");
-    			   }
+	        	   try {
+	        		   reply = new ObjectMapper().writeValueAsString(fc);
+	        	   } catch (Exception e) {
+	        		   logger.log(Level.SEVERE, e.getMessage(), e);
+	        	   }
 	           } else {
 	        	   try {
 	        		   URL cacheUrl = new URL(ROUTE_URL_NAME + routeId + "?user_key=" + Commons.getProperty(Property.RH_ROUTES_API_KEY));
 	        		   reply = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, "GET", null, null, "application/json; charset=utf-8", Commons.getProperty(Property.RH_GMS_USER));
-	        		   if (HttpUtils.getResponseCode(cacheUrl.toString()) == 200 && StringUtils.startsWith(reply, "{")) {
-	        			   response = new JSONObject(reply);
-	        		   } else {
+	        		   if (HttpUtils.getResponseCode(cacheUrl.toString()) != 200 || !StringUtils.startsWith(reply, "{")) {
 	        			   logger.log(Level.SEVERE, "Received following response from " + cacheUrl.toString() + ": -" + reply + "-");
 	        			   cacheUrl = new URL(ROUTE_URL_ID  + routeId + "?user_key=" + Commons.getProperty(Property.RH_ROUTES_API_KEY));
 	        			   reply = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, "GET", null, null, "application/json; charset=utf-8", Commons.getProperty(Property.RH_GMS_USER));
-	        			   if (HttpUtils.getResponseCode(cacheUrl.toString()) == 200 && StringUtils.startsWith(reply, "{")) {
-	        				   response = new JSONObject(reply);
-	        			   } else {
+	        			   if (HttpUtils.getResponseCode(cacheUrl.toString()) != 200 || !StringUtils.startsWith(reply, "{")) {
 	        				   logger.log(Level.SEVERE, "Received following response from " + cacheUrl.toString() + ": -" + reply + "-");
 	        			   }	
 	        		   }
@@ -119,7 +114,7 @@ public class RoutesUtils {
 	        		   logger.log(Level.SEVERE, e.getMessage() + " from response: " +  reply, e);
 	        	   }
 	           }
-	           return response;
+	           return reply;
 	     }       
 	     
 	     public static void addRoutePointToCache(String routeId, double latitude, double longitude) {
@@ -135,6 +130,7 @@ public class RoutesUtils {
 	    	 }
 	    	 LineString ls = (LineString) fc.getFeatures().get(0).getGeometry();
     		 ls.add(new LngLatAlt(longitude, latitude));
+    		 //logger.log(Level.INFO, "Adding to cache new route: " + routeId + ":" + fc.toString());
 	    	 CacheUtil.put(routeId, fc, CacheType.LONG);
 	     }
 }

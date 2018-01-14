@@ -122,13 +122,13 @@ public class CacheUtil {
 	}
 	
 	private static void putToLandmarkCache(String key, Object value) {
-		//logger.log(Level.INFO, "putToShortCache " + key);
+		//logger.log(Level.INFO, "putToLandmarkCache " + key);
 		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
 		syncCache.put(key, value, TEN_MINUTES_EXPIRATION);
 	}
 	
 	private static void putToLongCache(String key, Object value) {
-		//logger.log(Level.INFO, "putToShortCache " + key);
+		//logger.log(Level.INFO, "putToLongCache " + key);
 		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
 		syncCache.put(key, value, LONG_CACHE_EXPIRATION);
 	}

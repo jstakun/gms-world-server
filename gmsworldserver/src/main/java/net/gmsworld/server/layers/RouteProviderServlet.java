@@ -110,11 +110,8 @@ public class RouteProviderServlet extends HttpServlet {
                 } 
             } else if (!HttpUtils.isEmptyAny(request, "route")) {
                  //Load route from cache
-            	JSONObject route = RoutesUtils.loadFromCache(request.getParameter("route"));
-            	String json = null;
-            	if (route != null) {
-            		json = route.toString();
-            	}	else {
+            	String json = RoutesUtils.loadFromCache(request.getParameter("route"));
+            	if (!StringUtils.startsWith(json, "{")) {
             		json = "{\"features\":[]}";
             		//response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             	}
