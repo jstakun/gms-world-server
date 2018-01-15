@@ -17,7 +17,9 @@
         <% if (route != null) {%>
         <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
         <!-- TODO temporal solution -->
+        <% if (request.getParameter("now") != null) { %>
         <meta http-equiv="refresh" content="30">
+        <% } %>
         <style type="text/css">
             html, body {width: 100%; height: 100%}
             body {margin-top: 0px; margin-right: 0px; margin-left: 0px; margin-bottom: 0px}
@@ -60,10 +62,18 @@
                         }        
                         for (var i = 0; i < geometry.coordinates.length; i++) {
                       		var coords = geometry.coordinates[i];
-                      		var latlng = new google.maps.LatLng(coords[1], coords[0]);
+                      		//TODO fix that after new version release
+                      		<% if (request.getParameter("lnglat") != null) { %>
+                      		var lat = coords[1];
+                      		var lng = coords[0];                 
+                      		<% } else { %>
+                      		var lat = coords[0];
+                      		var lng = coords[1];
+                      		<% } %>
+                      		var latlng = new google.maps.LatLng(lat, lng);
                      		pathCoords.push(latlng);
                      		bounds.extend(latlng);
-                      		console.log("Loading coordinate latitude: "" + coords[1] + ", longitude: " + coords[0]);
+                      		console.log("Loading coordinate latitude: " + lat + ", longitude: " + lng);
                     	}
                     } else if (results != null && results.route_geometry != null && results.route_geometry.length > 0) {
                         //mapquest  
