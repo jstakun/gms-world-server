@@ -16,10 +16,6 @@
         <title>See your recorded route on the map</title>
         <% if (route != null) {%>
         <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-        <!-- TODO temporal solution -->
-        <% if (request.getParameter("now") != null) { %>
-        <meta http-equiv="refresh" content="30">
-        <% } %>
         <style type="text/css">
             html, body {width: 100%; height: 100%}
             body {margin-top: 0px; margin-right: 0px; margin-left: 0px; margin-bottom: 0px}
@@ -27,60 +23,77 @@
         <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_bSG1hQY2x8dfUTeSegTqfIChsvLzUJI">
         </script>
         <script type="text/javascript">
-            function initialize()
+        	var routePath, startMarker, endMarker, routeSize, map;
+            
+            function initialize() {
+            	routeSize = 0;
+            	var myOptions =
+                {
+                	zoom: 12,
+                	mapTypeId: google.maps.MapTypeId.ROADMAP,
+                	scaleControl: true
+            	};
+            	map = new google.maps.Map(document.getElementById("map_canvas"), myOptions); 
+				loadRouteFromServer();
+				<% if (request.getParameter("now") != null) { %>				
+				window.setInterval(loadRouteFromServer, 20000);
+				<% } %>
+            }
+        
+            function loadRouteFromServer()
             {
-                var bounds = new google.maps.LatLngBounds();
-                var myOptions =
-                    {
-                    zoom: 12,
-                    mapTypeId: google.maps.MapTypeId.ROADMAP,
-                    scaleControl: true
-                };
-
-                var image = '/images/flagblue.png';
-                var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-
-                var script = document.createElement('script');
-
+                var script = document.getElementById("loadedRoute");
+                if (script != null) {
+                    document.head.removeChild(script);
+                } 
+                console.info("Current route size is " + routeSize + ". Loading new route...");  
+                
+                script = document.createElement('script');
                 script.src = '/routeProvider?route=<%= route %>&callback=loadRoute';
-                document.getElementsByTagName('head')[0].appendChild(script);
+                script.id = 'loadedRoute'
+                document.head.appendChild(script);
 
                 window.loadRoute = function(results) {
                 	 var pathCoords = [];
                 	 var description = '';   
-
+                	 var bounds = new google.maps.LatLngBounds();
+               
                      if (results != null && results.features != null && results.features.length > 0) {
                          //geojson       
                  	 	var geometry = results.features[0].geometry;
-                 	 	if (results.features[0].properties.time != null && results.features[0].properties.distance != null) {
-                 	 		var time = new Date(results.features[0].properties.time).toISOString().substr(11, 8); 
-                        	var length = results.features[0].properties.distance / 1000; //km
-                        	var avg = length / ((results.features[0].properties.time / 1000) / 3600);
-                        	description = "Route length: " + length.toFixed(2) + " km, Average speed: " +  avg.toFixed(2) + " km/h, Estimated time: " + time;
-                        } else {
-                        	description = results.features[0].properties.description;
-                        }        
-                        for (var i = 0; i < geometry.coordinates.length; i++) {
-                      		var coords = geometry.coordinates[i];
-                      		//TODO fix that after new version release
-                      		<% if (request.getParameter("lnglat") != null) { %>
-                      		var lat = coords[1];
-                      		var lng = coords[0];                 
-                      		<% } else { %>
-                      		var lat = coords[0];
-                      		var lng = coords[1];
-                      		<% } %>
-                      		var latlng = new google.maps.LatLng(lat, lng);
-                     		pathCoords.push(latlng);
-                     		bounds.extend(latlng);
-                      		console.log("Loading coordinate latitude: " + lat + ", longitude: " + lng);
-                    	}
+                 	 	if (routeSize < geometry.coordinates.length) {
+                 	 		if (results.features[0].properties.time != null && results.features[0].properties.distance != null) {
+                 	 			var time = new Date(results.features[0].properties.time).toISOString().substr(11, 8); 
+                        		var length = results.features[0].properties.distance / 1000; //km
+                        		var avg = length / results.features[0].properties.time / 1000 / 3600;
+                        		description = "Route length: " + length.toFixed(2) + " km, Average speed: " +  avg.toFixed(2) + " km/h, Estimated time: " + time;
+                        	} else {
+                        		description = results.features[0].properties.description;
+                        	}        
+                        	for (var i = 0; i < geometry.coordinates.length; i++) {
+                      			var coords = geometry.coordinates[i];
+                      			//TODO fix that after new version release
+                      			<% if (request.getParameter("lnglat") != null) { %>
+                      			var lat = coords[1];
+                      			var lng = coords[0];                 
+                      			<% } else { %>
+                      			var lat = coords[0];
+                      			var lng = coords[1];
+                      			<% } %>
+                      			var latlng = new google.maps.LatLng(lat, lng);
+                     			pathCoords.push(latlng);
+                     			bounds.extend(latlng);
+                      			console.log("Loading coordinate latitude: " + lat + ", longitude: " + lng);
+                        	}
+                    	} else {
+                    		console.log('Current route points size is ' + routeSize + ' compared to new route ' +  geometry.coordinates.length);
+                        }
                     } else if (results != null && results.route_geometry != null && results.route_geometry.length > 0) {
                         //mapquest  
                     	var seconds= results.route_summary.total_time
                         var time = new Date(seconds * 1000).toISOString().substr(11, 8); 
                     	var length = results.route_summary.total_distance / 1000; //km
-                    	var avg = length / (results.route_summary.total_time / 3600);
+                    	var avg = length / results.route_summary.total_time / 3600;
                     	description = "Route length: " + length.toFixed(2) + " km, Average speed: " +  avg.toFixed(2) + " km/h, Estimated time: " + time;        
                         for (var i = 0; i < results.route_geometry.length; i++) {
                       		var coords = results.route_geometry[i];
@@ -93,22 +106,38 @@
                     	console.log('No routes found in results: ' + JSON.stringify(results));
                     }
 
-                    if (pathCoords.length > 0) {
-                    	var startMarker = new google.maps.Marker({
+                    if (pathCoords.length > routeSize) {
+                        if (startMarker != null) {
+                        	startMarker.setMap(null);
+                        }
+                    	
+                    	startMarker = new google.maps.Marker({
                           		position: pathCoords[0],
                          	 	map: map,
                          	 	title: description,
                          	 	icon: '/images/route-start.png'
                        	});
 
-                    	var endMarker = new google.maps.Marker({
+                    	if (endMarker != null) {
+                        	endMarker.setMap(null);
+                        }
+                    	
+                    	endMarker = new google.maps.Marker({
                       		position: pathCoords[pathCoords.length-1],
                      	 	map: map,
                      	 	title: description,
+                     	 	<% if (request.getParameter("now") != null) { %>				
+            				icon: '/images/dl_32.png'
+                         	<% } else { %>
                      	 	icon: '/images/route-end.png'
+                         	<% } %> 	
                    	    });
-                       			
-                  		var routePath = new google.maps.Polyline({
+
+                    	if (routePath != null) {
+                    		routePath.setMap(null);
+                        }
+                    	
+                  		routePath = new google.maps.Polyline({
                             path: pathCoords,
                             geodesic: true,
                             strokeColor: '#FF0000',
@@ -121,9 +150,11 @@
                         	map.panToBounds(bounds);
                   		} else {
                   		    map.setCenter(bounds.getCenter());	
-                        } 
-                    	routePath.setMap(map);						
-                    } else {
+                        }
+                         
+                    	routePath.setMap(map);				
+                    	routeSize = pathCoords.length; 		
+                    } else if (routeSize == 0){
                         console.log('Route path is empty!');
                         window.alert('Route has not been found. You\'ll be redirected to GMS World main page!'); 
                         window.location='https://www.gms-world.net/';
