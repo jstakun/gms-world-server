@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,6 +25,7 @@ import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.layers.GeocodeHelperFactory;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.ImageUtils;
+import net.gmsworld.server.utils.NumberUtils;
 
 public class RoutesUtils {
                 
@@ -121,18 +123,38 @@ public class RoutesUtils {
 	     
 	     public static void addRoutePointToCache(String routeId, double latitude, double longitude) {
 	    	 FeatureCollection fc = null;
+	    	 Feature f = null;
 	    	 if (CacheUtil.containsKey(routeId)) {
 	    		 fc = (FeatureCollection) CacheUtil.getObject(routeId);
+	    	     f = fc.getFeatures().get(0);
 	    	 } else {
 	    		 fc = new FeatureCollection();
-	    		 Feature f = new Feature();
+	    		 f = new Feature();
 	    		 f.setGeometry(new LineString());
 	    		 f.setProperty("description", "Currently recorder route...");
 	    		 f.setProperty("name", routeId);
+	    		 f.setProperty("creationTime", System.currentTimeMillis());
 	    		 fc.add(f);
 	    	 }
-	    	 LineString ls = (LineString) fc.getFeatures().get(0).getGeometry();
+	    	 LineString ls = (LineString) f.getGeometry();
     		 ls.add(new LngLatAlt(longitude, latitude));
+    		 int lsSize = ls.getCoordinates().size();
+    		 if (lsSize > 1) {
+    			 try {
+    				 Map<String, Object> props = f.getProperties();
+    				 f.setProperty("time", System.currentTimeMillis() - (long)props.get("creationTime"));
+    				 double distance = 0d;
+    				 if (props.containsKey("distance")) {
+    					 distance = (double)props.get("distance");
+    				 }
+    				 LngLatAlt coord1 = ls.getCoordinates().get(lsSize-2);
+    				 LngLatAlt coord2 = ls.getCoordinates().get(lsSize-1);
+    			     distance += NumberUtils.distanceInKilometer(coord1.getLatitude(), coord1.getLongitude(), coord2.getLatitude(), coord2.getLongitude())*1000d;
+    				 f.setProperty("distance", distance);
+    			 } catch (Exception e) {
+    				 logger.log(Level.SEVERE, e.getMessage(), e);
+    			 }
+    		 }
     		 //logger.log(Level.INFO, "Adding to cache new route: " + routeId + ":" + fc.toString());
 	    	 CacheUtil.put(routeId, fc, CacheType.LONG);
 	     }

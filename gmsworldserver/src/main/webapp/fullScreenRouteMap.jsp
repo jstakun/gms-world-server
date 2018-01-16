@@ -157,7 +157,7 @@
                              }
                          }
 
-                         if (currentPath.length > currentPathLength) {
+                         if (currentPath.length > currentPathLength && currentPath.length > 1) {
                          		if (endMarker != null) {
                              		endMarker.setMap(null);
                           		}
