@@ -9,6 +9,7 @@
 <%
        String route = (String) request.getAttribute("route");
        int interval = 10000;
+       boolean live = (request.getParameter("now") != null);
        if (request.getParameter("interval") != null) {
     	    try {
     	    	 int tmp = Integer.parseInt(request.getParameter("interval"));
@@ -46,7 +47,7 @@
             	map = new google.maps.Map(document.getElementById("map_canvas"), myOptions); 
             	bounds = new google.maps.LatLngBounds();
 				loadRouteFromServer();
-				<% if (request.getParameter("now") != null) { %>				
+				<% if (live) { %>				
 				window.setInterval(loadRouteFromServer, <%= interval %>); //reload every 10 sec
 				<% } %>
             }
@@ -59,7 +60,7 @@
                 console.info("Loading route points...");  
                 
                 script = document.createElement('script');
-                script.src = '/routeProvider?route=<%= route %>&callback=loadRoute';
+                script.src = '/routeProvider?route=<%= route %>&callback=loadRoute&now=<%= live %>';
                 script.id = 'loadedRoute'
                 document.head.appendChild(script);
 

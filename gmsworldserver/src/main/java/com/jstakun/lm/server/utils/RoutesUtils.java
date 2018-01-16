@@ -90,7 +90,7 @@ public class RoutesUtils {
 	           return resp;
          }
 	            
-	     public static String loadFromCache(String routeId) {
+	     public static String loadFromCache(String routeId, String live) {
 	           //check first if route is cached
 	           String reply = null;
 	           if (CacheUtil.containsKey(routeId)) {
@@ -100,7 +100,7 @@ public class RoutesUtils {
 	        	   } catch (Exception e) {
 	        		   logger.log(Level.SEVERE, e.getMessage(), e);
 	        	   }
-	           } else {
+	           } else if (!StringUtils.equalsIgnoreCase(live, "true")) {
 	        	   try {
 	        		   URL cacheUrl = new URL(ROUTE_URL_NAME + routeId + "?user_key=" + Commons.getProperty(Property.RH_ROUTES_API_KEY));
 	        		   reply = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, "GET", null, null, "application/json; charset=utf-8", Commons.getProperty(Property.RH_GMS_USER));
