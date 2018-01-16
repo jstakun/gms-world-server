@@ -8,6 +8,17 @@
 <%@page import="java.lang.String" %>
 <%
        String route = (String) request.getAttribute("route");
+       int interval = 10000;
+       if (request.getParameter("interval") != null) {
+    	    try {
+    	    	 int tmp = Integer.parseInt(request.getParameter("interval"));
+    	    	 if (tmp > interval) {
+    	    		  interval = tmp;
+    	    	 }
+    	    } catch (Exception e) {
+    	    	
+    	    }
+       }
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -36,7 +47,7 @@
             	bounds = new google.maps.LatLngBounds();
 				loadRouteFromServer();
 				<% if (request.getParameter("now") != null) { %>				
-				window.setInterval(loadRouteFromServer, 10000); //reload every 10 sec
+				window.setInterval(loadRouteFromServer, <%= interval %>); //reload every 10 sec
 				<% } %>
             }
         
@@ -63,7 +74,7 @@
                  	 		var time = new Date(results.features[0].properties.time).toISOString().substr(11, 8); //ms
                         	var length = results.features[0].properties.distance / 1000; //km
                         	var avg = results.features[0].properties.distance / (results.features[0].properties.time / 1000) * 3.6; //km/h
-                        	console.log("time: " + results.features[0].properties.time + " lenght: " + results.features[0].properties.distance + " avg: " + avg);
+                        	//console.log("time: " + results.features[0].properties.time + " lenght: " + results.features[0].properties.distance + " avg: " + avg);
                         	description = "Route length: " + length.toFixed(2) + " km, Average speed: " +  avg.toFixed(2) + " km/h, Estimated time: " + time;
                         } else {
                         	description = results.features[0].properties.description;
@@ -90,6 +101,7 @@
                     	var length = results.route_summary.total_distance / 1000; //km
                     	var avg = length / results.route_summary.total_time / 3600;
                     	description = "Route length: " + length.toFixed(2) + " km, Average speed: " +  avg.toFixed(2) + " km/h, Estimated time: " + time;        
+                    	//console.log("time: " + results.features[0].properties.time + " lenght: " + results.features[0].properties.distance + " avg: " + avg);    
                         for (var i = 0; i < results.route_geometry.length; i++) {
                       		var coords = results.route_geometry[i];
                       		var latlng = new google.maps.LatLng(coords[0], coords[1]);
@@ -126,7 +138,8 @@
                                   strokeOpacity: 1.0,
                                   strokeWeight: 4
                             });
-                             currentPath = pathCoords;
+                    	    routePath.setMap(map);	 
+                            currentPath = pathCoords;
                          } else {
                              var lastRoutePointIndex = -1; 
                              for (var i = pathCoords.length-1; i >= 0; i--) {
@@ -166,12 +179,11 @@
                          if (currentPath.length > 1 && currentPath.length > currentPathLength) {
                              map.fitBounds(bounds);
                              map.panToBounds(bounds);
-                  	     } else {
+                  	     } else if (currentPath.length > currentPathLength) {
                   		     map.setCenter(bounds.getCenter());	
                          }
-                         
-                        routePath.setMap(map);				
-                  } else if (currentRoute == null) {
+                        			
+                  } else if (routePath == null) {
                         console.log('Route path is empty!');
                         window.alert('Route has not been found. You\'ll be redirected to GMS World main page!'); 
                         window.location='https://www.gms-world.net/';
