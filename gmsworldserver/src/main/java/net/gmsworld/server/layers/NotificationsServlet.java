@@ -277,8 +277,12 @@ public class NotificationsServlet extends HttpServlet {
 								List<String> whitelistList = new ArrayList<String>(Arrays.asList(ConfigurationManager.getArray(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST)));
 								whitelistList.add(user + ":" + email );
 								ConfigurationManager.setParam(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST,  StringUtils.join(whitelistList, "|"));
-								MailUtils.sendDlVerificationRequest(email, email, user, this.getServletContext());
-								reply = new JSONObject().put("status", "unverified");
+								String status = MailUtils.sendDlVerificationRequest(email, email, user, this.getServletContext());
+								if (StringUtils.equals(status, "ok")) {
+									reply = new JSONObject().put("status", "unverified");
+								} else {
+									reply = new JSONObject().put("status", status);
+								}
 							}
 						} else {
 							logger.log(Level.WARNING, "Wrong email  " + email + " or user " + user);

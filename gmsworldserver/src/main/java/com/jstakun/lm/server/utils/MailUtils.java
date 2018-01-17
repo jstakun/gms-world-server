@@ -46,8 +46,8 @@ public class MailUtils {
             Transport.send(msg);
             return "ok";
         } catch (Exception ex) {
-            logger.log(Level.SEVERE, null, ex);
-            return null;
+            logger.log(Level.SEVERE, ex.getMessage(), ex);
+            return "failed";
         }
     }
     
@@ -69,11 +69,11 @@ public class MailUtils {
     		 if (responseCode != null) {
     			 return Integer.toString(responseCode);
     		 } else {
-    			 return null;
+    			 return "unknown";
     		 }
     	 } catch (Exception e) {
     		 logger.log(Level.SEVERE, e.getMessage(), e);
-    		 return null;
+    		 return "failed";
     	 }
     }
     
@@ -135,24 +135,27 @@ public class MailUtils {
         }
     }
     
-    public static void sendDlVerificationRequest(String toA, String nick, String user, ServletContext context) {
+    public static String sendDlVerificationRequest(String toA, String nick, String user, ServletContext context) {
         InputStream is = null;
+        String result = null; 
         try {
             String link = ConfigurationManager.SERVER_URL + "verify.do?m=" + URLEncoder.encode(toA, "UTF-8") + "&s=1&u=" + user;           
             is = context.getResourceAsStream("/WEB-INF/emails/verification-dl.html");
             String message = String.format(IOUtils.toString(is, "UTF-8"), link);
-            sendMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html");
+            result = sendMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html");
         } catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
+            result = "failed";
         } finally {
             if (is != null) {
                 try {
                     is.close();
                 } catch (IOException ex) {
-                    logger.log(Level.SEVERE, null, ex);
+                    logger.log(Level.SEVERE, ex.getMessage(), ex);
                 }
             }
         }
+        return result;
     }
     
     public static void sendRegistrationNotification(String toA, String nick, ServletContext context) {

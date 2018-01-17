@@ -82,13 +82,12 @@
                         }        
                         for (var i = 0; i < geometry.coordinates.length; i++) {
                       		var coords = geometry.coordinates[i];
-                      		//TODO fix that after new version release
-                      		<% if (request.getParameter("lnglat") != null) { %>
-                      		var lat = coords[1];
-                      		var lng = coords[0];                 
-                      		<% } else { %>
+                      		<% if (request.getParameter("latlng") != null) { %>
                       		var lat = coords[0];
-                      		var lng = coords[1];
+                      		var lng = coords[1];                 
+                      		<% } else { %>
+                      		var lat = coords[1];
+                      		var lng = coords[0];
                       		<% } %>
                       		var latlng = new google.maps.LatLng(lat, lng);
                      		pathCoords.push(latlng);
@@ -198,7 +197,7 @@
         <% if (route != null) {%>
         <div id="map_canvas" style="width:100%; height:100%"></div>
         <% } else {%>
-        No route selected
+        No route loaded
         <% }%>
     </body>
 </html>
