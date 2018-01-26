@@ -5,6 +5,8 @@ import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang.StringUtils;
+
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.HttpUtils;
@@ -13,7 +15,7 @@ public class TelegramUtils {
 	
 	private static final Logger logger = Logger.getLogger(TelegramUtils.class.getName());
 	
-	public static Integer sendTelegram(final Long telegramId, final String message) throws IOException {
+	public static Integer sendTelegram(final String telegramId, final String message) throws IOException {
 		Integer responseCode = null;
 		if (telegramId != null) {
         	String urlStr = "https://api.telegram.org/bot" + Commons.getProperty(Property.TELEGRAM_TOKEN) + "/sendMessage"; 
@@ -31,7 +33,7 @@ public class TelegramUtils {
 		return responseCode;
     }
 	
-	public static Integer sendLocationTelegram(final Long telegramId, final Double latitude, final Double longitude) throws IOException {
+	public static Integer sendLocationTelegram(final String telegramId, final Double latitude, final Double longitude) throws IOException {
 		Integer responseCode = null;
 		if (telegramId != null) {
         	String urlStr = "https://api.telegram.org/bot" + Commons.getProperty(Property.TELEGRAM_TOKEN) + "/sendLocation"; 
@@ -47,4 +49,38 @@ public class TelegramUtils {
         }
 		return responseCode;
     }
+	
+    public static boolean isValidTelegramId(String telegramId) {
+        //channel id could be negative number starting from -100 or string starting with @
+        //chat id must be positive integer
+        if (StringUtils.startsWith(telegramId, "@") && !containsWhitespace(telegramId)) {
+            return true;
+        } else  {
+            if (StringUtils.isNotEmpty(telegramId)) {
+                try {
+                    int id = Integer.parseInt(telegramId);
+                    if (id < 0) {
+                        return StringUtils.startsWith(telegramId, "-100");
+                    } else {
+                        return true;
+                    }
+                } catch (Exception e) {
+                	logger.log(Level.SEVERE, "Invalid telegram chat or channel id " + telegramId);
+                }
+            }
+        }
+        return false;
+    }
+    
+    private static boolean containsWhitespace(final String testCode){
+        if(testCode != null){
+            for(int i = 0; i < testCode.length(); i++){
+                if(Character.isWhitespace(testCode.charAt(i))){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
 }

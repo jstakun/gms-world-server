@@ -314,5 +314,11 @@
             <to>/telegram?type=$1</to>
     </rule>
     
+    <!-- booking.com -->
+    <rule>
+       		<from>^/booking$</from>
+       		<to type="redirect">http://www.booking.com?aid=864525</to>
+    </rule>
+    
 </urlrewrite>
 

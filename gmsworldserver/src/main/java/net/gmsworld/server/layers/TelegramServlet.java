@@ -82,10 +82,10 @@ public class TelegramServlet extends HttpServlet {
 									logger.log(Level.WARNING, "Telegram chat id " + telegramId + " already exists in the whitelist!");
 								}		
 								if (telegramId > 0) {
-									TelegramUtils.sendTelegram(telegramId, "You've been registered to Device Locator notifications.\n"
+									TelegramUtils.sendTelegram(Long.toString(telegramId), "You've been registered to Device Locator notifications.\n"
 									+ "You can unregister at any time by sending /unregister command message to @device_locator_bot");
 								} else if (telegramId < 0) {
-									TelegramUtils.sendTelegram(telegramId, "You've been registered to Device Locator notifications.\n"
+									TelegramUtils.sendTelegram(Long.toString(telegramId), "You've been registered to Device Locator notifications.\n"
 											+ "You can unregister at any time by sending /unregister " + telegramId +  " command message to @device_locator_bot");
 								}
 							} else if (StringUtils.startsWithIgnoreCase(message, "/unregister") || StringUtils.startsWithIgnoreCase(message, "unregister")) {
@@ -104,18 +104,18 @@ public class TelegramServlet extends HttpServlet {
 									} else {
 										logger.log(Level.SEVERE, "Unable to remove Telegram chat or channel Id " + id + " from the whitelist!");
 									}
-									TelegramUtils.sendTelegram(Long.valueOf(id), "You've been unregistered from Device Locator notifications.");
+									TelegramUtils.sendTelegram(id, "You've been unregistered from Device Locator notifications.");
 								} else if (id == null) {
-									TelegramUtils.sendTelegram(telegramId, "I've received unrecognised message " + message);
+									TelegramUtils.sendTelegram(Long.toString(telegramId), "I've received unrecognised message " + message);
 								} else {
 									logger.log(Level.WARNING, "Telegram chat or channel Id " + id + " doesn't exists in the whitelist!");
 								}
 							} else if (StringUtils.equalsIgnoreCase(message, "/getmyid") || StringUtils.equalsIgnoreCase(message, "getmyid")) { 
-								TelegramUtils.sendTelegram(telegramId, Long.toString(telegramId));
-								TelegramUtils.sendTelegram(telegramId, "Please click on message above containing your chat Id and select copy. Then come back to Device Locator and "
+								TelegramUtils.sendTelegram(Long.toString(telegramId), Long.toString(telegramId));
+								TelegramUtils.sendTelegram(Long.toString(telegramId), "Please click on message above containing your chat Id and select copy. Then come back to Device Locator and "
 							 		+ "paste your chat Id to Telegram Messenger chat Id form field. If you are lucky your chat Id will be pasted automatically :)");
 							} else {
-								TelegramUtils.sendTelegram(telegramId, "I've received unrecognised message " + message);
+								TelegramUtils.sendTelegram(Long.toString(telegramId), "I've received unrecognised message " + message);
 							}
 						}	else {
 							logger.log(Level.SEVERE, "Received following response: " + jb.toString());
@@ -196,7 +196,7 @@ public class TelegramServlet extends HttpServlet {
 						} else {
 							reply = "Invalid command!";
 						}
-						TelegramUtils.sendTelegram(telegramId, reply);
+						TelegramUtils.sendTelegram(Long.toString(telegramId), reply);
 					} else {
 						logger.log(Level.SEVERE, "Received following response: " + jb.toString());
 					}	

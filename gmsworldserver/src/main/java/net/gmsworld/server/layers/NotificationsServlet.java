@@ -185,10 +185,10 @@ public class NotificationsServlet extends HttpServlet {
 					// telegram
 					if (appId == Commons.DL_ID && StringUtils.startsWith(request.getRequestURI(), "/s/")) {
 						String message = request.getParameter("message");
-						long telegramId = NumberUtils.getLong(request.getParameter("chatId"), 0L);
-						if (telegramId != 0 && StringUtils.isNotEmpty(message)) {
+						String telegramId = request.getParameter("chatId");
+						if (TelegramUtils.isValidTelegramId(telegramId) && StringUtils.isNotEmpty(message)) {
 							// check if chat id is on white list
-							if (ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, Long.toString(telegramId))) {
+							if (ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, telegramId)) {
 				            	TelegramUtils.sendTelegram(telegramId, message);
 				            	if (GeocodeUtils.isValidLatitude(latitude) && GeocodeUtils.isValidLongitude(longitude)) {
 				            		TelegramUtils.sendLocationTelegram(telegramId, latitude, longitude);
@@ -199,7 +199,7 @@ public class NotificationsServlet extends HttpServlet {
 				            	reply = new JSONObject().put("status", "unverified");
 				            }
 						} else {
-							logger.log(Level.WARNING, "Wrong message to chat " + telegramId);
+							logger.log(Level.WARNING, "Wrong message or chat/channel id " + telegramId);
 							reply = new JSONObject().put("status", "failed");
 						}
 					} else {
@@ -230,10 +230,10 @@ public class NotificationsServlet extends HttpServlet {
 				} else if (StringUtils.equals(type, "register_t")) {
 					// telegram
 					if (appId == Commons.DL_ID && StringUtils.startsWith(request.getRequestURI(), "/s/")) {
-						long telegramId = NumberUtils.getLong(request.getParameter("chatId"), 0L);
-						if (telegramId != 0) {
-							if (ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, Long.toString(telegramId))) {
-								if (telegramId > 0) {
+						String telegramId = request.getParameter("chatId");
+						if (TelegramUtils.isValidTelegramId(telegramId)) {
+							if (ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, telegramId)) {
+								if (StringUtils.isNumeric(telegramId)) {
 									TelegramUtils.sendTelegram(telegramId, "You've been already registered to Device Locator notifications.\n"
 										+ "You can unregister at any time by sending /unregister command message to @device_locator_bot");
 								} else {
@@ -241,7 +241,7 @@ public class NotificationsServlet extends HttpServlet {
 											+ "You can unregister at any time by sending /unregister " + telegramId + " command message to @device_locator_bot");
 								}
 								reply = new JSONObject().put("status", "registered");
-							} else if (telegramId > 0) {
+							} else if (StringUtils.isNumeric(telegramId)) {
 								Integer responseCode = TelegramUtils.sendTelegram(telegramId, "We've received Device Locator registration request from you.\n"
 										+ "If this is correct please send us back /register command message, otherwise please ignore this message.");
 								if (responseCode != null && responseCode == 200) {
@@ -249,7 +249,7 @@ public class NotificationsServlet extends HttpServlet {
 								} else {
 									response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 								}
-							} else if (telegramId < 0) {
+							} else if ((StringUtils.startsWithAny(telegramId, new String[]{"@","-100"}))) {
 								Integer responseCode = TelegramUtils.sendTelegram(telegramId, "We've received Device Locator registration request from this Channel.\n"
 										+ "If this is correct please contact us via email at: device-locator@gms-world.net and send your Channel ID: " + telegramId + ", otherwise please ignore this message.");
 								if (responseCode != null && responseCode == 200) {
