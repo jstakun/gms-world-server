@@ -58,7 +58,7 @@ public class TelegramUtils {
         } else  {
             if (StringUtils.isNotEmpty(telegramId)) {
                 try {
-                    int id = Integer.parseInt(telegramId);
+                    long id = Long.parseLong(telegramId);
                     if (id < 0) {
                         return StringUtils.startsWith(telegramId, "-100");
                     } else {
