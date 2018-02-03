@@ -60,7 +60,8 @@ public class MailUtils {
     			                        "&subject=" + subject +
     			                        "&body=" + content +
     			                        "&fromNick=" + fromP +
-    			                        "&toNick=" + toP; 
+    			                        "&toNick=" + toP +
+    			                        "&contentType=" + contentType; 
     	 
     	 try {
     		 HttpUtils.processFileRequestWithBasicAuthn(new URL(MAILER_SERVER_URL), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
@@ -78,7 +79,7 @@ public class MailUtils {
     }
     
     public static void sendAdminMail(String message) {
-    	sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, "Admin message", message, "text/html");
+    	sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, "Admin message", message, "text/plain");
     }
 
     public static void sendEmailingMessage(String toA, String nick, String message) {

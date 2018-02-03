@@ -38,7 +38,7 @@ public class RHCloudUtils {
     	}
     	 if (status == null || status > 299) {
          	logger.log(Level.SEVERE, "Received landmarks status code " + status);
-         	MailUtils.sendAdminMail("Received response code " + status + " from " + appname + ": " + healthCheckUrl + "<br/>" +
+         	MailUtils.sendAdminMail("Received response code " + status + " from " + appname + ": " + healthCheckUrl + "\n" +
          	"Go to: https://console.pro-us-east-1.openshift.com/console/");
          }
     	return status;

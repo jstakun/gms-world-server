@@ -25,7 +25,7 @@
 <html>
     <head>
         <%@ include file="/WEB-INF/jspf/head_small.jspf" %>
-        <title>See your recorded route on the map</title>
+        <title>Watch your recorded route on the map...</title>
         <% if (route != null) {%>
         <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
         <style type="text/css">
@@ -172,6 +172,10 @@
                       	     		icon: '/images/route-end.png'
                               		<% } %> 	
                     	     	});
+
+                    	     	document.title = 'New route points received!';
+                          } else if (document.hasFocus()) {
+                                document.title= 'Watch your recorded route on the map...';      
                           }
 
                          console.log("Current route length: " + currentPath.length + " compared to previous " + currentPathLength);
