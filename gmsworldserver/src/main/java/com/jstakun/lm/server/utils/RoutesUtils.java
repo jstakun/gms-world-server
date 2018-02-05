@@ -77,6 +77,7 @@ public class RoutesUtils {
 	     public static String[] cache(String route) {
 	           String[] resp = new String[2];
 	           try {
+	        	   logger.log(Level.INFO, "Saving route with lenght " + route.length());
 	        	    URL cacheUrl = new URL(ROUTES_URL + "?user_key=" + Commons.getProperty(Property.RH_ROUTES_API_KEY));
 	            	resp[0] = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, "POST", null, route, "application/json; charset=utf-8", Commons.getProperty(Property.RH_GMS_USER));
 	            	Integer responseCode= HttpUtils.getResponseCode(cacheUrl.toString());

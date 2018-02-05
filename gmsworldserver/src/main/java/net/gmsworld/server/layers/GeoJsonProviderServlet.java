@@ -85,6 +85,7 @@ public class GeoJsonProviderServlet extends HttpServlet {
 	        		Locale locale = request.getLocale();
 	        		String flexString = StringUtil.getLanguage(locale.getLanguage(), "en", 2);
 	        		String flexString2 = request.getParameter("sortType");
+	        		int hotelsInRangeCount = -1;
 	        		
 	        		//Searching geojson document in local in-memory cache
 	        		LayerHelper layerHelper = LayerHelperFactory.getInstance().getByName(layer);
@@ -114,7 +115,7 @@ public class GeoJsonProviderServlet extends HttpServlet {
 							if (StringUtils.equals(layer, Commons.HOTELS_LAYER)) {
 								try {
 									//if less that 30 hotels is range increase search radius
-									int hotelsInRangeCount = ((HotelsBookingUtils)LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)).countNearbyHotels(lat, lng, RADIUS);
+									hotelsInRangeCount = ((HotelsBookingUtils)LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)).countNearbyHotels(lat, lng, RADIUS);
 									if (hotelsInRangeCount >= 0 && hotelsInRangeCount < 30) {
 										radius = 2 * RADIUS; //max 100
 									}
@@ -138,9 +139,11 @@ public class GeoJsonProviderServlet extends HttpServlet {
 							int version = Integer.parseInt(ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.LM_VERSION, "1146"));
 							
 							if (StringUtils.equals(layer, Commons.HOTELS_LAYER)) {
-								json = ((HotelsBookingUtils)layerHelper).extendFeatureCollection(lat, lng, radius, limit, flexString2, locale);
-								JSONObject layerJson = new JSONObject(json);
-								layerSize = layerJson.getJSONArray("features").length();
+								if (hotelsInRangeCount > 0) {
+									json = ((HotelsBookingUtils)layerHelper).extendFeatureCollection(lat, lng, radius, limit, flexString2, locale);
+									JSONObject layerJson = new JSONObject(json);
+									layerSize = layerJson.getJSONArray("features").length();
+								}
 							} else if (StringUtils.equals(layer, Commons.GROUPON_LAYER) || StringUtils.equals(layer, Commons.COUPONS_LAYER)) {
 								if (GeocodeUtils.isNorthAmericaLocation(lat, lng)) {
 									List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(lat, lng, null, radius, version, limit, StringUtil.getStringLengthLimit("l"), null, null, locale, true);
