@@ -25,8 +25,7 @@ public class TelegramUtils {
             if (responseCode == null || responseCode != 200) {
             	logger.log(Level.SEVERE,  "Received following server response: " + responseCode + " - " + response);
             	if (responseCode != null && responseCode == 400) {
-            		logger.log(Level.SEVERE, "Telegram chat or channel id: " + telegramId + ", message: " + message);
-            		
+            		logger.log(Level.SEVERE, "Telegram chat or channel id: " + telegramId + ", message: " + message);    		
             	}
             }
         }

@@ -86,7 +86,7 @@ public class UserForm extends DynaValidatorForm {
  			String response = HttpUtils.processFileRequest(new URL("https://www.google.com/recaptcha/api/siteverify"), "POST", null, urlParams);
  			JSONObject json = new JSONObject(response);
  			if (!json.getBoolean("success") == true) {
- 				logger.log(Level.SEVERE, "Recaptcha verification error", response);
+ 				logger.log(Level.WARNING, "Recaptcha verification error", response);
  				errors.add("userForm", new ActionMessage("errors.captcha"));
  			}
  	    } catch (Exception e) {

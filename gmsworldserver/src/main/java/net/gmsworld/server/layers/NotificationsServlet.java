@@ -246,6 +246,8 @@ public class NotificationsServlet extends HttpServlet {
 										+ "If this is correct please send us back /register command message, otherwise please ignore this message.");
 								if (responseCode != null && responseCode == 200) {
 									reply = new JSONObject().put("status", "unverified");
+								} else if (responseCode != null && responseCode == 400) {
+								    reply = new JSONObject().put("status", "failed");
 								} else {
 									response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 								}
