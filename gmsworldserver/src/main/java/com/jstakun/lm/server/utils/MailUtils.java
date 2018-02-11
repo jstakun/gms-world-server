@@ -43,6 +43,8 @@ public class MailUtils {
             msg.addRecipient(Message.RecipientType.TO, new InternetAddress(toA, toP));
             if (ccA != null && ccP != null) {
             	msg.addRecipient(Message.RecipientType.CC, new InternetAddress(ccA, ccP));
+            } else if (ccA != null) {
+            	msg.addRecipients(Message.RecipientType.CC, InternetAddress.parse(ccA));
             }
             msg.setSubject(subject);
             msg.setContent(content, contentType);
@@ -51,25 +53,35 @@ public class MailUtils {
         } catch (Exception ex) {
         	logger.log(Level.SEVERE, ex.getMessage(), ex);
             return sendRemoteMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
-            //return "failed";
         }
     }
     
     private static String sendRemoteMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType, String ccA, String ccP)  {
     	 final String MAILER_SERVER_URL = "https://openapi-landmarks.b9ad.pro-us-east-1.openshiftapps.com/actions/emailer"; 
     	 
-    	 String params = "from=" + fromA +
+     	 String params = "from=" + fromA +
     	                                "&password=" + Commons.getProperty(Property.RH_MAILER_PWD) +
-    			                        "&to=" + toA + 
-    			                        "&subject=" + subject +
-    			                        "&body=" + content +
-    			                        "&fromNick=" + fromP +
-    			                        "&toNick=" + toP +
-    			                        "&contentType=" + contentType; 
-    	 
-    	 if (ccA != null && ccP != null) {
-    		 params  += "&cc=" + ccA +
-             "&ccNick=" + ccP;
+    			                        "&to=" + toA;
+    	 if (subject != null) {
+    		  params +=  "&subject=" + subject;
+    	 }
+    	 if (content != null) {
+    			params += "&body=" + content;
+    			if (contentType != null) {
+    				 params += "&contentType=" + contentType;
+    			}
+    	 }		                        
+    	 if (fromP != null) {
+    		 	params +="&fromNick=" + fromP;
+    	 }
+    	 if (toP != null) {
+    		 	params += "&toNick=" + toP;
+    	 }	
+    	 if (ccA != null) {
+    		 	params  += "&cc=" + ccA;
+         }
+    	 if (ccP != null) {
+    		 	params  += "&ccNick=" + ccP;
     	 }
     	 
     	 try {
