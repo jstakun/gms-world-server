@@ -111,7 +111,7 @@ public class TaskServlet extends HttpServlet {
 				 for (String item : whitelistList) {
 					    String tokens[] = StringUtils.split(item, ':');
 					    if (tokens.length == 2 && StringUtils.isNumeric(tokens[0]) && StringUtils.contains(tokens[1], '@')) {
-					    	String status = "test"; //MailUtils.sendDlVerificationRequest(tokens[1], tokens[1], tokens[0], this.getServletContext(), false);
+					    	String status = MailUtils.sendDlVerificationRequest(tokens[1], tokens[1], tokens[0], this.getServletContext(), false);
 					        logger.log(Level.INFO, "Sent registration request to: " + tokens[1] + " with status: " + status);
 					    }
 				 }

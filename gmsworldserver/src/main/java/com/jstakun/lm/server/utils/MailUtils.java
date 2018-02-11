@@ -49,12 +49,13 @@ public class MailUtils {
             Transport.send(msg);
             return "ok";
         } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
-            return "failed";
+        	logger.log(Level.SEVERE, ex.getMessage(), ex);
+            return sendRemoteMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
+            //return "failed";
         }
     }
     
-    private static String sendRemoteMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType)  {
+    private static String sendRemoteMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType, String ccA, String ccP)  {
     	 final String MAILER_SERVER_URL = "https://openapi-landmarks.b9ad.pro-us-east-1.openshiftapps.com/actions/emailer"; 
     	 
     	 String params = "from=" + fromA +
@@ -65,6 +66,11 @@ public class MailUtils {
     			                        "&fromNick=" + fromP +
     			                        "&toNick=" + toP +
     			                        "&contentType=" + contentType; 
+    	 
+    	 if (ccA != null && ccP != null) {
+    		 params  += "&cc=" + ccA +
+             "&ccNick=" + ccP;
+    	 }
     	 
     	 try {
     		 HttpUtils.processFileRequestWithBasicAuthn(new URL(MAILER_SERVER_URL), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
@@ -82,16 +88,16 @@ public class MailUtils {
     }
     
     public static void sendAdminMail(String message) {
-    	sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, "Admin message", message, "text/plain");
+    	sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, "Admin message", message, "text/plain", null, null);
     }
 
     public static void sendEmailingMessage(String toA, String nick, String message) {
-        sendRemoteMail(ConfigurationManager.LM_MAIL, ConfigurationManager.LM_NICK, toA, nick, "Message from Landmark Manager", message, "text/html");
+        sendRemoteMail(ConfigurationManager.LM_MAIL, ConfigurationManager.LM_NICK, toA, nick, "Message from Landmark Manager", message, "text/html", null, null);
     }
     
     public static void sendDeviceLocatorMessage(String toA, String message, String title) {
     	//sendMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, toA, title, message, "text/plain");
-    	sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, toA, title, message, "text/plain");
+    	sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, toA, title, message, "text/plain", null, null);
     }
     
     public static void sendDeviceLocatorRegistrationRequest(String email) {
@@ -99,7 +105,7 @@ public class MailUtils {
     }
 
     public static String sendLandmarkCreationNotification(String title, String body) {
-        return sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, title, body, "text/plain");
+        return sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, title, body, "text/plain", null, null);
     }
 
     public static void sendList(String title, Map<String, Collection<String>> stringMap, Map<String, Integer> recentlyCreated) {
@@ -116,7 +122,7 @@ public class MailUtils {
             message += "Found " + stringList.size() + " record(s).";
             message += "<br/>Number of users last week: " + recentlyCreated.get(entry.getKey()) + ".<br/><br/>";
         }
-        sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, title, message, "text/html");
+        sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, title, message, "text/html", null, null);
     }
 
     public static void sendVerificationRequest(String toA, String nick, String key, ServletContext context) {
@@ -232,7 +238,7 @@ public class MailUtils {
         try {
             is = context.getResourceAsStream("/WEB-INF/emails/landmark.html");
             String message = String.format(IOUtils.toString(is, "UTF-8"), userUrl, nick, landmarkUrl, landmarkUrl);
-            status = sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "Message from GMS World", message, "text/html");
+            status = sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "Message from GMS World", message, "text/html", null, null);
             //remove after tests
             //sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.SUPORT_MAIL, ConfigurationManager.ADMIN_NICK, "Copy of message to " + toA, message, "text/html");
         } catch (IOException ex) {
@@ -254,15 +260,15 @@ public class MailUtils {
     }
     
     public static void sendBlackScreenshotNotification(String body) {
-        sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, "Black screenshot", body, "text/plain");
+        sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, "Black screenshot", body, "text/plain", null, null);
     }
 
     public static void sendCrashReport(String title, String body) {
-        sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, title, body, "text/plain");
+        sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, title, body, "text/plain", null, null);
     }
 
     public static void sendContactMessage(String fromA, String nick, String subject, String body) {
-        sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, subject, "Message from: " + nick + " " + fromA + "\n" + body, "text/plain");
+        sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, subject, "Message from: " + nick + " " + fromA + "\n" + body, "text/plain", null, null);
     }
 
     public static boolean isValidEmailAddress(String aEmailAddress) {
@@ -278,7 +284,7 @@ public class MailUtils {
         }
         String message = "New search query has been executed: " + query + "\nDeals: "
                 + isDeal + "\nResponse contains " + counter + " landmarks.\nCheck it out: " + url;
-        sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, "New search with " + counter + " results", message, "text/plain");
+        sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, "New search with " + counter + " results", message, "text/plain", null, null);
     }
     
     public static void sendEngagementMessage(String toA, ServletContext context) {
@@ -288,12 +294,12 @@ public class MailUtils {
             String message = IOUtils.toString(is, "UTF-8");
             
             if (com.jstakun.lm.server.config.ConfigurationManager.listContainsValue(ConfigurationManager.EXCLUDED, toA)) {
-               sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.LM_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, "Copy of excluded engagement message to " + toA, message, "text/html");
+               sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.LM_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, "Copy of excluded engagement message to " + toA, message, "text/html", null, null);
                logger.log(Level.INFO, "Skipped sending engagement message to " + toA);
             } else {
-               sendRemoteMail(ConfigurationManager.LM_MAIL, ConfigurationManager.LM_NICK, toA, "Landmark Manager User", "Message from Landmark Manager", message, "text/html");
+               sendRemoteMail(ConfigurationManager.LM_MAIL, ConfigurationManager.LM_NICK, toA, "Landmark Manager User", "Message from Landmark Manager", message, "text/html", null, null);
                //remove after tests
-               sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.LM_NICK,  "jstakun.appspot@gmail.com", ConfigurationManager.LM_NICK, "Copy of engagement message to " + toA, message, "text/html");
+               sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.LM_NICK,  "jstakun.appspot@gmail.com", ConfigurationManager.LM_NICK, "Copy of engagement message to " + toA, message, "text/html", null, null);
             }
         } catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
