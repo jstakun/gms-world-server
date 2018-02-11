@@ -228,7 +228,7 @@ public class NotificationsServlet extends HttpServlet {
 						logger.log(Level.WARNING, "Wrong application " + appId);
 					}
 				} else if (StringUtils.equals(type, "register_t")) {
-					// telegram
+					//register telegram
 					if (appId == Commons.DL_ID && StringUtils.startsWith(request.getRequestURI(), "/s/")) {
 						String telegramId = request.getParameter("chatId");
 						if (TelegramUtils.isValidTelegramId(telegramId)) {
@@ -267,7 +267,7 @@ public class NotificationsServlet extends HttpServlet {
 						logger.log(Level.WARNING, "Wrong application " + appId);
 					}
 				} else if (StringUtils.equals(type, "register_m")) {
-					// mail
+					//register mail
 					if (appId == Commons.DL_ID && StringUtils.startsWith(request.getRequestURI(), "/s/")) {
 						String email = request.getParameter("email");
 						String user = request.getParameter("user");
@@ -279,7 +279,7 @@ public class NotificationsServlet extends HttpServlet {
 								List<String> whitelistList = new ArrayList<String>(Arrays.asList(ConfigurationManager.getArray(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST)));
 								whitelistList.add(user + ":" + email );
 								ConfigurationManager.setParam(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST,  StringUtils.join(whitelistList, "|"));
-								String status = MailUtils.sendDlVerificationRequest(email, email, user, this.getServletContext());
+								String status = MailUtils.sendDlVerificationRequest(email, email, user, this.getServletContext(), true);
 								if (StringUtils.equals(status, "ok")) {
 									reply = new JSONObject().put("status", "unverified");
 								} else {

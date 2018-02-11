@@ -2,9 +2,12 @@ package com.jstakun.lm.server.tasks;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,6 +22,7 @@ import org.json.JSONObject;
 
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.utils.FileUtils;
+import com.jstakun.lm.server.utils.MailUtils;
 import com.jstakun.lm.server.utils.RHCloudUtils;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.jstakun.lm.server.utils.persistence.ScreenshotPersistenceUtils;
@@ -102,6 +106,15 @@ public class TaskServlet extends HttpServlet {
             	 for (int i=0;i<currencies.length;i++) {
             		 loadCurrency(currencies[i]);
             	 }
+             } else if (StringUtils.equalsIgnoreCase(action, "register_dl")) {
+            	 List<String> whitelistList = new ArrayList<String>(Arrays.asList(ConfigurationManager.getArray(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST)));
+				 for (String item : whitelistList) {
+					    String tokens[] = StringUtils.split(item, ':');
+					    if (tokens.length == 2 && StringUtils.isNumeric(tokens[0]) && StringUtils.contains(tokens[1], '@')) {
+					    	String status = "test"; //MailUtils.sendDlVerificationRequest(tokens[1], tokens[1], tokens[0], this.getServletContext(), false);
+					        logger.log(Level.INFO, "Sent registration request to: " + tokens[1] + " with status: " + status);
+					    }
+				 }
              } else {
                 logger.log(Level.SEVERE, "Wrong parameter action: {0}", action);
              }            

@@ -34,13 +34,16 @@ public class MailUtils {
 
     private static final Logger logger = Logger.getLogger(MailUtils.class.getName());
 
-    private static String sendMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType) {
+    private static String sendMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType, String ccA, String ccP) {
         try {
             Properties props = new Properties();
             Session session = Session.getDefaultInstance(props, null);
             Message msg = new MimeMessage(session);
             msg.setFrom(new InternetAddress(fromA, fromP));
             msg.addRecipient(Message.RecipientType.TO, new InternetAddress(toA, toP));
+            if (ccA != null && ccP != null) {
+            	msg.addRecipient(Message.RecipientType.CC, new InternetAddress(ccA, ccP));
+            }
             msg.setSubject(subject);
             msg.setContent(content, contentType);
             Transport.send(msg);
@@ -92,7 +95,7 @@ public class MailUtils {
     }
     
     public static void sendDeviceLocatorRegistrationRequest(String email) {
-    	sendMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, "Registration request", email, "text/plain");
+    	sendMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, "Registration request", email, "text/plain", ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK);
     }
 
     public static String sendLandmarkCreationNotification(String title, String body) {
@@ -122,7 +125,7 @@ public class MailUtils {
             String link = ConfigurationManager.SERVER_URL + "verify.do?k=" + URLEncoder.encode(key, "UTF-8") + "&s=1";
             is = context.getResourceAsStream("/WEB-INF/emails/verification.html");
             String message = String.format(IOUtils.toString(is, "UTF-8"), nick, link);
-            sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "Welcome to GMS World", message, "text/html");
+            sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "Welcome to GMS World", message, "text/html",ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK);
         } catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
         } finally {
@@ -136,14 +139,18 @@ public class MailUtils {
         }
     }
     
-    public static String sendDlVerificationRequest(String toA, String nick, String user, ServletContext context) {
+    public static String sendDlVerificationRequest(String toA, String nick, String user, ServletContext context, boolean first) {
         InputStream is = null;
         String result = null; 
         try {
-            String link = ConfigurationManager.SERVER_URL + "verify.do?m=" + URLEncoder.encode(toA, "UTF-8") + "&s=1&u=" + user;           
-            is = context.getResourceAsStream("/WEB-INF/emails/verification-dl.html");
+            String link = ConfigurationManager.SERVER_URL + "verify.do?m=" + URLEncoder.encode(toA, "UTF-8") + "&s=1&u=" + user;
+            if (first) {
+            	is = context.getResourceAsStream("/WEB-INF/emails/verification-dl.html");
+            } else {
+            	is = context.getResourceAsStream("/WEB-INF/emails/verification-next-dl.html");
+            }
             String message = String.format(IOUtils.toString(is, "UTF-8"), link);
-            result = sendMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html");
+            result = sendMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html",ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK);
         } catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
             result = "failed";
@@ -167,7 +174,7 @@ public class MailUtils {
             	nick = "GMS World User";
             }
             String message = String.format(IOUtils.toString(is, "UTF-8"), nick);
-            sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "GMS World Registration", message, "text/html");
+            sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "GMS World Registration", message, "text/html",ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK);
         } catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
         } finally {
@@ -186,7 +193,7 @@ public class MailUtils {
         try {
             is = context.getResourceAsStream("/WEB-INF/emails/notification-dl.html");
             String message = IOUtils.toString(is, "UTF-8");
-            sendMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html");
+            sendMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html",ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK);
         } catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
         } finally {
@@ -205,7 +212,7 @@ public class MailUtils {
         try {
             is = context.getResourceAsStream("/WEB-INF/emails/login.html");
             String message = String.format(IOUtils.toString(is, "UTF-8"), nick, layer);
-            sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "GMS World Login", message, "text/html");
+            sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "GMS World Login", message, "text/html",ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK);
         } catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
         } finally {
@@ -243,7 +250,7 @@ public class MailUtils {
     }
     
     public static void sendUserCreationNotification(String body) {
-        sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, "New user", body, "text/plain");
+        sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, "New user", body, "text/plain",ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK);
     }
     
     public static void sendBlackScreenshotNotification(String body) {

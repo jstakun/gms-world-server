@@ -35,6 +35,9 @@
      <h4>
       <a href="/admin/taskExecute?action=purge&entity=screenshot" onclick="return confirm_action()">Purge screenshot data</a>
     </h4>
+    <h4>
+      <a href="/admin/taskExecute?action=registerDl" onclick="return confirm_action()">Send Device Locator registration request</a>
+    </h4>
     <!--h4>
       <a href="/admin/taskExecute?action=emailing" onclick="return confirm_action()">Emailing</a>
     </h4>
