@@ -3,10 +3,7 @@ package net.gmsworld.server.layers;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,6 +22,7 @@ import com.jstakun.lm.server.utils.MailUtils;
 import com.jstakun.lm.server.utils.RoutesUtils;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceWebUtils;
+import com.jstakun.lm.server.utils.persistence.NotificationPersistenceUtils;
 
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.utils.HttpUtils;
@@ -188,7 +186,7 @@ public class NotificationsServlet extends HttpServlet {
 						String telegramId = request.getParameter("chatId");
 						if (TelegramUtils.isValidTelegramId(telegramId) && StringUtils.isNotEmpty(message)) {
 							// check if chat id is on white list
-							if (ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, telegramId)) {
+							if (NotificationPersistenceUtils.isWhitelistedTelegramId(telegramId)) {
 				            	TelegramUtils.sendTelegram(telegramId, message);
 				            	if (GeocodeUtils.isValidLatitude(latitude) && GeocodeUtils.isValidLongitude(longitude)) {
 				            		TelegramUtils.sendLocationTelegram(telegramId, latitude, longitude);
@@ -213,7 +211,7 @@ public class NotificationsServlet extends HttpServlet {
 						String emailTo = request.getParameter("emailTo");
 						if (StringUtils.isNotEmpty(emailTo) && (StringUtils.isNotEmpty(title) || StringUtils.isNotEmpty(message))) {
 							//check if email is on white list
-							if (ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST, emailTo)) {
+							if (NotificationPersistenceUtils.isWhitelistedEmail(emailTo)) {
 				            	MailUtils.sendDeviceLocatorMessage(emailTo, message, title);
 				            	reply = new JSONObject().put("status", "sent");	
 				            } else {
@@ -232,7 +230,7 @@ public class NotificationsServlet extends HttpServlet {
 					if (appId == Commons.DL_ID && StringUtils.startsWith(request.getRequestURI(), "/s/")) {
 						String telegramId = request.getParameter("chatId");
 						if (TelegramUtils.isValidTelegramId(telegramId)) {
-							if (ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, telegramId)) {
+							if (NotificationPersistenceUtils.isWhitelistedTelegramId(telegramId)) {
 								if (StringUtils.isNumeric(telegramId)) {
 									TelegramUtils.sendTelegram(telegramId, "You've been already registered to Device Locator notifications.\n"
 										+ "You can unregister at any time by sending /unregister command message to @device_locator_bot");
@@ -276,9 +274,7 @@ public class NotificationsServlet extends HttpServlet {
 								MailUtils.sendDlRegistrationNotification(email, email, this.getServletContext());
 								reply = new JSONObject().put("status", "registered");
 							} else {
-								List<String> whitelistList = new ArrayList<String>(Arrays.asList(ConfigurationManager.getArray(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST)));
-								whitelistList.add(user + ":" + email );
-								ConfigurationManager.setParam(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST,  StringUtils.join(whitelistList, "|"));
+								NotificationPersistenceUtils.addToWhitelistEmail(user, email);
 								String status = MailUtils.sendDlVerificationRequest(email, email, user, this.getServletContext(), true);
 								if (StringUtils.equals(status, "ok")) {
 									reply = new JSONObject().put("status", "unverified");

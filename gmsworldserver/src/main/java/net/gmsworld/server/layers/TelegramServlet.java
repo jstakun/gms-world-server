@@ -3,9 +3,7 @@ package net.gmsworld.server.layers;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,8 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
-import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.utils.persistence.DevicePersistenceUtils;
+import com.jstakun.lm.server.utils.persistence.NotificationPersistenceUtils;
 
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
@@ -74,10 +72,8 @@ public class TelegramServlet extends HttpServlet {
 							Long telegramId= messageJson.getJSONObject("chat").getLong("id");
 							if (StringUtils.equalsIgnoreCase(message, "/register") || StringUtils.equalsIgnoreCase(message, "register")) {
 								//add chat id to white list
-								if (!ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, Long.toString(telegramId))) {
-									List<String> whitelistList = new ArrayList<String>(Arrays.asList(ConfigurationManager.getArray(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST)));
-									whitelistList.add(Long.toString(telegramId));
-									ConfigurationManager.setParam(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST,  StringUtils.join(whitelistList, "|"));
+								if (!NotificationPersistenceUtils.isWhitelistedTelegramId(Long.toString(telegramId))) {
+									NotificationPersistenceUtils.addToWhitelistTelegramId(Long.toString(telegramId));
 								} else {
 									logger.log(Level.WARNING, "Telegram chat id " + telegramId + " already exists in the whitelist!");
 								}		
@@ -92,16 +88,13 @@ public class TelegramServlet extends HttpServlet {
 								//remove chat or channel id from white list
 								String[] tokens = StringUtils.split(message, " ");
 								String id = null;
-								if (tokens.length > 1 && StringUtils.startsWith(tokens[1], "-") && StringUtils.isNumeric(tokens[1].substring(1))) {
+								if (tokens.length > 1 && ((StringUtils.startsWith(tokens[1], "-") && StringUtils.isNumeric(tokens[1].substring(1))) || StringUtils.startsWith(tokens[1], "@"))) {
 									id = tokens[1]; //channel id
 								} else if (tokens.length == 1) {
 									id = Long.toString(telegramId); //chat id
 								}
-								if (id != null && ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, id)) {
-									List<String> whitelistList = new ArrayList<String>(Arrays.asList(ConfigurationManager.getArray(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST)));
-									if (whitelistList.remove(id)) {
-										ConfigurationManager.setParam(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST,  StringUtils.join(whitelistList, "|"));
-									} else {
+								if (NotificationPersistenceUtils.isWhitelistedTelegramId(id)) {
+									if (!NotificationPersistenceUtils.removeFromWhitelistTelegramId(id)) {
 										logger.log(Level.SEVERE, "Unable to remove Telegram chat or channel Id " + id + " from the whitelist!");
 									}
 									TelegramUtils.sendTelegram(id, "You've been unregistered from Device Locator notifications.");
@@ -111,8 +104,9 @@ public class TelegramServlet extends HttpServlet {
 									logger.log(Level.WARNING, "Telegram chat or channel Id " + id + " doesn't exists in the whitelist!");
 								}
 							} else if (StringUtils.equalsIgnoreCase(message, "/getmyid") || StringUtils.equalsIgnoreCase(message, "getmyid")) { 
-								TelegramUtils.sendTelegram(Long.toString(telegramId), Long.toString(telegramId));
-								TelegramUtils.sendTelegram(Long.toString(telegramId), "Please click on message above containing your chat Id and select copy. Then come back to Device Locator and "
+								String id = Long.toString(telegramId);
+								TelegramUtils.sendTelegram(id, id);
+								TelegramUtils.sendTelegram(id, "Please click on message above containing your chat Id and select copy. Then come back to Device Locator and "
 							 		+ "paste your chat Id to Telegram Messenger chat Id form field. If you are lucky your chat Id will be pasted automatically :)");
 							} else {
 								TelegramUtils.sendTelegram(Long.toString(telegramId), "I've received unrecognised message " + message);
