@@ -10,22 +10,14 @@ import com.jstakun.lm.server.config.ConfigurationManager;
 
 public class NotificationPersistenceUtils {
 	
+	//TODO use persistence manager
+	
+	//telegram
+	
 	public static boolean isWhitelistedTelegramId(String telegramId) {
 		 return telegramId != null && ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, telegramId);
 	}
 
-	public static boolean isWhitelistedEmail(String email) {
-		 return email != null && ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST, email);
-	}
-	
-	public static void addToWhitelistEmail(String user, String email) {
-		if (email != null && user != null) {
-			List<String> whitelistList = new ArrayList<String>(Arrays.asList(ConfigurationManager.getArray(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST)));
-			whitelistList.add(user + ":" + email );
-			ConfigurationManager.setParam(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST,  StringUtils.join(whitelistList, "|"));
-		}
-	}
-	
 	public static void addToWhitelistTelegramId(String telegramId) {
 		if (telegramId != null) {
 			List<String> whitelistList = new ArrayList<String>(Arrays.asList(ConfigurationManager.getArray(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST)));
@@ -44,5 +36,31 @@ public class NotificationPersistenceUtils {
 			}	 
 		}
 		return removed;
+	}
+	
+	//email
+	
+	public static boolean isWhitelistedEmail(String email) {
+		 return email != null && ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST, email);
+	}
+	
+	public static void addToWhitelistEmail(String user, String email, boolean isRegistered) {
+		if (email != null && user != null) {
+			List<String> whitelistList = new ArrayList<String>(Arrays.asList(ConfigurationManager.getArray(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST)));
+			if (!isRegistered) {
+				whitelistList.add(user + ":" + email );
+			} else {
+				//remove all occurences of email
+				for (String emailVal : whitelistList) {
+					 if (emailVal.endsWith(":" + email)) {
+						 whitelistList.remove(emailVal);
+					 }
+				}
+				if (!isWhitelistedEmail(email)) {
+					 whitelistList.add(email);
+				}
+			}
+			ConfigurationManager.setParam(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST,  StringUtils.join(whitelistList, "|"));
+		}
 	}
 }

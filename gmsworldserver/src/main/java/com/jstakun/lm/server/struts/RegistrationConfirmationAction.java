@@ -5,27 +5,24 @@
 package com.jstakun.lm.server.struts;
 
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.jstakun.lm.server.config.ConfigurationManager;
-import com.jstakun.lm.server.persistence.User;
-import com.jstakun.lm.server.utils.MailUtils;
-import com.jstakun.lm.server.utils.persistence.UserPersistenceUtils;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import net.gmsworld.server.utils.HttpUtils;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+
+import com.jstakun.lm.server.persistence.User;
+import com.jstakun.lm.server.utils.MailUtils;
+import com.jstakun.lm.server.utils.persistence.NotificationPersistenceUtils;
+import com.jstakun.lm.server.utils.persistence.UserPersistenceUtils;
+
+import net.gmsworld.server.utils.HttpUtils;
 
 /**
  *
@@ -73,11 +70,8 @@ public class RegistrationConfirmationAction extends Action {
         	String email = request.getParameter("m");
         	String user = request.getParameter("u");
             
-        	if (!ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST,  email)) {
-				List<String> whitelistList = new ArrayList<String>(Arrays.asList(ConfigurationManager.getArray(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST)));
-				whitelistList.remove(user + ":" + email);
-				whitelistList.add(email);
-				ConfigurationManager.setParam(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST,  StringUtils.join(whitelistList, "|"));
+        	if (!NotificationPersistenceUtils.isWhitelistedEmail(email)) {
+        		NotificationPersistenceUtils.addToWhitelistEmail(user, email, true);
             } else {
             	logger.log(Level.WARNING, "Email address " + email + " already exists in the whitelist!");
             }

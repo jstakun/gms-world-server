@@ -270,11 +270,11 @@ public class NotificationsServlet extends HttpServlet {
 						String email = request.getParameter("email");
 						String user = request.getParameter("user");
 						if (StringUtils.isNotEmpty(email) && StringUtils.isNotEmpty(user)) {
-							if (ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST, email)) {
+							if (NotificationPersistenceUtils.isWhitelistedEmail(email)) {
 								MailUtils.sendDlRegistrationNotification(email, email, this.getServletContext());
 								reply = new JSONObject().put("status", "registered");
 							} else {
-								NotificationPersistenceUtils.addToWhitelistEmail(user, email);
+								NotificationPersistenceUtils.addToWhitelistEmail(user, email, false);
 								String status = MailUtils.sendDlVerificationRequest(email, email, user, this.getServletContext(), true);
 								if (StringUtils.equals(status, "ok")) {
 									reply = new JSONObject().put("status", "unverified");
