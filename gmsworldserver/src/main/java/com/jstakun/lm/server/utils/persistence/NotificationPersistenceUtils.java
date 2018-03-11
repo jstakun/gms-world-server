@@ -14,11 +14,11 @@ public class NotificationPersistenceUtils {
 	
 	//telegram
 	
-	public static boolean isWhitelistedTelegramId(String telegramId) {
+	public static synchronized boolean isWhitelistedTelegramId(String telegramId) {
 		 return telegramId != null && ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST, telegramId);
 	}
 
-	public static void addToWhitelistTelegramId(String telegramId) {
+	public static synchronized void addToWhitelistTelegramId(String telegramId) {
 		if (telegramId != null) {
 			List<String> whitelistList = new ArrayList<String>(Arrays.asList(ConfigurationManager.getArray(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST)));
 			whitelistList.add(telegramId);
@@ -26,7 +26,7 @@ public class NotificationPersistenceUtils {
 		}
 	}
 	
-	public static boolean removeFromWhitelistTelegramId(String telegramId) {
+	public static synchronized boolean removeFromWhitelistTelegramId(String telegramId) {
 		boolean removed = false;
 		if (telegramId != null) {
 			List<String> whitelistList = new ArrayList<String>(Arrays.asList(ConfigurationManager.getArray(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST)));
@@ -40,11 +40,11 @@ public class NotificationPersistenceUtils {
 	
 	//email
 	
-	public static boolean isWhitelistedEmail(String email) {
+	public static synchronized boolean isWhitelistedEmail(String email) {
 		 return email != null && ConfigurationManager.listContainsValue(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST, email);
 	}
 	
-	public static void addToWhitelistEmail(String user, String email, boolean isRegistered) {
+	public static synchronized void addToWhitelistEmail(String user, String email, boolean isRegistered) {
 		if (email != null && user != null) {
 			List<String> whitelistList = new ArrayList<String>(Arrays.asList(ConfigurationManager.getArray(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST)));
 			if (!isRegistered) {

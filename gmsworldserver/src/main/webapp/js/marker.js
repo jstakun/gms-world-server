@@ -75,10 +75,14 @@ MarkerLabel.prototype = $.extend(new google.maps.OverlayView(), {
 		];
 	},
 	onRemove: function() {
-		this.div.parentNode.removeChild(this.div);
+		if (this.div.parentNode != null) {
+			this.div.parentNode.removeChild(this.div);
+		}
 		// Label is removed from the map, stop updating its position/text
-		for (var i = 0, l = this.listeners.length; i < l; ++i) {
-			google.maps.event.removeListener(this.listeners[i]);
+		if (this.listeners != null) {
+			for (var i = 0, l = this.listeners.length; i < l; ++i) {
+				google.maps.event.removeListener(this.listeners[i]);
+			}
 		}
 	},
 	draw: function() {
