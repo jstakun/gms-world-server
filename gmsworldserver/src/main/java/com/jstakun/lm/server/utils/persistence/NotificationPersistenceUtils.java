@@ -87,7 +87,7 @@ public class NotificationPersistenceUtils {
 		EntityManager pm = EMF.get().createEntityManager();
 		List<Notification> notifications = null;
 		try {
-        	TypedQuery<Notification> query = pm.createNamedQuery(Notification.NOTIFICATION_FINDBYID, Notification.class);
+        	TypedQuery<Notification> query = pm.createNamedQuery(Notification.NOTIFICATION_FINDALLWITHSTATUS, Notification.class);
         	query.setParameter("status", status);
         	notifications = query.getResultList();
         } catch (Exception ex) {
@@ -157,7 +157,7 @@ public class NotificationPersistenceUtils {
 		 }
 	}
 	
-	public static void requestForNotification(ServletContext sc) {
+	public static void requestForConfirmation(ServletContext sc) {
 		List<Notification> unverified = findByStatus(Notification.Status.UNVERIFIED);
 		if (unverified != null && !unverified.isEmpty()) {
 			  for (Notification n : unverified) {

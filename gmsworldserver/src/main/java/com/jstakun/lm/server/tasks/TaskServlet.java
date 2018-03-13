@@ -104,7 +104,7 @@ public class TaskServlet extends HttpServlet {
             		 loadCurrency(currencies[i]);
             	 }
              } else if (StringUtils.equalsIgnoreCase(action, "register_dl")) {
-            	 NotificationPersistenceUtils.requestForNotification(this.getServletContext());
+            	 NotificationPersistenceUtils.requestForConfirmation(this.getServletContext());
              } else {
                 logger.log(Level.SEVERE, "Wrong parameter action: {0}", action);
              }            
