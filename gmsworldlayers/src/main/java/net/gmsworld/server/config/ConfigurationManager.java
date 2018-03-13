@@ -20,8 +20,6 @@ public class ConfigurationManager {
     public static final String CLOSED_URLS = "closed";//temporary closed urls
     public static final String IP_TOTAL_LIMIT = "totalLimit"; //total call limit from ip
     public static final String IP_URI_LIMIT = "uriLimit"; //total call limit from ip to uri
-    public static final String DL_EMAIL_WHITELIST = "dlMailWhitelist"; //list of email addresses registered for Device Locator notifiactions 
-    public static final String DL_TELEGRAM_WHITELIST = "dlTelegramWhitelist"; //list of Telegram chat ids registered for Device Locator notifiactions
     
     public static final String FB_USERNAME = "fbUsername";
     public static final String FB_GENDER = "fbGender";

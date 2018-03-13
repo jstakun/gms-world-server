@@ -81,7 +81,7 @@ public class LayerPersistenceUtils {
 	    return layersCacheAction.getListFromCache(Layer.class, key, CacheType.NORMAL);
     }
 
-    public static void persistLayer(String name, String desc, boolean enabled, boolean manageable, boolean checkinable, String formatted) {
+    public static void persist(String name, String desc, boolean enabled, boolean manageable, boolean checkinable, String formatted) {
         /*Layer layer = new Layer(name, desc, enabled, manageable, checkinable, formatted);
         PersistenceManager pm = PMF.get().getPersistenceManager();
 

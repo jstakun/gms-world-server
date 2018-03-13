@@ -274,8 +274,8 @@ public class NotificationsServlet extends HttpServlet {
 								MailUtils.sendDlRegistrationNotification(email, email, this.getServletContext());
 								reply = new JSONObject().put("status", "registered");
 							} else {
-								NotificationPersistenceUtils.addToWhitelistEmail(user, email, false);
-								String status = MailUtils.sendDlVerificationRequest(email, email, user, this.getServletContext(), true);
+								NotificationPersistenceUtils.addToWhitelistEmail(email, false);
+								String status = MailUtils.sendDlVerificationRequest(email, email, this.getServletContext(), true);
 								if (StringUtils.equals(status, "ok")) {
 									reply = new JSONObject().put("status", "unverified");
 								} else {

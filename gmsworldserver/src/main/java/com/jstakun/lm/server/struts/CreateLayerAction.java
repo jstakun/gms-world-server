@@ -35,7 +35,7 @@ public class CreateLayerAction extends Action {
 
 
         //create layer
-        LayerPersistenceUtils.persistLayer(name, desc, true, false, true, formatted);
+        LayerPersistenceUtils.persist(name, desc, true, false, true, formatted);
 
         return mapping.findForward( "success");
     }

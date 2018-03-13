@@ -32,7 +32,7 @@ public class ScreenshotPersistenceUtils {
 
     private static final Logger logger = Logger.getLogger(ScreenshotPersistenceUtils.class.getName());
 
-    public static String persistScreenshot(String username, double latitude, double longitude, String filename)
+    public static String persist(String username, double latitude, double longitude, String filename)
     {
     	String key = null;
     	

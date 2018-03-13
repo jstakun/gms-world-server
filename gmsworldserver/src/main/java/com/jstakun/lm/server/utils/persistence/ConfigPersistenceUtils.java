@@ -18,7 +18,7 @@ public class ConfigPersistenceUtils {
 
    private static final Logger logger = Logger.getLogger(ConfigPersistenceUtils.class.getName());
 
-   public static void persistConfig(String key, String value) {
+   public static void persist(String key, String value) {
         EntityManager pm = EMF.get().createEntityManager();
         try {
         	Config c = findByKey(key, pm);

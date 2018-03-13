@@ -32,7 +32,7 @@ public class UserPersistenceUtils {
 
     private static final Logger logger = Logger.getLogger(UserPersistenceUtils.class.getName());
 
-    public static void persistUser(String login, String password, String email, String firstname, String lastname, boolean local) {
+    public static void persist(String login, String password, String email, String firstname, String lastname, boolean local) {
         
         try {
         	String landmarksUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "addItem";

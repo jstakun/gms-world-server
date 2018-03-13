@@ -15,9 +15,9 @@ public class PersistenceUtilsTest {
 	
 	@Test
 	public void checkInPersistenceUtils() {
-		CheckinPersistenceUtils.persistCheckin("test", null, landmarkId, 0);
+		CheckinPersistenceUtils.persist("test", null, landmarkId, 0);
 		
-		CheckinPersistenceUtils.persistCheckin("test", "test", -1, 2);
+		CheckinPersistenceUtils.persist("test", "test", -1, 2);
 		
 		List<Checkin> checkins = CheckinPersistenceUtils.selectCheckinsByLandmark(Integer.toString(landmarkId));
 		

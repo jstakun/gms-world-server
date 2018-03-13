@@ -52,7 +52,7 @@ public final class SocialCheckinServlet extends HttpServlet {
     			String name = request.getParameter("name");
     			String lat = request.getParameter("lat");
     			String lng = request.getParameter("lng");
-    			if (CheckinPersistenceUtils.persistCheckin(accessToken, venueId, -1, 2)) {
+    			if (CheckinPersistenceUtils.persist(accessToken, venueId, -1, 2)) {
     	    		int responseCode = FoursquareUtils.checkin(accessToken, venueId, name);
     				if (responseCode != HttpServletResponse.SC_OK) {
     					//response.sendError(responseCode);
@@ -80,7 +80,7 @@ public final class SocialCheckinServlet extends HttpServlet {
     			String name = request.getParameter("name");
     			String lat = request.getParameter("lat");
     			String lng = request.getParameter("lng");
-    			if (CheckinPersistenceUtils.persistCheckin(accessToken, venueId, -1, 2)) {
+    			if (CheckinPersistenceUtils.persist(accessToken, venueId, -1, 2)) {
     				int responseCode = FacebookSocialUtils.checkin(accessToken, venueId, name);
     				if (responseCode != HttpServletResponse.SC_OK) {
     					//response.sendError(responseCode);

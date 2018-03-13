@@ -80,7 +80,7 @@ public final class ConfigurationManager {
     
     public static void setParam(String key, String value) {
     	if (StringUtils.isNotEmpty(key)) {
-    			ConfigPersistenceUtils.persistConfig(key, value);
+    			ConfigPersistenceUtils.persist(key, value);
     			populateConfig();
     	}
     	refreshConfig();

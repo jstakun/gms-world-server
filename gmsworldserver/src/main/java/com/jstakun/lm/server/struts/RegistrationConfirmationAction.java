@@ -1,12 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.jstakun.lm.server.struts;
 
 import java.net.URLDecoder;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,8 +29,7 @@ public class RegistrationConfirmationAction extends Action {
     private static final String SUCCESS_UNREG = "success_unreg";
     private static final String FAILURE_REG = "failure_reg";
     private static final String FAILURE_UNREG = "failure_unreg";
-    private static final Logger logger = Logger.getLogger(RegistrationConfirmationAction.class.getName());
-
+    
     /**
      * This is the action called from the Struts framework.
      * @param mapping The ActionMapping used to select this instance.
@@ -66,14 +59,11 @@ public class RegistrationConfirmationAction extends Action {
                     MailUtils.sendRegistrationNotification(user.getEmail(), user.getLogin(), getServlet().getServletContext());
                }
             }
-        } else if (!HttpUtils.isEmptyAny(request, "s", "m", "u")) {
+        } else if (!HttpUtils.isEmptyAny(request, "m", "s")) {
         	String email = request.getParameter("m");
-        	String user = request.getParameter("u");
-            
+        	
         	if (!NotificationPersistenceUtils.isWhitelistedEmail(email)) {
-        		NotificationPersistenceUtils.addToWhitelistEmail(user, email, true);
-            } else {
-            	logger.log(Level.WARNING, "Email address " + email + " already exists in the whitelist!");
+        		NotificationPersistenceUtils.addToWhitelistEmail(email, true);
             }
         	result = true;
         }

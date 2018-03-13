@@ -20,7 +20,7 @@
     if (request.getParameter("key") != null && request.getParameter("value") != null) {
         String key = request.getParameter("key");
         String value = request.getParameter("value");
-        ConfigPersistenceUtils.persistConfig(key, value);
+        ConfigPersistenceUtils.persist(key, value);
         out.println("Parameter " + key + " created.");
     }
     else {

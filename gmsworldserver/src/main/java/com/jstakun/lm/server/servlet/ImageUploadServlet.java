@@ -106,7 +106,7 @@ public class ImageUploadServlet extends HttpServlet {
 									String username = StringUtil.getUsername(request.getAttribute("username"),
 											request.getHeader("username"));
 
-									String key = ScreenshotPersistenceUtils.persistScreenshot(username, lat, lng, itemName);
+									String key = ScreenshotPersistenceUtils.persist(username, lat, lng, itemName);
 
 									if (key != null) {
 										String imageUrl = ConfigurationManager.SERVER_URL + "image/" + key;

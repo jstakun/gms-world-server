@@ -35,7 +35,7 @@ public class CheckinPersistenceUtils {
     /*
      * type 0 - qrcode, 1 - GMS world landmark, 2 - social checkin (fb, fs, gg)
      */
-    public static boolean persistCheckin(String username, String venueId, int landmarkKey, Integer type) {
+    public static boolean persist(String username, String venueId, int landmarkKey, Integer type) {
     	boolean result = true;
     	try {
         	String landmarksUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "addItem?";

@@ -11,7 +11,7 @@ import com.jstakun.lm.server.persistence.Search;
  */
 public class SearchPersistenceUtils {
 
-    public static void persistSearch(String username, String uri, boolean auth, double latitude, double longitude, int radius, String query, String locale, int count)
+    public static void persist(String username, String uri, boolean auth, double latitude, double longitude, int radius, String query, String locale, int count)
     {
     	EntityManager pm = EMF.get().createEntityManager();
 

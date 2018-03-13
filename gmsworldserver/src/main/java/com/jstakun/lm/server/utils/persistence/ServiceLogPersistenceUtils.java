@@ -4,13 +4,6 @@ import java.util.Date;
 
 import javax.persistence.EntityManager;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.FetchOptions;
-import com.google.appengine.api.datastore.Query.Filter;
-import com.google.appengine.api.datastore.Query.FilterOperator;
-import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.jstakun.lm.server.persistence.EMF;
 import com.jstakun.lm.server.persistence.ServiceLog;
 
@@ -20,9 +13,9 @@ import com.jstakun.lm.server.persistence.ServiceLog;
  */
 public class ServiceLogPersistenceUtils {
 
-    private static final long FIVE_MINS = 1000 * 60 * 5;
+    //private static final long FIVE_MINS = 1000 * 60 * 5;
 
-    public static void persistServiceLog(String username, String serviceUri, boolean auth, int appId)
+    public static void persist(String username, String serviceUri, boolean auth, int appId)
     {
     	EntityManager pm = EMF.get().createEntityManager();
 
@@ -37,7 +30,7 @@ public class ServiceLogPersistenceUtils {
     public static long countServiceLogByDay(Date day) {
         //TODO not yet implemented
     	//day in format dd-MM-yyyy
-        //long result = 0;
+    	long result = 0;
         /*PersistenceManager pm = PMF.get().getPersistenceManager();
 
         try {
@@ -55,13 +48,13 @@ public class ServiceLogPersistenceUtils {
             pm.close();
         }*/
 
-        //return result;
-    	return 0;
+        return result;
     }
 
     public static long deleteLogsOlderThanDate(Date day) {
-        int result = 0;
-        DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
+    	//TODO not yet implemented
+    	int result = 0;
+        /*DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
         com.google.appengine.api.datastore.Query query = new com.google.appengine.api.datastore.Query("ServiceLog");
         //query.addFilter("creationDate", FilterOperator.LESS_THAN, day);
         query.setKeysOnly();
@@ -80,7 +73,7 @@ public class ServiceLogPersistenceUtils {
             }
             result += count;
             currentTime = System.currentTimeMillis();
-        }
+        }*/
 
         return result;
     }

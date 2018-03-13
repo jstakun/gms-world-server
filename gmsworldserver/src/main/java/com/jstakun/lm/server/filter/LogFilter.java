@@ -59,13 +59,13 @@ public class LogFilter implements Filter {
             int appIdVal = NumberUtils.getInt(httpRequest.getHeader(Commons.APP_HEADER), -1);
     		
             if (StringUtils.isNotEmpty(username)){
-                ServiceLogPersistenceUtils.persistServiceLog(username, httpRequest.getRequestURI(), true, appIdVal);
+                ServiceLogPersistenceUtils.persist(username, httpRequest.getRequestURI(), true, appIdVal);
             } else {
-                ServiceLogPersistenceUtils.persistServiceLog(null, httpRequest.getRequestURI(), false, appIdVal);
+                ServiceLogPersistenceUtils.persist(null, httpRequest.getRequestURI(), false, appIdVal);
             }
         } else {
             String url = request.getScheme() + "://" + request.getLocalName();
-            ServiceLogPersistenceUtils.persistServiceLog(null, url, false, -1);
+            ServiceLogPersistenceUtils.persist(null, url, false, -1);
         }
 
         if (block) {

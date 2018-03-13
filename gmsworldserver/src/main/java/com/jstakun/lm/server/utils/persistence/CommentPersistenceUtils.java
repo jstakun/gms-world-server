@@ -35,7 +35,7 @@ public class CommentPersistenceUtils implements Serializable {
     private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(CommentPersistenceUtils.class.getName());
 
-    public static void persistComment(String username, String landmarkKey, String message) {
+    public static void persist(String username, String landmarkKey, String message) {
         /*PersistenceManager pm = PMF.get().getPersistenceManager();
 
         try {
