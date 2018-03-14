@@ -10,6 +10,7 @@ import javax.persistence.TypedQuery;
 import javax.servlet.ServletContext;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.validator.routines.EmailValidator;
 
 import com.jstakun.lm.server.persistence.EMF;
 import com.jstakun.lm.server.persistence.Notification;
@@ -162,8 +163,10 @@ public class NotificationPersistenceUtils {
 		if (unverified != null && !unverified.isEmpty()) {
 			  for (Notification n : unverified) {
 				  String email = n.getId();
-				  String status = MailUtils.sendDlVerificationRequest(email, email, sc, false);
-				  logger.log(Level.INFO, "Sent registration request to: " + email + " with status: " + status);
+				  if (EmailValidator.getInstance().isValid(email)) {
+					  String status = MailUtils.sendDlVerificationRequest(email, email, sc, false);
+					  logger.log(Level.INFO, "Registration confirmation request has been sent to: " + email + " with status: " + status);
+				  }
 			  }
 		}
 	}

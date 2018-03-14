@@ -24,7 +24,7 @@ public class FBTest {
 		LayerHelperFactory.getInstance().setThreadProvider(new JvmThreadProvider());	
 	}
 	
-	String token = Commons.getProperty(Property.FB_TEST_TOKEN_FULL_0);
+	String token = Commons.getProperty(Property.FB_TEST_TOKEN_FULL);
 	double lat = 52.25;
 	double lng = 20.95;
 	int limit = 30;

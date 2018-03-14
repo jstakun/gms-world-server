@@ -6,10 +6,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 
 import net.gmsworld.server.config.Commons;
@@ -67,9 +69,9 @@ public class FacebookUtils extends LayerHelper {
             JsonObject placesSearch = null;
 
             if (query != null && query.length() > 0) {
-                placesSearch = facebookClient.fetchObject("search", JsonObject.class, Parameter.with("type", "place"), Parameter.with("center", latitude + "," + longitude), Parameter.with("distance", dist), Parameter.with("q", query), Parameter.with("limit", limit));
+                placesSearch = facebookClient.fetchObject("search", JsonObject.class, Parameter.with("type", "place"), Parameter.with("center", latitude + "," + longitude), Parameter.with("distance", dist), Parameter.with("q", query), Parameter.with("limit", limit), Parameter.with("fields", "name,location,website,picture.type(large),phone,description"));
             } else {
-                placesSearch = facebookClient.fetchObject("search", JsonObject.class, Parameter.with("type", "place"), Parameter.with("center", latitude + "," + longitude), Parameter.with("distance", dist), Parameter.with("limit", limit));
+                placesSearch = facebookClient.fetchObject("search", JsonObject.class, Parameter.with("type", "place"), Parameter.with("center", latitude + "," + longitude), Parameter.with("distance", dist), Parameter.with("limit", limit), Parameter.with("fields", "name,location,website,picture.type(large),phone,description"));
             }
 
             JsonArray data = placesSearch.getJsonArray("data");
@@ -143,23 +145,8 @@ public class FacebookUtils extends LayerHelper {
                     desc.putAll(pageDesc);
                 }
 
-                if (place.has("category_list")) {
-                	String category = "";
-                	JsonArray category_list = place.getJsonArray("category_list");
-                	for (int j=0;j<category_list.length();j++) {
-                		JsonObject cat = category_list.getJsonObject(j);
-                		if (StringUtils.isNotEmpty(category)) {
-                			category += ", ";
-                		}
-                	    category += cat.getString("name");
-                	}
-                	if (StringUtils.isNotEmpty(category)) {
-                		desc.put("category", category);
-                	}
-                } else if (place.has("category")) {
-                    desc.put("category", place.getString("category"));
-                }
-
+                processCategories(place, desc);
+                
                 jsonObject.put("lat", lat);
                 jsonObject.put("lng", lng);
 
@@ -224,23 +211,6 @@ public class FacebookUtils extends LayerHelper {
                 	url =  FBPLACES_PREFIX + placeid;
                 }
                 
-                if (place.has("category_list")) {
-                	String category = "";
-                	JsonArray category_list = place.getJsonArray("category_list");
-                	for (int j=0;j<category_list.length();j++) {
-                		JsonObject cat = category_list.getJsonObject(j);
-                		if (StringUtils.isNotEmpty(category)) {
-                			category += ", ";
-                		}
-                	    category += cat.getString("name");
-                	}
-                	if (StringUtils.isNotEmpty(category)) {
-                		pageDesc.put("category", category);
-                	}
-                } else if (place.has("category")) {
-                    pageDesc.put("category", place.getString("category"));
-                }
-
                 AddressInfo address = new AddressInfo();
                 String val = location.optString("street");
                 if (StringUtils.isNotEmpty(val)) {
@@ -280,6 +250,138 @@ public class FacebookUtils extends LayerHelper {
      		    if (thumbnail != null) {
                 	 landmark.setThumbnail(thumbnail);
                 }
+     		    
+     		    if (pageDesc.containsKey("rating")) {
+     			    landmark.setRating(Double.valueOf(pageDesc.remove("rating")));
+     		    }
+   		    
+     		    if (pageDesc.containsKey("numberOfReviews")) {
+     			    landmark.setNumberOfReviews(Integer.valueOf(pageDesc.remove("numberOfReviews")));
+     		    }
+   		        
+            	String desc = JSONUtils.buildLandmarkDesc(landmark, pageDesc, locale);
+     		    landmark.setDescription(desc);		   
+             
+     		    landmarks.add(landmark);
+            } else {
+            	logger.log(Level.WARNING, "Object {0} has no coordinates.", name);
+            }
+        }
+
+        return landmarks;
+    }
+
+	private static void processCategories(JsonObject place, Map<String, String> pageDesc) {
+		if (place.has("category_list")) {
+			JsonArray category_list = place.getJsonArray("category_list");
+			Set<String> categories = new HashSet<String>();
+			for (int j=0;j<category_list.length();j++) {
+				JsonObject cat = category_list.getJsonObject(j);
+				categories.add(cat.getString("name"));
+			}
+			if (!categories.isEmpty()) {
+				pageDesc.put("category", StringUtils.join(categories, ", "));
+			}
+		}  else if (place.has("category")) {
+		    pageDesc.put("category", place.getString("category"));
+		}
+	}
+    
+    private static List<ExtendedLandmark> createCustomLandmarkFacebookList(JsonArray data, Locale locale) throws JsonException {
+    	List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
+
+        for (int i=0;i<data.length(); i++) {
+        	JsonObject place = data.getJsonObject(i);
+        	String name = place.getString("name");
+        	JsonObject location = place.optJsonObject("location");
+        	if (location != null && location.has("latitude") && location.has("longitude")) {
+
+                double lat;
+                Object c = location.remove("latitude");
+                if (c instanceof Double) {
+                    lat = MathUtils.normalizeE6((Double) c);
+                } else if (c instanceof Integer) {
+                    lat = MathUtils.normalizeE6((double) ((Integer) c).intValue());
+                } else {
+                    continue;
+                }
+
+                double lng;
+                c = location.remove("longitude");
+                if (c instanceof Double) {
+                    lng = MathUtils.normalizeE6((Double) c);
+                } else if (c instanceof Integer) {
+                    lng = MathUtils.normalizeE6((double) ((Integer) c).intValue());
+                } else {
+                    continue;
+                }
+                
+                QualifiedCoordinates qc = new QualifiedCoordinates(lat, lng, 0f, 0f, 0f);
+     		    
+                String placeid = place.getString("id");
+
+                Map<String, String> pageDesc = new HashMap<String, String>();
+                
+                String url = place.optString("website");
+                if (url == null) {
+                	url =  FBPLACES_PREFIX + placeid;
+                }
+                
+                processCategories(place, pageDesc);
+
+                AddressInfo address = new AddressInfo();
+                String val = location.optString("street");
+                if (StringUtils.isNotEmpty(val)) {
+                	address.setField(AddressInfo.STREET, val);
+                }
+                val = location.optString("city");
+                if (StringUtils.isNotEmpty(val)) {
+                	address.setField(AddressInfo.CITY, val);
+                }
+                val = location.optString("country");
+                if (StringUtils.isNotEmpty(val)) {
+                    address.setField(AddressInfo.COUNTRY, val);
+                }
+                val = location.optString("zip");
+                if (StringUtils.isNotEmpty(val)) {
+                	address.setField(AddressInfo.POSTAL_CODE, val);
+                }
+                val = location.optString("state");
+                if (StringUtils.isNotEmpty(val)) {
+                	address.setField(AddressInfo.STATE, val);
+                }
+                val = place.optString("phone");
+                if (StringUtils.isNotEmpty(val) && val.matches(".*\\d+.*")) {
+                	address.setField(AddressInfo.PHONE_NUMBER, val);
+                }
+                
+                long creationDate = NumberUtils.getLong(pageDesc.remove("creation_date"), -1);
+                
+                ExtendedLandmark landmark = LandmarkFactory.getLandmark(name, null, qc, Commons.FACEBOOK_LAYER, address, creationDate, null);
+     		    landmark.setUrl(url);
+     		    
+     		    JsonObject picture = place.optJsonObject("picture");
+    		    if (picture != null) {
+    		    	landmark.setThumbnail(picture.getJsonObject("data").getString("url"));
+    		    }
+     		    
+    		    if (place.has("description")) {
+    		    		pageDesc.put("description", place.getString("description"));
+    		    }
+    		    
+     		    if (place.has("overall_star_rating")) {
+    		    	landmark.setRating(place.getDouble("overall_star_rating"));
+    		    }
+    		    if (place.has("rating_count")) {
+    		    	landmark.setNumberOfReviews(place.getInt("rating_count"));
+    		    }
+    		    if (place.has("fan_count")) {
+    		        pageDesc.put("Likes", Integer.toString(place.getInt("fan_count")));
+    		    }
+    		    
+    		    if (place.has("price_range")) {
+    		    	pageDesc.put("Pricing", place.getString("price_range"));
+    		    }
      		    
             	String desc = JSONUtils.buildLandmarkDesc(landmark, pageDesc, locale);
      		    landmark.setDescription(desc);		   
@@ -340,31 +442,23 @@ public class FacebookUtils extends LayerHelper {
         }
         FacebookClient facebookClient = getFacebookClient(token);
         JsonObject placesSearch = null;
+        
+        String picture = "picture.type(normal)";
+        if (stringLength == StringUtil.XLARGE) {
+        	picture = "picture.type(large)";
+        }
 
         if (query != null && query.length() > 0) {
-        	placesSearch = facebookClient.fetchObject("search", JsonObject.class, Parameter.with("type", "place"), Parameter.with("center", latitude + "," + longitude), Parameter.with("distance", dist), Parameter.with("q", query), Parameter.with("limit", limit));
+        	placesSearch = facebookClient.fetchObject("search", JsonObject.class, Parameter.with("type", "place"), Parameter.with("center", latitude + "," + longitude), Parameter.with("distance", dist), Parameter.with("q", query), Parameter.with("limit", limit), Parameter.with("fields", "name,location,website,phone,description,category_list,overall_star_rating,rating_count,fan_count,price_range," + picture));
         } else {
-        	placesSearch = facebookClient.fetchObject("search", JsonObject.class, Parameter.with("type", "place"), Parameter.with("center", latitude + "," + longitude), Parameter.with("distance", dist), Parameter.with("limit", limit));
+        	placesSearch = facebookClient.fetchObject("search", JsonObject.class, Parameter.with("type", "place"), Parameter.with("center", latitude + "," + longitude), Parameter.with("distance", dist), Parameter.with("limit", limit), Parameter.with("fields", "name,location,website,phone,description,category_list,overall_star_rating,rating_count,fan_count,price_range," + picture));
         }
   
-        JsonArray data = placesSearch.getJsonArray("data");           
-        int dataSize = data.length();
-        List<String> pages = new ArrayList<String>(dataSize);
-        List<JsonObject> places = new ArrayList<JsonObject>(dataSize);
-            
-        for (int i = 0; i < dataSize; i++) {
-        	JsonObject place = data.getJsonObject(i);
-        	pages.add(place.getString("id"));
-        	places.add(place);
-        }
-
-        Map<String, Map<String, String>> pageDescs = new HashMap<String, Map<String, String>>();
-        readFacebookPlacesDetails(facebookClient, pages, pageDescs, stringLength);
-        return createCustomLandmarkFacebookList(places, pageDescs, locale);
+        return createCustomLandmarkFacebookList(placesSearch.getJsonArray("data"), locale);
 	}
     
     public static FacebookClient getFacebookClient(String token) {
-    	return new DefaultFacebookClient(token, Version.VERSION_2_5);
+    	return new DefaultFacebookClient(token, Version.VERSION_2_11);
     }
     
     public String getLayerName() {
@@ -568,14 +662,14 @@ public class FacebookUtils extends LayerHelper {
             	List<BatchRequest> requests = new ArrayList<BatchRequest>(pageIds.size());
             	for (String pageId : pageIds) {
             		if (stringLimit == StringUtil.XLARGE) {
-            			requests.add(new BatchRequest.BatchRequestBuilder(pageId + "?fields=website,picture.type(large),phone,description").build()); //small, normal, large, square
+            			requests.add(new BatchRequest.BatchRequestBuilder(pageId + "?fields=website,picture.type(large),phone,description,category_list,overall_star_rating,rating_count,fan_count,price_range").build()); //small, normal, large, square
             		} else {
-            			requests.add(new BatchRequest.BatchRequestBuilder(pageId + "?fields=website,picture.type(normal),phone,description").build()); //small, normal, large, square
+            			requests.add(new BatchRequest.BatchRequestBuilder(pageId + "?fields=website,picture.type(normal),phone,description,category_list,overall_star_rating,rating_count,fan_count,hours,price_range").build()); //small, normal, large, square
             		}
             	}
                 List<BatchResponse> batchResponses = facebookClient.executeBatch(requests);
             	for (BatchResponse batchResponse : batchResponses) {           		
-            		JSONObject reply = new JSONObject(batchResponse.getBody()); //The HTTP response body JSON.
+            		JsonObject reply = new JsonObject(batchResponse.getBody()); //The HTTP response body JSON.
             		
             		HashMap<String, String> details = new HashMap<String, String>();
 
@@ -596,8 +690,26 @@ public class FacebookUtils extends LayerHelper {
                     }
 
                     if (reply.has("picture")) {
-                    	details.put("icon", reply.getJSONObject("picture").getJSONObject("data").getString("url"));
+                    	details.put("icon", reply.getJsonObject("picture").getJsonObject("data").getString("url"));
                     }
+                    
+                    if (reply.has("overall_star_rating")) {
+                    	details.put("rating", Double.toString(reply.getDouble("overall_star_rating")));
+                    }
+                    
+                    if (reply.has("rating_count")) {
+                    	details.put("numberOfReviews", Integer.toString(reply.getInt("rating_count")));
+                    }
+                    
+                    if (reply.has("fan_count")) {
+                    	details.put("Likes", Integer.toString(reply.getInt("fan_count")));
+                    }
+                    
+                    if (reply.has("price_range")) {
+                    	details.put("Pricing", reply.getString("price_range"));
+                    }
+                    
+                    processCategories(reply, details);                    
 
                     if (!details.isEmpty()) {
                     	String objectId = reply.getString("id");
