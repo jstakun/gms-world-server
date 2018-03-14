@@ -34,7 +34,7 @@ public class MailUtils {
 
     private static final Logger logger = Logger.getLogger(MailUtils.class.getName());
 
-    private static String sendMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType, String ccA, String ccP) {
+    private static String sendLocalMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType, String ccA, String ccP) {
         try {
             Properties props = new Properties();
             Session session = Session.getDefaultInstance(props, null);
@@ -52,7 +52,7 @@ public class MailUtils {
             return "ok";
         } catch (Exception ex) {
         	logger.log(Level.SEVERE, ex.getMessage(), ex);
-            return sendRemoteMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
+            return "failed";
         }
     }
     
@@ -88,14 +88,14 @@ public class MailUtils {
     		 HttpUtils.processFileRequestWithBasicAuthn(new URL(MAILER_SERVER_URL), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
     		 Integer responseCode = HttpUtils.getResponseCode(MAILER_SERVER_URL);
     		 logger.log(Level.INFO, "Received response code: " + responseCode);
-    		 if (responseCode != null) {
-    			 return Integer.toString(responseCode);
+    		 if (responseCode != null && responseCode == 200) {
+    			 return "ok";
     		 } else {
-    			 return "unknown";
-    		 }
+    			 return sendLocalMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
+    		 } 
     	 } catch (Exception e) {
     		 logger.log(Level.SEVERE, e.getMessage(), e);
-    		 return "failed";
+    		 return sendLocalMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
     	 }
     }
     
@@ -113,7 +113,7 @@ public class MailUtils {
     }
     
     public static void sendDeviceLocatorRegistrationRequest(String email) {
-    	sendMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, "Registration request", email, "text/plain", ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK);
+    	sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, "Registration request", email, "text/plain", ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK);
     }
 
     public static String sendLandmarkCreationNotification(String title, String body) {
@@ -143,7 +143,7 @@ public class MailUtils {
             String link = ConfigurationManager.SERVER_URL + "verify.do?k=" + URLEncoder.encode(key, "UTF-8") + "&s=1";
             is = context.getResourceAsStream("/WEB-INF/emails/verification.html");
             String message = String.format(IOUtils.toString(is, "UTF-8"), nick, link);
-            sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "Welcome to GMS World", message, "text/html",ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK);
+            sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "Welcome to GMS World", message, "text/html",ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK);
         } catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
         } finally {
@@ -168,7 +168,7 @@ public class MailUtils {
             	is = context.getResourceAsStream("/WEB-INF/emails/verification-next-dl.html");
             }
             String message = String.format(IOUtils.toString(is, "UTF-8"), link);
-            result = sendMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html",ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK);
+            result = sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html",ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK);
         } catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
             result = "failed";
@@ -192,7 +192,7 @@ public class MailUtils {
             	nick = "GMS World User";
             }
             String message = String.format(IOUtils.toString(is, "UTF-8"), nick);
-            sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "GMS World Registration", message, "text/html",ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK);
+            sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "GMS World Registration", message, "text/html",ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK);
         } catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
         } finally {
@@ -211,7 +211,7 @@ public class MailUtils {
         try {
             is = context.getResourceAsStream("/WEB-INF/emails/notification-dl.html");
             String message = IOUtils.toString(is, "UTF-8");
-            sendMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html",ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK);
+            sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html",ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK);
         } catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
         } finally {
@@ -230,7 +230,7 @@ public class MailUtils {
         try {
             is = context.getResourceAsStream("/WEB-INF/emails/login.html");
             String message = String.format(IOUtils.toString(is, "UTF-8"), nick, layer);
-            sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "GMS World Login", message, "text/html",ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK);
+            sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "GMS World Login", message, "text/html",ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK);
         } catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
         } finally {
@@ -268,7 +268,7 @@ public class MailUtils {
     }
     
     public static void sendUserCreationNotification(String body) {
-        sendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, "New user", body, "text/plain",ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK);
+        sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, "New user", body, "text/plain",ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK);
     }
     
     public static void sendBlackScreenshotNotification(String body) {
