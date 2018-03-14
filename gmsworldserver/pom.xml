@@ -189,7 +189,7 @@
         <dependency>
         	<groupId>net.gms-world</groupId>
         	<artifactId>gmsworldlayers</artifactId>
-        	<version>0.0.4.25</version>
+        	<version>0.0.4.26</version>
         </dependency>
         <dependency>
         	<groupId>de.grundid.opendatalab</groupId>

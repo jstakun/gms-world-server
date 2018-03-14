@@ -587,12 +587,11 @@ public class FacebookUtils extends LayerHelper {
     	}
     	if (landmarks == null) {
         	FacebookClient facebookClient = getFacebookClient(token);
-        	//{user-id}/photos,/{user-id}/photos?type=uploaded order created_time desc
         	List<JsonObject> photos = facebookClient.fetchConnection("me/photos", JsonObject.class, Parameter.with("type","uploaded"), Parameter.with("limit", limit), Parameter.with("fields", "picture,place,from,created_time,link")).getData();
         	int dataSize = photos.size();
         	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         	Map<String, Map<String, String>> pageDescs = new HashMap<String, Map<String, String>>();     
-        	List<String> pages = new ArrayList<String>(dataSize);
+        	List<String> placeIds = new ArrayList<String>(dataSize);
         	List<JsonObject> places = new ArrayList<JsonObject>(dataSize);
         	logger.log(Level.INFO, "Found " + dataSize + " photos.");
         	for (JsonObject photo : photos) {
@@ -600,9 +599,10 @@ public class FacebookUtils extends LayerHelper {
         			//TODO add support for multiple photos per page
         			JsonObject place = photo.getJsonObject("place");
         			String placeid = place.getString("id");
-        			if (!pages.contains(placeid)) {
-        				pages.add(placeid);
+        			if (!placeIds.contains(placeid)) {
+        				placeIds.add(placeid);
         				places.add(place);
+        				
         				JsonObject from = photo.getJsonObject("from");
         				Map<String, String> pageDesc = new HashMap<String, String>();
         				Date d = sdf.parse(photo.getString("created_time"));//2015-05-05T06:20:42+0000
@@ -611,12 +611,13 @@ public class FacebookUtils extends LayerHelper {
         				pageDesc.put("caption", photo.getString("link"));
         				pageDesc.put("url", photo.getString("link"));
         				pageDesc.put("creation_date", Long.toString(d.getTime()));
+        				
         				pageDescs.put(placeid, pageDesc);
         			}
         		} 
         	}
         	
-        	readFacebookPlacesDetails(facebookClient, pages, pageDescs, stringLength);
+        	readFacebookPlacesDetails(facebookClient, placeIds, pageDescs, stringLength);
         	landmarks = createCustomLandmarkFacebookList(places, pageDescs, locale);
         	
         	for (ExtendedLandmark landmark : landmarks) {
