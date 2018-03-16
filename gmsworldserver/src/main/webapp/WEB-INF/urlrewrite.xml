@@ -322,8 +322,8 @@
     
     <!-- verify rule -->
     <rule>
-            <from>^/verify/([a-zA-Z]+)/([a-zA-Z@0-9_-]+)$</from>
-            <to>/verify.do?s=$1&amp;m=$2</to>
+            <from>^/verify/([a-zA-Z]+)/(.+)$</from>
+            <to>/verify.do?sc=$1&amp;m=$2&amp;s=1</to>
     </rule>
     
     

@@ -59,9 +59,9 @@ public class RegistrationConfirmationAction extends Action {
                     MailUtils.sendRegistrationNotification(user.getEmail(), user.getLogin(), getServlet().getServletContext());
                }
             }
-        } else if (!HttpUtils.isEmptyAny(request, "m", "s")) {
+        } else if (!HttpUtils.isEmptyAny(request, "m", "sc")) {
         	String email = request.getParameter("m");
-        	String secret = request.getParameter("s");
+        	String secret = request.getParameter("sc");
         	
         	if (NotificationPersistenceUtils.isRegisteredEmail(email, secret)) {
         		NotificationPersistenceUtils.addToWhitelistEmail(email, true);
