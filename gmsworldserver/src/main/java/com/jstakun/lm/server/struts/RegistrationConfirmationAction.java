@@ -61,8 +61,9 @@ public class RegistrationConfirmationAction extends Action {
             }
         } else if (!HttpUtils.isEmptyAny(request, "m", "s")) {
         	String email = request.getParameter("m");
+        	String secret = request.getParameter("s");
         	
-        	if (!NotificationPersistenceUtils.isWhitelistedEmail(email)) {
+        	if (NotificationPersistenceUtils.isRegisteredEmail(email, secret)) {
         		NotificationPersistenceUtils.addToWhitelistEmail(email, true);
             }
         	result = true;

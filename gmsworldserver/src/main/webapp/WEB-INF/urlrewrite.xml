@@ -320,5 +320,12 @@
        		<to type="redirect">http://www.booking.com?aid=864525</to>
     </rule>
     
+    <!-- verify rule -->
+    <rule>
+            <from>^/verify/([a-zA-Z]+)/([a-zA-Z@0-9_-]+)$</from>
+            <to>/verify.do?s=$1&amp;m=$2</to>
+    </rule>
+    
+    
 </urlrewrite>
 

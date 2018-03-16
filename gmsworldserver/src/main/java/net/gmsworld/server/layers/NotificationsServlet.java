@@ -18,6 +18,7 @@ import org.json.JSONObject;
 
 import com.google.gdata.util.common.util.Base64;
 import com.jstakun.lm.server.config.ConfigurationManager;
+import com.jstakun.lm.server.persistence.Notification;
 import com.jstakun.lm.server.utils.MailUtils;
 import com.jstakun.lm.server.utils.RoutesUtils;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
@@ -268,14 +269,14 @@ public class NotificationsServlet extends HttpServlet {
 					//register mail
 					if (appId == Commons.DL_ID && StringUtils.startsWith(request.getRequestURI(), "/s/")) {
 						String email = request.getParameter("email");
-						String user = request.getParameter("user");
-						if (StringUtils.isNotEmpty(email) && StringUtils.isNotEmpty(user)) {
+						//String user = request.getParameter("user");
+						if (StringUtils.isNotEmpty(email)) {
 							if (NotificationPersistenceUtils.isWhitelistedEmail(email)) {
 								MailUtils.sendDlRegistrationNotification(email, email, this.getServletContext());
 								reply = new JSONObject().put("status", "registered");
 							} else {
-								NotificationPersistenceUtils.addToWhitelistEmail(email, false);
-								String status = MailUtils.sendDlVerificationRequest(email, email, this.getServletContext(), true);
+								Notification n = NotificationPersistenceUtils.addToWhitelistEmail(email, false);
+								String status = MailUtils.sendDlVerificationRequest(email, email, n.getSecret(), this.getServletContext(), true);
 								if (StringUtils.equals(status, "ok")) {
 									reply = new JSONObject().put("status", "unverified");
 								} else {
@@ -283,7 +284,7 @@ public class NotificationsServlet extends HttpServlet {
 								}
 							}
 						} else {
-							logger.log(Level.WARNING, "Wrong email  " + email + " or user " + user);
+							logger.log(Level.WARNING, "Email is empty!"); 
 						}
 					} else {
 						logger.log(Level.WARNING, "Wrong application " + appId);

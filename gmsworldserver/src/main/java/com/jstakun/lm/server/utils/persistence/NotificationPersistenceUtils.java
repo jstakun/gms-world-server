@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.servlet.ServletContext;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 
@@ -20,16 +21,18 @@ public class NotificationPersistenceUtils {
 	
 	private static final Logger logger = Logger.getLogger(NotificationPersistenceUtils.class.getName());
 
-	private static void persist(String id, Notification.Status status) {
+	private static Notification persist(String id, Notification.Status status) {
+		Notification n = null;
 		if (StringUtils.isNotEmpty(id)) {
 			EntityManager pm = EMF.get().createEntityManager();
 			try {
-				Notification n = findById(id, pm);
+				n = findById(id, pm);
 				if (n == null) {
 					n = new Notification(id, status);
 				} else {
 					n.setStatus(status);
 					n.setLastUpdateDate(new Date());
+					n.setSecret(RandomStringUtils.randomAlphabetic(32));
 				}
 				pm.getTransaction().begin();
 				pm.persist(n);
@@ -46,6 +49,7 @@ public class NotificationPersistenceUtils {
 				pm.close();
 			}
 		}
+		return n;
     }
 	
 	private static boolean remove(String id) {
@@ -115,6 +119,22 @@ public class NotificationPersistenceUtils {
 		return verified;
 	}
 	
+	private static boolean isUnverified(String id, String secret) {
+		boolean unverified = false;
+		if (StringUtils.isNotEmpty(id)) {
+			EntityManager pm = EMF.get().createEntityManager();
+			try {
+				Notification n = findById(id, pm);
+				if (n != null && n .getStatus() == Notification.Status.UNVERIFIED && StringUtils.equals(n.getSecret(), secret)) {
+					unverified = true;
+				}
+			} finally {
+				pm.close();
+			}
+		}
+		return unverified;
+	}
+	
 	/*public static void migrate() {
 		  List<String> whitelistList = new ArrayList<String>(Arrays.asList(ConfigurationManager.getArray(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST)));
 		  for (String telegramId : whitelistList) {
@@ -150,12 +170,13 @@ public class NotificationPersistenceUtils {
 		 return isVerified(email);
 	}
 	
-	public static synchronized void addToWhitelistEmail(String email, boolean isRegistered) {
-		 if (isRegistered) {
-			 persist(email, Notification.Status.VERIFIED);
-		 } else {
-			persist(email, Notification.Status.UNVERIFIED);
-		 }
+	public static synchronized boolean isRegisteredEmail(String email, String secret) {
+		 return isUnverified(email, secret);
+	}
+	
+	public static synchronized Notification addToWhitelistEmail(String email, boolean isRegistered) {
+		Notification.Status status =  isRegistered ?  Notification.Status.VERIFIED : Notification.Status.UNVERIFIED;
+		return persist(email, status);
 	}
 	
 	public static void requestForConfirmation(ServletContext sc) {
@@ -164,7 +185,7 @@ public class NotificationPersistenceUtils {
 			  for (Notification n : unverified) {
 				  String email = n.getId();
 				  if (EmailValidator.getInstance().isValid(email)) {
-					  String status = MailUtils.sendDlVerificationRequest(email, email, sc, false);
+					  String status = MailUtils.sendDlVerificationRequest(email, email, n.getSecret(), sc, false);
 					  logger.log(Level.INFO, "Registration confirmation request has been sent to: " + email + " with status: " + status);
 				  }
 			  }
