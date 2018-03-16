@@ -29,10 +29,10 @@ public class NotificationPersistenceUtils {
 				n = findById(id, pm);
 				if (n == null) {
 					n = new Notification(id, status);
+					n.setSecret(RandomStringUtils.randomAlphabetic(16));
 				} else {
 					n.setStatus(status);
 					n.setLastUpdateDate(new Date());
-					n.setSecret(RandomStringUtils.randomAlphabetic(32));
 				}
 				pm.getTransaction().begin();
 				pm.persist(n);
@@ -119,9 +119,9 @@ public class NotificationPersistenceUtils {
 		return verified;
 	}
 	
-	private static boolean isUnverified(String id, String secret) {
+	private static boolean isRegistered(String id, String secret) {
 		boolean unverified = false;
-		if (StringUtils.isNotEmpty(id)) {
+		if (StringUtils.isNotEmpty(id) && StringUtils.isNotEmpty(secret)) {
 			EntityManager pm = EMF.get().createEntityManager();
 			try {
 				Notification n = findById(id, pm);
@@ -171,7 +171,7 @@ public class NotificationPersistenceUtils {
 	}
 	
 	public static synchronized boolean isRegisteredEmail(String email, String secret) {
-		 return isUnverified(email, secret);
+		 return isRegistered(email, secret);
 	}
 	
 	public static synchronized Notification addToWhitelistEmail(String email, boolean isRegistered) {

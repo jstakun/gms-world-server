@@ -65,8 +65,11 @@ public class RegistrationConfirmationAction extends Action {
         	
         	if (NotificationPersistenceUtils.isRegisteredEmail(email, secret)) {
         		NotificationPersistenceUtils.addToWhitelistEmail(email, true);
-            }
-        	result = true;
+        		result = true;
+        	} else if (NotificationPersistenceUtils.isWhitelistedEmail(email)) {
+        		result = true;
+        	}
+        	
         }
 
         if (result) {
