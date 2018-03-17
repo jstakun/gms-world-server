@@ -287,7 +287,7 @@ public class FacebookUtils extends LayerHelper {
 		}
 	}
     
-    private static List<ExtendedLandmark> createCustomLandmarkFacebookList(JsonArray data, Locale locale) throws JsonException {
+    private static List<ExtendedLandmark> createCustomLandmarkFacebookList(JsonArray data, Locale locale, int stringLength) throws JsonException {
     	List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
 
         for (int i=0;i<data.length(); i++) {
@@ -366,7 +366,7 @@ public class FacebookUtils extends LayerHelper {
     		    }
      		    
     		    if (place.has("description")) {
-    		    		pageDesc.put("description", place.getString("description"));
+    		    		pageDesc.put("description", StringUtils.abbreviate(place.getString("description"), stringLength));
     		    }
     		    
      		    if (place.has("overall_star_rating")) {
@@ -454,7 +454,7 @@ public class FacebookUtils extends LayerHelper {
         	placesSearch = facebookClient.fetchObject("search", JsonObject.class, Parameter.with("type", "place"), Parameter.with("center", latitude + "," + longitude), Parameter.with("distance", dist), Parameter.with("limit", limit), Parameter.with("fields", "name,location,website,phone,description,category_list,overall_star_rating,rating_count,fan_count,price_range," + picture));
         }
   
-        return createCustomLandmarkFacebookList(placesSearch.getJsonArray("data"), locale);
+        return createCustomLandmarkFacebookList(placesSearch.getJsonArray("data"), locale, stringLength);
 	}
     
     public static FacebookClient getFacebookClient(String token) {
