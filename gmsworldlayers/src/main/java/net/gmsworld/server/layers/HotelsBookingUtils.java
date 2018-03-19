@@ -191,8 +191,7 @@ public class HotelsBookingUtils extends LayerHelper {
 			size = hotels.getFeatures().size();
 		}
 		
-		if (size > 0) {
-			
+		if (size > 0) {	
 		    Map<String, Double> exchangeRates = new HashMap<String, Double>();
 		    exchangeRates.put("EUR", 1d);
 			Map<Integer, Integer> starsMap = new HashMap<Integer, Integer>();
@@ -524,22 +523,25 @@ public class HotelsBookingUtils extends LayerHelper {
         	rate = NumberUtils.getDouble(hotel.getProperty("maxrate"));
         }
         if (rate != null) {
+        	boolean rateChanged = false;
         	if (tocc != null && fromcc != null && !StringUtils.equals(tocc, fromcc) && fromcc.length() == 3) {  	
         		Map<String, Double> ratesMap = cacheProvider.getObject(HashMap.class, "http://api.fixer.io/latest?base=" + fromcc);
         		if (ratesMap != null) {
         			Double toccrate = ratesMap.get(tocc);
         			if (toccrate != null) {
             			rate = rate * toccrate;
+            			rateChanged = true;
             		}
         		}
         	} 
 
         	props.put("price", StringUtil.formatCoordE0(rate));
-        	if (tocc == null) {
+        	if (tocc == null || !rateChanged) {
         		tocc = fromcc;
         	} 
+        	
         	props.put("cc", tocc);
-        	    		
+        	
         	s = 0;
         	Map<String, Double> ratesMap = cacheProvider.getObject(HashMap.class, "http://api.fixer.io/latest?base=EUR");
     		if (ratesMap != null) {

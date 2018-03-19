@@ -185,7 +185,7 @@ public class LayersTest {
 	}
 
 	//@Test
-	public void hotelsTest() {
+	public void hotelsTest() throws Exception {
 		//LayerHelperFactory.getHotelsBookingUtils().loadHotelsAsync(lat, lng, radius, limit);  
 		try {
 			String hotels = ((HotelsBookingUtils)LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)).extendFeatureCollection(lat, lng, radius, limit, "stars", locale);
@@ -195,6 +195,9 @@ public class LayersTest {
 		}
 		//System.out.println("Hotels in radius: " + LayerHelperFactory.getHotelsBookingUtils().countNearbyHotels(lat, lng, radius));
 		//System.out.println("Cheapest hotel price: " + LayerHelperFactory.getHotelsBookingUtils().findCheapestHotel(lat, lng, radius, 1));			
+		//bucharest 44.439663, 26.096306
+		//dakar 14.6937, -17.44406
+		System.out.println(((HotelsBookingUtils)LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)).extendFeatureCollection(14.6937, -17.44406, radius, 10, "stars", locale));
 	}
 	
 	//@Test
