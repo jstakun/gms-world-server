@@ -303,12 +303,12 @@ public class NotificationUtils {
     			logger.log(Level.INFO, "Using user mask " + userMask);
     			String fbTitle = name;
     			if (addressInfo != null) {
-    				fbTitle = "In ";
+    				fbTitle = "in ";
     				String city = addressInfo.getField(AddressInfo.CITY);
     				if (StringUtils.isNotEmpty(city)) {
     					fbTitle += city + ", ";
     				} else {
-    					fbTitle = "Somewhere in ";
+    					fbTitle = "somewhere in ";
     				}
     				String cc = addressInfo.getField(AddressInfo.COUNTRY_CODE);
     				if (StringUtils.isNotEmpty(cc)) {

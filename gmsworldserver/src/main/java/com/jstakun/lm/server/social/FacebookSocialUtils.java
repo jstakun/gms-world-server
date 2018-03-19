@@ -74,34 +74,34 @@ public class FacebookSocialUtils {
             if (type == Commons.BLOGEO) {
                 params = new Parameter[]{
                             Parameter.with("message", rb.getString("Social.fb.message.blogeo")),
-                            Parameter.with("name", title),
-                            Parameter.with("description", rb.getString("Social.fb.desc.blogeo")),
+                            //Parameter.with("name", title),
+                            //Parameter.with("description", rb.getString("Social.fb.desc.blogeo")),
                             Parameter.with("link", url),
-                            Parameter.with("picture", ConfigurationManager.SERVER_URL + "images/blogeo_j.png")
+                            //Parameter.with("picture", ConfigurationManager.SERVER_URL + "images/blogeo_j.png")
                         };
             } else if (type == Commons.LANDMARK) {
                 params = new Parameter[]{
                             Parameter.with("message", rb.getString("Social.fb.message.landmark")),
-                            Parameter.with("name", title),
-                            Parameter.with("description", rb.getString("Social.fb.desc.landmark")),
+                            //Parameter.with("name", title),
+                            //Parameter.with("description", rb.getString("Social.fb.desc.landmark")),
                             Parameter.with("link", url),
-                            Parameter.with("picture", ConfigurationManager.SERVER_URL + "images/poi_j.png")
+                            //Parameter.with("picture", ConfigurationManager.SERVER_URL + "images/poi_j.png")
                         };
             } else if (type == Commons.LOGIN) {
             	 params = new Parameter[]{
             			 Parameter.with("message", rb.getString("Social.login")),
-            			 Parameter.with("picture", ConfigurationManager.SERVER_URL + "images/3globe_80.png"),
-            			 Parameter.with("description", rb.getString("Social.login.desc")),
+            			 //Parameter.with("picture", ConfigurationManager.SERVER_URL + "images/3globe_80.png"),
+            			 //Parameter.with("description", rb.getString("Social.login.desc")),
             			 Parameter.with("link", url),
-             			Parameter.with("name", title),
+             			//Parameter.with("name", title),
                      }; 
             } else if (type == Commons.MY_POS) {
             	params = new Parameter[]{
             			Parameter.with("message", rb.getString("Social.fb.message.mypos")),
-            			Parameter.with("picture", ConfigurationManager.SERVER_URL + "images/location.png"),
-            			Parameter.with("description", rb.getString("Social.fb.desc.mypos")),
+            			//Parameter.with("picture", ConfigurationManager.SERVER_URL + "images/location.png"),
+            			//Parameter.with("description", rb.getString("Social.fb.desc.mypos")),
             			Parameter.with("link", url),
-            			Parameter.with("name", title),
+            			//Parameter.with("name", title),
             	};		
             }
             return sendMessage(facebookClient, "me/feed", params, true);
@@ -123,30 +123,30 @@ public class FacebookSocialUtils {
         	   imageUrl = ConfigurationManager.SERVER_URL + "images/" + images[imageId];
            }
            params = new Parameter[]{
-                   Parameter.with("message", String.format(rb.getString("Social.fb.message.server"), user)),
-                   Parameter.with("name", name),
-                   Parameter.with("description", rb.getString("Social.fb.desc.server")),
+                   Parameter.with("message", String.format(rb.getString("Social.fb.message.server"), name)),
+                   //Parameter.with("name", name),
+                   //Parameter.with("description", rb.getString("Social.fb.desc.server")),
                    Parameter.with("link", url),
-                   Parameter.with("picture", imageUrl)
+                   //Parameter.with("picture", imageUrl)
            };      	
         } else if (type == Commons.CHECKIN) {
         	params = new Parameter[]{
                     Parameter.with("message", String.format(rb.getString("Social.fb.message.checkin"), user, name)),
-                    Parameter.with("name", name),
-                    Parameter.with("description", rb.getString("Social.fb.desc.checkin")),
+                    //Parameter.with("name", name),
+                    //Parameter.with("description", rb.getString("Social.fb.desc.checkin")),
                     Parameter.with("link", url),
-                    Parameter.with("picture", imageUrl)
+                    //Parameter.with("picture", imageUrl)
             };   
         } else if (type == Commons.HOTELS) {
         	if (imageUrl == null) {
-         	   imageUrl = ConfigurationManager.SERVER_URL + "images/hotel_search_128.jpg";
+         	   imageUrl = ConfigurationManager.SERVER_URL + "images/hotel_search_128.png";
             }
-            params = new Parameter[]{
-                    Parameter.with("message", String.format(rb.getString("Social.fb.message.hotels"), user)),
-                    Parameter.with("name", name),
-                    Parameter.with("description", rb.getString("Social.fb.desc.hotels")),
+        	params = new Parameter[]{
+                    Parameter.with("message", String.format(rb.getString("Social.fb.message.hotels"), user, name)),
+                    //Parameter.with("name", name),
+                    //Parameter.with("description", rb.getString("Social.fb.desc.hotels")),
                     Parameter.with("link", url),
-                    Parameter.with("picture", imageUrl)
+                    //Parameter.with("picture", imageUrl)
             };	
         }
         
@@ -171,18 +171,18 @@ public class FacebookSocialUtils {
             if (type == Commons.SCREENSHOT) {
             	params = new Parameter[]{
             			Parameter.with("message", String.format(rb.getString("Social.fb.message.screenshot"),userMask)),
-            			Parameter.with("name", "GMS World"),
-            			Parameter.with("description", rb.getString("Social.fb.desc.image")),
+            			//Parameter.with("name", "GMS World"),
+            			//Parameter.with("description", rb.getString("Social.fb.desc.image")),
             			Parameter.with("link", showImageUrl),
-            			Parameter.with("picture", imageUrl + "?thumbnail=false")
+            			//Parameter.with("picture", imageUrl + "?thumbnail=false")
             	};
             } else if (type == Commons.ROUTE) {
             	params = new Parameter[]{
             			Parameter.with("message", String.format(rb.getString("Social.fb.message.route"), userMask, flex)),
-            			Parameter.with("name", "GMS World"),
-            			Parameter.with("description", rb.getString("Social.fb.desc.image")),
+            			//Parameter.with("name", "GMS World"),
+            			//Parameter.with("description", rb.getString("Social.fb.desc.image")),
             			Parameter.with("link", showImageUrl),
-            			Parameter.with("picture", imageUrl + "&thumbnail=false")
+            			//Parameter.with("picture", imageUrl + "&thumbnail=false")
             	};
             }
 
@@ -218,7 +218,7 @@ public class FacebookSocialUtils {
     	Parameter[] params = new Parameter[]{
     			Parameter.with("message", message),
                 Parameter.with("link", place),
-                Parameter.with("name", name),
+                //Parameter.with("name", name),
     	};
     	String id = sendMessage(facebookClient, "me/feed", params, true);
     	if (id != null) {

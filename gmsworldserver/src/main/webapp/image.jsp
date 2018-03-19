@@ -12,7 +12,7 @@
                String address = (String) request.getAttribute("address");
     %>
     <head>
-        <title>GMS World - Screenshot page</title>
+        <title>GMS World - Discover interesting places around!</title>
          <%@ include file="/WEB-INF/jspf/head.jspf" %>
     </head>
 
@@ -39,7 +39,7 @@
     }
 %>
 
-                <h3>GMS World screenshot</h3>
+                <h3>Discover interesting places around</h3>
 
                 <br/>
                     <!-- /main -->
@@ -49,7 +49,7 @@
                      </a>
                  </p>
                  <p class="post-details">
-                     <a href="<%=imageLink%>">See full screen map</a><br/>
+                     <a href="<%=imageLink%>">Go to map</a><br/>
                      <%=address != null ? "Geocode address: " + address + "<br/>" : ""%>
                      Latitude: <%=StringUtil.formatCoordE6(screenshot.getLatitude())%>, Longitude: <%=StringUtil.formatCoordE6(screenshot.getLongitude())%><br/>
                      Posted on <%=DateUtils.getFormattedDateTime(request.getLocale(), screenshot.getCreationDate())%> by 
