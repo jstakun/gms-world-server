@@ -8,7 +8,7 @@
 
 <head>
   <meta charset="utf-8" />  
-  <title>GMS World - Screenshot Page</title>
+  <title>GMS World - Discover interesting places around!</title>
   <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0" /> 
   <link rel="stylesheet" media="all" href="/style.css" type="text/css">
   <%@ include file="/WEB-INF/jspf/head_small.jspf" %>
@@ -32,11 +32,11 @@
     	    		  if (myposcode != null) {
     	    		   	  imageLink = "/showLandmark/" + myposcode; 
     	    		  } else {
-    	    		      imageLink = "/showLocation/" + screenshot.getLatitude() + "/" + screenshot.getLongitude();
+    	    		      imageLink = "/showLocation/" + screenshot.getLatitude() + "/" + screenshot.getLongitude() + "/fullScreen";
     	    		  }
     	%>
 
-                <h3>GMS World screenshot</h3>
+                <h3>Discover interesting places around</h3>
 
                  <a href="<%=imageLink%>">
                     <img src="<%=screenshot.getUrl()%>" alt="GMS World screenshot"/>

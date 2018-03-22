@@ -4,7 +4,7 @@
 
 <head>
   <meta charset="utf-8" />  
-  <title>GMS World - Route page</title>
+  <title>GMS World - See route on the map</title>
   <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0" /> 
   <link rel="stylesheet" media="all" href="/style.css" type="text/css">
   <%@ include file="/WEB-INF/jspf/head_small.jspf" %>
@@ -21,7 +21,7 @@
 	if (request.getAttribute("routeQueryString") != null) {
 		String routeQueryString = (String)request.getAttribute("routeQueryString");
 %>	
-                <h3>GMS World route</h3>
+                <h3>Discover interesting places around</h3>
                  <br/>
                  <p class="image-section">
                      <a href="/showLandmark/<%= request.getParameter("lat_start") %>/<%= request.getParameter("lng_start") %>">

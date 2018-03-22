@@ -8,12 +8,29 @@
 <!-- content-outer -->
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
     <%
-    	Screenshot screenshot = (Screenshot)request.getAttribute("screenshot");
-               String address = (String) request.getAttribute("address");
+    	Screenshot screenshot = (Screenshot) request.getAttribute("screenshot");
+        String address = (String) request.getAttribute("address");
+        String imageUrl = "http://www.gms-world.net/images/LM_banner_512x250.jpg";
+        if (screenshot != null) {
+        	imageUrl = screenshot.getUrl();
+        }
     %>
     <head>
         <title>GMS World - Discover interesting places around!</title>
-         <%@ include file="/WEB-INF/jspf/head.jspf" %>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE"/>
+        <meta HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE"/>
+        <meta HTTP-EQUIV="EXPIRES" CONTENT="0"/>
+        <meta name="author" content="GMS World - www.gms-world.net" />
+        <meta name="description" content="GMS World - discover power of geo location" />
+        <meta name="keywords" content="geo, location, geolocation, blogeo, j2me, nokia, blackberry, gps, iphone, android, htc, palm, windows phone, windows ce, samsung, galaxy" />
+        <meta name="robots" content="index, follow, noarchive" />
+        <meta name="googlebot" content="noarchive" />
+        <meta property="fb:pages" content="165436696841663"/>
+        <meta property="fb:app_id" content="197785136902139"/>
+        <meta property="og:image" content="<%= imageUrl %>"/>
+        <link rel="stylesheet" type="text/css" media="screen" href="/css/screen.css" />
+        <%@ include file="/WEB-INF/jspf/gms_mobile_tracker.jspf" %>
     </head>
 
     <body>

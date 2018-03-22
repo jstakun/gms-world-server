@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
     <head>
-        <title>GMS World - Route page</title>
+        <title>GMS World - See route on the map</title>
          <%@ include file="/WEB-INF/jspf/head.jspf" %>
     </head>
 
@@ -26,7 +26,7 @@
 	if (request.getAttribute("routeQueryString") != null) {
 		String routeQueryString = (String)request.getAttribute("routeQueryString");
 %>	
-                <h3>GMS World route</h3>
+                <h3>Discover interesting places around</h3>
                  <br/>
                  <p class="image-section">
                      <a href="/showLandmark/<%= request.getParameter("lat_start") %>/<%= request.getParameter("lng_start") %>">
