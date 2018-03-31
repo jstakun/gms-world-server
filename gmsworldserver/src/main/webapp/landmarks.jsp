@@ -487,15 +487,15 @@
 
                if (eurexchangerates[marker.cc] && marker.price) {
                		var eurrate = (marker.price / eurexchangerates[marker.cc]);
-               		if (eurrate < 50) {  
+               		if (eurrate < 50 && document.getElementById('1p') != null) {  
                	   		checkedPrice = document.getElementById('1p').checked;
-               		} else if (eurrate >= 50 && eurrate < 100) {  
+               		} else if (eurrate >= 50 && eurrate < 100 && document.getElementById('2p') != null) {  
                	   		checkedPrice = document.getElementById('2p').checked;
-               		} else if (eurrate >= 100 && eurrate < 150) {  
+               		} else if (eurrate >= 100 && eurrate < 150 && document.getElementById('3p') != null) {  
                  		checkedPrice = document.getElementById('3p').checked;
-               		} else if (eurrate >= 150 && eurrate < 200) {  
+               		} else if (eurrate >= 150 && eurrate < 200 && document.getElementById('4p') != null) {  
                   		checkedPrice = document.getElementById('4p').checked;
-               	 	} else if (eurrate >= 200) {  
+               	 	} else if (eurrate >= 200 && document.getElementById('5p') != null) {  
                   		checkedPrice = document.getElementById('5p').checked; 
                		}    
                }

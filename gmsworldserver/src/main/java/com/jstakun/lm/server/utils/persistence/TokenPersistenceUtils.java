@@ -8,6 +8,8 @@ import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
 import com.jstakun.lm.server.config.ConfigurationManager;
+import com.jstakun.lm.server.utils.memcache.CacheUtil;
+import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
@@ -38,20 +40,32 @@ public class TokenPersistenceUtils {
 	}
 	
 	public static int isTokenValid(String token, String scope) throws Exception {
-		String tokenUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "isValidToken?scope=" + scope + "&key=" + token;
-		String tokenJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(tokenUrl), Commons.getProperty(Property.RH_GMS_USER), false);		
-		if (StringUtils.startsWith(tokenJson, "{")) {
-			JSONObject root = new JSONObject(tokenJson);
-			if (root.optBoolean("output", false)) {
+		final String tokenKey = scope + "/" + token;
+		if (CacheUtil.containsKey(tokenKey)) {
+			if (StringUtils.equals(CacheUtil.getString(tokenKey),"1")) {
 				return 1;
 			} else {
 				return 0;
 			}
-		} else if (tokenJson == null || StringUtils.contains(tokenJson, "503 Service Temporarily Unavailable")) {
-		    return -1;
 		} else {
-			logger.log(Level.SEVERE, "Received following server response {0}", tokenJson);
-			return -1;
-		}
+			String tokenUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "isValidToken?scope=" + scope + "&key=" + token;
+			String tokenJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(tokenUrl), Commons.getProperty(Property.RH_GMS_USER), false);		
+			if (StringUtils.startsWith(tokenJson, "{")) {
+				JSONObject root = new JSONObject(tokenJson);
+				boolean isValid = root.optBoolean("output", false);
+				if (isValid) {
+					CacheUtil.put(tokenKey, "1", CacheType.FAST);
+					return 1;
+				} else {
+					CacheUtil.put(tokenKey, "0", CacheType.FAST);
+					return 0;
+				}
+			} else if (tokenJson == null || StringUtils.contains(tokenJson, "503 Service Temporarily Unavailable")) {
+				return -1;
+			} else {
+				logger.log(Level.SEVERE, "Received following server response {0}", tokenJson);
+				return -1;
+			}	
+		}	
 	}
 }
