@@ -191,7 +191,30 @@
               	infowindow.open(map, this);
           });
 
-          
+          //map.addListener('center_changed', function() {
+               //TODO load hotels when map center changed
+              //console.log('Map center changed'); 
+              //var data = {};
+          	  //data['layer'] = 'hotels';
+   	    	  //data['lat'] = map.getCenter().lat();
+   	    	  //data['lng'] = map.getCenter().lat();
+   	    	  //data['sortType'] = sortType;
+
+   	    	  //$.ajax({
+   			   //	  dataType: "json",
+   			 	//  url: "/geoJsonProvider",
+   				  //data: data,
+     				 //beforeSend: function(xhr) {
+         				//xhr.setRequestHeader("Accept-Encoding", "gzip, deflate");
+     				  //}})
+   				  //.done(function(results) {
+   					  //loadLayer(results);
+   				  //})
+   				  //.error(function(jqXHR, textStatus, errorThrown){ /* assign handler */
+   		    		  //console.log("API call error: " + textStatus + ", " + errorThrown);
+   			  //});
+          //});
+                 
           <% if (hotelsMode) { %>
           var message = '<bean:message key="hotels.wait" />';
           <% } else { %>

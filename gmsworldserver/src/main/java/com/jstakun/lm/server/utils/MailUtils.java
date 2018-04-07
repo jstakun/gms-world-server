@@ -113,7 +113,7 @@ public class MailUtils {
     }
     
     public static void sendDeviceLocatorRegistrationRequest(String email) {
-    	sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, "Registration request", email, "text/plain", ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK);
+    	sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, "Registration request", email, "text/plain", "jstakun.appspot@gmail.com", ConfigurationManager.DL_NICK);
     }
 
     public static String sendLandmarkCreationNotification(String title, String body) {
@@ -143,7 +143,7 @@ public class MailUtils {
             String link = ConfigurationManager.SERVER_URL + "verify.do?k=" + URLEncoder.encode(key, "UTF-8") + "&s=1";
             is = context.getResourceAsStream("/WEB-INF/emails/verification.html");
             String message = String.format(IOUtils.toString(is, "UTF-8"), nick, link);
-            sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "Welcome to GMS World", message, "text/html",ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK);
+            sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "Welcome to GMS World", message, "text/html",  "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK);
         } catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
         } finally {
@@ -168,7 +168,7 @@ public class MailUtils {
             	is = context.getResourceAsStream("/WEB-INF/emails/verification-next-dl.html");
             }
             String message = String.format(IOUtils.toString(is, "UTF-8"), link);
-            result = sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html",ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK);
+            result = sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html",  "jstakun.appspot@gmail.com", ConfigurationManager.DL_NICK);
         } catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
             result = "failed";
@@ -192,7 +192,7 @@ public class MailUtils {
             	nick = "GMS World User";
             }
             String message = String.format(IOUtils.toString(is, "UTF-8"), nick);
-            sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "GMS World Registration", message, "text/html",ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK);
+            sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "GMS World Registration", message, "text/html",  "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK);
         } catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
         } finally {
@@ -211,7 +211,7 @@ public class MailUtils {
         try {
             is = context.getResourceAsStream("/WEB-INF/emails/notification-dl.html");
             String message = IOUtils.toString(is, "UTF-8");
-            sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html",ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK);
+            sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html",  "jstakun.appspot@gmail.com", ConfigurationManager.DL_NICK);
         } catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
         } finally {
@@ -230,7 +230,7 @@ public class MailUtils {
         try {
             is = context.getResourceAsStream("/WEB-INF/emails/login.html");
             String message = String.format(IOUtils.toString(is, "UTF-8"), nick, layer);
-            sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "GMS World Login", message, "text/html",ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK);
+            sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "GMS World Login", message, "text/html",  "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK);
         } catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
         } finally {
@@ -252,7 +252,7 @@ public class MailUtils {
             String message = String.format(IOUtils.toString(is, "UTF-8"), userUrl, nick, landmarkUrl, landmarkUrl);
             status = sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "Message from GMS World", message, "text/html", null, null);
             //remove after tests
-            //sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.SUPORT_MAIL, ConfigurationManager.ADMIN_NICK, "Copy of message to " + toA, message, "text/html");
+            //sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.SUPORT_MAIL, ConfigurationManager.ADMIN_NICK, "Copy of message to " + toA, message, "text/html", null, null);
         } catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
         } finally {
@@ -268,7 +268,7 @@ public class MailUtils {
     }
     
     public static void sendUserCreationNotification(String body) {
-        sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, "New user", body, "text/plain",ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK);
+        sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, "New user", body, "text/plain",  "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK);
     }
     
     public static void sendBlackScreenshotNotification(String body) {
