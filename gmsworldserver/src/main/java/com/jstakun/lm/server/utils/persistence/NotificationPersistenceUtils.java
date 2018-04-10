@@ -29,7 +29,7 @@ public class NotificationPersistenceUtils {
 				n = findById(id, pm);
 				if (n == null) {
 					n = new Notification(id, status);
-					n.setSecret(RandomStringUtils.randomAlphabetic(16));
+					n.setSecret(RandomStringUtils.randomAlphabetic(32));
 				} else {
 					n.setStatus(status);
 					n.setLastUpdateDate(new Date());
@@ -200,11 +200,20 @@ public class NotificationPersistenceUtils {
 			if (n != null) {
 				if (n.getStatus() == Notification.Status.UNVERIFIED) {
 					n.setStatus(Notification.Status.VERIFIED);
+					pm.getTransaction().begin();
 					pm.persist(n);
+					pm.flush();
 				}
 			} 
-		} catch (Exception e ){
+		} catch (Exception e) {
+		    if (pm.getTransaction().isActive()) {
+				pm.getTransaction().rollback();
+			}
+		    n = null;
 		} finally {
+			if (pm.getTransaction().isActive()) {
+				pm.getTransaction().commit();
+			}
 			pm.close();
 		}
 		return n;
