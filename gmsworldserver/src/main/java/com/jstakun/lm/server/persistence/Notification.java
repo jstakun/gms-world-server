@@ -13,6 +13,7 @@ import javax.persistence.NamedQuery;
 
 @NamedQueries({
 	@NamedQuery(name = "Notification.findById", query = "select n from Notification n where n.id = :id"),
+	@NamedQuery(name = "Notification.findBySecret", query = "select n from Notification n where n.secret = :secret"),
 	@NamedQuery(name = "Notification.findAllWithStatus", query = "select n from Notification n where n.status = :status"),
 })	
 
@@ -21,6 +22,7 @@ public class Notification {
 	public enum Status {VERIFIED, UNVERIFIED};
 
 	public static final String NOTIFICATION_FINDBYID= "Notification.findById";
+	public static final String NOTIFICATION_FINDBYSECRET= "Notification.findBySecret";
 	public static final String NOTIFICATION_FINDALLWITHSTATUS= "Notification.findAllWithStatus";
 	
 	@Id

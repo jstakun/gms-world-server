@@ -161,7 +161,7 @@ public class MailUtils {
         InputStream is = null;
         String result = null; 
         try {
-            String link = ConfigurationManager.SERVER_URL + "verify/" + secret + "/" + URLEncoder.encode(toA, "UTF-8");
+            String link = ConfigurationManager.SERVER_URL + "verify/" + secret;
             if (first) {
             	is = context.getResourceAsStream("/WEB-INF/emails/verification-dl.html");
             } else {

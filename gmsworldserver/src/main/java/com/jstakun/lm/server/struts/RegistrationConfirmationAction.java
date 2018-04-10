@@ -59,17 +59,12 @@ public class RegistrationConfirmationAction extends Action {
                     MailUtils.sendRegistrationNotification(user.getEmail(), user.getLogin(), getServlet().getServletContext());
                }
             }
-        } else if (!HttpUtils.isEmptyAny(request, "m", "sc")) {
-        	String email = request.getParameter("m");
+        } else if (!HttpUtils.isEmptyAny(request, "sc")) {
         	String secret = request.getParameter("sc");
         	
-        	if (NotificationPersistenceUtils.isRegisteredEmail(email, secret)) {
-        		NotificationPersistenceUtils.addToWhitelistEmail(email, true);
+        	if (NotificationPersistenceUtils.verifyWithSecret(secret) != null) {
         		result = true;
-        	} else if (NotificationPersistenceUtils.isWhitelistedEmail(email)) {
-        		result = true;
-        	}
-        	
+        	} 
         }
 
         if (result) {

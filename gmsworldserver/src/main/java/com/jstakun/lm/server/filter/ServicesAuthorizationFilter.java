@@ -97,6 +97,7 @@ public class ServicesAuthorizationFilter implements Filter {
             			}
             		} catch (Exception e) {
                 		logger.log(Level.SEVERE, e.getMessage(), e);
+                		noservice = true;
                 	}
             	} else if (StringUtils.contains(httpRequest.getRequestURI(), "crashReport") ||
             			StringUtils.contains(httpRequest.getRequestURI(), "fbauth") ||

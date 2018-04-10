@@ -88,6 +88,19 @@ public class NotificationPersistenceUtils {
 		return null;
 	 }
 	
+	private static Notification findBySecret(String secret, EntityManager pm) {
+		if (StringUtils.isNotEmpty(secret)) {
+			try {
+				TypedQuery<Notification> query = pm.createNamedQuery(Notification.NOTIFICATION_FINDBYSECRET, Notification.class);
+				query.setParameter("secret", secret);
+				return query.getSingleResult();
+			} catch (Exception e) {
+				return null; 
+			}
+		}
+		return null;
+	}
+	
 	private static List<Notification> findByStatus(Notification.Status status) {
 		EntityManager pm = EMF.get().createEntityManager();
 		List<Notification> notifications = null;
@@ -119,7 +132,7 @@ public class NotificationPersistenceUtils {
 		return verified;
 	}
 	
-	private static boolean isRegistered(String id, String secret) {
+	/*private static boolean isRegistered(String id, String secret) {
 		boolean unverified = false;
 		if (StringUtils.isNotEmpty(id) && StringUtils.isNotEmpty(secret)) {
 			EntityManager pm = EMF.get().createEntityManager();
@@ -133,7 +146,7 @@ public class NotificationPersistenceUtils {
 			}
 		}
 		return unverified;
-	}
+	}*/
 	
 	/*public static void migrate() {
 		  List<String> whitelistList = new ArrayList<String>(Arrays.asList(ConfigurationManager.getArray(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST)));
@@ -170,25 +183,43 @@ public class NotificationPersistenceUtils {
 		 return isVerified(email);
 	}
 	
-	public static synchronized boolean isRegisteredEmail(String email, String secret) {
-		 return isRegistered(email, secret);
-	}
+	//public static synchronized boolean isRegisteredEmail(String email, String secret) {
+	//	 return isRegistered(email, secret);
+	//}
 	
 	public static synchronized Notification addToWhitelistEmail(String email, boolean isRegistered) {
 		Notification.Status status =  isRegistered ?  Notification.Status.VERIFIED : Notification.Status.UNVERIFIED;
 		return persist(email, status);
 	}
 	
+	public static synchronized Notification verifyWithSecret(String secret) {
+		EntityManager pm = EMF.get().createEntityManager();
+		Notification n = null;
+		try {
+			n = findBySecret(secret, pm);
+			if (n != null) {
+				if (n.getStatus() == Notification.Status.UNVERIFIED) {
+					n.setStatus(Notification.Status.VERIFIED);
+					pm.persist(n);
+				}
+			} 
+		} catch (Exception e ){
+		} finally {
+			pm.close();
+		}
+		return n;
+	}
+	
 	public static void requestForConfirmation(ServletContext sc) {
 		List<Notification> unverified = findByStatus(Notification.Status.UNVERIFIED);
 		if (unverified != null && !unverified.isEmpty()) {
-			  for (Notification n : unverified) {
-				  String email = n.getId();
-				  if (EmailValidator.getInstance().isValid(email)) {
+			for (Notification n : unverified) {
+				String email = n.getId();
+				if (EmailValidator.getInstance().isValid(email)) {
 					  String status = MailUtils.sendDlVerificationRequest(email, email, n.getSecret(), sc, false);
 					  logger.log(Level.INFO, "Registration confirmation request has been sent to: " + email + " with status: " + status);
-				  }
-			  }
+				}
+			}
 		}
 	}
 }
