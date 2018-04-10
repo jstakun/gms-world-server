@@ -17,7 +17,7 @@ public class DevicePersistenceUtils {
 	
 	private static final Logger logger = Logger.getLogger(DevicePersistenceUtils.class.getName());
 	
-	public static int isDeviceRegistered(Long imei, Integer pin) throws Exception {
+	public static int isDeviceRegistered(String imei, Integer pin) throws Exception {
 		if (imei != null && pin != null) {
 		    String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "getDevice?" + 
 	                 "imei="+  imei + "&pin=" + pin;
@@ -25,7 +25,7 @@ public class DevicePersistenceUtils {
 		    if (StringUtils.startsWith(deviceJson, "{")) {
 			   JSONObject root = new JSONObject(deviceJson);
 			   JSONObject output = root.optJSONObject("output");
-			   if (output != null && output.getLong("imei") == imei) {
+			   if (output != null && StringUtils.equals(output.getString("imei"), imei)) {
 				   return 1;   
 			   } else {
 				   logger.log(Level.SEVERE, "Oops! wrong imei returned!");
@@ -43,7 +43,7 @@ public class DevicePersistenceUtils {
 	   }
 	}
 	
-	public static int setupDevice(Long imei, Integer pin, String name, String username, String token, String oldPin) throws Exception {
+	public static int setupDevice(String imei, Integer pin, String name, String username, String token, String oldPin) throws Exception {
 		if (imei != null && pin != null) {
 		    String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "setupDevice?" + 
 	                 "imei="+  imei + "&pin=" + pin;
@@ -63,7 +63,7 @@ public class DevicePersistenceUtils {
 		    if (StringUtils.startsWith(deviceJson, "{")) {
 			   JSONObject root = new JSONObject(deviceJson);
 			   JSONObject output = root.optJSONObject("output");
-			   if (output != null && output.getLong("imei") == imei) {
+			   if (output != null && StringUtils.equals(output.getString("imei"), imei)) {
 				   return 1;   
 			   } else {
 				   logger.log(Level.SEVERE, "Oops! wrong imei returned!");
@@ -81,7 +81,7 @@ public class DevicePersistenceUtils {
 	   }
 	}
 
-	public static int sendCommand(Long imei, Integer pin, String name, String username, String command, String args) throws Exception {
+	public static int sendCommand(String imei, Integer pin, String name, String username, String command, String args) throws Exception {
 		if (command != null && pin != null) {
 			String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "commandDevice?" + 
 					"command=" + command + "&pin=" + pin;

@@ -131,28 +131,20 @@ public class TelegramServlet extends HttpServlet {
 					JSONObject messageJson = jsonObject.optJSONObject("message");
 					if (messageJson != null) {
 						Long telegramId= messageJson.getJSONObject("chat").getLong("id");
-						//command imei pin args 
-						//command name pin username args 
+						//command imei pin -p args 
+						//command name pin username -p args 
 						String[] tokens = StringUtils.split(messageJson.getString("text"), " ");
 						String reply = "";
 						if (tokens.length >= 3 && StringUtils.isAlpha(tokens[0]) && StringUtils.isNumeric(tokens[2])) {
 							try {
 								String command = tokens[0];
-								
-								Long imei = null;
-								String name = null;
-								if (StringUtils.isNumeric(tokens[1])) {
-									imei = Long.valueOf(tokens[1]);
-								} else {
-									name = tokens[1];
-								}
-								
+								String deviceId = tokens[1];
 								Integer pin = Integer.valueOf(tokens[2]);	
 								
-								int argsIndex = 3;
+								int argsIndex = 4;
 								String username = null;
-								if (imei == null) {
-									argsIndex = 4;
+								if (tokens.length > 3 && !StringUtils.equals(tokens[3], "-p")) {
+									argsIndex = 5;
 									username = tokens[3];
 								}
 								
@@ -163,11 +155,7 @@ public class TelegramServlet extends HttpServlet {
 									StringUtils.join(Arrays.copyOfRange(tokens, argsIndex, tokens.length-1), " ");
 								}
 								
-								if (imei != null) {
-									reply = "Command " +  command + " has been sent to the device " + imei; // + ". It is up to cloud when it will be delivered to the device!";
-								} else {
-									reply = "Command " +  command + " has been sent to the device " + name; // + ". It is up to cloud when it will be delivered to the device!";
-								}
+								reply = "Command " +  command + " has been sent to the device " + deviceId; // + ". It is up to cloud when it will be delivered to the device!";
 								
 								if (StringUtils.startsWith(command, "/")) {
 									command = command.substring(1);
@@ -176,13 +164,15 @@ public class TelegramServlet extends HttpServlet {
 									command += "dlt";
 								}
 								
-								int status = DevicePersistenceUtils.sendCommand(imei, pin, name, username, command, args);
+								int status;
+								if (username == null) {
+									status = DevicePersistenceUtils.sendCommand(deviceId, pin, null, username, command, args);
+								} else {
+									status = DevicePersistenceUtils.sendCommand(null, pin, deviceId, username, command, args);
+								}
+								
 								if (status == -1) {
-									if (imei != null) {
-										reply = "Failed to send command " + command.substring(0, command.length()-3) + " to the device " + imei;
-									} else {
-										reply = "Failed to send command " + command.substring(0, command.length()-3) + " to the device " + name;
-									}
+									reply = "Failed to send command " + command.substring(0, command.length()-3) + " to the device " + deviceId;
 								} 
 							} catch (Exception e) {
 								reply = "Failed to send command: " + e.getMessage();

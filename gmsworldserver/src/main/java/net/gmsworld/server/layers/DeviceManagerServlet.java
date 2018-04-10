@@ -40,7 +40,7 @@ public final class DeviceManagerServlet extends HttpServlet {
 			if (HttpUtils.isEmptyAny(request, "imei", "pin")) {
 				response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 			} else {
-				 Long imei = Long.valueOf(request.getParameter("imei"));
+				 String imei = request.getParameter("imei");
 		         Integer pin = Integer.valueOf(request.getParameter("pin"));		
 		         int status = DevicePersistenceUtils.isDeviceRegistered(imei, pin);
 		         if (status == 1) {
@@ -66,7 +66,7 @@ public final class DeviceManagerServlet extends HttpServlet {
 			if (HttpUtils.isEmptyAny(request, "imei", "pin")) {
 				response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 			} else {
-				 Long imei = Long.valueOf(request.getParameter("imei"));
+				 String imei = request.getParameter("imei");
 		         Integer pin = Integer.valueOf(request.getParameter("pin"));		
 		         String token = request.getParameter("token");
 		         String username = request.getParameter("username");
