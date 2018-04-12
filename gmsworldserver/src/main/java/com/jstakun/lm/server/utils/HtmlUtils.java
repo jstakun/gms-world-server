@@ -218,19 +218,7 @@ public class HtmlUtils {
 	public static String getLandmarkDesc(Landmark landmark, Locale locale) throws UnsupportedEncodingException {
 		PrettyTime prettyTime = new PrettyTime(locale);
 		ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource", locale);
-		
-		String hotelsText = rb.getString("hotels.discover.nearby");		
-		//show hostels count
-		/*LayerHelper layerHelper = LayerHelperFactory.getByName(Commons.HOTELS_LAYER);
-		String json = layerHelper.getGeoJson(landmark.getLatitude(), landmark.getLongitude(), Commons.HOTELS_LAYER, locale.getLanguage(), "distance");	
-		if (StringUtils.startsWith(json, "{")) {
-			JSONObject layerJson = new JSONObject(json);
-			int layerSize = layerJson.getJSONArray("features").length();
-			if (layerSize > 0) {
-				hotelsText = String.format(rb.getString("hotels.discover.nearby.2"), layerSize);
-			}
-		}*/
-		
+		String hotelsText = rb.getString("hotels.discover.nearby");	
 		String userUrl = null;		
 		if (landmark.isSocial()) {
 			userUrl = "/blogeo/" + URLEncoder.encode(landmark.getUsername(), "UTF-8");
@@ -238,7 +226,7 @@ public class HtmlUtils {
 			userUrl = "/showUser/" + URLEncoder.encode( landmark.getUsername(), "UTF-8");
 		}
 		String layerUrl = "/showLayer/" + landmark.getLayer();
-		String bookingUrl = "/showLandmark/" + landmark.getId() + "?enabled=Hotels&fullScreenLandmarkMap=true";
+		String bookingUrl = "/showHotels/" + landmark.getId();
 		
 		String desc = "";
 		String description = landmark.getDescription();

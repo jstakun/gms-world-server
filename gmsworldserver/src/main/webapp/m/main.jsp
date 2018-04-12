@@ -57,8 +57,8 @@
                  for (Landmark landmark : landmarkList) {
         %>
         <article class="underline">
-			<h4><a href="<%=response.encodeURL("/showLandmark/" + landmark.getId())%>"><%=landmark.getName()%></a></h4>
-            <a href="<%=response.encodeURL("/showLandmark/" + landmark.getId())%>"><img src="/image?lat=<%=landmark.getLatitude()%>&lng=<%=landmark.getLongitude()%>" alt="Landmark on the map" /></a>                           
+			<h4><a href="<%=response.encodeURL("/showLandmark/" + landmark.getId() + "/" + HtmlUtils.encodeDouble(landmark.getLatitude()) + "/" + HtmlUtils.encodeDouble(landmark.getLongitude())) %>"><%=landmark.getName()%></a></h4>
+            <a href="<%=response.encodeURL("/showLandmark/" + landmark.getId() + "/" + HtmlUtils.encodeDouble(landmark.getLatitude()) + "/" + HtmlUtils.encodeDouble(landmark.getLongitude()))%>"><img src="/image?lat=<%=landmark.getLatitude()%>&lng=<%=landmark.getLongitude()%>" alt="Landmark on the map" /></a>                           
 			<p>
 				<%= HtmlUtils.getLandmarkDesc(landmark, request.getLocale()) %>
 			</p>

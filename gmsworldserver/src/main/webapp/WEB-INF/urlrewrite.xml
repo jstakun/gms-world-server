@@ -58,12 +58,34 @@
             <from>^/showLandmark/([a-zA-Z0-9_-]+);jsessionid=(.*)$</from>
             <to>/showLandmark.do?key=$1</to>
     </rule>
+    
+    <rule>
+            <from>^/showLandmark/([a-zA-Z0-9_-]+)/([m-y]+)/([m-y]+)$</from>
+            <to>/showLandmark.do?key=$1</to>
+    </rule>
 
+     <rule>
+            <from>^/showLandmark/([a-zA-Z0-9_-]+)/([m-y]+)/([m-y]+);jsessionid=(.*)$</from>
+            <to>/showLandmark.do?key=$1</to>
+    </rule>
+    
     <rule>
             <from>^/showLandmark/([a-zA-Z0-9_-]+)/(fullScreen)$</from>
             <to>/showLandmark.do?key=$1&amp;fullScreenLandmarkMap=1</to>
     </rule>
     
+    <!-- showHotels rules -->
+ 
+    <rule>
+            <from>^/showHotels/([a-zA-Z0-9_-]+)$</from>
+            <to>/showLandmark.do?key=$1&amp;enabled=Hotels&amp;fullScreenLandmarkMap=1</to>
+    </rule>
+
+    <rule>
+            <from>^/showHotels/([a-zA-Z0-9_-]+);jsessionid=(.*)$</from>
+            <to>/showLandmark.do?key=$1&amp;enabled=Hotels&amp;fullScreenLandmarkMap=1</to>
+    </rule>
+       
     <!-- showDevice rules -->
     
     <rule>
