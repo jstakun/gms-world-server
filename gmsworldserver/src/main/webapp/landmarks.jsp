@@ -107,11 +107,11 @@
 			hotelUrlSuffix += "&age=" + document.getElementById("checkinChildren" + i + "Age").value;
         }
         
-        console.log('Opening ' + url + hotelUrlSuffix + '...')
+        //console.log('Opening ' + url + hotelUrlSuffix + '...')
         window.open(url + hotelUrlSuffix, '_blank');
 	}
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?libraries=visualization"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?libraries=visualization,geometry"></script>
     <script src="/js/marker.js"></script>
     <script src="/js/markerclusterer.js"></script>
     <script src="/js/js.cookie.js"></script>
@@ -141,6 +141,7 @@
       	  ];
       	  
       function initialize() {
+          //console.log('Initializing map service');
     	  map = new google.maps.Map(document.getElementById('map-canvas'), {
       			zoom: <%= zoom %>,
         		center: mapcenter,
@@ -191,31 +192,46 @@
               	infowindow.open(map, this);
           });
 
-          //map.addListener('center_changed', function() {
-               //TODO load hotels when map center changed
-              //console.log('Map center changed'); 
-              //var data = {};
-          	  //data['layer'] = 'hotels';
-   	    	  //data['lat'] = map.getCenter().lat();
-   	    	  //data['lng'] = map.getCenter().lat();
-   	    	  //data['sortType'] = sortType;
-
-   	    	  //$.ajax({
-   			   //	  dataType: "json",
-   			 	//  url: "/geoJsonProvider",
-   				  //data: data,
-     				 //beforeSend: function(xhr) {
-         				//xhr.setRequestHeader("Accept-Encoding", "gzip, deflate");
-     				  //}})
-   				  //.done(function(results) {
-   					  //loadLayer(results);
-   				  //})
-   				  //.error(function(jqXHR, textStatus, errorThrown){ /* assign handler */
-   		    		  //console.log("API call error: " + textStatus + ", " + errorThrown);
-   			  //});
-          //});
-                 
           <% if (hotelsMode) { %>
+          var xhr = null;
+          map.addListener('center_changed', function() {
+              var distance_in_meters = google.maps.geometry.spherical.computeDistanceBetween( mapcenter, map.getCenter() );
+              if (distance_in_meters > 500) {
+            	  console.log('Running new hotels search in distance: ' + distance_in_meters + " meters from previous..."); 
+                  mapcenter = map.getCenter();
+               
+              	  var data = {};
+          	  	  data['layer'] = 'Hotels';
+   	    	  	  data['lat'] = mapcenter.lat();
+   	    	  	  data['lng'] = mapcenter.lng();
+   	    	  	  data['sortType'] = sortType;
+
+   	    	  	  //console.log(data['lat'] + " " + data['lng']);
+
+   	    	  	  if (xhr != null) {
+   	    	  			//console.log('Aborting current request');
+						xhr.abort();
+    	   	      }
+   	    	  	  
+   	    	  	  xhr = $.ajax({
+   			   			dataType: "json",
+   			 		  	url: "/geoJsonProvider",
+   				  	    data: data,
+     				 	    beforeSend: function(xhr) {
+         					   xhr.setRequestHeader("Accept-Encoding", "gzip, deflate");
+     				}})
+   				  	.done(function(results) {
+   				  		xhr = null;  
+   				  		loadLayer(results, true);    
+   				  	})
+   				  	.error(function(jqXHR, textStatus, errorThrown) { /* assign handler */
+   	   				  	 if ( textStatus != 'abort') {
+   		    	            console.log("API call error: " + textStatus + ", " + errorThrown);
+   	   				  	 }
+   			  	    });
+                 }
+          });  
+                       
           var message = '<bean:message key="hotels.wait" />';
           <% } else { %>
           var message = '<bean:message key="landmarks.wait" />';
@@ -226,11 +242,47 @@
           $("#status").css({"background-color": "#fff", "border" : "2px solid #fff", "border-radius": "3px", "text-align": "center", "box-shadow" : "0 2px 6px rgba(0,0,0,.3)"});
           $("#status").html("<img src=\'/images/progress.gif\' style=\'width:16px; height:16px; vertical-align: middle;'><span style='line-height:<%=fontSize%>;'>&nbsp;" + message + "</span>");
 		  $("#status").center().show();
+
+		  $.each(layers, function(index, layer) { 
+		        if (layer.enabled == "true") {  
+		        	var data = {};
+		        	data['layer'] = layer.name;
+		 	    	data['lat'] = "<%= latitude %>";
+		 	    	data['lng'] = "<%= longitude %>";
+		 	    	if (layer.name == "Hotels") {
+		 	    		data['sortType'] = sortType;
+		 	    	}
+		  			$.ajax({
+		 				dataType: "json",
+		 				url: "/geoJsonProvider",
+		 				data: data,
+		   				beforeSend: function(xhr) {
+		       				xhr.setRequestHeader("Accept-Encoding", "gzip, deflate");
+		   				}})
+		 				.done(function(results) {
+		 					loadLayer(results, false);
+		 				})
+		 				.error(function(jqXHR, textStatus, errorThrown){ /* assign handler */
+		 		    		console.log("API call error: " + textStatus + ", " + errorThrown);
+		 			});
+			     } else {
+		            excluded_layers++; 
+		        }
+		   });   		
       }
 
-      function loadMarkers(results, image, ismobile) {
+      function loadMarkers(results, image, ismobile, clear) {
           currencycode = results.properties.currencycode;
           eurexchangerates = results.properties.eurexchangerates;
+
+          if (results.features.length > 0 && clear) {
+        	    //console.log('Markers will be cleared');   
+				markers = [];
+				mc.clearMarkers();
+				marker_counter = 0;	
+          }
+
+          var newmarkers = [];
           
     	  for (var i = 0; i < results.features.length; i++) {
           		var coords = results.features[i].geometry.coordinates;
@@ -320,11 +372,14 @@
       	
           	if (results.features.length > 0) {  
                 marker_counter += results.features.length;
-  				mc.addMarkers(markers, true);
+                mc.addMarkers(markers, true);
+                if (clear) {
+					filter(); 
+                }
 	  		}
       }
 
-      function loadLayer(results) {
+      function loadLayer(results, clear) {
     	   if (results.properties != null) {
                 var layer = results.properties.layer;
     	  		for (var i = 0; i < layers.length; i++) {
@@ -335,7 +390,7 @@
 							  hotelsOnly = false;
                        	  }
                        	  if (results.features.length > 0) {
-          	  				  loadMarkers(results, image, <%= isMobile %>);
+          	  				  loadMarkers(results, image, <%= isMobile %>, clear);
                            	  mc.repaint();
     	  			 	  }
           			 }	   
@@ -344,7 +399,7 @@
           	   console.log('Wrong response format: results.properties=' + results.properties);   
       	   }	   
            layer_counter++;
-		   console.log("Loaded markers from (" + layer_counter + "/" + layers.length + ") layers!");
+		   //console.log("Loaded markers from (" + layer_counter + "/" + layers.length + ") layers!");
 		   if ((layer_counter + excluded_layers) == layers.length && marker_counter > 1) {
 				mc.repaint();
 
@@ -375,6 +430,7 @@
 		        	map.controls[google.maps.ControlPosition.TOP_CENTER].push(hotelControlDiv);
 		        	google.maps.event.addDomListener(hotelControlDiv, 'click', function() { 
 		                window.location.href = window.location.pathname + '?enabled=Hotels';
+		        		//window.location.replace(window.location.pathname + '?enabled=Hotels');
 		       	    });
 		       } else {
 			        //new search button
@@ -444,8 +500,7 @@
 			     	} else {
 		     	    	console.log('no filter cookie set');
 			     	}
-
-		     	   map.fitBounds(bounds); 
+		     	   //map.fitBounds(bounds); 
 			    }	 
 			} else if ((layer_counter + excluded_layers) == layers.length && marker_counter == 1) {
 				<% if (hotelsMode) { %>
@@ -576,7 +631,7 @@
       var checkinChildrenAges = [<%= (String)request.getAttribute("checkinChildrenAges") %>];
       
       function setupChildrenAges() {
-   	  	if (document.getElementById("checkinChildren") != null) {
+        if (document.getElementById("checkinChildren") != null) {
 			var count = document.getElementById("checkinChildren").value;
   			document.getElementById("checkinChildrenHeaderRow").innerHTML='';
   			document.getElementById("checkinChildrenRow1").innerHTML='';
@@ -719,33 +774,6 @@
     	</table>
     </div>
     <script type="text/javascript">
-     $.each(layers, function(index, layer) { 
-        if (layer.enabled == "true") {  
-        	var data = {};
-        	data['layer'] = layer.name;
- 	    	data['lat'] = "<%= latitude %>";
- 	    	data['lng'] = "<%= longitude %>";
- 	    	if (layer.name == "Hotels") {
- 	    		data['sortType'] = sortType;
- 	    	}
-  			$.ajax({
- 				dataType: "json",
- 				url: "/geoJsonProvider",
- 				data: data,
-   				beforeSend: function(xhr) {
-       				xhr.setRequestHeader("Accept-Encoding", "gzip, deflate");
-   				}})
- 				.done(function(results) {
- 					loadLayer(results);
- 				})
- 				.error(function(jqXHR, textStatus, errorThrown){ /* assign handler */
- 		    		console.log("API call error: " + textStatus + ", " + errorThrown);
- 			});
-	     } else {
-            excluded_layers++; 
-        }
-     });   		
-
      $(function() {
 	     var daysToAdd = 1;
 	     $.datepicker.setDefaults($.datepicker.regional['<%= request.getLocale().getLanguage() %>']);
