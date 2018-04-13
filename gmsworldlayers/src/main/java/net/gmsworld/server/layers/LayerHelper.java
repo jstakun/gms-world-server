@@ -64,26 +64,30 @@ public abstract class LayerHelper {
     }
 
     protected List<ExtendedLandmark> processBinaryRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2, Locale locale, boolean useCache) throws Exception {
-    	String key = null;
-		List<ExtendedLandmark> landmarks = null;
-		if (useCache) {
-			key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, limit, stringLimit, flexString, flexString2);
-			if (cacheProvider != null) {
-				landmarks = cacheProvider.getList(ExtendedLandmark.class, key);
-			}
-		}
-        if (landmarks == null) {
-        	landmarks = loadLandmarks(lat, lng, query, radius, version, limit, stringLimit, flexString, flexString2, locale, useCache);
-        	if (useCache && !landmarks.isEmpty()) { // && landmarks.size() <= 300) { //don't cache too large objects
-        		logger.log(Level.INFO, "Adding {0} landmark list to cache with key {1}", new Object[]{getLayerName(), key});
-                cacheProvider.put(key, landmarks);
-            }
-        } else {
-        	logger.log(Level.INFO, "Reading {0} landmark list from cache with key {1}", new Object[]{getLayerName(), key});
-        }
+    	List<ExtendedLandmark> landmarks = null;
+    	if (isEnabled()) {
+    		String key = null;
+    		if (useCache) {
+    			key = getCacheKey(getClass(), "processBinaryRequest", lat, lng, query, radius, version, limit, stringLimit, flexString, flexString2);
+    			if (cacheProvider != null) {
+    				landmarks = cacheProvider.getList(ExtendedLandmark.class, key);
+    			}
+    		}
+    		if (landmarks == null) {
+    			landmarks = loadLandmarks(lat, lng, query, radius, version, limit, stringLimit, flexString, flexString2, locale, useCache);
+    			if (useCache && !landmarks.isEmpty()) { // && landmarks.size() <= 300) { //don't cache too large objects
+    				logger.log(Level.INFO, "Adding {0} landmark list to cache with key {1}", new Object[]{getLayerName(), key});
+    				cacheProvider.put(key, landmarks);
+    			}
+    		} else {
+    			logger.log(Level.INFO, "Reading {0} landmark list from cache with key {1}", new Object[]{getLayerName(), key});
+    		}
            
-        logger.log(Level.INFO, "Found {0} landmarks", landmarks.size()); 
-    		
+    		logger.log(Level.INFO, "Found {0} landmarks", landmarks.size()); 
+    	} else {
+    		logger.log(Level.INFO, "Layer is disabled!");
+    		landmarks = new ArrayList<ExtendedLandmark>();
+    	}
     	return landmarks;
     }
     

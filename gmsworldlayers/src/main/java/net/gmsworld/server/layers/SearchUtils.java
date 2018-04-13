@@ -60,7 +60,7 @@ public class SearchUtils extends LayerHelper {
 			}
 
 			if (!geocode && GeocodeUtils.isNorthAmericaLocation(lat, lng)) {
-				threadManager.put(threadProvider.newThread(new JSonSearchTask(lat, lng, query, null, language, Commons.COUPONS_LAYER, radius, dealLimit, limit, stringLimit, locale, isDeal, jsonMap)));
+				//threadManager.put(threadProvider.newThread(new JSonSearchTask(lat, lng, query, null, language, Commons.COUPONS_LAYER, radius, dealLimit, limit, stringLimit, locale, isDeal, jsonMap)));
 				threadManager.put(threadProvider.newThread(new JSonSearchTask(lat, lng, query, null, language, Commons.GROUPON_LAYER, radius, dealLimit, limit, stringLimit, locale, isDeal, jsonMap)));
 			}
 
@@ -116,7 +116,7 @@ public class SearchUtils extends LayerHelper {
 			}
 
 			if (!geocode && GeocodeUtils.isNorthAmericaLocation(lat, lng)) {
-				threadManager.put(threadProvider.newThread(new SerialSearchTask(lat, lng, query, null, language, Commons.COUPONS_LAYER, radius, dealLimit, limit, stringLimit, locale, isDeal, foundLandmarks)));
+				//threadManager.put(threadProvider.newThread(new SerialSearchTask(lat, lng, query, null, language, Commons.COUPONS_LAYER, radius, dealLimit, limit, stringLimit, locale, isDeal, foundLandmarks)));
 				threadManager.put(threadProvider.newThread(new SerialSearchTask(lat, lng, query, null, language, Commons.GROUPON_LAYER, radius, dealLimit, limit, stringLimit, locale, isDeal, foundLandmarks)));
 			}
 
