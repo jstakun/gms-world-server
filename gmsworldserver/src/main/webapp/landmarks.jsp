@@ -201,16 +201,13 @@
                   mapcenter = map.getCenter();
                
               	  var data = {};
-          	  	  data['layer'] = 'Hotels';
-   	    	  	  data['lat'] = mapcenter.lat();
-   	    	  	  data['lng'] = mapcenter.lng();
-   	    	  	  data['sortType'] = sortType;
-
-   	    	  	  //console.log(data['lat'] + " " + data['lng']);
+          	  	    data['layer'] = 'Hotels';
+   	        	    data['lat'] = mapcenter.lat();
+   	     	  	    data['lng'] = mapcenter.lng();
+   	    	  	    data['sortType'] = sortType;
 
    	    	  	  if (xhr != null) {
-   	    	  			//console.log('Aborting current request');
-						xhr.abort();
+   	   				xhr.abort();
     	   	      }
    	    	  	  
    	    	  	  xhr = $.ajax({
@@ -220,16 +217,16 @@
      				 	    beforeSend: function(xhr) {
          					   xhr.setRequestHeader("Accept-Encoding", "gzip, deflate");
      				}})
-   				  	.done(function(results) {
+   	 			  	.done(function(results) {
    				  		xhr = null;  
    				  		loadLayer(results, true);    
    				  	})
-   				  	.error(function(jqXHR, textStatus, errorThrown) { /* assign handler */
+   				  	.error(function(jqXHR, textStatus, errorThrown) { 
    	   				  	 if ( textStatus != 'abort') {
    		    	            console.log("API call error: " + textStatus + ", " + errorThrown);
    	   				  	 }
-   			  	    });
-                 }
+   		  	        });
+                }
           });  
                        
           var message = '<bean:message key="hotels.wait" />';
@@ -400,7 +397,7 @@
       	   }	   
            layer_counter++;
 		   //console.log("Loaded markers from (" + layer_counter + "/" + layers.length + ") layers!");
-		   if ((layer_counter + excluded_layers) == layers.length && marker_counter > 1) {
+		   if ((layer_counter + excluded_layers) == layers.length) {
 				mc.repaint();
 
 				<% if (hotelsMode) { %>
@@ -442,24 +439,25 @@
 		                window.location.href = '/hotels/' + map.getCenter().lat() + '/' + map.getCenter().lng() + '/' + map.getZoom();
 		       	    }); 
 
-		       	    //legend
-		        	var topLocationsDiv = document.createElement('div'); //scale
-		        	var text = '<input type=\'checkbox\' id=\'singleVenueFilter\' checked onclick=\"filter()\"><img src=\'/images/layers/0stars_blue_32.png\' style=\'width:32px; height:32px; vertical-align: middle;\' title=\'Single room or apartment venue\'><span style=\'line-height:32px;\'>&nbsp;<bean:message key="hotels.single.venue" /></span><br/>' +
+		        	 if (marker_counter > 1) {
+		       	    	//legend
+		        		var topLocationsDiv = document.createElement('div'); //scale
+		        		var text = '<input type=\'checkbox\' id=\'singleVenueFilter\' checked onclick=\"filter()\"><img src=\'/images/layers/0stars_blue_32.png\' style=\'width:32px; height:32px; vertical-align: middle;\' title=\'Single room or apartment venue\'><span style=\'line-height:32px;\'>&nbsp;<bean:message key="hotels.single.venue" /></span><br/>' +
 			        		   '<input type=\'checkbox\' id=\'multiVenueFilter\' checked onclick=\"filter()\"><img src=\'/images/layers/star_0_32.png\' style=\'width:32px; height:32px; vertical-align: middle;\'><span style=\'line-height:32px;\' title=\'Multiple rooms or apartments venue\'>&nbsp;<bean:message key="hotels.multiple.venue" /></span>'; 
-		        	var topLocationsControl = new CenterControl(topLocationsDiv, 'left', text, '');
-		     	    topLocationsDiv.index = 3
-		     	    map.controls[google.maps.ControlPosition.RIGHT_TOP].push(topLocationsDiv);	
+		        		var topLocationsControl = new CenterControl(topLocationsDiv, 'left', text, '');
+		     	    	topLocationsDiv.index = 3
+		     	    	map.controls[google.maps.ControlPosition.RIGHT_TOP].push(topLocationsDiv);	
 
-		     	    //dates
-		     	    var checkinDiv = document.getElementById('checkin');
-		     	    checkinDiv.index = 4
-		     	    map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(checkinDiv);
-		     	    checkinDiv.style.display = 'inline';	
+		     	    	//dates
+		     	    	var checkinDiv = document.getElementById('checkin');
+		     	    	checkinDiv.index = 4
+		     	    	map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(checkinDiv);
+		     	    	checkinDiv.style.display = 'inline';	
 		     	     
-		     	    //filters
-		     	    var filtersDiv = document.createElement('div');
+		     	    	//filters
+		     	    	var filtersDiv = document.createElement('div');
 		     	    
-		     	    var text = '<table style=\"width:100%;border-spacing: 0px;padding: 0px;font-family:Roboto,Arial,sans-serif;font-size:<%=fontSize%>;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;\">' + 
+		     	    	var text = '<table style=\"width:100%;border-spacing: 0px;padding: 0px;font-family:Roboto,Arial,sans-serif;font-size:<%=fontSize%>;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;\">' + 
                                '<tr><td colspan=\"2\"><b><bean:message key="hotels.starrating" /></b></td></tr>' + 
 			     	           '<tr><td><input type=\"checkbox\" id=\"5s\" checked=\"checked\" onclick=\"filter()\"/></td><td><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/></td><td align=\'right\'>' + (results.properties['stats_stars']['5'] ? results.properties['stats_stars']['5'] : '0') + '</td></tr>' +
 		     	               '<tr><td><input type=\"checkbox\" id=\"4s\" checked=\"checked\" onclick=\"filter()\"/></td><td><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/></td><td align=\'right\'>' + (results.properties['stats_stars']['4'] ? results.properties['stats_stars']['4'] : '0') + '</td></tr>' +
@@ -468,39 +466,41 @@
 		     	               '<tr><td><input type=\"checkbox\" id=\"1s\" checked=\"checked\" onclick=\"filter()\"/></td><td><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/></td><td align=\'right\'>' + (results.properties['stats_stars']['1'] ? results.properties['stats_stars']['1'] : '0') + '</td></tr>' +
 		     	               '<tr><td><input type=\"checkbox\" id=\"0s\" checked=\"checked\" onclick=\"filter()\"/></td><td><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/></td><td align=\'right\'>' + (results.properties['stats_stars']['0'] ? results.properties['stats_stars']['0'] : '0') + '</td></tr>';
 
-		     	    if (currencycode && eurexchangerates[currencycode] && (results.properties['stats_price']['1'] || results.properties['stats_price']['2'] || results.properties['stats_price']['3'] || results.properties['stats_price']['4'] || results.properties['stats_price']['5'])) {
-                        var value = parseInt(eurexchangerates[currencycode]*50, 10);
-                    	text += '<tr><td colspan=\"2\"><b><bean:message key="hotels.price" /></b</td></tr>' + 
+		     	    	if (currencycode && eurexchangerates[currencycode] && (results.properties['stats_price']['1'] || results.properties['stats_price']['2'] || results.properties['stats_price']['3'] || results.properties['stats_price']['4'] || results.properties['stats_price']['5'])) {
+                        	var value = parseInt(eurexchangerates[currencycode]*50, 10);
+                    		text += '<tr><td colspan=\"2\"><b><bean:message key="hotels.price" /></b</td></tr>' + 
                                 '<tr><td><input type=\"checkbox\" id=\"1p\" checked=\"checked\" onclick=\"filter()\"/></td><td>0 ' + currencycode + ' - ' + value + ' ' + currencycode + '</td><td align=\'right\'>&nbsp;' + (results.properties['stats_price']['1'] ? results.properties['stats_price']['1'] : '0') + '</td></tr>' + 
                                 '<tr><td><input type=\"checkbox\" id=\"2p\" checked=\"checked\" onclick=\"filter()\"/></td><td>' + value + ' ' + currencycode + ' - ' + (value*2) + ' ' + currencycode + '</td><td align=\'right\'>&nbsp;' + (results.properties['stats_price']['2'] ? results.properties['stats_price']['2'] : '0') + '</td></tr>' +
                                 '<tr><td><input type=\"checkbox\" id=\"3p\" checked=\"checked\" onclick=\"filter()\"/></td><td>' + (value*2) + ' ' + currencycode + ' - ' + (value*3) + ' ' + currencycode + '</td><td align=\'right\'>&nbsp;' + (results.properties['stats_price']['3'] ? results.properties['stats_price']['3'] : '0') +'</td></tr>' +
                                 '<tr><td><input type=\"checkbox\" id=\"4p\" checked=\"checked\" onclick=\"filter()\"/></td><td>' + (value*3) + ' ' + currencycode + ' - ' + (value*4) + ' ' + currencycode + '</td><td align=\'right\'>&nbsp;' + (results.properties['stats_price']['4'] ? results.properties['stats_price']['4'] : '0') +'</td></tr>' +
                                 '<tr><td><input type=\"checkbox\" id=\"5p\" checked=\"checked\" onclick=\"filter()\"/></td><td>' + (value*4) + ' ' + currencycode + ' +</td><td align=\'right\'>&nbsp;' + (results.properties['stats_price']['5'] ? results.properties['stats_price']['5'] : '0') + '</td></tr>'; 
-                    }
-                    //
-           		    text += '</table>'; 
-		     	    var filtersControl = new CenterControl(filtersDiv, 'center', text, '');
-		     	    filtersDiv.index = 5
-		     	    map.controls[google.maps.ControlPosition.LEFT_CENTER].push(filtersDiv);
-		     	    //	     	    
+                    	}
 
-		     	    var filterStr = Cookies.get('filter');
-		     	    if (filterStr) {
-		     	    	console.log('filter cookie: ' + filterStr);
-                        var cids = filterStr.split(',');
-                        if (cids.length > 0) {
-                            for (var i=0;i<cids.length;i++) {
-                            	var cid = cids[i];
-                            	if (cid.length > 0 && document.getElementById(cid)) {
-                                	document.getElementById(cid).checked = false;
-                            	}
-                        	}     
-		     	    		filter();
-		     	    	} 	
-			     	} else {
-		     	    	console.log('no filter cookie set');
-			     	}
-		     	   //map.fitBounds(bounds); 
+	                	text += '</table>'; 
+		     	    	var filtersControl = new CenterControl(filtersDiv, 'center', text, '');
+		     	    	filtersDiv.index = 5
+		     	    	map.controls[google.maps.ControlPosition.LEFT_CENTER].push(filtersDiv);
+
+		     	    	//cookies
+		     	    	var filterStr = Cookies.get('filter');
+		     	    	if (filterStr) {
+		     	    		console.log('filter cookie: ' + filterStr);
+                        	var cids = filterStr.split(',');
+                        	if (cids.length > 0) {
+                            	for (var i=0;i<cids.length;i++) {
+                            		var cid = cids[i];
+                            		if (cid.length > 0 && document.getElementById(cid)) {
+                                		document.getElementById(cid).checked = false;
+                            		}
+                        		}     
+		     	    			filter();
+		     	    		} 	
+			     		} else {
+		     	    		console.log('no filter cookie set');
+			     		}
+			     	
+		     	    	//map.fitBounds(bounds); 
+		            }
 			    }	 
 			} else if ((layer_counter + excluded_layers) == layers.length && marker_counter == 1) {
 				<% if (hotelsMode) { %>
