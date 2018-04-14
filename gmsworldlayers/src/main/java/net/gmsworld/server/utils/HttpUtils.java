@@ -166,8 +166,9 @@ public class HttpUtils {
             	file = IOUtils.toString(is, "UTF-8");
             	int length = file.length();
             	if (length > 0) {
-            		logger.log(Level.INFO, "Received " + conn.getContentType() + " document having " + length + " characters");
+            		logger.log(Level.INFO, "Received " + conn.getContentType() + " document containing " + length + " characters");
             	}
+            	//logger.log(Level.INFO, file);
             }
             
             logger.log(Level.INFO, "Request with status " + responseCode + " processed in " + (System.currentTimeMillis()-start) + " millis.");

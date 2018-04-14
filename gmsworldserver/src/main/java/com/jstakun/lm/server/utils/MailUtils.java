@@ -57,11 +57,32 @@ public class MailUtils {
     }
     
     private static String sendRemoteMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType, String ccA, String ccP)  {
+    	String recipients = ""; //to:name <email@address>, cc:name <email@address>, bcc:name <email@address>
+    	if (StringUtils.isNotEmpty(toP)) {
+    		  recipients = "to:" + toP + " <" + toA +">";
+    	} else {
+    		 recipients = "to:" + toA;
+    	} 
+    	if (StringUtils.isNotEmpty(ccA) && StringUtils.isNotEmpty(ccP)) {
+    		recipients += "|cc:" + ccP + " <" + ccA +">";
+    	} else if (StringUtils.isNotEmpty(ccA)) {
+    		recipients += "|cc:" + ccA;
+    	}
+   	 
+    	if  (sendRemoteMail(fromA, fromP, recipients, subject, content, contentType)) {
+    		return "ok";
+    	} else {	
+    		return sendLocalMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
+   		} 
+    }
+        
+    
+    private static boolean sendRemoteMail(String fromA, String fromP, String recipients, String subject, String content, String contentType)  {
     	 final String MAILER_SERVER_URL = "https://openapi-landmarks.b9ad.pro-us-east-1.openshiftapps.com/actions/emailer"; 
     	 
      	 String params = "from=" + fromA +
     	                                "&password=" + Commons.getProperty(Property.RH_MAILER_PWD) +
-    			                        "&to=" + toA;
+    	                                "&recipients=" + recipients;
     	 if (subject != null) {
     		  params +=  "&subject=" + subject;
     	 }
@@ -74,29 +95,19 @@ public class MailUtils {
     	 if (fromP != null) {
     		 	params +="&fromNick=" + fromP;
     	 }
-    	 if (toP != null) {
-    		 	params += "&toNick=" + toP;
-    	 }	
-    	 if (ccA != null) {
-    		 	params  += "&cc=" + ccA;
-         }
-    	 if (ccP != null) {
-    		 	params  += "&ccNick=" + ccP;
-    	 }
     	 
+    	 boolean success = false;
     	 try {
     		 HttpUtils.processFileRequestWithBasicAuthn(new URL(MAILER_SERVER_URL), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
     		 Integer responseCode = HttpUtils.getResponseCode(MAILER_SERVER_URL);
     		 logger.log(Level.INFO, "Received response code: " + responseCode);
     		 if (responseCode != null && responseCode == 200) {
-    			 return "ok";
-    		 } else {
-    			 return sendLocalMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
+    			 success = true;
     		 } 
     	 } catch (Exception e) {
     		 logger.log(Level.SEVERE, e.getMessage(), e);
-    		 return sendLocalMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
     	 }
+    	 return success;
     }
     
     public static void sendAdminMail(String message) {
@@ -113,7 +124,7 @@ public class MailUtils {
     }
     
     public static void sendDeviceLocatorRegistrationRequest(String email) {
-    	sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, "Registration request", email, "text/plain", "jstakun.appspot@gmail.com", ConfigurationManager.DL_NICK);
+    	sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, "Registration request", email, "text/plain", "jstakun.appspot@gmail.com", ConfigurationManager.DL_NICK);        
     }
 
     public static String sendLandmarkCreationNotification(String title, String body) {
@@ -161,15 +172,30 @@ public class MailUtils {
         InputStream is = null;
         String result = null; 
         try {
+        	String message = null;
             String link = ConfigurationManager.SSL_SERVER_URL + "verify/" + secret;
-            if (first) {
-            	is = context.getResourceAsStream("/WEB-INF/emails/verification-dl.html");
+            if (context != null) {
+            	if (first) {
+            		is = context.getResourceAsStream("/WEB-INF/emails/verification-dl.html");
+            	} else {
+            		is = context.getResourceAsStream("/WEB-INF/emails/verification-next-dl.html");
+            	}
+            	message = String.format(IOUtils.toString(is, "UTF-8"), link);
             } else {
-            	is = context.getResourceAsStream("/WEB-INF/emails/verification-next-dl.html");
+            	message = link;
             }
-            String message = String.format(IOUtils.toString(is, "UTF-8"), link);
-            result = sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html",  "jstakun.appspot@gmail.com", ConfigurationManager.DL_NICK);
-        } catch (IOException ex) {
+            String recipients = "bcc:jstakun.appspot@gmail.com|";
+            if (StringUtils.isNotEmpty(nick)) {
+            	 recipients += "to:" + nick + "<" + toA + ">"; 
+            } else {
+            	 recipients += "to:" + toA;
+            }
+            if  (sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, recipients, "Device Locator Registration", message, "text/html")) {
+        		return "ok";
+        	} else {	
+        		return sendLocalMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html",  "jstakun.appspot@gmail.com", ConfigurationManager.DL_NICK);
+       		}
+        } catch (Exception ex) {
             logger.log(Level.SEVERE, null, ex);
             result = "failed";
         } finally {
@@ -209,8 +235,11 @@ public class MailUtils {
     public static void sendDlRegistrationNotification(String toA, String nick, ServletContext context) {
         InputStream is = null;
         try {
-            is = context.getResourceAsStream("/WEB-INF/emails/notification-dl.html");
-            String message = IOUtils.toString(is, "UTF-8");
+        	String message = "";
+        	if (context != null) {
+        		is = context.getResourceAsStream("/WEB-INF/emails/notification-dl.html");
+        		message = IOUtils.toString(is, "UTF-8");
+        	}
             sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html",  "jstakun.appspot@gmail.com", ConfigurationManager.DL_NICK);
         } catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
