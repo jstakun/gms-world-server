@@ -57,16 +57,9 @@ public class MailUtils {
     }
     
     private static String sendRemoteMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType, String ccA, String ccP)  {
-    	String recipients = ""; //to:name <email@address>, cc:name <email@address>, bcc:name <email@address>
-    	if (StringUtils.isNotEmpty(toP)) {
-    		  recipients = "to:" + toP + " <" + toA +">";
-    	} else {
-    		 recipients = "to:" + toA;
-    	} 
-    	if (StringUtils.isNotEmpty(ccA) && StringUtils.isNotEmpty(ccP)) {
-    		recipients += "|cc:" + ccP + " <" + ccA +">";
-    	} else if (StringUtils.isNotEmpty(ccA)) {
-    		recipients += "|cc:" + ccA;
+    	String recipients = addEmailAddress("to", toA, toP); 
+    	if (StringUtils.isNotEmpty(ccA)) {
+    		recipients += "|" + addEmailAddress("to", ccA, ccP);
     	}
    	 
     	if  (sendRemoteMail(fromA, fromP, recipients, subject, content, contentType)) {
@@ -75,8 +68,7 @@ public class MailUtils {
     		return sendLocalMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
    		} 
     }
-        
-    
+       
     private static boolean sendRemoteMail(String fromA, String fromP, String recipients, String subject, String content, String contentType)  {
     	 final String MAILER_SERVER_URL = "https://openapi-landmarks.b9ad.pro-us-east-1.openshiftapps.com/actions/emailer"; 
     	 
@@ -184,12 +176,8 @@ public class MailUtils {
             } else {
             	message = link;
             }
-            String recipients = "bcc:jstakun.appspot@gmail.com|";
-            if (StringUtils.isNotEmpty(nick)) {
-            	 recipients += "to:" + nick + " <" + toA + ">"; 
-            } else {
-            	 recipients += "to:" + toA;
-            }
+            String recipients = addEmailAddress("bcc", "jstakun.appspot@gmail.com", null) 
+            		+ "|" + addEmailAddress("to", toA, nick);
             if  (sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, recipients, "Device Locator Registration", message, "text/html")) {
         		return "ok";
         	} else {	
@@ -354,5 +342,22 @@ public class MailUtils {
                 }
             }
         }
+    }
+    
+    private static String addEmailAddress(String type, String email, String nick) {
+    	  String emailAddress = "";
+    	  if ((StringUtils.equals(type, "to") || StringUtils.equals(type, "cc") || StringUtils.equals(type, "bcc")) && StringUtils.isNotEmpty(email)) {
+    		  try { 
+    			  InternetAddress.parse(email);   
+    		      if (StringUtils.isNotEmpty(nick) && !StringUtils.equals(nick, email)) {
+    		    	  emailAddress = type + ":" + nick + " <" + email + ">";
+    		      } else {
+    		    	  emailAddress = type + ":" + email;
+    		      }
+    		   } catch (Exception e) {
+    			   logger.log(Level.SEVERE, "Invalid email: " + email, e);    
+    		   }
+    	  }
+    	  return  emailAddress;
     }
 }
