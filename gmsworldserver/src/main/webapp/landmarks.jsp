@@ -196,7 +196,7 @@
           var xhr = null;
           map.addListener('center_changed', function() {
               var distance_in_meters = google.maps.geometry.spherical.computeDistanceBetween( mapcenter, map.getCenter() );
-              if (distance_in_meters > 500) {
+              if (distance_in_meters > 5000) {
             	  console.log('Running new hotels search in distance: ' + distance_in_meters + " meters from previous..."); 
                   mapcenter = map.getCenter();
                

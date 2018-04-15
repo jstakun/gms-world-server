@@ -186,7 +186,7 @@ public class MailUtils {
             }
             String recipients = "bcc:jstakun.appspot@gmail.com|";
             if (StringUtils.isNotEmpty(nick)) {
-            	 recipients += "to:" + nick + "<" + toA + ">"; 
+            	 recipients += "to:" + nick + " <" + toA + ">"; 
             } else {
             	 recipients += "to:" + toA;
             }
