@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.layers.HotelsBookingUtils;
 import net.gmsworld.server.utils.HttpUtils;
+import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
 
 import org.apache.commons.lang.StringUtils;
@@ -111,7 +112,7 @@ public class GeoJsonProviderServlet extends HttpServlet {
 						try {
 							//layers specific code
 							int radius = RADIUS;
-							int limit = DEFAULT_LIMIT;
+							int limit = NumberUtils.getInt(request.getParameter("limit"), DEFAULT_LIMIT);
 							if (StringUtils.equals(layer, Commons.HOTELS_LAYER)) {
 								try {
 									//if less that 30 hotels is range increase search radius
@@ -123,7 +124,7 @@ public class GeoJsonProviderServlet extends HttpServlet {
 								} catch (Exception e) {
 						    		logger.log(Level.SEVERE, e.getMessage(), e);
 						    	} 
-								limit = HOTELS_LIMIT;
+								limit = NumberUtils.getInt(request.getParameter("limit"), HOTELS_LIMIT);
 								flexString = "true";
 							} else if (StringUtils.equals(layer, Commons.FACEBOOK_LAYER) || StringUtils.equals(layer, Commons.FOURSQUARE_LAYER) || StringUtils.equals(layer, Commons.FOURSQUARE_MERCHANT_LAYER)) {
 						    	flexString = null;	

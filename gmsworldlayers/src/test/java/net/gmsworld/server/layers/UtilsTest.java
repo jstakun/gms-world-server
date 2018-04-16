@@ -15,6 +15,7 @@ import net.gmsworld.server.utils.UrlUtils;
 
 public class UtilsTest {
 
+	@Test
 	public void test() {
 		String longUrl = "http://www.gms-world.net/showLandmark/23159";
 		String shortUrl1 = UrlUtils.getShortUrl(longUrl);
@@ -25,7 +26,6 @@ public class UtilsTest {
 		assertNotEquals("Shortening url 2 failed!", longUrl, shortUrl2);
 	}
 	
-	@Test
 	public void geocodeTest() {
 		System.out.println(GeocodeUtils.getLatitude("52,23455"));
 		System.out.println(GeocodeUtils.getLatitude("52.23455"));

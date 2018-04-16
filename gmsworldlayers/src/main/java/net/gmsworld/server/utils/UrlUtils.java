@@ -3,6 +3,7 @@ package net.gmsworld.server.utils;
 import static com.rosaloves.bitlyj.Bitly.as;
 import static com.rosaloves.bitlyj.Bitly.shorten;
 
+import java.net.URL;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
 import java.util.Date;
@@ -15,12 +16,7 @@ import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.utils.persistence.Landmark;
 
 import org.apache.commons.lang.StringUtils;
-
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson.JacksonFactory;
-import com.google.api.services.urlshortener.Urlshortener;
+import org.json.JSONObject;
 
 import com.rosaloves.bitlyj.Bitly.Provider;
 import com.rosaloves.bitlyj.Url;
@@ -173,24 +169,25 @@ public class UrlUtils {
         	return ConfigurationManager.SERVER_URL + "showLandmark/" + landmark.getId();
         }
     }
-    
-    private static Urlshortener newUrlshortener() {
-    	HttpTransport httpTransport = new NetHttpTransport();
-        JsonFactory jsonFactory = new JacksonFactory();
-        return new Urlshortener.Builder(httpTransport, jsonFactory, null).build();
-    }
-    
+  
     public static String getGoogleShortUrl(String longUrl) {
     	if (!StringUtils.startsWith(longUrl, BITLY_URL)) {
     		try {
-    			Urlshortener shortener = newUrlshortener();
-        		com.google.api.services.urlshortener.model.Url toInsert = new com.google.api.services.urlshortener.model.Url().setLongUrl(longUrl);
-            	com.google.api.services.urlshortener.model.Url shortUrl = shortener.url().insert(toInsert).setKey(Commons.getProperty(Property.GOOGLE_API_KEY)).execute();
-        		return shortUrl.getId();
+    			URL url = new URL("https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=" + Commons.getProperty(Property.FCM_LM_WEB_API_KEY));
+        		JSONObject request = new JSONObject();
+        		request.put("longDynamicLink", "https://nm3n7.app.goo.gl/?link=" + longUrl + "&apn=com.jstakun.gms.android.ui");
+        		request.put("suffix", new JSONObject().put("option", "SHORT")); //UNGUESSABLE"));
+        		String reply = HttpUtils.processFileRequest(url, "POST", "application/json", request.toString(), "application/json");
+        		if (StringUtils.startsWith(reply, "{")) {
+        			 return new JSONObject(reply).getString("shortLink");
+        		} else {
+        			 logger.log(Level.WARNING, "Received following reply: " + reply);
+        			 return longUrl;
+        		}
         	} catch (Exception e) {
         		logger.log(Level.SEVERE, e.getMessage(), e);
             	return longUrl;
-        	}
+        	}	
     	} else {
     		return longUrl;
     	}

@@ -127,6 +127,7 @@
           layer_counter = 0,
  		  marker_counter = 1,
 		  excluded_layers = 0,
+		  hotels_search_distance = 5000;
 		  infowindow = new google.maps.InfoWindow(),   
 		  bounds  = new google.maps.LatLngBounds();
 		  markers = [],
@@ -196,7 +197,7 @@
           var xhr = null;
           map.addListener('center_changed', function() {
               var distance_in_meters = google.maps.geometry.spherical.computeDistanceBetween( mapcenter, map.getCenter() );
-              if (distance_in_meters > 5000) {
+              if (distance_in_meters > hotels_search_distance) {
             	  console.log('Running new hotels search in distance: ' + distance_in_meters + " meters from previous..."); 
                   mapcenter = map.getCenter();
                
@@ -205,7 +206,8 @@
    	        	    data['lat'] = mapcenter.lat();
    	     	  	    data['lng'] = mapcenter.lng();
    	    	  	    data['sortType'] = sortType;
-
+   	    	  	    data['limit'] = 100;
+   	    	  	    
    	    	  	  if (xhr != null) {
    	   				xhr.abort();
     	   	      }
