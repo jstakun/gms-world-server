@@ -289,7 +289,18 @@ public class NotificationsServlet extends HttpServlet {
 					} else {
 						logger.log(Level.WARNING, "Wrong application " + appId);
 					}
-				} 
+				} else if (StringUtils.equals(type, "unregister")) {
+					if (appId == Commons.DL_ID && StringUtils.startsWith(request.getRequestURI(), "/s/")) {
+						String id = request.getParameter("id");
+						if (StringUtils.isNotEmpty(id) && NotificationPersistenceUtils.remove(id)) {
+							reply = new JSONObject().put("status", "removed");
+						} else {
+							reply = new JSONObject().put("status", "failed");
+						}
+					} else {
+							logger.log(Level.WARNING, "Wrong application " + appId);
+					}
+				}
 				out.print(reply.toString());
 			}
 		} catch (Exception e) {

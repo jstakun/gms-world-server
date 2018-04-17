@@ -161,11 +161,8 @@ public class UrlUtils {
         Date creationDate = landmark.getCreationDate();
         //hash not empty and not /showLandmark/null
         if ((creationDate == null || creationDate.getTime() > DB_MIGRATION_DATE) && StringUtils.isNotEmpty(hash) && !StringUtils.equals(hash, "12wsNzG")) { 
-            //logger.log(Level.INFO, "Landmark " + landmark.getName() + " created after migration");
-            //logger.log(Level.INFO, landmark.getCreationDate().getTime() + " > " + DB_MIGRATION_DATE);
-        	return BITLY_URL + hash;
+            return BITLY_URL + hash;
         } else {
-        	//logger.log(Level.INFO, "Landmark " + landmark.getName() + " created before migration");
         	return ConfigurationManager.SERVER_URL + "showLandmark/" + landmark.getId();
         }
     }
@@ -196,11 +193,8 @@ public class UrlUtils {
     public static String getLandmarkUrl(String hash, int id, Date creationDate) {
     	//hash not empty and not /showLandmark/null
     	if ((creationDate == null || creationDate.getTime() > DB_MIGRATION_DATE) && StringUtils.isNotEmpty(hash) && !StringUtils.equals(hash, "12wsNzG")) {
-    		//logger.log(Level.INFO, "Landmark created after migration");
-    		//logger.log(Level.INFO, creationDate.getTime() + " > " + DB_MIGRATION_DATE);
     		return BITLY_URL + hash;
     	} else {
-    		//logger.log(Level.INFO, "Landmark created before migration");
     		return ConfigurationManager.SERVER_URL + "showLandmark/" + id;
     	}
     }

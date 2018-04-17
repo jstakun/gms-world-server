@@ -94,7 +94,7 @@ public class TelegramServlet extends HttpServlet {
 									id = Long.toString(telegramId); //chat id
 								}
 								if (NotificationPersistenceUtils.isWhitelistedTelegramId(id)) {
-									if (!NotificationPersistenceUtils.removeFromWhitelistTelegramId(id)) {
+									if (!NotificationPersistenceUtils.remove(id)) {
 										logger.log(Level.SEVERE, "Unable to remove Telegram chat or channel Id " + id + " from the whitelist!");
 									}
 									TelegramUtils.sendTelegram(id, "You've been unregistered from Device Locator notifications.");

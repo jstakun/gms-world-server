@@ -52,7 +52,7 @@ public class NotificationPersistenceUtils {
 		return n;
     }
 	
-	private static boolean remove(String id) {
+	public static boolean remove(String id) {
 		boolean removed = false;
 		if (StringUtils.isNotEmpty(id)) {
 			EntityManager pm = EMF.get().createEntityManager();
@@ -173,11 +173,7 @@ public class NotificationPersistenceUtils {
 		persist(telegramId, Notification.Status.VERIFIED);
 	}
 	
-	public static boolean removeFromWhitelistTelegramId(String telegramId) {
-		return remove(telegramId);
-	}
-	
-	//email
+    //email
 	
 	public static synchronized boolean isWhitelistedEmail(String email) {
 		 return isVerified(email);
