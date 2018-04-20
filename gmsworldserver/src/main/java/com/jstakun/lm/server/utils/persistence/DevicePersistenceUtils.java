@@ -72,7 +72,7 @@ public class DevicePersistenceUtils {
 		   } else if (deviceJson == null || StringUtils.contains(deviceJson, "503 Service Temporarily Unavailable")) {
 		       return -1;
 		   } else {
-			   logger.log(Level.SEVERE, "Received following server response {0}", deviceJson);
+			   logger.log(Level.SEVERE, "Received following server response " +  deviceJson + " from\n" + deviceUrl);
 			   return -1;
 		  }
 	   } else {

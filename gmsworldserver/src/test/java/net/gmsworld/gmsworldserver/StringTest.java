@@ -3,7 +3,10 @@ package net.gmsworld.gmsworldserver;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
+
+import com.jstakun.lm.server.utils.HtmlUtils;
 
 public class StringTest {
 
@@ -24,4 +27,9 @@ public class StringTest {
         }
     }
 
+	@Test
+	public void test2() {
+		String lng = StringUtils.split("mxvtrwsqs;jsessionid=1s85bi1qlwymbba2gkgy427gm", ";")[0];
+		System.out.println(lng + " " + HtmlUtils.decodeDouble(lng));
+	}
 }
