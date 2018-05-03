@@ -2,7 +2,8 @@
 <%@ page import="org.apache.commons.lang.StringUtils,
                 net.gmsworld.server.utils.NumberUtils,
                 net.gmsworld.server.utils.StringUtil,
-                net.gmsworld.server.config.ConfigurationManager"%>
+                net.gmsworld.server.config.ConfigurationManager,
+                net.gmsworld.server.config.Commons"%>
 <%@ taglib uri="http://struts.apache.org/tags-bean" prefix="bean"%>                                
 <%
     double latitude;
@@ -111,7 +112,7 @@
         window.open(url + hotelUrlSuffix, '_blank');
 	}
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?libraries=visualization,geometry&key=AIzaSyD_bSG1hQY2x8dfUTeSegTqfIChsvLzUJI"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?libraries=visualization,geometry&key=<%= Commons.getProperty(Commons.Property.GOOGLE_API_WEB_KEY) %>"></script>
     <script src="/js/marker.js"></script>
     <script src="/js/markerclusterer.js"></script>
     <script src="/js/js.cookie.js"></script>

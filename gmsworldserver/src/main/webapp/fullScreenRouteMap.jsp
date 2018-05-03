@@ -5,7 +5,8 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="java.lang.String" %>
+<%@page import="java.lang.String,
+                                   net.gmsworld.server.config.Commons" %>
 <%
        String route = (String) request.getAttribute("route");
        int interval = 10000;
@@ -32,7 +33,7 @@
             html, body {width: 100%; height: 100%}
             body {margin-top: 0px; margin-right: 0px; margin-left: 0px; margin-bottom: 0px}
         </style>
-        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_bSG1hQY2x8dfUTeSegTqfIChsvLzUJI">
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<%= Commons.getProperty(Commons.Property.GOOGLE_API_WEB_KEY) %>">
         </script>
         <script type="text/javascript">
         	var routePath, endMarker, map, bounds, currentPath;

@@ -18,6 +18,8 @@ import java.util.logging.Logger;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.UrlUtils;
@@ -145,7 +147,7 @@ public class HtmlUtils {
 	    }
 		String desc = "'<span style=\"font-family:Roboto,Arial,sans-serif;font-size:" + fontSize + "px;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;\">'+\n" +
 	            "'<b>" + StringEscapeUtils.escapeJavaScript(landmark.getName()) + "</b><br/>'+\n" +
-		        "'<img src=\"https://maps.googleapis.com/maps/api/streetview?size=200x150&location=" + landmark.getLatitude() + "," + landmark.getLongitude() + "&key=AIzaSyD_bSG1hQY2x8dfUTeSegTqfIChsvLzUJI\" style=\"margin: 4px 0px\" title=\"Location street view image\"/><br/>'+\n";
+		        "'<img src=\"https://maps.googleapis.com/maps/api/streetview?size=200x150&location=" + landmark.getLatitude() + "," + landmark.getLongitude() + "&key=" +  Commons.getProperty(Property.GOOGLE_API_WEB_KEY) +"\" style=\"margin: 4px 0px\" title=\"Location street view image\"/><br/>'+\n";
 	    String landmarkDesc = landmark.getDescription();
 	    if (StringUtils.isNotEmpty(landmarkDesc)) {
 	           desc += "'Description: " + StringEscapeUtils.escapeJavaScript(landmarkDesc) + ",<br/>'+\n";
@@ -166,7 +168,7 @@ public class HtmlUtils {
 	    }
 		String desc = "'<span style=\"font-family:Roboto,Arial,sans-serif;font-size:" + fontSize + "px;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;\">'+\n" +
 				      "'<b>" + StringEscapeUtils.escapeJavaScript(gc.getLocation()) + "</b><br/>'+\n" +
-                      "'<img src=\"https://maps.googleapis.com/maps/api/streetview?size=200x150&location=" + gc.getLatitude() + "," + gc.getLongitude() + "&key=AIzaSyD_bSG1hQY2x8dfUTeSegTqfIChsvLzUJI\" style=\"margin: 4px 0px\" title=\"Location street view image\"/><br/>'+\n";
+                      "'<img src=\"https://maps.googleapis.com/maps/api/streetview?size=200x150&location=" + gc.getLatitude() + "," + gc.getLongitude() + "&key=" + Commons.getProperty(Property.GOOGLE_API_WEB_KEY) + "\" style=\"margin: 4px 0px\" title=\"Location street view image\"/><br/>'+\n";
 		if (address != null && StringUtils.isNotEmpty(address.toString())) {
 	           desc += "'Geocode address: " + StringEscapeUtils.escapeJavaScript(address.toString()) + ",<br/>'+\n"; 
 	    }        
@@ -182,7 +184,7 @@ public class HtmlUtils {
 	    }
 		String desc = "'<span style=\"font-family:Roboto,Arial,sans-serif;font-size:" + fontSize + "px;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;\">'+\n" +
 					  "'<b>" + name + "</b><br/>'+\n" +
-					  "'<img src=\"https://maps.googleapis.com/maps/api/streetview?size=200x150&location=" + lat + "," + lng + "&key=AIzaSyD_bSG1hQY2x8dfUTeSegTqfIChsvLzUJI\" style=\"margin: 4px 0px\" title=\"Location street view image\"/><br/>'+\n";
+					  "'<img src=\"https://maps.googleapis.com/maps/api/streetview?size=200x150&location=" + lat + "," + lng + "&key=" + Commons.getProperty(Property.GOOGLE_API_WEB_KEY) + "\" style=\"margin: 4px 0px\" title=\"Location street view image\"/><br/>'+\n";
 		if (address != null && StringUtils.isNotEmpty(address.toString())) {
 	           desc += "'" + StringEscapeUtils.escapeJavaScript(address.toString()) + ",<br/>'+\n"; 
 	    }        

@@ -12,7 +12,8 @@
         net.gmsworld.server.utils.UrlUtils,
         net.gmsworld.server.utils.StringUtil,
         org.apache.commons.lang.StringEscapeUtils,
-        org.apache.commons.lang.StringUtils" %>
+        org.apache.commons.lang.StringUtils,
+        net.gmsworld.server.config.Commons" %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
     <%
@@ -31,7 +32,7 @@
             html, body {width: 100%; height: 100%}
             body {margin-top: 0px; margin-right: 0px; margin-left: 0px; margin-bottom: 0px}
         </style>
-        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_bSG1hQY2x8dfUTeSegTqfIChsvLzUJI">
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<%= Commons.getProperty(Commons.Property.GOOGLE_API_WEB_KEY) %>">
         </script>
         <script type="text/javascript">
             function initialize()
