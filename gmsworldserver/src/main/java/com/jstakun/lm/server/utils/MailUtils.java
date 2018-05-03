@@ -293,8 +293,12 @@ public class MailUtils {
     }
 
     public static void sendCrashReport(String title, String body) {
-        //sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, title, body, "text/plain", null, null);
-        sendLocalMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, title, body, "text/plain", null, null);
+        try {
+        	sendLocalMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, title, body, "text/plain", null, null);
+        } catch (Exception e) {
+        	String recipients = addEmailAddress("to", "jstakun.appspot@gmail.com", null) ;
+            sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, recipients, title, body, "text/plain");
+        }
     }
 
     public static void sendContactMessage(String fromA, String nick, String subject, String body) {

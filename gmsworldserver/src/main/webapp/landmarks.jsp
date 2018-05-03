@@ -111,7 +111,7 @@
         window.open(url + hotelUrlSuffix, '_blank');
 	}
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?libraries=visualization,geometry"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?libraries=visualization,geometry&key=AIzaSyD_bSG1hQY2x8dfUTeSegTqfIChsvLzUJI"></script>
     <script src="/js/marker.js"></script>
     <script src="/js/markerclusterer.js"></script>
     <script src="/js/js.cookie.js"></script>

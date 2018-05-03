@@ -181,7 +181,7 @@ public class NotificationsServlet extends HttpServlet {
 						reply = new JSONObject().put("status", "accepted");
 					}
 				} else if (StringUtils.equals(type, "t_dl")) {
-					// telegram
+					//telegram notification
 					if (appId == Commons.DL_ID && StringUtils.startsWith(request.getRequestURI(), "/s/")) {
 						String message = request.getParameter("message");
 						String telegramId = request.getParameter("chatId");
@@ -205,7 +205,7 @@ public class NotificationsServlet extends HttpServlet {
 						logger.log(Level.WARNING, "Wrong application " + appId);
 					}
 				} else if (StringUtils.equals(type, "m_dl")) {
-					// mail
+					//email notification
 					if (appId == Commons.DL_ID && StringUtils.startsWith(request.getRequestURI(), "/s/")) {
 						String message = request.getParameter("message");
 						String title = request.getParameter("title");
@@ -256,8 +256,10 @@ public class NotificationsServlet extends HttpServlet {
 								if (responseCode != null && responseCode == 200) {
 									reply = new JSONObject().put("status", "unverified");
 								} else if (responseCode != null && responseCode == 400) {
-								    reply = new JSONObject().put("status", "failed");
+								    //reply = new JSONObject().put("status", "failed");
+									response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 								} else {
+									logger.log(Level.WARNING, "Received response code " + responseCode + " for channel " + telegramId);
 									response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 								}
 							}

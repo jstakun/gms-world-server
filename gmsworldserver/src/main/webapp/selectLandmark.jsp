@@ -374,7 +374,7 @@
 	    return (!str || 0 == str.length);
 	}
   </script>
-  <script src="https://maps.googleapis.com/maps/api/js?libraries=places&callback=initialize" async defer></script>
+  <script src="https://maps.googleapis.com/maps/api/js?libraries=places&callback=initialize&key=AIzaSyD_bSG1hQY2x8dfUTeSegTqfIChsvLzUJI" async defer></script>
 </head>
 <body>
     <input id="pac-input" class="controls" type="text" placeholder="<bean:message key="landmarks.search" />">

@@ -145,7 +145,7 @@ public class HtmlUtils {
 	    }
 		String desc = "'<span style=\"font-family:Roboto,Arial,sans-serif;font-size:" + fontSize + "px;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;\">'+\n" +
 	            "'<b>" + StringEscapeUtils.escapeJavaScript(landmark.getName()) + "</b><br/>'+\n" +
-		        "'<img src=\"https://maps.googleapis.com/maps/api/streetview?size=200x150&location=" + landmark.getLatitude() + "," + landmark.getLongitude() + "\" style=\"margin: 4px 0px\" title=\"Location street view image\"/><br/>'+\n";
+		        "'<img src=\"https://maps.googleapis.com/maps/api/streetview?size=200x150&location=" + landmark.getLatitude() + "," + landmark.getLongitude() + "&key=AIzaSyD_bSG1hQY2x8dfUTeSegTqfIChsvLzUJI\" style=\"margin: 4px 0px\" title=\"Location street view image\"/><br/>'+\n";
 	    String landmarkDesc = landmark.getDescription();
 	    if (StringUtils.isNotEmpty(landmarkDesc)) {
 	           desc += "'Description: " + StringEscapeUtils.escapeJavaScript(landmarkDesc) + ",<br/>'+\n";
@@ -166,7 +166,7 @@ public class HtmlUtils {
 	    }
 		String desc = "'<span style=\"font-family:Roboto,Arial,sans-serif;font-size:" + fontSize + "px;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;\">'+\n" +
 				      "'<b>" + StringEscapeUtils.escapeJavaScript(gc.getLocation()) + "</b><br/>'+\n" +
-                      "'<img src=\"https://maps.googleapis.com/maps/api/streetview?size=200x150&location=" + gc.getLatitude() + "," + gc.getLongitude() + "\" style=\"margin: 4px 0px\" title=\"Location street view image\"/><br/>'+\n";
+                      "'<img src=\"https://maps.googleapis.com/maps/api/streetview?size=200x150&location=" + gc.getLatitude() + "," + gc.getLongitude() + "&key=AIzaSyD_bSG1hQY2x8dfUTeSegTqfIChsvLzUJI\" style=\"margin: 4px 0px\" title=\"Location street view image\"/><br/>'+\n";
 		if (address != null && StringUtils.isNotEmpty(address.toString())) {
 	           desc += "'Geocode address: " + StringEscapeUtils.escapeJavaScript(address.toString()) + ",<br/>'+\n"; 
 	    }        
@@ -182,7 +182,7 @@ public class HtmlUtils {
 	    }
 		String desc = "'<span style=\"font-family:Roboto,Arial,sans-serif;font-size:" + fontSize + "px;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;\">'+\n" +
 					  "'<b>" + name + "</b><br/>'+\n" +
-					  "'<img src=\"https://maps.googleapis.com/maps/api/streetview?size=200x150&location=" + lat + "," + lng + "\" style=\"margin: 4px 0px\" title=\"Location street view image\"/><br/>'+\n";
+					  "'<img src=\"https://maps.googleapis.com/maps/api/streetview?size=200x150&location=" + lat + "," + lng + "&key=AIzaSyD_bSG1hQY2x8dfUTeSegTqfIChsvLzUJI\" style=\"margin: 4px 0px\" title=\"Location street view image\"/><br/>'+\n";
 		if (address != null && StringUtils.isNotEmpty(address.toString())) {
 	           desc += "'" + StringEscapeUtils.escapeJavaScript(address.toString()) + ",<br/>'+\n"; 
 	    }        
@@ -226,7 +226,7 @@ public class HtmlUtils {
 			userUrl = "/showUser/" + URLEncoder.encode( landmark.getUsername(), "UTF-8");
 		}
 		String layerUrl = "/showLayer/" + landmark.getLayer();
-		String bookingUrl = "/showHotels/" + landmark.getId();
+		String bookingUrl = "/showHotels/" + landmark.getId() + "/" + HtmlUtils.encodeDouble(landmark.getLatitude()) + "/" + HtmlUtils.encodeDouble(landmark.getLongitude());
 		
 		String desc = "";
 		String description = landmark.getDescription();
@@ -262,7 +262,8 @@ public class HtmlUtils {
     		String[] date = DateUtils.getShortMonthYearString(i).split("-");
     	    resp += "<li><a href=\"/archive/" + date[1] + "/" + date[0] + "\">" + DateUtils.getLongMonthYearString(i) + "</a></li>\n";
     	}
-    	resp += "<li><a href=\"/archive/2016\">January 2016</a></li>\n" +
+    	resp += "<li><a href=\"/archive/2017\">January 2017</a></li>\n" +
+    			 "<li><a href=\"/archive/2016\">January 2016</a></li>\n" +
     			"<li><a href=\"/archive/2015\">January 2015</a></li>\n" +
     			"<li><a href=\"/archive/2014\">January 2014</a></li>\n";
     	return resp;
