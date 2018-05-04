@@ -82,8 +82,10 @@ public class LayersTest {
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.COUPONS_LAYER)});
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.GROUPON_LAYER)});
 	   
-	   data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.MC_ATM_LAYER)});
+	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.MC_ATM_LAYER)});
 	 
+	   data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.GOOGLE_PLACES_LAYER)});
+	   
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.YELP_LAYER)});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.YOUTUBE_LAYER)});

@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.config.ConfigurationManager;
 
 import org.apache.commons.io.IOUtils;
@@ -95,7 +96,8 @@ public class HttpUtils {
             conn.setReadTimeout(timeoutMs);
             
             conn.setRequestProperty("User-Agent", "http://www.gms-world.net HTTP client");
-
+            conn.setRequestProperty("Referer", ConfigurationManager.SERVER_URL + Commons.getProperty(Property.REFERER_KEY));
+            
             if (authn) {
             	if (StringUtils.isNotEmpty(userpassword)) {
             		//username : password
@@ -194,6 +196,7 @@ public class HttpUtils {
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
             conn.setRequestProperty("User-Agent", "GMS World HTTP client " + ConfigurationManager.SERVER_URL);
+            conn.setRequestProperty("Referer", ConfigurationManager.SERVER_URL + Commons.getProperty(Property.REFERER_KEY));
 
             conn.connect();
             int responseCode = conn.getResponseCode();
@@ -244,6 +247,7 @@ public class HttpUtils {
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
             conn.setRequestProperty("User-Agent", "http://www.gms-world.net HTTP client");
+            conn.setRequestProperty("Referer", ConfigurationManager.SERVER_URL + Commons.getProperty(Property.REFERER_KEY));
 
             if (token != null && scope != null) {
             	conn.setRequestProperty(Commons.TOKEN_HEADER, token);
