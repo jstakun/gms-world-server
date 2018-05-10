@@ -12,9 +12,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
+import com.jstakun.lm.server.utils.memcache.CacheUtil;
+import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 import com.jstakun.lm.server.utils.persistence.DevicePersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.NotificationPersistenceUtils;
 
@@ -155,7 +158,7 @@ public class TelegramServlet extends HttpServlet {
 									StringUtils.join(Arrays.copyOfRange(tokens, argsIndex, tokens.length-1), " ");
 								}
 								
-								reply = "Command " +  command + " has been sent to the device " + deviceId; // + ". It is up to cloud when it will be delivered to the device!";
+								reply = "Command " +  command + " for the device " + deviceId + " has been sent to the cloud. You'll be notified when device will receive this message!";
 								
 								if (StringUtils.startsWith(command, "/")) {
 									command = command.substring(1);
@@ -164,16 +167,22 @@ public class TelegramServlet extends HttpServlet {
 									command += "dlt";
 								}
 								
+								String correlationId = RandomStringUtils.randomAlphabetic(16) + System.currentTimeMillis();
+								
 								int status;
 								if (username == null) {
-									status = DevicePersistenceUtils.sendCommand(deviceId, pin, null, username, command, args);
+									status = DevicePersistenceUtils.sendCommand(deviceId, pin, null, null, command, args, correlationId);
 								} else {
-									status = DevicePersistenceUtils.sendCommand(null, pin, deviceId, username, command, args);
+									status = DevicePersistenceUtils.sendCommand(null, pin, deviceId, username, command, args, correlationId);
 								}
 								
 								if (status == -1) {
 									reply = "Failed to send command " + command.substring(0, command.length()-3) + " to the device " + deviceId;
-								} 
+								} else {
+									CacheUtil.put(correlationId + "-tid", telegramId, CacheType.LANDMARK);
+									CacheUtil.put(correlationId + "-did", deviceId, CacheType.LANDMARK);
+									CacheUtil.put(correlationId + "-cid", command, CacheType.LANDMARK);
+								}
 							} catch (Exception e) {
 								reply = "Failed to send command: " + e.getMessage();
 							}

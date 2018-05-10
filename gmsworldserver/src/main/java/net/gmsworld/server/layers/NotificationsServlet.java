@@ -21,6 +21,7 @@ import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.persistence.Notification;
 import com.jstakun.lm.server.utils.MailUtils;
 import com.jstakun.lm.server.utils.RoutesUtils;
+import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceWebUtils;
 import com.jstakun.lm.server.utils.persistence.NotificationPersistenceUtils;
@@ -198,8 +199,18 @@ public class NotificationsServlet extends HttpServlet {
 				            	reply = new JSONObject().put("status", "unverified");
 				            }
 						} else {
-							logger.log(Level.WARNING, "Wrong message or chat/channel id " + telegramId);
-							reply = new JSONObject().put("status", "failed");
+							String correlationId = request.getParameter("correlationId");
+							if (StringUtils.isNotEmpty(correlationId)) {
+								String deviceId = CacheUtil.getString(correlationId + "-did");
+								String command = CacheUtil.getString(correlationId + "-cid");
+								telegramId = CacheUtil.getString(correlationId + "-tid");
+								if (StringUtils.isNotEmpty(telegramId)) {
+									TelegramUtils.sendTelegram(telegramId, "Command " + command + " has been received by device " + deviceId);
+								}
+							} else {
+								logger.log(Level.WARNING, "Wrong message or chat/channel id " + telegramId);
+								reply = new JSONObject().put("status", "failed");
+							}
 						}
 					} else {
 						logger.log(Level.WARNING, "Wrong application " + appId);

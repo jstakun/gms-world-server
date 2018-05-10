@@ -87,29 +87,31 @@ public final class Commons {
 		fb_app_token, fb_page_token, fb_secret, fb_client_id, FB_GMS_WORLD_FEED, //
 		FLICKR_APIKEY, FLICKR_sharedSecret, //
 		FS_CLIENT_ID, FS_CLIENT_SECRET, FS_OAUTH_TOKEN, //
-		GL_PLUS_KEY, GL_PLUS_SECRET, gl_plus_token, gl_plus_refresh, GOOGLE_API_KEY, //
+		GL_PLUS_KEY, GL_PLUS_SECRET, gl_plus_token, gl_plus_refresh, GOOGLE_API_KEY, GOOGLE_API_WEB_KEY, //
 		GEONAMES_USERNAME, //
 		GROUPON_CLIENT_ID, //
 		INSTAGRAM_ACCESS_TOKEN, //
 		LASTFM_API_KEY, //
 		HOTWIRE_KEY, //
 		MASHAPE_KEY, //
-		mcopenapi_ksPwd, mcopenapi_keyAlias, mcopenapi_prodConsumerKey, mcopenapi_privKeyFile, //
+		mcopenapi_ksPwd, mcopenapi_keyAlias, mcopenapi_prodConsumerKey, 
 		MEETUP_API_KEY, //
 		TW_TOKEN, TW_SECRET, TW_CONSUMER_KEY, TW_CONSUMER_SECRET, //
 		WEBCAM_API_KEY, //
-		YELP_Consumer_Key, YELP_Consumer_Secret, YELP_Token, YELP_Token_Secret, YELP_ywsid, //
+		YELP_API_KEY, //
 		YOUTUBE_API_KEY, //
-		RH_GMS_USER, RH_ACCOUNT, //
+		RH_GMS_USER, RH_ACCOUNT, RH_MAILER_PWD,//
 		CB_API_KEY, CB_API_SECRET, //
 		GROUPON_AFFILIATE_ID, MAPQUEST_APPKEY, //
 		AWS_ACCESS_KEY, AWS_ACCESS_SECRET, //
-		TELEGRAM_TOKEN,
-		RAPLEAF_API_KEY , 
+		TELEGRAM_TOKEN, TELEGRAM_COMMANDS_TOKEN,
+		REFERER_KEY , 
 		RECAPTCHA_PRIVATE_KEY , RECAPTCHA_PUBLIC_KEY ,
 		DEFAULT_USERNAME, DEFAULT_PASSWORD, 
-		FB_TEST_TOKEN_FULL_0 , FB_GMS_WORLD_PAGE_TOKEN , FS_TEST_TOKEN_FULL_0, 
-		RH_TEST_TOKEN, RH_TEST_SCOPE 
+		FB_TEST_TOKEN_FULL, FB_GMS_WORLD_PAGE_TOKEN , FS_TEST_TOKEN_FULL_0, 
+		RH_TEST_TOKEN, RH_TEST_SCOPE , 
+		RH_ROUTES_API_KEY, RH_HOTELS_API_KEY,
+		FCM_LM_WEB_API_KEY, FCM_PROJECT
 	};
 	
 	public static String getProperty(Property property) {
