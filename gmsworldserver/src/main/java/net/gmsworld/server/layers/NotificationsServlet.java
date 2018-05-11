@@ -194,23 +194,22 @@ public class NotificationsServlet extends HttpServlet {
 				            		TelegramUtils.sendLocationTelegram(telegramId, latitude, longitude);
 				            	}
 				            	reply = new JSONObject().put("status", "sent");
+				            } else if (CacheUtil.containsKey(telegramId)) {
+				            	//telegramId is correlationId and message is command
+				            	String val = CacheUtil.getString(telegramId); //telegramId _+_ deviceid
+				            	String[] data = StringUtils.split(val, "_+_");
+				            	if (data.length == 2 && TelegramUtils.isValidTelegramId(data[0])) {
+				            		TelegramUtils.sendTelegram(data[0], "Command " + message + " has been received by device " + data[1]);
+				            	} else {
+				            		logger.log(Level.WARNING, "Invalid " +  telegramId + " entry value " + val); 
+				            	}
 				            } else {
 				            	logger.log(Level.WARNING, "Telegram chat or channel Id " + telegramId + " is not on whitelist!");
 				            	reply = new JSONObject().put("status", "unverified");
 				            }
 						} else {
-							String correlationId = request.getParameter("correlationId");
-							if (StringUtils.isNotEmpty(correlationId)) {
-								String deviceId = CacheUtil.getString(correlationId + "-did");
-								String command = CacheUtil.getString(correlationId + "-cid");
-								telegramId = CacheUtil.getString(correlationId + "-tid");
-								if (StringUtils.isNotEmpty(telegramId)) {
-									TelegramUtils.sendTelegram(telegramId, "Command " + command + " has been received by device " + deviceId);
-								}
-							} else {
-								logger.log(Level.WARNING, "Wrong message or chat/channel id " + telegramId);
-								reply = new JSONObject().put("status", "failed");
-							}
+							logger.log(Level.WARNING, "Wrong message or chat/channel id " + telegramId);
+							reply = new JSONObject().put("status", "failed");
 						}
 					} else {
 						logger.log(Level.WARNING, "Wrong application " + appId);

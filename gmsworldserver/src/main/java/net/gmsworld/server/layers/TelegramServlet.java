@@ -179,9 +179,7 @@ public class TelegramServlet extends HttpServlet {
 								if (status == -1) {
 									reply = "Failed to send command " + command.substring(0, command.length()-3) + " to the device " + deviceId;
 								} else {
-									CacheUtil.put(correlationId + "-tid", telegramId, CacheType.LANDMARK);
-									CacheUtil.put(correlationId + "-did", deviceId, CacheType.LANDMARK);
-									CacheUtil.put(correlationId + "-cid", command, CacheType.LANDMARK);
+									CacheUtil.put(correlationId, telegramId + "_+_" + deviceId , CacheType.LANDMARK);
 								}
 							} catch (Exception e) {
 								reply = "Failed to send command: " + e.getMessage();
