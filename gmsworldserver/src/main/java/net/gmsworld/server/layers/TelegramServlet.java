@@ -176,10 +176,12 @@ public class TelegramServlet extends HttpServlet {
 									status = DevicePersistenceUtils.sendCommand(null, pin, deviceId, username, command, args, correlationId);
 								}
 								
+								final String commandName =  command.substring(0, command.length()-3);
+								
 								if (status == -1) {
-									reply = "Failed to send command " + command.substring(0, command.length()-3) + " to the device " + deviceId;
+									reply = "Failed to send command " + commandName + " to the device " + deviceId;
 								} else {
-									CacheUtil.put(correlationId, telegramId + "_+_" + deviceId , CacheType.LANDMARK);
+									CacheUtil.put(correlationId, telegramId + "_+_" + deviceId + "_+_" + commandName, CacheType.LANDMARK);
 								}
 							} catch (Exception e) {
 								reply = "Failed to send command: " + e.getMessage();

@@ -194,20 +194,20 @@ public class NotificationsServlet extends HttpServlet {
 				            		TelegramUtils.sendLocationTelegram(telegramId, latitude, longitude);
 				            	}
 				            	reply = new JSONObject().put("status", "sent");
-				            } else if (CacheUtil.containsKey(telegramId)) {
-				            	//telegramId is correlationId and message is command
-				            	String val = CacheUtil.getString(telegramId); //telegramId _+_ deviceid
-				            	String[] data = StringUtils.split(val, "_+_");
-				            	if (data.length == 2 && TelegramUtils.isValidTelegramId(data[0])) {
-				            		TelegramUtils.sendTelegram(data[0], "Command " + message + " has been received by device " + data[1]);
-				            	} else {
-				            		logger.log(Level.WARNING, "Invalid " +  telegramId + " entry value " + val); 
-				            	}
-				            } else {
+				            }  else {
 				            	logger.log(Level.WARNING, "Telegram chat or channel Id " + telegramId + " is not on whitelist!");
 				            	reply = new JSONObject().put("status", "unverified");
 				            }
-						} else {
+						} else if (CacheUtil.containsKey(telegramId)) {
+			            	//telegramId is correlationId
+			            	String val = CacheUtil.getString(telegramId); //telegramId _+_ deviceid  _+_ command
+			            	String[] data = StringUtils.split(val, "_+_");
+			            	if (data.length == 3 && TelegramUtils.isValidTelegramId(data[0])) {
+			            		TelegramUtils.sendTelegram(data[0], "Command " + data[2] + " has been received by device " + data[1]);
+			            	} else {
+			            		logger.log(Level.WARNING, "Invalid " +  telegramId + " entry value " + val); 
+			            	}
+			            } else {
 							logger.log(Level.WARNING, "Wrong message or chat/channel id " + telegramId);
 							reply = new JSONObject().put("status", "failed");
 						}
