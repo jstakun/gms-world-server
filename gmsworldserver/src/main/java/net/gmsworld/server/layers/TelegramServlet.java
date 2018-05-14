@@ -158,7 +158,7 @@ public class TelegramServlet extends HttpServlet {
 									StringUtils.join(Arrays.copyOfRange(tokens, argsIndex, tokens.length-1), " ");
 								}
 								
-								reply = "Command " +  command + " for the device " + deviceId + " has been sent to the cloud. You'll be notified when device will receive this message!";
+								reply = "Command " +  command + " has been sent to the cloud! You should get notified when device " + deviceId + " will receive this command.";
 								
 								if (StringUtils.startsWith(command, "/")) {
 									command = command.substring(1);
@@ -169,9 +169,7 @@ public class TelegramServlet extends HttpServlet {
 								
 								final String correlationId = RandomStringUtils.randomAlphabetic(16) + System.currentTimeMillis();
 								final String commandName =  command.substring(0, command.length()-3);
-								
-								CacheUtil.put(correlationId, telegramId + "_+_" + deviceId + "_+_" + commandName, CacheType.LANDMARK);
-								
+							
 								int status;
 								if (username == null) {
 									status = DevicePersistenceUtils.sendCommand(deviceId, pin, null, null, command, args, correlationId);
@@ -181,8 +179,9 @@ public class TelegramServlet extends HttpServlet {
 								
 								if (status == -1) {
 									reply = "Failed to send command " + commandName + " to the device " + deviceId;
-									CacheUtil.remove(correlationId);
-								} 
+								} else {
+									CacheUtil.put(correlationId, telegramId + "_+_" + deviceId + "_+_" + commandName, CacheType.LANDMARK);
+								}
 							} catch (Exception e) {
 								reply = "Failed to send command: " + e.getMessage();
 							}

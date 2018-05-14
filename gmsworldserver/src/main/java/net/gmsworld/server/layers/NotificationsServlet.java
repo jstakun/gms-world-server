@@ -192,7 +192,7 @@ public class NotificationsServlet extends HttpServlet {
 			            	if (val != null) {
 			            		String[] data = StringUtils.split(val, "_+_");
 			            		if (data != null && data.length == 3 && TelegramUtils.isValidTelegramId(data[0])) {
-			            			TelegramUtils.sendTelegram(data[0], "Command " + data[2] + " has been received by device " + data[1]);
+			            			TelegramUtils.sendTelegram(data[0], "Command " + data[2] + " has been received by device " + data[1] + ".");
 			            		} else {
 			            			logger.log(Level.WARNING, "Invalid " +  message + " entry value " + val); 
 			            		}

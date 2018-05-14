@@ -131,7 +131,7 @@ public class PersistLandmarkServlet extends HttpServlet {
                     	//in order to make it visible immediately.
                     	int radius = NumberUtils.getRadius(request.getParameter("radius"), 3, 6371);
                     	String layerKey = JSON_LAYER_LIST + "_" + StringUtil.formatCoordE2(l.getLatitude()) + "_" + StringUtil.formatCoordE2(l.getLongitude()) + "_" + radius;
-                    	logger.log(Level.INFO, "Removed from cache layer list {0}: {1}", new Object[]{layerKey, CacheUtil.remove(layerKey)});           
+                    	logger.log(Level.INFO, "Removed from cache layer list {0}: {1}", new Object[]{layerKey, (CacheUtil.remove(layerKey) != null)});           
                 	    
                     	//send notification to social networks
                     	LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), socialIds);

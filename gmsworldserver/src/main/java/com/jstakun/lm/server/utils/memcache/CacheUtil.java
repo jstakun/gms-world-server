@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import net.sf.jsr107cache.Cache;
 import net.sf.jsr107cache.CacheException;
 import net.sf.jsr107cache.CacheFactory;
+import net.sf.jsr107cache.CacheListener;
 import net.sf.jsr107cache.CacheManager;
 
 import org.json.JSONObject;
@@ -30,13 +31,11 @@ public class CacheUtil {
 	private static Cache cache = null;
 	private static final Logger logger = Logger.getLogger(CacheUtil.class.getName());
 	private static final Expiration ONE_HOUR_EXPIRATION = Expiration.byDeltaSeconds(60 * 60);
-    //private static final int TWO_HOURS = 3600 * 2;
     private static final Expiration ONE_MINUTE_EXPIRATION = Expiration.byDeltaSeconds(60);
     private static final Expiration TEN_MINUTES_EXPIRATION = Expiration.byDeltaSeconds(10 * 60);
     private static final Expiration LONG_CACHE_EXPIRATION = Expiration.byDeltaMillis(4 * 60 * 60 * 1000);
     public static final int LONG_CACHE_LIMIT = 4 * 60 * 60 * 1000; //4h
-    //private static final MyCacheListener listener = new MyCacheListener();
-	
+    
 	private static Cache getCache() {
 		if (cache == null) {
 			try {
@@ -44,7 +43,7 @@ public class CacheUtil {
 				props.put(GCacheFactory.EXPIRATION_DELTA, LONG_CACHE_LIMIT); 
 				CacheFactory cacheFactory = CacheManager.getInstance().getCacheFactory();
 				cache = cacheFactory.createCache(props);
-				//cache.addListener(listener);
+				//cache.addListener(new MyCacheListener());
 			} catch (CacheException e) {
 				logger.log(Level.SEVERE, e.getMessage(), e);
 			}
@@ -111,8 +110,8 @@ public class CacheUtil {
 		}
 	}
 
-	public static boolean remove(String key) {
-		return (getCache().remove(key) != null);
+	public static Object remove(String key) {
+		return getCache().remove(key) ;
 	}
 	
 	private static void putToFastCache(String key, Object value) {
@@ -164,40 +163,23 @@ public class CacheUtil {
 		}
 
 		@Override
-		public void onEvict(Object arg0) {
-			logger.log(Level.INFO, "onEvict " + arg0);			
+		public void onEvict(Object key) {
+			logger.log(Level.INFO, "onEvict " + key);			
 		}
 
 		@Override
-		public void onLoad(Object arg0) {
-			logger.log(Level.INFO, "onLoad " + arg0);	
+		public void onLoad(Object key) {
+			logger.log(Level.INFO, "onLoad " + key);	
 		}
 
 		@Override
-		public void onPut(Object arg0) {
-			logger.log(Level.INFO, "onPut " + arg0);	
+		public void onPut(Object key) {
+			logger.log(Level.INFO, "onPut " + key);	
 		}
 
 		@Override
-		public void onRemove(Object arg0) {
-			logger.log(Level.INFO, "onRemove " + arg0);	
-		}
-		
-	}*/
-	
-	/*private static class ThreadPut implements Runnable {
-
-		private String key;
-		private Object value;
-		
-		public ThreadPut(String key, Object value) {
-			this.key = key;
-			this.value = value;
-		}
-		
-		@Override
-		public void run() {
-			put(key, value);	
-		}
+		public void onRemove(Object key) {
+			logger.log(Level.INFO, "onRemove " + key);	
+		}	
 	}*/
 }
