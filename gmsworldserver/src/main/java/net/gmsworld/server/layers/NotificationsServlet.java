@@ -186,7 +186,20 @@ public class NotificationsServlet extends HttpServlet {
 					if (appId == Commons.DL_ID && StringUtils.startsWith(request.getRequestURI(), "/s/")) {
 						String message = request.getParameter("message");
 						String telegramId = request.getParameter("chatId");
-						if (TelegramUtils.isValidTelegramId(telegramId) && StringUtils.isNotEmpty(message)) {
+						if (StringUtils.equals(telegramId, "@dlcorrelationId")) {
+			            	//message is correlationId
+			            	String val = CacheUtil.getString(message); //telegramId _+_ deviceid  _+_ command
+			            	if (val != null) {
+			            		String[] data = StringUtils.split(val, "_+_");
+			            		if (data != null && data.length == 3 && TelegramUtils.isValidTelegramId(data[0])) {
+			            			TelegramUtils.sendTelegram(data[0], "Command " + data[2] + " has been received by device " + data[1]);
+			            		} else {
+			            			logger.log(Level.WARNING, "Invalid " +  message + " entry value " + val); 
+			            		}
+			            	} else {
+			            		logger.log(Level.WARNING, "No entry found " +  message);
+			            	}
+			            } else if (TelegramUtils.isValidTelegramId(telegramId) && StringUtils.isNotEmpty(message)) {
 							// check if chat id is on white list
 							if (NotificationPersistenceUtils.isWhitelistedTelegramId(telegramId)) {
 				            	TelegramUtils.sendTelegram(telegramId, message);
@@ -198,16 +211,7 @@ public class NotificationsServlet extends HttpServlet {
 				            	logger.log(Level.WARNING, "Telegram chat or channel Id " + telegramId + " is not on whitelist!");
 				            	reply = new JSONObject().put("status", "unverified");
 				            }
-						} else if (CacheUtil.containsKey(telegramId)) {
-			            	//telegramId is correlationId
-			            	String val = CacheUtil.getString(telegramId); //telegramId _+_ deviceid  _+_ command
-			            	String[] data = StringUtils.split(val, "_+_");
-			            	if (data.length == 3 && TelegramUtils.isValidTelegramId(data[0])) {
-			            		TelegramUtils.sendTelegram(data[0], "Command " + data[2] + " has been received by device " + data[1]);
-			            	} else {
-			            		logger.log(Level.WARNING, "Invalid " +  telegramId + " entry value " + val); 
-			            	}
-			            } else {
+						} else {
 							logger.log(Level.WARNING, "Wrong message or chat/channel id " + telegramId);
 							reply = new JSONObject().put("status", "failed");
 						}

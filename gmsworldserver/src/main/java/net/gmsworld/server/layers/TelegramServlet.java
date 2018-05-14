@@ -167,7 +167,10 @@ public class TelegramServlet extends HttpServlet {
 									command += "dlt";
 								}
 								
-								String correlationId = RandomStringUtils.randomAlphabetic(16) + System.currentTimeMillis();
+								final String correlationId = RandomStringUtils.randomAlphabetic(16) + System.currentTimeMillis();
+								final String commandName =  command.substring(0, command.length()-3);
+								
+								CacheUtil.put(correlationId, telegramId + "_+_" + deviceId + "_+_" + commandName, CacheType.LANDMARK);
 								
 								int status;
 								if (username == null) {
@@ -176,13 +179,10 @@ public class TelegramServlet extends HttpServlet {
 									status = DevicePersistenceUtils.sendCommand(null, pin, deviceId, username, command, args, correlationId);
 								}
 								
-								final String commandName =  command.substring(0, command.length()-3);
-								
 								if (status == -1) {
 									reply = "Failed to send command " + commandName + " to the device " + deviceId;
-								} else {
-									CacheUtil.put(correlationId, telegramId + "_+_" + deviceId + "_+_" + commandName, CacheType.LANDMARK);
-								}
+									CacheUtil.remove(correlationId);
+								} 
 							} catch (Exception e) {
 								reply = "Failed to send command: " + e.getMessage();
 							}
