@@ -228,7 +228,7 @@ public class HtmlUtils {
 			userUrl = "/showUser/" + URLEncoder.encode( landmark.getUsername(), "UTF-8");
 		}
 		String layerUrl = "/showLayer/" + landmark.getLayer();
-		String bookingUrl = "/showHotels/" + landmark.getId() + "/" + HtmlUtils.encodeDouble(landmark.getLatitude()) + "/" + HtmlUtils.encodeDouble(landmark.getLongitude());
+		String bookingUrl = "/showHotels/" + landmark.getId() + "/" + HtmlUtils.encodeDouble(landmark.getLatitude()) + "/" + HtmlUtils.encodeDouble(landmark.getLongitude()) + "/300";
 		
 		String desc = "";
 		String description = landmark.getDescription();
@@ -259,15 +259,23 @@ public class HtmlUtils {
 
     public static String getArchivesUrls() {
     	String resp = "";
+    	int year = -1;
     	for (int i=0;i<12;i++)
     	{
     		String[] date = DateUtils.getShortMonthYearString(i).split("-");
-    	    resp += "<li><a href=\"/archive/" + date[1] + "/" + date[0] + "\">" + DateUtils.getLongMonthYearString(i) + "</a></li>\n";
+    		if (i == 0) {
+    			year = Integer.valueOf(date[1]); 
+    		}
+    		if (date.length >= 2) {
+    			resp += "<li><a href=\"/archive/" + date[1] + "/" + date[0] + "\">" + DateUtils.getLongMonthYearString(i) + "</a></li>\n";
+    		}
     	}
-    	resp += "<li><a href=\"/archive/2017\">January 2017</a></li>\n" +
-    			 "<li><a href=\"/archive/2016\">January 2016</a></li>\n" +
-    			"<li><a href=\"/archive/2015\">January 2015</a></li>\n" +
-    			"<li><a href=\"/archive/2014\">January 2014</a></li>\n";
+    	if (year > -1) {
+    		for (int i=0;i<4;i++) {
+    			year--;
+    			resp += "<li><a href=\"/archive/" + year +"\">January " + year +"</a></li>\n";
+    		}	
+    	}
     	return resp;
     }
     

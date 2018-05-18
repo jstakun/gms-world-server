@@ -87,12 +87,12 @@
     </rule>
     
     <rule>
-            <from>^/showHotels/([a-zA-Z0-9_-]+)/([m-y]+)/([m-y]+)$</from>
+            <from>^/showHotels/([a-zA-Z0-9_-]+)/([m-y]+)/([m-y]+)/([0-9]+)$</from>
             <to>/showLandmark.do?key=$1&amp;enabled=Hotels&amp;fullScreenLandmarkMap=1</to>
     </rule>
 
     <rule>
-            <from>^/showHotels/([a-zA-Z0-9_-]+)/([m-y]+)/([m-y]+);jsessionid=(.*)$</from>
+            <from>^/showHotels/([a-zA-Z0-9_-]+)/([m-y]+)/([m-y]+)/([0-9]+);jsessionid=(.*)$</from>
             <to>/showLandmark.do?key=$1&amp;enabled=Hotels&amp;fullScreenLandmarkMap=1</to>
     </rule>
        
