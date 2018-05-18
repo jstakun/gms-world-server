@@ -263,11 +263,11 @@ public class HtmlUtils {
     	for (int i=0;i<12;i++)
     	{
     		String[] date = DateUtils.getShortMonthYearString(i).split("-");
-    		if (i == 0) {
-    			year = Integer.valueOf(date[1]); 
-    		}
     		if (date.length >= 2) {
-    			resp += "<li><a href=\"/archive/" + date[1] + "/" + date[0] + "\">" + DateUtils.getLongMonthYearString(i) + "</a></li>\n";
+    			if (i == 0) {
+        			year = Integer.valueOf(date[1]); 
+        		}
+        		resp += "<li><a href=\"/archive/" + date[1] + "/" + date[0] + "\">" + DateUtils.getLongMonthYearString(i) + "</a></li>\n";
     		}
     	}
     	if (year > -1) {
