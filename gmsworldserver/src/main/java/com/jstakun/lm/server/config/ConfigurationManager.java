@@ -30,7 +30,7 @@ public final class ConfigurationManager {
     private static final String LM_GOOGLE_PLAY_URL = "https://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui";
     private static final String DA_GOOGLE_PLAY_URL = "https://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui.deals";
     private static final String DL_GOOGLE_PLAY_URL = "https://play.google.com/store/apps/details?id=net.gmsworld.devicelocator";
-    private static final String BROWSER_URL = "http://www.gms-world.net/landmarks";
+    private static final String BROWSER_URL = "https://www.gms-world.net/landmarks";
     public static final String BOOKING_URL = "http://www.booking.com/city/%s/%s.html?aid=864525";
     public static final String HOTELS_URL = "http://www.hotelsonmap.net/";
     public static final String RHCLOUD_SERVER_URL = "https://openapi-landmarks.b9ad.pro-us-east-1.openshiftapps.com/actions/";
