@@ -46,7 +46,7 @@ public final class DeviceManagerServlet extends HttpServlet {
 		         if (status == 1) {
 		        	  out.print("{\"status\":\"verified\"}");
 		         } else {
-		        	  out.print("{\"status\":\"not-verified\"}");
+		        	  out.print("{\"status\":\"unverified\"}");
 		         }
 			}
 		} catch (Exception e) {
@@ -75,17 +75,22 @@ public final class DeviceManagerServlet extends HttpServlet {
 		         String args = request.getParameter("args");
 		         String oldPin = request.getParameter("oldPin");
 		         String correlationId = request.getParameter("correlationId");
-		         int status;
-		         if (StringUtils.isNotEmpty(command)) {
-		        	 status = DevicePersistenceUtils.sendCommand(imei, pin, name, username, command, args, correlationId);
+		         if (pin < 1000 || (oldPin != null && !StringUtils.isNumeric(oldPin)) || StringUtils.equalsIgnoreCase(token, "BLACKLISTED")) {
+		        	 logger.log(Level.SEVERE, "Imei: " + imei + ", pin: " + pin + ", oldPin: " + oldPin + ", token: " + token);
+	        		 response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 		         } else {
-		        	 //logger.log(Level.INFO, "Imei: " + imei + ", pin: " + pin + ", name: " + name + ", username: " + username + ", token: " + token);
-		        	 status = DevicePersistenceUtils.setupDevice(imei, pin, name, username, token, oldPin);
-		         }	 
-		         if (status == 1) {
-		        	 out.print("{\"status\":\"ok\"}");
-		         } else {
-		        	 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		        	 int status;
+			         if (StringUtils.isNotEmpty(command)) {
+		        		 status = DevicePersistenceUtils.sendCommand(imei, pin, name, username, command, args, correlationId);
+		        	 } else {
+		        		 //logger.log(Level.INFO, "Imei: " + imei + ", pin: " + pin + ", name: " + name + ", username: " + username + ", token: " + token);
+		        		 status = DevicePersistenceUtils.setupDevice(imei, pin, name, username, token, oldPin);
+		        	 }	 
+		        	 if (status == 1) {
+		        		 out.print("{\"status\":\"ok\"}");
+		        	 } else {
+		        		 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		        	 }
 		         }
 			}
 		} catch (Exception e) {
