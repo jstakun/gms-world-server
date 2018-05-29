@@ -221,7 +221,7 @@ public class NotificationPersistenceUtils {
 			for (Notification n : unverified) {
 				String email = n.getId();
 				if (EmailValidator.getInstance().isValid(email)) {
-					  String status = MailUtils.sendDlVerificationRequest(email, email, n.getSecret(), sc, false);
+					  String status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), sc, false);
 					  logger.log(Level.INFO, "Registration confirmation request has been sent to: " + email + " with status: " + status);
 				}
 			}

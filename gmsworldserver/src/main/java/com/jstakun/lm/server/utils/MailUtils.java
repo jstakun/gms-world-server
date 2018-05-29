@@ -115,10 +115,6 @@ public class MailUtils {
     	sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, toA, title, message, "text/plain", null, null);
     }
     
-    public static void sendDeviceLocatorRegistrationRequest(String email) {
-    	sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, "Registration request", email, "text/plain", "jstakun.appspot@gmail.com", ConfigurationManager.DL_NICK);        
-    }
-
     public static String sendLandmarkCreationNotification(String title, String body) {
         return sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, title, body, "text/plain", null, null);
     }
@@ -160,7 +156,7 @@ public class MailUtils {
         }
     }
     
-    public static String sendDlVerificationRequest(String toA, String nick, String secret, ServletContext context, boolean first) {
+    public static String sendDeviceLocatorVerificationRequest(String toA, String nick, String secret, ServletContext context, boolean first) {
         InputStream is = null;
         String result = null; 
         try {
@@ -176,13 +172,15 @@ public class MailUtils {
             } else {
             	message = link;
             }
-            String recipients = addEmailAddress("bcc", "jstakun.appspot@gmail.com", null) 
-            		+ "|" + addEmailAddress("to", toA, nick);
-            if  (sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, recipients, "Device Locator Registration", message, "text/html")) {
-        		return "ok";
-        	} else {	
-        		return sendLocalMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html",  "jstakun.appspot@gmail.com", ConfigurationManager.DL_NICK);
-       		}
+            result = sendLocalMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html",  ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK);
+       		if (!StringUtils.equalsIgnoreCase(result, "ok")) {
+       			String recipients = addEmailAddress("bcc", "jstakun.appspot@gmail.com", null) + "|" + addEmailAddress("to", toA, nick);
+       			if  (sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, recipients, "Device Locator Registration", message, "text/html")) {
+       				result = "ok";
+       			} else {	
+       				result = "failed";
+       			}
+       		}	
         } catch (Exception ex) {
             logger.log(Level.SEVERE, null, ex);
             result = "failed";
@@ -220,7 +218,7 @@ public class MailUtils {
         }
     }
     
-    public static void sendDlRegistrationNotification(String toA, String nick, ServletContext context) {
+    public static void sendDeviceLocatorRegistrationNotification(String toA, String nick, ServletContext context) {
         InputStream is = null;
         try {
         	String message = "";
@@ -228,7 +226,10 @@ public class MailUtils {
         		is = context.getResourceAsStream("/WEB-INF/emails/notification-dl.html");
         		message = IOUtils.toString(is, "UTF-8");
         	}
-            sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html",  "jstakun.appspot@gmail.com", ConfigurationManager.DL_NICK);
+            String status = sendLocalMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html",  ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK);
+        	if (!StringUtils.equalsIgnoreCase(status, "ok")) {
+        		sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html",  "jstakun.appspot@gmail.com", ConfigurationManager.DL_NICK);	
+        	}
         } catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
         } finally {

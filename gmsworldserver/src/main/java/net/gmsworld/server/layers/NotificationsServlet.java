@@ -290,11 +290,11 @@ public class NotificationsServlet extends HttpServlet {
 						//String user = request.getParameter("user");
 						if (StringUtils.isNotEmpty(email)) {
 							if (NotificationPersistenceUtils.isWhitelistedEmail(email)) {
-								MailUtils.sendDlRegistrationNotification(email, email, this.getServletContext());
+								MailUtils.sendDeviceLocatorRegistrationNotification(email, email, this.getServletContext());
 								reply = new JSONObject().put("status", "registered");
 							} else {
 								Notification n = NotificationPersistenceUtils.addToWhitelistEmail(email, false);
-								String status = MailUtils.sendDlVerificationRequest(email, email, n.getSecret(), this.getServletContext(), true);
+								String status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), this.getServletContext(), true);
 								if (StringUtils.equals(status, "ok")) {
 									reply = new JSONObject().put("status", "unverified");
 								} else {

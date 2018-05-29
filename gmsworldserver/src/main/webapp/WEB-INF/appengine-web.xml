@@ -12,13 +12,8 @@
     <!--manual-scaling>
     	<instances>1</instances>
   	</manual-scaling-->
-  	<!--automatic-scaling>
-    	<min-instances>0</min-instances>
-    	<max-instances>1</max-instances>
-    	<max-concurrent-requests>32</max-concurrent-requests>
-   </automatic-scaling-->
-   <basic-scaling>
+   <!--basic-scaling>
     	<max-instances>1</max-instances>
     	<idle-timeout>3m</idle-timeout>
-  </basic-scaling>
+  </basic-scaling-->
 </appengine-web-app>
