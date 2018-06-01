@@ -33,8 +33,9 @@
             html, body {width: 100%; height: 100%}
             body {margin-top: 0px; margin-right: 0px; margin-left: 0px; margin-bottom: 0px}
         </style>
-        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<%= Commons.getProperty(Commons.Property.GOOGLE_API_WEB_KEY) %>">
-        </script>
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<%= Commons.getProperty(Commons.Property.GOOGLE_API_WEB_KEY) %>"></script>
+        <script src="/js/jquery.min.js"></script>
+        <script src="/js/jquery.titlealert.js"></script>
         <script type="text/javascript">
         	var routePath, endMarker, map, bounds, currentPath;
             
@@ -174,10 +175,14 @@
                               		<% } %> 	
                     	     	});
 
-                    	     	document.title = 'New route points received!';
-                          } else if (document.hasFocus()) {
-                                document.title= 'Watch your recorded route on the map...';      
-                          }
+                    	     	$.titleAlert('New route points received!', {
+                        		    stopOnFocus: true,
+                        		    interval: 2000
+                        		});
+                    	     	//document.title= 'New route points received!';    
+                          } //else if (document.hasFocus()) {
+                        	    //document.title= 'Watch your recorded route on the map...';      
+                          //}
 
                          console.log("Current route length: " + currentPath.length + " compared to previous " + currentPathLength);
                           
@@ -187,9 +192,12 @@
                   	     } else if (currentPath.length > currentPathLength) {
                   		     map.setCenter(bounds.getCenter());	
                          }
-                        			
+
+                  	     if (document.hasFocus()) {
+                   	         $.titleAlert.stop(); 
+                         }			
                   } else if (routePath == null) {
-                        console.log('Route path is empty!');
+                	    console.log('Route path is empty!');
                         window.alert('Route has not been found. You\'ll be redirected to GMS World main page!'); 
                         window.location='https://www.gms-world.net/';
                   }  
