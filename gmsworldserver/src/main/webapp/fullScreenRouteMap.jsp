@@ -177,7 +177,7 @@
 
                     	     	$.titleAlert('New route points received!', {
                         		    stopOnFocus: true,
-                        		    interval: 2000
+                        		    interval: 1000
                         		});
                     	     	//document.title= 'New route points received!';    
                           } //else if (document.hasFocus()) {

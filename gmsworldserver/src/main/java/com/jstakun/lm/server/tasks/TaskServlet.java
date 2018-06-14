@@ -63,9 +63,9 @@ public class TaskServlet extends HttpServlet {
             if (StringUtils.equalsIgnoreCase(action, "purge")) {
                 if (StringUtils.equalsIgnoreCase(entity, "log")) {
                     //long count = ServiceLogPersistenceUtils.deleteAllLogs();
-                    Date nDaysAgo = DateUtils.getDayInPast(Integer.parseInt(ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.LOG_OLDER_THAN_DAYS, "60")), false);                        
-                    long count = ServiceLogPersistenceUtils.deleteLogsOlderThanDate(nDaysAgo);
-                    logger.log(Level.INFO, "Deleted {0} logs.", count);
+                    //Date nDaysAgo = DateUtils.getDayInPast(Integer.parseInt(ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.LOG_OLDER_THAN_DAYS, "60")), false);                        
+                    //long count = ServiceLogPersistenceUtils.deleteLogsOlderThanDate(nDaysAgo);
+                    //logger.log(Level.INFO, "Deleted {0} logs.", count);
                 } else if (StringUtils.equalsIgnoreCase(entity, "screenshot")) {
                   	int ndays = NumberUtils.getInt(ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.SCREENSHOT_OLDER_THAN_DAYS, "90"), 90);
                     long count = ScreenshotPersistenceUtils.deleteScreenshotsOlderThanDate(ndays);

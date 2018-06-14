@@ -37,12 +37,12 @@ public final class DeviceManagerServlet extends HttpServlet {
 		response.setContentType("text/json;charset=UTF-8");
 		PrintWriter out = response.getWriter();
 		try {
-			if (HttpUtils.isEmptyAny(request, "imei", "pin")) {
+			if (HttpUtils.isEmptyAny(request, "imei")) {
 				response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 			} else {
 				 String imei = request.getParameter("imei");
-		         Integer pin = Integer.valueOf(request.getParameter("pin"));		
-		         int status = DevicePersistenceUtils.isDeviceRegistered(imei, pin);
+		         //Integer pin = Integer.valueOf(request.getParameter("pin"));		
+		         int status = DevicePersistenceUtils.isDeviceRegistered(imei);
 		         if (status == 1) {
 		        	  out.print("{\"status\":\"verified\"}");
 		         } else {
@@ -63,7 +63,7 @@ public final class DeviceManagerServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		PrintWriter out = response.getWriter();
 		try {
-			if (HttpUtils.isEmptyAny(request, "imei", "pin")) {
+			if (HttpUtils.isEmptyAny(request, "imei")) {
 				response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 			} else {
 				 String imei = request.getParameter("imei");
@@ -73,18 +73,18 @@ public final class DeviceManagerServlet extends HttpServlet {
 		         String name = request.getParameter("name");
 		         String command = request.getParameter("command");
 		         String args = request.getParameter("args");
-		         String oldPin = request.getParameter("oldPin");
+		         //String oldPin = request.getParameter("oldPin");
 		         String correlationId = request.getParameter("correlationId");
-		         if (pin < 0 || (oldPin != null && !StringUtils.isNumeric(oldPin)) || StringUtils.equalsIgnoreCase(token, "BLACKLISTED")) {
-		        	 logger.log(Level.SEVERE, "Imei: " + imei + ", pin: " + pin + ", oldPin: " + oldPin + ", token: " + token);
+		         if (StringUtils.equalsIgnoreCase(token, "BLACKLISTED")) {
+		        	 logger.log(Level.SEVERE, "Imei: " + imei + ", token: " + token);
 	        		 response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 		         } else {
 		        	 int status;
-			         if (StringUtils.isNotEmpty(command)) {
+			         if (StringUtils.isNotEmpty(command) && pin >= 0) {
 		        		 status = DevicePersistenceUtils.sendCommand(imei, pin, name, username, command, args, correlationId);
 		        	 } else {
 		        		 //logger.log(Level.INFO, "Imei: " + imei + ", pin: " + pin + ", name: " + name + ", username: " + username + ", token: " + token);
-		        		 status = DevicePersistenceUtils.setupDevice(imei, pin, name, username, token, oldPin);
+		        		 status = DevicePersistenceUtils.setupDevice(imei, name, username, token);
 		        	 }	 
 		        	 if (status == 1) {
 		        		 out.print("{\"status\":\"ok\"}");

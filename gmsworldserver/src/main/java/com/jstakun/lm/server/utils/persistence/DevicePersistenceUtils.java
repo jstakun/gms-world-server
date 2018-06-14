@@ -17,10 +17,10 @@ public class DevicePersistenceUtils {
 	
 	private static final Logger logger = Logger.getLogger(DevicePersistenceUtils.class.getName());
 	
-	public static int isDeviceRegistered(String imei, Integer pin) throws Exception {
-		if (imei != null && pin != null) {
+	public static int isDeviceRegistered(String imei) throws Exception {
+		if (imei != null) {
 		    String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "getDevice?" + 
-	                 "imei="+  imei + "&pin=" + pin;
+	                 "imei="+  imei;
 		    String deviceJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(deviceUrl), Commons.getProperty(Property.RH_GMS_USER), false);		
 		    if (StringUtils.startsWith(deviceJson, "{")) {
 			   JSONObject root = new JSONObject(deviceJson);
@@ -43,10 +43,10 @@ public class DevicePersistenceUtils {
 	   }
 	}
 	
-	public static int setupDevice(String imei, Integer pin, String name, String username, String token, String oldPin) throws Exception {
-		if (imei != null && pin != null) {
+	public static int setupDevice(String imei, String name, String username, String token) throws Exception {
+		if (imei != null) {
 		    String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "setupDevice?" + 
-	                 "imei="+  imei + "&pin=" + pin;
+	                 "imei="+  imei;
 		    if (StringUtils.isNotEmpty(username)) {
 		    	deviceUrl += "&username=" + username;
 		    }
@@ -55,9 +55,6 @@ public class DevicePersistenceUtils {
 		    }
 		    if (StringUtils.isNotEmpty(token)) {
 		    	deviceUrl += "&token=" + token;
-		    }
-		    if (StringUtils.isNotEmpty(oldPin)) {
-		    	deviceUrl += "&oldPin=" + oldPin;
 		    }
 		    String deviceJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(deviceUrl), Commons.getProperty(Property.RH_GMS_USER), false);		
 		    if (StringUtils.startsWith(deviceJson, "{")) {
