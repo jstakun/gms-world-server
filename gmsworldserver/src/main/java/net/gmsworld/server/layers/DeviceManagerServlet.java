@@ -15,6 +15,7 @@ import org.apache.commons.lang.StringUtils;
 import com.jstakun.lm.server.utils.persistence.DevicePersistenceUtils;
 
 import net.gmsworld.server.utils.HttpUtils;
+import net.gmsworld.server.utils.NumberUtils;
 
 /**
  * Servlet implementation class DeviceManagerServlet
@@ -67,8 +68,7 @@ public final class DeviceManagerServlet extends HttpServlet {
 				response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 			} else {
 				 String imei = request.getParameter("imei");
-		         Integer pin = Integer.valueOf(request.getParameter("pin"));		
-		         String token = request.getParameter("token");
+				 String token = request.getParameter("token");
 		         String username = request.getParameter("username");
 		         String name = request.getParameter("name");
 		         String command = request.getParameter("command");
@@ -80,6 +80,7 @@ public final class DeviceManagerServlet extends HttpServlet {
 	        		 response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 		         } else {
 		        	 int status;
+		        	 int pin = NumberUtils.getInt(request.getParameter("pin"), -1);
 			         if (StringUtils.isNotEmpty(command) && pin >= 0) {
 		        		 status = DevicePersistenceUtils.sendCommand(imei, pin, name, username, command, args, correlationId);
 		        	 } else {
