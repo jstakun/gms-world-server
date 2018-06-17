@@ -17,6 +17,9 @@ public class DevicePersistenceUtils {
 	
 	private static final Logger logger = Logger.getLogger(DevicePersistenceUtils.class.getName());
 	
+	private static final String[] commands = {"resume","start","stop","route","locate","mute","normal","call",
+			"radius","gpshigh","gpsbalance","notify","audio","noaudio","photo","ping","ring","ringoff","lock","pin","about"}; 
+	
 	public static int isDeviceRegistered(String imei) throws Exception {
 		if (imei != null) {
 		    String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "getDevice?" + 
@@ -79,7 +82,7 @@ public class DevicePersistenceUtils {
 	}
 
 	public static int sendCommand(String imei, Integer pin, String name, String username, String command, String args, String correlationId) throws Exception {
-		if (command != null && pin != null) {
+		if (pin != null && isValidCommand(command)) {
 			String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "commandDevice?" + 
 					"command=" + command + "&pin=" + pin;
 			if (imei != null) {
@@ -111,8 +114,19 @@ public class DevicePersistenceUtils {
 		    	return -1; 
 		    }
 	   } else {
-		   logger.log(Level.SEVERE, "Command and pin can't be null!");
+		   logger.log(Level.SEVERE, "Command and/or pin are invalid!");
 		   return -1;
 	   }	
+	}
+	  
+	private static boolean isValidCommand(String command) {
+		if (StringUtils.isNotEmpty(command)) { 
+			for (int i=0; i<commands.length; i++) {
+				if (StringUtils.startsWithIgnoreCase(command, commands[i])) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }

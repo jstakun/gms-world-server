@@ -73,8 +73,8 @@ public final class DeviceManagerServlet extends HttpServlet {
 		         String name = request.getParameter("name");
 		         String command = request.getParameter("command");
 		         String args = request.getParameter("args");
-		         //String oldPin = request.getParameter("oldPin");
 		         String correlationId = request.getParameter("correlationId");
+		         
 		         if (StringUtils.equalsIgnoreCase(token, "BLACKLISTED")) {
 		        	 logger.log(Level.SEVERE, "Imei: " + imei + ", token: " + token);
 	        		 response.sendError(HttpServletResponse.SC_BAD_REQUEST);
