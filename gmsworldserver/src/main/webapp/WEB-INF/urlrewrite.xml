@@ -352,7 +352,7 @@
        		<to type="redirect">http://www.booking.com?aid=864525</to>
     </rule>
     
-    <!-- verify rule -->
+    <!-- verify notification rule -->
     <rule>
             <from>^/verify/([a-zA-Z]+)/(.+)$</from>
             <to>/verify.do?sc=$1&amp;m=$2&amp;s=1</to>
@@ -362,22 +362,22 @@
             <to>/verify.do?sc=$1&amp;s=1</to>
     </rule>
     
-    <!-- verifyUser -->
-    <rule>
-            <from>^/verifyUser/([a-zA-Z0-9_-]+)$</from>
-            <to>/verify.do?k=$1&amp;s=1</to>
-    </rule>
-    
-    <!-- unregister rule -->
+    <!-- unregister notification rule -->
     <rule>
             <from>^/unregister/([a-zA-Z]+)$</from>
             <to>/verify.do?sc=$1&amp;u=1</to>
     </rule>
     
+    <!-- verifyUser -->
+    <rule>
+            <from>^/verifyUser/([a-zA-Z]+)$</from>
+            <to>/verify.do?se=$1&amp;s=1</to>
+    </rule>
+    
      <!-- unregisterUser -->
     <rule>
-            <from>^/unregisterUser/([a-zA-Z0-9_-]+)$</from>
-            <to>/verify.do?k=$1&amp;u=1</to>
+            <from>^/unregisterUser/([a-zA-Z]+)$</from>
+            <to>/verify.do?se=$1&amp;u=1</to>
     </rule>
     
 </urlrewrite>

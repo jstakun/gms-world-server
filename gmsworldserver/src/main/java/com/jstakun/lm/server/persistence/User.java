@@ -26,7 +26,9 @@ public class User {
   private String personalInfo;
 
   //private Date lastLogonDate;
-
+  
+  private String secret;
+  
   public User(String login, String password, String email, String firstname, String lastname)
   {
 	  this();
@@ -120,6 +122,14 @@ public class User {
     public void setLogin(String login) {
     	this.login = login;
     }
+
+	public String getSecret() {
+		return secret;
+	}
+
+	public void setSecret(String secret) {
+		this.secret = secret;
+	}
 
     /**
      * @param lastLogonDate the lastLogonDate to set

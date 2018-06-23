@@ -54,9 +54,9 @@ public class AccountAction extends Action {
             String login = URLDecoder.decode(request.getParameter("k"),"UTF-8");
             result = UserPersistenceUtils.confirmUserRegistration(login);
             if (result) {
-               User user = UserPersistenceUtils.selectUserByLogin(login);
+               User user = UserPersistenceUtils.selectUserByLogin(login, null);
                if (user != null) {
-                    MailUtils.sendRegistrationNotification(user.getEmail(), user.getLogin(), getServlet().getServletContext());
+                    MailUtils.sendRegistrationNotification(user.getEmail(), user.getLogin(), user.getSecret(), getServlet().getServletContext());
                }
             }
         } else if (!HttpUtils.isEmptyAny(request, "sc","s")) {
@@ -78,13 +78,28 @@ public class AccountAction extends Action {
         } else if (!HttpUtils.isEmptyAny(request, "k", "u")) {
         	//unregister user from GMS World
             String login = URLDecoder.decode(request.getParameter("k"),"UTF-8");
-            User user = UserPersistenceUtils.selectUserByLogin(login);
+            User user = UserPersistenceUtils.selectUserByLogin(login, null);
             if (user != null) {
                 MailUtils.sendAdminMail("Please unregister user "+ login);
-                //TODO unregister user automatically
-            	result = true;
+                result = true;
             }
-        }
+        } else if (!HttpUtils.isEmptyAny(request, "se", "u")) {
+        	//unregister user from GMS World
+            String secret = request.getParameter("se");
+            User user = UserPersistenceUtils.selectUserByLogin(null, secret);
+            if (user != null) {
+            	UserPersistenceUtils.removeUser(secret);
+                result = true;
+            }
+        } else if (!HttpUtils.isEmptyAny(request, "se", "s")) {
+        	//register user to GMS World
+            String secret = request.getParameter("se");
+            User user = UserPersistenceUtils.selectUserByLogin(null, secret);
+            if (user != null) {
+            	result = UserPersistenceUtils.confirmUserRegistration(user.getLogin());
+                MailUtils.sendRegistrationNotification(user.getEmail(), user.getLogin(), secret, getServlet().getServletContext());
+            }
+        } 
 
         if (result) {
             if (confirm) {

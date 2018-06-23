@@ -3,7 +3,6 @@ package com.jstakun.lm.server.utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Properties;
@@ -136,10 +135,10 @@ public class MailUtils {
         sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, title, message, "text/html", null, null);
     }
 
-    public static void sendVerificationRequest(String toA, String nick, String key, ServletContext context) {
+    public static void sendVerificationRequest(String toA, String nick, String secret, ServletContext context) {
         InputStream is = null;
         try {
-            String link = ConfigurationManager.SSL_SERVER_URL + "verifyUser/" + URLEncoder.encode(key, "UTF-8");
+            String link = ConfigurationManager.SSL_SERVER_URL + "verifyUser/" + secret;
             is = context.getResourceAsStream("/WEB-INF/emails/verification.html");
             String message = String.format(IOUtils.toString(is, "UTF-8"), nick, link);
             String result = sendLocalMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "Welcome to GMS World", message, "text/html",  "landmark-manager@gms-world.net", ConfigurationManager.ADMIN_NICK);
@@ -199,14 +198,14 @@ public class MailUtils {
         return result;
     }
     
-    public static void sendRegistrationNotification(String toA, String nick, ServletContext context) {
+    public static void sendRegistrationNotification(String toA, String nick, String secret, ServletContext context) {
         InputStream is = null;
         try {
             is = context.getResourceAsStream("/WEB-INF/emails/notification.html");
             if (StringUtils.isEmpty(nick)) {
             	nick = "GMS World User";
             }
-            String link = ConfigurationManager.SSL_SERVER_URL + "unregisterUser/" + nick;
+            String link = ConfigurationManager.SSL_SERVER_URL + "unregisterUser/" + secret;
             String message = String.format(IOUtils.toString(is, "UTF-8"), nick, link);
             String result = sendLocalMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "GMS World Registration", message, "text/html",  "landmark-manager@gms-world.net", ConfigurationManager.ADMIN_NICK);
        		if (!StringUtils.equalsIgnoreCase(result, "ok")) {

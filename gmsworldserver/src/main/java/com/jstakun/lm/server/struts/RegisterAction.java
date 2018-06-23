@@ -35,9 +35,13 @@ public class RegisterAction extends Action {
         String status = "success";
         try
         {
-            UserPersistenceUtils.persist(login, password, email, firstname, lastname, true);
-            MailUtils.sendVerificationRequest(email, login, login, getServlet().getServletContext());
-            MailUtils.sendUserCreationNotification("User " + ConfigurationManager.SERVER_URL + "showUser/" + login + " created");
+            String secret = UserPersistenceUtils.persist(login, password, email, firstname, lastname, true);
+            if (StringUtils.isNotEmpty(secret )) {
+            	MailUtils.sendVerificationRequest(email, login, secret, getServlet().getServletContext());
+            	MailUtils.sendUserCreationNotification("User " + ConfigurationManager.SERVER_URL + "showUser/" + login + " created");
+            } else {
+            	status = "failure";
+            }
         }
         catch (Exception e)
         {

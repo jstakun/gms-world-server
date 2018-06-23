@@ -32,7 +32,7 @@ public class UserPersistenceUtils {
 
     private static final Logger logger = Logger.getLogger(UserPersistenceUtils.class.getName());
 
-    public static void persist(String login, String password, String email, String firstname, String lastname, boolean local) {
+    public static String persist(String login, String password, String email, String firstname, String lastname, boolean local) {
         
         try {
         	String landmarksUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "addItem";
@@ -56,10 +56,15 @@ public class UserPersistenceUtils {
         		if (resp.optString("login") == null) {
         			logger.log(Level.SEVERE, "Failed to save user: " + landmarksJson);
         		}
-        	}	
+        		return resp.optString("secret");
+        	}	else {
+        		return null;
+        	}
         } catch (Exception e) {
         	logger.log(Level.SEVERE, e.getMessage(), e);
+        	return null;
         }
+        
 
         /*if (local) {
         	//User user = new User(login, password, email, firstname, lastname);
@@ -74,7 +79,7 @@ public class UserPersistenceUtils {
         }*/
     }
 
-    public static User selectUserByLogin(String username) {
+    public static User selectUserByLogin(String username, String secret) {
     	User user = null;
         /*PersistenceManager pm = PMF.get().getPersistenceManager();
 
@@ -96,7 +101,12 @@ public class UserPersistenceUtils {
         
         try {
         	String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "itemProvider";
-        	String params = "type=user&login=" + username;			 
+        	String params = "type=user";
+        	if (StringUtils.isNotEmpty(username)) {
+       		 	 params += "&login=" + username;
+        	} else if (StringUtils.isNotEmpty(secret)) {
+        		 params += "&secret=" + secret;
+        	}
         	//logger.log(Level.INFO, "Calling: " + gUrl);
         	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
         	//logger.log(Level.INFO, "Received response: " + gJson);
@@ -162,7 +172,24 @@ public class UserPersistenceUtils {
     }
     
     public static boolean userExists(String username) {
-        return (selectUserByLogin(username) != null);
+        return (selectUserByLogin(username, null) != null);
+    }
+    
+    public static void removeUser(String secret) {
+    	try {
+        	String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "removeItem";
+        	String params = "type=user&secret=" + secret;			 
+        	//logger.log(Level.INFO, "Calling: " + gUrl);
+        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
+        	//logger.log(Level.INFO, "Received response: " + gJson);
+        	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
+        		logger.log(Level.INFO, "User removal status: " + gJson);
+        	} else {
+        		logger.log(Level.SEVERE, "Received following server response: " + gJson);
+        	}
+        } catch (Exception e) {
+        	logger.log(Level.SEVERE, e.getMessage(), e);
+        }
     }
 
     /*public static List<User> selectUsers(int first, int last) {
