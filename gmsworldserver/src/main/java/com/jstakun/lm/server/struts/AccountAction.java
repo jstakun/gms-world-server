@@ -11,6 +11,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import com.jstakun.lm.server.persistence.Notification;
 import com.jstakun.lm.server.persistence.User;
 import com.jstakun.lm.server.utils.MailUtils;
 import com.jstakun.lm.server.utils.persistence.NotificationPersistenceUtils;
@@ -22,7 +23,7 @@ import net.gmsworld.server.utils.HttpUtils;
  *
  * @author jstakun
  */
-public class RegistrationConfirmationAction extends Action {
+public class AccountAction extends Action {
 
     /* forward name="success" path="" */
     private static final String SUCCESS_REG = "success_reg";
@@ -40,8 +41,7 @@ public class RegistrationConfirmationAction extends Action {
      * @return
      */
     @Override
-    public ActionForward execute(ActionMapping mapping, ActionForm form,
-            HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         Boolean confirm = Boolean.FALSE;
         if (StringUtils.equals(request.getParameter("s"), "1")) {
@@ -50,8 +50,8 @@ public class RegistrationConfirmationAction extends Action {
         boolean result = false;
         
         if (!HttpUtils.isEmptyAny(request, "k", "s")) {
+        	//register user to GMS World
             String login = URLDecoder.decode(request.getParameter("k"),"UTF-8");
-            
             result = UserPersistenceUtils.confirmUserRegistration(login);
             if (result) {
                User user = UserPersistenceUtils.selectUserByLogin(login);
@@ -59,12 +59,30 @@ public class RegistrationConfirmationAction extends Action {
                     MailUtils.sendRegistrationNotification(user.getEmail(), user.getLogin(), getServlet().getServletContext());
                }
             }
-        } else if (!HttpUtils.isEmptyAny(request, "sc")) {
+        } else if (!HttpUtils.isEmptyAny(request, "sc","s")) {
+        	//register to DL notifications
         	String secret = request.getParameter("sc");
-        	
-        	if (NotificationPersistenceUtils.verifyWithSecret(secret) != null) {
+        	Notification n = NotificationPersistenceUtils.verifyWithSecret(secret);
+        	if (n != null) {
+        		MailUtils.sendDeviceLocatorRegistrationNotification(n.getId(), n.getId(), secret, getServlet().getServletContext());
         		result = true;
         	} 
+        } else if (!HttpUtils.isEmptyAny(request, "sc","u")) {
+        	//unregister from DL notifications
+        	String secret = request.getParameter("sc");
+        	Notification n = NotificationPersistenceUtils.verifyWithSecret(secret);
+        	if (n != null) {
+        		NotificationPersistenceUtils.remove(n.getId());
+        		result = true;
+        	} 
+        } else if (!HttpUtils.isEmptyAny(request, "k", "u")) {
+        	//register user to GMS World
+            String login = URLDecoder.decode(request.getParameter("k"),"UTF-8");
+            User user = UserPersistenceUtils.selectUserByLogin(login);
+            if (user != null) {
+                 //TODO unregister
+            	result = true;
+            }
         }
 
         if (result) {

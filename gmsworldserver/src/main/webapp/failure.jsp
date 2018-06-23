@@ -10,7 +10,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
     <head>
-        <title>Landmark Manager Action Failure</title>
+        <title>GMS World Action Failure</title>
         <%@ include file="/WEB-INF/jspf/head.jspf" %>
     </head>
 
@@ -34,22 +34,22 @@
 
     if (step.equals("1")) {
  %>
-                    <h3>Account Registration Failed</h3>
+                    <h3>Account registration failed</h3>
                     <p><a href="register.jsp">Please try again</a></p>
  <%
     } else if (step.equals("2")) {
  %>
-                    <h3>Account Verification Failed</h3>
+                    <h3>Account or email verification failed</h3>
                     <p>Please try again or contact <a href="mailto:support@gms-world.net?subject=Account verification failed">System Administrator</a></p>
  <%
     } else if (step.equals("3")) {
  %>
-                    <h3>Account Unregistration Failed</h3>
+                    <h3>Account or email unregistration failed</h3>
                     <p>Please try again or contact <a href="mailto:support@gms-world.net?subject=Account unregistration failed">System Administrator</a></p>
  <%
     } else {
  %>
-                    <h3>Account Action Error</h3>
+                    <h3>Account error</h3>
                     <p>Oops! Something went wrong. Please try again.</p>
  <%
     }

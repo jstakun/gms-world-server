@@ -10,7 +10,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
     <head>
-        <title>Landmark Manager Action Confirmation</title>
+        <title>GMS World Action Confirmation</title>
         <%@ include file="/WEB-INF/jspf/head.jspf" %>
     </head>
 
@@ -40,17 +40,17 @@
  <%
     } else if (step.equals("2")) {
  %>
-                <h3>Account/Email Registration Confirmation</h3>
-                <p>Thank you for your registration. Your account/email is now active.</p>
+                <h3>Account or email registered</h3>
+                <p>Thank you for your registration. Your account or email is now active.</p>
  <%
     } else if (step.equals("3")) {
  %>
-                <h3>Account Unregistration Confirmation</h3>
-                <p>Your account has been successfully unregistered.</p>
+                <h3>Account or email unregistered</h3>
+                <p>Your account or email has been successfully unregistered.</p>
  <%
     } else {
  %>
-                <h3>Account Action Error</h3>
+                <h3>Account error</h3>
                 <p>Oops! Something went wrong. Please try again.</p>
  <%
     }

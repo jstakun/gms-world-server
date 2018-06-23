@@ -126,7 +126,7 @@
              <forward name="landmarks" path="/landmarks.jsp"/>
              <forward name="landmarksMobile" path="/landmarks.jsp?mobile=true"/>
          </action>
-        <action path="/verify" type="com.jstakun.lm.server.struts.RegistrationConfirmationAction">
+        <action path="/verify" type="com.jstakun.lm.server.struts.AccountAction">
             <forward name="success_reg" path="/confirm.jsp?step=2"/>
             <forward name="failure_reg" path="/failure.jsp?step=2"/>
             <forward name="success_unreg" path="/confirm.jsp?step=3"/>

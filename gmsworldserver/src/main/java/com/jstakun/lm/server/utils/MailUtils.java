@@ -218,13 +218,14 @@ public class MailUtils {
         }
     }
     
-    public static void sendDeviceLocatorRegistrationNotification(String toA, String nick, ServletContext context) {
+    public static void sendDeviceLocatorRegistrationNotification(String toA, String nick, String secret, ServletContext context) {
         InputStream is = null;
         try {
         	String message = "";
+        	String link = ConfigurationManager.SSL_SERVER_URL + "unregister/" + secret;
         	if (context != null) {
         		is = context.getResourceAsStream("/WEB-INF/emails/notification-dl.html");
-        		message = IOUtils.toString(is, "UTF-8");
+        		message =String.format(IOUtils.toString(is, "UTF-8"), link);
         	}
             String status = sendLocalMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html",  ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK);
         	if (!StringUtils.equalsIgnoreCase(status, "ok")) {

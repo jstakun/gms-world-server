@@ -179,10 +179,6 @@ public class NotificationPersistenceUtils {
 		 return isVerified(email);
 	}
 	
-	//public static synchronized boolean isRegisteredEmail(String email, String secret) {
-	//	 return isRegistered(email, secret);
-	//}
-	
 	public static synchronized Notification addToWhitelistEmail(String email, boolean isRegistered) {
 		Notification.Status status =  isRegistered ?  Notification.Status.VERIFIED : Notification.Status.UNVERIFIED;
 		return persist(email, status);

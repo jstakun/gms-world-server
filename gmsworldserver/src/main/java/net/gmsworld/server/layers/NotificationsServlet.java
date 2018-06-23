@@ -292,10 +292,10 @@ public class NotificationsServlet extends HttpServlet {
 					//register mail
 					if (appId == Commons.DL_ID && StringUtils.startsWith(request.getRequestURI(), "/s/")) {
 						String email = request.getParameter("email");
-						//String user = request.getParameter("user");
 						if (StringUtils.isNotEmpty(email)) {
 							if (NotificationPersistenceUtils.isWhitelistedEmail(email)) {
-								MailUtils.sendDeviceLocatorRegistrationNotification(email, email, this.getServletContext());
+								Notification n = NotificationPersistenceUtils.addToWhitelistEmail(email, true);
+								MailUtils.sendDeviceLocatorRegistrationNotification(email, email, n.getSecret(), this.getServletContext());
 								reply = new JSONObject().put("status", "registered");
 							} else {
 								Notification n = NotificationPersistenceUtils.addToWhitelistEmail(email, false);
