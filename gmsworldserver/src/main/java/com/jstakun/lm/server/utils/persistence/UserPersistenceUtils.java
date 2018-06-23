@@ -177,7 +177,7 @@ public class UserPersistenceUtils {
     
     public static void removeUser(String secret) {
     	try {
-        	String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "removeItem";
+        	String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "deleteItem";
         	String params = "type=user&secret=" + secret;			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
         	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
