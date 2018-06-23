@@ -77,12 +77,13 @@ public class AccountAction extends Action {
         	} 
         } else if (!HttpUtils.isEmptyAny(request, "k", "u")) {
         	//unregister user from GMS World
-            //String login = URLDecoder.decode(request.getParameter("k"),"UTF-8");
-            //User user = UserPersistenceUtils.selectUserByLogin(login);
-            //if (user != null) {
-                 //TODO unregister
-            	//result = true;
-            //}
+            String login = URLDecoder.decode(request.getParameter("k"),"UTF-8");
+            User user = UserPersistenceUtils.selectUserByLogin(login);
+            if (user != null) {
+                MailUtils.sendAdminMail("Please unregister user "+ login);
+                //TODO unregister user automatically
+            	result = true;
+            }
         }
 
         if (result) {

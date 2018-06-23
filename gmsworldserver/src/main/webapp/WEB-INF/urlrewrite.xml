@@ -362,10 +362,22 @@
             <to>/verify.do?sc=$1&amp;s=1</to>
     </rule>
     
+    <!-- verifyUser -->
+    <rule>
+            <from>^/verifyUser/([a-zA-Z0-9_-]+)$</from>
+            <to>/verify.do?k=$1&amp;s=1</to>
+    </rule>
+    
     <!-- unregister rule -->
     <rule>
             <from>^/unregister/([a-zA-Z]+)$</from>
             <to>/verify.do?sc=$1&amp;u=1</to>
+    </rule>
+    
+     <!-- unregisterUser -->
+    <rule>
+            <from>^/unregisterUser/([a-zA-Z0-9_-]+)$</from>
+            <to>/verify.do?k=$1&amp;u=1</to>
     </rule>
     
 </urlrewrite>
