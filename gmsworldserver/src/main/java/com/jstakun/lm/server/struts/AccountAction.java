@@ -17,6 +17,8 @@ import com.jstakun.lm.server.utils.MailUtils;
 import com.jstakun.lm.server.utils.persistence.NotificationPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.UserPersistenceUtils;
 
+import eu.bitwalker.useragentutils.DeviceType;
+import eu.bitwalker.useragentutils.OperatingSystem;
 import net.gmsworld.server.utils.HttpUtils;
 
 /**
@@ -30,6 +32,11 @@ public class AccountAction extends Action {
     private static final String SUCCESS_UNREG = "success_unreg";
     private static final String FAILURE_REG = "failure_reg";
     private static final String FAILURE_UNREG = "failure_unreg";
+    
+    private static final String SUCCESS_REG_MOBILE = "success_reg_mobile";
+    private static final String SUCCESS_UNREG_MOBILE = "success_unreg_mobile";
+    private static final String FAILURE_REG_MOBILE = "failure_reg_mobile";
+    private static final String FAILURE_UNREG_MOBILE = "failure_unreg_mobile";
     
     /**
      * This is the action called from the Struts framework.
@@ -49,6 +56,9 @@ public class AccountAction extends Action {
         }
         boolean result = false;
         
+        OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
+        boolean isMobile = os.getDeviceType().equals(DeviceType.MOBILE);
+        
         if (!HttpUtils.isEmptyAny(request, "k", "s")) {
         	//register user to GMS World
             String login = URLDecoder.decode(request.getParameter("k"),"UTF-8");
@@ -57,6 +67,8 @@ public class AccountAction extends Action {
                User user = UserPersistenceUtils.selectUserByLogin(login, null);
                if (user != null) {
                     MailUtils.sendRegistrationNotification(user.getEmail(), user.getLogin(), user.getSecret(), getServlet().getServletContext());
+                    request.setAttribute("login", user.getLogin());
+                    request.setAttribute("email", user.getEmail());
                }
             }
         } else if (!HttpUtils.isEmptyAny(request, "sc","s")) {
@@ -65,6 +77,7 @@ public class AccountAction extends Action {
         	Notification n = NotificationPersistenceUtils.verifyWithSecret(secret);
         	if (n != null) {
         		MailUtils.sendDeviceLocatorRegistrationNotification(n.getId(), n.getId(), secret, getServlet().getServletContext());
+        		request.setAttribute("email", n.getId());
         		result = true;
         	} 
         } else if (!HttpUtils.isEmptyAny(request, "sc","u")) {
@@ -73,6 +86,7 @@ public class AccountAction extends Action {
         	Notification n = NotificationPersistenceUtils.verifyWithSecret(secret);
         	if (n != null) {
         		NotificationPersistenceUtils.remove(n.getId());
+        		request.setAttribute("email", n.getId());
         		result = true;
         	} 
         } else if (!HttpUtils.isEmptyAny(request, "k", "u")) {
@@ -80,7 +94,9 @@ public class AccountAction extends Action {
             String login = URLDecoder.decode(request.getParameter("k"),"UTF-8");
             User user = UserPersistenceUtils.selectUserByLogin(login, null);
             if (user != null) {
-                MailUtils.sendAdminMail("Please unregister user "+ login);
+            	UserPersistenceUtils.removeUser(user.getSecret());
+                request.setAttribute("login", user.getLogin());
+            	request.setAttribute("email", user.getEmail());
                 result = true;
             }
         } else if (!HttpUtils.isEmptyAny(request, "se", "u")) {
@@ -89,6 +105,8 @@ public class AccountAction extends Action {
             User user = UserPersistenceUtils.selectUserByLogin(null, secret);
             if (user != null) {
             	UserPersistenceUtils.removeUser(secret);
+            	request.setAttribute("login", user.getLogin());
+            	request.setAttribute("email", user.getEmail());
                 result = true;
             }
         } else if (!HttpUtils.isEmptyAny(request, "se", "s")) {
@@ -98,21 +116,39 @@ public class AccountAction extends Action {
             if (user != null) {
             	result = UserPersistenceUtils.confirmUserRegistration(user.getLogin());
                 MailUtils.sendRegistrationNotification(user.getEmail(), user.getLogin(), secret, getServlet().getServletContext());
+                request.setAttribute("login", user.getLogin());
+                request.setAttribute("email", user.getEmail());
             }
         } 
 
-        if (result) {
-            if (confirm) {
-                return mapping.findForward(SUCCESS_REG);
-            } else {
-                return mapping.findForward(SUCCESS_UNREG);
-            }
+        if (isMobile) {
+        	if (result) {
+        		if (confirm) {
+        			return mapping.findForward(SUCCESS_REG_MOBILE);
+        		} else {
+        			return mapping.findForward(SUCCESS_UNREG_MOBILE);
+        		}
+        	} else {
+        		if (confirm) {
+        			return mapping.findForward(FAILURE_REG_MOBILE);
+        		} else {
+        			return mapping.findForward(FAILURE_UNREG_MOBILE);
+        		}
+        	}
         } else {
-            if (confirm) {
-                return mapping.findForward(FAILURE_REG);
-            } else {
-                return mapping.findForward(FAILURE_UNREG);
-            }
+        	if (result) {
+        		if (confirm) {
+        			return mapping.findForward(SUCCESS_REG);
+        		} else {
+        			return mapping.findForward(SUCCESS_UNREG);
+        		}
+        	} else {
+        		if (confirm) {
+        			return mapping.findForward(FAILURE_REG);
+        		} else {
+        			return mapping.findForward(FAILURE_UNREG);
+        		}
+        	}
         }
     }
 }

@@ -26,7 +26,6 @@
 
                 <!-- main -->
                 <div id="main">
-
  <%
     String step = request.getParameter("step");
     if (step == null || step.length() != 1) {
@@ -36,26 +35,35 @@
     if (step.equals("1")) {
  %>
                 <h3>Verification in progress...</h3>
-                <p>Verification mail has been sent to you. Your account will be activated after you'll confirm your registration.</p>
+                <p>We have just sent you verification mail to <%= request.getAttribute("email") %>. Your account will be activated after you'll confirm your registration.</p>
  <%
-    } else if (step.equals("2")) {
+    } else if (step.equals("2") && request.getAttribute("login") != null) {
  %>
-                <h3>Account or email registered</h3>
-                <p>Thank you for your registration. Your account or email is now active.</p>
+                <h3>Account <%= request.getAttribute("login") %>  registered</h3>
+                <p>Thank you for your registration. Your account is now registered in GMS World.</p>
  <%
-    } else if (step.equals("3")) {
+    } else if (step.equals("2") && request.getAttribute("login") == null && request.getAttribute("email") != null) {
  %>
-                <h3>Account or email unregistered</h3>
-                <p>Your account or email has been successfully unregistered.</p>
+                <h3>Email address <%= request.getAttribute("email") %>  registered</h3>
+                <p>Thank you for your registration. Your email is now registered to Device Locator notifications service.</p>
+ <%
+    } else if (step.equals("3") && request.getAttribute("login") != null) {
+ %>
+                <h3>Account <%= request.getAttribute("login") %> unregistered</h3>
+                <p>Your account has been successfully unregistered from GMS World.</p>
+<%
+    } else if (step.equals("3") && request.getAttribute("login") == null && request.getAttribute("email") != null) {
+ %>
+                <h3>Email address <%= request.getAttribute("email") %> unregistered</h3>
+                <p>Your email address has been successfully unregistered from Device Locator notifications service.</p>
  <%
     } else {
  %>
-                <h3>Account error</h3>
+                <h3>Internal error</h3>
                 <p>Oops! Something went wrong. Please try again.</p>
  <%
     }
  %>
-
                     <!-- main -->
                 </div>
                 <%@ include file="/WEB-INF/jspf/sidebar.jsp" %>

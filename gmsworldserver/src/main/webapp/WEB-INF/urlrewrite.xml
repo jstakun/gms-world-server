@@ -380,5 +380,19 @@
             <to>/verify.do?se=$1&amp;u=1</to>
     </rule>
     
+    <!-- register.jsp http to https -->
+    <rule>
+    	<condition type="scheme" operator="notequal">https</condition>
+        <condition name="host" operator="equal">www.gms-world.net</condition>
+        <from>^/m/register.jsp</from>
+    	<to type="permanent-redirect" last="true">https://www.gms-world.net/m/register.jsp</to>
+	</rule>
+    <rule>
+    	<condition type="scheme" operator="notequal">https</condition>
+        <condition name="host" operator="equal">www.gms-world.net</condition>
+        <from>^/register.jsp</from>
+    	<to type="permanent-redirect" last="true">https://www.gms-world.net/register.jsp</to>
+	</rule>
+    
 </urlrewrite>
 

@@ -131,6 +131,10 @@
             <forward name="failure_reg" path="/failure.jsp?step=2"/>
             <forward name="success_unreg" path="/confirm.jsp?step=3"/>
             <forward name="failure_unreg" path="/failure.jsp?step=3"/>
+            <forward name="success_reg_mobile" path="/m/confirm.jsp?step=2"/>
+            <forward name="failure_reg_mobile" path="/m/failure.jsp?step=2"/>
+            <forward name="success_unreg_mobile" path="/m/confirm.jsp?step=3"/>
+            <forward name="failure_unreg_mobile" path="/m/failure.jsp?step=3"/>
         </action>
         <action path="/getHeatMap" type="com.jstakun.lm.server.struts.GetHeatMapAction">
             <forward name="success" path="/fullScreenHeatMap.jsp"/>

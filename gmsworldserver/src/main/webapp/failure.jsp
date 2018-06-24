@@ -37,19 +37,29 @@
                     <h3>Account registration failed</h3>
                     <p><a href="register.jsp">Please try again</a></p>
  <%
-    } else if (step.equals("2")) {
+    } else if (step.equals("2") && request.getAttribute("login") != null) {
  %>
-                    <h3>Account or email verification failed</h3>
+                    <h3>Account <%= request.getAttribute("login") %> verification failed</h3>
                     <p>Please try again or contact <a href="mailto:support@gms-world.net?subject=Account verification failed">System Administrator</a></p>
  <%
-    } else if (step.equals("3")) {
+    } else if (step.equals("2") && request.getAttribute("login") == null && request.getAttribute("email") != null) {
  %>
-                    <h3>Account or email unregistration failed</h3>
-                    <p>Please try again or contact <a href="mailto:support@gms-world.net?subject=Account unregistration failed">System Administrator</a></p>
+                    <h3>Email <%= request.getAttribute("email") %> verification failed</h3>
+                    <p>Please try again or contact <a href="mailto:support@gms-world.net?subject=Email verification failed">System Administrator</a></p>
+ <%
+    } else if (step.equals("3") && request.getAttribute("login") != null) {
+ %>
+                    <h3>Account <%= request.getAttribute("login") %> unregister failed</h3>
+                    <p>Please try again or contact <a href="mailto:support@gms-world.net?subject=Account unregister failed">System Administrator</a></p>
+ <%
+    } else if (step.equals("3") && request.getAttribute("login") == null && request.getAttribute("email") != null) {
+ %>
+                    <h3>Email <%= request.getAttribute("email") %> unregister failed</h3>
+                    <p>Please try again or contact <a href="mailto:support@gms-world.net?subject=Account unregister failed">System Administrator</a></p>
  <%
     } else {
  %>
-                    <h3>Account error</h3>
+                    <h3>Internal error</h3>
                     <p>Oops! Something went wrong. Please try again.</p>
  <%
     }

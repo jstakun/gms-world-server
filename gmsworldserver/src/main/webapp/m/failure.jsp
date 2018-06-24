@@ -4,7 +4,7 @@
 
 <head>
   <meta charset="utf-8" />  
-  <title>GMS World - Action Failure</title>
+  <title>GMS World Action Failure</title>
   <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0" /> 
   <link rel="stylesheet" media="all" href="/style.css" type="text/css">
   <%@ include file="/WEB-INF/jspf/head_small.jspf" %>
@@ -16,7 +16,6 @@
        
     <div class="content">
     	<article>
-    	
  <%
     String step = request.getParameter("step");
     if (step == null || step.length() != 1) {
@@ -25,27 +24,37 @@
 
     if (step.equals("1")) {
  %>
-                    <h3>Account Registration Failed</h3>
-                    <a href="register.jsp">Please try again</a>
+                    <h3>Account registration failed</h3>
+                    <p><a href="register.jsp">Please try again</a></p>
  <%
-    } else if (step.equals("2")) {
+    } else if (step.equals("2") && request.getAttribute("login") != null) {
  %>
-                    <h3>Account Verification Failed</h3>
-                    Please try again or contact <a href="mailto:support@gms-world.net?subject=Account verification failed">System Administrator</a>
+                    <h3>Account <%= request.getAttribute("login") %> verification failed</h3>
+                    <p>Please try again or contact <a href="mailto:support@gms-world.net?subject=Account verification failed">System Administrator</a></p>
  <%
-    } else if (step.equals("3")) {
+    } else if (step.equals("2") && request.getAttribute("login") == null && request.getAttribute("email") != null) {
  %>
-                    <h3>Account Unregistration Failed</h3>
-                    Please try again or contact <a href="mailto:support@gms-world.net?subject=Account unregistration failed">System Administrator</a>
+                    <h3>Email <%= request.getAttribute("email") %> verification failed</h3>
+                    <p>Please try again or contact <a href="mailto:support@gms-world.net?subject=Email verification failed">System Administrator</a></p>
+ <%
+    } else if (step.equals("3") && request.getAttribute("login") != null) {
+ %>
+                    <h3>Account <%= request.getAttribute("login") %> unregister failed</h3>
+                    <p>Please try again or contact <a href="mailto:support@gms-world.net?subject=Account unregister failed">System Administrator</a></p>
+ <%
+    } else if (step.equals("3") && request.getAttribute("login") == null && request.getAttribute("email") != null) {
+ %>
+                    <h3>Email <%= request.getAttribute("email") %> unregister failed</h3>
+                    <p>Please try again or contact <a href="mailto:support@gms-world.net?subject=Account unregister failed">System Administrator</a></p>
  <%
     } else {
  %>
-                    <h3>Account Action Error</h3>
-                    Oops! Something went wrong. Please try again.
+                    <h3>Internal error</h3>
+                    <p>Oops! Something went wrong. Please try again.</p>
  <%
     }
- %>       
-    	</article>
+ %>
+  	</article>
     	
     	<%@ include file="/WEB-INF/jspf/ad_small_baner.jspf" %>
     </div>

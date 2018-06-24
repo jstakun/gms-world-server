@@ -39,6 +39,7 @@ public class RegisterAction extends Action {
             if (StringUtils.isNotEmpty(secret )) {
             	MailUtils.sendVerificationRequest(email, login, secret, getServlet().getServletContext());
             	MailUtils.sendUserCreationNotification("User " + ConfigurationManager.SERVER_URL + "showUser/" + login + " created");
+            	request.setAttribute("email", email);
             } else {
             	status = "failure";
             }
