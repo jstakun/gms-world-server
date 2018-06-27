@@ -176,7 +176,13 @@ public class UrlUtils {
         		request.put("suffix", new JSONObject().put("option", "SHORT")); //UNGUESSABLE"));
         		String reply = HttpUtils.processFileRequest(url, "POST", "application/json", request.toString(), "application/json");
         		if (StringUtils.startsWith(reply, "{")) {
-        			 return new JSONObject(reply).getString("shortLink");
+        			 JSONObject replyJson = new JSONObject(reply);
+        			 if (replyJson.has("shortLink")) {
+        				 return replyJson.getString("shortLink");
+        			 } else {
+        				 logger.log(Level.WARNING, "Received following reply: " + reply);
+        				 return longUrl;
+        			 }
         		} else {
         			 logger.log(Level.WARNING, "Received following reply: " + reply);
         			 return longUrl;
