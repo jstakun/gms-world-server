@@ -38,17 +38,18 @@ public final class DeviceManagerServlet extends HttpServlet {
 		response.setContentType("text/json;charset=UTF-8");
 		PrintWriter out = response.getWriter();
 		try {
-			if (HttpUtils.isEmptyAny(request, "imei")) {
-				response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-			} else {
-				 String imei = request.getParameter("imei");
-		         //Integer pin = Integer.valueOf(request.getParameter("pin"));		
-		         int status = DevicePersistenceUtils.isDeviceRegistered(imei);
+			if (!HttpUtils.isEmptyAny(request, "imei")) {
+				 int status = DevicePersistenceUtils.isDeviceRegistered(request.getParameter("imei"));
 		         if (status == 1) {
 		        	  out.print("{\"status\":\"verified\"}");
 		         } else {
 		        	  out.print("{\"status\":\"unverified\"}");
 		         }
+			} else if (!HttpUtils.isEmptyAny(request, "username"))  {
+				String devices = DevicePersistenceUtils.getUserDevices(request.getParameter("username"));
+				out.print("{\"devices\":" + devices + "}");
+			} else {
+				response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);

@@ -129,4 +129,28 @@ public class DevicePersistenceUtils {
 		}
 		return false;
 	}
+	
+	public static String getUserDevices(String username) throws Exception {
+		if (username != null) {
+		    String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "getUserDevices?" + 
+	                 "username="+  username;
+		    String deviceJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(deviceUrl), Commons.getProperty(Property.RH_GMS_USER), false);		
+		    if (StringUtils.startsWith(deviceJson, "{")) {
+			   JSONObject root = new JSONObject(deviceJson);
+			   JSONObject output = root.optJSONObject("output");
+			   if (output != null) {
+				   return output.toString();   
+			   } else {
+				   logger.log(Level.SEVERE, "Oops! wrong imei returned!");
+				   return "[]";
+			   }
+		   } else {
+			   logger.log(Level.SEVERE, "Received following server response {0}", deviceJson);
+			   return "[]";
+		  }
+	   } else {
+		   logger.log(Level.SEVERE, "Username can't be null!");
+		   return "[]";
+	   }
+	}
 }
