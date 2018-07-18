@@ -5,6 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.jstakun.lm.server.config.ConfigurationManager;
@@ -137,11 +138,11 @@ public class DevicePersistenceUtils {
 		    String deviceJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(deviceUrl), Commons.getProperty(Property.RH_GMS_USER), false);		
 		    if (StringUtils.startsWith(deviceJson, "{")) {
 			   JSONObject root = new JSONObject(deviceJson);
-			   JSONObject output = root.optJSONObject("output");
+			   JSONArray output = root.optJSONArray("output");
 			   if (output != null) {
 				   return output.toString();   
 			   } else {
-				   logger.log(Level.SEVERE, "Oops! wrong imei returned!");
+				   logger.log(Level.SEVERE, "Received following server response {0}", deviceJson);
 				   return "[]";
 			   }
 		   } else {
