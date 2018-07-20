@@ -183,6 +183,28 @@ public class GeocodeCachePersistenceUtils {
     	return gc;
     }
     
+    public static GeocodeCache selectGeocodeCache(double lat, double lng) {
+        GeocodeCache gc = null;
+         try {
+        	String gUrl = RHCLOUD_SERVER_URL + "itemProvider";
+        	String params = "type=geocode&lat=" + lat + "&lng=" + lng;			 
+        	//logger.log(Level.INFO, "Calling: " + gUrl);
+        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
+        	//logger.log(Level.INFO, "Received response: " + gJson);
+        	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
+        		JSONObject root = new JSONObject(gJson);
+        		if (root.has("latitude") && root.has("longitude")) {
+        			gc = jsonToGeocode(root);
+        		}
+        	} else {
+        		logger.log(Level.SEVERE, "Received following server response: " + gJson);
+        	}
+        } catch (Exception e) {
+        	logger.log(Level.SEVERE, e.getMessage(), e);
+        }
+    	return gc;
+    }
+    
     private static GeocodeCache jsonToGeocode(JSONObject geocode) throws IllegalAccessException, InvocationTargetException {
 		GeocodeCache gc = new GeocodeCache();
 		   

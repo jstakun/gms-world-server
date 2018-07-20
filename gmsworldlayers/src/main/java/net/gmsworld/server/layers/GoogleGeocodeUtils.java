@@ -23,7 +23,8 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
 
 	@Override
 	protected JSONObject processGeocode(String addressIn, String email, int appId, boolean persistAsLandmark) {
-        JSONObject jsonResponse = new JSONObject();
+		//TODO read first from geocode cache
+		JSONObject jsonResponse = new JSONObject();
         try {
             logger.log(Level.INFO, "Calling Google geocode: {0}", addressIn);
             URL geocodeUrl = new URL("https://maps.googleapis.com/maps/api/geocode/json?address=" + URLEncoder.encode(addressIn, "UTF-8") + "&key=" + Commons.getProperty(Property.GOOGLE_API_KEY));
@@ -125,7 +126,7 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
 
 
 	@Override
-	public AddressInfo processReverseGeocode(double lat, double lng) {
+	protected AddressInfo processReverseGeocode(double lat, double lng) {
 		String coords = StringUtil.formatCoordE6(lat) + "," + StringUtil.formatCoordE6(lng);
 		final String key = getClass().getName() + coords;
 		AddressInfo addressInfo = cacheProvider.getObject(AddressInfo.class, key);

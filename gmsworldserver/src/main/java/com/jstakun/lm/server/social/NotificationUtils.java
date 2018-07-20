@@ -279,7 +279,8 @@ public class NotificationUtils {
     				} else {
     					fbTitle += "...";
     				}
-    			}  if (cheapestPrice != null) {
+    			}  
+    			if (cheapestPrice != null) {
                 	userMask = " " + fbTitle;
                 	fbTitle = "From " + cheapestPrice + " per night";
                 } else {
@@ -288,7 +289,7 @@ public class NotificationUtils {
                 if (hotelsCount > 0) {
                 	String hotelsUrl = UrlUtils.getShortUrl(com.jstakun.lm.server.config.ConfigurationManager.HOTELS_URL + "hotelLandmark/" + HtmlUtils.encodeDouble(latitude) + "/" + HtmlUtils.encodeDouble(longitude));
                 	return FacebookSocialUtils.sendMessageToPageFeed(hotelsUrl, userMask, fbTitle, imageUrl, Commons.HOTELS, null);
-                } if (hotelsCount == 0) { 
+                } else if (hotelsCount == 0) { 
     				logger.log(Level.INFO, "No hotels in range " + HOTELS_RADIUS + "km");
                 	return NO_HOTELS_IN_RANGE;
     			} else {

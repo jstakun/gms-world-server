@@ -88,6 +88,9 @@ public class GeocodeTest {
         System.out.println(GeocodeUtils.isValidLatitude(89d));
         
         System.out.println(GeocodeUtils.isValidLongitude(179d));
+        
+        String addressString = GeocodeHelperFactory.processReverseGeocodeAddress(54.352025, 18.646638);
+        System.out.println(addressString);
 	}
 
 }

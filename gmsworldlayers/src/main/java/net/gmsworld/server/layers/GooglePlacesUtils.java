@@ -451,7 +451,7 @@ public class GooglePlacesUtils extends LayerHelper {
                return null;
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "GooglePlacesUtils.gerPlaceDetails() exception:", e);
+            logger.log(Level.SEVERE, "GooglePlacesUtils.getPlaceDetails() exception:", e);
             return null;
         } 
     }
@@ -489,4 +489,8 @@ public class GooglePlacesUtils extends LayerHelper {
             } 
         }
     }
+	
+	public boolean isEnabled() {
+   		return false;
+   }
 }

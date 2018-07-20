@@ -134,16 +134,7 @@ public class LandmarkPersistenceWebUtils {
     }
     
     public static void setFlex(Landmark l, HttpServletRequest request) {
-    	//AddressInfo addressInfo = new AddressInfo();
-    	
-    	/*try {
-    		//addressInfo = GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(l.getLatitude(), l.getLongitude());
-			addressInfo = GeocodeHelperFactory.getMapQuestUtils().processReverseGeocode(l.getLatitude(), l.getLongitude());
-    	} catch (Exception e) {
-    		logger.log(Level.SEVERE, e.getMessage(), e);
-    	}*/
-    	
-    	int useCount = NumberUtils.getInt(request.getHeader(Commons.USE_COUNT_HEADER), 1);
+     	int useCount = NumberUtils.getInt(request.getHeader(Commons.USE_COUNT_HEADER), 1);
 		int appId = NumberUtils.getInt(request.getHeader(Commons.APP_HEADER), -1);
 		int version = NumberUtils.getInt(request.getHeader(Commons.APP_VERSION_HEADER), -1);
 		String deviceId = request.getHeader("X-GMS-DeviceId");
@@ -159,10 +150,6 @@ public class LandmarkPersistenceWebUtils {
 		if (deviceId != null) {
 			flex.put("deviceId", deviceId);
 		}
-		//flex.putOpt("cc", addressInfo.getField(AddressInfo.COUNTRY_CODE));
-		//flex.putOpt("city", addressInfo.getField(AddressInfo.CITY));
-		l.setFlex(flex.toString());
-		
-		//return addressInfo.getField(AddressInfo.EXTENSION); //formatted address
+		l.setFlex(flex.toString());		
     }
 }

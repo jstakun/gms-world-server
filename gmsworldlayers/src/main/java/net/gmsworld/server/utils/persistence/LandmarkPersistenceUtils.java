@@ -74,7 +74,7 @@ public class LandmarkPersistenceUtils {
     }
     
     public static void persistLandmark(Landmark landmark, CacheProvider cacheProvider) {
-    	Map<String, String> persistResponse = net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils.persistLandmark(landmark.getName(), landmark.getDescription(), landmark.getLatitude(), landmark.getLongitude(), landmark.getAltitude(), landmark.getUsername(), landmark.getValidityDate(), landmark.getLayer(), landmark.getEmail(), landmark.getFlex());
+    	Map<String, String> persistResponse = persistLandmark(landmark.getName(), landmark.getDescription(), landmark.getLatitude(), landmark.getLongitude(), landmark.getAltitude(), landmark.getUsername(), landmark.getValidityDate(), landmark.getLayer(), landmark.getEmail(), landmark.getFlex());
     	landmark.setId(NumberUtils.getInt(persistResponse.get("id"),-1));
     	landmark.setHash(persistResponse.get("hash"));
     	if (landmark.getId() > 0 && cacheProvider != null) {

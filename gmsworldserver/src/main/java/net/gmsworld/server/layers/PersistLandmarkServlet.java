@@ -12,6 +12,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
+
+import com.google.gdata.util.common.util.Base64;
+import com.jstakun.lm.server.utils.memcache.CacheUtil;
+import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
+import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceWebUtils;
+
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.utils.CryptoTools;
 import net.gmsworld.server.utils.HttpUtils;
@@ -19,14 +26,6 @@ import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.persistence.Landmark;
 import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;
-
-import org.apache.commons.lang.StringUtils;
-
-import com.google.gdata.util.common.util.Base64;
-import com.jstakun.lm.server.utils.memcache.CacheUtil;
-import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
-import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceWebUtils;
-import com.openlapi.AddressInfo;
 
 /**
  *
@@ -83,8 +82,7 @@ public class PersistLandmarkServlet extends HttpServlet {
                 logger.log(Level.INFO, "Creating new landmark in layer: " + layer);
                 
                 if (layer.equals(Commons.MY_POS_CODE)) {
-                	AddressInfo addressInfo = GeocodeHelperFactory.getGoogleGeocodeUtils().processReverseGeocode(l.getLatitude(), l.getLongitude());
-                    String address = addressInfo.getField(AddressInfo.EXTENSION);
+                	String address = GeocodeHelperFactory.processReverseGeocodeAddress(l.getLatitude(), l.getLongitude());
                 	if (StringUtils.isNotEmpty(address)) {
                 		l.setDescription(address);
                 	}

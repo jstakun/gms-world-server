@@ -45,12 +45,9 @@ public class ShowImageAction extends org.apache.struts.action.Action {
         Screenshot s = FileUtils.getScreenshot(key, false, request.isSecure());
         
         if (s != null) {
-        	AddressInfo ai = GeocodeHelperFactory.processReverseGeocode(s.getLatitude(),s.getLongitude());
-        	if (ai != null) {
-        		String address = ai.getField(AddressInfo.EXTENSION);
-        		if (StringUtils.isNotEmpty(address)) {
-        			request.setAttribute("address", address);
-        		}
+        	String address = GeocodeHelperFactory.processReverseGeocodeAddress(s.getLatitude(),s.getLongitude());
+        	if (StringUtils.isNotEmpty(address)) {
+        		request.setAttribute("address", address);
         	}
             request.setAttribute("screenshot", s);
         }
