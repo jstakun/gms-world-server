@@ -56,7 +56,7 @@ public class GeocodeHelperFactory {
 	
 	public static String processReverseGeocodeAddress(double latitude, double longitude) {
 		GeocodeCache gc = GeocodeCachePersistenceUtils.selectGeocodeCache(latitude, longitude);
-		if (gc.getLocation() != null) {
+		if (gc != null && gc.getLocation() != null) {
 			return gc.getLocation();
 		} else {
 			AddressInfo addressInfo = processReverseGeocode(latitude, longitude);

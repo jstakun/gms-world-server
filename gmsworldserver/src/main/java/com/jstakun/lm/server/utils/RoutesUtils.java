@@ -143,10 +143,10 @@ public class RoutesUtils {
     		 if (lsSize > 1) {
     			 try {
     				 Map<String, Object> props = f.getProperties();
-    				 f.setProperty("time", System.currentTimeMillis() - (long)props.get("creationTime"));
+    				 f.setProperty("time", System.currentTimeMillis() - (Long)props.get("creationTime"));
     				 double distance = 0d;
     				 if (props.containsKey("distance")) {
-    					 distance = (double)props.get("distance");
+    					 distance = (Double)props.get("distance");
     				 }
     				 LngLatAlt coord1 = ls.getCoordinates().get(lsSize-2);
     				 LngLatAlt coord2 = ls.getCoordinates().get(lsSize-1);
