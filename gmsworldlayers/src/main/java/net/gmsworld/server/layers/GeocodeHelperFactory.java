@@ -48,6 +48,9 @@ public class GeocodeHelperFactory {
 			 //if (addressInfo == null) {
 			 // addressInfo = getGoogleGeocodeUtils().processReverseGeocode(latitude, longitude);
 			 //}
+			 if (addressInfo == null) {
+				 addressInfo = new AddressInfo();
+			 }
 		 } catch (Exception e) {
 	         logger.log(Level.SEVERE, e.getMessage(), e);
 	     } 

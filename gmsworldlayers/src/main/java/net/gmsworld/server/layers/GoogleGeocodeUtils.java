@@ -131,9 +131,7 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
 		final String key = getClass().getName() + coords;
 		AddressInfo addressInfo = cacheProvider.getObject(AddressInfo.class, key);
 
-        if (addressInfo == null) {
-        	addressInfo = new AddressInfo();
-            
+        if (addressInfo == null) {      
         	try {
                 URL geocodeUrl = new URL("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + coords + "&language=en&key=" + Commons.getProperty(Property.GOOGLE_API_KEY));
                 addressInfo = getAddressInfo(geocodeUrl);
@@ -141,7 +139,7 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
                 logger.log(Level.SEVERE, ex.getMessage(), ex);
             }
 
-            if (StringUtils.isNotEmpty(addressInfo.getField(AddressInfo.EXTENSION))) {
+            if (addressInfo != null && StringUtils.isNotEmpty(addressInfo.getField(AddressInfo.EXTENSION))) {
             	cacheProvider.put(key, addressInfo);
             }
         } else {
@@ -157,7 +155,7 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
 	}
 	
 	private AddressInfo getAddressInfo(URL geocodeUrl) throws IOException {
-		AddressInfo addressInfo = new AddressInfo();
+		AddressInfo addressInfo = null;
 		String geocodeResponse = HttpUtils.processFileRequest(geocodeUrl);
         if (geocodeResponse != null) {
             JSONObject json = new JSONObject(geocodeResponse);
@@ -165,6 +163,7 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
             if (status.equals("OK")) {
                 JSONArray results = json.getJSONArray("results");
                 if (results.length() > 0) {
+                	addressInfo = new AddressInfo();
                     JSONObject item = results.getJSONObject(0);
                     addressInfo.setField(AddressInfo.EXTENSION, item.getString("formatted_address"));
                     
