@@ -1,6 +1,7 @@
 package com.jstakun.lm.server.utils.persistence;
 
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -95,13 +96,14 @@ public class DevicePersistenceUtils {
 				return -1;
 			}
 		    if (StringUtils.isNotEmpty(args)) {
-		    	deviceUrl += "&args=" + args;
+		    	deviceUrl += "&args=" + URLEncoder.encode(args, "UTF-8");
 		    }
 		    if (StringUtils.isNotEmpty(correlationId)) {
 		    	deviceUrl += "&correlationId=" + correlationId; 
 		    }
 		    String deviceJson = null;
 		    try {
+		    	logger.log(Level.INFO, "Calling: " + deviceUrl);
 			    deviceJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(deviceUrl), Commons.getProperty(Property.RH_GMS_USER), false);		
 			    JSONObject root = new JSONObject(deviceJson);
 			    if (root.optString("name") != null ) {
