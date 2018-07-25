@@ -91,6 +91,8 @@ public final class DeviceManagerServlet extends HttpServlet {
 		        	 }	 
 		        	 if (status == 1) {
 		        		 out.print("{\"status\":\"ok\"}");
+		        	 } else if (status == -2) {
+		        		 response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 		        	 } else {
 		        		 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		        	 }

@@ -19,7 +19,7 @@ public class DevicePersistenceUtils {
 	
 	private static final Logger logger = Logger.getLogger(DevicePersistenceUtils.class.getName());
 	
-	private static final String[] commands = {"resume","start","stop","route","locate","mute","normal","call","message",
+	private static final String[] commands = {"resume","start","stop","route","locate","mute","unmute","normal","call","message",
 			"radius","gpshigh","gpsbalance","notify","audio","noaudio","photo","ping","ring","ringoff","lock","pin","about"}; 
 	
 	public static int isDeviceRegistered(String imei) throws Exception {
@@ -103,7 +103,7 @@ public class DevicePersistenceUtils {
 		    }
 		    String deviceJson = null;
 		    try {
-		    	logger.log(Level.INFO, "Calling: " + deviceUrl);
+		    	//logger.log(Level.INFO, "Calling: " + deviceUrl);
 			    deviceJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(deviceUrl), Commons.getProperty(Property.RH_GMS_USER), false);		
 			    JSONObject root = new JSONObject(deviceJson);
 			    if (root.optString("name") != null ) {
@@ -118,7 +118,7 @@ public class DevicePersistenceUtils {
 		    }
 	   } else {
 		   logger.log(Level.SEVERE, "Command and/or pin are invalid!");
-		   return -1;
+		   return -2;
 	   }	
 	}
 	  

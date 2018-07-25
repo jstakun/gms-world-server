@@ -179,6 +179,8 @@ public class TelegramServlet extends HttpServlet {
 								
 								if (status == -1) {
 									reply = "Failed to send command " + commandName + " to the device " + deviceId;
+								} else if (status == -2) {
+									reply = "Invalid command " + commandName + " or pin";
 								} else {
 									CacheUtil.put(correlationId, telegramId + "_+_" + deviceId + "_+_" + commandName, CacheType.LANDMARK);
 								}

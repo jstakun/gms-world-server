@@ -134,6 +134,7 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
         if (addressInfo == null) {      
         	try {
                 URL geocodeUrl = new URL("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + coords + "&language=en&key=" + Commons.getProperty(Property.GOOGLE_API_KEY));
+                //logger.log(Level.INFO, "Calling: " + geocodeUrl.toString());
                 addressInfo = getAddressInfo(geocodeUrl);
             } catch (Exception ex) {
                 logger.log(Level.SEVERE, ex.getMessage(), ex);
@@ -189,7 +190,7 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
                     }
                 }
             } else {
-            	logger.log(Level.WARNING, "Received following Google reverse geocode response: " + status);
+            	logger.log(Level.WARNING, "Received following Google reverse geocode response: " + geocodeResponse);
             }
         }
         return addressInfo;
