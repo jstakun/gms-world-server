@@ -76,7 +76,8 @@ public final class DeviceManagerServlet extends HttpServlet {
 		         String command = request.getParameter("command");
 		         String args = request.getParameter("args");
 		         String correlationId = request.getParameter("correlationId");
-		         
+		         String action = request.getParameter("action"); 
+		        		 
 		         if (StringUtils.equalsIgnoreCase(token, "BLACKLISTED")) {
 		        	 logger.log(Level.SEVERE, "Imei: " + imei + ", token: " + token);
 	        		 response.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -85,7 +86,9 @@ public final class DeviceManagerServlet extends HttpServlet {
 		        	 int pin = NumberUtils.getInt(request.getParameter("pin"), -1);
 			         if (StringUtils.isNotEmpty(command) && pin >= 0) {
 		        		 status = DevicePersistenceUtils.sendCommand(imei, pin, name, username, command, args, correlationId);
-		        	 } else {
+		        	 } else if (StringUtils.equalsIgnoreCase(action, "delete")) {
+		        		 status = DevicePersistenceUtils.deleteDevice(imei);
+		        	 } else { 
 		        		 //logger.log(Level.INFO, "Imei: " + imei + ", pin: " + pin + ", name: " + name + ", username: " + username + ", token: " + token);
 		        		 status = DevicePersistenceUtils.setupDevice(imei, name, username, token);
 		        	 }	 

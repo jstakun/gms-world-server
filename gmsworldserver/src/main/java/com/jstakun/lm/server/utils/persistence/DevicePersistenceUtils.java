@@ -156,4 +156,21 @@ public class DevicePersistenceUtils {
 		   return "[]";
 	   }
 	}
+	
+	public static int deleteDevice(String imei) throws Exception {
+		if (imei != null) {
+		    String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "deleteDevice?" + 
+	                 "imei="+  imei;
+		    String deviceJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(deviceUrl), Commons.getProperty(Property.RH_GMS_USER), false);		
+		    if (StringUtils.startsWith(StringUtils.trim(deviceJson), "{")) {
+			   return 1;
+		   } else {
+			   logger.log(Level.SEVERE, "Received following server response {0}", deviceJson);
+			   return -1;
+		  }
+	   } else {
+		   logger.log(Level.SEVERE, "Imei can't be null!");
+		   return -2;
+	   }
+	}
 }
