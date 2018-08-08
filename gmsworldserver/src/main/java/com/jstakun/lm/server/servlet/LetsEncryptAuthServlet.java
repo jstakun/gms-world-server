@@ -45,13 +45,9 @@ public class LetsEncryptAuthServlet extends HttpServlet {
 				 if (StringUtils.isNotEmpty(value)) {
 					 tokens = StringUtils.split(value, ",");
 					 for (int i=0;i<tokens.length;i++) {
-						 //String[] token = StringUtils.split(tokens[i], ":");
-						 //if (token.length == 2 && StringUtils.equals(token[0],key)) {
-						 //	 out.print(token[1]);
-						 //}
-						 //each token has structure <key>.<value> or naked-domain.<key>.<value>
 						 String[] token = StringUtils.split(tokens[i], ".");
 						 if (token.length >= 2 && StringUtils.equals(token[0],key)) {
+							 logger.log(Level.INFO, "Returning: " +  token[token.length-2] + "." + token[token.length-1]);
 							 out.print(token[token.length-2] + "." + token[token.length-1]);
 						}
 					 }

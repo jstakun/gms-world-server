@@ -33,7 +33,7 @@ public final class FBCommons {
     
 	private static final String outf = "yyyyMMdd";
     private static final String redirect_uri = ConfigurationManager.SSL_SERVER_URL + "s/fbauth";
-    private static final String SCOPE = "email,publish_actions,user_tagged_places,user_posts,user_photos";
+    private static final String SCOPE = "email"; //,publish_actions,user_tagged_places,user_posts,user_photos";
     
     private static final Logger logger = Logger.getLogger(FBCommons.class.getName());
     
