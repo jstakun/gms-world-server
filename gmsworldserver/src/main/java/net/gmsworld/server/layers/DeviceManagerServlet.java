@@ -90,7 +90,7 @@ public final class DeviceManagerServlet extends HttpServlet {
 			        	 String[] cid = StringUtils.split(correlationId, "+=+");
 			        	 String commandKey = "";
 			        	 if (cid != null && cid.length == 2) {
-			        		 commandKey += cid[0] + "_";
+			        		 commandKey += cid[0].trim() + "_";
 			        	 }
 			        	 if (imei != null) {
 			 				 commandKey +=  imei  + "_";
@@ -99,7 +99,8 @@ public final class DeviceManagerServlet extends HttpServlet {
 			 			 }
 			        	 commandKey += command;
 			        	 if (CacheUtil.containsKey(commandKey)) {
-			        		  logger.log(Level.WARNING, "This command has been sent before " + commandKey);
+			        		  CacheUtil.increment(commandKey);
+			        		  logger.log(Level.WARNING, "Command " + commandKey + " has been sent before " + CacheUtil.getString(commandKey) + " times");
 			        	      //TODO status = -3;
 			        	      status = DevicePersistenceUtils.sendCommand(imei, pin, name, username, command, args, correlationId);
 			        	 } else {
