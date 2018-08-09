@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.jstakun.lm.server.utils.memcache.CacheUtil;
+import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 import com.jstakun.lm.server.utils.persistence.DevicePersistenceUtils;
 
 import net.gmsworld.server.utils.HttpUtils;
@@ -85,17 +87,36 @@ public final class DeviceManagerServlet extends HttpServlet {
 		        	 int status;
 		        	 int pin = NumberUtils.getInt(request.getParameter("pin"), -1);
 			         if (StringUtils.isNotEmpty(command) && pin >= 0) {
-		        		 status = DevicePersistenceUtils.sendCommand(imei, pin, name, username, command, args, correlationId);
+			        	 String[] cid = StringUtils.split(correlationId, "+=+");
+			        	 String commandKey = "";
+			        	 if (cid != null && cid.length == 2) {
+			        		 commandKey += cid[0] + "_";
+			        	 }
+			        	 if (imei != null) {
+			 				 commandKey +=  imei  + "_";
+			 			 } else if (username != null && name != null) {
+			 				 commandKey += username + "_" + name  + "_";
+			 			 }
+			        	 commandKey += command;
+			        	 if (CacheUtil.containsKey(commandKey)) {
+			        		  logger.log(Level.WARNING, "This command has been sent before " + commandKey);
+			        	      //TODO status = -3;
+			        	      status = DevicePersistenceUtils.sendCommand(imei, pin, name, username, command, args, correlationId);
+			        	 } else {
+			        		  CacheUtil.put(commandKey, "1", CacheType.FAST);
+			        		  status = DevicePersistenceUtils.sendCommand(imei, pin, name, username, command, args, correlationId);
+			        	 }		        		 
 		        	 } else if (StringUtils.equalsIgnoreCase(action, "delete")) {
 		        		 status = DevicePersistenceUtils.deleteDevice(imei);
 		        	 } else { 
-		        		 //logger.log(Level.INFO, "Imei: " + imei + ", pin: " + pin + ", name: " + name + ", username: " + username + ", token: " + token);
 		        		 status = DevicePersistenceUtils.setupDevice(imei, name, username, token);
 		        	 }	 
 		        	 if (status == 1) {
 		        		 out.print("{\"status\":\"ok\"}");
 		        	 } else if (status == -2) {
 		        		 response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+		        	 } else if (status == -3) {
+		        		 response.sendError(HttpServletResponse.SC_FORBIDDEN);
 		        	 } else {
 		        		 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		        	 }
