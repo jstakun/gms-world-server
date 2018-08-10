@@ -8,15 +8,13 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import net.gmsworld.server.layers.GeocodeHelperFactory;
-
 import com.jstakun.lm.server.persistence.Screenshot;
 import com.jstakun.lm.server.utils.FileUtils;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
-import com.openlapi.AddressInfo;
 
 import eu.bitwalker.useragentutils.DeviceType;
 import eu.bitwalker.useragentutils.OperatingSystem;
+import net.gmsworld.server.layers.GeocodeHelperFactory;
 
 /**
  *

@@ -6,13 +6,6 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.layers.GeocodeHelperFactory;
-import net.gmsworld.server.layers.HotelsBookingUtils;
-import net.gmsworld.server.layers.LayerHelperFactory;
-import net.gmsworld.server.utils.HttpUtils;
-import net.gmsworld.server.utils.StringUtil;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -20,10 +13,15 @@ import org.apache.struts.action.ActionMapping;
 
 import com.jstakun.lm.server.utils.HtmlUtils;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
-import com.openlapi.AddressInfo;
 
 import eu.bitwalker.useragentutils.DeviceType;
 import eu.bitwalker.useragentutils.OperatingSystem;
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.layers.GeocodeHelperFactory;
+import net.gmsworld.server.layers.HotelsBookingUtils;
+import net.gmsworld.server.layers.LayerHelperFactory;
+import net.gmsworld.server.utils.HttpUtils;
+import net.gmsworld.server.utils.StringUtil;
 
 /**
  *

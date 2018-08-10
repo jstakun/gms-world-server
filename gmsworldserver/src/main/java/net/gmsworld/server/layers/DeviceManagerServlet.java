@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
-import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 import com.jstakun.lm.server.utils.persistence.DevicePersistenceUtils;
 
 import net.gmsworld.server.utils.HttpUtils;

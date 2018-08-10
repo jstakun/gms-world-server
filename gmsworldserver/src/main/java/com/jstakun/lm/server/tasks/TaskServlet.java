@@ -2,7 +2,6 @@ package com.jstakun.lm.server.tasks;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -23,9 +22,7 @@ import com.jstakun.lm.server.utils.RHCloudUtils;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.jstakun.lm.server.utils.persistence.NotificationPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.ScreenshotPersistenceUtils;
-import com.jstakun.lm.server.utils.persistence.ServiceLogPersistenceUtils;
 
-import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.ImageUtils;
 import net.gmsworld.server.utils.NumberUtils;
