@@ -14,11 +14,10 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.gmsworld.server.utils.NumberUtils;
-
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
-import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
+
+import net.gmsworld.server.utils.NumberUtils;
 
 /**
  * Servlet Filter implementation class IPFilter
@@ -44,20 +43,8 @@ public class IPFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		final String ip = request.getRemoteAddr();
 		final String ip_key = getClass().getName() + "_" + ip;
-
-		Integer total_count = CacheUtil.getObject(Integer.class, ip_key);
-
-		if (total_count == null) {
-			total_count = 1;
-			CacheUtil.put(ip_key, 0, CacheType.NORMAL);
-		} else {
-			total_count += 1;
-		}
-		
-		CacheUtil.increment(ip_key);
-		
-		logger.log(Level.INFO, "Added address to cache " + ip_key + ": " + total_count);
-		
+		Long total_count = CacheUtil.increment(ip_key);
+		logger.log(Level.INFO, "Added address to cache " + ip_key + ": " + total_count);	
 		if (total_count > NumberUtils.getInt(ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.IP_TOTAL_LIMIT, "90"), 90)) {
 				logger.log(Level.WARNING, "IP: " + ip + " is blocked after " + total_count + " requests");
 				if (response instanceof HttpServletResponse) {
@@ -76,20 +63,8 @@ public class IPFilter implements Filter {
 			    final HttpServletRequest httpRequest = (HttpServletRequest) request;
 				final String uri = httpRequest.getRequestURI();
 				final String uri_key = getClass().getName() + "_" + ip + "_" + uri;
-            			
-				Integer uri_count = CacheUtil.getObject(Integer.class, uri_key);
-
-				if (uri_count == null) {
-					uri_count = 1;
-					CacheUtil.put(uri_key, 0, CacheType.NORMAL);
-				} else {
-					uri_count += 1;
-				}
-			
-				CacheUtil.increment(uri_key);
-			
+				Long uri_count = CacheUtil.increment(uri_key);
 				logger.log(Level.INFO, "Added uri to cache " + uri_key + ": " + uri_count);
-            
 				if (uri_count > NumberUtils.getInt(ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.IP_URI_LIMIT, "3"), 3)) {
 					logger.log(Level.INFO, "User-Agent: " + httpRequest.getHeader("User-Agent"));
 					logger.log(Level.WARNING, "IP: " + ip + " is blocked after " + uri_count + " uri requests");

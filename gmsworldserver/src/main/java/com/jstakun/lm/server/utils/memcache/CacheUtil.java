@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 import net.sf.jsr107cache.Cache;
 import net.sf.jsr107cache.CacheException;
 import net.sf.jsr107cache.CacheFactory;
-import net.sf.jsr107cache.CacheListener;
 import net.sf.jsr107cache.CacheManager;
 
 import org.json.JSONObject;
@@ -138,9 +137,9 @@ public class CacheUtil {
 		syncCache.put(key + "_" + layer, value, ONE_HOUR_EXPIRATION);
 	}
 	
-	public static void increment(String key) {
+	public static Long increment(String key) {
 		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
-		syncCache.increment(key, 1);
+		return syncCache.increment(key, 1, 0L);
 	}
 	
 	public static void put(String key, Object value, CacheType type) {

@@ -12,10 +12,9 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import net.gmsworld.server.config.Commons;
-
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
-import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
+
+import net.gmsworld.server.config.Commons;
 
 /**
  * Servlet Filter implementation class TokenFilter
@@ -43,19 +42,8 @@ public class TokenFilter implements Filter {
 			HttpServletRequest httpRequest = (HttpServletRequest)request;
 			String authHeader = httpRequest.getHeader(Commons.TOKEN_HEADER);
 			if (authHeader != null) {
-				Integer token_count = CacheUtil.getObject(Integer.class, authHeader);
-				
-				if (token_count == null) {
-					token_count = 1;
-					CacheUtil.put(authHeader, 0, CacheType.NORMAL);
-				} else {
-					token_count += 1;
-				}
-			
-				CacheUtil.increment(authHeader);
-			
+				Long token_count = CacheUtil.increment(authHeader);
 				logger.log(Level.INFO, "Added token to cache " + authHeader + ": " + token_count);
-				
 				if (token_count > 100) {
 					logger.log(Level.WARNING, "User with token {0} sent {1} requests.", new Object[]{authHeader, token_count});
 				}
