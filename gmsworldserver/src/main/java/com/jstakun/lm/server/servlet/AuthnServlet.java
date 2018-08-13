@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.jstakun.lm.server.servlet;
 
 import java.io.IOException;
@@ -18,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
 
 import net.gmsworld.server.config.ConfigurationManager;
+import net.gmsworld.server.utils.StringUtil;
+
 import com.jstakun.lm.server.utils.MailUtils;
 import com.jstakun.lm.server.utils.persistence.TokenPersistenceUtils;
 
@@ -46,11 +43,13 @@ public class AuthnServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         JSONObject resp = new JSONObject();
         try {
-            String username = (String)request.getAttribute("username");
+            final String username = (String)request.getAttribute("username");
+            final String scope = StringUtil.getStringParam(request.getParameter("scope"), "lm");
             if (username != null) {
-           		String key = TokenPersistenceUtils.generateToken("lm", username);
+           		String key = TokenPersistenceUtils.generateToken(scope, username);
         		resp.put(ConfigurationManager.GMS_TOKEN, key);   
-           		String email = (String) request.getAttribute("email");
+        		resp.put("scope", scope);
+        		String email = (String) request.getAttribute("email");
            		if (email != null) {
            			resp.put(ConfigurationManager.USER_EMAIL, email);
            			String name = (String)request.getAttribute("name");
@@ -59,7 +58,6 @@ public class AuthnServlet extends HttpServlet {
            			}
            			MailUtils.sendLoginNotification(email, name, "GMS World", getServletContext());
            		} 
-           		out.print(resp.toString());  	
             } else {
             	resp.put("message", "No password encrypted");
             }

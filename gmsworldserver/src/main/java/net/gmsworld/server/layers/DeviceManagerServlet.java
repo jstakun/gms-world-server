@@ -99,12 +99,13 @@ public final class DeviceManagerServlet extends HttpServlet {
 			        	 commandKey += command;
 			        	 Long count = CacheUtil.increment(commandKey);
 			        	 if (count > 10) {
-			        		 logger.log(Level.WARNING, "Command " + commandKey + " has been sent before " + count + " times");
+			        		 logger.log(Level.WARNING, "Command " + commandKey + " has been sent " + count + " times");
+			        		 //TODO status = -3;
+			        		 status = DevicePersistenceUtils.sendCommand(imei, pin, name, username, command, args, correlationId);
 			        	 } else {
-			        		  logger.log(Level.INFO, "Command " + commandKey + " has been sent before " + count + " times");
-			        	 } 
-			        	 //TODO status = -3;
-			        	 status = DevicePersistenceUtils.sendCommand(imei, pin, name, username, command, args, correlationId);       		 
+			        		  logger.log(Level.INFO, "Command " + commandKey + " has been sent " + count + " times");
+			        		  status = DevicePersistenceUtils.sendCommand(imei, pin, name, username, command, args, correlationId);
+			        	 }        		 
 		        	 } else if (StringUtils.equalsIgnoreCase(action, "delete")) {
 		        		 status = DevicePersistenceUtils.deleteDevice(imei);
 		        	 } else { 
