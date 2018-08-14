@@ -20,7 +20,7 @@ public class DevicePersistenceUtils {
 	private static final Logger logger = Logger.getLogger(DevicePersistenceUtils.class.getName());
 	
 	private static final String[] commands = {"resume","start","stop","route","locate","mute","unmute","normal","call","message",
-			"radius","gpshigh","gpsbalance","notify","audio","noaudio","photo","ping","ring","ringoff","lock","pin","about"}; 
+			"radius","gpshigh","gpsbalance","notify","audio","noaudio","photo","ping","ring","ringoff","lock","pin","about", "hello"}; 
 	
 	public static int isDeviceRegistered(String imei) throws Exception {
 		if (imei != null) {
