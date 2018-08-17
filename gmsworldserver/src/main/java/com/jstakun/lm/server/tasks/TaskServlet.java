@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,10 +15,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.json.JSONObject;
 
 import com.jstakun.lm.server.config.ConfigurationManager;
+import com.jstakun.lm.server.persistence.Notification;
 import com.jstakun.lm.server.utils.FileUtils;
+import com.jstakun.lm.server.utils.MailUtils;
 import com.jstakun.lm.server.utils.RHCloudUtils;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.jstakun.lm.server.utils.persistence.NotificationPersistenceUtils;
@@ -101,7 +105,16 @@ public class TaskServlet extends HttpServlet {
             		 loadCurrency(currencies[i]);
             	 }
              } else if (StringUtils.equalsIgnoreCase(action, "register_dl")) {
-            	 NotificationPersistenceUtils.requestForConfirmation(this.getServletContext());
+            	 List<Notification> unverified = NotificationPersistenceUtils.findByStatus(Notification.Status.UNVERIFIED);
+         		 if (unverified != null && !unverified.isEmpty()) {
+         			for (Notification n : unverified) {
+         				String email = n.getId();
+         				if (EmailValidator.getInstance().isValid(email)) {
+         					  String status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), getServletContext(), false);
+         					  logger.log(Level.INFO, "Registration confirmation request has been sent to: " + email + " with status: " + status);
+         				}
+         			}
+         		 }
              } else {
                 logger.log(Level.SEVERE, "Wrong parameter action: {0}", action);
              }            

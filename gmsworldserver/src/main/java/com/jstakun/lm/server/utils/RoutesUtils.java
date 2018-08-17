@@ -156,7 +156,7 @@ public class RoutesUtils {
     				 logger.log(Level.SEVERE, e.getMessage(), e);
     			 }
     		 }
-    		 //logger.log(Level.INFO, "Adding to cache new route: " + routeId + ":" + fc.toString());
+    		 //logger.log(Level.INFO, "Adding to cache route " + routeId + ":" + fc.toString());
 	    	 CacheUtil.put(routeId, fc, CacheType.LONG);
 	     }
 }

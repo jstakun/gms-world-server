@@ -7,15 +7,12 @@ import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
-import javax.servlet.ServletContext;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.validator.routines.EmailValidator;
 
 import com.jstakun.lm.server.persistence.EMF;
 import com.jstakun.lm.server.persistence.Notification;
-import com.jstakun.lm.server.utils.MailUtils;
 
 public class NotificationPersistenceUtils {
 	
@@ -101,7 +98,7 @@ public class NotificationPersistenceUtils {
 		return null;
 	}
 	
-	private static List<Notification> findByStatus(Notification.Status status) {
+	public static List<Notification> findByStatus(Notification.Status status) {
 		EntityManager pm = EMF.get().createEntityManager();
 		List<Notification> notifications = null;
 		try {
@@ -131,38 +128,7 @@ public class NotificationPersistenceUtils {
 		}
 		return verified;
 	}
-	
-	/*private static boolean isRegistered(String id, String secret) {
-		boolean unverified = false;
-		if (StringUtils.isNotEmpty(id) && StringUtils.isNotEmpty(secret)) {
-			EntityManager pm = EMF.get().createEntityManager();
-			try {
-				Notification n = findById(id, pm);
-				if (n != null && n .getStatus() == Notification.Status.UNVERIFIED && StringUtils.equals(n.getSecret(), secret)) {
-					unverified = true;
-				}
-			} finally {
-				pm.close();
-			}
-		}
-		return unverified;
-	}*/
-	
-	/*public static void migrate() {
-		  List<String> whitelistList = new ArrayList<String>(Arrays.asList(ConfigurationManager.getArray(net.gmsworld.server.config.ConfigurationManager.DL_TELEGRAM_WHITELIST)));
-		  for (String telegramId : whitelistList) {
-			    persist(telegramId, Notification.Status.VERIFIED);
-		  }
-		  whitelistList = new ArrayList<String>(Arrays.asList(ConfigurationManager.getArray(net.gmsworld.server.config.ConfigurationManager.DL_EMAIL_WHITELIST)));
-		  for (String emailId : whitelistList) {
-			    if  (emailId.contains(":")) {
-			    	persist(emailId.split(":")[1], Notification.Status.UNVERIFIED);
-			    } else {
-			    	persist(emailId, Notification.Status.VERIFIED);
-			    }
-		  }	
-	}*/
-	
+
 	//telegram
 	
 	public static boolean isWhitelistedTelegramId(String telegramId) {
@@ -170,7 +136,7 @@ public class NotificationPersistenceUtils {
 	}
 
 	public static void addToWhitelistTelegramId(String telegramId) {
-		persist(telegramId, Notification.Status.VERIFIED);
+		 persist(telegramId, Notification.Status.VERIFIED);
 	}
 	
     //email
@@ -209,18 +175,5 @@ public class NotificationPersistenceUtils {
 			pm.close();
 		}
 		return n;
-	}
-	
-	public static void requestForConfirmation(ServletContext sc) {
-		List<Notification> unverified = findByStatus(Notification.Status.UNVERIFIED);
-		if (unverified != null && !unverified.isEmpty()) {
-			for (Notification n : unverified) {
-				String email = n.getId();
-				if (EmailValidator.getInstance().isValid(email)) {
-					  String status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), sc, false);
-					  logger.log(Level.INFO, "Registration confirmation request has been sent to: " + email + " with status: " + status);
-				}
-			}
-		}
 	}
 }
