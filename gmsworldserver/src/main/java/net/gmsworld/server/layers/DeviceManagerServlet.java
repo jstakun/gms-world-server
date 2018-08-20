@@ -77,7 +77,8 @@ public final class DeviceManagerServlet extends HttpServlet {
 		         String command = request.getParameter("command");
 		         String args = request.getParameter("args");
 		         String correlationId = request.getParameter("correlationId");
-		         String action = request.getParameter("action"); 
+		         String action = request.getParameter("action");
+		         String flex = request.getParameter("flex"); 
 		        		 
 		         if (StringUtils.equalsIgnoreCase(token, "BLACKLISTED")) {
 		        	 logger.log(Level.SEVERE, "Imei: " + imei + ", token: " + token);
@@ -101,10 +102,10 @@ public final class DeviceManagerServlet extends HttpServlet {
 			        	 if (count > 10) {
 			        		 logger.log(Level.WARNING, "Command " + commandKey + " has been sent " + count + " times");
 			        		 //TODO status = -3;
-			        		 status = DevicePersistenceUtils.sendCommand(imei, pin, name, username, command, args, correlationId);
+			        		 status = DevicePersistenceUtils.sendCommand(imei, pin, name, username, command, args, correlationId, flex);
 			        	 } else {
 			        		  logger.log(Level.INFO, "Command " + commandKey + " has been sent " + count + " times");
-			        		  status = DevicePersistenceUtils.sendCommand(imei, pin, name, username, command, args, correlationId);
+			        		  status = DevicePersistenceUtils.sendCommand(imei, pin, name, username, command, args, correlationId, flex);
 			        	 }        		 
 		        	 } else if (StringUtils.equalsIgnoreCase(action, "delete")) {
 		        		 status = DevicePersistenceUtils.deleteDevice(imei);

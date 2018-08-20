@@ -83,7 +83,7 @@ public class DevicePersistenceUtils {
 	   }
 	}
 
-	public static int sendCommand(String imei, Integer pin, String name, String username, String command, String args, String correlationId) throws Exception {
+	public static int sendCommand(String imei, Integer pin, String name, String username, String command, String args, String correlationId, String flex) throws Exception {
 		if (pin != null && isValidCommand(command)) {
 			String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "commandDevice?" + 
 					"command=" + command + "&pin=" + pin;
@@ -100,6 +100,9 @@ public class DevicePersistenceUtils {
 		    }
 		    if (StringUtils.isNotEmpty(correlationId)) {
 		    	deviceUrl += "&correlationId=" + correlationId; 
+		    }
+		    if (StringUtils.isNotEmpty(flex)) {
+		    	deviceUrl += "&flex=" + flex; 
 		    }
 		    String deviceJson = null;
 		    try {

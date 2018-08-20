@@ -172,9 +172,9 @@ public class TelegramServlet extends HttpServlet {
 							
 								int status;
 								if (username == null) {
-									status = DevicePersistenceUtils.sendCommand(deviceId, pin, null, null, command, args, correlationId);
+									status = DevicePersistenceUtils.sendCommand(deviceId, pin, null, null, command, args, correlationId, null);
 								} else {
-									status = DevicePersistenceUtils.sendCommand(null, pin, deviceId, username, command, args, correlationId);
+									status = DevicePersistenceUtils.sendCommand(null, pin, deviceId, username, command, args, correlationId, null);
 								}
 								
 								if (status == -1) {
