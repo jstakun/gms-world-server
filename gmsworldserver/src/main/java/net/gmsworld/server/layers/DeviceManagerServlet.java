@@ -15,6 +15,7 @@ import org.apache.commons.lang.StringUtils;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.persistence.DevicePersistenceUtils;
 
+import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.NumberUtils;
 
@@ -79,7 +80,24 @@ public final class DeviceManagerServlet extends HttpServlet {
 		         String correlationId = request.getParameter("correlationId");
 		         String action = request.getParameter("action");
 		         String flex = request.getParameter("flex"); 
-		        		 
+		         
+		         try {
+		        	 Double latitude = null, longitude = null;
+		        	 if (request.getHeader(Commons.LAT_HEADER) != null) {
+		        		 latitude = GeocodeUtils.getLatitude(request.getHeader(Commons.LAT_HEADER));
+		        	 }
+		        	 if (request.getHeader(Commons.LNG_HEADER) != null) {
+		        		 longitude = GeocodeUtils.getLongitude(request.getHeader(Commons.LNG_HEADER));
+		        	 }
+		             if (StringUtils.isEmpty(flex)) {
+		            	 flex = "geo:" + latitude + "," + longitude;
+		             } else {
+		            	 flex += ",geo:" + latitude + "," + longitude;
+		             }
+		         } catch (Exception e) {
+		        	 logger.log(Level.SEVERE, e.getMessage(), e);
+		         }
+		         		        		 
 		         if (StringUtils.equalsIgnoreCase(token, "BLACKLISTED")) {
 		        	 logger.log(Level.SEVERE, "Imei: " + imei + ", token: " + token);
 	        		 response.sendError(HttpServletResponse.SC_BAD_REQUEST);
