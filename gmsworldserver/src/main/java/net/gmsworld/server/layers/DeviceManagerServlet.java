@@ -89,11 +89,15 @@ public final class DeviceManagerServlet extends HttpServlet {
 		        	 if (request.getHeader(Commons.LNG_HEADER) != null) {
 		        		 longitude = GeocodeUtils.getLongitude(request.getHeader(Commons.LNG_HEADER));
 		        	 }
-		             if (StringUtils.isEmpty(flex)) {
-		            	 flex = "geo:" + latitude + "," + longitude;
-		             } else {
-		            	 flex += ",geo:" + latitude + "," + longitude;
-		             }
+		        	 if (latitude != null && longitude != null) {
+		        		 if (StringUtils.isEmpty(flex)) {
+		        			 flex = "geo:" + latitude + "," + longitude;
+		        		 } else {
+		        			 flex += ",geo:" + latitude + "," + longitude;
+		        		 }
+		        	 } else {
+		        		 logger.log(Level.INFO, "No location header provided");
+		        	 }
 		         } catch (Exception e) {
 		        	 logger.log(Level.SEVERE, e.getMessage(), e);
 		         }
