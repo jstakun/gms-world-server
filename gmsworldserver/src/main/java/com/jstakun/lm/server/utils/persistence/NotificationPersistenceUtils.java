@@ -1,5 +1,6 @@
 package com.jstakun.lm.server.utils.persistence;
 
+import java.net.URL;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -11,8 +12,13 @@ import javax.persistence.TypedQuery;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 
+import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.persistence.EMF;
 import com.jstakun.lm.server.persistence.Notification;
+
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.utils.HttpUtils;
 
 public class NotificationPersistenceUtils {
 	
@@ -45,6 +51,24 @@ public class NotificationPersistenceUtils {
 				}
 				pm.close();
 			}
+			//TODO testing cloud provider
+			try {
+				String landmarksUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "addItem";
+	        	String params = "id=" + id + "&type=notification";
+	        	if (status.equals(Notification.Status.VERIFIED)) {
+	        		params += "&status=1";
+	        	}
+	        	//logger.log(Level.INFO, "Calling: " + landmarksUrl);
+	        	String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
+	        	logger.log(Level.INFO, "Received response: " + landmarksJson);
+	        	if (StringUtils.startsWith(StringUtils.trim(landmarksJson), "{")) {
+	        		//JSONObject resp = new JSONObject(landmarksJson);
+	        		//key = resp.optString("id");
+	        		logger.log(Level.INFO, "Received response: " + landmarksJson);
+	        	}	
+			} catch (Exception ex) {
+				logger.log(Level.SEVERE, ex.getMessage(), ex);
+			}
 		}
 		return n;
     }
@@ -68,6 +92,19 @@ public class NotificationPersistenceUtils {
 				}
 				pm.close();
 			}
+			//TODO testing cloud provider
+			try {
+	        	String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "deleteItem";
+	        	String params = "type=notification&id=" + id;			 
+	        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
+	        	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
+	        		logger.log(Level.INFO, "Notification removal status: " + gJson);
+	        	} else {
+	        		logger.log(Level.SEVERE, "Received following server response: " + gJson);
+	        	}
+	        } catch (Exception e) {
+	        	logger.log(Level.SEVERE, e.getMessage(), e);
+	        }
 		}	
         return removed;
     }
