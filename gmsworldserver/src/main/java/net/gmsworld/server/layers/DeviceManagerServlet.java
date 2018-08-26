@@ -95,6 +95,9 @@ public final class DeviceManagerServlet extends HttpServlet {
 		        		 } else {
 		        			 flex += ",geo:" + latitude + "," + longitude;
 		        		 }
+		        		 if (StringUtils.isNotEmpty(request.getHeader("X-GMS-DeviceName"))) {
+		        			 flex += "," + request.getHeader("X-GMS-DeviceName");
+		        		 }
 		        	 } else {
 		        		 logger.log(Level.INFO, "No location header provided");
 		        	 }

@@ -2,33 +2,12 @@ package com.jstakun.lm.server.persistence;
 
 import java.util.Date;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-
-@Entity
-
-@NamedQueries({
-	@NamedQuery(name = "Notification.findById", query = "select n from Notification n where n.id = :id"),
-	@NamedQuery(name = "Notification.findBySecret", query = "select n from Notification n where n.secret = :secret"),
-	@NamedQuery(name = "Notification.findAllWithStatus", query = "select n from Notification n where n.status = :status"),
-})	
-
 public class Notification {
 	
 	public enum Status {VERIFIED, UNVERIFIED};
 
-	public static final String NOTIFICATION_FINDBYID= "Notification.findById";
-	public static final String NOTIFICATION_FINDBYSECRET= "Notification.findBySecret";
-	public static final String NOTIFICATION_FINDALLWITHSTATUS= "Notification.findAllWithStatus";
-	
-	@Id
 	private String id;
 	
-	@Enumerated(EnumType.STRING)
 	private Status status;
 	
 	private Date lastUpdateDate;
@@ -71,5 +50,9 @@ public class Notification {
 
 	public void setSecret(String secret) {
 		this.secret = secret;
+	}
+	
+	public void setId(String id) {
+		this.id = id;
 	}
 }
