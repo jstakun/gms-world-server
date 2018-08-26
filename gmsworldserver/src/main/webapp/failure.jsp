@@ -59,8 +59,8 @@
  <%
     } else {
  %>
-                    <h3>Internal error</h3>
-                    <p>Oops! Something went wrong. Please try again.</p>
+                    <h3>Unregister error</h3>
+                     <p>Please try again or contact <a href="mailto:support@gms-world.net?subject=Account unregister failed">System Administrator</a></p>
  <%
     }
  %>

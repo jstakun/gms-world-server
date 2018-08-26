@@ -85,9 +85,10 @@ public class AccountAction extends Action {
         	String secret = request.getParameter("sc");
         	Notification n = NotificationPersistenceUtils.verifyWithSecret(secret);
         	if (n != null) {
-        		NotificationPersistenceUtils.remove(n.getId());
-        		request.setAttribute("email", n.getId());
-        		result = true;
+        		if (NotificationPersistenceUtils.remove(n.getId())) {
+        			request.setAttribute("email", n.getId());
+        			result = true;
+        		}
         	} 
         } else if (!HttpUtils.isEmptyAny(request, "k", "u")) {
         	//unregister user from GMS World

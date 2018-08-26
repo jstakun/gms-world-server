@@ -48,6 +48,7 @@ public final class DeviceManagerServlet extends HttpServlet {
 		        	  out.print("{\"status\":\"unverified\"}");
 		         }
 			} else if (!HttpUtils.isEmptyAny(request, "username"))  {
+				//TODO move to post
 				String devices = DevicePersistenceUtils.getUserDevices(request.getParameter("username"));
 				out.print("{\"devices\":" + devices + "}");
 			} else {
