@@ -60,7 +60,7 @@
     } else {
  %>
                     <h3>Unregister error</h3>
-                     <p>Please try again or contact <a href="mailto:support@gms-world.net?subject=Account unregister failed">System Administrator</a></p>
+                     <p>Please try again or contact <a href="mailto:support@gms-world.net?subject=Unregister failed">System Administrator</a></p>
  <%
     }
  %>
