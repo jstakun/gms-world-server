@@ -284,12 +284,12 @@
     </rule>
     
     <rule>
-            <from>^/dlr/([0-9_]+)/([0-9_]+)/(now)$</from>
+            <from>^/dlr/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)/(now)$</from>
             <to>/showRoute.do?route=device_locator_route_$1_$2&amp;now=1</to>
     </rule>
     
     <rule>
-            <from>^/dlr/([0-9_]+)/([0-9_]+)$</from>
+            <from>^/dlr/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)$</from>
             <to>/showRoute.do?route=device_locator_route_$1_$2</to>
     </rule>
     

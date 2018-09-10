@@ -99,6 +99,9 @@ public final class DeviceManagerServlet extends HttpServlet {
 		        		 if (StringUtils.isNotEmpty(request.getHeader("X-GMS-DeviceName"))) {
 		        			 flex += "," + request.getHeader("X-GMS-DeviceName");
 		        		 }
+		        		 if (StringUtils.isNotEmpty(request.getHeader("X-GMS-RouteId"))) {
+		        			 flex += ",rid:" + request.getHeader("X-GMS-RouteId");
+		        		 }
 		        	 } else {
 		        		 logger.log(Level.INFO, "No location header provided");
 		        	 }
