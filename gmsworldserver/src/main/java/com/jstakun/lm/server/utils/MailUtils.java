@@ -102,7 +102,11 @@ public class MailUtils {
     }
     
     public static void sendAdminMail(String message) {
-    	sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, "Admin message", message, "text/plain", null, null);
+    	sendAdminMail("Admin message", message) ;
+    }
+    
+    public static void sendAdminMail(String title, String message) {
+    	sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, title, message, "text/plain", null, null);
     }
 
     public static void sendEmailingMessage(String toA, String nick, String message) {

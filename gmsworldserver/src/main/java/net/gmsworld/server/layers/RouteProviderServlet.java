@@ -17,6 +17,7 @@ import org.json.JSONObject;
 
 import com.google.common.collect.ImmutableMap;
 import com.jstakun.lm.server.social.NotificationUtils;
+import com.jstakun.lm.server.utils.MailUtils;
 import com.jstakun.lm.server.utils.RoutesUtils;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 
@@ -160,9 +161,21 @@ public class RouteProviderServlet extends HttpServlet {
         		if (StringUtils.startsWith(routeStr, "{")) {
         			String[] resp = RoutesUtils.cache(routeStr);
         			if (! StringUtils.equals(resp[1], "200")) {
-        				logger.log(Level.SEVERE, "Server error", resp[1] + ": " + resp[0]);
+        				logger.log(Level.SEVERE, "Server error: " + resp[1] + " " + resp[0]);
         				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, resp[0]);
         			} else if (resp[0] != null) {
+        				try {
+        					JSONObject route = new JSONObject(routeStr);
+        					String routeName = route.getString("name");
+        					String[] tokens = StringUtils.split(routeName, "_");
+        					if (tokens.length == 5) {
+        						MailUtils.sendAdminMail("New route", "New route saved: " + routeName + "\n" + ConfigurationManager.SERVER_URL + "dlr/" + tokens[3] + "/" + tokens[4]);
+        					} else {
+        						MailUtils.sendAdminMail("New route", "New route saved: " + routeName);
+        					}
+        				} catch (Exception e) {
+        					logger.log(Level.SEVERE, e.getMessage(), e);
+        				}
         				out.println(resp[0]);
         				out.close();
         			}
