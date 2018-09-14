@@ -96,11 +96,23 @@ public final class DeviceManagerServlet extends HttpServlet {
 		        		 } else {
 		        			 flex += ",geo:" + latitude + "," + longitude;
 		        		 }
-		        		 if (StringUtils.isNotEmpty(request.getHeader("X-GMS-DeviceName"))) {
-		        			 flex += "," + request.getHeader("X-GMS-DeviceName");
-		        		 }
-		        		 if (StringUtils.isNotEmpty(request.getHeader("X-GMS-RouteId"))) {
-		        			 flex += ",rid:" + request.getHeader("X-GMS-RouteId");
+		        		 if (NumberUtils.getInt(request.getHeader("X-GMS-AppCode"), -1) >= 28) {
+		        			 if (StringUtils.isNotEmpty(request.getHeader("X-GMS-DeviceId"))) {
+		        				 flex += ",deviceId:" + request.getHeader("X-GMS-DeviceId");
+		        			 }
+		        			 if (StringUtils.isNotEmpty(request.getHeader("X-GMS-DeviceName"))) {
+		        				 flex += ",deviceName:" + request.getHeader("X-GMS-DeviceName");
+		        			 }
+		        			 if (StringUtils.isNotEmpty(request.getHeader("X-GMS-RouteId"))) {
+		        				 flex += ",routeId:" + request.getHeader("X-GMS-RouteId");
+		        			 }
+		        		 } else {
+		        			 if (StringUtils.isNotEmpty(request.getHeader("X-GMS-DeviceName"))) {
+		        				 flex += "," + request.getHeader("X-GMS-DeviceName");
+		        			 }
+		        			 if (StringUtils.isNotEmpty(request.getHeader("X-GMS-RouteId"))) {
+		        				 flex += ",rid:" + request.getHeader("X-GMS-RouteId");
+		        			 }
 		        		 }
 		        	 } else {
 		        		 logger.log(Level.INFO, "No location header provided");
