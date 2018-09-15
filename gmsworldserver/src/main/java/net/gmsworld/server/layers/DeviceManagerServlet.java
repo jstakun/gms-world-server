@@ -2,6 +2,8 @@ package net.gmsworld.server.layers;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -83,39 +85,19 @@ public final class DeviceManagerServlet extends HttpServlet {
 		         String flex = request.getParameter("flex"); 
 		         
 		         try {
-		        	 Double latitude = null, longitude = null;
-		        	 if (request.getHeader(Commons.LAT_HEADER) != null) {
-		        		 latitude = GeocodeUtils.getLatitude(request.getHeader(Commons.LAT_HEADER));
-		        	 }
-		        	 if (request.getHeader(Commons.LNG_HEADER) != null) {
-		        		 longitude = GeocodeUtils.getLongitude(request.getHeader(Commons.LNG_HEADER));
-		        	 }
-		        	 if (latitude != null && longitude != null) {
-		        		 if (StringUtils.isEmpty(flex)) {
-		        			 flex = "geo:" + latitude + "," + longitude;
+		        	 int version = NumberUtils.getInt(request.getHeader("X-GMS-AppCode"), -1);
+		        	 if (version >= 28) {
+		        		 if (flex == null) {
+		        			 flex = processHeadersV2(request);
 		        		 } else {
-		        			 flex += ",geo:" + latitude + "," + longitude;
-		        		 }
-		        		 if (NumberUtils.getInt(request.getHeader("X-GMS-AppCode"), -1) >= 28) {
-		        			 if (StringUtils.isNotEmpty(request.getHeader("X-GMS-DeviceId"))) {
-		        				 flex += ",deviceId:" + request.getHeader("X-GMS-DeviceId");
-		        			 }
-		        			 if (StringUtils.isNotEmpty(request.getHeader("X-GMS-DeviceName"))) {
-		        				 flex += ",deviceName:" + request.getHeader("X-GMS-DeviceName");
-		        			 }
-		        			 if (StringUtils.isNotEmpty(request.getHeader("X-GMS-RouteId"))) {
-		        				 flex += ",routeId:" + request.getHeader("X-GMS-RouteId");
-		        			 }
-		        		 } else {
-		        			 if (StringUtils.isNotEmpty(request.getHeader("X-GMS-DeviceName"))) {
-		        				 flex += "," + request.getHeader("X-GMS-DeviceName");
-		        			 }
-		        			 if (StringUtils.isNotEmpty(request.getHeader("X-GMS-RouteId"))) {
-		        				 flex += ",rid:" + request.getHeader("X-GMS-RouteId");
-		        			 }
+		        			 flex += "," + processHeadersV2(request);
 		        		 }
 		        	 } else {
-		        		 logger.log(Level.INFO, "No location header provided");
+		        		 if (flex == null) {
+		        			 flex = processHeaders(request);
+		        		 } else {
+		        			 flex += "," + processHeaders(request);
+		        		 }
 		        	 }
 		         } catch (Exception e) {
 		        	 logger.log(Level.SEVERE, e.getMessage(), e);
@@ -172,4 +154,56 @@ public final class DeviceManagerServlet extends HttpServlet {
 		}
 	}
  
+	private String processHeaders(HttpServletRequest request) {
+		Double latitude = null, longitude = null;
+		String flex = null;
+   	   	if (request.getHeader(Commons.LAT_HEADER) != null) {
+   	   		latitude = GeocodeUtils.getLatitude(request.getHeader(Commons.LAT_HEADER));
+   	   	}
+   	   	if (request.getHeader(Commons.LNG_HEADER) != null) {
+   	   		longitude = GeocodeUtils.getLongitude(request.getHeader(Commons.LNG_HEADER));
+   	   	}
+   	   	if (latitude != null && longitude != null) {
+   	   		flex = "geo:" + latitude + "," + longitude;
+   	   		if (StringUtils.isNotEmpty(request.getHeader("X-GMS-DeviceName"))) {
+   				 flex += "," + request.getHeader("X-GMS-DeviceName");
+   			 }
+   			 if (StringUtils.isNotEmpty(request.getHeader("X-GMS-RouteId"))) {
+   				 flex += ",rid:" + request.getHeader("X-GMS-RouteId");
+   			 }
+   	   	}
+   	   	return flex;
+	}
+	
+	private String processHeadersV2(HttpServletRequest request) {
+		List<String> tokens = new ArrayList<>();
+		Double latitude = null, longitude = null;
+   	   	if (request.getHeader(Commons.LAT_HEADER) != null) {
+   	   		latitude = GeocodeUtils.getLatitude(request.getHeader(Commons.LAT_HEADER));
+   	   	}
+   	   	if (request.getHeader(Commons.LNG_HEADER) != null) {
+   	   		longitude = GeocodeUtils.getLongitude(request.getHeader(Commons.LNG_HEADER));
+   	   	}
+   	   	if (latitude != null && longitude != null) {
+   	   		tokens.add("geo:" + latitude + "+" + longitude);
+   	   	}	
+   	   	if (StringUtils.isNotEmpty(request.getHeader("X-GMS-DeviceId"))) {
+   	   		tokens.add("deviceId:" + request.getHeader("X-GMS-DeviceId"));
+   	   	}
+   	   	if (StringUtils.isNotEmpty(request.getHeader("X-GMS-DeviceName"))) {
+   	   		tokens.add("deviceName:" + request.getHeader("X-GMS-DeviceName"));
+   	   	}
+   	   	if (StringUtils.isNotEmpty(request.getHeader("X-GMS-RouteId"))) {
+   	   		tokens.add("routeId:" + request.getHeader("X-GMS-RouteId"));
+   	   	} 
+   	   	if (StringUtils.isNotEmpty(request.getParameter("replyToCommand"))) {
+   	   		tokens.add("command:" + request.getParameter("replyToCommand"));
+   	   	}
+   	   	if (!tokens.isEmpty()) {
+   	   		 return StringUtils.join(tokens, ",");
+   	   	} else {
+   	   		return null;
+   	   	}
+	}
+	
 }
