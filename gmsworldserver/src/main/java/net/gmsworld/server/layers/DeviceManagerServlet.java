@@ -85,7 +85,7 @@ public final class DeviceManagerServlet extends HttpServlet {
 		         String flex = request.getParameter("flex"); 
 		         
 		         try {
-		        	 int version = NumberUtils.getInt(request.getHeader("X-GMS-AppCode"), -1);
+		        	 int version = NumberUtils.getInt(request.getHeader(Commons.APP_VERSION_HEADER), -1);
 		        	 if (version >= 28) {
 		        		 if (flex == null) {
 		        			 flex = processHeadersV2(request);
