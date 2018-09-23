@@ -27,6 +27,7 @@ import org.apache.commons.lang.StringUtils;
 import com.google.common.collect.ImmutableMap;
 import com.jstakun.lm.server.social.NotificationUtils;
 import com.jstakun.lm.server.utils.FileUtils;
+import com.jstakun.lm.server.utils.MailUtils;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 import com.jstakun.lm.server.utils.persistence.ScreenshotPersistenceUtils;
@@ -70,44 +71,30 @@ public class ImageUploadServlet extends HttpServlet {
 			if (CacheUtil.containsKey(cacheKey)) {
 				logger.log(Level.WARNING, "This screenshot is similar to newest: " + cacheKey);
 			} else if (((!Double.isNaN(lat) && !Double.isNaN(lng)) || (StringUtils.isNotEmpty(bucketName) && silent)) && isMultipart) {
-
 				ServletFileUpload upload = new ServletFileUpload();
 				upload.setSizeMax(EIGHT_MB); // 8 MB
-
 				FileItemIterator iter = upload.getItemIterator(request);
-
 				String output = null;
-
+				
 				if (iter != null && iter.hasNext()) {
-
 					FileItemStream item = iter.next();
-
 					String itemName = item.getName();
-
-					logger.log(Level.INFO, "Found file {0} with type {1}",
-							new Object[] { itemName, item.getContentType() });
+					logger.log(Level.INFO, "Found file {0} with type {1}", new Object[] { itemName, item.getContentType() });
 
 					if (StringUtils.startsWith(itemName, "screenshot")) {
-
 						byte[] screenshot = IOUtils.toByteArray(item.openStream());
-
 						if (screenshot != null && screenshot.length > 3) {
-
 							itemName = System.currentTimeMillis() + "_" + itemName;
-
 							if (ImageUtils.isBlackImage(screenshot)) {
 								logger.log(Level.SEVERE, "This image is black and won't be saved.");
 								output = "Image is black.";
 							} else {
-
+                                //save image
 								FileUtils.saveFileV2(bucketName, itemName, screenshot, lat, lng);
-
+                                //send social notification
 								if (!silent) {
-									String username = StringUtil.getUsername(request.getAttribute("username"),
-											request.getHeader("username"));
-
+									String username = StringUtil.getUsername(request.getAttribute("username"), request.getHeader("username"));
 									String key = ScreenshotPersistenceUtils.persist(username, lat, lng, itemName);
-
 									if (key != null) {
 										String imageUrl = ConfigurationManager.SERVER_URL + "image/" + key;
 										String showImageUrl = ConfigurationManager.SERVER_URL + "showImage/" + key;
@@ -119,43 +106,39 @@ public class ImageUploadServlet extends HttpServlet {
 											logger.log(Level.INFO, "This screenshot is not linked with any landmark");
 										}
 										showImageUrl = UrlUtils.getShortUrl(showImageUrl);
-
 										CacheUtil.put(cacheKey, "1", CacheType.FAST);
-
-										// load image from imageUrl and check if
-										// it is black
-										// sometimes uploaded image is black
+										//load image from imageUrl and check if it is black
 										try {
 											byte[] uploadedImage = ImageUtils.loadImage(imageUrl);
-											if (uploadedImage != null && uploadedImage.length > 3
-													&& ImageUtils.isBlackImage(uploadedImage)) {
-												logger.log(Level.SEVERE,
-														"Uploaded image " + key + " is black: " + imageUrl);
+											if (uploadedImage != null && uploadedImage.length > 3 && ImageUtils.isBlackImage(uploadedImage)) {
+												logger.log(Level.SEVERE, "Uploaded image " + key + " is black: " + imageUrl);
 												output = "Uploaded image is black!";
 											} else {
 												Map<String, String> params = new ImmutableMap.Builder<String, String>()
-														.put("showImageUrl", showImageUrl).put("imageUrl", imageUrl)
+														.put("showImageUrl", showImageUrl)
+														.put("imageUrl", imageUrl)
 														.put("lat", Double.toString(lat))
 														.put("lng", Double.toString(lng))
 														.put("username",
 																StringUtils.isNotEmpty(username) ? username : "")
 														.build();
 												NotificationUtils.createImageCreationNotificationTask(params);
+												MailUtils.sendAdminMail("New screenshot", "New screenshot saved at: " + showImageUrl);
 												output = "File saved with key " + key;
 											}
 										} catch (Exception e) {
-											logger.log(Level.SEVERE, "ImageUploadServlet.processRequest() exception",
-													e);
+											logger.log(Level.SEVERE, "ImageUploadServlet.processRequest() exception", e);
 											output = "Image upload failed!";
 										}
-										//
 									} else {
 										output = "Key is empty!";
 										logger.log(Level.SEVERE, "Key is empty!");
 										logger.log(Level.INFO, "Deleted file " + FileUtils.deleteFileV2(bucketName, itemName));
 									}
 								} else {
+									//don't send social notification
 									output = UrlUtils.getShortUrl(FileUtils.getImageUrlV2(bucketName, itemName, false, true));
+									MailUtils.sendAdminMail("New image", "New image saved at: " + output);
 								}
 							}
 						} else {
@@ -170,8 +153,7 @@ public class ImageUploadServlet extends HttpServlet {
 				out.print(output);
 				logger.log(Level.INFO, output);
 			} else {
-				logger.log(Level.WARNING, "Latitude is NaN: " + Double.isNaN(lat) +  ", Longitude is NaN: " + Double.isNaN(lng) + ", "
-						+ "Is multipart: " + isMultipart + ", Bucket name: " + bucketName);
+				logger.log(Level.WARNING, "Latitude is NaN: " + Double.isNaN(lat) +  ", Longitude is NaN: " + Double.isNaN(lng) + ", Is multipart: " + isMultipart + ", Bucket name: " + bucketName);
 				response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 			}
 		} catch (Exception e) {
