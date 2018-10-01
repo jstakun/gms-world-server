@@ -44,6 +44,9 @@ public final class Commons {
 	public static final String MYPOS_KEY_HEADER = "X-GMS-MyPos-Key";
 	public static final String LAT_HEADER = "X-GMS-Lat";
 	public static final String LNG_HEADER = "X-GMS-Lng";
+	public static final String DEVICE_NAME_HEADER  = "X-GMS-DeviceName";
+	public static final String DEVICE_ID_HEADER  = "X-GMS-DeviceId";
+	public static final String ROUTE_ID_HEADER = "X-GMS-RouteId";
 
 	public static final String SOCIAL = "Social";
 	public static final int BLOGEO = 0;

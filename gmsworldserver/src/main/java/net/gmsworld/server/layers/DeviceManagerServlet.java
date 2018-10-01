@@ -165,11 +165,11 @@ public final class DeviceManagerServlet extends HttpServlet {
    	   	}
    	   	if (latitude != null && longitude != null) {
    	   		flex = "geo:" + latitude + "," + longitude;
-   	   		if (StringUtils.isNotEmpty(request.getHeader("X-GMS-DeviceName"))) {
-   				 flex += "," + request.getHeader("X-GMS-DeviceName");
+   	   		if (StringUtils.isNotEmpty(request.getHeader(Commons.DEVICE_NAME_HEADER))) {
+   				 flex += "," + request.getHeader(Commons.DEVICE_NAME_HEADER);
    			 }
-   			 if (StringUtils.isNotEmpty(request.getHeader("X-GMS-RouteId"))) {
-   				 flex += ",rid:" + request.getHeader("X-GMS-RouteId");
+   			 if (StringUtils.isNotEmpty(request.getHeader(Commons.ROUTE_ID_HEADER))) {
+   				 flex += ",rid:" + request.getHeader(Commons.ROUTE_ID_HEADER);
    			 }
    	   	}
    	   	return flex;
@@ -187,14 +187,14 @@ public final class DeviceManagerServlet extends HttpServlet {
    	   	if (latitude != null && longitude != null) {
    	   		tokens.add("geo:" + latitude + "+" + longitude);
    	   	}	
-   	   	if (StringUtils.isNotEmpty(request.getHeader("X-GMS-DeviceId"))) {
-   	   		tokens.add("deviceId:" + request.getHeader("X-GMS-DeviceId"));
+   	   	if (StringUtils.isNotEmpty(request.getHeader(Commons.DEVICE_ID_HEADER))) {
+   	   		tokens.add("deviceId:" + request.getHeader(Commons.DEVICE_ID_HEADER));
    	   	}
-   	   	if (StringUtils.isNotEmpty(request.getHeader("X-GMS-DeviceName"))) {
-   	   		tokens.add("deviceName:" + request.getHeader("X-GMS-DeviceName"));
+   	   	if (StringUtils.isNotEmpty(request.getHeader(Commons.DEVICE_NAME_HEADER))) {
+   	   		tokens.add("deviceName:" + request.getHeader(Commons.DEVICE_NAME_HEADER));
    	   	}
-   	   	if (StringUtils.isNotEmpty(request.getHeader("X-GMS-RouteId"))) {
-   	   		tokens.add("routeId:" + request.getHeader("X-GMS-RouteId"));
+   	   	if (StringUtils.isNotEmpty(request.getHeader(Commons.ROUTE_ID_HEADER))) {
+   	   		tokens.add("routeId:" + request.getHeader(Commons.ROUTE_ID_HEADER));
    	   	} 
    	   	if (StringUtils.isNotEmpty(request.getParameter("replyToCommand"))) {
    	   		tokens.add("command:" + request.getParameter("replyToCommand"));

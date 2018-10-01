@@ -74,7 +74,7 @@ public class NotificationsServlet extends HttpServlet {
 			} else {
 				String type = request.getParameter("type");
 				int appId = NumberUtils.getInt(request.getHeader(Commons.APP_HEADER), -1);
-				String routeId = request.getHeader("X-GMS-RouteId");
+				String routeId = request.getHeader(Commons.ROUTE_ID_HEADER);
 				JSONObject reply = new JSONObject();
 
 				Double latitude = null;

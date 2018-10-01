@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="org.apache.commons.lang.StringUtils,
-                 com.jstakun.lm.server.utils.HtmlUtils" %>
+                                      com.jstakun.lm.server.utils.HtmlUtils,
+                                      net.gmsworld.server.config.Commons" %>
 <%@ taglib uri="http://struts.apache.org/tags-bean" prefix="bean"%>                 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -9,7 +10,7 @@
  if (StringUtils.equals(request.getParameter("generatetoken"),"true")) {
 	  token = com.jstakun.lm.server.config.ConfigurationManager.getParam(com.jstakun.lm.server.config.ConfigurationManager.GMS_WORLD_ACCESS_TOKEN, null);  
  } else {	
-	  token = request.getHeader("X-GMS-Token") != null ? request.getHeader("X-GMS-Token") : request.getParameter("gmstoken");
+	  token = request.getHeader(Commons.TOKEN_HEADER) != null ? request.getHeader(Commons.TOKEN_HEADER) : request.getParameter("gmstoken");
  }	
  boolean hotelsMode = StringUtils.equals(request.getParameter("enabled"), "Hotels");
  String enabled = request.getParameter("enabled");
@@ -77,9 +78,9 @@
   	    		longitude: "<%= longitude %>"
   			},
     		beforeSend: function( xhr ) {
-        		xhr.setRequestHeader("X-GMS-Token", "<%= token  %>");
-        		xhr.setRequestHeader("X-GMS-Scope", "lm");
-        		xhr.setRequestHeader("X-GMS-AppId", "10");
+        		xhr.setRequestHeader(Commons.TOKEN_HEADER, "<%= token  %>");
+        		xhr.setRequestHeader(Commons.SCOPE_HEADER, "lm");
+        		xhr.setRequestHeader(Commons.APP_HEADER, "10");
     		}})
   		.done(function( data ) {
   	  		var link = "/showLandmark/" + data.id + "<%= enabled %>";

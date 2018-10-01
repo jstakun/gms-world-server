@@ -161,7 +161,7 @@ public class LayersProviderServlet extends HttpServlet {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 } else {
                     radiusInMeters = NumberUtils.getRadius(request.getParameter("radius"), 1000, 40000);
-                    int deals = NumberUtils.getInt(request.getHeader("X-GMS-AppId"), 0);
+                    int deals = NumberUtils.getInt(request.getHeader(Commons.APP_HEADER), 0);
                     String hasDeals = "false";
                     if (deals == 1) {
                         hasDeals = "true";

@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.config.ConfigurationManager;
 
 import org.apache.commons.lang.StringUtils;
@@ -85,17 +86,21 @@ public class ImageUtils {
 		return mapsUrl;
 	}
 	
-	private static String getOpenStreetMapsImageUrl(double latitude, double longitude, String size, int zoom) {
+	private static String getOpenStreetMapsImageUrl(double latitude, double longitude, String size, int zoom, boolean isSecure) {
 		String coords = latitude+","+longitude;
-		//TODO add ssl support
-	    return "http://staticmap.openstreetmap.de/staticmap.php?center="+coords+"&zoom="+zoom+"&size="+size+"&maptype=mapnik&markers="+coords+",red-pushpin";
+		String prefix = "http";
+		if (isSecure) {
+			prefix = "https";
+		}
+		//return "http://staticmap.openstreetmap.de/staticmap.php?center="+coords+"&zoom="+zoom+"&size="+size+"&maptype=mapnik&markers="+coords+",red-pushpin";
+	    return prefix + "://www.mapquestapi.com/staticmap/v5/map?locations="+coords+"&zoom="+zoom+"&size="+size.replace('x', ',')+"&defaultMarker=marker-sm-3B5998-22407F&key="+Commons.getProperty(Property.MAPQUEST_APPKEY);
 	}
 	
 	public static String getImageUrl(double latitude, double longitude, String size, int zoom, boolean anonymous, ConfigurationManager.MAP_PROVIDER mapProvider, boolean isSecure) {
 		if (mapProvider == ConfigurationManager.MAP_PROVIDER.GOOGLE_MAPS) {
 			return getGoogleMapsImageUrl(latitude, longitude, size, zoom, anonymous, isSecure);
 		} else { //ConfigurationManager.MAP_PROVIDER.OSM_MAPS
-			return getOpenStreetMapsImageUrl(latitude, longitude, size, zoom);
+			return getOpenStreetMapsImageUrl(latitude, longitude, size, zoom, isSecure);
 		}
 	}
 	

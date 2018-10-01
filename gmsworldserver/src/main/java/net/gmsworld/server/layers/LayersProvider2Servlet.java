@@ -152,7 +152,7 @@ public class LayersProvider2Servlet extends HttpServlet {
             			 flexString2 = language;
             		 } else if (StringUtils.equals(layerHelper.getLayerName(), Commons.YELP_LAYER)) {
             			 radius = NumberUtils.getRadius(request.getParameter("radius"), 1000, 40000);
-                         int deals = NumberUtils.getInt(request.getHeader("X-GMS-AppId"), 0);
+                         int deals = NumberUtils.getInt(request.getHeader(Commons.APP_HEADER), 0);
                          flexString = "false";
                          if (deals == 1) {
                         	 flexString = "true";

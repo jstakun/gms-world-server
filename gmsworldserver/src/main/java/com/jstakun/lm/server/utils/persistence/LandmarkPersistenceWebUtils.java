@@ -137,7 +137,7 @@ public class LandmarkPersistenceWebUtils {
      	int useCount = NumberUtils.getInt(request.getHeader(Commons.USE_COUNT_HEADER), 1);
 		int appId = NumberUtils.getInt(request.getHeader(Commons.APP_HEADER), -1);
 		int version = NumberUtils.getInt(request.getHeader(Commons.APP_VERSION_HEADER), -1);
-		String deviceId = request.getHeader("X-GMS-DeviceId");
+		String deviceId = request.getHeader(Commons.DEVICE_ID_HEADER);
     	
     	JSONObject flex = new JSONObject();
 		flex.put("useCount", useCount);

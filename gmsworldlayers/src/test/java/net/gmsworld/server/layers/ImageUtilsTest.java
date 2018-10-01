@@ -12,6 +12,7 @@ import java.net.URLEncoder;
 import javax.imageio.ImageIO;
 
 import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.utils.ImageUtils;
 
 import org.junit.Test;
@@ -59,6 +60,7 @@ public class ImageUtilsTest {
         if (image != null) {
         	System.out.println("Image size " + image.length);
         }
+        System.out.println(ImageUtils.getImageUrl(52.25, 20.95, "170x170", 12, true, ConfigurationManager.MAP_PROVIDER.OSM_MAPS, true));
 	}
 	
 	@Test
