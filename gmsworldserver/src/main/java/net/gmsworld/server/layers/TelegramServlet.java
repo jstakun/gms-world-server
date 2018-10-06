@@ -76,7 +76,7 @@ public class TelegramServlet extends HttpServlet {
 							if (StringUtils.equalsIgnoreCase(message, "/register") || StringUtils.equalsIgnoreCase(message, "register")) {
 								//add chat id to white list
 								if (!NotificationPersistenceUtils.isWhitelistedTelegramId(Long.toString(telegramId))) {
-									NotificationPersistenceUtils.addToWhitelistTelegramId(Long.toString(telegramId));
+									NotificationPersistenceUtils.addToWhitelistTelegramId(Long.toString(telegramId), true);
 								} else {
 									logger.log(Level.WARNING, "Telegram chat id " + telegramId + " already exists in the whitelist!");
 								}		

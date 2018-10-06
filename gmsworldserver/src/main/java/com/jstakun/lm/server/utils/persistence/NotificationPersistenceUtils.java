@@ -28,37 +28,6 @@ public class NotificationPersistenceUtils {
 	
 	private static final Logger logger = Logger.getLogger(NotificationPersistenceUtils.class.getName());
 
-	/*private static Notification persist(String id, Notification.Status status) {
-		Notification n = null;
-		if (StringUtils.isNotEmpty(id)) {
-			EntityManager pm = EMF.get().createEntityManager();
-			try {
-				n = findById(id, pm);
-				if (n == null) {
-					n = new Notification(id, status);
-					n.setSecret(RandomStringUtils.randomAlphabetic(32));
-				} else {
-					n.setStatus(status);
-					n.setLastUpdateDate(new Date());
-				}
-				pm.getTransaction().begin();
-				pm.persist(n);
-				pm.flush();
-			} catch (Exception ex) {
-				logger.log(Level.SEVERE, ex.getMessage(), ex);
-				if (pm.getTransaction().isActive()) {
-					pm.getTransaction().rollback();
-				}
-			} finally {
-				if (pm.getTransaction().isActive()) {
-					pm.getTransaction().commit();
-				}
-				pm.close();
-			}
-		}
-		return n;
-    }*/
-	
 	private static Notification persist(String id, Notification.Status status) {
 		Notification n = null;
 		if (StringUtils.isNotEmpty(id)) {
@@ -104,37 +73,12 @@ public class NotificationPersistenceUtils {
 	        } catch (Exception e) {
 	        	logger.log(Level.SEVERE, e.getMessage(), e);
 	        }
-			/*
-			EntityManager pm = EMF.get().createEntityManager();
-			try {
-				Notification n = findById(id, pm);
-				if (n != null) {
-					pm.getTransaction().begin();
-					pm.remove(n);
-				}
-			} catch (Exception ex) {
-				logger.log(Level.SEVERE, ex.getMessage(), ex);
-			} finally {
-				if (pm.getTransaction().isActive()) {
-					removed = true;
-					pm.getTransaction().commit();
-				}
-				pm.close();
-			}*/
 		}	
         return removed;
     }
 	
 	private static Notification findById(String id) {
 		Notification n = null;
-		/*if (StringUtils.isNotEmpty(id)) {
-			try {
-				TypedQuery<Notification> query = pm.createNamedQuery(Notification.NOTIFICATION_FINDBYID, Notification.class);
-				query.setParameter("id", id);
-				n = query.getSingleResult();
-			} catch (Exception e) { 
-			}
-		}*/
 		try {
         	String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "itemProvider";
         	String params = "type=notification";
@@ -161,12 +105,6 @@ public class NotificationPersistenceUtils {
 	private static Notification findBySecret(String secret) {
 		Notification n = null;
 		if (StringUtils.isNotEmpty(secret)) {
-			/*try {
-				TypedQuery<Notification> query = pm.createNamedQuery(Notification.NOTIFICATION_FINDBYSECRET, Notification.class);
-				query.setParameter("secret", secret);
-				n = query.getSingleResult();
-			} catch (Exception e) { 
-			}*/
 			try {
 	        	String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "itemProvider";
 	        	String params = "type=notification";
@@ -191,21 +129,6 @@ public class NotificationPersistenceUtils {
 		return n;
 	}
 	
-	/*public static List<Notification> findByStatus(Notification.Status status) {
-		EntityManager pm = EMF.get().createEntityManager();
-		List<Notification> notifications = null;
-		try {
-        	TypedQuery<Notification> query = pm.createNamedQuery(Notification.NOTIFICATION_FINDALLWITHSTATUS, Notification.class);
-        	query.setParameter("status", status);
-        	notifications = query.getResultList();
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
-        } finally {
-        	pm.close();
-        }
-		return notifications;
-	}*/
-	
 	private static boolean isVerified(String id) {
 		boolean verified = false;
 		if (StringUtils.isNotEmpty(id)) {
@@ -220,12 +143,13 @@ public class NotificationPersistenceUtils {
 
 	//telegram
 	
-	public static boolean isWhitelistedTelegramId(String telegramId) {
+	public static synchronized boolean isWhitelistedTelegramId(String telegramId) {
 		 return isVerified(telegramId);
 	}
 
-	public static void addToWhitelistTelegramId(String telegramId) {
-		 persist(telegramId, Notification.Status.VERIFIED);
+	public static synchronized Notification addToWhitelistTelegramId(String telegramId, boolean isRegistered) {
+		Notification.Status status =  isRegistered ?  Notification.Status.VERIFIED : Notification.Status.UNVERIFIED;
+		return persist(telegramId, status);
 	}
 	
     //email

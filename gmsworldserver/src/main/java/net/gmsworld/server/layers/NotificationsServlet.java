@@ -263,7 +263,8 @@ public class NotificationsServlet extends HttpServlet {
 								Integer responseCode = TelegramUtils.sendTelegram(telegramId, "We've received Device Locator registration request from you.\n"
 										+ "If this is correct please send us back /register command message, otherwise please ignore this message.");
 								if (responseCode != null && responseCode == 200) {
-									reply = new JSONObject().put("status", "unverified");
+									Notification n = NotificationPersistenceUtils.addToWhitelistTelegramId(telegramId, false);
+									reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
 								} else if (responseCode != null && responseCode == 400) {
 								    reply = new JSONObject().put("status", "failed");
 								} else {
@@ -273,7 +274,8 @@ public class NotificationsServlet extends HttpServlet {
 								Integer responseCode = TelegramUtils.sendTelegram(telegramId, "We've received Device Locator registration request from this Channel.\n"
 										+ "If this is correct please contact us via email at: device-locator@gms-world.net and send your Channel ID: " + telegramId + ", otherwise please ignore this message.");
 								if (responseCode != null && responseCode == 200) {
-									reply = new JSONObject().put("status", "unverified");
+									Notification n = NotificationPersistenceUtils.addToWhitelistTelegramId(telegramId, false);
+									reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
 								} else if (responseCode != null && responseCode == 400) {
 								    //reply = new JSONObject().put("status", "failed");
 									response.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -301,7 +303,7 @@ public class NotificationsServlet extends HttpServlet {
 								Notification n = NotificationPersistenceUtils.addToWhitelistEmail(email, false);
 								String status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), this.getServletContext(), true);
 								if (StringUtils.equals(status, "ok")) {
-									reply = new JSONObject().put("status", "unverified");
+									reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
 								} else {
 									reply = new JSONObject().put("status", status);
 								}
