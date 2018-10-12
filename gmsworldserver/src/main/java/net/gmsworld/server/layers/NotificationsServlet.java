@@ -412,6 +412,9 @@ public class NotificationsServlet extends HttpServlet {
 				} else if (responseCode != null && responseCode == 400) {
 					reply = new JSONObject().put("status", "badRequestError");
 					response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+				} else if (responseCode != null && responseCode == 403) {
+					reply = new JSONObject().put("status", "permissionDenied");
+					response.sendError(HttpServletResponse.SC_FORBIDDEN);	
 				} else {
 					logger.log(Level.WARNING, "Received response code " + responseCode + " for channel " + telegramId);
 					reply = new JSONObject().put("status", "internalError");
