@@ -59,6 +59,13 @@ public class AccountAction extends Action {
         OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
         boolean isMobile = os.getDeviceType().equals(DeviceType.MOBILE);
         
+        boolean api = false;
+        String output = null;
+        if (StringUtils.startsWith(request.getHeader("User-Agent"), "Device Locator")) {
+        	api = true;
+        	output = "{\"status\":\"unknown\"}";
+        }
+        
         if (!HttpUtils.isEmptyAny(request, "k", "s")) {
         	//register user to GMS World
             String login = URLDecoder.decode(request.getParameter("k"),"UTF-8");
@@ -76,8 +83,13 @@ public class AccountAction extends Action {
         	String secret = request.getParameter("sc");
         	Notification n = NotificationPersistenceUtils.verifyWithSecret(secret);
         	if (n != null) {
-        		MailUtils.sendDeviceLocatorRegistrationNotification(n.getId(), n.getId(), secret, getServlet().getServletContext());
-        		request.setAttribute("email", n.getId());
+        		if (MailUtils.isValidEmailAddress(n.getId())) {
+        			MailUtils.sendDeviceLocatorRegistrationNotification(n.getId(), n.getId(), secret, getServlet().getServletContext());
+        			request.setAttribute("email", n.getId());
+        		} 
+        		if (api) {
+    				output = "{\"status\":\"ok\"}";
+    			}
         		result = true;
         	} 
         } else if (!HttpUtils.isEmptyAny(request, "sc","u")) {
@@ -86,7 +98,12 @@ public class AccountAction extends Action {
         	Notification n = NotificationPersistenceUtils.verifyWithSecret(secret);
         	if (n != null) {
         		if (NotificationPersistenceUtils.remove(n.getId())) {
-        			request.setAttribute("email", n.getId());
+        			if (MailUtils.isValidEmailAddress(n.getId())) {
+        				request.setAttribute("email", n.getId());
+        			}
+        			if (api) {
+        				output = "{\"status\":\"ok\"}";
+        			}
         			result = true;
         		}
         	} 
@@ -122,7 +139,10 @@ public class AccountAction extends Action {
             }
         } 
 
-        if (isMobile) {
+        if (api) {
+        	request.setAttribute("output", output);
+        	return mapping.findForward("api");   
+        } else if (isMobile) {
         	if (result) {
         		if (confirm) {
         			return mapping.findForward(SUCCESS_REG_MOBILE);

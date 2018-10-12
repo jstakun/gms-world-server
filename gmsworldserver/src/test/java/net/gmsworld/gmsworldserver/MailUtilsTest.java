@@ -8,7 +8,7 @@ public class MailUtilsTest {
 
 	@Test
 	public void test() {
-		MailUtils.sendDeviceLocatorVerificationRequest("jstakun.appspot@gmail.com", null, "abcd", null, true);
+		MailUtils.sendDeviceLocatorVerificationRequest("jstakun.appspot@gmail.com", null, "abcd", null, 0);
 	
 		//MailUtils.sendDlRegistrationNotification("jstakun.appspot@gmail.com", null, null); 
 	}

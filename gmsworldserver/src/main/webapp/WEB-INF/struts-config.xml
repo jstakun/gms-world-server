@@ -135,6 +135,7 @@
             <forward name="failure_reg_mobile" path="/m/failure.jsp?step=2"/>
             <forward name="success_unreg_mobile" path="/m/confirm.jsp?step=3"/>
             <forward name="failure_unreg_mobile" path="/m/failure.jsp?step=3"/>
+            <forward name="api" path="/m/json.jsp"/>
         </action>
         <action path="/getHeatMap" type="com.jstakun.lm.server.struts.GetHeatMapAction">
             <forward name="success" path="/fullScreenHeatMap.jsp"/>

@@ -76,6 +76,7 @@ public class NotificationsServlet extends HttpServlet {
 				int appId = NumberUtils.getInt(request.getHeader(Commons.APP_HEADER), -1);
 				String routeId = request.getHeader(Commons.ROUTE_ID_HEADER);
 				JSONObject reply = new JSONObject();
+				int appVersion = NumberUtils.getInt(request.getHeader(Commons.APP_VERSION_HEADER), -1);
 
 				Double latitude = null;
 	            if (request.getParameter("lat") != null) {
@@ -157,7 +158,7 @@ public class NotificationsServlet extends HttpServlet {
 						reply.put("value", version);
 					}
 				} else if (StringUtils.equals(type, "u")) {
-					// engagement
+					//mail engagement
 					String email = request.getParameter("e");
 					long lastStartupTime = NumberUtils.getLong(request.getParameter("lst"), -1);
 					String useCount = request.getParameter("uc");
@@ -249,68 +250,14 @@ public class NotificationsServlet extends HttpServlet {
 					//register telegram
 					if (appId == Commons.DL_ID && StringUtils.startsWith(request.getRequestURI(), "/s/")) {
 						String telegramId = request.getParameter("chatId");
-						if (TelegramUtils.isValidTelegramId(telegramId)) {
-							if (NotificationPersistenceUtils.isWhitelistedTelegramId(telegramId)) {
-								if (StringUtils.isNumeric(telegramId)) {
-									TelegramUtils.sendTelegram(telegramId, "You've been already registered to Device Locator notifications.\n"
-										+ "You can unregister at any time by sending /unregister command message to @device_locator_bot");
-								} else {
-									TelegramUtils.sendTelegram(telegramId, "You've been already registered to Device Locator notifications.\n"
-											+ "You can unregister at any time by sending /unregister " + telegramId + " command message to @device_locator_bot");
-								}
-								reply = new JSONObject().put("status", "registered");
-							} else if (StringUtils.isNumeric(telegramId)) {
-								Integer responseCode = TelegramUtils.sendTelegram(telegramId, "We've received Device Locator registration request from you.\n"
-										+ "If this is correct please send us back /register command message, otherwise please ignore this message.");
-								if (responseCode != null && responseCode == 200) {
-									Notification n = NotificationPersistenceUtils.addToWhitelistTelegramId(telegramId, false);
-									reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
-								} else if (responseCode != null && responseCode == 400) {
-								    reply = new JSONObject().put("status", "failed");
-								} else {
-									response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-								}
-							} else if ((StringUtils.startsWithAny(telegramId, new String[]{"@","-100"}))) {
-								Integer responseCode = TelegramUtils.sendTelegram(telegramId, "We've received Device Locator registration request from this Channel.\n"
-										+ "If this is correct please contact us via email at: device-locator@gms-world.net and send your Channel ID: " + telegramId + ", otherwise please ignore this message.");
-								if (responseCode != null && responseCode == 200) {
-									Notification n = NotificationPersistenceUtils.addToWhitelistTelegramId(telegramId, false);
-									reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
-								} else if (responseCode != null && responseCode == 400) {
-								    //reply = new JSONObject().put("status", "failed");
-									response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-								} else {
-									logger.log(Level.WARNING, "Received response code " + responseCode + " for channel " + telegramId);
-									response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-								}
-							}
-						} else {
-							logger.log(Level.WARNING, "Wrong chat id " + telegramId);
-						}
+						reply = registerTelegram(telegramId, appVersion, response);
 					} else {
 						logger.log(Level.WARNING, "Wrong application " + appId);
 					}
 				} else if (StringUtils.equals(type, "register_m")) {
 					//register mail
 					if (appId == Commons.DL_ID && StringUtils.startsWith(request.getRequestURI(), "/s/")) {
-						String email = request.getParameter("email");
-						if (StringUtils.isNotEmpty(email)) {
-							if (NotificationPersistenceUtils.isWhitelistedEmail(email)) {
-								Notification n = NotificationPersistenceUtils.addToWhitelistEmail(email, true);
-								MailUtils.sendDeviceLocatorRegistrationNotification(email, email, n.getSecret(), this.getServletContext());
-								reply = new JSONObject().put("status", "registered");
-							} else {
-								Notification n = NotificationPersistenceUtils.addToWhitelistEmail(email, false);
-								String status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), this.getServletContext(), true);
-								if (StringUtils.equals(status, "ok")) {
-									reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
-								} else {
-									reply = new JSONObject().put("status", status);
-								}
-							}
-						} else {
-							logger.log(Level.WARNING, "Email is empty!"); 
-						}
+						reply = registerEmail(request.getParameter("email"), appVersion);
 					} else {
 						logger.log(Level.WARNING, "Wrong application " + appId);
 					}
@@ -336,8 +283,6 @@ public class NotificationsServlet extends HttpServlet {
 		}
 	}
 
-	// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on
-	// the + sign on the left to edit the code.">
 	/**
 	 * Handles the HTTP <code>GET</code> method.
 	 * 
@@ -382,6 +327,100 @@ public class NotificationsServlet extends HttpServlet {
 	@Override
 	public String getServletInfo() {
 		return "Notifications servlet";
-	}// </editor-fold>
+	}
 
+	private JSONObject registerEmail(String email, int appVersion) {
+		JSONObject reply = null;
+		if (StringUtils.isNotEmpty(email)) {
+			if (NotificationPersistenceUtils.isWhitelistedEmail(email)) {
+				Notification n = NotificationPersistenceUtils.addToWhitelistEmail(email, true);
+				MailUtils.sendDeviceLocatorRegistrationNotification(email, email, n.getSecret(), this.getServletContext());
+				reply = new JSONObject().put("status", "registered");
+			} else {
+				Notification n = NotificationPersistenceUtils.addToWhitelistEmail(email, false);
+				int version = 0;
+				if (appVersion >= 30) {
+					version = 2;
+				}
+				String status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), this.getServletContext(), version);
+				if (StringUtils.equals(status, "ok")) {
+					reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
+				} else {
+					reply = new JSONObject().put("status", status);
+				}
+			}
+		} else {
+			logger.log(Level.WARNING, "Email is empty!"); 
+		}
+		return reply;
+	}
+	
+	private JSONObject registerTelegram(String telegramId, int appVersion, HttpServletResponse response) throws IOException {
+		JSONObject reply = null;
+		if (TelegramUtils.isValidTelegramId(telegramId)) {
+			if (NotificationPersistenceUtils.isWhitelistedTelegramId(telegramId)) {
+				if (StringUtils.isNumeric(telegramId)) {
+					TelegramUtils.sendTelegram(telegramId, "You've been already registered to Device Locator notifications.\n"
+						+ "You can unregister at any time by sending /unregister command message to @device_locator_bot");
+				} else {
+					TelegramUtils.sendTelegram(telegramId, "You've been already registered to Device Locator notifications.\n"
+							+ "You can unregister at any time by sending /unregister " + telegramId + " command message to @device_locator_bot");
+				}
+				reply = new JSONObject().put("status", "registered");
+			} else if (StringUtils.isNumeric(telegramId)) {
+				Integer responseCode =  TelegramUtils.sendTelegram(telegramId, "We've received Device Locator registration request from you.");
+				if (responseCode != null && responseCode == 200) {
+					Notification n = NotificationPersistenceUtils.addToWhitelistTelegramId(telegramId, false);
+					if (appVersion >= 30) {
+						String tokens[] = StringUtils.split(n.getSecret(), ".");
+	            		if (tokens.length == 2 && tokens[1].length() == 4 && StringUtils.isNumeric(tokens[1])) {
+	            			String activationCode = tokens[1];
+	            			TelegramUtils.sendTelegram(telegramId, "If this is correct please enter activation code: " + activationCode + " in Device Locator." );
+	            			reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
+	            		} else {
+	            			reply = new JSONObject().put("status", "internalError");
+	    					response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+	            		}
+					} else {
+						TelegramUtils.sendTelegram(telegramId, "If this is correct please send us back /register command message, otherwise please ignore this message.");
+						reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
+					}				
+				} else if (responseCode != null && responseCode == 400) {
+				    reply = new JSONObject().put("status", "failed");
+				} else {
+					reply = new JSONObject().put("status", "internalError");
+					response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				}
+			} else if ((StringUtils.startsWithAny(telegramId, new String[]{"@","-100"}))) {
+				Integer responseCode = TelegramUtils.sendTelegram(telegramId, "We've received Device Locator registration request from this Channel.");
+				if (responseCode != null && responseCode == 200) {
+					Notification n = NotificationPersistenceUtils.addToWhitelistTelegramId(telegramId, false);
+					if (appVersion >= 30) {
+						String tokens[] = StringUtils.split(n.getSecret(), ".");
+	            		if (tokens.length == 2 && tokens[1].length() == 4 && StringUtils.isNumeric(tokens[1])) {
+	            			String activationCode = tokens[1];
+	            			TelegramUtils.sendTelegram(telegramId, "If this is correct please enter activation code: " + activationCode + " in Device Locator." );
+	            			reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
+	            		} else {
+	            			reply = new JSONObject().put("status", "internalError");
+	    					response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+	            		}
+					} else {
+						TelegramUtils.sendTelegram(telegramId, "If this is correct please contact us via email at: device-locator@gms-world.net and send your Channel ID: " + telegramId + ", otherwise please ignore this message.");
+						reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
+					}
+				} else if (responseCode != null && responseCode == 400) {
+					reply = new JSONObject().put("status", "badRequestError");
+					response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+				} else {
+					logger.log(Level.WARNING, "Received response code " + responseCode + " for channel " + telegramId);
+					reply = new JSONObject().put("status", "internalError");
+					response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				}
+			}
+		} else {
+			logger.log(Level.WARNING, "Wrong chat id " + telegramId);
+		}
+		return reply;
+	}
 }

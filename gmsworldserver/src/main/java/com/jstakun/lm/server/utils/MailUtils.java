@@ -162,17 +162,25 @@ public class MailUtils {
         }
     }
     
-    public static String sendDeviceLocatorVerificationRequest(String toA, String nick, String secret, ServletContext context, boolean first) {
+    public static String sendDeviceLocatorVerificationRequest(String toA, String nick, String secret, ServletContext context, int version) {
         InputStream is = null;
         String result = null; 
         try {
         	String message = null;
-            String link = ConfigurationManager.SSL_SERVER_URL + "verify/" + secret;
+            String link = null; 
             if (context != null) {
-            	if (first) {
+            	if (version == 0) {
             		is = context.getResourceAsStream("/WEB-INF/emails/verification-dl.html");
-            	} else {
+            		link = ConfigurationManager.SSL_SERVER_URL + "verify/" + secret;
+            	} else if (version == 1) {
             		is = context.getResourceAsStream("/WEB-INF/emails/verification-next-dl.html");
+            		link = ConfigurationManager.SSL_SERVER_URL + "verify/" + secret;
+            	} else if (version == 2) {
+            		is = context.getResourceAsStream("/WEB-INF/emails/verification-dl-v2.html");
+            		String tokens[] = StringUtils.split(secret, ".");
+            		if (tokens.length == 2 && tokens[1].length() == 4 && StringUtils.isNumeric(tokens[1])) {
+            			link = tokens[1];
+            		}
             	}
             	message = String.format(IOUtils.toString(is, "UTF-8"), link);
             } else {
