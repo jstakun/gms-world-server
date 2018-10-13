@@ -375,7 +375,7 @@ public class NotificationsServlet extends HttpServlet {
 						String tokens[] = StringUtils.split(n.getSecret(), ".");
 	            		if (tokens.length == 2 && tokens[1].length() == 4 && StringUtils.isNumeric(tokens[1])) {
 	            			String activationCode = tokens[1];
-	            			TelegramUtils.sendTelegram(telegramId, "If this is correct please enter activation code: " + activationCode + " in Device Locator." );
+	            			TelegramUtils.sendTelegram(telegramId, "If this is correct here is your activation code: " + activationCode + ", otherwise please ignore this message.");
 	            			reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
 	            		} else {
 	            			reply = new JSONObject().put("status", "internalError");
@@ -392,14 +392,14 @@ public class NotificationsServlet extends HttpServlet {
 					response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 				}
 			} else if ((StringUtils.startsWithAny(telegramId, new String[]{"@","-100"}))) {
-				Integer responseCode = TelegramUtils.sendTelegram(telegramId, "We've received Device Locator registration request from this Channel.");
+				Integer responseCode = TelegramUtils.sendTelegram(telegramId, "We've received Device Locator registration request for this Channel.");
 				if (responseCode != null && responseCode == 200) {
 					Notification n = NotificationPersistenceUtils.addToWhitelistTelegramId(telegramId, false);
 					if (appVersion >= 30) {
 						String tokens[] = StringUtils.split(n.getSecret(), ".");
 	            		if (tokens.length == 2 && tokens[1].length() == 4 && StringUtils.isNumeric(tokens[1])) {
 	            			String activationCode = tokens[1];
-	            			TelegramUtils.sendTelegram(telegramId, "If this is correct please enter activation code: " + activationCode + " in Device Locator." );
+	            			TelegramUtils.sendTelegram(telegramId, "If this is correct here is your activation code: " + activationCode +  ", otherwise please ignore this message.");
 	            			reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
 	            		} else {
 	            			reply = new JSONObject().put("status", "internalError");
