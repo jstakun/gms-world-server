@@ -368,7 +368,7 @@ public class NotificationsServlet extends HttpServlet {
 				}
 				reply = new JSONObject().put("status", "registered");
 			} else if (StringUtils.isNumeric(telegramId)) {
-				Integer responseCode =  TelegramUtils.sendTelegram(telegramId, "We've received Device Locator registration request from you.");
+				Integer responseCode =  TelegramUtils.sendTelegram(telegramId, "We've received Device Locator notifications registration request from you.");
 				if (responseCode != null && responseCode == 200) {
 					Notification n = NotificationPersistenceUtils.addToWhitelistTelegramId(telegramId, false);
 					if (appVersion >= 30) {
@@ -392,7 +392,7 @@ public class NotificationsServlet extends HttpServlet {
 					response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 				}
 			} else if ((StringUtils.startsWithAny(telegramId, new String[]{"@","-100"}))) {
-				Integer responseCode = TelegramUtils.sendTelegram(telegramId, "We've received Device Locator registration request for this Channel.");
+				Integer responseCode = TelegramUtils.sendTelegram(telegramId, "We've received Device Locator notifications registration request for this Channel.");
 				if (responseCode != null && responseCode == 200) {
 					Notification n = NotificationPersistenceUtils.addToWhitelistTelegramId(telegramId, false);
 					if (appVersion >= 30) {
