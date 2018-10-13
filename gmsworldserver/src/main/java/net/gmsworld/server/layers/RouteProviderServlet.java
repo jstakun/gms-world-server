@@ -165,14 +165,23 @@ public class RouteProviderServlet extends HttpServlet {
         				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, resp[0]);
         			} else if (resp[0] != null) {
         				try {
-        					JSONObject route = new JSONObject(routeStr);
-        					String routeName = route.getString("name");
+        					JSONObject root = new JSONObject(routeStr);
+        					String routeName = root.getString("name");
         					String[] tokens = StringUtils.split(routeName, "_");
+        					String message;
         					if (tokens.length == 5) {
-        						MailUtils.sendAdminMail("New route", "New route saved: " + routeName + "\n" + ConfigurationManager.SERVER_URL + "dlr/" + tokens[3] + "/" + tokens[4]);
+        						message = "New route saved: " + routeName + "\n" + ConfigurationManager.SERVER_URL + "dlr/" + tokens[3] + "/" + tokens[4];
         					} else {
-        						MailUtils.sendAdminMail("New route", "New route saved: " + routeName);
+        						message = "New route saved: " + routeName;
         					}
+        					try {
+        						JSONObject route = root.getJSONArray("features").getJSONObject(0);
+        						message += "\nDescription: " + route.getJSONObject("properties").getString("description");
+        						message += "\nRoute waypoints count: " + route.getJSONObject("geometry").getJSONArray("coordinates").length();  
+        					} catch (Exception e) {
+        						logger.log(Level.SEVERE, e.getMessage(), e);
+        					}
+        					MailUtils.sendAdminMail("New route", message);
         				} catch (Exception e) {
         					logger.log(Level.SEVERE, e.getMessage(), e);
         				}

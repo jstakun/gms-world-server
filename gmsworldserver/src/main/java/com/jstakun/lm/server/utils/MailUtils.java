@@ -187,7 +187,8 @@ public class MailUtils {
             	message = link;
             }
             result = sendLocalMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html",  ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK);
-       		if (!StringUtils.equalsIgnoreCase(result, "ok")) {
+       		logger.log(Level.INFO, "Email verification request status: " + result);
+            if (!StringUtils.equalsIgnoreCase(result, "ok")) {
        			String recipients = addEmailAddress("bcc", "jstakun.appspot@gmail.com", null) + "|" + addEmailAddress("to", toA, nick);
        			if  (sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, recipients, "Device Locator Registration", message, "text/html")) {
        				result = "ok";
@@ -236,8 +237,9 @@ public class MailUtils {
         }
     }
     
-    public static void sendDeviceLocatorRegistrationNotification(String toA, String nick, String secret, ServletContext context) {
+    public static String sendDeviceLocatorRegistrationNotification(String toA, String nick, String secret, ServletContext context) {
         InputStream is = null;
+        String status = null;
         try {
         	String message = "";
         	String link = ConfigurationManager.SSL_SERVER_URL + "unregister/" + secret;
@@ -245,9 +247,9 @@ public class MailUtils {
         		is = context.getResourceAsStream("/WEB-INF/emails/notification-dl.html");
         		message =String.format(IOUtils.toString(is, "UTF-8"), link);
         	}
-            String status = sendLocalMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html",  ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK);
+            status = sendLocalMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html",  ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK);
         	if (!StringUtils.equalsIgnoreCase(status, "ok")) {
-        		sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html",  "jstakun.appspot@gmail.com", ConfigurationManager.DL_NICK);	
+        		status = sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html",  "jstakun.appspot@gmail.com", ConfigurationManager.DL_NICK);	
         	}
         } catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
@@ -260,6 +262,7 @@ public class MailUtils {
                 }
             }
         }
+        return status;
     }
 
     public static void sendLoginNotification(String toA, String nick, String layer, ServletContext context) {
