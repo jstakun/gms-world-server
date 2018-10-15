@@ -138,7 +138,11 @@ public class ImageUploadServlet extends HttpServlet {
 								} else {
 									//don't send social notification
 									output = UrlUtils.getShortUrl(FileUtils.getImageUrlV2(bucketName, itemName, false, true));
-									MailUtils.sendAdminMail("New image", "New image saved at: " + output);
+									String message  = "New image saved at: " + output;
+									if (!Double.isNaN(lat) && !Double.isNaN(lng)) {
+										message += "\nTaken at: https://maps.google.com/maps?q=" + StringUtil.formatCoordE6(lat) + "," + StringUtil.formatCoordE6(lng);  
+									}
+									MailUtils.sendAdminMail("New image", message);
 								}
 							}
 						} else {

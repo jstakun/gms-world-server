@@ -481,7 +481,7 @@ public class MailUtils {
     			  wtr = new BufferedWriter( new OutputStreamWriter( skt.getOutputStream() ) );
     			  res = hear( rdr );
     			  if ( res != 220 ) throw new Exception( "Invalid header" );
-    			  say( wtr, "EHLO orbaker.com" );
+    			  say( wtr, "EHLO gms-world.net");
     			  res = hear( rdr );
     			  if ( res != 250 ) throw new Exception( "Not ESMTP" );
     			  // validate the sender address  
