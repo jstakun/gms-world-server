@@ -257,7 +257,7 @@ public class NotificationsServlet extends HttpServlet {
 				} else if (StringUtils.equals(type, "register_m")) {
 					//register mail
 					if (appId == Commons.DL_ID && StringUtils.startsWith(request.getRequestURI(), "/s/")) {
-						reply = registerEmail(request.getParameter("email"), appVersion);
+						reply = registerEmail(request.getParameter("email"), appVersion, response);
 					} else {
 						logger.log(Level.WARNING, "Wrong application " + appId);
 					}
@@ -329,14 +329,14 @@ public class NotificationsServlet extends HttpServlet {
 		return "Notifications servlet";
 	}
 
-	private JSONObject registerEmail(String email, int appVersion) {
+	private JSONObject registerEmail(String email, int appVersion, HttpServletResponse response) throws IOException {
 		JSONObject reply = null;
 		if (StringUtils.isNotEmpty(email)) {
 			if (NotificationPersistenceUtils.isWhitelistedEmail(email)) {
 				Notification n = NotificationPersistenceUtils.addToWhitelistEmail(email, true);
 				MailUtils.sendDeviceLocatorRegistrationNotification(email, email, n.getSecret(), this.getServletContext());
 				reply = new JSONObject().put("status", "registered");
-			} else {
+			} else if (MailUtils.emailAccountExists(email)) {
 				Notification n = NotificationPersistenceUtils.addToWhitelistEmail(email, false);
 				int version = 0;
 				if (appVersion >= 30) {
@@ -348,6 +348,9 @@ public class NotificationsServlet extends HttpServlet {
 				} else {
 					reply = new JSONObject().put("status", status);
 				}
+			} else {
+				reply = new JSONObject().put("status", "failed");
+				response.sendError(HttpServletResponse.SC_BAD_REQUEST);   
 			}
 		} else {
 			logger.log(Level.WARNING, "Email is empty!"); 
