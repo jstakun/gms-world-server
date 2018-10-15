@@ -117,14 +117,21 @@
 
                     console.log("Loaded " + pathCoords.length + " route points");
 
+                    var infowindow = new google.maps.InfoWindow({
+             	          content: description
+             	    });
+             	                          		
                     if (pathCoords.length > 0) { 
                          if (currentPath == null) {
-                             var startMarker = new google.maps.Marker({
+                            var startMarker = new google.maps.Marker({
                    	 	        position: pathCoords[0],
                   	     	    map: map,
                   	 	        title: description,
                   	 	        icon: '/images/route-start.png'
                 	        }); 
+                            startMarker.addListener('click', function() {
+                                infowindow.open(map, startMarker);
+                            });                                     	        
                          }
                      
                          var currentPathLength = 0;
@@ -163,8 +170,8 @@
                          		if (endMarker != null) {
                              		endMarker.setMap(null);
                           		}
-                     	
-                          		endMarker = new google.maps.Marker({
+
+                         		endMarker = new google.maps.Marker({
                        	     		position: pathCoords[pathCoords.length-1],
                        	     		map: map,
                       	     		title: description,
@@ -174,6 +181,9 @@
                       	     		icon: '/images/route-end.png'
                               		<% } %> 	
                     	     	});
+                         		endMarker.addListener('click', function() {
+                                    infowindow.open(map, endMarker);
+                                });
 
                     	     	$.titleAlert('New route points received!', {
                         		    stopOnFocus: true,
