@@ -336,26 +336,27 @@ public class NotificationsServlet extends HttpServlet {
 				Notification n = NotificationPersistenceUtils.addToWhitelistEmail(email, true);
 				MailUtils.sendDeviceLocatorRegistrationNotification(email, email, n.getSecret(), this.getServletContext());
 				reply = new JSONObject().put("status", "registered");
-			} else { //if (MailUtils.emailAccountExists(email)) {
-				try {
-					logger.log(Level.WARNING, "Email address " + email + " has been verified: " + MailUtils.emailAccountExists(email));
-				} catch (Exception e) {}
+			} else if (appVersion >= 30 && MailUtils.emailAccountExists(email)) {
 				Notification n = NotificationPersistenceUtils.addToWhitelistEmail(email, false);
-				int version = 0;
-				if (appVersion >= 30) {
-					version = 2;
-				}
-				String status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), this.getServletContext(), version);
+				String status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), this.getServletContext(), 2);
 				if (StringUtils.equals(status, "ok")) {
 					reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
 				} else {
 					reply = new JSONObject().put("status", status);
 				}
-			} //else {
-				//logger.log(Level.WARNING, "Email address " + email + " is invalid");
-				//reply = new JSONObject().put("status", "failed");
-				//response.sendError(HttpServletResponse.SC_BAD_REQUEST);   
-			//}
+			} else if (appVersion < 30) {
+				Notification n = NotificationPersistenceUtils.addToWhitelistEmail(email, false);
+				String status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), this.getServletContext(), 0);
+				if (StringUtils.equals(status, "ok")) {
+					reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
+				} else {
+					reply = new JSONObject().put("status", status);
+				}
+			} else {
+				logger.log(Level.WARNING, "Email address " + email + " is invalid");
+				reply = new JSONObject().put("status", "failed");
+				response.sendError(HttpServletResponse.SC_BAD_REQUEST);   
+			}
 		} else {
 			logger.log(Level.WARNING, "Email is empty!"); 
 		}
