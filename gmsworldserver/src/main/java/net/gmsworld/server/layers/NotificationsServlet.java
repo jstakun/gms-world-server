@@ -336,7 +336,10 @@ public class NotificationsServlet extends HttpServlet {
 				Notification n = NotificationPersistenceUtils.addToWhitelistEmail(email, true);
 				MailUtils.sendDeviceLocatorRegistrationNotification(email, email, n.getSecret(), this.getServletContext());
 				reply = new JSONObject().put("status", "registered");
-			} else if (MailUtils.emailAccountExists(email)) {
+			} else { //if (MailUtils.emailAccountExists(email)) {
+				try {
+					logger.log(Level.WARNING, "Email address " + email + " has been verified: " + MailUtils.emailAccountExists(email));
+				} catch (Exception e) {}
 				Notification n = NotificationPersistenceUtils.addToWhitelistEmail(email, false);
 				int version = 0;
 				if (appVersion >= 30) {
@@ -348,10 +351,11 @@ public class NotificationsServlet extends HttpServlet {
 				} else {
 					reply = new JSONObject().put("status", status);
 				}
-			} else {
-				reply = new JSONObject().put("status", "failed");
-				response.sendError(HttpServletResponse.SC_BAD_REQUEST);   
-			}
+			} //else {
+				//logger.log(Level.WARNING, "Email address " + email + " is invalid");
+				//reply = new JSONObject().put("status", "failed");
+				//response.sendError(HttpServletResponse.SC_BAD_REQUEST);   
+			//}
 		} else {
 			logger.log(Level.WARNING, "Email is empty!"); 
 		}

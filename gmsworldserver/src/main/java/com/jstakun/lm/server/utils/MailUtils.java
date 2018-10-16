@@ -21,6 +21,7 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
@@ -405,10 +406,12 @@ public class MailUtils {
           int res = 0;
           while ( (line = in.readLine()) != null ) {
         	  String pfx = line.substring( 0, 3 );
+        	  logger.log(Level.INFO, "Received: " + line);
         	  try {
         		  res = Integer.parseInt( pfx );
         	  } 
         	  catch (Exception ex) {
+        		  logger.log(Level.SEVERE, ex.getMessage(), ex);
         		  res = -1;
         	  }
         	  if ( line.charAt( 3 ) != '-' ) break;
@@ -419,18 +422,18 @@ public class MailUtils {
       private static void say( BufferedWriter wr, String text )  throws IOException {
     	  wr.write( text + "\r\n" );
     	  wr.flush();
+    	  logger.log(Level.INFO, "Sending: " + text);
     	  return;
       }
       
       private static ArrayList<String> getMX( String hostName ) throws NamingException {
-    	  // Perform a DNS lookup for MX records in the domain
     	  Hashtable<String, String> env = new Hashtable<String, String>();
-    	  env.put("java.naming.factory.initial", "com.sun.jndi.dns.DnsContextFactory");
+    	  env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.dns.DnsContextFactory");
+          //env.put(Context.PROVIDER_URL, "dns://8.8.8.8 dns://8.8.4.4");
     	  DirContext ictx = new InitialDirContext( env );
     	  Attributes attrs = ictx.getAttributes( hostName, new String[] { "MX" });
     	  Attribute attr = attrs.get( "MX" );
     	  
-    	  // if we don't have an MX record, try the machine itself
     	  if (( attr == null ) || ( attr.size() == 0 )) {
     		  attrs = ictx.getAttributes( hostName, new String[] { "A" });
     		  attr = attrs.get( "A" );
@@ -449,6 +452,9 @@ public class MailUtils {
     		  	}
     		  	res.add( f[1] );
     	  }
+    	  
+    	  logger.log(Level.INFO, "Found " + res.size() + " MX servers");
+    	  
     	  return res;
       }
       
@@ -462,8 +468,8 @@ public class MailUtils {
     	  ArrayList<String> mxList = null;
     	  try {
     		  mxList = getMX( domain );
-    	  } 
-    	  catch (NamingException ex) {
+    	  } catch (NamingException ex) {
+    		  logger.log(Level.SEVERE, ex.getMessage(), ex);
     		  return false;
     	  }
     	  
@@ -490,7 +496,6 @@ public class MailUtils {
     			  if ( res != 250 ) throw new Exception( "Sender rejected" );
     			  say( wtr, "RCPT TO: <" + address + ">" );
     			  res = hear( rdr );
-    			  // be polite
     			  say( wtr, "RSET" ); hear( rdr );
     			  say( wtr, "QUIT" ); hear( rdr );
     			  if ( res != 250 && res != 451) {
@@ -499,8 +504,7 @@ public class MailUtils {
     			  valid = true;
     		  } catch (Exception ex) {
     			  logger.log(Level.SEVERE, ex.getMessage(), ex);
-    		  } 
-    		  finally {
+    		  } finally {
     			  if (rdr != null) {
     				  try {
     					  rdr.close();
@@ -516,8 +520,9 @@ public class MailUtils {
     					  skt.close();
     				  } catch (Exception e) {}
     			  }
-    			  if ( valid ) return true;
-    			  
+    			  if ( valid ) {
+    				  return true;
+    			  }
     		  }
     	  }
     	  return false;
