@@ -6,7 +6,7 @@ import com.jstakun.lm.server.utils.MailUtils;
 
 public class MailUtilsTest {
 
-	private static final String MAIL = "jstakun.appspot@gamil.com";
+	private static final String MAIL = "jstakun.appspot1@gamil.com";
 	
 	@Test
 	public void test() {
@@ -16,5 +16,4 @@ public class MailUtilsTest {
 		
 		System.out.println(MAIL + " exists: " + MailUtils.emailAccountExists(MAIL));
 	}
-
 }

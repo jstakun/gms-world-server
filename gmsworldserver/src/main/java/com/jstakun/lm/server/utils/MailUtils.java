@@ -388,27 +388,40 @@ public class MailUtils {
     	  return  emailAddress;
     }
     
-    public static boolean emailAccountExists( String address ) {
+    public static JSONObject emailAccountExists( String address ) {
+    	JSONObject reply = new JSONObject();
     	if (StringUtils.isEmpty(address)) {
-    		 return false;
+    		reply.put("responseCode",500); 
+    		return reply;
     	}
     	final String MAILER_SERVER_URL = "https://openapi-landmarks.b9ad.pro-us-east-1.openshiftapps.com/actions/validateEmail?to=" + address;
     	
-    	boolean isValid = false;
-   	 	try {
+    	try {
    	 		String response = HttpUtils.processFileRequestWithBasicAuthn(new URL(MAILER_SERVER_URL), "GET", null, null, Commons.getProperty(Property.RH_GMS_USER));
    	 		Integer responseCode = HttpUtils.getResponseCode(MAILER_SERVER_URL);
    	 		logger.log(Level.INFO, "Received response code: " + responseCode);
    	 		if (responseCode != null && responseCode == 200 && StringUtils.startsWith(response, "{")) {
    	 			JSONObject root = new JSONObject(response);
-   	 			isValid = StringUtils.equals(root.optString("status"), "ok");
+   	 		    reply.put("responseCode",responseCode);
+   	 		    if (StringUtils.equals(root.optString("status"), "ok")) {
+   	 		    	reply.put("status", "ok");
+   	 		    } else {
+   	 		    	reply.put("status", "failed");
+   	 		    }
    	 		} else {
+   	 			reply.put("status", "failed");
    	 			logger.log(Level.SEVERE, "Received following response: " + response);
+   	 			if (responseCode != null) {
+   	 				reply.put("responseCode", responseCode);
+   	 			} else {
+   	 				reply.put("responseCode", 500);
+   	 			}
    	 		}
    	 	} catch (Exception e) {
-   		 logger.log(Level.SEVERE, e.getMessage(), e);
+   	 		logger.log(Level.SEVERE, e.getMessage(), e);
+   	 		reply.put("responseCode", 500);
    	 	}
     	
-    	 return isValid;
+    	return reply;
     }
 }

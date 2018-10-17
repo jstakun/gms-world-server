@@ -336,13 +336,22 @@ public class NotificationsServlet extends HttpServlet {
 				Notification n = NotificationPersistenceUtils.addToWhitelistEmail(email, true);
 				MailUtils.sendDeviceLocatorRegistrationNotification(email, email, n.getSecret(), this.getServletContext());
 				reply = new JSONObject().put("status", "registered");
-			} else if (appVersion >= 30 && MailUtils.emailAccountExists(email)) {
-				Notification n = NotificationPersistenceUtils.addToWhitelistEmail(email, false);
-				String status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), this.getServletContext(), 2);
-				if (StringUtils.equals(status, "ok")) {
-					reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
+			} else if (appVersion >= 30) {
+				JSONObject verificationStatus = MailUtils.emailAccountExists(email);
+				if (verificationStatus.getInt("responseCode") == 200 && StringUtils.equals(verificationStatus.optString("status"), "ok")) {
+					Notification n = NotificationPersistenceUtils.addToWhitelistEmail(email, false);
+					String status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), this.getServletContext(), 2);
+					if (StringUtils.equals(status, "ok")) {
+						reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
+					} else {
+						reply = new JSONObject().put("status", status);
+					}
+				} else if (verificationStatus.getInt("responseCode") != 200) {
+					reply = new JSONObject().put("status", "failed");
+					response.sendError(verificationStatus.getInt("responseCode")); 
 				} else {
-					reply = new JSONObject().put("status", status);
+					reply = new JSONObject().put("status", "failed");
+					response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 				}
 			} else if (appVersion < 30) {
 				Notification n = NotificationPersistenceUtils.addToWhitelistEmail(email, false);
