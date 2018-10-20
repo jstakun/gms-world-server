@@ -50,7 +50,6 @@ public final class DeviceManagerServlet extends HttpServlet {
 		        	  out.print("{\"status\":\"unverified\"}");
 		         }
 			} else if (!HttpUtils.isEmptyAny(request, "username"))  {
-				//TODO move to post
 				String devices = DevicePersistenceUtils.getUserDevices(request.getParameter("username"));
 				out.print("{\"devices\":" + devices + "}");
 			} else {
@@ -71,9 +70,7 @@ public final class DeviceManagerServlet extends HttpServlet {
 		response.setContentType("application/json;charset=UTF-8");
 		PrintWriter out = response.getWriter();
 		try {
-			if (HttpUtils.isEmptyAny(request, "imei")) {
-				response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-			} else {
+			if (!HttpUtils.isEmptyAny(request, "imei")) {
 				 String imei = request.getParameter("imei");
 				 String token = request.getParameter("token");
 		         String username = request.getParameter("username");
@@ -145,7 +142,16 @@ public final class DeviceManagerServlet extends HttpServlet {
 		        		 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		        	 }
 		         }
-			}
+			} else if (!HttpUtils.isEmptyAny(request, "username", "action"))  {
+				if (StringUtils.equalsIgnoreCase(request.getParameter("action"), "list")) {
+					String devices = DevicePersistenceUtils.getUserDevices(request.getParameter("username"));
+					out.print("{\"devices\":" + devices + "}");
+				} else {
+					response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+				}
+			} else { 
+				response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+			}  
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
