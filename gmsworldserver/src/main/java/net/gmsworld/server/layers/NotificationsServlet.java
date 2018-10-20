@@ -347,9 +347,11 @@ public class NotificationsServlet extends HttpServlet {
 						reply = new JSONObject().put("status", status);
 					}
 				} else if (verificationStatus.getInt("responseCode") != 200) {
+					logger.log(Level.WARNING, email + " verification failed");
 					reply = new JSONObject().put("status", "failed");
 					response.sendError(verificationStatus.getInt("responseCode")); 
 				} else {
+					logger.log(Level.WARNING, email + " verification failed");
 					reply = new JSONObject().put("status", "failed");
 					response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 				}
