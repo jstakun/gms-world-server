@@ -200,7 +200,7 @@ public final class DeviceManagerServlet extends HttpServlet {
    	   		tokens.add("deviceId:" + deviceId);
    	   		if (latitude != null && longitude != null) {
    	   			//add device location to cache
-   	   			CacheUtil.put(deviceId + "_ location", StringUtil.formatCoordE6(latitude) + "_" + StringUtil.formatCoordE6(longitude) + "_" + System.currentTimeMillis(), CacheType.LONG);
+   	   			CacheUtil.put(deviceId + "_location", StringUtil.formatCoordE6(latitude) + "_" + StringUtil.formatCoordE6(longitude) + "_" + System.currentTimeMillis(), CacheType.LONG);
    	   		}
    	   	}
    	   	if (StringUtils.isNotEmpty(request.getHeader(Commons.DEVICE_NAME_HEADER))) {

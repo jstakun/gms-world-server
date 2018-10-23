@@ -142,7 +142,7 @@ public class NotificationsServlet extends HttpServlet {
 					
 					if (StringUtils.isNotEmpty(deviceId)) {
 						//add device location to cache
-						CacheUtil.put(deviceId + "_ location", StringUtil.formatCoordE6(latitude) + "_" + StringUtil.formatCoordE6(longitude) + "_" + System.currentTimeMillis(), CacheType.LONG);
+						CacheUtil.put(deviceId + "_location", StringUtil.formatCoordE6(latitude) + "_" + StringUtil.formatCoordE6(longitude) + "_" + System.currentTimeMillis(), CacheType.LONG);
 					}
 				}
 
