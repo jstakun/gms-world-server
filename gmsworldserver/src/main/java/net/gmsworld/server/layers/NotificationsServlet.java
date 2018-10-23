@@ -22,6 +22,7 @@ import com.jstakun.lm.server.persistence.Notification;
 import com.jstakun.lm.server.utils.MailUtils;
 import com.jstakun.lm.server.utils.RoutesUtils;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
+import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceWebUtils;
 import com.jstakun.lm.server.utils.persistence.NotificationPersistenceUtils;
@@ -77,6 +78,7 @@ public class NotificationsServlet extends HttpServlet {
 				String routeId = request.getHeader(Commons.ROUTE_ID_HEADER);
 				JSONObject reply = new JSONObject();
 				int appVersion = NumberUtils.getInt(request.getHeader(Commons.APP_VERSION_HEADER), -1);
+				String deviceId = request.getHeader(Commons.DEVICE_ID_HEADER);
 
 				Double latitude = null;
 	            if (request.getParameter("lat") != null) {
@@ -92,54 +94,56 @@ public class NotificationsServlet extends HttpServlet {
 	                 longitude = GeocodeUtils.getLongitude(request.getHeader(Commons.LNG_HEADER));
 	            }
 	            
-	            //create new landmark but skip dl route points
-				if (StringUtils.isEmpty(routeId) && GeocodeUtils.isValidLatitude(latitude) && GeocodeUtils.isValidLongitude(longitude)) {
-					try {
-						Landmark l = new Landmark();
-						l.setLatitude(latitude);
-						l.setLongitude(longitude);
-						//logger.log(Level.INFO, "User location is " + Double.toString(latitude) + "," + Double.toString(longitude));
-						l.setName(Commons.MY_POSITION_LAYER);
+	            if (GeocodeUtils.isValidLatitude(latitude) && GeocodeUtils.isValidLongitude(longitude)) {
+					if (StringUtils.isEmpty(routeId)) {
+						//create new landmark but skip dl route points
+						try {
+							Landmark l = new Landmark();
+							l.setLatitude(latitude);
+							l.setLongitude(longitude);
+							l.setName(Commons.MY_POSITION_LAYER);
 						
-						String u = StringUtil.getUsername(request.getAttribute("username"),
-								request.getParameter("username"));
-						if (u != null && u.length() % 4 == 0) {
-							try {
-								u = new String(Base64.decode(u));
-							} catch (Exception e) {
-								// from version 1086, 86 username is Base64 encoded string
+							String u = StringUtil.getUsername(request.getAttribute("username"), request.getParameter("username"));
+							if (u != null && u.length() % 4 == 0) {
+								try {
+									u = new String(Base64.decode(u));
+								} catch (Exception e) {
+									// from version 1086, 86 username is Base64 encoded string
+								}
 							}
-						}
-						if (u == null) {
-							throw new Exception("Username can't be null!");
-						} //else {
-						//	logger.log(Level.INFO, "Username is " + u);
-						//}
-						l.setUsername(u);
+							if (u == null) {
+								throw new Exception("Username can't be null!");
+							} 
+							
+							l.setUsername(u);
 						
-						if (!LandmarkPersistenceWebUtils.isSimilarToNewest(l)) {
-							String socialIds = request.getParameter("socialIds");
+							if (!LandmarkPersistenceWebUtils.isSimilarToNewest(l)) {
+								String socialIds = request.getParameter("socialIds");
+							
+								LandmarkPersistenceWebUtils.setFlex(l, request);
+								l.setLayer(Commons.MY_POS_CODE);
 
-							LandmarkPersistenceWebUtils.setFlex(l, request);
-							l.setLayer(Commons.MY_POS_CODE);
+								LandmarkPersistenceUtils.persistLandmark(l, GoogleCacheProvider.getInstance());
 
-							LandmarkPersistenceUtils.persistLandmark(l, GoogleCacheProvider.getInstance());
-
-							if (l.getId() > 0) {
-								LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), socialIds);
+								if (l.getId() > 0) {
+									LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), socialIds);
+								}
 							}
+						} catch (Exception e) {
+							logger.log(Level.SEVERE, e.getMessage(), e);
 						}
-					} catch (Exception e) {
-						logger.log(Level.SEVERE, e.getMessage(), e);
+					} 
+				   
+					if (StringUtils.isNotEmpty(routeId)) {
+						//add route point to cache
+						RoutesUtils.addRoutePointToCache(routeId, latitude, longitude);
 					}
-				} //else {
-					//logger.log(Level.INFO, "No user location provided");
-				//}
-				
-				//add route point to cache
-				if (StringUtils.isNotEmpty(routeId) && GeocodeUtils.isValidLatitude(latitude) && GeocodeUtils.isValidLongitude(longitude)) {
-        			RoutesUtils.addRoutePointToCache(routeId, latitude, longitude);
-        		}
+					
+					if (StringUtils.isNotEmpty(deviceId)) {
+						//add device location to cache
+						CacheUtil.put(deviceId + "_ location", StringUtil.formatCoordE6(latitude) + "_" + StringUtil.formatCoordE6(longitude) + "_" + System.currentTimeMillis(), CacheType.LONG);
+					}
+				}
 
 				if (StringUtils.equals(type, "v")) {
 					// check for version
