@@ -186,8 +186,7 @@ public final class DeviceManagerServlet extends HttpServlet {
 	private String processHeadersV2(HttpServletRequest request) {
 		List<String> tokens = new ArrayList<>();
 		Double latitude = null, longitude = null;
-		String deviceId = null;
-   	   	if (request.getHeader(Commons.LAT_HEADER) != null) {
+		if (request.getHeader(Commons.LAT_HEADER) != null) {
    	   		latitude = GeocodeUtils.getLatitude(request.getHeader(Commons.LAT_HEADER));
    	   	}
    	   	if (request.getHeader(Commons.LNG_HEADER) != null) {
@@ -196,11 +195,13 @@ public final class DeviceManagerServlet extends HttpServlet {
    	   	if (latitude != null && longitude != null) {
    	   		tokens.add("geo:" + latitude + "+" + longitude);
    	   	}	
-   	   	deviceId = request.getHeader(Commons.DEVICE_ID_HEADER);
+   	   	String deviceId = request.getHeader(Commons.DEVICE_ID_HEADER);
    	   	if (StringUtils.isNotEmpty(deviceId)) {
    	   		tokens.add("deviceId:" + deviceId);
-   	   		//add device location to cache
-			CacheUtil.put(deviceId + "_ location", StringUtil.formatCoordE6(latitude) + "_" + StringUtil.formatCoordE6(longitude) + "_" + System.currentTimeMillis(), CacheType.LONG);
+   	   		if (latitude != null && longitude != null) {
+   	   			//add device location to cache
+   	   			CacheUtil.put(deviceId + "_ location", StringUtil.formatCoordE6(latitude) + "_" + StringUtil.formatCoordE6(longitude) + "_" + System.currentTimeMillis(), CacheType.LONG);
+   	   		}
    	   	}
    	   	if (StringUtils.isNotEmpty(request.getHeader(Commons.DEVICE_NAME_HEADER))) {
    	   		tokens.add("deviceName:" + request.getHeader(Commons.DEVICE_NAME_HEADER));
