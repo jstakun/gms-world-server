@@ -49,7 +49,7 @@ public class DevicePersistenceUtils {
 	   }
 	}
 	
-	public static int setupDevice(String imei, String name, String username, String token) throws Exception {
+	public static int setupDevice(String imei, String name, String username, String token, String flex) throws Exception {
 		if (imei != null) {
 		    String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "setupDevice?" + 
 	                 "imei="+  imei;
@@ -61,6 +61,9 @@ public class DevicePersistenceUtils {
 		    }
 		    if (StringUtils.isNotEmpty(token)) {
 		    	deviceUrl += "&token=" + token;
+		    }
+		    if (StringUtils.isNotEmpty(flex)) {
+		    	deviceUrl += "&flex=" + flex;
 		    }
 		    String deviceJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(deviceUrl), Commons.getProperty(Property.RH_GMS_USER), false);		
 		    if (StringUtils.startsWith(deviceJson, "{")) {

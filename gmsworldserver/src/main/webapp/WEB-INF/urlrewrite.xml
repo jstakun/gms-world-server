@@ -14,7 +14,7 @@
     
      <rule>
         <condition type="method">HEAD</condition>
-        <from>/.*</from>
+        <from>^/.*</from>
         <to>/head.jsp</to>
     </rule>
 
@@ -107,13 +107,13 @@
     <!-- showDevice rules -->
     
     <rule>
-            <from>^/showDevice/([0-9]+)/(fullScreen)$</from>
+            <from>^/showDevice/([a-zA-Z0-9-_]+)/(fullScreen)$</from>
             <to>/showUser.do?user=$1&amp;fullScreenCollectionMap=1</to>
     </rule>
 
     <rule>
-            <from>^/showDevice/(.*)$</from>
-            <to type="forward" encode="true">/showUser.do?user=$1</to>
+            <from>^/showDevice/([a-zA-Z0-9-_]+)$</from>
+            <to>/showUser.do?user=$1</to>
     </rule>
     
     <!-- showImage rules -->

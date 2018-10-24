@@ -85,9 +85,9 @@ public final class DeviceManagerServlet extends HttpServlet {
 		        	 int version = NumberUtils.getInt(request.getHeader(Commons.APP_VERSION_HEADER), -1);
 		        	 if (version >= 28) {
 		        		 if (flex == null) {
-		        			 flex = processHeadersV2(request);
+		        			 flex = processHeadersV2(request, version);
 		        		 } else {
-		        			 flex += "," + processHeadersV2(request);
+		        			 flex += "," + processHeadersV2(request, version);
 		        		 }
 		        	 } else {
 		        		 if (flex == null) {
@@ -130,7 +130,7 @@ public final class DeviceManagerServlet extends HttpServlet {
 		        	 } else if (StringUtils.equalsIgnoreCase(action, "delete")) {
 		        		 status = DevicePersistenceUtils.deleteDevice(imei);
 		        	 } else { 
-		        		 status = DevicePersistenceUtils.setupDevice(imei, name, username, token);
+		        		 status = DevicePersistenceUtils.setupDevice(imei, name, username, token, flex);
 		        	 }	 
 		        	 if (status == 1) {
 		        		 out.print("{\"status\":\"ok\"}");
@@ -181,9 +181,10 @@ public final class DeviceManagerServlet extends HttpServlet {
    	   	return flex;
 	}
 	
-	private String processHeadersV2(HttpServletRequest request) {
+	private String processHeadersV2(HttpServletRequest request, int version) {
 		List<String> tokens = new ArrayList<>();
 		Double latitude = null, longitude = null;
+		String accuracy = request.getHeader("X-GMS-Acc");
 		if (request.getHeader(Commons.LAT_HEADER) != null) {
    	   		latitude = GeocodeUtils.getLatitude(request.getHeader(Commons.LAT_HEADER));
    	   	}
@@ -191,13 +192,17 @@ public final class DeviceManagerServlet extends HttpServlet {
    	   		longitude = GeocodeUtils.getLongitude(request.getHeader(Commons.LNG_HEADER));
    	   	}
    	   	if (latitude != null && longitude != null) {
-   	   		tokens.add("geo:" + latitude + "+" + longitude);
+   	   		String geo = "geo:" + latitude + "+" + longitude;
+   	   		if (version > 31 && StringUtils.isNotEmpty(accuracy)) {
+   	   			geo += "+" + accuracy;
+   	   		}
+   	   		tokens.add(geo);
    	   	}	
    	   	String deviceId = request.getHeader(Commons.DEVICE_ID_HEADER);
    	   	if (StringUtils.isNotEmpty(deviceId)) {
    	   		tokens.add("deviceId:" + deviceId);
    	 	    //add device location to cache
-   	   		CacheUtil.cacheDeviceLocation(deviceId, latitude, longitude, request.getHeader("X-GMS-Acc"));
+   	   		CacheUtil.cacheDeviceLocation(deviceId, latitude, longitude, accuracy);
    	   	}
    	   	if (StringUtils.isNotEmpty(request.getHeader(Commons.DEVICE_NAME_HEADER))) {
    	   		tokens.add("deviceName:" + request.getHeader(Commons.DEVICE_NAME_HEADER));
