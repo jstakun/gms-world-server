@@ -8,17 +8,19 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sf.jsr107cache.Cache;
-import net.sf.jsr107cache.CacheException;
-import net.sf.jsr107cache.CacheFactory;
-import net.sf.jsr107cache.CacheManager;
-
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
 import com.google.appengine.api.memcache.Expiration;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.appengine.api.memcache.jsr107cache.GCacheFactory;
+
+import net.gmsworld.server.utils.StringUtil;
+import net.sf.jsr107cache.Cache;
+import net.sf.jsr107cache.CacheException;
+import net.sf.jsr107cache.CacheFactory;
+import net.sf.jsr107cache.CacheManager;
 
 /**
  * 
@@ -136,6 +138,19 @@ public class CacheUtil {
 		syncCache.increment(key, 1, 0L);
 		syncCache.put(key + "_" + layer, value, ONE_HOUR_EXPIRATION);
 	}
+	
+	public static void cacheDeviceLocation(String deviceId, Double latitude, Double longitude, String accuracy) {
+		if (StringUtils.isNotEmpty(deviceId) && latitude != null && longitude != null) {
+			String key = deviceId + "_location";
+			String value = StringUtil.formatCoordE6(latitude) + "_" + StringUtil.formatCoordE6(longitude) + "_";
+			if (StringUtils.isNotEmpty(accuracy)) {
+				value += accuracy + "_";
+			}
+			value += Long.toString(System.currentTimeMillis());
+			CacheUtil.put(key, value, CacheType.LONG);
+		}
+	}
+	
 	
 	public static Long increment(String key) {
 		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();

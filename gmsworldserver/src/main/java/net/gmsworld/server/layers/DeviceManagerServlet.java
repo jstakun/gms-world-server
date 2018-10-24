@@ -15,13 +15,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
-import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 import com.jstakun.lm.server.utils.persistence.DevicePersistenceUtils;
 
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.NumberUtils;
-import net.gmsworld.server.utils.StringUtil;
 
 /**
  * Servlet implementation class DeviceManagerServlet
@@ -198,10 +196,8 @@ public final class DeviceManagerServlet extends HttpServlet {
    	   	String deviceId = request.getHeader(Commons.DEVICE_ID_HEADER);
    	   	if (StringUtils.isNotEmpty(deviceId)) {
    	   		tokens.add("deviceId:" + deviceId);
-   	   		if (latitude != null && longitude != null) {
-   	   			//add device location to cache
-   	   			CacheUtil.put(deviceId + "_location", StringUtil.formatCoordE6(latitude) + "_" + StringUtil.formatCoordE6(longitude) + "_" + System.currentTimeMillis(), CacheType.LONG);
-   	   		}
+   	 	    //add device location to cache
+   	   		CacheUtil.cacheDeviceLocation(deviceId, latitude, longitude, request.getHeader("X-GMS-Acc"));
    	   	}
    	   	if (StringUtils.isNotEmpty(request.getHeader(Commons.DEVICE_NAME_HEADER))) {
    	   		tokens.add("deviceName:" + request.getHeader(Commons.DEVICE_NAME_HEADER));

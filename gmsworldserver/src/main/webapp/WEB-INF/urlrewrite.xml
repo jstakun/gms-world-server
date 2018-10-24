@@ -10,6 +10,14 @@
 -->
 <urlrewrite>
 
+    <!--  HEAD request -->
+    
+     <rule>
+        <condition type="method">HEAD</condition>
+        <from>/.*</from>
+        <to>/head.jsp</to>
+    </rule>
+
     <!--  Let's Encrypt -->
     
     <rule>
@@ -321,11 +329,6 @@
             <from>/download/blackberry/LandmarkManagerUIMIDlet.cod</from>
             <to>/download/blackberry/106/LandmarkManagerUIMIDlet.cod</to>
     </rule>
-
-    <!-- rule>
-            <from>/download/android/GMSClientNext.apk</from>
-            <to>/download/android/21/GMSClientNext.apk</to>
-    </rule-->
     
     <!-- archive -->
     
