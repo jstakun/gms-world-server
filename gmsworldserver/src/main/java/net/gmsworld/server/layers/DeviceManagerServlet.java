@@ -20,6 +20,7 @@ import com.jstakun.lm.server.utils.persistence.DevicePersistenceUtils;
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.NumberUtils;
+import net.gmsworld.server.utils.StringUtil;
 
 /**
  * Servlet implementation class DeviceManagerServlet
@@ -192,7 +193,7 @@ public final class DeviceManagerServlet extends HttpServlet {
    	   		longitude = GeocodeUtils.getLongitude(request.getHeader(Commons.LNG_HEADER));
    	   	}
    	   	if (latitude != null && longitude != null) {
-   	   		String geo = "geo:" + latitude + "+" + longitude;
+   	   		String geo = "geo:" + StringUtil.formatCoordE6(latitude) + "+" + StringUtil.formatCoordE6(longitude);
    	   		if (version > 31 && StringUtils.isNotEmpty(accuracy)) {
    	   			geo += "+" + accuracy;
    	   		}
