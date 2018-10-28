@@ -139,6 +139,8 @@ public final class DeviceManagerServlet extends HttpServlet {
 		        		 response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 		        	 } else if (status == -3) {
 		        		 response.sendError(HttpServletResponse.SC_FORBIDDEN);
+		        	 } else if (status == -4) {
+		        		 response.sendError(HttpServletResponse.SC_NOT_FOUND);
 		        	 } else {
 		        		 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		        	 }

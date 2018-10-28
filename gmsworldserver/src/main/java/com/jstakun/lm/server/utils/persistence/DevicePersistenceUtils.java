@@ -112,12 +112,26 @@ public class DevicePersistenceUtils {
 		    try {
 		    	//logger.log(Level.INFO, "Calling: " + deviceUrl);
 			    deviceJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(deviceUrl), Commons.getProperty(Property.RH_GMS_USER), false);		
-			    JSONObject root = new JSONObject(deviceJson);
-			    if (root.optString("name") != null ) {
-			       return 1;
+			    if (StringUtils.startsWith(deviceJson, "{")) {
+			    	JSONObject root = new JSONObject(deviceJson);
+			    	if (root.optString("name") != null ) {
+			    		return 1;
+			    	} else {
+			    		logger.log(Level.SEVERE, "Received following server response {0}", deviceJson);
+			    		return -1;
+			    	}
 			    } else {
-				   logger.log(Level.SEVERE, "Received following server response {0}", deviceJson);
-				   return -1;
+			    	Integer responseCode = HttpUtils.getResponseCode(deviceUrl);
+			    	if (responseCode != null && responseCode == 400) {
+			    		logger.log(Level.SEVERE, "Received following response 400: {0}", deviceJson);
+			    		return -2;
+			    	} else if (responseCode != null && responseCode == 404) {
+			    		logger.log(Level.SEVERE, "Received following response 404 {0}", deviceJson);
+			    		return -4;
+			    	} else {
+			    		logger.log(Level.SEVERE, "Received following response {0} {1}",  new Object[]{HttpUtils.getResponseCode(deviceUrl), deviceJson});
+			    		return -1;
+			    	}
 			    }
 		    } catch (Exception e) {
 		    	logger.log(Level.SEVERE, "Received following server response {0} {1} ", new Object[]{HttpUtils.getResponseCode(deviceUrl), deviceJson});
