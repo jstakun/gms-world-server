@@ -129,7 +129,7 @@ public class DevicePersistenceUtils {
 			    		logger.log(Level.SEVERE, "Received following response 404 {0}", deviceJson);
 			    		return -4;
 			    	} else {
-			    		logger.log(Level.SEVERE, "Received following response {0} {1}",  new Object[]{HttpUtils.getResponseCode(deviceUrl), deviceJson});
+			    		logger.log(Level.SEVERE, "Received following response {0} {1}",  new Object[]{responseCode, deviceJson});
 			    		return -1;
 			    	}
 			    }
