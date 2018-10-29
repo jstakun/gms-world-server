@@ -18,6 +18,19 @@
         <to>/head.jsp</to>
     </rule>
 
+    <!-- PHP, ASP -->
+     
+     <rule>
+        <from>^.*\.(php|asp)$</from>
+        <set type="status">404</set>
+        <to>null</to>
+    </rule>
+ 
+     <rule>
+        <from>^.*\.(php|asp)\?(.*)$</from>
+        <set type="status">404</set>
+        <to>null</to>
+    </rule>
     <!--  Let's Encrypt -->
     
     <rule>
