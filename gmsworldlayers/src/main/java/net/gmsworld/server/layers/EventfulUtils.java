@@ -252,7 +252,7 @@ public class EventfulUtils extends LayerHelper {
     private static List<ExtendedLandmark> createCustomLandmarkEventfulList(String eventfulJson, int version, int stringLimit, Locale locale) throws JSONException, ParseException {
     	List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
 
-        if (StringUtils.startsWith(eventfulJson, "{")) {
+    	if (StringUtils.startsWith(eventfulJson, "{")) {
             try {
                 JSONObject jsonRoot = new JSONObject(eventfulJson);
                 int total_items = jsonRoot.getInt("total_items");
@@ -270,10 +270,12 @@ public class EventfulUtils extends LayerHelper {
                     }
                 } else if (total_items == 1) {
                     JSONObject e = jsonRoot.getJSONObject("events");
-                    JSONObject event = e.getJSONObject("event");
-                    ExtendedLandmark landmark = createEventfulLandmark(event, stringLimit, locale);
-                    if (landmark != null) {		
-                    	landmarks.add(landmark);
+                    JSONObject event = e.optJSONObject("event");
+                    if (event != null) {
+                    	ExtendedLandmark landmark = createEventfulLandmark(event, stringLimit, locale);
+                    	if (landmark != null) {		
+                    		landmarks.add(landmark);
+                    	}
                     }
                 }
             } catch (JSONException ex) {

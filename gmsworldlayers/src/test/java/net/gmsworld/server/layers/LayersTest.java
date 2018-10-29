@@ -63,7 +63,11 @@ public class LayersTest {
 		//bbox = "-97.79,30.16,-97.74,30.26"; 
 		
 		//lat = 46.782499;
-		//lng = 23.558828;	
+		//lng = 23.558828;
+		
+		//bangalore
+		//lat = 12.502252; 
+		//lng = 76.205722; 
 	}
 	
 	
@@ -80,7 +84,7 @@ public class LayersTest {
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.OSM_PARKING_LAYER)});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.COUPONS_LAYER)});
-	   data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.GROUPON_LAYER)});
+	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.GROUPON_LAYER)});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.MC_ATM_LAYER)});
 	 
@@ -97,6 +101,8 @@ public class LayersTest {
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.LM_SERVER_LAYER)});
+	 
+	   data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.EVENTFUL_LAYER)});
 	   
 	   System.out.println("Found " + data.size() + " layers.");
 	   
