@@ -65,8 +65,8 @@ public class ImageUploadServlet extends HttpServlet {
 			boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 			String myPosKey = request.getHeader(Commons.MYPOS_KEY_HEADER);
 			String cacheKey = "screenshot_" + StringUtil.formatCoordE2(lat) + "_" + StringUtil.formatCoordE2(lng);
-			boolean silent = StringUtils.equals(request.getHeader("X-GMS-Silent"), "true");
-			String bucketName =  request.getHeader("X-GMS-BucketName");
+			boolean silent = StringUtils.equals(request.getHeader(Commons.SILENT_HEADER), "true");
+			String bucketName =  request.getHeader(Commons.BUCKET_NAME_HEADER);
 
 			if (CacheUtil.containsKey(cacheKey)) {
 				logger.log(Level.WARNING, "This screenshot is similar to newest: " + cacheKey);

@@ -141,7 +141,7 @@ public class NotificationsServlet extends HttpServlet {
 					
 					if (StringUtils.isNotEmpty(deviceId)) {
 						//add device location to cache
-			   	   		CacheUtil.cacheDeviceLocation(deviceId, latitude, longitude, request.getHeader("X-GMS-Acc"));
+			   	   		CacheUtil.cacheDeviceLocation(deviceId, latitude, longitude, request.getHeader(Commons.ACC_HEADER));
 					}
 				}
 
@@ -197,7 +197,7 @@ public class NotificationsServlet extends HttpServlet {
 			            	if (val != null) {
 			            		String[] data = StringUtils.split(val, "_+_");
 			            		if (data != null && data.length == 3 && TelegramUtils.isValidTelegramId(data[0])) {
-			            			String authStatus = request.getHeader("X-GMS-AuthStatus");
+			            			String authStatus = request.getHeader(Commons.AUTH_HEADER);
 			            			if (StringUtils.equals(authStatus, "failed")) {
 			            				TelegramUtils.sendTelegram(data[0], "Command " + data[2] + " has been rejected by device " + data[1] + ".");
 			            			} else {

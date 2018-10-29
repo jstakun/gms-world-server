@@ -187,7 +187,7 @@ public final class DeviceManagerServlet extends HttpServlet {
 	private String processHeadersV2(HttpServletRequest request, int version) {
 		List<String> tokens = new ArrayList<>();
 		Double latitude = null, longitude = null;
-		String accuracy = request.getHeader("X-GMS-Acc");
+		String accuracy = request.getHeader(Commons.ACC_HEADER);
 		if (request.getHeader(Commons.LAT_HEADER) != null) {
    	   		latitude = GeocodeUtils.getLatitude(request.getHeader(Commons.LAT_HEADER));
    	   	}

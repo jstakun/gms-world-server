@@ -622,5 +622,9 @@ public class GrouponUtils extends LayerHelper {
 	public String getIcon() {
 		return "dollar.png";
 	}
+	
+	public boolean isEnabled() {
+   		return false;
+   }
 
 }

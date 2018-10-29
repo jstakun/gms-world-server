@@ -145,12 +145,12 @@ public class GeoJsonProviderServlet extends HttpServlet {
 									JSONObject layerJson = new JSONObject(json);
 									layerSize = layerJson.getJSONArray("features").length();
 								}
-							} else if (StringUtils.equals(layer, Commons.GROUPON_LAYER) || StringUtils.equals(layer, Commons.COUPONS_LAYER)) {
-								if (GeocodeUtils.isNorthAmericaLocation(lat, lng)) {
-									List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(lat, lng, null, radius, version, limit, StringUtil.getStringLengthLimit("l"), null, null, locale, true);
-					    			layerSize = landmarks.size();
-									newkey = layerHelper.cacheGeoJson(landmarks, lat, lng, layer, locale, flexString2);                       
-								}
+							//} else if (StringUtils.equals(layer, Commons.GROUPON_LAYER) || StringUtils.equals(layer, Commons.COUPONS_LAYER)) {
+								//if (GeocodeUtils.isNorthAmericaLocation(lat, lng)) {
+									//List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(lat, lng, null, radius, version, limit, StringUtil.getStringLengthLimit("l"), null, null, locale, true);
+					    			//layerSize = landmarks.size();
+									//newkey = layerHelper.cacheGeoJson(landmarks, lat, lng, layer, locale, flexString2);                       
+								//}
 							} else {
 								List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(lat, lng, null, radius, version, limit, StringUtil.getStringLengthLimit("l"), flexString, flexString2, locale, true);
 								layerSize = landmarks.size();
