@@ -212,6 +212,9 @@
    	    	  	  if (xhr != null) {
    	   				xhr.abort();
     	   	      }
+   	    	      $.ajaxSetup({
+   	    		      timeout: 60000 //Time in milliseconds
+   	    		  });
    	    	  	  
    	    	  	  xhr = $.ajax({
    			   			dataType: "json",
@@ -219,7 +222,7 @@
    				  	    data: data,
      				 	    beforeSend: function(xhr) {
          					   xhr.setRequestHeader("Accept-Encoding", "gzip, deflate");
-     				}})
+     			    }})
    	 			  	.done(function(results) {
    				  		xhr = null;  
    				  		loadLayer(results, true);    
@@ -227,6 +230,8 @@
    				  	.error(function(jqXHR, textStatus, errorThrown) { 
    	   				  	 if ( textStatus != 'abort') {
    		    	            console.log("API call error: " + textStatus + ", " + errorThrown);
+   		    	            xhr = null;
+   		    	            loadLayer(null, true);
    	   				  	 }
    		  	        });
                 }
@@ -264,6 +269,7 @@
 		 				})
 		 				.error(function(jqXHR, textStatus, errorThrown){ /* assign handler */
 		 		    		console.log("API call error: " + textStatus + ", " + errorThrown);
+		 		    		loadLayer(null, false);
 		 			});
 			     } else {
 		            excluded_layers++; 
@@ -380,7 +386,7 @@
       }
 
       function loadLayer(results, clear) {
-    	   if (results.properties != null) {
+    	   if (results != null && results.properties != null) {
                 var layer = results.properties.layer;
     	  		for (var i = 0; i < layers.length; i++) {
     	  			 if (layer == layers[i].name && layers[i].enabled == "true") {
