@@ -5,8 +5,11 @@ import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.jstakun.lm.server.config.ConfigurationManager;
+
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.layers.HotelsBookingUtils;
 import net.gmsworld.server.utils.HttpUtils;
 
 public class RHCloudUtils {
@@ -15,12 +18,12 @@ public class RHCloudUtils {
 	
 	public static void rhcloudHealthCheck() {
 		try {
-			rhcloudHealthCheck("hotels", "http://openapi-hotels.b9ad.pro-us-east-1.openshiftapps.com/camel/v1/ping");
+			rhcloudHealthCheck("hotels", HotelsBookingUtils.HOTELS_API_URL + "/camel/v1/ping");
 		} catch (Exception e) {
 			 logger.log(Level.SEVERE, e.getMessage(), e);
 		}
 		try {
-			rhcloudHealthCheck("landmarks", "https://openapi-landmarks.b9ad.pro-us-east-1.openshiftapps.com/");
+			rhcloudHealthCheck("landmarks", ConfigurationManager.BACKEND_SERVER_URL + "landmarksProvider?limit=10");
 		} catch (Exception e) {
 			 logger.log(Level.SEVERE, e.getMessage(), e);
 		}

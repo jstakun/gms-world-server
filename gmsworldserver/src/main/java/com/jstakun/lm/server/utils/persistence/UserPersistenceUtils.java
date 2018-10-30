@@ -35,7 +35,7 @@ public class UserPersistenceUtils {
     public static String persist(String login, String password, String email, String firstname, String lastname, boolean local) {
         
         try {
-        	String landmarksUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "addItem";
+        	String landmarksUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "addItem";
         	String params = "login=" + URLEncoder.encode(login, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8") + "&type=user";
         	
         	if (firstname != null) {
@@ -100,7 +100,7 @@ public class UserPersistenceUtils {
         */
         
         try {
-        	String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "itemProvider";
+        	String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "itemProvider";
         	String params = "type=user";
         	if (StringUtils.isNotEmpty(username)) {
        		 	 params += "&login=" + username;
@@ -153,7 +153,7 @@ public class UserPersistenceUtils {
     public static boolean confirmUserRegistration(String login) {
     	boolean confirmed = false;
     	try {
-        	String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "itemProvider";
+        	String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "itemProvider";
         	String params = "type=user&confirm=1&login=" + URLEncoder.encode(login, "UTF-8");			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
         	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
@@ -177,7 +177,7 @@ public class UserPersistenceUtils {
     
     public static void removeUser(String secret) {
     	try {
-        	String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "deleteItem";
+        	String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "deleteItem";
         	String params = "type=user&secret=" + secret;			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
         	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
@@ -267,7 +267,7 @@ public class UserPersistenceUtils {
     private static boolean loginRemote(String login, String password) {
     	boolean auth = false;
     	try {
-    		String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "itemProvider";
+    		String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "itemProvider";
     		String params = "type=user&login=" + URLEncoder.encode(login, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8");			 
     		String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
     		if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {

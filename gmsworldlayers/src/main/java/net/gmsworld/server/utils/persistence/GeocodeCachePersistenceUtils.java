@@ -30,7 +30,7 @@ import net.gmsworld.server.utils.HttpUtils;
 public class GeocodeCachePersistenceUtils {
 
     private static final Logger logger = Logger.getLogger(GeocodeCachePersistenceUtils.class.getName());
-    private static final String RHCLOUD_SERVER_URL = "https://openapi-landmarks.b9ad.pro-us-east-1.openshiftapps.com/actions/";//"https://landmarks-gmsworld.rhcloud.com/actions/";//
+    private static final String BACKEND_SERVER_URL = "https://openapi-landmarks.b9ad.pro-us-east-1.openshiftapps.com/actions/";//"https://landmarks-gmsworld.rhcloud.com/actions/";//
     
     public static void persistGeocode(String location, int status, String message, double latitude, double longitude) {
         /*String loc = StringUtils.replace(location, "\n", " ");
@@ -48,7 +48,7 @@ public class GeocodeCachePersistenceUtils {
             pm.close();
         }*/
     	try {
-        	String gUrl = RHCLOUD_SERVER_URL + "addItem";
+        	String gUrl = BACKEND_SERVER_URL + "addItem";
         	String params = "type=geocode&latitude=" + latitude + "&longitude=" + longitude + 
         			"&address=" + URLEncoder.encode(location, "UTF-8");			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
@@ -78,7 +78,7 @@ public class GeocodeCachePersistenceUtils {
             pm.close();
         }*/
     	try {
-        	String gUrl = RHCLOUD_SERVER_URL + "itemProvider";
+        	String gUrl = BACKEND_SERVER_URL + "itemProvider";
         	String params = "type=geocode&address=" + URLEncoder.encode(address, "UTF-8");			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
         	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
@@ -123,7 +123,7 @@ public class GeocodeCachePersistenceUtils {
     	
     	try {
     		String limit = "10";
-        	String gUrl = RHCLOUD_SERVER_URL + "itemProvider";
+        	String gUrl = BACKEND_SERVER_URL + "itemProvider";
         	String params = "type=geocode&limit=" + limit;			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
         	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
@@ -164,7 +164,7 @@ public class GeocodeCachePersistenceUtils {
             pm.close();
         }*/
         try {
-        	String gUrl = RHCLOUD_SERVER_URL + "itemProvider";
+        	String gUrl = BACKEND_SERVER_URL + "itemProvider";
         	String params = "type=geocode&id=" + k;			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
         	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
@@ -186,7 +186,7 @@ public class GeocodeCachePersistenceUtils {
     public static GeocodeCache selectGeocodeCache(double lat, double lng) {
         GeocodeCache gc = null;
          try {
-        	String gUrl = RHCLOUD_SERVER_URL + "itemProvider";
+        	String gUrl = BACKEND_SERVER_URL + "itemProvider";
         	String params = "type=geocode&lat=" + lat + "&lng=" + lng;			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
         	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));

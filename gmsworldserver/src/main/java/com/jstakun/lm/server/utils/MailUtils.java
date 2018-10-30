@@ -33,6 +33,10 @@ import net.gmsworld.server.utils.HttpUtils;
 public class MailUtils {
 
     private static final Logger logger = Logger.getLogger(MailUtils.class.getName());
+    private static final String VALIDATE_MAIL_URL = com.jstakun.lm.server.config.ConfigurationManager.BACKEND_SERVER_URL + "/validateEmail";
+    private static final String MAILER_SERVER_URL = com.jstakun.lm.server.config.ConfigurationManager.BACKEND_SERVER_URL + "/emailer"; 
+	 
+	 
 
     private static String sendLocalMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType, String ccA, String ccP) {
         try {
@@ -70,9 +74,7 @@ public class MailUtils {
     }
        
     private static boolean sendRemoteMail(String fromA, String fromP, String recipients, String subject, String content, String contentType)  {
-    	 final String MAILER_SERVER_URL = "https://openapi-landmarks.b9ad.pro-us-east-1.openshiftapps.com/actions/emailer"; 
-    	 
-     	 String params = "from=" + fromA +
+    	 String params = "from=" + fromA +
     	                                "&password=" + Commons.getProperty(Property.RH_MAILER_PWD) +
     	                                "&recipients=" + recipients;
     	 if (subject != null) {
@@ -394,11 +396,11 @@ public class MailUtils {
     		reply.put("responseCode",500); 
     		return reply;
     	}
-    	final String MAILER_SERVER_URL = "https://openapi-landmarks.b9ad.pro-us-east-1.openshiftapps.com/actions/validateEmail?to=" + address;
-    	
+  
     	try {
-   	 		String response = HttpUtils.processFileRequestWithBasicAuthn(new URL(MAILER_SERVER_URL), "GET", null, null, Commons.getProperty(Property.RH_GMS_USER));
-   	 		Integer responseCode = HttpUtils.getResponseCode(MAILER_SERVER_URL);
+    		final String url =  VALIDATE_MAIL_URL + "?to"+ address;
+   	 		String response = HttpUtils.processFileRequestWithBasicAuthn(new URL(url), "GET", null, null, Commons.getProperty(Property.RH_GMS_USER));
+   	 		Integer responseCode = HttpUtils.getResponseCode(url);
    	 		logger.log(Level.INFO, "Received response code: " + responseCode);
    	 		if (responseCode != null && responseCode == 200 && StringUtils.startsWith(response, "{")) {
    	 			JSONObject root = new JSONObject(response);

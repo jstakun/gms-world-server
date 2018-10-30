@@ -37,7 +37,7 @@ public class ScreenshotPersistenceUtils {
     	String key = null;
     	
         try {
-        	String landmarksUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "addItem";
+        	String landmarksUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "addItem";
         	String params = "filename=" + filename + "&latitude=" + latitude + "&longitude=" + longitude + "&type=screenshot";
         	if (username != null) {
         		params += "&username=" + username;
@@ -92,7 +92,7 @@ public class ScreenshotPersistenceUtils {
     	 int result = 0;
     	 
     	 try {
-         	String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "itemProvider";
+         	String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "itemProvider";
          	String params = "type=screenshot&ndays=" + ndays;			 
          	//logger.log(Level.INFO, "Calling: " + gUrl);
          	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
@@ -125,7 +125,7 @@ public class ScreenshotPersistenceUtils {
     		if (!FileUtils.deleteFileV2(null, filename)) {
     			logger.log(Level.SEVERE, "Failed to delete file {0} from screeshot {1}", new Object[] {filename, id});
     		}
-    		String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "itemProvider";
+    		String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "itemProvider";
             String params = "type=screenshot&id=" + id + "&action=remove";
     		String response = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
     		logger.log(Level.INFO, "Deleting screenshot " + id + " response: " + response);
@@ -181,7 +181,7 @@ public class ScreenshotPersistenceUtils {
     {
     	Screenshot s = null;
     	try {
-        	String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "itemProvider";
+        	String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "itemProvider";
         	String params = "type=screenshot&id=" + k;			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
         	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));

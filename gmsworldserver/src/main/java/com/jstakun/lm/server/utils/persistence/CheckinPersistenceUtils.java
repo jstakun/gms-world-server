@@ -38,7 +38,7 @@ public class CheckinPersistenceUtils {
     public static boolean persist(String username, String venueId, int landmarkKey, Integer type) {
     	boolean result = true;
     	try {
-        	String landmarksUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "addItem?";
+        	String landmarksUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "addItem?";
         	String params = "username=" + username + "&itemType=" + type + "&type=checkin";
         	if (landmarkKey > 0) {
         		params += "&landmarkId=" + landmarkKey;
@@ -62,7 +62,7 @@ public class CheckinPersistenceUtils {
     	List<Checkin> results = new ArrayList<Checkin>();
         
     	try {
-        	String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "itemProvider";
+        	String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "itemProvider";
         	String params = "type=checkin&landmarkId=" + landmarkid;			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
         	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));

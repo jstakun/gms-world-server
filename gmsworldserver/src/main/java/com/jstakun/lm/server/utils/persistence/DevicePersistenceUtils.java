@@ -25,7 +25,7 @@ public class DevicePersistenceUtils {
 	
 	public static int isDeviceRegistered(String imei) throws Exception {
 		if (imei != null) {
-		    String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "getDevice?" + 
+		    String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "getDevice?" + 
 	                 "imei="+  imei;
 		    String deviceJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(deviceUrl), Commons.getProperty(Property.RH_GMS_USER), false);		
 		    if (StringUtils.startsWith(deviceJson, "{")) {
@@ -51,7 +51,7 @@ public class DevicePersistenceUtils {
 	
 	public static int setupDevice(String imei, String name, String username, String token, String flex) throws Exception {
 		if (imei != null) {
-		    String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "setupDevice?" + 
+		    String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "setupDevice?" + 
 	                 "imei="+  imei;
 		    if (StringUtils.isNotEmpty(username)) {
 		    	deviceUrl += "&username=" + username;
@@ -89,7 +89,7 @@ public class DevicePersistenceUtils {
 
 	public static int sendCommand(String imei, Integer pin, String name, String username, String command, String args, String correlationId, String flex) throws Exception {
 		if (pin != null && isValidCommand(command)) {
-			String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "commandDevice?" + 
+			String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "commandDevice?" + 
 					"command=" + command + "&pin=" + pin;
 			if (imei != null) {
 				deviceUrl += "&imei="+  imei;
@@ -156,7 +156,7 @@ public class DevicePersistenceUtils {
 	
 	public static String getUserDevices(String username) throws Exception {
 		if (username != null) {
-		    String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "getUserDevices?" + 
+		    String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "getUserDevices?" + 
 	                 "username="+  username;
 		    String deviceJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(deviceUrl), Commons.getProperty(Property.RH_GMS_USER), false);		
 		    if (StringUtils.startsWith(deviceJson, "{")) {
@@ -180,7 +180,7 @@ public class DevicePersistenceUtils {
 	
 	public static int deleteDevice(String imei) throws Exception {
 		if (imei != null) {
-		    String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.RHCLOUD_SERVER_URL) + "deleteDevice?" + 
+		    String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "deleteDevice?" + 
 	                 "imei="+  imei;
 		    String deviceJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(deviceUrl), Commons.getProperty(Property.RH_GMS_USER), false);		
 		    if (StringUtils.startsWith(StringUtils.trim(deviceJson), "{")) {
