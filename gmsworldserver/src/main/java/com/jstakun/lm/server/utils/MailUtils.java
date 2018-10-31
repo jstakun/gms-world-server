@@ -398,7 +398,7 @@ public class MailUtils {
     	}
   
     	try {
-    		final String url =  VALIDATE_MAIL_URL + "?to"+ address;
+    		final String url =  VALIDATE_MAIL_URL + "?to="+ address;
    	 		String response = HttpUtils.processFileRequestWithBasicAuthn(new URL(url), "GET", null, null, Commons.getProperty(Property.RH_GMS_USER));
    	 		Integer responseCode = HttpUtils.getResponseCode(url);
    	 		logger.log(Level.INFO, "Received response code: " + responseCode);
