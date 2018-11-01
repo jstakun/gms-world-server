@@ -15,7 +15,6 @@ import net.gmsworld.server.utils.UrlUtils;
 
 public class UtilsTest {
 
-	@Test
 	public void test() {
 		String longUrl = "http://www.gms-world.net/showLandmark/23159";
 		String shortUrl1 = UrlUtils.getShortUrl(longUrl);
@@ -31,6 +30,7 @@ public class UtilsTest {
 		System.out.println(GeocodeUtils.getLatitude("52.23455"));
 	}
 	
+	@Test
 	public void stringTest() throws Exception {
 		//String original = "aáeéiíoóöőuúüű AÁEÉIÍOÓÖŐUÚÜŰ";
 		String original = "ążźćółęńś ĄŻŹĆÓŁĘŃŚ";
@@ -54,8 +54,11 @@ public class UtilsTest {
 		System.out.println("\nLocales:\n");
 		
 		for (Locale locale : Locale.getAvailableLocales()) {
-			System.out.println(locale.getCountry() + ": " + locale.getDisplayCountry());
+			System.out.println(locale.getDisplayName() + " -> " + locale.getCountry() + ": " + locale.getDisplayCountry());
 		}
+		
+		Locale en = new Locale("en", "US");
+		System.out.println("Currency en-US: " + Currency.getInstance(en).getCurrencyCode());
 		
 		System.out.println("\nCurrencies:\n");
 		

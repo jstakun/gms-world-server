@@ -203,18 +203,22 @@ public class HotelsBookingUtils extends LayerHelper {
 			
 			String language = locale.getLanguage();
         	String country = locale.getCountry();
-        	if (StringUtils.isEmpty(country)) {
-        		country = language;
-        	}
-        	Locale l = new Locale(language, country);
         	String tocc = null;
+        	
         	try {
-        		tocc = Currency.getInstance(l).getCurrencyCode();
+        		if (StringUtils.isEmpty(country) && StringUtils.isNotEmpty(language)) {
+            		if (StringUtils.equals(language, "en")) {
+            			country = "US";
+            		}  else {
+            			country = StringUtils.upperCase(language, locale);
+            		}
+    			}
+        		tocc = Currency.getInstance(new Locale(language, country)).getCurrencyCode();
+        		if (tocc != null) {
+            		hotels.setProperty("currencycode", tocc);
+            	}
         	} catch (Exception e) {
-        		logger.log(Level.SEVERE, "Error for: " + country + "," + language, e);
-        	}
-        	if (tocc != null) {
-        		hotels.setProperty("currencycode", tocc);
+        		logger.log(Level.WARNING, "Error getting currency for: " + country + "," + language + "\n" + e.getMessage());
         	}
         	
         	Calendar cal = Calendar.getInstance();

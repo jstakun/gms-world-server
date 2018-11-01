@@ -308,11 +308,14 @@ public abstract class LayerHelper {
 				String language = locale.getLanguage();
 				String country = locale.getCountry();
 				try {
-					if (StringUtils.isEmpty(country)) {
-						country = language;
+					if (StringUtils.isEmpty(country) && StringUtils.isNotEmpty(language)) {
+		        		if (StringUtils.equals(language, "en")) {
+		        			country = "US";
+		        		}  else {
+		        			country = StringUtils.upperCase(language, locale);
+		        		}
 					}
-					Locale l = new Locale(language, country);
-					String cc = Currency.getInstance(l).getCurrencyCode();
+		        	String cc = Currency.getInstance(new Locale(language, country)).getCurrencyCode();
 					featureCollection.setProperty("currencycode", cc);
 					if (!StringUtils.equals(cc, "EUR") && !exchangeRates.containsKey(cc)) {
 						Map<String, Double> ratesMap = cacheProvider.getObject(HashMap.class, "http://api.fixer.io/latest?base=EUR");
@@ -324,7 +327,7 @@ public abstract class LayerHelper {
 		        		}
 					}
 				} catch (Exception e) {
-					logger.log(Level.SEVERE, "Error for: " + country + "," + language, e);
+					logger.log(Level.WARNING, "Error getting currency for: " + country + "," + language + "\n" + e.getMessage());
 					featureCollection.setProperty("currencycode", "EUR");
 				} finally {
 					exchangeRates.put("EUR", 1d);

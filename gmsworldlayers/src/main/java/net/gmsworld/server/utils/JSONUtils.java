@@ -174,7 +174,7 @@ public class JSONUtils {
 		}
 		
     	if (StringUtils.equals(language, "en") && StringUtils.equals(country, "en")) {
-    		country = "us";
+    		country = "US";
     	}
     	
     	try {

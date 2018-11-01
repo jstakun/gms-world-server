@@ -56,7 +56,7 @@ public class LayersTest {
 		lat = 40.71;
 		lng = -74.01;
 		bbox = "-74.060000,40.660000,-74.010000,40.710000";//"-75.01,39.71,-73.01,41.71";
-		locale = Locale.US;
+		locale = new Locale("en"); //Locale.US;
 		
 		//lat = 30.21;
 		//lng = -97.77;
