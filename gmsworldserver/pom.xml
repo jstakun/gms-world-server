@@ -252,6 +252,9 @@
    				<configuration>
          			<port>8080</port>
          			<address>0.0.0.0</address>
+         			<deploy.version>1</deploy.version>
+         			<deploy.project>gms-world</deploy.project>
+         			<deploy.stopPreviousVersion>true</deploy.stopPreviousVersion>
      			</configuration>
 		   </plugin>
 
