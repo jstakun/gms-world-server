@@ -10,7 +10,7 @@
 
     <properties>
         <appengine.app.version>1</appengine.app.version>
-        <appengine.target.version>1.9.59</appengine.target.version>
+        <appengine.target.version>1.9.67</appengine.target.version>
         <appengine.gsc.client.version>0.5</appengine.gsc.client.version>
         <blogger.version>v3-rev52-1.22.0</blogger.version>
         <plus.version>v1-rev455-1.22.0</plus.version>
@@ -20,6 +20,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <jdk.version>1.8</jdk.version>
     </properties>
 
     <dependencies>
@@ -49,6 +50,11 @@
             <scope>test</scope>
         </dependency>
         
+        <dependency>
+        	<groupId>com.google.appengine</groupId>
+        	<artifactId>appengine-jsr107cache</artifactId>
+        	<version>${appengine.target.version}</version>
+        </dependency>
         <dependency>
         	<groupId>org.json</groupId>
         	<artifactId>json</artifactId>
@@ -113,11 +119,6 @@
         	<groupId>commons-fileupload</groupId>
         	<artifactId>commons-fileupload</artifactId>
         	<version>1.3.2</version>
-        </dependency>
-        <dependency>
-        	<groupId>com.google.appengine</groupId>
-        	<artifactId>appengine-jsr107cache</artifactId>
-        	<version>${appengine.target.version}</version>
         </dependency>
         <dependency>
         	<groupId>com.google.http-client</groupId>
@@ -233,16 +234,26 @@
                         </resource>
                     </webResources>
                     <nonFilteredFileExtensions>
-            <nonFilteredFileExtension>p12</nonFilteredFileExtension>
-          </nonFilteredFileExtensions>
+            				<nonFilteredFileExtension>p12</nonFilteredFileExtension>
+          			</nonFilteredFileExtensions>
                 </configuration>
             </plugin>
 
-            <plugin>
+            <!--  plugin>
                 <groupId>com.google.appengine</groupId>
                 <artifactId>appengine-maven-plugin</artifactId>
                 <version>${appengine.target.version}</version>
-            </plugin>
+            </plugin-->
+
+           <plugin>
+   				<groupId>com.google.cloud.tools</groupId>
+   				<artifactId>appengine-maven-plugin</artifactId>
+   				<version>1.3.2</version>
+   				<configuration>
+         			<port>8080</port>
+         			<address>0.0.0.0</address>
+     			</configuration>
+		   </plugin>
 
            <plugin>
             	<groupId>org.datanucleus</groupId>
