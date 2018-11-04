@@ -251,13 +251,13 @@ public class UserPersistenceUtils {
             		byte[] pwd = CryptoTools.decrypt(password);
             		passwordString = new String(pwd);
                  } catch (Exception e) {
-                     logger.log(Level.SEVERE, "User {0} decrypt failed with {1}", new Object[]{username, passwordString});
+                     logger.log(Level.WARNING, "User {0} decrypt failed", username);
                  }
             }        		
         	if (loginRemote(username, passwordString)) {
         		auth = true;
         	} else {
-        		logger.log(Level.SEVERE, "User {0} authn failed with {1}", new Object[]{username, passwordString});
+        		logger.log(Level.SEVERE, "User {0} authn failed", username);
         	}
     	}
     	
