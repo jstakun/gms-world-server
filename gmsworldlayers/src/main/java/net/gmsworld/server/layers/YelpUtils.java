@@ -40,6 +40,7 @@ public class YelpUtils extends LayerHelper {
 	private static final String LOCATION_UNAVAILABILITY_MARKER = "YelpLocationUnavailabilityMarker";	
 	
 	private static final String[] LOCALES = {"cs_CZ","da_DK","de_AT","de_CH","de_DE","en_AU","en_BE","en_CA","en_CH","en_GB","en_HK","en_IE","en_MY","en_NZ","en_PH","en_SG","en_US","es_AR","es_CL","es_ES","es_MX","fi_FI","fil_PH","fr_BE","fr_CA","fr_CH","fr_FR","it_CH","it_IT","ja_JP","ms_MY","nb_NO","nl_BE","nl_NL","pl_PL","pt_BR","pt_PT","sv_FI","sv_SE","tr_TR","zh_HK","zh_TW"};
+	private static final String[] LONG_LOCALES = {"en_US","ja_JP","ms_MY","nb_NO","sv_SE","zh_TW","cs_CZ","da_DK","fil_PH"};	
 	
     @Override
 	public JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String hasDeals, String locale) throws Exception {
@@ -110,8 +111,7 @@ public class YelpUtils extends LayerHelper {
         
     		
     		if (locale != null && locale.length() == 2) {
-    			String[] longLocales = {"en_US","ja_JP","ms_MY","nb_NO","sv_SE","zh_TW","cs_CZ","da_DK","fil_PH"};
-    			for (String longLocale : longLocales) {
+    			for (String longLocale : LONG_LOCALES) {
     			     if (longLocale.startsWith(locale)) {
     			    	  locale = longLocale;
     			    	  break;
@@ -500,10 +500,11 @@ public class YelpUtils extends LayerHelper {
             		String l = null;
             		if (locale != null ) {
             			l = locale.getLanguage() ;
+            			if (StringUtils.isNotEmpty(locale.getCountry())) {
+                			l += "_" + locale.getCountry();
+                		}
             		}
-            		if (StringUtils.isNotEmpty(locale.getCountry())) {
-            			l += "_" + locale.getCountry();
-            		}
+            		
             		String responseBody = processRequest(latitude, longitude, query, radius, hasDeals, offset, l);
             		if (format.equals("bin")) {
             			createCustomLandmarkYelpList(responseBody, (List<ExtendedLandmark>)venueArray, latitude, longitude, stringLimit, hasDeals, locale);
