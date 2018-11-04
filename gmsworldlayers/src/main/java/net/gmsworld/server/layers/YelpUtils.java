@@ -39,6 +39,8 @@ public class YelpUtils extends LayerHelper {
 	private static final String USAGE_LIMIT_MARKER = "YelpUsageLimitsMarker";
 	private static final String LOCATION_UNAVAILABILITY_MARKER = "YelpLocationUnavailabilityMarker";	
 	
+	private static final String[] LOCALES = {"cs_CZ","da_DK","de_AT","de_CH","de_DE","en_AU","en_BE","en_CA","en_CH","en_GB","en_HK","en_IE","en_MY","en_NZ","en_PH","en_SG","en_US","es_AR","es_CL","es_ES","es_MX","fi_FI","fil_PH","fr_BE","fr_CA","fr_CH","fr_FR","it_CH","it_IT","ja_JP","ms_MY","nb_NO","nl_BE","nl_NL","pl_PL","pt_BR","pt_PT","sv_FI","sv_SE","tr_TR","zh_HK","zh_TW"};
+	
     @Override
 	public JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String hasDeals, String locale) throws Exception {
         int normalizedRadius = NumberUtils.normalizeNumber(radius, 1000, 40000);
@@ -54,8 +56,12 @@ public class YelpUtils extends LayerHelper {
                 boolean isDeal = Boolean.parseBoolean(hasDeals);
         		int offset = 0;
 
-        		while (offset < normalizedLimit) {
-        			threadManager.put(new VenueDetailsRetriever(venueArray, lat, lng, query, normalizedRadius, offset, isDeal, stringLimit, locale, "json", null));
+        		Locale l = null;
+    			if (StringUtils.isNotEmpty(locale)) {
+    				l = new Locale(locale);
+    			}
+        		while (offset < normalizedLimit) {	
+        			threadManager.put(new VenueDetailsRetriever(venueArray, lat, lng, query, normalizedRadius, offset, isDeal, stringLimit, "json", l));
         			offset += 50;
         		}
 
@@ -102,17 +108,30 @@ public class YelpUtils extends LayerHelper {
     			urlString += "&attributes=deals";
     		}
         
-    		if (StringUtils.isNotEmpty(locale) && locale.length() == 5 && locale.indexOf('_') == 2) {
+    		
+    		if (locale != null && locale.length() == 2) {
+    			String[] longLocales = {"en_US","ja_JP","ms_MY","nb_NO","sv_SE","zh_TW","cs_CZ","da_DK","fil_PH"};
+    			for (String longLocale : longLocales) {
+    			     if (longLocale.startsWith(locale)) {
+    			    	  locale = longLocale;
+    			    	  break;
+    			    }
+    			}	
+    			if (locale != null && locale.length() == 2) {
+       			 	locale = locale + "_" + locale.toUpperCase();
+    			} 
+    		}
+    		
+    		if (StringUtils.endsWithAny(locale, LOCALES) && locale.length() == 5) {
     			urlString += "&locale=" + locale;
-    		} else {
-    			logger.log(Level.WARNING, "Wrong locale " + locale);
+    		}  else {
+    			logger.log(Level.WARNING, "Unsupported locale " + locale);
     		}
 
-    		//System.out.println("Calling: " + urlString);
+    		logger.log(Level.INFO, "Calling: " + urlString);
 
       		responseBody = HttpUtils.processFileRequestWithAuthn(new URL(urlString), "Bearer " + Commons.getProperty(Property.YELP_API_KEY));
     		
-    		//System.out.println(responseBody);
     	}
 
         return responseBody;
@@ -126,7 +145,6 @@ public class YelpUtils extends LayerHelper {
             	JSONArray businesses = jsonRoot.getJSONArray("businesses");
                 total = businesses.length(); 
                 if (total > 0) {
-                   //System.out.println("total: " + total);
                    for (int i = 0; i < businesses.length(); i++) {
                         JSONObject business = businesses.getJSONObject(i);
 
@@ -134,10 +152,22 @@ public class YelpUtils extends LayerHelper {
 
                         JSONObject location = business.getJSONObject("location");
                         JSONObject coordinates = business.getJSONObject("coordinates");
-
+                        
+                        Double lat = null, lng = null;
+                    	try {
+                    		lat = coordinates.optDouble("latitude", Double.NaN);
+                    		lng = coordinates.optDouble("longitude", Double.NaN);
+                    		if (lat.isNaN() || lng.isNaN()) {
+                                throw new Exception("Invalid latitude or longitude!");
+                            }
+                    	} catch (Exception e) {
+                    		logger.log(Level.WARNING, "Invalid latitude or logitude!");
+                    		continue;
+                    	}
+                    	
                         jsonObject.put("name", business.getString("name"));
-                        jsonObject.put("lat", Double.toString(coordinates.getDouble("latitude")));
-                        jsonObject.put("lng", Double.toString(coordinates.getDouble("longitude")));
+                        jsonObject.put("lat", Double.toString(lat));
+                        jsonObject.put("lng", Double.toString(lng));
                         jsonObject.put("url", business.getString("url"));
 
                         Map<String, String> desc = new HashMap<String, String>();
@@ -184,51 +214,7 @@ public class YelpUtils extends LayerHelper {
                         	if (StringUtils.isNotEmpty(category)) {
                         		desc.put("category", category);
                         	}
-                        	/*if (hasDeals) {
-                        		String[] categoryCode = YelpCategoryMapping.findMapping(categoryCodes);
-                        		jsonObject.put("categoryID", categoryCode[0]);
-                        		String subcat = categoryCode[1];
-                        		if (StringUtils.isNotEmpty(subcat)) {
-                        			jsonObject.put("subcategoryID", subcat);
-                        		}
-                        	}*/
                         }
-                        
-                        //deals
-                        /*JSONArray deals = business.optJSONArray("deals");
-                        if (deals != null && deals.length() > 0) {
-                        	for (int d = 0; d < deals.length(); d++) {
-                                JSONObject deal = deals.getJSONObject(d);
-                                
-                                desc.put("start_date", Long.toString(deal.getLong("time_start")*1000));
-                                if (deal.has("time_end")) {
-                                	desc.put("end_date", Long.toString(deal.getLong("time_end")*1000));
-                                }
-                                jsonObject.put("url", deal.getString("url"));
-                                jsonObject.put("name", deal.getString("title") + " Deal At " + business.getString("name"));
-                                //desc.put("icon", deal.getString("image_url"));
-                                String description = ""; 
-                                if (deal.has("what_you_get")) {
-                                	description = "<b>What You Get</b><br/>" + deal.getString("what_you_get") + "<br/>";
-                                } if (deal.has("important_restrictions")) {
-                                	description += "<b>Important Restrictions</b><br/>" + deal.getString("important_restrictions") + "<br/>";
-                                } if (deal.has("additional_restrictions")) {
-                                	description += "<b>Additional Restrictions</b><br/>" + deal.getString("additional_restrictions") + "<br/>";
-                                }
-                                desc.put("description", description);
-                                JSONArray options = deal.getJSONArray("options");
-                                
-                                JSONObject option = options.getJSONObject(0);
-                                
-                                desc.put("price", option.getString("formatted_price"));
-                                
-                                double original_price = option.getDouble("original_price");
-                                double price = option.getDouble("price");
-                                
-                                double discount = 100 - (price / original_price * 100);
-                                desc.put("discount", Double.toString(discount) + "%");
-                        	}     
-                        }*/
                                               
                         jsonObject.put("desc", desc);
                         jsonArray.add(jsonObject);
@@ -259,8 +245,6 @@ public class YelpUtils extends LayerHelper {
                             //add desc
 
                             phone = phone.replaceAll("[^\\d]", "");
-
-                            //System.out.println("Adding review " + phone);
 
                             if (business.has("rating")) {
                                 desc.put("rating", Double.toString(business.getDouble("rating")));
@@ -323,7 +307,7 @@ public class YelpUtils extends LayerHelper {
         		int offset = 0;
 
         		while (offset < normalizedLimit) {
-        			threadManager.put(new VenueDetailsRetriever(landmarks, lat, lng, query, normalizedRadius, offset, isDeal, stringLimit, language, "bin", locale));
+        			threadManager.put(new VenueDetailsRetriever(landmarks, lat, lng, query, normalizedRadius, offset, isDeal, stringLimit, "bin", locale));
         			offset += 50;
         		}
 
@@ -348,18 +332,26 @@ public class YelpUtils extends LayerHelper {
                 JSONArray businesses = jsonRoot.getJSONArray("businesses");
                 total = businesses.length();
                 if (total > 0) {
-                    //System.out.println("total: " + total);
-                    
                     for (int i = 0; i < businesses.length(); i++) {
                         JSONObject business = businesses.getJSONObject(i);
-                        System.out.println(business);
                         JSONObject coordinates= business.optJSONObject("coordinates");
 
                         if (coordinates != null) {
                         	String name = business.getString("name");
                         	String url = business.getString("url");
 
-                        	QualifiedCoordinates qc = new QualifiedCoordinates(coordinates.getDouble("latitude"), coordinates.getDouble("longitude"), 0f, 0f, 0f);
+                        	Double lat = null, lng = null;
+                        	try {
+                        		lat = coordinates.optDouble("latitude", Double.NaN);
+                        		lng = coordinates.optDouble("longitude", Double.NaN);
+                        		if (lat.isNaN() || lng.isNaN()) {
+                                    throw new Exception("Invalid latitude or longitude!");
+                                }
+                        	} catch (Exception e) {
+                        		logger.log(Level.WARNING, "Invalid latitude or logitude!");
+                        		continue;
+                        	}
+                        	QualifiedCoordinates qc = new QualifiedCoordinates(lat, lng, 0f, 0f, 0f);
              		   
                         	AddressInfo address = new AddressInfo();
                         	if (business.has("display_phone") && !business.isNull("display_phone")) {
@@ -412,60 +404,8 @@ public class YelpUtils extends LayerHelper {
                         			tokens.put("category", category);
                         		}
                         		
-                        		//not available in api v3
-                        		//if (hasDeals) {
-                        		//	String[] categoryCode = YelpCategoryMapping.findMapping(categoryCodes);
-                        		//	landmark.setCategoryId(Integer.valueOf(categoryCode[0]).intValue());
-                        		//	String subcat = categoryCode[1];
-                        		//	if (StringUtils.isNotEmpty(subcat)) {
-                        		//		landmark.setSubCategoryId(Integer.valueOf(subcat).intValue());
-                        		//	}
-                        		//}
                         	}
-                        
-                        	//deals
-                        	/*JSONArray deals = business.optJSONArray("deals");
-                        	if (deals != null && deals.length() > 0) {
-                        		for (int d = 0; d < deals.length(); d++) {
-                        			JSONObject deal = deals.getJSONObject(d);
-                                
-                        			long creationDate = deal.getLong("time_start")*1000;
-                        			landmark.setCreationDate(creationDate);
-                        			tokens.put("start_date", Long.toString(creationDate));
-                        			long endDate = 0;
-                        			if (deal.has("time_end")) {
-                        				endDate = deal.getLong("time_end")*1000;
-                        				tokens.put("end_date", Long.toString(endDate));
-                        			}
-                        			landmark.setUrl(deal.getString("url"));
-                        			landmark.setName(deal.getString("title") + " Deal At " + business.getString("name"));
-                        			//desc.put("icon", deal.getString("image_url"));
-                        			String description = ""; 
-                        			if (deal.has("what_you_get")) {
-                        				description = "<b>What You Get</b><br/>" + deal.getString("what_you_get") + "<br/>";
-                        			} if (deal.has("important_restrictions")) {
-                        				description += "<b>Important Restrictions</b><br/>" + deal.getString("important_restrictions") + "<br/>";
-                        			} if (deal.has("additional_restrictions")) {
-                        				description += "<b>Additional Restrictions</b><br/>" + deal.getString("additional_restrictions") + "<br/>";
-                        			}
-                        			tokens.put("description", description);
-                        			String currencyCode = deal.getString("currency_code");
-                        			JSONArray options = deal.getJSONArray("options");
-                                
-                        			JSONObject option = options.getJSONObject(0);
-                                
-                        			double original_price = option.getDouble("original_price") / 100d;
-                        			double price = option.getDouble("price") / 100d;
-                        			double save = (original_price - price);
-                                
-                        			double discount = (100d - (price / original_price * 100d)) / 100d;
-                                
-                                	Deal dealObj = new Deal(price, discount, save, null, currencyCode);
-                                	dealObj.setEndDate(endDate);
-                                	landmark.setDeal(dealObj);
-                        		}     
-                        	}*/
-                        
+                                                
                         	landmark.setDescription(JSONUtils.buildLandmarkDesc(landmark, tokens, locale));
                                               
                         	landmarks.add(landmark);
@@ -505,8 +445,7 @@ public class YelpUtils extends LayerHelper {
         private int radius, offset;
         private boolean hasDeals;
 
-        public ReviewDetailsRetriever(Map<String, Map<String, String>> reviewsArray,
-                double latitude, double longitude, String query, int radius, int offset, boolean hasDeals, String locale) {
+        public ReviewDetailsRetriever(Map<String, Map<String, String>> reviewsArray,  double latitude, double longitude, String query, int radius, int offset, boolean hasDeals, String locale) {
             this.reviewsArray = reviewsArray;
             this.latitude = latitude;
             this.longitude = longitude;
@@ -536,13 +475,12 @@ public class YelpUtils extends LayerHelper {
 
     	private List<? extends Object> venueArray;
         private double latitude, longitude;
-        private String query, language, format;
+        private String query, format;
         private int radius, offset, stringLimit;
         private boolean hasDeals;
         private Locale locale;
 
-        public VenueDetailsRetriever(List<? extends Object> venueArray, double latitude, double longitude, String query, int radius,
-                int offset, boolean hasDeals, int stringLimit, String language, String format, Locale locale) {
+        public VenueDetailsRetriever(List<? extends Object> venueArray, double latitude, double longitude, String query, int radius, int offset, boolean hasDeals, int stringLimit, String format, Locale locale) {
             this.venueArray = venueArray;
             this.latitude = latitude;
             this.longitude = longitude;
@@ -551,7 +489,6 @@ public class YelpUtils extends LayerHelper {
             this.offset = offset;
             this.hasDeals = hasDeals;
             this.stringLimit = stringLimit;
-            this.language = language;
             this.format = format;
             this.locale = locale;
         }
@@ -560,7 +497,14 @@ public class YelpUtils extends LayerHelper {
             try {
             	String key = LOCATION_UNAVAILABILITY_MARKER + "_" + StringUtil.formatCoordE2(latitude) + "_" + StringUtil.formatCoordE2(longitude);
             	if (!cacheProvider.containsKey(key)) { 
-            		String responseBody = processRequest(latitude, longitude, query, radius, hasDeals, offset, language);
+            		String l = null;
+            		if (locale != null ) {
+            			l = locale.getLanguage() ;
+            		}
+            		if (StringUtils.isNotEmpty(locale.getCountry())) {
+            			l += "_" + locale.getCountry();
+            		}
+            		String responseBody = processRequest(latitude, longitude, query, radius, hasDeals, offset, l);
             		if (format.equals("bin")) {
             			createCustomLandmarkYelpList(responseBody, (List<ExtendedLandmark>)venueArray, latitude, longitude, stringLimit, hasDeals, locale);
             		} else {

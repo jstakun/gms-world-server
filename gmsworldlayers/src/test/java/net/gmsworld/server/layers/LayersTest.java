@@ -90,7 +90,7 @@ public class LayersTest {
 	 
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.GOOGLE_PLACES_LAYER)});
 	   
-	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.YELP_LAYER)});
+	   data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.YELP_LAYER)});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.YOUTUBE_LAYER)});
 	   
@@ -98,7 +98,7 @@ public class LayersTest {
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.FOURSQUARE_LAYER)});
 	   
-	   data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)});
+	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.LM_SERVER_LAYER)});
 	 
@@ -149,7 +149,7 @@ public class LayersTest {
 			} else if (StringUtils.equals(layer.getLayerName(), Commons.FOURSQUARE_LAYER)) {
 				landmarks = layer.processBinaryRequest(lat, lng, null, radius, apiLevel, limit, stringLength, "checkin", "en", locale, true);
 			} else if (StringUtils.equals(layer.getLayerName(), Commons.YELP_LAYER)) {
-				landmarks = layer.processBinaryRequest(lat, lng, null, radius, apiLevel, limit, stringLength, "false", "en", locale, true);
+				landmarks = layer.processBinaryRequest(lat, lng, null, radius, apiLevel, limit, stringLength, "false", null, locale, true);
 			} else if (StringUtils.equals(layer.getLayerName(), Commons.GOOGLE_PLACES_LAYER)) {
 				landmarks = layer.processBinaryRequest(lat, lng, null, radius, apiLevel, limit, stringLength, "en", null, locale, true);
 			} else if (StringUtils.equals(layer.getLayerName(), Commons.COUPONS_LAYER)) {
