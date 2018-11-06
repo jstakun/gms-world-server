@@ -24,6 +24,7 @@ import org.json.JSONObject;
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.config.ConfigurationManager;
+import net.gmsworld.server.layers.AwsSesUtils;
 import net.gmsworld.server.utils.HttpUtils;
 
 /**
@@ -33,11 +34,11 @@ import net.gmsworld.server.utils.HttpUtils;
 public class MailUtils {
 
     private static final Logger logger = Logger.getLogger(MailUtils.class.getName());
-    private static final String VALIDATE_MAIL_URL = com.jstakun.lm.server.config.ConfigurationManager.BACKEND_SERVER_URL + "/validateEmail";
-    private static final String MAILER_SERVER_URL = com.jstakun.lm.server.config.ConfigurationManager.BACKEND_SERVER_URL + "/emailer"; 
+    private static final String VALIDATE_MAIL_URL = com.jstakun.lm.server.config.ConfigurationManager.BACKEND_SERVER_URL + "validateEmail";
+    private static final String MAILER_SERVER_URL = com.jstakun.lm.server.config.ConfigurationManager.BACKEND_SERVER_URL + "emailer"; 
 	 
-	 
-
+	// ---------------------------------------------------------------------------------------------------------------------------
+    
     private static String sendLocalMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType, String ccA, String ccP) {
         try {
             Properties props = new Properties();
@@ -61,20 +62,19 @@ public class MailUtils {
     }
     
     private static String sendRemoteMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType, String ccA, String ccP)  {
+    	String status = "failed";
+   	    if (AwsSesUtils.sendEmail(fromA, fromP, toA, toP, ccA, ccP, content, contentType, subject)) {
+   	    	 status = "ok";
+   	    }
+   	    return status;
+    }
+    
+    private static String sendRemoteMailV1(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType, String ccA, String ccP)  {
     	String recipients = addEmailAddress("to", toA, toP); 
     	if (StringUtils.isNotEmpty(ccA)) {
     		recipients += "|" + addEmailAddress("to", ccA, ccP);
-    	}
-   	 
-    	if  (sendRemoteMail(fromA, fromP, recipients, subject, content, contentType)) {
-    		return "ok";
-    	} else {	
-    		return sendLocalMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
-   		} 
-    }
-       
-    private static boolean sendRemoteMail(String fromA, String fromP, String recipients, String subject, String content, String contentType)  {
-    	 String params = "from=" + fromA +
+    	}	 
+    	String params = "from=" + fromA +
     	                                "&password=" + Commons.getProperty(Property.RH_MAILER_PWD) +
     	                                "&recipients=" + recipients;
     	 if (subject != null) {
@@ -90,19 +90,22 @@ public class MailUtils {
     		 	params +="&fromNick=" + fromP;
     	 }
     	 
-    	 boolean success = false;
+    	 String status = "failed";   
     	 try {
     		 HttpUtils.processFileRequestWithBasicAuthn(new URL(MAILER_SERVER_URL), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
     		 Integer responseCode = HttpUtils.getResponseCode(MAILER_SERVER_URL);
     		 logger.log(Level.INFO, "Received response code: " + responseCode);
     		 if (responseCode != null && responseCode == 200) {
-    			 success = true;
+    			 status = "ok";
     		 } 
     	 } catch (Exception e) {
     		 logger.log(Level.SEVERE, e.getMessage(), e);
     	 }
-    	 return success;
+   	    
+    	 return status;
     }
+    
+    // ---------------------------------------------------------------------------------------------------------------
     
     public static void sendAdminMail(String message) {
     	sendAdminMail("Admin message", message) ;
@@ -117,7 +120,6 @@ public class MailUtils {
     }
     
     public static void sendDeviceLocatorMessage(String toA, String message, String title) {
-    	//sendMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, toA, title, message, "text/plain");
     	sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, toA, title, message, "text/plain", null, null);
     }
     
@@ -149,7 +151,7 @@ public class MailUtils {
             is = context.getResourceAsStream("/WEB-INF/emails/verification.html");
             String message = String.format(IOUtils.toString(is, "UTF-8"), nick, link);
             String result = sendLocalMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "Welcome to GMS World", message, "text/html",  "landmark-manager@gms-world.net", ConfigurationManager.ADMIN_NICK);
-       		if (!StringUtils.equalsIgnoreCase(result, "ok")) {
+       		if (! StringUtils.equalsIgnoreCase(result, "ok")) {
        			sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "Welcome to GMS World", message, "text/html",  "landmark-manager@gms-world.net", ConfigurationManager.ADMIN_NICK);
        		}
         } catch (IOException ex) {
@@ -169,7 +171,7 @@ public class MailUtils {
         InputStream is = null;
         String result = null; 
         try {
-        	String message = null;
+        	String message = "";
             String link = null; 
             if (context != null) {
             	if (version == 0) {
@@ -186,18 +188,17 @@ public class MailUtils {
             		}
             	}
             	message = String.format(IOUtils.toString(is, "UTF-8"), link);
-            } else {
-            	message = link;
-            }
+            } 
             result = sendLocalMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html",  ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK);
        		logger.log(Level.INFO, "Email verification request status: " + result);
-            if (!StringUtils.equalsIgnoreCase(result, "ok")) {
-       			String recipients = addEmailAddress("bcc", "jstakun.appspot@gmail.com", null) + "|" + addEmailAddress("to", toA, nick);
-       			if  (sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, recipients, "Device Locator Registration", message, "text/html")) {
-       				result = "ok";
-       			} else {	
-       				result = "failed";
-       			}
+            if (! StringUtils.equalsIgnoreCase(result, "ok")) {
+       			//String recipients = addEmailAddress("bcc", "jstakun.appspot@gmail.com", null) + "|" + addEmailAddress("to", toA, nick);
+       			//if  (sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, recipients, "Device Locator Registration", message, "text/html")) {
+       			//	result = "ok";
+       			//} else {	
+       			//	result = "failed";
+       			//}
+       			return sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick,  "Device Locator Registration", message, "text/html", ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK);
        		}	
         } catch (Exception ex) {
             logger.log(Level.SEVERE, null, ex);
@@ -224,7 +225,7 @@ public class MailUtils {
             String link = ConfigurationManager.SSL_SERVER_URL + "unregisterUser/" + secret;
             String message = String.format(IOUtils.toString(is, "UTF-8"), nick, link);
             String result = sendLocalMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "GMS World Registration", message, "text/html",  "landmark-manager@gms-world.net", ConfigurationManager.ADMIN_NICK);
-       		if (!StringUtils.equalsIgnoreCase(result, "ok")) {
+       		if (! StringUtils.equalsIgnoreCase(result, "ok")) {
        			sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "GMS World Registration", message, "text/html",  "landmark-manager@gms-world.net", ConfigurationManager.ADMIN_NICK);
        		}
        	} catch (IOException ex) {
@@ -251,7 +252,7 @@ public class MailUtils {
         		message =String.format(IOUtils.toString(is, "UTF-8"), link);
         	}
             status = sendLocalMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html",  ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK);
-        	if (!StringUtils.equalsIgnoreCase(status, "ok")) {
+        	if (! StringUtils.equalsIgnoreCase(status, "ok")) {
         		status = sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html",  "jstakun.appspot@gmail.com", ConfigurationManager.DL_NICK);	
         	}
         } catch (IOException ex) {
@@ -294,8 +295,6 @@ public class MailUtils {
             is = context.getResourceAsStream("/WEB-INF/emails/landmark.html");
             String message = String.format(IOUtils.toString(is, "UTF-8"), userUrl, nick, landmarkUrl, landmarkUrl);
             status = sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "Message from GMS World", message, "text/html", null, null);
-            //remove after tests
-            //sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.SUPORT_MAIL, ConfigurationManager.ADMIN_NICK, "Copy of message to " + toA, message, "text/html", null, null);
         } catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
         } finally {
@@ -321,17 +320,14 @@ public class MailUtils {
     public static void sendCrashReport(String title, String body) {
         String status = sendLocalMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, title, body, "text/plain", null, null);
         if (!StringUtils.equalsIgnoreCase(status, "ok")) {
-        	String recipients = addEmailAddress("to", "jstakun.appspot@gmail.com", null) ;
-            sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, recipients, title, body, "text/plain");
+        	//String recipients = addEmailAddress("to", "jstakun.appspot@gmail.com", null) ;
+            //sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, recipients, title, body, "text/plain");
+            sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", null, title, body, "text/plain", null, null) ;
         }
     }
 
     public static void sendContactMessage(String fromA, String nick, String subject, String body) {
         sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, subject, "Message from: " + nick + " " + fromA + "\n" + body, "text/plain", null, null);
-    }
-
-    public static boolean isValidEmailAddress(String aEmailAddress) {
-        return EmailValidator.getInstance().isValid(aEmailAddress);
     }
 
     public static void sendSearchQueryNotification(String query, boolean isDeal, int counter, String uri) {
@@ -373,6 +369,8 @@ public class MailUtils {
         }
     }
     
+    // --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    
     private static String addEmailAddress(String type, String email, String nick) {
     	  String emailAddress = "";
     	  if ((StringUtils.equals(type, "to") || StringUtils.equals(type, "cc") || StringUtils.equals(type, "bcc")) && StringUtils.isNotEmpty(email)) {
@@ -388,6 +386,10 @@ public class MailUtils {
     		   }
     	  }
     	  return  emailAddress;
+    }
+    
+    public static boolean isValidEmailAddress(String aEmailAddress) {
+        return EmailValidator.getInstance().isValid(aEmailAddress);
     }
     
     public static JSONObject emailAccountExists( String address ) {

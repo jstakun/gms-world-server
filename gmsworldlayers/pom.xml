@@ -143,7 +143,7 @@
     <dependency>
     	<groupId>com.amazonaws</groupId>
     	<artifactId>aws-java-sdk-ses</artifactId>
-    	<version>1.11.133</version>
+    	<version>1.11.443</version>
 	</dependency>
   </dependencies>
   
