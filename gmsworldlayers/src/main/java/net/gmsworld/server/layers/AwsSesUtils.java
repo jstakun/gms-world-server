@@ -72,7 +72,7 @@ public class AwsSesUtils {
 					withMessage(new Message().withBody(body).withSubject(new Content().withData(title))).
 					withSource(from));
 			
-			logger.log(Level.SEVERE, "Message sent with id: " + result.getMessageId());
+			logger.log(Level.INFO, "Message sent with id: " + result.getMessageId());
 			return true;
 		} else {
 			logger.log(Level.SEVERE, "Missing required parameter!");

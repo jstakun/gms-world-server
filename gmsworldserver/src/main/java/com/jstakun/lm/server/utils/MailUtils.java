@@ -62,11 +62,13 @@ public class MailUtils {
     }
     
     private static String sendRemoteMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType, String ccA, String ccP)  {
-    	String status = "failed";
-   	    if (AwsSesUtils.sendEmail(fromA, fromP, toA, toP, ccA, ccP, content, contentType, subject)) {
-   	    	 status = "ok";
+    	if (AwsSesUtils.sendEmail(fromA, fromP, toA, toP, ccA, ccP, content, contentType, subject)) {
+   	    	 return "ok";
+   	    } else {
+   	    	logger.log(Level.SEVERE, "Failed to send mail with SES!");
+   	    	//return "failed";
+   	    	return sendRemoteMailV1(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
    	    }
-   	    return status;
     }
     
     private static String sendRemoteMailV1(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType, String ccA, String ccP)  {
