@@ -31,7 +31,7 @@ public class AwsSesUtils {
 				BasicAWSCredentials awsCredentials = new BasicAWSCredentials(Commons.getProperty(Property.AWS_ACCESS_KEY), Commons.getProperty(Property.AWS_ACCESS_SECRET)); 
 				
 				sesClient =  AmazonSimpleEmailServiceClientBuilder.standard().
-						withRegion(Regions.US_WEST_2).
+						withRegion(Regions.US_EAST_1). 
 						withCredentials(new AWSStaticCredentialsProvider(awsCredentials)).build();
 		 }
 		 
@@ -67,13 +67,20 @@ public class AwsSesUtils {
 				body = new Body().withText(new Content().withData(message));
 			}
 			
-			SendEmailResult result = getSesClient().sendEmail(new SendEmailRequest().
+			boolean status = false;
+			try {
+				SendEmailResult result = getSesClient().sendEmail(new SendEmailRequest().
 					withDestination(dest).
 					withMessage(new Message().withBody(body).withSubject(new Content().withData(title))).
 					withSource(from));
+				logger.log(Level.INFO, "Message sent with id: " + result.getMessageId());
+				status = true;
+			} catch (Exception e) {
+				logger.log(Level.SEVERE, e.getMessage(), e);
+				status = false;
+			}
 			
-			logger.log(Level.INFO, "Message sent with id: " + result.getMessageId());
-			return true;
+			return status;
 		} else {
 			logger.log(Level.SEVERE, "Missing required parameter!");
 			return false;
