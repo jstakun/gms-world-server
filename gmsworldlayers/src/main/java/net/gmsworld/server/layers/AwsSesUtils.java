@@ -1,5 +1,7 @@
 package net.gmsworld.server.layers;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,18 +26,23 @@ public class AwsSesUtils {
 	
 	private static final Logger logger = Logger.getLogger(AwsSesUtils.class.getName());
 	
-	private static AmazonSimpleEmailService sesClient = null;
+	private static final Regions DEFAULT_REGION =  Regions.US_EAST_1;
 	
-	private static AmazonSimpleEmailService getSesClient() {
-		 if (sesClient == null) {
+	private static Map<String, AmazonSimpleEmailService> sesClients = new HashMap<String, AmazonSimpleEmailService>();
+	
+	private static AmazonSimpleEmailService getSesClient(Regions region) {
+		 if (!sesClients.containsKey(region.getName())) {
 				BasicAWSCredentials awsCredentials = new BasicAWSCredentials(Commons.getProperty(Property.AWS_ACCESS_KEY), Commons.getProperty(Property.AWS_ACCESS_SECRET)); 
 				
-				sesClient =  AmazonSimpleEmailServiceClientBuilder.standard().
-						withRegion(Regions.US_EAST_1). 
+				AmazonSimpleEmailService sesClient =  AmazonSimpleEmailServiceClientBuilder.standard().
+						withRegion(region). 
 						withCredentials(new AWSStaticCredentialsProvider(awsCredentials)).build();
+				
+				sesClients.put(region.getName(), sesClient);
+				return sesClient;
+		 } else {
+			 return sesClients.get(region.getName());
 		 }
-		 
-		 return sesClient;
 	}
 	
 	
@@ -69,7 +76,7 @@ public class AwsSesUtils {
 			
 			boolean status = false;
 			try {
-				SendEmailResult result = getSesClient().sendEmail(new SendEmailRequest().
+				SendEmailResult result = getSesClient(DEFAULT_REGION ).sendEmail(new SendEmailRequest().
 					withDestination(dest).
 					withMessage(new Message().withBody(body).withSubject(new Content().withData(title))).
 					withSource(from));

@@ -194,13 +194,7 @@ public class MailUtils {
             result = sendLocalMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html",  ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK);
        		logger.log(Level.INFO, "Email verification request status: " + result);
             if (! StringUtils.equalsIgnoreCase(result, "ok")) {
-       			//String recipients = addEmailAddress("bcc", "jstakun.appspot@gmail.com", null) + "|" + addEmailAddress("to", toA, nick);
-       			//if  (sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, recipients, "Device Locator Registration", message, "text/html")) {
-       			//	result = "ok";
-       			//} else {	
-       			//	result = "failed";
-       			//}
-       			return sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick,  "Device Locator Registration", message, "text/html", ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK);
+            	return sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick,  "Device Locator Registration", message, "text/html", ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK);
        		}	
         } catch (Exception ex) {
             logger.log(Level.SEVERE, null, ex);
@@ -321,10 +315,8 @@ public class MailUtils {
 
     public static void sendCrashReport(String title, String body) {
         String status = sendLocalMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, title, body, "text/plain", null, null);
-        if (!StringUtils.equalsIgnoreCase(status, "ok")) {
-        	//String recipients = addEmailAddress("to", "jstakun.appspot@gmail.com", null) ;
-            //sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, recipients, title, body, "text/plain");
-            sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", null, title, body, "text/plain", null, null) ;
+        if (! StringUtils.equalsIgnoreCase(status, "ok")) {
+        	sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", null, title, body, "text/plain", null, null) ;
         }
     }
 
