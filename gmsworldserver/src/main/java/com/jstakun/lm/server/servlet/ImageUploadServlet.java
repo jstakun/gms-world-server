@@ -108,13 +108,17 @@ public class ImageUploadServlet extends HttpServlet {
 										showImageUrl = UrlUtils.getShortUrl(showImageUrl);
 										CacheUtil.put(cacheKey, "1", CacheType.FAST);
 										//load image from imageUrl and check if it is black
+										byte[] uploadedImage = null;
 										try {
-											byte[] uploadedImage = ImageUtils.loadImage(imageUrl);
-											if (uploadedImage != null && uploadedImage.length > 3 && ImageUtils.isBlackImage(uploadedImage)) {
-												logger.log(Level.SEVERE, "Uploaded image " + key + " is black: " + imageUrl);
-												output = "Uploaded image is black!";
-											} else {
-												Map<String, String> params = new ImmutableMap.Builder<String, String>()
+											uploadedImage = ImageUtils.loadImage(imageUrl);
+										} catch (Exception e) {
+											logger.log(Level.SEVERE, "ImageUploadServlet.processRequest() exception", e);
+										}
+										if (uploadedImage != null && uploadedImage.length > 3 && ImageUtils.isBlackImage(uploadedImage)) {
+											logger.log(Level.SEVERE, "Uploaded image " + key + " is black: " + imageUrl);
+											output = "Uploaded image is black!";
+										} else {
+											Map<String, String> params = new ImmutableMap.Builder<String, String>()
 														.put("showImageUrl", showImageUrl)
 														.put("imageUrl", imageUrl)
 														.put("lat", Double.toString(lat))
@@ -122,14 +126,10 @@ public class ImageUploadServlet extends HttpServlet {
 														.put("username",
 																StringUtils.isNotEmpty(username) ? username : "")
 														.build();
-												NotificationUtils.createImageCreationNotificationTask(params);
-												MailUtils.sendAdminMail("New screenshot", "New screenshot saved at: " + showImageUrl);
-												output = "File saved with key " + key;
-											}
-										} catch (Exception e) {
-											logger.log(Level.SEVERE, "ImageUploadServlet.processRequest() exception", e);
-											output = "Image upload failed!";
-										}
+											NotificationUtils.createImageCreationNotificationTask(params);
+											MailUtils.sendAdminMail("New screenshot", "New screenshot saved at: " + showImageUrl);
+											output = "File saved with key " + key;
+										}										
 									} else {
 										output = "Key is empty!";
 										logger.log(Level.SEVERE, "Key is empty!");
