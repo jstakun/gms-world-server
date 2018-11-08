@@ -67,11 +67,11 @@ public class MailUtils {
    	    } else {
    	    	logger.log(Level.SEVERE, "Failed to send mail with SES!");
    	    	//return "failed";
-   	    	return sendRemoteMailV1(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
+   	    	return sendJamesMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
    	    }
     }
     
-    private static String sendRemoteMailV1(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType, String ccA, String ccP)  {
+    private static String sendJamesMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType, String ccA, String ccP)  {
     	String recipients = addEmailAddress("to", toA, toP); 
     	if (StringUtils.isNotEmpty(ccA)) {
     		recipients += "|" + addEmailAddress("to", ccA, ccP);
@@ -114,7 +114,11 @@ public class MailUtils {
     }
     
     public static void sendAdminMail(String title, String message) {
-    	sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, title, message, "text/plain", null, null);
+    	sendJamesMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, title, message, "text/plain", null, null);
+    }
+
+    public static String sendLandmarkCreationNotification(String title, String body) {
+        return sendJamesMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, title, body, "text/plain", null, null);
     }
 
     public static void sendEmailingMessage(String toA, String nick, String message) {
@@ -125,10 +129,6 @@ public class MailUtils {
     	sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, toA, title, message, "text/plain", null, null);
     }
     
-    public static String sendLandmarkCreationNotification(String title, String body) {
-        return sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, title, body, "text/plain", null, null);
-    }
-
     public static void sendList(String title, Map<String, Collection<String>> stringMap, Map<String, Integer> recentlyCreated) {
         String message = "";
         for (Map.Entry<String, Collection<String>> entry : stringMap.entrySet()) {
