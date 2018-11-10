@@ -7,7 +7,7 @@
     <system-properties>
         <property name="java.util.logging.config.file" value="WEB-INF/logging.properties" />
     </system-properties>
-    <url-stream-handler>urlfetch</url-stream-handler>
+    <!--url-stream-handler>urlfetch</url-stream-handler-->
     <runtime>java8</runtime>
     <!--manual-scaling>
     	<instances>1</instances>

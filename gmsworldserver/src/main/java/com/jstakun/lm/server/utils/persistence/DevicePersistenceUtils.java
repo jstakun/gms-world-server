@@ -25,7 +25,7 @@ public class DevicePersistenceUtils {
 	
 	public static int isDeviceRegistered(String imei) throws Exception {
 		if (imei != null) {
-		    String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "getDevice?" + 
+		    final String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "getDevice?" + 
 	                 "imei="+  imei;
 		    String deviceJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(deviceUrl), Commons.getProperty(Property.RH_GMS_USER), false);		
 		    if (StringUtils.startsWith(deviceJson, "{")) {
@@ -51,21 +51,21 @@ public class DevicePersistenceUtils {
 	
 	public static int setupDevice(String imei, String name, String username, String token, String flex) throws Exception {
 		if (imei != null) {
-		    String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "setupDevice?" + 
-	                 "imei="+  imei;
+		    final String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "setupDevice";
+		    String params = "imei="+  imei;
 		    if (StringUtils.isNotEmpty(username)) {
-		    	deviceUrl += "&username=" + username;
+		    	params += "&username=" + username;
 		    }
 		    if (StringUtils.isNotEmpty(name)) {
-		    	deviceUrl += "&name=" + name;
+		    	params += "&name=" + name;
 		    }
 		    if (StringUtils.isNotEmpty(token)) {
-		    	deviceUrl += "&token=" + token;
+		    	params += "&token=" + token;
 		    }
 		    if (StringUtils.isNotEmpty(flex)) {
-		    	deviceUrl += "&flex=" + flex;
+		    	params += "&flex=" + flex;
 		    }
-		    String deviceJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(deviceUrl), Commons.getProperty(Property.RH_GMS_USER), false);		
+		    String deviceJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(deviceUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));		
 		    if (StringUtils.startsWith(deviceJson, "{")) {
 			   JSONObject root = new JSONObject(deviceJson);
 			   JSONObject output = root.optJSONObject("output");
@@ -89,29 +89,29 @@ public class DevicePersistenceUtils {
 
 	public static int sendCommand(String imei, Integer pin, String name, String username, String command, String args, String correlationId, String flex) throws Exception {
 		if (pin != null && isValidCommand(command)) {
-			String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "commandDevice?" + 
-					"command=" + command + "&pin=" + pin;
+			final String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "commandDevice";
+			String params = "command=" + command + "&pin=" + pin;
 			if (imei != null) {
-				deviceUrl += "&imei="+  imei;
+				params += "&imei="+  imei;
 			} else if (username != null && name != null) {
-				deviceUrl += "&username=" + username + "&name=" + name ;
+				params += "&username=" + username + "&name=" + name ;
 			} else if (imei == null && (username == null || name == null)) {
 				logger.log(Level.SEVERE, "Imei and name or username can't be null!");
 				return -1;
 			}
 		    if (StringUtils.isNotEmpty(args)) {
-		    	deviceUrl += "&args=" + URLEncoder.encode(args, "UTF-8");
+		    	params += "&args=" + URLEncoder.encode(args, "UTF-8");
 		    }
 		    if (StringUtils.isNotEmpty(correlationId)) {
-		    	deviceUrl += "&correlationId=" + correlationId; 
+		    	params += "&correlationId=" + correlationId; 
 		    }
 		    if (StringUtils.isNotEmpty(flex)) {
-		    	deviceUrl += "&flex=" + flex; 
+		    	params += "&flex=" + flex; 
 		    }
 		    String deviceJson = null;
 		    try {
 		    	//logger.log(Level.INFO, "Calling: " + deviceUrl);
-			    deviceJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(deviceUrl), Commons.getProperty(Property.RH_GMS_USER), false);		
+			    deviceJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(deviceUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));		
 			    if (StringUtils.startsWith(deviceJson, "{")) {
 			    	JSONObject root = new JSONObject(deviceJson);
 			    	if (root.optString("name") != null ) {

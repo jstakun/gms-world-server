@@ -72,7 +72,7 @@ public final class DeviceManagerServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		try {
 			if (!HttpUtils.isEmptyAny(request, "imei")) {
-				 String imei = request.getParameter("imei");
+				 String imei = request.getParameter("imei").trim();
 				 String token = request.getParameter("token");
 		         String username = request.getParameter("username");
 		         String name = request.getParameter("name");
@@ -106,9 +106,13 @@ public final class DeviceManagerServlet extends HttpServlet {
 	        		 response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 		         } else {
 		        	 int status;
-		        	 int pin = NumberUtils.getInt(request.getParameter("pin"), -1);
-			         if (StringUtils.isNotEmpty(command) && pin >= 0) {
-			        	 String[] cid = StringUtils.split(correlationId, "+=+");
+		        	 String pinStr = request.getParameter("pin");
+		        	 int pin = -1;
+		        	 if (StringUtils.isNotEmpty(pinStr)) {
+		        		 pin = NumberUtils.getInt(pinStr.trim(), -1);
+				     }
+		        	 if (StringUtils.isNotEmpty(command) && pin >= 0) {
+			        	 String[] cid = StringUtils.split(correlationId, "=");
 			        	 String commandKey = "";
 			        	 if (cid != null && cid.length == 2) {
 			        		 commandKey += cid[0].trim() + "_";
