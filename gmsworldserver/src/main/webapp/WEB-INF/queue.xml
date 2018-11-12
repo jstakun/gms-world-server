@@ -10,15 +10,6 @@
       		<task-retry-limit>5</task-retry-limit>      		
     	</retry-parameters>
     </queue>
-    <!--queue>
-        <name>hotelLoaderQueue</name>
-        <rate>10/s</rate>
-    </queue>
-    <queue>
-        <name>searchQueue</name>
-        <rate>15/s</rate>
-        <bucket-size>30</bucket-size>
-    </queue-->
     <queue>
     	<name>notifications</name>
     	<rate>10/s</rate>
@@ -26,7 +17,7 @@
       		<min-backoff-seconds>10</min-backoff-seconds>
       		<max-backoff-seconds>180</max-backoff-seconds>
       		<max-doublings>2</max-doublings>
-      		<task-retry-limit>5</task-retry-limit>      		
+      		<task-retry-limit>3</task-retry-limit>      		
     	</retry-parameters>
   	</queue>
 </queue-entries>

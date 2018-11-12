@@ -140,7 +140,7 @@ public class TwitterUtils {
             		update.setMedia("image.jpg", is);
             	}
             } catch (Exception e) {
-            	logger.log(Level.SEVERE, "Failed to load image " + imageUrl, e);
+            	logger.log(Level.WARNING, "Failed to load image " + imageUrl, e);
             } finally {
             	if (is != null) {
             		is.close();
