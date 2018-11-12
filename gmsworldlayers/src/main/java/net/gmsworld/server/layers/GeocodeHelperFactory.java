@@ -44,10 +44,6 @@ public class GeocodeHelperFactory {
 			 if (addressInfo == null) {
 			 	 addressInfo = getMapQuestUtils().processReverseGeocode(latitude, longitude);
 			 }
-			 //addressInfo = getMapQuestUtils().processReverseGeocode(latitude, longitude);
-			 //if (addressInfo == null) {
-			 // addressInfo = getGoogleGeocodeUtils().processReverseGeocode(latitude, longitude);
-			 //}
 			 if (addressInfo == null) {
 				 addressInfo = new AddressInfo();
 			 }
@@ -57,13 +53,14 @@ public class GeocodeHelperFactory {
 		 return addressInfo;
 	}
 	
-	public static String processReverseGeocodeAddress(double latitude, double longitude) {
+	public static AddressInfo processReverseGeocodeAddress(double latitude, double longitude) {
 		GeocodeCache gc = GeocodeCachePersistenceUtils.selectGeocodeCache(latitude, longitude);
+		AddressInfo addressInfo = new AddressInfo();
 		if (gc != null && gc.getLocation() != null) {
-			return gc.getLocation();
+			addressInfo.setField(AddressInfo.EXTENSION, gc.getLocation());
 		} else {
-			AddressInfo addressInfo = processReverseGeocode(latitude, longitude);
-            return addressInfo.getField(AddressInfo.EXTENSION);
+			 addressInfo = processReverseGeocode(latitude, longitude);
 		}
+		return addressInfo;
 	}
 }

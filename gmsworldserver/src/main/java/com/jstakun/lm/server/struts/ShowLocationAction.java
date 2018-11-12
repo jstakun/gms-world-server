@@ -13,6 +13,7 @@ import org.apache.struts.action.ActionMapping;
 
 import com.jstakun.lm.server.utils.HtmlUtils;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
+import com.openlapi.AddressInfo;
 
 import eu.bitwalker.useragentutils.DeviceType;
 import eu.bitwalker.useragentutils.OperatingSystem;
@@ -77,7 +78,7 @@ public class ShowLocationAction extends org.apache.struts.action.Action {
                 
                 String address = null;
                 if (!StringUtils.equals(request.getParameter("enabled"), "Hotels")) {
-                	address = GeocodeHelperFactory.processReverseGeocodeAddress(lat, lng);
+                	address = GeocodeHelperFactory.processReverseGeocodeAddress(lat, lng).getField(AddressInfo.EXTENSION);
                 	if (StringUtils.isNotEmpty(address)) {
                 		request.setAttribute("address", address);
                 	}

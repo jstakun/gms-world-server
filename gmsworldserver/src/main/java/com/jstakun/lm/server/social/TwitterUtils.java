@@ -17,6 +17,7 @@ import twitter4j.Status;
 import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
+import twitter4j.UploadedMedia;
 import twitter4j.auth.AccessToken;
 
 public class TwitterUtils {
@@ -130,14 +131,20 @@ public class TwitterUtils {
             }
             
             InputStream is = null;
+            UploadedMedia media = null;
             try {
             	if (type == Commons.SCREENSHOT) {
             		is  = new URL(imageUrl + "?thumbnail=false").openStream();
             	} else if (type == Commons.ROUTE) {
-            		is  = new URL(imageUrl + "&thumbnail=false").openStream();
+            		is  = new URL(imageUrl).openStream();
             	}
             	if (is != null) {
-            		update.setMedia("image.jpg", is);
+            		//update.setMedia("img_" + System.currentTimeMillis() + ".jpg", is);
+            	    media = getTwitter(null, null).uploadMedia("img_" + System.currentTimeMillis() + ".jpg", is); 
+            		if (media != null) {
+            			logger.info("Uploaded media " + media.getImageType() + ": " + media.getMediaId());
+            			update.setMediaIds(media.getMediaId());
+            		}
             	}
             } catch (Exception e) {
             	logger.log(Level.WARNING, "Failed to load image " + imageUrl, e);

@@ -82,11 +82,11 @@ public final class GlCommons {
             	userData.put(ConfigurationManager.GL_EXPIRES_IN, Long.toString(expires_in));
             }
            
-            String key = TokenPersistenceUtils.generateToken("lm", userData.get(ConfigurationManager.GL_USERNAME) + "@" + Commons.GOOGLE_PLUS);
+            String key = TokenPersistenceUtils.generateToken("lm", userData.get(ConfigurationManager.GL_USERNAME) + "@" + Commons.GOOGLE);
             userData.put("gmsToken", key); 
             
             Map<String, String> params = new ImmutableMap.Builder<String, String>().
-               		put("service", Commons.GOOGLE_PLUS).
+               		put("service", Commons.GOOGLE).
             		put("accessToken", accessToken).
             		put("email", userData.containsKey(ConfigurationManager.USER_EMAIL) ? userData.get(ConfigurationManager.USER_EMAIL) : "").
             		put("username", userData.get(ConfigurationManager.GL_USERNAME)).

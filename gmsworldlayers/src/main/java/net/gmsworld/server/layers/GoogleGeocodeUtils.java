@@ -144,7 +144,7 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
             	cacheProvider.put(key, addressInfo);
             }
         } else {
-            logger.log(Level.INFO, "Reading GRG geocode from cache with key {0}", addressInfo.getField(AddressInfo.EXTENSION));
+            logger.log(Level.INFO, "Reading Google geocode from cache with key {0}", addressInfo.getField(AddressInfo.EXTENSION));
         }
 
         return addressInfo;

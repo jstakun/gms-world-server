@@ -81,7 +81,7 @@ public class SocialMessageServlet extends HttpServlet {
 				if (refresh != null) {
 					params.put("refresh_token", refresh);
 				}
-				params.put("service", Commons.GOOGLE_PLUS);
+				params.put("service", Commons.GOOGLE);
 				NotificationUtils.createNotificationTask(params);
 			} else {
 				logger.log(Level.SEVERE, "GL access token and refresh token is empty!");

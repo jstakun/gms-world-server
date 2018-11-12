@@ -97,7 +97,7 @@ public class GeocodeTest {
         
         System.out.println(GeocodeUtils.isValidLongitude(179d));
         
-        String addressString = GeocodeHelperFactory.processReverseGeocodeAddress(54.352025, 18.646638);
+        String addressString = GeocodeHelperFactory.processReverseGeocodeAddress(54.352025, 18.646638).getField(AddressInfo.EXTENSION);
         System.out.println(addressString);
 	}
 

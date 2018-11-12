@@ -11,6 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.ConfigurationManager;
+import net.gmsworld.server.layers.GeocodeHelperFactory;
+import net.gmsworld.server.layers.HotelsBookingUtils;
+import net.gmsworld.server.layers.LayerHelperFactory;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.UrlUtils;
@@ -23,9 +26,11 @@ import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.common.collect.ImmutableMap;
 import com.jstakun.lm.server.social.NotificationUtils;
+import com.jstakun.lm.server.utils.HtmlUtils;
 import com.jstakun.lm.server.utils.memcache.CacheAction;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
+import com.openlapi.AddressInfo;
 
 /**
  *
@@ -68,7 +73,7 @@ public class LandmarkPersistenceWebUtils {
         return isSimilarToNewest;
     }
     
-    public static void notifyOnLandmarkCreation(Landmark l, String userAgent, String socialIds) {
+    public static void notifyOnLandmarkCreation(Landmark l, String userAgent, String socialIds, AddressInfo addressInfo) {
     	//load image
     	Queue queue = QueueFactory.getDefaultQueue();
     	queue.add(withUrl("/tasks/execute").param("action", "loadImage").param("latitude", Double.toString(l.getLatitude())).param("longitude", Double.toString(l.getLongitude())));
@@ -113,7 +118,7 @@ public class LandmarkPersistenceWebUtils {
     	}
     	
     	String imageUrl = ConfigurationManager.SERVER_URL + "image?lat=" + l.getLatitude() + "&lng=" + l.getLongitude();
-    
+    	
     	Map<String, String> params = new ImmutableMap.Builder<String, String>().
             put("key", Integer.toString(l.getId())).
     		put("landmarkUrl", landmarkUrl).
@@ -130,6 +135,23 @@ public class LandmarkPersistenceWebUtils {
     		put("socialIds", socialIds != null ? socialIds : l.getUsername()).
     		put("imageUrl", imageUrl).build();  
     	  
+    	//Hotels setup
+    	String cheapestPrice = null, hotelsUrl = null;
+    	int hotelsCount = ((HotelsBookingUtils)LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)).countNearbyHotels(l.getLatitude(), l.getLongitude(), 50);
+    	params.put("hotelsCount", Integer.toString(hotelsCount));
+    	if (hotelsCount > 0) {	
+			 cheapestPrice = ((HotelsBookingUtils)LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)).findCheapestHotel(l.getLatitude(), l.getLongitude(), 50, 1);
+			 hotelsUrl = UrlUtils.getShortUrl(com.jstakun.lm.server.config.ConfigurationManager.HOTELS_URL + "hotelLandmark/" + HtmlUtils.encodeDouble(l.getLatitude()) + "/" + HtmlUtils.encodeDouble(l.getLongitude()));		 
+			 params.put("cheapestPrice", cheapestPrice);
+			 params.put("hotelsUrl", hotelsUrl);
+    	}
+    	
+    	if (addressInfo == null) {
+    		addressInfo = GeocodeHelperFactory.processReverseGeocode(l.getLatitude(), l.getLongitude()); 
+    	}    
+    	params.put("cc", addressInfo.getField(AddressInfo.COUNTRY_CODE));
+    	params.put("city", addressInfo.getField(AddressInfo.CITY));
+		
     	NotificationUtils.createLadmarkCreationNotificationTask(params);
     }
     
