@@ -331,8 +331,9 @@ public class NotificationUtils {
     		}
     	} else if (StringUtils.equals(service, Commons.GOOGLE)) {
     		if (StringUtils.equals(type, "Hotels")) {
+    			desc = "Discover hotels ";
     			if (StringUtils.isNotEmpty(city)) {
-                	desc = city + ", ";
+                	desc = "in " + city + ", ";
                 } else {
                 	desc = "somewhere in ";
                 }
@@ -355,7 +356,7 @@ public class NotificationUtils {
     			}
                 name = desc;
     			if (hotelsCount > 0) {
-    				return GoogleBloggerUtils.sendMessage(hotelsUrl, Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), userMask, name, imageUrl, Commons.HOTELS_LAYER, latitude, longitude, desc, Commons.SERVER);
+    				return GoogleBloggerUtils.sendMessage(hotelsUrl, Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), userMask, name, imageUrl, Commons.HOTELS_LAYER, latitude, longitude, desc, Commons.HOTELS);
     			} else if (hotelsCount == 0) { 
     				logger.log(Level.INFO, "No hotels in range 50 km");
                 	return NO_HOTELS_IN_RANGE;
