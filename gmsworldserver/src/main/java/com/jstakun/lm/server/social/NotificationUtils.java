@@ -356,7 +356,7 @@ public class NotificationUtils {
     			}
                 name = desc;
     			if (hotelsCount > 0) {
-    				return GoogleBloggerUtils.sendMessage(hotelsUrl, Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), userMask, name, imageUrl, Commons.HOTELS_LAYER, latitude, longitude, desc, Commons.HOTELS);
+    				return GoogleBloggerUtils.sendMessage(hotelsUrl, Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), userMask, name, imageUrl, Commons.HOTELS_LAYER, latitude, longitude, desc, Commons.SERVER);
     			} else if (hotelsCount == 0) { 
     				logger.log(Level.INFO, "No hotels in range 50 km");
                 	return NO_HOTELS_IN_RANGE;
