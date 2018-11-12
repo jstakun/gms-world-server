@@ -78,7 +78,8 @@ public class ShowLocationAction extends org.apache.struts.action.Action {
                 
                 String address = null;
                 if (!StringUtils.equals(request.getParameter("enabled"), "Hotels")) {
-                	address = GeocodeHelperFactory.processReverseGeocodeAddress(lat, lng).getField(AddressInfo.EXTENSION);
+                	AddressInfo addressInfo = GeocodeHelperFactory.processReverseGeocodeAddress(lat, lng);
+                	address = addressInfo.getField(AddressInfo.EXTENSION);
                 	if (StringUtils.isNotEmpty(address)) {
                 		request.setAttribute("address", address);
                 	}

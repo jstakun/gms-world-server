@@ -331,7 +331,6 @@ public class NotificationUtils {
     		}
     	} else if (StringUtils.equals(service, Commons.GOOGLE)) {
     		if (StringUtils.equals(type, "Hotels")) {
-    			name = "Discover hotels...";
     			if (StringUtils.isNotEmpty(city)) {
                 	desc = city + ", ";
                 } else {
@@ -350,10 +349,11 @@ public class NotificationUtils {
                 }
                 if (cheapestPrice != null) {
     				if (StringUtils.isNotEmpty(name)) {
-    					name += " ";
+    					desc += " ";
     				}
-    				name += "from " + cheapestPrice + " per night";
+    				desc += "from " + cheapestPrice + " per night";
     			}
+                name = desc;
     			if (hotelsCount > 0) {
     				return GoogleBloggerUtils.sendMessage(hotelsUrl, Commons.getProperty(Property.gl_plus_token), Commons.getProperty(Property.gl_plus_refresh), userMask, name, imageUrl, Commons.HOTELS_LAYER, latitude, longitude, desc, Commons.SERVER);
     			} else if (hotelsCount == 0) { 

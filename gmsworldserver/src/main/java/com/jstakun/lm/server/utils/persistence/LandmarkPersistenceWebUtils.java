@@ -118,40 +118,41 @@ public class LandmarkPersistenceWebUtils {
     	}
     	
     	String imageUrl = ConfigurationManager.SERVER_URL + "image?lat=" + l.getLatitude() + "&lng=" + l.getLongitude();
-    	
-    	Map<String, String> params = new ImmutableMap.Builder<String, String>().
-            put("key", Integer.toString(l.getId())).
-    		put("landmarkUrl", landmarkUrl).
-    		put("email", l.getEmail()).
-    		put("title", title).
-    		put("userUrl", userUrl).
-    		put("username", l.getUsername()).
-    		put("name", l.getName()).
-    		put("body", body).
-    		put("latitude", Double.toString(l.getLatitude())).
-    		put("longitude", Double.toString(l.getLongitude())).
-    		put("layer", l.getLayer()).
-    		put("desc", l.getDescription()).
-    		put("socialIds", socialIds != null ? socialIds : l.getUsername()).
-    		put("imageUrl", imageUrl).build();  
     	  
     	//Hotels setup
     	String cheapestPrice = null, hotelsUrl = null;
     	int hotelsCount = ((HotelsBookingUtils)LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)).countNearbyHotels(l.getLatitude(), l.getLongitude(), 50);
-    	params.put("hotelsCount", Integer.toString(hotelsCount));
     	if (hotelsCount > 0) {	
 			 cheapestPrice = ((HotelsBookingUtils)LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)).findCheapestHotel(l.getLatitude(), l.getLongitude(), 50, 1);
 			 hotelsUrl = UrlUtils.getShortUrl(com.jstakun.lm.server.config.ConfigurationManager.HOTELS_URL + "hotelLandmark/" + HtmlUtils.encodeDouble(l.getLatitude()) + "/" + HtmlUtils.encodeDouble(l.getLongitude()));		 
-			 params.put("cheapestPrice", cheapestPrice);
-			 params.put("hotelsUrl", hotelsUrl);
-    	}
+		}
     	
     	if (addressInfo == null) {
     		addressInfo = GeocodeHelperFactory.processReverseGeocode(l.getLatitude(), l.getLongitude()); 
     	}    
-    	params.put("cc", addressInfo.getField(AddressInfo.COUNTRY_CODE));
-    	params.put("city", addressInfo.getField(AddressInfo.CITY));
-		
+    	
+    	Map<String, String> params = new ImmutableMap.Builder<String, String>().
+                put("key", Integer.toString(l.getId())).
+        		put("landmarkUrl", landmarkUrl).
+        		put("email", l.getEmail()).
+        		put("title", title).
+        		put("userUrl", userUrl).
+        		put("username", l.getUsername()).
+        		put("name", l.getName()).
+        		put("body", body).
+        		put("latitude", Double.toString(l.getLatitude())).
+        		put("longitude", Double.toString(l.getLongitude())).
+        		put("layer", l.getLayer()).
+        		put("desc", l.getDescription()).
+        		put("socialIds", socialIds != null ? socialIds : l.getUsername()).
+        		put("imageUrl", imageUrl).
+        		put("hotelsCount", Integer.toString(hotelsCount)).
+    	 		put("cheapestPrice", cheapestPrice).
+    	 		put("hotelsUrl", hotelsUrl).
+    	 		put("cc", addressInfo.getField(AddressInfo.COUNTRY_CODE)).
+    	    	put("city", addressInfo.getField(AddressInfo.CITY)).
+    	 		build();  
+    	
     	NotificationUtils.createLadmarkCreationNotificationTask(params);
     }
     
