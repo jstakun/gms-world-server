@@ -120,7 +120,7 @@ public class LandmarkPersistenceWebUtils {
     	String imageUrl = ConfigurationManager.SERVER_URL + "image?lat=" + l.getLatitude() + "&lng=" + l.getLongitude();
     	  
     	//Hotels setup
-    	String cheapestPrice = null, hotelsUrl = null;
+    	String cheapestPrice = "", hotelsUrl = "";
     	int hotelsCount = ((HotelsBookingUtils)LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)).countNearbyHotels(l.getLatitude(), l.getLongitude(), 50);
     	if (hotelsCount > 0) {	
 			 cheapestPrice = ((HotelsBookingUtils)LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)).findCheapestHotel(l.getLatitude(), l.getLongitude(), 50, 1);
@@ -149,8 +149,8 @@ public class LandmarkPersistenceWebUtils {
         		put("hotelsCount", Integer.toString(hotelsCount)).
     	 		put("cheapestPrice", cheapestPrice).
     	 		put("hotelsUrl", hotelsUrl).
-    	 		put("cc", addressInfo.getField(AddressInfo.COUNTRY_CODE)).
-    	    	put("city", addressInfo.getField(AddressInfo.CITY)).
+    	 		put("cc", addressInfo.getField(AddressInfo.COUNTRY_CODE) == null ? "" : addressInfo.getField(AddressInfo.COUNTRY_CODE)).
+    	    	put("city", addressInfo.getField(AddressInfo.CITY) == null ? "" : addressInfo.getField(AddressInfo.CITY)).
     	 		build();  
     	
     	NotificationUtils.createLadmarkCreationNotificationTask(params);

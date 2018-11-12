@@ -334,7 +334,7 @@ public class HotelsBookingUtils extends LayerHelper {
 	}
 	
 	public String findCheapestHotel(double lat, double lng, int r, int limit) {
-        String response = null;
+        String response = "";
 		JSONObject cheapest = findCheapestHotelJSon(lat, lng, r, limit);
 		
 		if (cheapest != null) {

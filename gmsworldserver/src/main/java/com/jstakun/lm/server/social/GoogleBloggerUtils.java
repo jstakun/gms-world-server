@@ -58,7 +58,7 @@ public class GoogleBloggerUtils {
         		if (StringUtils.equals(layer, Commons.SOCIAL)) { 
                     message = String.format(rb.getString("Social.gl.server.blogeo"), prefix + userMask, url);
         		} else if (StringUtils.equals(layer, Commons.HOTELS_LAYER)) {
-        			message = String.format(rb.getString("Social.gl.hotels"), name, url);
+        			message = String.format(rb.getString("Social.gl.hotels"), prefix + name, url);
         		} else {
                     message = String.format(rb.getString("Social.gl.server.landmark"), prefix + userMask, name, url);
         		}  

@@ -333,9 +333,9 @@ public class NotificationUtils {
     		if (StringUtils.equals(type, "Hotels")) {
     			desc = "Discover hotels ";
     			if (StringUtils.isNotEmpty(city)) {
-                	desc = "in " + city + ", ";
+                	desc += "in " + city + ", ";
                 } else {
-                	desc = "somewhere in ";
+                	desc += "somewhere in ";
                 }
                 if (StringUtils.isNotEmpty(cc)) {
                 	Locale l = new Locale("", cc);
