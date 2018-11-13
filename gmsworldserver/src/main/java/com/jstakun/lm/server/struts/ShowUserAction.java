@@ -1,8 +1,5 @@
 package com.jstakun.lm.server.struts;
 
-import com.jstakun.lm.server.utils.memcache.CacheAction;
-import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
-
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -10,17 +7,19 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import eu.bitwalker.useragentutils.Browser;
-import eu.bitwalker.useragentutils.DeviceType;
-import eu.bitwalker.useragentutils.OperatingSystem;
-import net.gmsworld.server.utils.NumberUtils;
-import net.gmsworld.server.utils.persistence.Landmark;
-import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+
+import com.jstakun.lm.server.utils.UserAgentUtils;
+import com.jstakun.lm.server.utils.memcache.CacheAction;
+import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
+
+import eu.bitwalker.useragentutils.Browser;
+import net.gmsworld.server.utils.NumberUtils;
+import net.gmsworld.server.utils.persistence.Landmark;
+import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;
 
 /**
  *
@@ -117,9 +116,7 @@ public class ShowUserAction extends org.apache.struts.action.Action {
 
             return mapping.findForward("fullScreen");
         } else {
-            OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
-
-            if (os.getDeviceType().equals(DeviceType.MOBILE)) {
+            if (UserAgentUtils.isMobile(request.getHeader("User-Agent"))) {
                 return mapping.findForward("mobile");
             } else {
                 return mapping.findForward("success");

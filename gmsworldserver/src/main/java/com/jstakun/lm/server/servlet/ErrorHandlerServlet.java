@@ -7,8 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import eu.bitwalker.useragentutils.DeviceType;
-import eu.bitwalker.useragentutils.OperatingSystem;
+import com.jstakun.lm.server.utils.UserAgentUtils;
 
 /**
  * Servlet implementation class ErrorHandlerServlet
@@ -47,8 +46,7 @@ public class ErrorHandlerServlet extends HttpServlet {
 		request.setAttribute("header", header);
 		request.setAttribute("message", message);
 				
-		OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
-		if (os.getDeviceType().equals(DeviceType.MOBILE)) {
+		if (UserAgentUtils.isMobile(request.getHeader("User-Agent"))) {
         	request.getRequestDispatcher("/m/error.jsp").forward(request, response); 
         } else {
         	request.getRequestDispatcher("/error.jsp").forward(request, response);

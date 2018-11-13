@@ -7,19 +7,17 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.gmsworld.server.utils.persistence.Landmark;
-import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import com.jstakun.lm.server.utils.UserAgentUtils;
 import com.jstakun.lm.server.utils.memcache.CacheAction;
 import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 
-import eu.bitwalker.useragentutils.DeviceType;
-import eu.bitwalker.useragentutils.OperatingSystem;
+import net.gmsworld.server.utils.persistence.Landmark;
+import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;
 
 public class WelcomeAction extends org.apache.struts.action.Action {
 	
@@ -54,8 +52,7 @@ public class WelcomeAction extends org.apache.struts.action.Action {
     		List<Landmark> landmarkList = newestLandmarksAction.getListFromCache(Landmark.class, "newestLandmarks", CacheType.FAST);
             request.setAttribute("newestLandmarkList", landmarkList);   
             
-        	OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
-        	if (os.getDeviceType().equals(DeviceType.MOBILE)) {
+        	if (UserAgentUtils.isMobile(request.getHeader("User-Agent"))) {
         		return mapping.findForward("mobile");
         	} else {
         		return mapping.findForward("success");

@@ -10,11 +10,10 @@ import org.apache.struts.action.ActionMapping;
 
 import com.jstakun.lm.server.persistence.Screenshot;
 import com.jstakun.lm.server.utils.FileUtils;
+import com.jstakun.lm.server.utils.UserAgentUtils;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.openlapi.AddressInfo;
 
-import eu.bitwalker.useragentutils.DeviceType;
-import eu.bitwalker.useragentutils.OperatingSystem;
 import net.gmsworld.server.layers.GeocodeHelperFactory;
 
 /**
@@ -51,8 +50,7 @@ public class ShowImageAction extends org.apache.struts.action.Action {
             request.setAttribute("screenshot", s);
         }
         
-        OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
-        if (os.getDeviceType().equals(DeviceType.MOBILE)) {
+        if (UserAgentUtils.isMobile(request.getHeader("User-Agent"))) {
             return mapping.findForward("mobile");
         } else {
             return mapping.findForward("success");

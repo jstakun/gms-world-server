@@ -1,23 +1,22 @@
 package com.jstakun.lm.server.struts;
 
-import com.jstakun.lm.server.utils.HtmlUtils;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import eu.bitwalker.useragentutils.DeviceType;
-import eu.bitwalker.useragentutils.OperatingSystem;
-import net.gmsworld.server.utils.StringUtil;
-import net.gmsworld.server.utils.persistence.GeocodeCache;
-import net.gmsworld.server.utils.persistence.GeocodeCachePersistenceUtils;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+
+import com.jstakun.lm.server.utils.HtmlUtils;
+import com.jstakun.lm.server.utils.UserAgentUtils;
+
+import net.gmsworld.server.utils.StringUtil;
+import net.gmsworld.server.utils.persistence.GeocodeCache;
+import net.gmsworld.server.utils.persistence.GeocodeCachePersistenceUtils;
 
 /**
  *
@@ -53,8 +52,7 @@ public class ShowGeocodeAction extends org.apache.struts.action.Action {
             }
         }
 
-        OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
-        boolean isMobile = os.getDeviceType().equals(DeviceType.MOBILE);
+        boolean isMobile = UserAgentUtils.isMobile(request.getHeader("User-Agent"));
         if (StringUtils.isNotEmpty(request.getParameter("fullScreenGeocodeMap"))) {
             if (gc != null) {    	
             	request.setAttribute("lat", StringUtil.formatCoordE6(gc.getLatitude()));

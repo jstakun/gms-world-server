@@ -9,11 +9,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.gmsworld.server.layers.GeocodeHelperFactory;
-import net.gmsworld.server.utils.StringUtil;
-import net.gmsworld.server.utils.persistence.Landmark;
-import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
@@ -23,6 +18,7 @@ import org.apache.struts.action.ActionMapping;
 import com.jstakun.lm.server.persistence.Checkin;
 import com.jstakun.lm.server.persistence.Comment;
 import com.jstakun.lm.server.utils.HtmlUtils;
+import com.jstakun.lm.server.utils.UserAgentUtils;
 import com.jstakun.lm.server.utils.memcache.CacheAction;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
@@ -31,9 +27,10 @@ import com.jstakun.lm.server.utils.persistence.CheckinPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.CommentPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.CommonPersistenceUtils;
 
-import eu.bitwalker.useragentutils.Browser;
-import eu.bitwalker.useragentutils.DeviceType;
-import eu.bitwalker.useragentutils.OperatingSystem;
+import net.gmsworld.server.layers.GeocodeHelperFactory;
+import net.gmsworld.server.utils.StringUtil;
+import net.gmsworld.server.utils.persistence.Landmark;
+import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;
 
 /**
  *
@@ -49,10 +46,7 @@ public class ShowLandmarkAction extends Action {
     }
 
     @Override
-    public ActionForward execute(ActionMapping mapping, ActionForm form,
-            final HttpServletRequest request,
-            HttpServletResponse response) throws IOException,
-            ServletException {
+    public ActionForward execute(ActionMapping mapping, ActionForm form,  final HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
         final String key = (String) request.getParameter("key");
         Landmark landmark = null;
@@ -65,9 +59,7 @@ public class ShowLandmarkAction extends Action {
             	    
             	  CacheAction landmarkCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
         				public Object executeAction() {
-        					Browser browser = Browser.parseUserAgentString(request.getHeader("User-Agent"));
-        		            if (browser.getGroup() == Browser.BOT || browser.getGroup() == Browser.BOT_MOBILE || browser.getGroup() == Browser.UNKNOWN) {
-        		            	logger.log(Level.WARNING, "User agent: " + browser.getName() + ", " + request.getHeader("User-Agent"));
+        					if (UserAgentUtils.isBot(request.getHeader("User-Agent"))) {
         		            	return null;
         		            } else if (CommonPersistenceUtils.isKeyValid(key)) {
         		            	return LandmarkPersistenceUtils.selectLandmarkById(key, GoogleCacheProvider.getInstance());
@@ -122,9 +114,8 @@ public class ShowLandmarkAction extends Action {
             }
         }
         
+    	boolean isMobile = UserAgentUtils.isMobile(request.getHeader("User-Agent"));
         if (landmark != null && isFullScreenLandmark) {
-        	OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
-        	boolean isMobile = os.getDeviceType().equals(DeviceType.MOBILE);
         	request.setAttribute("lat", StringUtil.formatCoordE6(landmark.getLatitude()));
         	request.setAttribute("lng", StringUtil.formatCoordE6(landmark.getLongitude()));
         	request.setAttribute("landmarkDesc", HtmlUtils.buildLandmarkDescV2(landmark, request.getAttribute("address"), request.getLocale(), isMobile));
@@ -135,8 +126,7 @@ public class ShowLandmarkAction extends Action {
             	return mapping.findForward("landmarks");
             } 
         } else {
-        	OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
-            if (os.getDeviceType().equals(DeviceType.MOBILE)) {
+        	if (isMobile) {
                 return mapping.findForward("mobile");
             } else {
             	return mapping.findForward("success");

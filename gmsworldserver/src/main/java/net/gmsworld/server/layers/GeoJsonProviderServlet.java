@@ -12,12 +12,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.layers.HotelsBookingUtils;
-import net.gmsworld.server.utils.HttpUtils;
-import net.gmsworld.server.utils.NumberUtils;
-import net.gmsworld.server.utils.StringUtil;
-
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -25,11 +19,14 @@ import org.json.JSONObject;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.utils.GoogleThreadProvider;
+import com.jstakun.lm.server.utils.UserAgentUtils;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 
-import eu.bitwalker.useragentutils.DeviceType;
-import eu.bitwalker.useragentutils.OperatingSystem;
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.utils.HttpUtils;
+import net.gmsworld.server.utils.NumberUtils;
+import net.gmsworld.server.utils.StringUtil;
 
 /**
  * Servlet implementation class geoJsonProviderServlet
@@ -76,10 +73,8 @@ public class GeoJsonProviderServlet extends HttpServlet {
 			if (HttpUtils.isEmptyAny(request, "lat", "lng", "layer")) {
 				response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 			} else {
-				OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
-	        	logger.log(Level.INFO, "User agent device type: " + os.getDeviceType().getName());
-	        	layer = request.getParameter("layer"); 
-        		if (!os.getDeviceType().equals(DeviceType.UNKNOWN)) {
+				layer = request.getParameter("layer"); 
+        		if (! UserAgentUtils.isUnknown(request.getHeader("User-Agent"))) {
 	        		response.setContentType("text/javascript;charset=UTF-8");
 	        		double lat = GeocodeUtils.getLatitude(request.getParameter("lat"));
 	        		double lng =  GeocodeUtils.getLongitude(request.getParameter("lng"));

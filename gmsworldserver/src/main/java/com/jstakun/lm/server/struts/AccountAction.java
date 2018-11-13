@@ -14,11 +14,10 @@ import org.apache.struts.action.ActionMapping;
 import com.jstakun.lm.server.persistence.Notification;
 import com.jstakun.lm.server.persistence.User;
 import com.jstakun.lm.server.utils.MailUtils;
+import com.jstakun.lm.server.utils.UserAgentUtils;
 import com.jstakun.lm.server.utils.persistence.NotificationPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.UserPersistenceUtils;
 
-import eu.bitwalker.useragentutils.DeviceType;
-import eu.bitwalker.useragentutils.OperatingSystem;
 import net.gmsworld.server.utils.HttpUtils;
 
 /**
@@ -55,9 +54,7 @@ public class AccountAction extends Action {
             confirm = Boolean.TRUE;
         }
         boolean result = false;
-        
-        OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
-        boolean isMobile = os.getDeviceType().equals(DeviceType.MOBILE);
+        boolean isMobile = UserAgentUtils.isMobile(request.getHeader("User-Agent"));
         
         boolean api = false;
         String output = null;

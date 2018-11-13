@@ -6,16 +6,14 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.gmsworld.server.layers.GeocodeHelperFactory;
-
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import com.jstakun.lm.server.utils.UserAgentUtils;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 
-import eu.bitwalker.useragentutils.DeviceType;
-import eu.bitwalker.useragentutils.OperatingSystem;
+import net.gmsworld.server.layers.GeocodeHelperFactory;
 
 /**
  *
@@ -59,8 +57,7 @@ public class ShowRouteAction extends org.apache.struts.action.Action {
     	if (route != null) {
     		return mapping.findForward("fullScreen");
     	} else {
-    		OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
-    		if (os.getDeviceType().equals(DeviceType.MOBILE)) {
+    		if (UserAgentUtils.isMobile(request.getHeader("User-Agent"))) {
     			return mapping.findForward("mobile");
     		} else {
     			return mapping.findForward("success");

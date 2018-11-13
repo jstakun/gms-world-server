@@ -12,11 +12,10 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import com.jstakun.lm.server.utils.HtmlUtils;
+import com.jstakun.lm.server.utils.UserAgentUtils;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.openlapi.AddressInfo;
 
-import eu.bitwalker.useragentutils.DeviceType;
-import eu.bitwalker.useragentutils.OperatingSystem;
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.layers.GeocodeHelperFactory;
 import net.gmsworld.server.layers.HotelsBookingUtils;
@@ -51,8 +50,7 @@ public class ShowLocationAction extends org.apache.struts.action.Action {
     @Override
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
     	Double lat = null, lng = null;
-    	OperatingSystem os = OperatingSystem.parseUserAgentString(request.getHeader("User-Agent"));
-        boolean isMobile = os.getDeviceType().equals(DeviceType.MOBILE);
+        boolean isMobile = UserAgentUtils.isMobile(request.getHeader("User-Agent"));
         
         if (!HttpUtils.isEmptyAny(request, "lat", "lon") || !HttpUtils.isEmptyAny(request, "latitudeEnc", "longitudeEnc")) {
             try {
@@ -119,7 +117,7 @@ public class ShowLocationAction extends org.apache.struts.action.Action {
 
         if (StringUtils.isNotEmpty(request.getParameter("fullScreen")) && lat != null && lng != null) {
         	//load hotels layer in asynchronous mode 
-			if (StringUtils.contains(request.getParameter("enabled"), "Hotels")) {
+			if (StringUtils.contains(request.getParameter("enabled"), "Hotels") && ! UserAgentUtils.isBot(request.getHeader("User-Agent"))) {
 				((HotelsBookingUtils)LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)).loadHotelsAsync(lat, lng, RADIUS, HOTELS_LIMIT, request.getParameter("sortType"), true); 
 			}
 			
