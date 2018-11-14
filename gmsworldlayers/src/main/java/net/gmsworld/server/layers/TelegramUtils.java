@@ -59,7 +59,7 @@ public class TelegramUtils {
                 try {
                     long id = Long.parseLong(telegramId);
                     if (id < 0) {
-                        return StringUtils.startsWith(telegramId, "-100");
+                        return StringUtils.startsWith(telegramId, "-100") && telegramId.length() > 4;
                     } else {
                         return true;
                     }

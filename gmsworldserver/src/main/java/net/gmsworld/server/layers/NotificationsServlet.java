@@ -447,7 +447,6 @@ public class NotificationsServlet extends HttpServlet {
 				}
 			}
 		} else {
-			logger.log(Level.SEVERE, "Wrong chat or channel id: " + telegramId);
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 		}
 		return reply;
