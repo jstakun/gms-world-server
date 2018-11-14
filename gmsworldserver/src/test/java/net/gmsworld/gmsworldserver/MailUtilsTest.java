@@ -6,12 +6,12 @@ import com.jstakun.lm.server.utils.MailUtils;
 
 public class MailUtilsTest {
 
-	private static final String MAIL = "jstakun.appspot@gmail.com";
+	private static final String MAIL = "jstakun.appspot@gamil.com";
 	
 	@Test
 	public void test() {
 		MailUtils.sendDeviceLocatorVerificationRequest(MAIL, "Admin", "abcd", null, 0);
 		
-		System.out.println(MAIL + " exists: " + MailUtils.emailAccountExists(MAIL));
+		//System.out.println(MAIL + " exists: " + MailUtils.emailAccountExists(MAIL));
 	}
 }

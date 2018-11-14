@@ -434,18 +434,21 @@ public class NotificationsServlet extends HttpServlet {
 					}
 				} else if (responseCode != null && responseCode == 400) {
 					reply = new JSONObject().put("status", "badRequestError");
+					logger.log(Level.SEVERE, "Received response code " + responseCode + " for channel " + telegramId);
 					response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 				} else if (responseCode != null && responseCode == 403) {
 					reply = new JSONObject().put("status", "permissionDenied");
+					logger.log(Level.SEVERE, "Received response code " + responseCode + " for channel " + telegramId);
 					response.sendError(HttpServletResponse.SC_FORBIDDEN);	
 				} else {
-					logger.log(Level.WARNING, "Received response code " + responseCode + " for channel " + telegramId);
+					logger.log(Level.SEVERE, "Received response code " + responseCode + " for channel " + telegramId);
 					reply = new JSONObject().put("status", "internalError");
 					response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 				}
 			}
 		} else {
-			logger.log(Level.WARNING, "Wrong chat id " + telegramId);
+			logger.log(Level.SEVERE, "Wrong chat or channel id: " + telegramId);
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 		}
 		return reply;
 	}

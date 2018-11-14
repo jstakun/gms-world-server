@@ -67,59 +67,56 @@ public class TelegramServlet extends HttpServlet {
 						logger.log(Level.SEVERE, e.getMessage(), e);
 					}
 
-					try {
-						JSONObject jsonObject = new JSONObject(jb.toString());
-						JSONObject messageJson = jsonObject.optJSONObject("message");
-						if (messageJson != null) {
-							String message = messageJson.getString("text");
-							Long telegramId= messageJson.getJSONObject("chat").getLong("id");
-							if (StringUtils.equalsIgnoreCase(message, "/register") || StringUtils.equalsIgnoreCase(message, "register")) {
-								//add chat id to white list
-								if (!NotificationPersistenceUtils.isWhitelistedTelegramId(Long.toString(telegramId))) {
-									NotificationPersistenceUtils.addToWhitelistTelegramId(Long.toString(telegramId), true);
-								} else {
-									logger.log(Level.WARNING, "Telegram chat id " + telegramId + " already exists in the whitelist!");
-								}		
-								if (telegramId > 0) {
+					JSONObject jsonObject = new JSONObject(jb.toString());
+					JSONObject messageJson = jsonObject.optJSONObject("message");
+					if (messageJson != null && messageJson.has("text") && messageJson.has("chat")) {
+						String message = messageJson.getString("text");
+						Long telegramId= messageJson.getJSONObject("chat").getLong("id");
+						if (StringUtils.equalsIgnoreCase(message, "/register") || StringUtils.equalsIgnoreCase(message, "register")) {
+							//add chat id to white list
+							if (!NotificationPersistenceUtils.isWhitelistedTelegramId(Long.toString(telegramId))) {
+								NotificationPersistenceUtils.addToWhitelistTelegramId(Long.toString(telegramId), true);
+							} else {
+								logger.log(Level.WARNING, "Telegram chat id " + telegramId + " already exists in the whitelist!");
+							}		
+							if (telegramId > 0) {
 									TelegramUtils.sendTelegram(Long.toString(telegramId), "You've been registered to Device Locator notifications.\n"
 									+ "You can unregister at any time by sending /unregister command message to @device_locator_bot");
-								} else if (telegramId < 0) {
+							} else if (telegramId < 0) {
 									TelegramUtils.sendTelegram(Long.toString(telegramId), "You've been registered to Device Locator notifications.\n"
 											+ "You can unregister at any time by sending /unregister " + telegramId +  " command message to @device_locator_bot");
-								}
-							} else if (StringUtils.startsWithIgnoreCase(message, "/unregister") || StringUtils.startsWithIgnoreCase(message, "unregister")) {
-								//remove chat or channel id from white list
-								String[] tokens = StringUtils.split(message, " ");
-								String id = null;
-								if (tokens.length > 1 && ((StringUtils.startsWith(tokens[1], "-") && StringUtils.isNumeric(tokens[1].substring(1))) || StringUtils.startsWith(tokens[1], "@"))) {
-									id = tokens[1]; //channel id
-								} else if (tokens.length == 1) {
-									id = Long.toString(telegramId); //chat id
-								}
-								if (NotificationPersistenceUtils.isWhitelistedTelegramId(id)) {
-									if (!NotificationPersistenceUtils.remove(id)) {
-										logger.log(Level.SEVERE, "Unable to remove Telegram chat or channel Id " + id + " from the whitelist!");
-									}
-									TelegramUtils.sendTelegram(id, "You've been unregistered from Device Locator notifications.");
-								} else if (id == null) {
-									TelegramUtils.sendTelegram(Long.toString(telegramId), "I've received unrecognised message " + message);
-								} else {
-									logger.log(Level.WARNING, "Telegram chat or channel Id " + id + " doesn't exists in the whitelist!");
-								}
-							} else if (StringUtils.equalsIgnoreCase(message, "/getmyid") || StringUtils.equalsIgnoreCase(message, "getmyid")) { 
-								String id = Long.toString(telegramId);
-								TelegramUtils.sendTelegram(id, id);
-								TelegramUtils.sendTelegram(id, "Please click on message above containing your chat Id and select copy. Then come back to Device Locator and "
-							 		+ "paste your chat Id to Telegram Messenger chat Id form field. If you are lucky your chat Id will be pasted automatically :)");
-							} else {
-								TelegramUtils.sendTelegram(Long.toString(telegramId), "I've received unrecognised message " + message);
 							}
-						}	else {
-							logger.log(Level.SEVERE, "Received following response: " + jb.toString());
-						}	
-					} catch (Exception e) {
-						logger.log(Level.SEVERE, e.getMessage(), e);
-					}
+						} else if (StringUtils.startsWithIgnoreCase(message, "/unregister") || StringUtils.startsWithIgnoreCase(message, "unregister")) {
+								//remove chat or channel id from white list
+							String[] tokens = StringUtils.split(message, " ");
+							String id = null;
+							if (tokens.length > 1 && ((StringUtils.startsWith(tokens[1], "-") && StringUtils.isNumeric(tokens[1].substring(1))) || StringUtils.startsWith(tokens[1], "@"))) {
+								id = tokens[1]; //channel id
+							} else if (tokens.length == 1) {
+								id = Long.toString(telegramId); //chat id
+							}
+							if (NotificationPersistenceUtils.isWhitelistedTelegramId(id)) {
+								if (!NotificationPersistenceUtils.remove(id)) {
+									logger.log(Level.SEVERE, "Unable to remove Telegram chat or channel Id " + id + " from the whitelist!");
+								}
+								TelegramUtils.sendTelegram(id, "You've been unregistered from Device Locator notifications.");
+							} else if (id == null) {
+								TelegramUtils.sendTelegram(Long.toString(telegramId), "I've received unrecognised message " + message);
+							} else {
+								logger.log(Level.WARNING, "Telegram chat or channel Id " + id + " doesn't exists in the whitelist!");
+							}
+						} else if (StringUtils.equalsIgnoreCase(message, "/getmyid") || StringUtils.equalsIgnoreCase(message, "getmyid")) { 
+							String id = Long.toString(telegramId);
+							TelegramUtils.sendTelegram(id, id);
+							TelegramUtils.sendTelegram(id, "Please click on message above containing your chat Id and select copy. Then come back to Device Locator and "
+							 		+ "paste your chat Id to Telegram Messenger chat Id form field. If you are lucky your chat Id will be pasted automatically :)");
+						} else {
+							TelegramUtils.sendTelegram(Long.toString(telegramId), "I've received unrecognised message " + message);
+						}
+					}	else {
+						logger.log(Level.SEVERE, "Received invalid json: " + jb.toString());
+						response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+					}	
 				} else if (StringUtils.equals(type, Commons.getProperty(Property.TELEGRAM_COMMANDS_TOKEN))) {
 					StringBuffer jb = new StringBuffer();
 					String line = null;
@@ -130,9 +127,10 @@ public class TelegramServlet extends HttpServlet {
 					} catch (Exception e) {
 						logger.log(Level.SEVERE, e.getMessage(), e);
 					}
+					
 					JSONObject jsonObject = new JSONObject(jb.toString());
 					JSONObject messageJson = jsonObject.optJSONObject("message");
-					if (messageJson != null) {
+					if (messageJson != null && messageJson.has("text") && messageJson.has("chat")) {
 						Long telegramId= messageJson.getJSONObject("chat").getLong("id");
 						//command imei pin -p args 
 						//command name pin username -p args 
@@ -194,10 +192,12 @@ public class TelegramServlet extends HttpServlet {
 						}
 						TelegramUtils.sendTelegram(Long.toString(telegramId), reply);
 					} else {
-						logger.log(Level.SEVERE, "Received following response: " + jb.toString());
+						logger.log(Level.SEVERE, "Received invalid json: " + jb.toString());
+						response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 					}	
 				}	else {
 					logger.log(Level.SEVERE, "Received wrong paramter: " + type);
+					response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 				}
 			} 
 		} catch (Exception e) {

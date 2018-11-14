@@ -52,7 +52,7 @@ public class TelegramUtils {
     public static boolean isValidTelegramId(String telegramId) {
         //channel id could be negative number starting from -100 or string starting with @
         //chat id must be positive integer
-        if (StringUtils.startsWith(telegramId, "@") && !containsWhitespace(telegramId)) {
+        if (StringUtils.startsWith(telegramId, "@") && telegramId.length() > 1 && !containsWhitespace(telegramId)) {
             return true;
         } else  {
             if (StringUtils.isNotEmpty(telegramId)) {
