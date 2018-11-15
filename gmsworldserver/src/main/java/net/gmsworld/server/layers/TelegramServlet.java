@@ -105,7 +105,7 @@ public class TelegramServlet extends HttpServlet {
 							} else {
 								logger.log(Level.WARNING, "Telegram chat or channel Id " + id + " doesn't exists in the whitelist!");
 							}
-						} else if (StringUtils.equalsIgnoreCase(message, "/getmyid") || StringUtils.equalsIgnoreCase(message, "getmyid")) { 
+						} else if (StringUtils.equalsIgnoreCase(message, "/getmyid") || StringUtils.equalsIgnoreCase(message, "getmyid") || StringUtils.equalsIgnoreCase(message, "/myid") || StringUtils.equalsIgnoreCase(message, "myid") || StringUtils.equalsIgnoreCase(message, "/id") || StringUtils.equalsIgnoreCase(message, "id")) { 
 							String id = Long.toString(telegramId);
 							TelegramUtils.sendTelegram(id, id);
 							TelegramUtils.sendTelegram(id, "Please click on message above containing your chat Id and select copy. Then come back to Device Locator and "
