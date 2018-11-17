@@ -1,6 +1,5 @@
 package net.gmsworld.server.layers;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
@@ -12,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
@@ -57,27 +57,18 @@ public class TelegramServlet extends HttpServlet {
 				
 				//device_locator_bot
 				if (StringUtils.equals(type, Commons.getProperty(Property.TELEGRAM_TOKEN))) {
-					StringBuffer jb = new StringBuffer();
-					String line = null;
-					try {
-						BufferedReader reader = request.getReader();
-						while ((line = reader.readLine()) != null)
-							jb.append(line);
-					} catch (Exception e) {
-						logger.log(Level.SEVERE, e.getMessage(), e);
-					}
-
-					JSONObject jsonObject = new JSONObject(jb.toString());
+					String content = IOUtils.toString(request.getReader());
+					JSONObject jsonObject = new JSONObject(content);
 					JSONObject messageJson = jsonObject.optJSONObject("message");
 					if (messageJson != null && messageJson.has("text") && messageJson.has("chat")) {
 						String message = messageJson.getString("text");
 						Long telegramId= messageJson.getJSONObject("chat").getLong("id");
 						if (StringUtils.equalsIgnoreCase(message, "/register") || StringUtils.equalsIgnoreCase(message, "register")) {
 							//add chat id to white list
-							if (!NotificationPersistenceUtils.isWhitelistedTelegramId(Long.toString(telegramId))) {
-								NotificationPersistenceUtils.addToWhitelistTelegramId(Long.toString(telegramId), true);
+							if (!NotificationPersistenceUtils.isVerified(Long.toString(telegramId))) {
+								NotificationPersistenceUtils.setVerified(Long.toString(telegramId), true);
 							} else {
-								logger.log(Level.WARNING, "Telegram chat id " + telegramId + " already exists in the whitelist!");
+								logger.log(Level.WARNING, "Telegram chat id " + telegramId + " is already verified!");
 							}		
 							if (telegramId > 0) {
 									TelegramUtils.sendTelegram(Long.toString(telegramId), "You've been registered to Device Locator notifications.\n"
@@ -95,7 +86,7 @@ public class TelegramServlet extends HttpServlet {
 							} else if (tokens.length == 1) {
 								id = Long.toString(telegramId); //chat id
 							}
-							if (NotificationPersistenceUtils.isWhitelistedTelegramId(id)) {
+							if (NotificationPersistenceUtils.isVerified(id)) {
 								if (!NotificationPersistenceUtils.remove(id)) {
 									logger.log(Level.SEVERE, "Unable to remove Telegram chat or channel Id " + id + " from the whitelist!");
 								}
@@ -114,21 +105,12 @@ public class TelegramServlet extends HttpServlet {
 							TelegramUtils.sendTelegram(Long.toString(telegramId), "Oops! I didn't understand your message. Please check list of available commands.");
 						}
 					}	else {
-						logger.log(Level.SEVERE, "Received invalid json: " + jb.toString());
+						logger.log(Level.SEVERE, "Received invalid json: " + content);
 						response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 					}	
 				} else if (StringUtils.equals(type, Commons.getProperty(Property.TELEGRAM_COMMANDS_TOKEN))) {
-					StringBuffer jb = new StringBuffer();
-					String line = null;
-					try {
-						BufferedReader reader = request.getReader();
-						while ((line = reader.readLine()) != null)
-							jb.append(line);
-					} catch (Exception e) {
-						logger.log(Level.SEVERE, e.getMessage(), e);
-					}
-					
-					JSONObject jsonObject = new JSONObject(jb.toString());
+					String content = IOUtils.toString(request.getReader());
+					JSONObject jsonObject = new JSONObject(content);
 					JSONObject messageJson = jsonObject.optJSONObject("message");
 					if (messageJson != null && messageJson.has("text") && messageJson.has("chat")) {
 						Long telegramId= messageJson.getJSONObject("chat").getLong("id");
@@ -192,7 +174,7 @@ public class TelegramServlet extends HttpServlet {
 						}
 						TelegramUtils.sendTelegram(Long.toString(telegramId), reply);
 					} else {
-						logger.log(Level.SEVERE, "Received invalid json: " + jb.toString());
+						logger.log(Level.SEVERE, "Received invalid json: " + content);
 						response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 					}	
 				}	else {

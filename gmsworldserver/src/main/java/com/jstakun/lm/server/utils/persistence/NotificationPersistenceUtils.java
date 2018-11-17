@@ -129,38 +129,20 @@ public class NotificationPersistenceUtils {
 		return n;
 	}
 	
-	private static boolean isVerified(String id) {
+	public static boolean isVerified(String id) {
 		boolean verified = false;
 		if (StringUtils.isNotEmpty(id)) {
 			Notification n = findById(id);
 			if (n != null && n .getStatus() == Notification.Status.VERIFIED) {
 				verified = true;
 			}
-			
 		}
 		return verified;
 	}
 
-	//telegram
-	
-	public static synchronized boolean isWhitelistedTelegramId(String telegramId) {
-		 return isVerified(telegramId);
-	}
-
-	public static synchronized Notification addToWhitelistTelegramId(String telegramId, boolean isRegistered) {
+	public static synchronized Notification setVerified(String notification, boolean isRegistered) {
 		Notification.Status status =  isRegistered ?  Notification.Status.VERIFIED : Notification.Status.UNVERIFIED;
-		return persist(telegramId, status);
-	}
-	
-    //email
-	
-	public static synchronized boolean isWhitelistedEmail(String email) {
-		 return isVerified(email);
-	}
-	
-	public static synchronized Notification addToWhitelistEmail(String email, boolean isRegistered) {
-		Notification.Status status =  isRegistered ?  Notification.Status.VERIFIED : Notification.Status.UNVERIFIED;
-		return persist(email, status);
+		return persist(notification, status);
 	}
 	
 	public static synchronized Notification verifyWithSecret(String secret) {

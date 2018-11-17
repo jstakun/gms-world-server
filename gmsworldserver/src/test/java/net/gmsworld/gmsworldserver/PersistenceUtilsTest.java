@@ -38,11 +38,11 @@ public class PersistenceUtilsTest {
 
 	@Test
 	public void notificationPersistenceUtils() throws Exception {
-		 Notification n = NotificationPersistenceUtils.addToWhitelistEmail(email, false);
-		 System.out.println(NotificationPersistenceUtils.isWhitelistedEmail(email));
+		 Notification n = NotificationPersistenceUtils.setVerified(email, false);
+		 System.out.println(NotificationPersistenceUtils.isVerified(email));
 		 System.out.println("Veryfing with secret: " + n.getSecret());
 		 NotificationPersistenceUtils.verifyWithSecret(n.getSecret());
-		 System.out.println(NotificationPersistenceUtils.isWhitelistedEmail(email));
+		 System.out.println(NotificationPersistenceUtils.isVerified(email));
 		 System.out.println("Deleted " + n.getId() + ": " + NotificationPersistenceUtils.remove(n.getId()));
 	}
 }

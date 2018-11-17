@@ -209,7 +209,7 @@ public class NotificationsServlet extends HttpServlet {
 			            	}
 			            } else if (TelegramUtils.isValidTelegramId(telegramId) && StringUtils.isNotEmpty(message)) {
 							// check if chat id is on white list
-							if (NotificationPersistenceUtils.isWhitelistedTelegramId(telegramId)) {
+							if (NotificationPersistenceUtils.isVerified(telegramId)) {
 				            	TelegramUtils.sendTelegram(telegramId, message);
 				            	if (GeocodeUtils.isValidLatitude(latitude) && GeocodeUtils.isValidLongitude(longitude)) {
 				            		TelegramUtils.sendLocationTelegram(telegramId, latitude, longitude);
@@ -234,7 +234,7 @@ public class NotificationsServlet extends HttpServlet {
 						String emailTo = request.getParameter("emailTo");
 						if (StringUtils.isNotEmpty(emailTo) && (StringUtils.isNotEmpty(title) || StringUtils.isNotEmpty(message))) {
 							//check if email is on white list
-							if (NotificationPersistenceUtils.isWhitelistedEmail(emailTo)) {
+							if (NotificationPersistenceUtils.isVerified(emailTo)) {
 				            	MailUtils.sendDeviceLocatorMessage(emailTo, message, title);
 				            	reply = new JSONObject().put("status", "sent");	
 				            } else {
@@ -334,14 +334,14 @@ public class NotificationsServlet extends HttpServlet {
 	private JSONObject registerEmail(String email, int appVersion, HttpServletResponse response) throws IOException {
 		JSONObject reply = null;
 		if (StringUtils.isNotEmpty(email)) {
-			if (NotificationPersistenceUtils.isWhitelistedEmail(email)) {
-				Notification n = NotificationPersistenceUtils.addToWhitelistEmail(email, true);
+			if (NotificationPersistenceUtils.isVerified(email)) {
+				Notification n = NotificationPersistenceUtils.setVerified(email, true);
 				MailUtils.sendDeviceLocatorRegistrationNotification(email, email, n.getSecret(), this.getServletContext());
 				reply = new JSONObject().put("status", "registered");
 			} else if (appVersion >= 30) {
 				JSONObject verificationStatus = MailUtils.emailAccountExists(email);
 				if (verificationStatus.getInt("responseCode") == 200 && StringUtils.equals(verificationStatus.optString("status"), "ok")) {
-					Notification n = NotificationPersistenceUtils.addToWhitelistEmail(email, false);
+					Notification n = NotificationPersistenceUtils.setVerified(email, false);
 					String status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), this.getServletContext(), 2);
 					if (StringUtils.equals(status, "ok")) {
 						reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
@@ -358,7 +358,7 @@ public class NotificationsServlet extends HttpServlet {
 					response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 				}
 			} else if (appVersion < 30) {
-				Notification n = NotificationPersistenceUtils.addToWhitelistEmail(email, false);
+				Notification n = NotificationPersistenceUtils.setVerified(email, false);
 				String status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), this.getServletContext(), 0);
 				if (StringUtils.equals(status, "ok")) {
 					reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
@@ -379,7 +379,7 @@ public class NotificationsServlet extends HttpServlet {
 	private JSONObject registerTelegram(String telegramId, int appVersion, HttpServletResponse response) throws IOException {
 		JSONObject reply = null;
 		if (TelegramUtils.isValidTelegramId(telegramId)) {
-			if (NotificationPersistenceUtils.isWhitelistedTelegramId(telegramId)) {
+			if (NotificationPersistenceUtils.isVerified(telegramId)) {
 				if (StringUtils.isNumeric(telegramId)) {
 					TelegramUtils.sendTelegram(telegramId, "You've been already registered to Device Locator notifications.\n"
 						+ "You can unregister at any time by sending /unregister command message to @device_locator_bot");
@@ -391,7 +391,7 @@ public class NotificationsServlet extends HttpServlet {
 			} else if (StringUtils.isNumeric(telegramId)) {
 				Integer responseCode =  TelegramUtils.sendTelegram(telegramId, "We've received Device Locator notifications registration request from you.");
 				if (responseCode != null && responseCode == 200) {
-					Notification n = NotificationPersistenceUtils.addToWhitelistTelegramId(telegramId, false);
+					Notification n = NotificationPersistenceUtils.setVerified(telegramId, false);
 					if (appVersion >= 30) {
 						String tokens[] = StringUtils.split(n.getSecret(), ".");
 	            		if (tokens.length == 2 && tokens[1].length() == 4 && StringUtils.isNumeric(tokens[1])) {
@@ -415,7 +415,7 @@ public class NotificationsServlet extends HttpServlet {
 			} else if ((StringUtils.startsWithAny(telegramId, new String[]{"@","-100"}))) {
 				Integer responseCode = TelegramUtils.sendTelegram(telegramId, "We've received Device Locator notifications registration request for this Channel.");
 				if (responseCode != null && responseCode == 200) {
-					Notification n = NotificationPersistenceUtils.addToWhitelistTelegramId(telegramId, false);
+					Notification n = NotificationPersistenceUtils.setVerified(telegramId, false);
 					if (appVersion >= 30) {
 						String tokens[] = StringUtils.split(n.getSecret(), ".");
 	            		if (tokens.length == 2 && tokens[1].length() == 4 && StringUtils.isNumeric(tokens[1])) {
