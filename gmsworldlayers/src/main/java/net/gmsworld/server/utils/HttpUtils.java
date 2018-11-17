@@ -122,7 +122,7 @@ public class HttpUtils {
             	conn.setRequestProperty(customHeaderName, customHeaderValue);
             }
              
-            if (content != null) {
+            if (StringUtils.isNotEmpty(content)) {
                 conn.setRequestProperty("Content-Length", Integer.toString(content.getBytes().length));
                 //conn.setRequestProperty("Content-Language", "en-US");
                 

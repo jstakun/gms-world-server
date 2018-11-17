@@ -337,6 +337,10 @@
     <servlet-name>TelegramServlet</servlet-name>
     <servlet-class>net.gmsworld.server.layers.TelegramServlet</servlet-class>
   </servlet>
+  <servlet>
+    <servlet-name>MessengerServlet</servlet-name>
+    <servlet-class>net.gmsworld.server.layers.MessengerServlet</servlet-class>
+  </servlet>
   <servlet-mapping>
     <servlet-name>action</servlet-name>
     <url-pattern>*.do</url-pattern>
@@ -535,9 +539,13 @@
     <servlet-name>DeviceManagerServlet</servlet-name>
     <url-pattern>/s/deviceManager</url-pattern>
   </servlet-mapping>
-   <servlet-mapping>
+  <servlet-mapping>
     <servlet-name>TelegramServlet</servlet-name>
     <url-pattern>/telegram</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>MessengerServlet</servlet-name>
+    <url-pattern>/messenger</url-pattern>
   </servlet-mapping>
   <session-config>
     <session-timeout>30</session-timeout>

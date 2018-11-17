@@ -72,7 +72,7 @@ public class TelegramServlet extends HttpServlet {
 							}		
 							if (telegramId > 0) {
 									TelegramUtils.sendTelegram(Long.toString(telegramId), "You've been registered to Device Locator notifications.\n"
-									+ "You can unregister at any time by sending /unregister command message to @device_locator_bot");
+									+ "You can unregister at any time by sending /unregister message to @device_locator_bot");
 							} else if (telegramId < 0) {
 									TelegramUtils.sendTelegram(Long.toString(telegramId), "You've been registered to Device Locator notifications.\n"
 											+ "You can unregister at any time by sending /unregister " + telegramId +  " command message to @device_locator_bot");
@@ -101,7 +101,10 @@ public class TelegramServlet extends HttpServlet {
 							TelegramUtils.sendTelegram(id, id);
 							TelegramUtils.sendTelegram(id, "Please click on message above containing your chat id, select copy and come back to Device Locator. "
 									+ "Your chat id should be pasted automatically otherwise please paste it to \"Telegram chat or channel id\" form field.");
-						} else {
+						} else if (StringUtils.equalsIgnoreCase(message, "/hello") ||  StringUtils.equalsIgnoreCase(message, "hello")) {
+							TelegramUtils.sendTelegram(Long.toString(telegramId), "Hello there!");
+						}
+						   else {
 							TelegramUtils.sendTelegram(Long.toString(telegramId), "Oops! I didn't understand your message. Please check list of available commands.");
 						}
 					}	else {
