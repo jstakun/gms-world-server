@@ -87,6 +87,7 @@ public final class MessengerServlet extends HttpServlet {
 				} else if (StringUtils.equalsIgnoreCase(text, "getmyid") || StringUtils.equalsIgnoreCase(text, "myid") ||  StringUtils.equalsIgnoreCase(text, "id")) {
 					//return psid
 					MessengerUtils.sendMessage(psid, null, psid);
+					MessengerUtils.sendMessage(psid, MessengerUtils.ACTION_TYPING_ON, null);
 					MessengerUtils.sendMessage(psid, null, "Please long click on message above containing your psid, select Copy and come back to Device Locator.\n" 
 																+ "Your psid should be pasted automatically otherwise please paste it to \"Facebook Messenger psid\" form field.");
 				} else if (StringUtils.equalsIgnoreCase(text, "hello") ) {
