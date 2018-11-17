@@ -169,12 +169,9 @@ public class NotificationsServlet extends HttpServlet {
 					String useCount = request.getParameter("uc");
 					Calendar cal = Calendar.getInstance();
 					cal.setTimeInMillis(lastStartupTime);
-					logger.log(Level.INFO,
-							"Received usage notification from " + (email != null ? email : "guest")
-									+ " last startup time: " + DateFormat.getDateTimeInstance().format(cal.getTime())
-									+ ", use count: " + useCount);
-					int minInterval = NumberUtils.getInt(ConfigurationManager.getParam(
-							net.gmsworld.server.config.ConfigurationManager.NOTIFICATIONS_INTERVAL, "14"), 14);
+					logger.log(Level.INFO, "Received usage notification from " + (email != null ? email : "guest")
+									+ " last startup time: " + DateFormat.getDateTimeInstance().format(cal.getTime())	 + ", use count: " + useCount);
+					int minInterval = NumberUtils.getInt(ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.NOTIFICATIONS_INTERVAL, "14"), 14);
 					int maxInterval = 31;
 					long interval = System.currentTimeMillis() - lastStartupTime;
 					if (interval > (minInterval * ONE_DAY) && interval < (maxInterval * ONE_DAY) && email != null) {
@@ -200,7 +197,7 @@ public class NotificationsServlet extends HttpServlet {
 			            		if (data != null && data.length == 3 && TelegramUtils.isValidTelegramId(data[0])) {
 			            			String authStatus = request.getHeader(Commons.AUTH_HEADER);
 			            			if (StringUtils.equals(authStatus, "failed")) {
-			            				TelegramUtils.sendTelegram(data[0], "Command " + data[2] + " has been rejected by device " + data[1] + ".");
+			            				TelegramUtils.sendTelegram(data[0], "Command " + data[2] + " has been rejected by device " + data[1] + "!");
 			            			} else {
 			            				TelegramUtils.sendTelegram(data[0], "Command " + data[2] + " has been received by device " + data[1] + ".");
 			            			}

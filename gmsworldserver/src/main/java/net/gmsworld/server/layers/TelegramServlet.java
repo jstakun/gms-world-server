@@ -101,17 +101,17 @@ public class TelegramServlet extends HttpServlet {
 								}
 								TelegramUtils.sendTelegram(id, "You've been unregistered from Device Locator notifications.");
 							} else if (id == null) {
-								TelegramUtils.sendTelegram(Long.toString(telegramId), "I've received unrecognised message " + message);
+								TelegramUtils.sendTelegram(Long.toString(telegramId), "Oops! I didn't understand your message. Please check list of available commands.");
 							} else {
 								logger.log(Level.WARNING, "Telegram chat or channel Id " + id + " doesn't exists in the whitelist!");
 							}
 						} else if (StringUtils.equalsIgnoreCase(message, "/getmyid") || StringUtils.equalsIgnoreCase(message, "getmyid") || StringUtils.equalsIgnoreCase(message, "/myid") || StringUtils.equalsIgnoreCase(message, "myid") || StringUtils.equalsIgnoreCase(message, "/id") || StringUtils.equalsIgnoreCase(message, "id")) { 
 							String id = Long.toString(telegramId);
 							TelegramUtils.sendTelegram(id, id);
-							TelegramUtils.sendTelegram(id, "Please click on message above containing your chat Id and select copy. Then come back to Device Locator and "
-							 		+ "paste your chat Id to Telegram Messenger chat Id form field. If you are lucky your chat Id will be pasted automatically :)");
+							TelegramUtils.sendTelegram(id, "Please click on message above containing your chat id, select copy and come back to Device Locator. "
+									+ "Your chat id should be pasted automatically otherwise please paste it to \"Telegram chat or channel id\" form field.");
 						} else {
-							TelegramUtils.sendTelegram(Long.toString(telegramId), "I've received unrecognised message " + message);
+							TelegramUtils.sendTelegram(Long.toString(telegramId), "Oops! I didn't understand your message. Please check list of available commands.");
 						}
 					}	else {
 						logger.log(Level.SEVERE, "Received invalid json: " + jb.toString());
@@ -156,7 +156,7 @@ public class TelegramServlet extends HttpServlet {
 									StringUtils.join(Arrays.copyOfRange(tokens, argsIndex, tokens.length-1), " ");
 								}
 								
-								reply = "Command " +  command + " has been sent to the cloud! You should get notified when device " + deviceId + " will receive this command.";
+								reply = "Command " +  command + " has been sent to the device " + deviceId + ".";
 								
 								if (StringUtils.startsWith(command, "/")) {
 									command = command.substring(1);

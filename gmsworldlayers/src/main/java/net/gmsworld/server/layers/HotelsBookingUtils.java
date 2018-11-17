@@ -634,10 +634,17 @@ public class HotelsBookingUtils extends LayerHelper {
         //----------------------------------------4------------------------------------------
         
         //creation date
-		cal.setTimeInMillis((Long)hotel.getProperty("creationDate"));
-    	desc += String.format(rb.getString("Landmark.creation_date"), prettyTime.format(cal)) + "<br/>";
-		//no of rooms
-		desc += String.format(rb.getString("Landmark.no_rooms"), nr);
+        Long creationDate = null;
+        try {
+        	creationDate = (Long)hotel.getProperty("creationDate");
+        	cal.setTimeInMillis(creationDate);
+        	desc += String.format(rb.getString("Landmark.creation_date"), prettyTime.format(cal)) + "<br/>";
+		} catch (Exception e) {
+        	logger.log(Level.SEVERE, "Failed to set creation date: " +  creationDate, e);
+        }
+        
+        //no of rooms
+        desc += String.format(rb.getString("Landmark.no_rooms"), nr);
 		props.put("desc", desc); 
 		
 		hotel.setProperties(props);
