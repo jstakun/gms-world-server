@@ -409,7 +409,7 @@ public class JSONUtils {
         //}
         
         val = tokens.remove("start_date");
-        if (val != null) {
+        if (StringUtils.isNumeric(val) && val.length() > 0) {
         	cal.setTimeInMillis(Long.valueOf(val).longValue());
         	start_date = String.format(rb.getString("Landmark.start_date"), prettyTime.format(cal));
         }
@@ -422,19 +422,19 @@ public class JSONUtils {
         }
         
         val = tokens.remove("taken_date");
-        if (val != null) {
+        if (StringUtils.isNumeric(val) && val.length() > 0) {
         	cal.setTimeInMillis(Long.valueOf(val).longValue());
             otherNamed.add(String.format(rb.getString("Landmark.taken_date"), prettyTime.format(cal)));
         }
         
         val = tokens.remove("end_date");
-        if (val != null) {
+        if (StringUtils.isNumeric(val) && val.length() > 0) {
         	cal.setTimeInMillis(Long.valueOf(val).longValue());
             otherNamed.add(String.format(rb.getString("Landmark.end_date"), prettyTime.format(cal)));
         }
         
         val = tokens.remove("expiration_date");
-        if (val != null) {
+        if (StringUtils.isNumeric(val) && val.length() > 0) {
         	cal.setTimeInMillis(Long.valueOf(val).longValue());
         	otherNamed.add(String.format(rb.getString("Landmark.expiration_date"), prettyTime.format(cal)));
         }
