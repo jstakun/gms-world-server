@@ -249,7 +249,7 @@ public class NotificationsServlet extends HttpServlet {
 						logger.log(Level.WARNING, "Wrong application " + appId);
 					}
 				} else if (StringUtils.equals(type, "register_t")) {
-					//register telegram
+					//register for telegram notifications
 					if (appId == Commons.DL_ID && StringUtils.startsWith(request.getRequestURI(), "/s/")) {
 						String telegramId = request.getParameter("chatId");
 						reply = registerTelegram(telegramId, appVersion, response);
@@ -257,7 +257,7 @@ public class NotificationsServlet extends HttpServlet {
 						logger.log(Level.WARNING, "Wrong application " + appId);
 					}
 				} else if (StringUtils.equals(type, "register_m")) {
-					//register mail
+					//register for email notifications
 					if (appId == Commons.DL_ID && StringUtils.startsWith(request.getRequestURI(), "/s/")) {
 						reply = registerEmail(request.getParameter("email"), appVersion, response);
 					} else {
@@ -274,7 +274,9 @@ public class NotificationsServlet extends HttpServlet {
 					} else {
 							logger.log(Level.WARNING, "Wrong application " + appId);
 					}
-				}
+				} //else if (StringUtils.equals(type, "register_fbm")) {
+				//} else if (StringUtils.equals(type, "fbm_dl")) {
+				//}
 				out.print(reply.toString());
 			}
 		} catch (Exception e) {
