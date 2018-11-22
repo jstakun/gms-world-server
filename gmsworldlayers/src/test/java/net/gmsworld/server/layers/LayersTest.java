@@ -79,14 +79,14 @@ public class LayersTest {
 	  
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.WEBCAM_LAYER)});
 	   
-	   data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.OSM_TAXI_LAYER)});
-	   data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.OSM_ATM_LAYER)});
-	   data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.OSM_PARKING_LAYER)});
+	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.OSM_TAXI_LAYER)});
+	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.OSM_ATM_LAYER)});
+	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.OSM_PARKING_LAYER)});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.COUPONS_LAYER)});
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.GROUPON_LAYER)});
 	   
-	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.MC_ATM_LAYER)});
+	   data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.MC_ATM_LAYER)});
 	 
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.GOOGLE_PLACES_LAYER)});
 	   

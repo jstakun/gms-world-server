@@ -30,9 +30,9 @@ import net.gmsworld.server.utils.StringUtil;
  *
  * @author jstakun
  */
-public class McOpenApiUtils extends LayerHelper {
+public class McOpenApiUtilsV2 extends LayerHelper {
 
-    public McOpenApiUtils() {
+    public McOpenApiUtilsV2() {
     	try {
     		String keyAlias = Commons.getProperty(Property.mcopenapi_keyAlias);
     		InputStream is = getClass().getResourceAsStream("/" + keyAlias + ".p12"); //getClass().getResourceAsStream(Commons.getProperty(Property.mcopenapi_privKeyFile));
@@ -60,7 +60,7 @@ public class McOpenApiUtils extends LayerHelper {
          
         if (response != null ){
         	totalCount = Integer.parseInt(response.get("Atms.TotalCount").toString());
-        	//System.out.println("Found " + totalCount + " atms");
+        	logger.log(Level.INFO, "Found " + totalCount + " ATMs...");
         	createExtendedLandmarkList(response, landmarks, locale);
         	offset += 25;
   		    while (offset < limit && offset < totalCount) {
@@ -98,9 +98,9 @@ public class McOpenApiUtils extends LayerHelper {
     		map.set("PageLength", Integer.toString(limit));
     		map.set("Latitude", Double.toString(latitude));
     		map.set("Longitude", Double.toString(longitude));
-    		map.set("DistanceUnit", "m");
-    		map.set("Radius", Integer.toString(radius));
-    		map.set("PageOffset", "0");
+    		//map.set("DistanceUnit", "KILOMETER");
+    		//map.set("Radius", Integer.toString(radius / 1000));
+    	    map.set("PageOffset", pageOffset);
          
     		return ATMLocations.query(map);
     	} catch (Throwable e) {
@@ -122,7 +122,7 @@ public class McOpenApiUtils extends LayerHelper {
                 String name = StringUtil.capitalize((String) locationMap.get("Name"));
                 
                 double latitude = Double.parseDouble(pointMap.get("Latitude").toString());
-                double longitude = Double.parseDouble(pointMap.get("Latitude").toString());
+                double longitude = Double.parseDouble(pointMap.get("Longitude").toString());
                 QualifiedCoordinates qc = new QualifiedCoordinates(latitude, longitude, 0f, 0f, 0f);
                 
                 AddressInfo addressInfo = new AddressInfo();
@@ -167,7 +167,7 @@ public class McOpenApiUtils extends LayerHelper {
                 
                 String thumbnail = "https://maps.googleapis.com/maps/api/streetview?size=128x128&location=" + latitude + "," + longitude + "&key=" + Commons.getProperty(Property.GOOGLE_API_KEY);
                 
-                //TODO landmark.setUrl(url);
+                landmark.setUrl("geo:0,0?q=" + latitude + "," + longitude + "(" + name +")");
                 
                 landmark.setThumbnail(thumbnail);
 				
@@ -191,6 +191,7 @@ public class McOpenApiUtils extends LayerHelper {
 	}
 	
 	 public boolean isEnabled() {
-	    	return false;
+	    	return true;
 	    }
 }
+
