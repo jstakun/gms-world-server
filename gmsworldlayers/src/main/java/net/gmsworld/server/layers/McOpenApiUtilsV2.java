@@ -37,13 +37,13 @@ public class McOpenApiUtilsV2 extends LayerHelper {
     public McOpenApiUtilsV2() {
     	try {
     		String keyAlias = Commons.getProperty(Property.mcopenapi_keyAlias);
-    		InputStream is = getClass().getResourceAsStream("/" + keyAlias + ".p12"); //getClass().getResourceAsStream(Commons.getProperty(Property.mcopenapi_privKeyFile));
+    		InputStream is = getClass().getResourceAsStream("/" + keyAlias + ".p12"); 
     		String consumerKey = Commons.getProperty(Property.mcopenapi_prodConsumerKey);
     		String keyPassword = new String(CryptoTools.decrypt(Base64.decode(Commons.getProperty(Property.mcopenapi_ksPwd).getBytes())));
     	
     		ApiConfig.setAuthentication(new OAuthAuthentication(consumerKey, is, keyAlias, keyPassword));
     		
-    		ApiConfig.setDebug(true);
+    		ApiConfig.setDebug(false);
     		ApiConfig.setSandbox(false);    
 
     		logger.log(Level.INFO, "Calling production servers: " + ApiConfig.isProduction());
