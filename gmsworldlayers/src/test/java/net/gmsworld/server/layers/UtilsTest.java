@@ -2,12 +2,12 @@ package net.gmsworld.server.layers;
 
 import static org.junit.Assert.assertNotEquals;
 
-import java.text.Normalizer;
-import java.text.Normalizer.Form;
-import java.util.Currency;
 import java.util.Date;
 import java.util.Locale;
 
+import javax.xml.bind.DatatypeConverter;
+
+import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 
 import net.gmsworld.server.utils.DateUtils;
@@ -33,7 +33,7 @@ public class UtilsTest {
 	@Test
 	public void stringTest() throws Exception {
 		//String original = "aáeéiíoóöőuúüű AÁEÉIÍOÓÖŐUÚÜŰ";
-		String original = "ążźćółęńś ĄŻŹĆÓŁĘŃŚ";
+		/*String original = "ążźćółęńś ĄŻŹĆÓŁĘŃŚ";
 		for (int i = 0; i < original.length(); i++) {
 		    // we will report on each separate character, to show you how this works
 		    String text = original.substring(i, i + 1);
@@ -49,9 +49,13 @@ public class UtilsTest {
 		    System.out.println(text + " (" + asHex(text) + ") -> "
 		                + decomposed + " (" + asHex(decomposed) + ") -> "
 		                + removed + " (" + asHex(removed) + ")");
-		}
+		}*/
 		
-		System.out.println("\nLocales:\n");
+		String utf8 = "POW[0xc4]\u0084ZKOWSKA G[0xc3]\u0093RCZEWSKA";
+		String text = convertUtfHex(utf8);
+		System.out.println(text);
+			
+		/*System.out.println("\nLocales:\n");
 		
 		for (Locale locale : Locale.getAvailableLocales()) {
 			System.out.println(locale.getDisplayName() + " -> " + locale.getCountry() + ": " + locale.getDisplayCountry());
@@ -66,7 +70,7 @@ public class UtilsTest {
 		for (Currency currency : Currency.getAvailableCurrencies()) {
 			System.out.println(currency.getCurrencyCode() + ": " + currency.getDisplayName());
 		}
-		System.out.println(validCurrencies);
+		System.out.println(validCurrencies);*/
 	}
 	
 	public void dateTest() {
@@ -79,4 +83,27 @@ public class UtilsTest {
 	private static String asHex(String arg) {
 		return Integer.toHexString(arg.charAt(0));
 	}
+	
+	private static String convertUtfHex(String arg)  {
+		StringBuffer sb = new StringBuffer();
+		if (StringUtils.isNotEmpty(arg)) {
+			for (int i=0;i<arg.length();i++) {
+				if (arg.charAt(i) == '[') {
+					StringBuffer hex = new StringBuffer();
+					hex.append(arg.charAt(i+3));
+					hex.append(arg.charAt(i+4));
+					hex.append(Integer.toHexString((int)arg.charAt(i+6)));
+					try {
+						sb.append(new String(DatatypeConverter.parseHexBinary(hex.toString()), "UTF-8"));
+					} catch (Exception e) {
+						return arg;
+					}
+					i += 6;
+				} else {
+					sb.append(arg.charAt(i));
+				}
+			}
+		}
+		return sb.toString();
+ 	}
 }

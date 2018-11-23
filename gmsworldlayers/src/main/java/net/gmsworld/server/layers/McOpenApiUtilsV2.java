@@ -8,6 +8,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 
+import javax.xml.bind.DatatypeConverter;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.google.gdata.util.common.util.Base64;
@@ -41,7 +43,7 @@ public class McOpenApiUtilsV2 extends LayerHelper {
     	
     		ApiConfig.setAuthentication(new OAuthAuthentication(consumerKey, is, keyAlias, keyPassword));
     		
-    		ApiConfig.setDebug(false);
+    		ApiConfig.setDebug(true);
     		ApiConfig.setSandbox(false);    
 
     		logger.log(Level.INFO, "Calling production servers: " + ApiConfig.isProduction());
@@ -57,8 +59,7 @@ public class McOpenApiUtilsV2 extends LayerHelper {
     	int totalCount = 0;
     	
     	ATMLocations response = getATMLocations(lat, lng, radius, limit, offset);
-         
-        if (response != null ){
+    	if (response != null && !response.isEmpty()){
         	totalCount = Integer.parseInt(response.get("Atms.TotalCount").toString());
         	logger.log(Level.INFO, "Found " + totalCount + " ATMs...");
         	createExtendedLandmarkList(response, landmarks, locale);
@@ -69,11 +70,11 @@ public class McOpenApiUtilsV2 extends LayerHelper {
         			  createExtendedLandmarkList(response, landmarks, locale);
         		  }
         		  offset += 25;
-        	}
+        	 }
         }
       
         if (landmarks.size() > limit) {
-        	return landmarks.subList(0, limit);
+        	return new ArrayList<ExtendedLandmark>(landmarks.subList(0, limit));
         } else {
         	return landmarks;
         }
@@ -98,8 +99,8 @@ public class McOpenApiUtilsV2 extends LayerHelper {
     		map.set("PageLength", Integer.toString(limit));
     		map.set("Latitude", Double.toString(latitude));
     		map.set("Longitude", Double.toString(longitude));
-    		//map.set("DistanceUnit", "KILOMETER");
-    		//map.set("Radius", Integer.toString(radius / 1000));
+    		map.set("DistanceUnit", "KILOMETER");
+    		map.set("Radius", Integer.toString(radius / 1000));
     	    map.set("PageOffset", pageOffset);
          
     		return ATMLocations.query(map);
@@ -112,19 +113,19 @@ public class McOpenApiUtilsV2 extends LayerHelper {
 	private void createExtendedLandmarkList(ATMLocations response, List<ExtendedLandmark> landmarks, Locale locale) {
 		List<Map<String, Object>> list = (List<Map<String, Object>>) response.get("Atms.Atm");
         if (list != null && !list.isEmpty()) {
-        	for (Map<String, Object> i : list) {
-                Map<String, Object> locationMap = (Map<String, Object>) i.get("Location");
+        	for (Map<String, Object> atms : list) {
+                Map<String, Object> locationMap = (Map<String, Object>) atms.get("Location");
                 Map<String, Object> addressMap = (Map<String, Object>) locationMap.get("Address");
                 Map<String, Object> subDivisionMap = (Map<String, Object>) addressMap.get("CountrySubdivision");
                 Map<String, Object> countryMap = (Map<String, Object>) addressMap.get("Country");
                 Map<String, Object> pointMap = (Map<String, Object>) locationMap.get("Point");
 
-                String name = StringUtil.capitalize((String) locationMap.get("Name"));
-                
+                String name = String.valueOf(locationMap.get("Name"));
+                     
                 double latitude = Double.parseDouble(pointMap.get("Latitude").toString());
                 double longitude = Double.parseDouble(pointMap.get("Longitude").toString());
                 QualifiedCoordinates qc = new QualifiedCoordinates(latitude, longitude, 0f, 0f, 0f);
-                
+                          
                 AddressInfo addressInfo = new AddressInfo();
                 
                 String val = (String) addressMap.get("City");
@@ -140,13 +141,14 @@ public class McOpenApiUtilsV2 extends LayerHelper {
                 	addressInfo.setField(AddressInfo.STATE, StringUtil.capitalize(val));	
                 }
                 
-                String addr = (String)addressMap.get("Line1");
-                String line2 =  (String)addressMap.get("Line2");
+                String addr = addressMap.get("Line1").toString();
+                String line2 =  addressMap.get("Line2").toString();
                 if (StringUtils.isNotEmpty(addr) && StringUtils.isNotEmpty(line2)) {
-                    addr += "\n" + line2;
+                	addr += "\n" + line2;
                 } else if (StringUtils.isEmpty(addr) && StringUtils.isNotEmpty(line2)) {
                     addr = line2;
                 }
+                
                 if (StringUtils.isNotEmpty(addr)) {
                 	addressInfo.setField(AddressInfo.STREET, StringUtil.capitalize(addr));	
                 }
@@ -156,9 +158,9 @@ public class McOpenApiUtilsV2 extends LayerHelper {
                 }             
                 
                 Map<String, String> tokens = new HashMap<String, String>();
-                tokens.put("owner", StringUtil.capitalize( (String) i.get("Owner")));
+                tokens.put("owner", StringUtil.capitalize( (String) locationMap.get("Owner")));
                 
-                setAtmAvailability(tokens, (String) i.get("Availability"));
+                setAtmAvailability(tokens, (String) locationMap.get("Availability"));
                 
                 ExtendedLandmark landmark = LandmarkFactory.getLandmark(name, null, qc, Commons.MC_ATM_LAYER, addressInfo, -1, null);
                 
@@ -166,18 +168,16 @@ public class McOpenApiUtilsV2 extends LayerHelper {
                 landmark.setDescription(description);
                 
                 String thumbnail = "https://maps.googleapis.com/maps/api/streetview?size=128x128&location=" + latitude + "," + longitude + "&key=" + Commons.getProperty(Property.GOOGLE_API_KEY);
-                
-                landmark.setUrl("geo:0,0?q=" + latitude + "," + longitude + "(" + name +")");
-                
                 landmark.setThumbnail(thumbnail);
-				
+    			
+                String url = "https://maps.google.com/maps?q=" + latitude + "," + longitude;
+                landmark.setUrl(url);            
+                
                 landmarks.add(landmark);        
             }
-        }
-		
+        }	
 	}
-	
-	
+		
 	public String getLayerName() {
     	return Commons.MC_ATM_LAYER;
     }
@@ -191,7 +191,31 @@ public class McOpenApiUtilsV2 extends LayerHelper {
 	}
 	
 	 public boolean isEnabled() {
-	    	return true;
-	    }
+	    return true;
+	 }
+	 
+	 private static String convertUtfHex(String arg)  {
+			StringBuffer sb = new StringBuffer();
+			if (StringUtils.isNotEmpty(arg)) {
+				for (int i=0;i<arg.length();i++) {
+					if (arg.charAt(i) == '[') {
+						StringBuffer hex = new StringBuffer();
+						hex.append(arg.charAt(i+3));
+						hex.append(arg.charAt(i+4));
+						hex.append(Integer.toHexString((int)arg.charAt(i+6)));
+						try {
+							sb.append(new String(DatatypeConverter.parseHexBinary(hex.toString()), "UTF-8"));
+						} catch (Exception e) {
+							logger.log(Level.SEVERE, e.getMessage());
+							return arg;
+						}
+						i += 6;
+					} else {
+						sb.append(arg.charAt(i));
+					}
+				}
+			}
+			return sb.toString();
+	 	}
 }
 
