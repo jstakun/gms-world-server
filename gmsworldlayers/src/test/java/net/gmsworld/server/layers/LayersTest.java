@@ -30,7 +30,7 @@ public class LayersTest {
 	
 	private static final int apiLevel = 1115;
 	private static final int limit = 93; //min 30, max 1000
-	private static final int radius = 50000; 
+	private static final int radius = 5000; //50000; 
 	private static final int stringLength = StringUtil.XLARGE;
 	
 	private static CacheProvider cacheProvider;	

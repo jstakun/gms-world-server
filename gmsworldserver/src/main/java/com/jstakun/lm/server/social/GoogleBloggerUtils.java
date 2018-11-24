@@ -158,8 +158,12 @@ public class GoogleBloggerUtils {
         	int status = ex.getStatusCode();
         	if (status == 403) {
         		CacheUtil.put(USAGE_LIMIT_MARKER, "1", CacheType.NORMAL);
+        		logger.log(Level.WARNING, "GoogleBloggerUtils.createPost() exception " + status);
+            } else if (status == 500) {
+            	logger.log(Level.WARNING, "GoogleBloggerUtils.createPost() exception " + status);
+        	} else {
+        		logger.log(Level.SEVERE, "GoogleBloggerUtils.createPost() exception " + status, ex);
         	}
-        	logger.log(Level.SEVERE, "GoogleBloggerUtils.createPost() exception with error " + status, ex);
         	return null;
         } catch (Exception ex) {
             logger.log(Level.SEVERE, "GoogleBloggerUtils.createPost() exception", ex);

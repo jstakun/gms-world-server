@@ -83,12 +83,16 @@ public class McOpenApiUtilsV1 extends LayerHelper {
 
     private static String getATMbyLocation(double latitude, double longitude, int radius, int limit, int pageOffset) {
         try {
+        	int kmRadius = radius/1000;
+        	if (kmRadius < 1) {
+        		kmRadius = 1;
+        	}
             String endPoint = "https://api.mastercard.com/atms/v1/atm?Format=XML"
                     + "&PageOffset=" + pageOffset
                     + "&PageLength=" + Integer.toString(limit)
                     + "&Latitude=" + Double.toString(latitude)
                     + "&Longitude=" + Double.toString(longitude)
-                    + "&Radius=" + Integer.toString(radius/1000)
+                    + "&Radius=" + Integer.toString(kmRadius)
                     + "&DistanceUnit=kilometer";
             logger.log(Level.INFO, "Calling " + endPoint);
             return getOpenAPIConnection(endPoint);
