@@ -191,31 +191,7 @@ public class McOpenApiUtilsV2 extends LayerHelper {
 	}
 	
 	 public boolean isEnabled() {
-	    return true;
+	    return false; //due to encoding issues
 	 }
-	 
-	 private static String convertUtfHex(String arg)  {
-			StringBuffer sb = new StringBuffer();
-			if (StringUtils.isNotEmpty(arg)) {
-				for (int i=0;i<arg.length();i++) {
-					if (arg.charAt(i) == '[') {
-						StringBuffer hex = new StringBuffer();
-						hex.append(arg.charAt(i+3));
-						hex.append(arg.charAt(i+4));
-						hex.append(Integer.toHexString((int)arg.charAt(i+6)));
-						try {
-							sb.append(new String(DatatypeConverter.parseHexBinary(hex.toString()), "UTF-8"));
-						} catch (Exception e) {
-							logger.log(Level.SEVERE, e.getMessage());
-							return arg;
-						}
-						i += 6;
-					} else {
-						sb.append(arg.charAt(i));
-					}
-				}
-			}
-			return sb.toString();
-	 	}
 }
 
