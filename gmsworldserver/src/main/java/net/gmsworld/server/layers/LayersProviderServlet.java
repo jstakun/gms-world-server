@@ -581,10 +581,12 @@ public class LayersProviderServlet extends HttpServlet {
         		if (outString == null && outFormat.equals(Format.JSON)) {
         			 outString = "{ResultSet:[]}";
         		}
-        		if (outPrinter != null && outString != null) {
-        			outPrinter.print(outString);
+        		if (outPrinter != null) {
+        			if (outString != null) {
+        				outPrinter.print(outString);
+        			}
+        			outPrinter.close();
         		}
-        		outPrinter.close();
         	} 
         }
     }
