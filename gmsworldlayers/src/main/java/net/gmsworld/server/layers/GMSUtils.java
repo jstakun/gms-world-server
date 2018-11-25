@@ -52,34 +52,31 @@ public class GMSUtils extends LayerHelper {
 
     @Override
 	public JSONObject processRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String layer, String flexString2) throws JSONException, UnsupportedEncodingException {
-    	this.layer = layer;
-    	String key = getCacheKey(getClass(), "processRequest", latitude, longitude, query, radius, version, limit, stringLimit, layer, flexString2);
-        JSONObject json = null;
-        String output = cacheProvider.getString(key);
-        if (output == null) {
-            //List<Landmark> landmarkList = LandmarkPersistenceUtils.selectLandmarksByCoordsAndLayer(latitude, longitude, layer, limit, radius);
-            
-            //if (!landmarkList.isEmpty()) {
-            //	results.addAll(Collections2.filter(landmarkList, new QueryPredicate(query)));
-            //}
-            List<Landmark> landmarkList = null;
+    	JSONObject json = null;
+    	if (isEnabled()) {
+    		this.layer = layer;
+    		String key = getCacheKey(getClass(), "processRequest", latitude, longitude, query, radius, version, limit, stringLimit, layer, flexString2);
+        
+    		String output = cacheProvider.getString(key);
+    		if (output == null) {
+	    		List<Landmark> landmarkList = null;
         	
-        	if (StringUtils.isNotEmpty(query)) {
-        		landmarkList = LandmarkPersistenceUtils.selectLandmarkMatchingQuery(query, limit);
-        	} else {
-        		landmarkList = LandmarkPersistenceUtils.selectLandmarksByCoordsAndLayer(latitude, longitude, layer, limit, radius);
-        	}
-        	
-            json = createCustomJSonLandmarkList(landmarkList, version, stringLimit);
-            if (!landmarkList.isEmpty()) {
-            	cacheProvider.put(key, json.toString());
-                logger.log(Level.INFO, "Adding GMS landmark list to cache with key {0}", key);
-            }
-        } else {
-            json = new JSONObject(output);
-            logger.log(Level.INFO, "Reading GMS landmark list from cache with key {0}", key);
-        }
-
+	        	if (StringUtils.isNotEmpty(query)) {
+	        		landmarkList = LandmarkPersistenceUtils.selectLandmarkMatchingQuery(query, limit);
+	        	} else {
+	        		landmarkList = LandmarkPersistenceUtils.selectLandmarksByCoordsAndLayer(latitude, longitude, layer, limit, radius);
+	        	}
+	        	
+	            json = createCustomJSonLandmarkList(landmarkList, version, stringLimit);
+	            if (!landmarkList.isEmpty()) {
+	            	cacheProvider.put(key, json.toString());
+	                logger.log(Level.INFO, "Adding GMS landmark list to cache with key {0}", key);
+	            }
+	        } else {
+	            json = new JSONObject(output);
+	            logger.log(Level.INFO, "Reading GMS landmark list from cache with key {0}", key);
+	        }
+    	}
         return json;
     }
 

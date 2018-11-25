@@ -45,25 +45,27 @@ public class FlickrUtils extends LayerHelper {
 	
     @Override
 	public JSONObject processRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String flex, String flexString2) throws ParserConfigurationException, JSONException, UnsupportedEncodingException {
-    	int r = NumberUtils.normalizeNumber(radius, 1, 32);
-        String key = getCacheKey(getClass(), "processRequest", latitude, longitude, query, r, version, limit, stringLimit, flex, flexString2);
+    	JSONObject json = null;
+        if (isEnabled()) {
+        	int r = NumberUtils.normalizeNumber(radius, 1, 32);
+        	String key = getCacheKey(getClass(), "processRequest", latitude, longitude, query, r, version, limit, stringLimit, flex, flexString2);
         
-        String output = cacheProvider.getString(key);
-        JSONObject json = null;
-        if (output == null) {
-            SearchParameters sp = new SearchParameters();
-            sp.setLatitude(Double.toString(latitude));
-            sp.setLongitude(Double.toString(longitude));
-            sp.setRadius(r);
-            PhotoList<Photo> photoList = getPhotoList(sp, query, limit);
-            json = createCustomJsonFlickrPhotoList(photoList, version, stringLimit);
-            if (!photoList.isEmpty()) {
-                cacheProvider.put(key, json.toString());
-                logger.log(Level.INFO, "Adding FL landmark list to cache with key {0}", key);
-            }
-        } else {
-            logger.log(Level.INFO, "Reading FL landmark list from cache with key {0}", key);
-            json = new JSONObject(output);
+        	String output = cacheProvider.getString(key);
+        	if (output == null) {
+            	SearchParameters sp = new SearchParameters();
+            	sp.setLatitude(Double.toString(latitude));
+            	sp.setLongitude(Double.toString(longitude));
+            	sp.setRadius(r);
+            	PhotoList<Photo> photoList = getPhotoList(sp, query, limit);
+            	json = createCustomJsonFlickrPhotoList(photoList, version, stringLimit);
+            	if (!photoList.isEmpty()) {
+                	cacheProvider.put(key, json.toString());
+                	logger.log(Level.INFO, "Adding FL landmark list to cache with key {0}", key);
+            	}
+        	} else {
+            	logger.log(Level.INFO, "Reading FL landmark list from cache with key {0}", key);
+            	json = new JSONObject(output);
+        	}
         }
         return json;
     }

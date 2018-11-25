@@ -34,31 +34,34 @@ public class MeetupUtils extends LayerHelper {
 
     @Override
 	public JSONObject processRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String flex, String flexString2) throws MalformedURLException, IOException, JSONException {
-        String key = getCacheKey(getClass(), "processRequest", latitude, longitude, query, radius, version, limit, stringLimit, flex, flexString2);
-        JSONObject json = null;
-        String output = cacheProvider.getString(key);
-
-        if (output == null) {
-            String meetupUrl = "https://api.meetup.com/2/open_events?key=" + Commons.getProperty(Property.MEETUP_API_KEY) + "&lon=" + longitude + "&lat="
-                    + latitude + "&radius=" + radius + "&page=" + limit + "&order=time&text_format=plain";
-            //order=time,distance,trending
-            if (StringUtils.isNotEmpty(query)) {
-                meetupUrl += "&text=" + URLEncoder.encode(query, "UTF-8");
-            }
-
-            String meetupResponse = HttpUtils.processFileRequest(new URL(meetupUrl));
-
-            json = createCustomJsonMeetupList(meetupResponse, stringLimit);
-
-            if (json.getJSONArray("ResultSet").length() > 0) {
-                cacheProvider.put(key, json.toString());
-                logger.log(Level.INFO, "Adding MTU landmark list to cache with key {0}", key);
-            }
-        } else {
-            logger.log(Level.INFO, "Reading MTU landmark list from cache with key {0}", key);
-            json = new JSONObject(output);
-        }
-
+    	JSONObject json = null;
+    	if (isEnabled()) {
+	    	String key = getCacheKey(getClass(), "processRequest", latitude, longitude, query, radius, version, limit, stringLimit, flex, flexString2);
+	       
+	        String output = cacheProvider.getString(key);
+	
+	        if (output == null) {
+	            String meetupUrl = "https://api.meetup.com/2/open_events?key=" + Commons.getProperty(Property.MEETUP_API_KEY) + "&lon=" + longitude + "&lat="
+	                    + latitude + "&radius=" + radius + "&page=" + limit + "&order=time&text_format=plain";
+	            //order=time,distance,trending
+	            if (StringUtils.isNotEmpty(query)) {
+	                meetupUrl += "&text=" + URLEncoder.encode(query, "UTF-8");
+	            }
+	
+	            String meetupResponse = HttpUtils.processFileRequest(new URL(meetupUrl));
+	
+	            json = createCustomJsonMeetupList(meetupResponse, stringLimit);
+	
+	            if (json.getJSONArray("ResultSet").length() > 0) {
+	                cacheProvider.put(key, json.toString());
+	                logger.log(Level.INFO, "Adding MTU landmark list to cache with key {0}", key);
+	            }
+	        } else {
+	            logger.log(Level.INFO, "Reading MTU landmark list from cache with key {0}", key);
+	            json = new JSONObject(output);
+	        }
+    	}
+    	
         return json;
     }
 

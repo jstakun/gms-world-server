@@ -35,37 +35,38 @@ public class PanoramioUtils extends LayerHelper {
 
     @Override
 	public JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String bbox, String flexString2) throws Exception {
-        String key = getCacheKey(getClass(), "processRequest", lat, lng, query, radius, version, limit, stringLimit, bbox, flexString2);
-
-        JSONObject json = null;
-        String output = cacheProvider.getString(key);
-
-        if (output == null) {
-        	
-        	String size = "thumbnail";
-        	if (stringLimit == StringUtil.XLARGE) {
-        		size = "small";
-        	}
-
-            URL panoramioUrl = new URL("http://www.panoramio.com/map/get_panoramas.php?order=popularity&"
-                    + "set=full&from=0&to=" + limit + "&" + bbox + "&size=" + size + "&mapfilter=true");
-
-            //System.out.print("calling url: " + panoramioUrl.toString());
-
-            String panoramioResponse = HttpUtils.processFileRequest(panoramioUrl);
-
-            //System.out.print(panoramioResponse);
-
-
-            json = createCustomJsonPanoramioList(panoramioResponse, version, stringLimit);
-            if (json.getJSONArray("ResultSet").length() > 0) {
-                cacheProvider.put(key, json.toString());
-                logger.log(Level.INFO, "Adding PN landmark list to cache with key {0}", key);
-            }
-        } else {
-            logger.log(Level.INFO, "Reading PN landmark list from cache with key {0}", key);
-            json = new JSONObject(output);
-        }
+    	JSONObject json = null;
+    	if (isEnabled()) {
+	    	String key = getCacheKey(getClass(), "processRequest", lat, lng, query, radius, version, limit, stringLimit, bbox, flexString2);
+	        String output = cacheProvider.getString(key);
+	
+	        if (output == null) {
+	        	
+	        	String size = "thumbnail";
+	        	if (stringLimit == StringUtil.XLARGE) {
+	        		size = "small";
+	        	}
+	
+	            URL panoramioUrl = new URL("http://www.panoramio.com/map/get_panoramas.php?order=popularity&"
+	                    + "set=full&from=0&to=" + limit + "&" + bbox + "&size=" + size + "&mapfilter=true");
+	
+	            //System.out.print("calling url: " + panoramioUrl.toString());
+	
+	            String panoramioResponse = HttpUtils.processFileRequest(panoramioUrl);
+	
+	            //System.out.print(panoramioResponse);
+	
+	
+	            json = createCustomJsonPanoramioList(panoramioResponse, version, stringLimit);
+	            if (json.getJSONArray("ResultSet").length() > 0) {
+	                cacheProvider.put(key, json.toString());
+	                logger.log(Level.INFO, "Adding PN landmark list to cache with key {0}", key);
+	            }
+	        } else {
+	            logger.log(Level.INFO, "Reading PN landmark list from cache with key {0}", key);
+	            json = new JSONObject(output);
+	        }
+    	}
 
         return json;
     }

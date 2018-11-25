@@ -63,22 +63,25 @@ public class McOpenApiUtilsV1 extends LayerHelper {
     
     @Override
 	public JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2) throws Exception {
-        String key = getCacheKey(getClass(), "processRequest", lat, lng, query, radius, version, limit, stringLimit, flexString, flexString2);
-        String output = cacheProvider.getString(key);
-
-        if (output == null) {
-            List<Atm> atms = new ArrayList<Atm>();
-            loadAtmCollection(lat, lng, radius, limit, atms, 0);        
-            JSONObject resp = createCustomJSonAtmList(atms, stringLimit);
-            if (atms != null && atms.size() > 0) {
-                cacheProvider.put(key, resp.toString());
-                logger.log(Level.INFO, "Adding MC landmark list to cache with key {0}", key);
-            }
-            return resp;
-        } else {
-            logger.log(Level.INFO, "Reading MC landmark list from cache with key {0}", key);
-            return new JSONObject(output);
-        }
+    	JSONObject resp = null;
+    	if (isEnabled()) {
+	    	String key = getCacheKey(getClass(), "processRequest", lat, lng, query, radius, version, limit, stringLimit, flexString, flexString2);
+	        String output = cacheProvider.getString(key);
+	
+	        if (output == null) {
+	            List<Atm> atms = new ArrayList<Atm>();
+	            loadAtmCollection(lat, lng, radius, limit, atms, 0);        
+	            resp = createCustomJSonAtmList(atms, stringLimit);
+	            if (atms != null && atms.size() > 0) {
+	                cacheProvider.put(key, resp.toString());
+	                logger.log(Level.INFO, "Adding MC landmark list to cache with key {0}", key);
+	            }
+	        } else {
+	            logger.log(Level.INFO, "Reading MC landmark list from cache with key {0}", key);
+	            resp = new JSONObject(output);
+	        }
+    	}
+        return resp;
     }
 
     private static String getATMbyLocation(double latitude, double longitude, int radius, int limit, int pageOffset) {

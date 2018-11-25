@@ -540,7 +540,7 @@ public class LayersProviderServlet extends HttpServlet {
                     }
             	}
             } else if (StringUtils.endsWithAny(uri, new String[]{"qypeProvider", "upcomingProvider", "gowallaProvider", 
-            		"picasaProvider", "freebaseProvider", "lastfmProvider", "instagramProvider", "panoramio2Provider"})) {
+            		"picasaProvider", "freebaseProvider", "lastfmProvider", "instagramProvider", "panoramio2Provider", "hotwireProvider"})) {
             	logger.log(Level.WARNING, "Closed api request uri: {0}", uri);
             } else {
             	logger.log(Level.SEVERE, "Unexpected uri: {0}", uri);
@@ -578,7 +578,10 @@ public class LayersProviderServlet extends HttpServlet {
         		//	outObj.close();
         		//}
         	} else {
-        		if (outPrinter != null) {
+        		if (outString == null && outFormat.equals(Format.JSON)) {
+        			 outString = "{ResultSet:[]}";
+        		}
+        		if (outPrinter != null && outString != null) {
         			outPrinter.print(outString);
         		}
         		outPrinter.close();

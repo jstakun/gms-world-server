@@ -47,46 +47,46 @@ public class PicasaUtils extends LayerHelper {
 
     @Override
 	public JSONObject processRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String bbox, String flexString2) throws MalformedURLException, IOException, ServiceException, JSONException {
-
-        double lat = 0d, lng = 0d;
-        String[] coords = StringUtils.split(bbox, ",");
-        if (coords.length == 4) {
-            lat = (Double.parseDouble(coords[2]) + Double.parseDouble(coords[0])) / 2;
-            lng = (Double.parseDouble(coords[3]) + Double.parseDouble(coords[1])) / 2;
-        }
-
-        String key = getCacheKey(getClass(), "processRequest", lat, lng, query, radius, version, limit, stringLimit, bbox, flexString2);
-
-        String cachedResponse = cacheProvider.getString(key);
-
-        if (cachedResponse == null) {
-            PicasawebService myService = new PicasawebService("Landmark Manager");
-            URL baseSearchUrl = new URL("https://picasaweb.google.com/data/feed/api/all");
-            Query myQuery = new Query(baseSearchUrl);
-            myQuery.setStringCustomParameter("kind", "photo");
-            myQuery.setStringCustomParameter("bbox", bbox); //west, south, east, north i.e. "50.0,20.0,53.0,23.0"
-            Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.YEAR, -1); 
-            myQuery.setPublishedMin(new DateTime(cal.getTime()));
-            myQuery.setMaxResults(limit);
-            if (StringUtils.isNotEmpty(query)) {
-                myQuery.setFullTextQuery(query);
-            }
-
-            AlbumFeed searchResultsFeed = myService.query(myQuery, AlbumFeed.class);
-            JSONObject output = createCustomJSonPicasaPhotoList(searchResultsFeed.getPhotoEntries(), version, stringLimit);
-
-            if (!searchResultsFeed.getPhotoEntries().isEmpty()) {
-                cacheProvider.put(key, output.toString());
-                logger.log(Level.INFO, "Adding PC landmark list to cache with key {0}", key);
-            }
-
-            return output;
-
-        } else {
-            logger.log(Level.INFO, "Reading PC landmark list from cache with key {0}", key);
-            return new JSONObject(cachedResponse);
-        }
+    	JSONObject output = null;
+    	if (isEnabled()) {
+	        double lat = 0d, lng = 0d;
+	        String[] coords = StringUtils.split(bbox, ",");
+	        if (coords.length == 4) {
+	            lat = (Double.parseDouble(coords[2]) + Double.parseDouble(coords[0])) / 2;
+	            lng = (Double.parseDouble(coords[3]) + Double.parseDouble(coords[1])) / 2;
+	        }
+	
+	        String key = getCacheKey(getClass(), "processRequest", lat, lng, query, radius, version, limit, stringLimit, bbox, flexString2);
+	
+	        String cachedResponse = cacheProvider.getString(key);
+	
+	        if (cachedResponse == null) {
+	            PicasawebService myService = new PicasawebService("Landmark Manager");
+	            URL baseSearchUrl = new URL("https://picasaweb.google.com/data/feed/api/all");
+	            Query myQuery = new Query(baseSearchUrl);
+	            myQuery.setStringCustomParameter("kind", "photo");
+	            myQuery.setStringCustomParameter("bbox", bbox); //west, south, east, north i.e. "50.0,20.0,53.0,23.0"
+	            Calendar cal = Calendar.getInstance();
+	            cal.add(Calendar.YEAR, -1); 
+	            myQuery.setPublishedMin(new DateTime(cal.getTime()));
+	            myQuery.setMaxResults(limit);
+	            if (StringUtils.isNotEmpty(query)) {
+	                myQuery.setFullTextQuery(query);
+	            }
+	
+	            AlbumFeed searchResultsFeed = myService.query(myQuery, AlbumFeed.class);
+	            output = createCustomJSonPicasaPhotoList(searchResultsFeed.getPhotoEntries(), version, stringLimit);
+	
+	            if (!searchResultsFeed.getPhotoEntries().isEmpty()) {
+	                cacheProvider.put(key, output.toString());
+	                logger.log(Level.INFO, "Adding PC landmark list to cache with key {0}", key);
+	            }
+	        } else {
+	            logger.log(Level.INFO, "Reading PC landmark list from cache with key {0}", key);
+	            output =  new JSONObject(cachedResponse);
+	        }
+    	}
+        return output;
     }
 
     private static JSONObject createCustomJSonPicasaPhotoList(List<PhotoEntry> pel, int version, int stringLimit) throws JSONException, ServiceException {

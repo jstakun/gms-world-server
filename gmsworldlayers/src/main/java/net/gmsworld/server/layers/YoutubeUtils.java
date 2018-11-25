@@ -148,22 +148,23 @@ public class YoutubeUtils extends LayerHelper {
 
     @Override
 	public JSONObject processRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String flex, String flexString2) throws MalformedURLException, IOException, ServiceException, JSONException {
-        String key = getCacheKey(getClass(), "processRequest", latitude, longitude, query, radius, version, limit, stringLimit, flex, flexString2);
-
-        String output = cacheProvider.getString(key);
-        JSONObject json = null;
-
-        if (output == null) {
-            VideoFeed videoFeed = new VideoFeed(); //getVideoFeed(latitude, longitude, query, radius, limit);
-            json = createCustomJSonVideoList(videoFeed.getEntries(), version, stringLimit);
-            if (!videoFeed.getEntries().isEmpty()) {
-                cacheProvider.put(key, json.toString());
-                logger.log(Level.INFO, "Adding YT landmark list to cache with key {0}", key);
-            }
-        } else {
-            json = new JSONObject(output);
-            logger.log(Level.INFO, "Reading YT landmark list from cache with key {0}", key);
-        }
+    	JSONObject json = null;
+    	if (isEnabled()) { 
+	    	String key = getCacheKey(getClass(), "processRequest", latitude, longitude, query, radius, version, limit, stringLimit, flex, flexString2);
+	        String output = cacheProvider.getString(key);
+	
+	        if (output == null) {
+	            VideoFeed videoFeed = new VideoFeed(); //getVideoFeed(latitude, longitude, query, radius, limit);
+	            json = createCustomJSonVideoList(videoFeed.getEntries(), version, stringLimit);
+	            if (!videoFeed.getEntries().isEmpty()) {
+	                cacheProvider.put(key, json.toString());
+	                logger.log(Level.INFO, "Adding YT landmark list to cache with key {0}", key);
+	            }
+	        } else {
+	            json = new JSONObject(output);
+	            logger.log(Level.INFO, "Reading YT landmark list from cache with key {0}", key);
+	        }
+	    }
 
         return json;
     }

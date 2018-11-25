@@ -43,37 +43,37 @@ public class GrouponUtils extends LayerHelper {
     
     @Override
 	public JSONObject processRequest(double lat, double lng, String query, int radius, int version, int dealLimit, int stringLimit, String categoryid, String flexString2) throws MalformedURLException, IOException, JSONException {
-    	if (dealLimit > 250) {
-			dealLimit = 250;
-		}
-    	if (radius > 1000) {
-			radius = radius / 1000;
-		}
-		if (radius > 100) {
-			radius = 100;
-		}
-		String key = getCacheKey(getClass(), "processRequest", lat, lng, query, radius, version, dealLimit, stringLimit, categoryid, flexString2);
+    	JSONObject json = null;
+    	if (isEnabled()) {
+    		if (dealLimit > 250) {
+    			dealLimit = 250;
+    		}
+    		if (radius > 1000) {
+    			radius = radius / 1000;
+    		}
+    		if (radius > 100) {
+    			radius = 100;
+    		}
+    		String key = getCacheKey(getClass(), "processRequest", lat, lng, query, radius, version, dealLimit, stringLimit, categoryid, flexString2);
 
-        JSONObject json = null;
-
-        String cachedResponse = cacheProvider.getString(key);
-        if (cachedResponse == null) {
-            URL grouponUrl = new URL(API_URL + "&lat=" + lat + "&lng=" + lng + "&radius=" + radius + "&limit=" + dealLimit);
-            String grouponResponse = HttpUtils.processFileRequest(grouponUrl);
-            if (version == 1) {
-                json = createCustomJsonGrouponListV1(grouponResponse, dealLimit);
-            } else {
-                json = createCustomJsonGrouponList(grouponResponse, version, categoryid, dealLimit, query, stringLimit);
-            }
-            if (json.getJSONArray("ResultSet").length() > 0) {
-                cacheProvider.put(key, json.toString());
-                logger.log(Level.INFO, "Adding GR landmark list to cache with key {0}", key);
-            }
-        } else {
-            logger.log(Level.INFO, "Reading GR landmark list from cache with key {0}", key);
-            json = new JSONObject(cachedResponse);
-        }
-
+    		String cachedResponse = cacheProvider.getString(key);
+    		if (cachedResponse == null) {
+    			URL grouponUrl = new URL(API_URL + "&lat=" + lat + "&lng=" + lng + "&radius=" + radius + "&limit=" + dealLimit);
+    			String grouponResponse = HttpUtils.processFileRequest(grouponUrl);
+    			if (version == 1) {
+    				json = createCustomJsonGrouponListV1(grouponResponse, dealLimit);
+    			} else {
+    				json = createCustomJsonGrouponList(grouponResponse, version, categoryid, dealLimit, query, stringLimit);
+    			}
+    			if (json.getJSONArray("ResultSet").length() > 0) {
+    				cacheProvider.put(key, json.toString());
+    				logger.log(Level.INFO, "Adding GR landmark list to cache with key {0}", key);
+    			}
+    		} else {
+    			logger.log(Level.INFO, "Reading GR landmark list from cache with key {0}", key);
+    			json = new JSONObject(cachedResponse);
+    		}
+    	}
         return json;
     }
 

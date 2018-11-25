@@ -44,50 +44,53 @@ public class YelpUtils extends LayerHelper {
 	
     @Override
 	public JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String hasDeals, String locale) throws Exception {
-        int normalizedRadius = NumberUtils.normalizeNumber(radius, 1000, 40000);
-        int normalizedLimit = NumberUtils.normalizeNumber(limit, 20, 100);
-        String key = getCacheKey(getClass(), "processRequest", lat, lng, query, normalizedRadius, version, normalizedLimit, stringLimit, hasDeals, locale);
-
-        String cachedResponse = cacheProvider.getString(key);
-        if (cachedResponse == null) {
-        	List<Object> venueArray = new ArrayList<Object>();
-            
-        	if (!cacheProvider.containsKey(USAGE_LIMIT_MARKER)) {
-        		ThreadManager threadManager = new ThreadManager(threadProvider);
-                boolean isDeal = Boolean.parseBoolean(hasDeals);
-        		int offset = 0;
-
-        		Locale l = null;
-    			if (StringUtils.isNotEmpty(locale)) {
-    				l = new Locale(locale);
-    			}
-        		while (offset < normalizedLimit) {	
-        			threadManager.put(new VenueDetailsRetriever(venueArray, lat, lng, query, normalizedRadius, offset, isDeal, stringLimit, "json", l));
-        			offset += 50;
-        		}
-
-        		threadManager.waitForThreads();
-            
-        		if (venueArray.size() > normalizedLimit) {
-        			venueArray = venueArray.subList(0, normalizedLimit);
-        		}
-            
-        	} else {
-            	logger.log(Level.WARNING, "Yelp Rate Limit Exceeded");
-            }
-
-            JSONObject json = new JSONObject().put("ResultSet", venueArray);
-
-            if (!venueArray.isEmpty()) {
-                cacheProvider.put(key, json.toString());
-                logger.log(Level.INFO, "Adding YP landmark list to cache with key {0}", key);
-            }
-
-            return json;
-        } else {
-            logger.log(Level.INFO, "Reading YP landmark list from cache with key {0}", key);
-            return new JSONObject(cachedResponse);
-        }
+    	JSONObject json = null;
+    	if (isEnabled()) {
+	    	int normalizedRadius = NumberUtils.normalizeNumber(radius, 1000, 40000);
+	        int normalizedLimit = NumberUtils.normalizeNumber(limit, 20, 100);
+	        String key = getCacheKey(getClass(), "processRequest", lat, lng, query, normalizedRadius, version, normalizedLimit, stringLimit, hasDeals, locale);
+	
+	        String cachedResponse = cacheProvider.getString(key);
+	        if (cachedResponse == null) {
+	        	List<Object> venueArray = new ArrayList<Object>();
+	            
+	        	if (!cacheProvider.containsKey(USAGE_LIMIT_MARKER)) {
+	        		ThreadManager threadManager = new ThreadManager(threadProvider);
+	                boolean isDeal = Boolean.parseBoolean(hasDeals);
+	        		int offset = 0;
+	
+	        		Locale l = null;
+	    			if (StringUtils.isNotEmpty(locale)) {
+	    				l = new Locale(locale);
+	    			}
+	        		while (offset < normalizedLimit) {	
+	        			threadManager.put(new VenueDetailsRetriever(venueArray, lat, lng, query, normalizedRadius, offset, isDeal, stringLimit, "json", l));
+	        			offset += 50;
+	        		}
+	
+	        		threadManager.waitForThreads();
+	            
+	        		if (venueArray.size() > normalizedLimit) {
+	        			venueArray = venueArray.subList(0, normalizedLimit);
+	        		}
+	            
+	        	} else {
+	            	logger.log(Level.WARNING, "Yelp Rate Limit Exceeded");
+	            }
+	
+	            json = new JSONObject().put("ResultSet", venueArray);
+	
+	            if (!venueArray.isEmpty()) {
+	                cacheProvider.put(key, json.toString());
+	                logger.log(Level.INFO, "Adding YP landmark list to cache with key {0}", key);
+	            }
+	
+	        } else {
+	            logger.log(Level.INFO, "Reading YP landmark list from cache with key {0}", key);
+	            json = new JSONObject(cachedResponse);
+	        }
+    	}
+        return json;
     }
 
     private String processRequest(double latitude, double longitude, String query, int radius, boolean hasDeals, int offset, String locale) throws OAuthException, IOException {

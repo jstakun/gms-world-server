@@ -281,7 +281,10 @@ public class LayersProvider2Servlet extends HttpServlet {
          	if (outFormat.equals(Format.BIN)) {
          		//do nothing
          	} else {
-         		if (outPrinter != null) {
+         		if (outString == null && outFormat.equals(Format.JSON)) {
+         			 outString = "{ResultSet:[]}";
+         		}
+         		if (outPrinter != null && outString != null) {
          			outPrinter.print(outString);
          			outPrinter.close();
          		}

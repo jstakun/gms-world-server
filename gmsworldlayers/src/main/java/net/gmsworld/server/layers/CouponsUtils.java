@@ -56,44 +56,46 @@ public class CouponsUtils extends LayerHelper {
 
     @Override
     public JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String categoryid, String language) throws MalformedURLException, IOException, JSONException, ParseException {
-        String key = getCacheKey(getClass(), "processRequest", lat, lng, query, radius, version, limit, stringLimit, categoryid, language);
+    	JSONObject json = null;
+    	
+    	if (isEnabled()) {
+    		String key = getCacheKey(getClass(), "processRequest", lat, lng, query, radius, version, limit, stringLimit, categoryid, language);
 
-        JSONObject json = null;
+    		String cachedResponse = cacheProvider.getString(key);
+    		if (cachedResponse == null) {
 
-        String cachedResponse = cacheProvider.getString(key);
-        if (cachedResponse == null) {
-
-            String url = "http://api.8coupons.com/v1/getdeals?key=" + Commons.getProperty(Property.COUPONS_KEY) + "&lat=" + lat + "&lon=" + lng + "&mileradius=" + radius + "&limit=" + limit + "&orderby=date"; //popular, radius, date
-            if (StringUtils.isNotEmpty(query)) {
-                url += "&search=" + URLEncoder.encode(query, "UTF-8");
-            }
-            if (StringUtils.isNotEmpty(categoryid)) {
-                url += "&categoryid=" + categoryid;
-            }
-            URL couponsUrl = new URL(url);
-            String couponsResponse = HttpUtils.processFileRequest(couponsUrl);
-            //System.out.println(couponsResponse);
-            if (StringUtils.startsWith(couponsResponse, "["))  {
-                Map<String, Map<String, String>> reviewsArray = new HashMap<String, Map<String, String>>();
-                try {
-                    reviewsArray = ((YelpUtils)LayerHelperFactory.getInstance().getByName(Commons.YELP_LAYER)).processReviewsRequest(lat, lng, query, radius * 1000, limit, true, language);
-                } catch (Exception e) {
-                    logger.log(Level.SEVERE, null, e);
-                }
-                List<Object> jsonArray = createCustomJsonCouponsList(StringUtils.trim(couponsResponse), version, reviewsArray, stringLimit);
-                json = new JSONObject().put("ResultSet", jsonArray);
-                if (jsonArray.size() > 0) {
-                    cacheProvider.put(key, json.toString());
-                    logger.log(Level.INFO, "Adding COU landmark list to cache with key {0}", key);
-                }
-            } else {
-                logger.log(Level.WARNING, "Received following response: " + couponsResponse);
-                json = new JSONObject().put("ResultSet", new ArrayList<Object>());
-            }
-        } else {
-            logger.log(Level.INFO, "Reading COU landmark list from cache with key {0}", key);
-            json = new JSONObject(cachedResponse);
-        }
+    			String url = "http://api.8coupons.com/v1/getdeals?key=" + Commons.getProperty(Property.COUPONS_KEY) + "&lat=" + lat + "&lon=" + lng + "&mileradius=" + radius + "&limit=" + limit + "&orderby=date"; //popular, radius, date
+    			if (StringUtils.isNotEmpty(query)) {
+    				url += "&search=" + URLEncoder.encode(query, "UTF-8");
+    			}
+            	if (StringUtils.isNotEmpty(categoryid)) {
+                	url += "&categoryid=" + categoryid;
+            	}
+            	URL couponsUrl = new URL(url);
+            	String couponsResponse = HttpUtils.processFileRequest(couponsUrl);
+            
+            	if (StringUtils.startsWith(couponsResponse, "["))  {
+                	Map<String, Map<String, String>> reviewsArray = new HashMap<String, Map<String, String>>();
+                	try {
+                		reviewsArray = ((YelpUtils)LayerHelperFactory.getInstance().getByName(Commons.YELP_LAYER)).processReviewsRequest(lat, lng, query, radius * 1000, limit, true, language);
+                	} catch (Exception e) {
+                    	logger.log(Level.SEVERE, null, e);
+                	}
+                	List<Object> jsonArray = createCustomJsonCouponsList(StringUtils.trim(couponsResponse), version, reviewsArray, stringLimit);
+                	json = new JSONObject().put("ResultSet", jsonArray);
+                	if (jsonArray.size() > 0) {
+                    	cacheProvider.put(key, json.toString());
+                    	logger.log(Level.INFO, "Adding COU landmark list to cache with key {0}", key);
+                	}
+            	} else {
+                	logger.log(Level.WARNING, "Received following response: " + couponsResponse);
+                	json = new JSONObject().put("ResultSet", new ArrayList<Object>());
+            	}
+        	} else {
+            	logger.log(Level.INFO, "Reading COU landmark list from cache with key {0}", key);
+            	json = new JSONObject(cachedResponse);
+        	}
+    	}
 
         return json;
     }

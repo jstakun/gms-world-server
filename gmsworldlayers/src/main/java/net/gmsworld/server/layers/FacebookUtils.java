@@ -51,56 +51,54 @@ public class FacebookUtils extends LayerHelper {
 	
 	@Override
 	public JSONObject processRequest(double latitude, double longitude, String query, int distance, int version, int limit, int stringLength, String fbtoken, String flexString2) throws JsonException, JSONException, UnsupportedEncodingException {
+		JSONObject response = null;
+		if (isEnabled()) {  
+			int dist = NumberUtils.normalizeNumber(distance, 1000, 50000);
+        	String key = getCacheKey(getClass(), "processRequest", latitude, longitude, query, dist, version, limit, stringLength, fbtoken, flexString2);
+        	String cachedResponse = cacheProvider.getString(key);
+        	
+        	if (cachedResponse == null) {
+        		String token = fbtoken;
+        		if (!StringUtils.isNotEmpty(token)) {
+        			token = Commons.getProperty(Property.fb_app_token);
+        		}
+        		FacebookClient facebookClient = getFacebookClient(token);
 
-        int dist = NumberUtils.normalizeNumber(distance, 1000, 50000);
+            	JsonObject placesSearch = null;
 
-        String key = getCacheKey(getClass(), "processRequest", latitude, longitude, query, dist, version, limit, stringLength, fbtoken, flexString2);
+            	if (query != null && query.length() > 0) {
+                	placesSearch = facebookClient.fetchObject("search", JsonObject.class, Parameter.with("type", "place"), Parameter.with("center", latitude + "," + longitude), Parameter.with("distance", dist), Parameter.with("q", query), Parameter.with("limit", limit), Parameter.with("fields", "name,location,website,picture.type(large),phone,description"));
+            	} else {
+                	placesSearch = facebookClient.fetchObject("search", JsonObject.class, Parameter.with("type", "place"), Parameter.with("center", latitude + "," + longitude), Parameter.with("distance", dist), Parameter.with("limit", limit), Parameter.with("fields", "name,location,website,picture.type(large),phone,description"));
+            	}
 
-        JSONObject response = null;
+            	JsonArray data = placesSearch.getJsonArray("data");
 
-        String cachedResponse = cacheProvider.getString(key);
-        if (cachedResponse == null) {
-        	String token = fbtoken;
-        	if (!StringUtils.isNotEmpty(token)) {
-               token = Commons.getProperty(Property.fb_app_token);
-            }
-        	FacebookClient facebookClient = getFacebookClient(token);
+            	int dataSize = data.length();
 
-            JsonObject placesSearch = null;
+            	List<String> pages = new ArrayList<String>();
+            	for (int i = 0; i < dataSize; i++) {
+                	JsonObject place = (JsonObject) data.get(i);
+                	pages.add(place.getString("id"));
+            	}
 
-            if (query != null && query.length() > 0) {
-                placesSearch = facebookClient.fetchObject("search", JsonObject.class, Parameter.with("type", "place"), Parameter.with("center", latitude + "," + longitude), Parameter.with("distance", dist), Parameter.with("q", query), Parameter.with("limit", limit), Parameter.with("fields", "name,location,website,picture.type(large),phone,description"));
-            } else {
-                placesSearch = facebookClient.fetchObject("search", JsonObject.class, Parameter.with("type", "place"), Parameter.with("center", latitude + "," + longitude), Parameter.with("distance", dist), Parameter.with("limit", limit), Parameter.with("fields", "name,location,website,picture.type(large),phone,description"));
-            }
+            	Map<String, Map<String, String>> pageDescs = new HashMap<String, Map<String, String>>();
 
-            JsonArray data = placesSearch.getJsonArray("data");
+            	readFacebookPlacesDetails(facebookClient, pages, pageDescs, stringLength);
 
-            int dataSize = data.length();
+            	response = createCustomJsonFacebookList(data, pageDescs);
 
-            List<String> pages = new ArrayList<String>();
-            for (int i = 0; i < dataSize; i++) {
-                JsonObject place = (JsonObject) data.get(i);
-                pages.add(place.getString("id"));
-            }
+            	logger.log(Level.INFO, "No of FB places {0}", dataSize);
 
-            Map<String, Map<String, String>> pageDescs = new HashMap<String, Map<String, String>>();
-
-            readFacebookPlacesDetails(facebookClient, pages, pageDescs, stringLength);
-
-            response = createCustomJsonFacebookList(data, pageDescs);
-
-            logger.log(Level.INFO, "No of FB places {0}", dataSize);
-
-            if (dataSize > 0) {
-                cacheProvider.put(key, response.toString());
-                logger.log(Level.INFO, "Adding FB landmark list to cache with key {0}", key);
-            }
-        } else {
-            logger.log(Level.INFO, "Reading FB landmark list from cache with key {0}", key);
-            response = new JSONObject(cachedResponse);
-        }
-
+            	if (dataSize > 0) {
+                	cacheProvider.put(key, response.toString());
+                	logger.log(Level.INFO, "Adding FB landmark list to cache with key {0}", key);
+            	}
+        	} else {
+            	logger.log(Level.INFO, "Reading FB landmark list from cache with key {0}", key);
+            	response = new JSONObject(cachedResponse);
+        	}
+		}
         return response;
     }
 

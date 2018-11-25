@@ -40,26 +40,28 @@ public class EventfulUtils extends LayerHelper {
 	
     @Override
     public JSONObject processRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String flex, String flexString2) throws MalformedURLException, IOException, JSONException, ParseException {
-        String key = getCacheKey(getClass(), "processRequest", latitude, longitude, query, radius, version, limit, stringLimit, flex, flexString2);
-        String output = cacheProvider.getString(key);
-        JSONObject json = null;
-        if (output == null) {
-            String eventfulUrl = "http://api.eventful.com/json/events/search?"
+    	JSONObject json = null;
+        if (isEnabled()) {
+        	String key = getCacheKey(getClass(), "processRequest", latitude, longitude, query, radius, version, limit, stringLimit, flex, flexString2);
+        	String output = cacheProvider.getString(key);
+        	if (output == null) {
+            	String eventfulUrl = "http://api.eventful.com/json/events/search?"
                     + "location=" + latitude + "," + longitude + "&within=" + radius
                     + "&date=Future&units=km&format=json&page_size=" + limit + "&app_key=" + Commons.getProperty(Property.EVENTFUL_APP_KEY);
-            if (StringUtils.isNotEmpty(query)) {
-                eventfulUrl += "&keywords=" + URLEncoder.encode(query, "UTF-8");
-            }
+            	if 	(StringUtils.isNotEmpty(query)) {
+            		eventfulUrl += "&keywords=" + URLEncoder.encode(query, "UTF-8");
+            	}
 
-            String eventfulJson = HttpUtils.processFileRequest(new URL(eventfulUrl));
-            json = createCustomJsonEventfulList(eventfulJson, version, stringLimit);
+            	String eventfulJson = HttpUtils.processFileRequest(new URL(eventfulUrl));
+            	json = createCustomJsonEventfulList(eventfulJson, version, stringLimit);
 
-            if (json.getJSONArray("ResultSet").length() > 0) {
-                cacheProvider.put(key, json.toString());
-                logger.log(Level.INFO, "Adding EV landmark list to cache with key {0}", key);
-            }
-        } else {
-            json = new JSONObject(output);
+            	if (json.getJSONArray("ResultSet").length() > 0) {
+                	cacheProvider.put(key, json.toString());
+                	logger.log(Level.INFO, "Adding EV landmark list to cache with key {0}", key);
+            	}
+        	} else {
+            	json = new JSONObject(output);
+        	}
         }
         return json;
     }

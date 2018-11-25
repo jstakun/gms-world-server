@@ -39,28 +39,30 @@ public class GeonamesUtils extends LayerHelper {
 
     @Override
 	public JSONObject processRequest(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String lang, String flexString2) throws Exception {
-        int r = NumberUtils.normalizeNumber(radius, 1, 20);
-        String key = getCacheKey(getClass(), "processRequest", lat, lng, query, r, version, limit, stringLimit, lang, flexString2);
-        String output = cacheProvider.getString(key);
+    	JSONObject json = null;
+    	if (isEnabled()) {
+    		int r = NumberUtils.normalizeNumber(radius, 1, 20);
+    		String key = getCacheKey(getClass(), "processRequest", lat, lng, query, r, version, limit, stringLimit, lang, flexString2);
+    		String output = cacheProvider.getString(key);
 
-        if (output == null) {
+        	if (output == null) {
 
-            URL geonamesUrl = new URL("http://api.geonames.org/findNearbyWikipediaJSON?lat=" + lat + "&lng=" + lng + "&maxRows=" + MAXROWS + "&radius=" + r + "&username=" + Commons.getProperty(Property.GEONAMES_USERNAME) + "&lang=" + lang);
+            	URL geonamesUrl = new URL("http://api.geonames.org/findNearbyWikipediaJSON?lat=" + lat + "&lng=" + lng + "&maxRows=" + MAXROWS + "&radius=" + r + "&username=" + Commons.getProperty(Property.GEONAMES_USERNAME) + "&lang=" + lang);
 
-            String geonamesResponse = HttpUtils.processFileRequest(geonamesUrl);
+            	String geonamesResponse = HttpUtils.processFileRequest(geonamesUrl);
 
-            JSONObject json =  createCustomJSonGeonamesList(geonamesResponse, version, limit, stringLimit);
+            	json =  createCustomJSonGeonamesList(geonamesResponse, version, limit, stringLimit);
 
-            if (json.getJSONArray("ResultSet").length() > 0) {
-                cacheProvider.put(key, json.toString());
-                logger.log(Level.INFO, "Adding GN landmark list to cache with key {0}", key);
-            }
-
-            return json;
-        } else {
-            logger.log(Level.INFO, "Reading GN landmark list from cache with key {0}", key);
-            return new JSONObject(output);
-        }
+            	if (json.getJSONArray("ResultSet").length() > 0) {
+                	cacheProvider.put(key, json.toString());
+                	logger.log(Level.INFO, "Adding GN landmark list to cache with key {0}", key);
+            	}
+            } else {
+            	logger.log(Level.INFO, "Reading GN landmark list from cache with key {0}", key);
+            	json = new JSONObject(output);
+        	}
+    	} 
+    	return json;
     }
 
     private static JSONObject createCustomJSonGeonamesList(String jsonGeonames, int version, int limit, int stringLimit) throws JSONException {

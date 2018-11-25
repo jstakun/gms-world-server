@@ -46,41 +46,40 @@ public class TwitterUtils extends LayerHelper {
     
 	@Override
     public JSONObject processRequest(double latitude, double longitude, String query, int distance, int version, int limit, int stringLimit, String lang, String flexString2) throws TwitterException, JSONException, UnsupportedEncodingException {
-        int radius = NumberUtils.normalizeNumber(distance, 1, 3);
-
-        String key = getCacheKey(getClass(), "processRequest", latitude, longitude, query, radius, version, limit, stringLimit, lang, flexString2);
-
-        JSONObject response = null;
-
-        String cachedResponse = cacheProvider.getString(key);
-        if (cachedResponse == null) {
-
-            Query twquery;
-            if (query != null) {
-                twquery = new Query(query);
-            } else {
-                twquery = new Query();
-            }
-            twquery.setGeoCode(new GeoLocation(latitude, longitude), radius, Query.KILOMETERS);
-            twquery.setCount(limit);
-            twquery.setResultType(Query.RECENT); //POPULAR, MIXED, RECENT
-            //twquery.setLang(lang);
-            if (query != null) {
-            }
-
-            QueryResult results = getTwitter(null, null).search(twquery);
-            List<Status> tweets = results.getTweets();
-
-            response = createCustomTweetsList(tweets);
-
-            if (response.getJSONArray("ResultSet").length() > 0) {
-                cacheProvider.put(key, response.toString());
-                logger.log(Level.INFO, "Adding TW landmark list to cache with key {0}", key);
-            }
-        } else {
-            logger.log(Level.INFO, "Reading TW landmark list from cache with key {0}", key);
-            response = new JSONObject(cachedResponse);
-        }
+		JSONObject response = null;
+		if (isEnabled() ) {
+			int radius = NumberUtils.normalizeNumber(distance, 1, 3);
+	        String key = getCacheKey(getClass(), "processRequest", latitude, longitude, query, radius, version, limit, stringLimit, lang, flexString2);
+	        String cachedResponse = cacheProvider.getString(key);
+	        if (cachedResponse == null) {
+	
+	            Query twquery;
+	            if (query != null) {
+	                twquery = new Query(query);
+	            } else {
+	                twquery = new Query();
+	            }
+	            twquery.setGeoCode(new GeoLocation(latitude, longitude), radius, Query.KILOMETERS);
+	            twquery.setCount(limit);
+	            twquery.setResultType(Query.RECENT); //POPULAR, MIXED, RECENT
+	            //twquery.setLang(lang);
+	            if (query != null) {
+	            }
+	
+	            QueryResult results = getTwitter(null, null).search(twquery);
+	            List<Status> tweets = results.getTweets();
+	
+	            response = createCustomTweetsList(tweets);
+	
+	            if (response.getJSONArray("ResultSet").length() > 0) {
+	                cacheProvider.put(key, response.toString());
+	                logger.log(Level.INFO, "Adding TW landmark list to cache with key {0}", key);
+	            }
+	        } else {
+	            logger.log(Level.INFO, "Reading TW landmark list from cache with key {0}", key);
+	            response = new JSONObject(cachedResponse);
+	        }
+		}
         return response;
     }
 

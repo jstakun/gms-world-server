@@ -35,19 +35,14 @@ public class ExpediaUtils extends LayerHelper {
 
 	@Override
 	public JSONObject processRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String lang, String flexString2) throws Exception {
-		int r = NumberUtils.normalizeNumber(radius, 2, 80);
-		String key = getCacheKey(getClass(), "processRequest", latitude, longitude, query, r, version, limit, stringLimit, lang, flexString2);
-		String output = cacheProvider.getString(key);
 		JSONObject json = null;
-		if (output == null) {
+		if (isEnabled()) {
+			int r = NumberUtils.normalizeNumber(radius, 2, 80);
+			String key = getCacheKey(getClass(), "processRequest", latitude, longitude, query, r, version, limit, stringLimit, lang, flexString2);
+			String output = cacheProvider.getString(key);
+			if (output == null) {
 
-			//MessageDigest md = MessageDigest.getInstance("MD5");
-		    //long timeInSeconds = (System.currentTimeMillis() / 1000);
-		    //String input = Commons.getProperty(Property.EXPEDIA_KEY) + Commons.getProperty(Property.EXPEDIA_SECRET) + timeInSeconds;
-		    //md.update(input.getBytes());
-		    //String sig = String.format("%032x", new BigInteger(1, md.digest()));
-			
-			URL expediaUrl = new URL(
+				URL expediaUrl = new URL(
 					"http://api.ean.com/ean-services/rs/hotel/v3/list?"
 							+ "&apiKey=" + Commons.getProperty(Property.EXPEDIA_KEY)
 							//+ "&sig=" + sig
@@ -60,22 +55,18 @@ public class ExpediaUtils extends LayerHelper {
 							+ "&locale=" + lang
 							+ "&_type=json");
 
-			//System.out.println(expediaUrl.toString());
+				String expediaResponse = HttpUtils.processFileRequest(expediaUrl);
 
-			String expediaResponse = HttpUtils.processFileRequest(expediaUrl);
+				json = createCustomJsonExpediaList(expediaResponse, stringLimit, lang, limit);
 
-			// System.out.println(expediaResponse);
-
-			json = createCustomJsonExpediaList(expediaResponse, stringLimit, lang, limit);
-
-			if (json.getJSONArray("ResultSet").length() > 0) {
-				cacheProvider.put(key, json.toString());
-				logger.log(Level.INFO, "Adding EXP landmark list to cache with key {0}", key);
+				if (json.getJSONArray("ResultSet").length() > 0) {
+					cacheProvider.put(key, json.toString());
+					logger.log(Level.INFO, "Adding EXP landmark list to cache with key {0}", key);
+				}
+			} else {
+				logger.log(Level.INFO, "Reading EXP landmark list from cache with key {0}", key);
+				json = new JSONObject(output);
 			}
-
-		} else {
-			logger.log(Level.INFO, "Reading EXP landmark list from cache with key {0}", key);
-			json = new JSONObject(output);
 		}
 
 		return json;

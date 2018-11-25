@@ -36,28 +36,27 @@ public class LastfmUtils extends LayerHelper {
 
     @Override
 	public JSONObject processRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String flexString, String flexString2) throws Exception {
-        String key = getCacheKey(getClass(), "processRequest", latitude, longitude, query, radius, version, limit, stringLimit, flexString, flexString2);
-
-        JSONObject json = null;
-
-        String output = cacheProvider.getString(key);
-
-        if (output == null) {
-            URL lastfmUrl = new URL("http://ws.audioscrobbler.com/2.0/?method=geo.getevents&lat=" + latitude
-                    + "&long=" + longitude + "&distance=" + radius + "&limit=" + limit + "&format=json&api_key=" + Commons.getProperty(Property.LASTFM_API_KEY));
-            String lastfmResponse = HttpUtils.processFileRequest(lastfmUrl);
-
-            json = createCustomJsonLastfmList(lastfmResponse, version, stringLimit);
-
-            if (json.getJSONArray("ResultSet").length() > 0) {
-                cacheProvider.put(key, json.toString());
-                logger.log(Level.INFO, "Adding LFM landmark list to cache with key {0}", key);
-            }
-        } else {
-            logger.log(Level.INFO, "Reading LFM landmark list from cache with key {0}", key);
-            json = new JSONObject(output);
-        }
-
+    	JSONObject json = null;
+    	if  (isEnabled()) {
+	    	String key = getCacheKey(getClass(), "processRequest", latitude, longitude, query, radius, version, limit, stringLimit, flexString, flexString2);
+	        String output = cacheProvider.getString(key);
+	
+	        if (output == null) {
+	            URL lastfmUrl = new URL("http://ws.audioscrobbler.com/2.0/?method=geo.getevents&lat=" + latitude
+	                    + "&long=" + longitude + "&distance=" + radius + "&limit=" + limit + "&format=json&api_key=" + Commons.getProperty(Property.LASTFM_API_KEY));
+	            String lastfmResponse = HttpUtils.processFileRequest(lastfmUrl);
+	
+	            json = createCustomJsonLastfmList(lastfmResponse, version, stringLimit);
+	
+	            if (json.getJSONArray("ResultSet").length() > 0) {
+	                cacheProvider.put(key, json.toString());
+	                logger.log(Level.INFO, "Adding LFM landmark list to cache with key {0}", key);
+	            }
+	        } else {
+	            logger.log(Level.INFO, "Reading LFM landmark list from cache with key {0}", key);
+	            json = new JSONObject(output);
+	        }
+    	}
         return json;
     }
 

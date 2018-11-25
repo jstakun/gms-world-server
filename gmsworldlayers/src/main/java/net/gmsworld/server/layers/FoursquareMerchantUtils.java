@@ -52,27 +52,27 @@ public class FoursquareMerchantUtils extends FoursquareUtils {
 	
 	@Override
 	public JSONObject processRequest(double lat, double lng, String categoryid, int radius, int version, int limit, int stringLimit, String token, String locale) throws MalformedURLException, IOException, JSONException {
-        String key = getCacheKey(getClass(), "processRequest", lat, lng, categoryid, radius, version, limit, stringLimit, token, locale);
-        JSONObject response = null;
-        String cachedResponse = cacheProvider.getString(key);
+		JSONObject response = null;
+        if (isEnabled()) {
+        	String key = getCacheKey(getClass(), "processRequest", lat, lng, categoryid, radius, version, limit, stringLimit, token, locale);
+        	String cachedResponse = cacheProvider.getString(key);
         
-        if (cachedResponse == null) {
-            StringBuilder sb = new StringBuilder("https://api.foursquare.com/v2/specials/search?ll=").append(lat).
+        	if (cachedResponse == null) {
+            	StringBuilder sb = new StringBuilder("https://api.foursquare.com/v2/specials/search?ll=").append(lat).
                     append(",").append(lng).append("&llAcc=").append(radius).append("&oauth_token=").
                     append(token).append("&limit=").append(limit).append("&v=").append(FoursquareApi.DEFAULT_VERSION);
-            URL url = new URL(sb.toString());
-            String resp = HttpUtils.processFileRequestWithLocale(url, locale);
-            //System.out.println(resp);
-            response = createCustomJsonFoursquareMerchantList(resp, locale, categoryid, stringLimit);
-            if (response.getJSONArray("ResultSet").length() > 0) {
-                cacheProvider.put(key, response.toString());
-                logger.log(Level.INFO, "Adding FSM landmark list to cache with key {0}", key);
-            }
-        } else {
-            logger.log(Level.INFO, "Reading FSM landmark list from cache with key {0}", key);
-            response = new JSONObject(cachedResponse);
+            	URL url = new URL(sb.toString());
+            	String resp = HttpUtils.processFileRequestWithLocale(url, locale);
+            	response = createCustomJsonFoursquareMerchantList(resp, locale, categoryid, stringLimit);
+            	if (response.getJSONArray("ResultSet").length() > 0) {
+                	cacheProvider.put(key, response.toString());
+                	logger.log(Level.INFO, "Adding FSM landmark list to cache with key {0}", key);
+            	}
+        	} else {
+            	logger.log(Level.INFO, "Reading FSM landmark list from cache with key {0}", key);
+            	response = new JSONObject(cachedResponse);
+        	}
         }
-
         return response;
     }
 	

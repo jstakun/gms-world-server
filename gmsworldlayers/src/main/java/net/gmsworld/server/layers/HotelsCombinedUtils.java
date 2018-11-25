@@ -46,54 +46,48 @@ public class HotelsCombinedUtils extends LayerHelper {
 	
 	@Override
 	public JSONObject processRequest(double latitudeMin, double longitudeMin, String query, int radius, int version, int limit, int stringLimit, String language, String flexString2) throws Exception {
-        double lat, lng;
-        double latitudeMax = 0.0, longitudeMax = 0.0;
-        if (version > 2) {
-            lat = latitudeMin;
-            lng = longitudeMin;
-        } else {
-            String[] coords = StringUtils.split(flexString2, "_");
-            latitudeMax = Double.parseDouble(coords[0]);
-            longitudeMax = Double.parseDouble(coords[1]);
-            lat = (latitudeMin + latitudeMax) / 2;
-            lng = (longitudeMin + longitudeMax) / 2;
-            radius = (int)(NumberUtils.distanceInKilometer(latitudeMin, latitudeMax, longitudeMin, longitudeMax) * 1000 / 2);
-        }
-
-        int l = NumberUtils.normalizeNumber(limit, 1, 100);
-
-        String key = getCacheKey(getClass(), "processRequest", lat, lng, query, radius, version, l, stringLimit, language, null);
-
-        String output = cacheProvider.getString(key);
-
-        JSONObject json = null;
-
-        if (output == null) {
-            //List<Hotel> hotels = new ArrayList<Hotel>();
-            //if (version > 2) {
-            //    hotels = HotelPersistenceUtils.selectHotelsByPointAndRadius(latitudeMin, longitudeMin, radius * 1000, l);
-            //} else {
-            //    hotels = HotelPersistenceUtils.selectHotelsByCoordsAndLayer(latitudeMin, longitudeMin, latitudeMax, longitudeMax, l);
-            //}
-            
-            String hotelsUrl = HOTELS_PROVIDER_URL + "?lat=" + lat + "&lng=" + lng + "&radius=" + radius + "&limit=" + limit;			
-			logger.log(Level.INFO, "Calling: " + hotelsUrl);
-            String hotelsJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), false);		
-			List<Hotel> hotels = jsonToHotelList(hotelsJson);      	
-			logger.log(Level.INFO, "Found " + hotels.size() + " hotels...");		
-            if (!hotels.isEmpty()) {
-            	json = createCustomJSonHotelsCombinedList(hotels, language, version);
-            	cacheProvider.put(key, json.toString());
-                logger.log(Level.INFO, "Adding H landmark list to cache with key {0}", key);
-            } else {
-            	json = new JSONObject().put("ResultSet", hotels);
-            }
-
-        } else {
-            logger.log(Level.INFO, "Reading H landmark list from cache with key {0}", key);
-            json = new JSONObject(output);
-        }
-
+		JSONObject json = null;
+		if (isEnabled()) {
+			double lat, lng;
+	        double latitudeMax = 0.0, longitudeMax = 0.0;
+	        if (version > 2) {
+	            lat = latitudeMin;
+	            lng = longitudeMin;
+	        } else {
+	            String[] coords = StringUtils.split(flexString2, "_");
+	            latitudeMax = Double.parseDouble(coords[0]);
+	            longitudeMax = Double.parseDouble(coords[1]);
+	            lat = (latitudeMin + latitudeMax) / 2;
+	            lng = (longitudeMin + longitudeMax) / 2;
+	            radius = (int)(NumberUtils.distanceInKilometer(latitudeMin, latitudeMax, longitudeMin, longitudeMax) * 1000 / 2);
+	        }
+	
+	        int l = NumberUtils.normalizeNumber(limit, 1, 100);
+	
+	        String key = getCacheKey(getClass(), "processRequest", lat, lng, query, radius, version, l, stringLimit, language, null);
+	
+	        String output = cacheProvider.getString(key);
+	        
+	        if (output == null) {
+	            
+	            String hotelsUrl = HOTELS_PROVIDER_URL + "?lat=" + lat + "&lng=" + lng + "&radius=" + radius + "&limit=" + limit;			
+				logger.log(Level.INFO, "Calling: " + hotelsUrl);
+	            String hotelsJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), false);		
+				List<Hotel> hotels = jsonToHotelList(hotelsJson);      	
+				logger.log(Level.INFO, "Found " + hotels.size() + " hotels...");		
+	            if (!hotels.isEmpty()) {
+	            	json = createCustomJSonHotelsCombinedList(hotels, language, version);
+	            	cacheProvider.put(key, json.toString());
+	                logger.log(Level.INFO, "Adding H landmark list to cache with key {0}", key);
+	            } else {
+	            	json = new JSONObject().put("ResultSet", hotels);
+	            }
+	
+	        } else {
+	            logger.log(Level.INFO, "Reading H landmark list from cache with key {0}", key);
+	            json = new JSONObject(output);
+	        }
+		}
         return json;
     }
 

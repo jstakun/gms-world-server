@@ -149,35 +149,37 @@ public class GooglePlacesUtils extends LayerHelper {
 	
     @Override
 	public JSONObject processRequest(double latitude, double longitude, String query, int radius, int version, int limit, int stringLimit, String language, String flexString2) throws MalformedURLException, IOException, JSONException {
-        int r = NumberUtils.normalizeNumber(radius, 1000, 50000);
-        int l = NumberUtils.normalizeNumber(limit, 1, QUOTA_LIMIT);
-        String key = getCacheKey(getClass(), "processRequest", latitude, longitude, query, r, version, l, stringLimit, language, flexString2);
+    	JSONObject response = null;
 
-        JSONObject response = null;
+    	if (isEnabled()) {
+    		int r = NumberUtils.normalizeNumber(radius, 1000, 50000);
+        	int l = NumberUtils.normalizeNumber(limit, 1, QUOTA_LIMIT);
+        	String key = getCacheKey(getClass(), "processRequest", latitude, longitude, query, r, version, l, stringLimit, language, flexString2);
 
-        String cachedResponse = cacheProvider.getString(key);
-        if (cachedResponse == null) {
-            List<String> placeDetails = Collections.synchronizedList(new ArrayList<String>());
-            String queryStringSuffix = "&types=" + types + "&sensor=false&key=" + Commons.getProperty(Property.GOOGLE_API_KEY);
+        	String cachedResponse = cacheProvider.getString(key);
+        	if (cachedResponse == null) {
+            	List<String> placeDetails = Collections.synchronizedList(new ArrayList<String>());
+            	String queryStringSuffix = "&types=" + types + "&sensor=false&key=" + Commons.getProperty(Property.GOOGLE_API_KEY);
 
-            String url = "location=" + latitude + "," + longitude + "&radius=" + r + "&language=" + language;
-            if (query != null) {
-                url += "&keyword=" + URLEncoder.encode(query, "UTF-8");
-            }
-            url += queryStringSuffix;
+            	String url = "location=" + latitude + "," + longitude + "&radius=" + r + "&language=" + language;
+            	if (query != null) {
+                	url += "&keyword=" + URLEncoder.encode(query, "UTF-8");
+            	}
+            	url += queryStringSuffix;
 
-            processRadarRequest(placeDetails, url, l, language);
+            	processRadarRequest(placeDetails, url, l, language);
 
-            response = createCustomJSonGooglePlacesList(placeDetails, stringLimit, version);
+            	response = createCustomJSonGooglePlacesList(placeDetails, stringLimit, version);
 
-            if (response.getJSONArray("ResultSet").length() > 0) {
-                cacheProvider.put(key, response.toString());
-                logger.log(Level.INFO, "Adding GL landmark list to cache with key {0}", key);
-            }
-        } else {
-            logger.log(Level.INFO, "Reading GL landmark list from cache with key {0}", key);
-            response = new JSONObject(cachedResponse);
-        }
+            	if (response.getJSONArray("ResultSet").length() > 0) {
+                	cacheProvider.put(key, response.toString());
+                	logger.log(Level.INFO, "Adding GL landmark list to cache with key {0}", key);
+            	}
+        	} else {
+            	logger.log(Level.INFO, "Reading GL landmark list from cache with key {0}", key);
+            	response = new JSONObject(cachedResponse);
+        	}
+    	}
 
         return response;
     }
