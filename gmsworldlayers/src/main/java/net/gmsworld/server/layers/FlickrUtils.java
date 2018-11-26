@@ -21,6 +21,7 @@ import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.xml.XMLUtils;
 
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -66,7 +67,9 @@ public class FlickrUtils extends LayerHelper {
             	logger.log(Level.INFO, "Reading FL landmark list from cache with key {0}", key);
             	json = new JSONObject(output);
         	}
-        }
+        } else {
+    		json = new JSONObject().put("ResultSet", new JSONArray());
+    	}
         return json;
     }
 

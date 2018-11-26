@@ -23,6 +23,7 @@ import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.ThreadManager;
 
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -98,7 +99,9 @@ public class FacebookUtils extends LayerHelper {
             	logger.log(Level.INFO, "Reading FB landmark list from cache with key {0}", key);
             	response = new JSONObject(cachedResponse);
         	}
-		}
+		} else {
+    		response = new JSONObject().put("ResultSet", new JSONArray());
+    	}
         return response;
     }
 

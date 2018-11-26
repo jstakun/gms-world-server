@@ -67,7 +67,9 @@ public class ExpediaUtils extends LayerHelper {
 				logger.log(Level.INFO, "Reading EXP landmark list from cache with key {0}", key);
 				json = new JSONObject(output);
 			}
-		}
+		} else {
+    		json = new JSONObject().put("ResultSet", new JSONArray());
+    	}
 
 		return json;
 	}

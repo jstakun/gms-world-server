@@ -89,6 +89,8 @@ public class YelpUtils extends LayerHelper {
 	            logger.log(Level.INFO, "Reading YP landmark list from cache with key {0}", key);
 	            json = new JSONObject(cachedResponse);
 	        }
+    	} else {
+    		json = new JSONObject().put("ResultSet", new JSONArray());
     	}
         return json;
     }

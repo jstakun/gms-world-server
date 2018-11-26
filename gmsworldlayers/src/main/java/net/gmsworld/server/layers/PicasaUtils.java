@@ -20,6 +20,7 @@ import net.gmsworld.server.utils.JSONUtils;
 import net.gmsworld.server.utils.MathUtils;
 
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -85,7 +86,10 @@ public class PicasaUtils extends LayerHelper {
 	            logger.log(Level.INFO, "Reading PC landmark list from cache with key {0}", key);
 	            output =  new JSONObject(cachedResponse);
 	        }
+    	} else {
+    		output = new JSONObject().put("ResultSet", new JSONArray());
     	}
+    	
         return output;
     }
 

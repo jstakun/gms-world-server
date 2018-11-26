@@ -44,11 +44,8 @@ public class GeonamesUtils extends LayerHelper {
     		int r = NumberUtils.normalizeNumber(radius, 1, 20);
     		String key = getCacheKey(getClass(), "processRequest", lat, lng, query, r, version, limit, stringLimit, lang, flexString2);
     		String output = cacheProvider.getString(key);
-
         	if (output == null) {
-
             	URL geonamesUrl = new URL("http://api.geonames.org/findNearbyWikipediaJSON?lat=" + lat + "&lng=" + lng + "&maxRows=" + MAXROWS + "&radius=" + r + "&username=" + Commons.getProperty(Property.GEONAMES_USERNAME) + "&lang=" + lang);
-
             	String geonamesResponse = HttpUtils.processFileRequest(geonamesUrl);
 
             	json =  createCustomJSonGeonamesList(geonamesResponse, version, limit, stringLimit);
@@ -61,7 +58,9 @@ public class GeonamesUtils extends LayerHelper {
             	logger.log(Level.INFO, "Reading GN landmark list from cache with key {0}", key);
             	json = new JSONObject(output);
         	}
-    	} 
+    	} else {
+    		json = new JSONObject().put("ResultSet", new JSONArray());
+    	}
     	return json;
     }
 

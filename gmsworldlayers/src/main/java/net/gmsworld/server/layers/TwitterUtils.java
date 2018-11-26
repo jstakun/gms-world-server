@@ -17,6 +17,7 @@ import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.JSONUtils;
 import net.gmsworld.server.utils.NumberUtils;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -79,7 +80,9 @@ public class TwitterUtils extends LayerHelper {
 	            logger.log(Level.INFO, "Reading TW landmark list from cache with key {0}", key);
 	            response = new JSONObject(cachedResponse);
 	        }
-		}
+		} else {
+    		response = new JSONObject().put("ResultSet", new JSONArray());
+    	}
         return response;
     }
 

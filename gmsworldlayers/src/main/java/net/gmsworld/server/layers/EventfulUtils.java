@@ -62,7 +62,10 @@ public class EventfulUtils extends LayerHelper {
         	} else {
             	json = new JSONObject(output);
         	}
-        }
+        } else {
+    		json = new JSONObject().put("ResultSet", new JSONArray());
+    	}
+        
         return json;
     }
 

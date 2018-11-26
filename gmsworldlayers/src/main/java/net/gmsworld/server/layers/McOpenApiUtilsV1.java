@@ -20,6 +20,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -80,6 +81,8 @@ public class McOpenApiUtilsV1 extends LayerHelper {
 	            logger.log(Level.INFO, "Reading MC landmark list from cache with key {0}", key);
 	            resp = new JSONObject(output);
 	        }
+    	} else {
+    		resp = new JSONObject().put("ResultSet", new JSONArray());
     	}
         return resp;
     }

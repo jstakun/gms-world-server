@@ -72,7 +72,9 @@ public class FoursquareMerchantUtils extends FoursquareUtils {
             	logger.log(Level.INFO, "Reading FSM landmark list from cache with key {0}", key);
             	response = new JSONObject(cachedResponse);
         	}
-        }
+        } else {
+    		response = new JSONObject().put("ResultSet", new JSONArray());
+    	}
         return response;
     }
 	

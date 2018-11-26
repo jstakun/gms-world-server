@@ -95,6 +95,8 @@ public class CouponsUtils extends LayerHelper {
             	logger.log(Level.INFO, "Reading COU landmark list from cache with key {0}", key);
             	json = new JSONObject(cachedResponse);
         	}
+    	} else {
+    		json = new JSONObject().put("ResultSet", new JSONArray());
     	}
 
         return json;

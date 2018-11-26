@@ -87,7 +87,9 @@ public class HotelsCombinedUtils extends LayerHelper {
 	            logger.log(Level.INFO, "Reading H landmark list from cache with key {0}", key);
 	            json = new JSONObject(output);
 	        }
-		}
+		} else {
+    		json = new JSONObject().put("ResultSet", new JSONArray());
+    	}
         return json;
     }
 

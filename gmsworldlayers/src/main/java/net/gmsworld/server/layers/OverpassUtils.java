@@ -61,15 +61,17 @@ public abstract class OverpassUtils extends LayerHelper {
         		String.format("%.2f", MathUtils.normalizeE2(dcoords[3]));  
         }
         
+     
         if (amenity != null && bbox != null) {
         	
-            final String endpoint = API_ENDPOINT + URLEncoder.encode(String.format("[out:json][timeout:30];node[amenity=%1$s](%2$s);out meta qt %3$d;", amenity, bbox, limit), "UTF-8");
+        	final String endpoint = API_ENDPOINT + URLEncoder.encode(String.format("[out:json][timeout:30];node[amenity=%1$s](%2$s);out meta qt %3$d;", amenity, bbox, limit), "UTF-8");
+        	logger.log(Level.INFO, "Calling endpoint : " + endpoint);
         	String response = HttpUtils.processFileRequest(new URL(endpoint));
         	
         	output = createCustomLandmarkList(response, locale, amenity);
         	
         } else {
-            logger.log(Level.WARNING, "Parameters can't be null! Amenity: " + amenity + " , bbox: " + bbox);
+            logger.log(Level.SEVERE, "Parameters can't be null! Amenity: " + amenity + " , bbox: " + bbox);
         }
         return output;
 	}

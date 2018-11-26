@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -76,6 +77,8 @@ public class GMSUtils extends LayerHelper {
 	            json = new JSONObject(output);
 	            logger.log(Level.INFO, "Reading GMS landmark list from cache with key {0}", key);
 	        }
+    	} else {
+    		json = new JSONObject().put("ResultSet", new JSONArray());
     	}
         return json;
     }

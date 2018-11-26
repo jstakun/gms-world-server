@@ -73,6 +73,8 @@ public class GrouponUtils extends LayerHelper {
     			logger.log(Level.INFO, "Reading GR landmark list from cache with key {0}", key);
     			json = new JSONObject(cachedResponse);
     		}
+    	} else {
+    		json = new JSONObject().put("ResultSet", new JSONArray());
     	}
         return json;
     }
