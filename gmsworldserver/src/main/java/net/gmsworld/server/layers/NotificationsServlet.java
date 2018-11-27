@@ -289,6 +289,7 @@ public class NotificationsServlet extends HttpServlet {
 							reply = new JSONObject().put("status", result);
 						} else {
 							reply = new JSONObject().put("status", "invalid login");
+							response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 						}
 					} else {
 						reply = new JSONObject().put("status", "failed");
