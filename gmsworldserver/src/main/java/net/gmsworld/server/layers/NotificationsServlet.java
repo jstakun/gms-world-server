@@ -280,8 +280,16 @@ public class NotificationsServlet extends HttpServlet {
 					String login = request.getParameter("login");
 					if (StringUtils.isNotEmpty(login)) {
 						User u = UserPersistenceUtils.selectUserByLogin(login, null);
-						String result = MailUtils.sendResetPassword(u.getEmail(), u.getLogin(), u.getSecret(), getServletContext());
-						reply = new JSONObject().put("status", result);
+						if (u != null) {
+							String nick = u.getFirstname();
+							if (StringUtils.isEmpty(nick)) {
+								nick = u.getLogin();
+							}
+							String result = MailUtils.sendResetPassword(u.getEmail(), nick, u.getSecret(), getServletContext());
+							reply = new JSONObject().put("status", result);
+						} else {
+							reply = new JSONObject().put("status", "invalid login");
+						}
 					} else {
 						reply = new JSONObject().put("status", "failed");
 						response.sendError(HttpServletResponse.SC_BAD_REQUEST);
