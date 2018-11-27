@@ -19,12 +19,14 @@ import org.json.JSONObject;
 import com.google.gdata.util.common.util.Base64;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.persistence.Notification;
+import com.jstakun.lm.server.persistence.User;
 import com.jstakun.lm.server.utils.MailUtils;
 import com.jstakun.lm.server.utils.RoutesUtils;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceWebUtils;
 import com.jstakun.lm.server.utils.persistence.NotificationPersistenceUtils;
+import com.jstakun.lm.server.utils.persistence.UserPersistenceUtils;
 
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.utils.HttpUtils;
@@ -274,7 +276,19 @@ public class NotificationsServlet extends HttpServlet {
 					} else {
 							logger.log(Level.WARNING, "Wrong application " + appId);
 					}
-				} //else if (StringUtils.equals(type, "register_fbm")) {
+				} else if (StringUtils.equals(type, "reset")) {
+					String login = request.getParameter("login");
+					if (StringUtils.isNotEmpty(login)) {
+						User u = UserPersistenceUtils.selectUserByLogin(login, null);
+						String result = MailUtils.sendResetPassword(u.getEmail(), u.getLogin(), u.getSecret(), getServletContext());
+						reply = new JSONObject().put("status", result);
+					} else {
+						reply = new JSONObject().put("status", "failed");
+						response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+					}
+				}
+				
+				//else if (StringUtils.equals(type, "register_fbm")) {
 				//} else if (StringUtils.equals(type, "fbm_dl")) {
 				//}
 				out.print(reply.toString());

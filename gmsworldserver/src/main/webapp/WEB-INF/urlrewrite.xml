@@ -314,7 +314,13 @@
             <to>/showRoute.do?route=device_locator_route_$1_$2</to>
     </rule>
     
-     <!-- mobile shortcuts -->
+    <!--  reset rule -->
+     <rule>
+            <from>^/reset/([a-zA-Z]+)$</from>
+            <to>/m/reset.jsp?secret=$1</to>
+    </rule>
+    
+    <!-- mobile shortcuts -->
     
     <rule>
             <from>^/providers$</from>
@@ -409,6 +415,15 @@
         <from>^/register.jsp</from>
     	<to type="permanent-redirect" last="true">https://www.gms-world.net/register.jsp</to>
 	</rule>
+    
+    <!-- reset.jsp https -->
+    <rule>
+    	<condition type="scheme" operator="notequal">https</condition>
+        <condition name="host" operator="equal">www.gms-world.net</condition>
+        <from>^/m/reset.jsp</from>
+    	<to type="permanent-redirect" last="true">https://www.gms-world.net/m/reset.jsp</to>
+	</rule>
+    
     
 </urlrewrite>
 

@@ -237,6 +237,34 @@ public class MailUtils {
         }
     }
     
+    public static String sendResetPassword(String toA, String nick, String secret, ServletContext context) {
+        InputStream is = null;
+        String result = null;
+        try {
+            is = context.getResourceAsStream("/WEB-INF/emails/reset.html");
+            if (StringUtils.isEmpty(nick)) {
+            	nick = "GMS World User";
+            }
+            String link = ConfigurationManager.SSL_SERVER_URL + "reset/" + secret;
+            String message = String.format(IOUtils.toString(is, "UTF-8"), nick, link);
+            result = sendLocalMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "GMS World Password Reset", message, "text/html",  null, null);
+       		if (! StringUtils.equalsIgnoreCase(result, "ok")) {
+       			result = sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "GMS World Password Reset", message, "text/html",  null, null);
+       		}
+       	} catch (IOException ex) {
+            logger.log(Level.SEVERE, null, ex);
+        } finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException ex) {
+                    logger.log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        return result;
+    }
+    
     public static String sendDeviceLocatorRegistrationNotification(String toA, String nick, String secret, ServletContext context) {
         InputStream is = null;
         String status = null;

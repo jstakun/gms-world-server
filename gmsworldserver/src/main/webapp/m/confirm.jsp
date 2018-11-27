@@ -48,6 +48,11 @@
                 <h3>Email address <%= request.getAttribute("email") %> unregistered</h3>
                 <p>Your email address has been successfully unregistered from Device Locator notifications service.</p>
  <%
+    } else if (step.equals("4") && request.getAttribute("login") != null) {
+ %>
+    	                <h3>User <%= request.getAttribute("login") %> password reset</h3>
+    	                <p>Your password has been successfully reset.</p>
+ <%
     } else {
  %>
                 <h3>Internal error</h3>

@@ -47,6 +47,13 @@
                     <h3>Email <%= request.getAttribute("email") %> unregister failed</h3>
                     <p>Please try again or contact <a href="mailto:support@gms-world.net?subject=Account unregister failed">System Administrator</a></p>
  <%
+    } else if (step.equals("4") && request.getAttribute("login") != null) {
+ %>
+                    <h3>User <%= request.getAttribute("login") %> password reset failed</h3>
+                    <p>Please try again or contact <a href="mailto:support@gms-world.net?subject=Password reset failed">System Administrator</a></p>
+ 
+ 
+ <%
     } else {
  %>
                     <h3>Internal error</h3>

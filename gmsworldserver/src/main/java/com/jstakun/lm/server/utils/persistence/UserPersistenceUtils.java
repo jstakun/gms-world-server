@@ -3,6 +3,7 @@ package com.jstakun.lm.server.utils.persistence;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -38,13 +39,13 @@ public class UserPersistenceUtils {
         	String landmarksUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "addItem";
         	String params = "login=" + URLEncoder.encode(login, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8") + "&type=user";
         	
-        	if (firstname != null) {
+        	if (StringUtils.isNotEmpty(firstname)) {
         	   params += "&firstname=" + URLEncoder.encode(firstname, "UTF-8");
         	}
-        	if (lastname != null) {
+        	if (StringUtils.isNotEmpty(lastname)) {
         		params += "&lastname=" + URLEncoder.encode(lastname, "UTF-8");
         	}
-            if (email != null) {
+            if (StringUtils.isNotEmpty(email)) {
         	   params += "&email=" + URLEncoder.encode(email, "UTF-8");
             }
             
@@ -64,40 +65,10 @@ public class UserPersistenceUtils {
         	logger.log(Level.SEVERE, e.getMessage(), e);
         	return null;
         }
-        
-
-        /*if (local) {
-        	//User user = new User(login, password, email, firstname, lastname);
-            //PersistenceManager pm = PMF.get().getPersistenceManager();
-            try {
-        		user = pm.makePersistent(user);
-        	} catch (Exception ex) {
-        		logger.log(Level.SEVERE, ex.getMessage(), ex);
-        	} finally {
-        		pm.close();
-        	}
-        }*/
     }
 
     public static User selectUserByLogin(String username, String secret) {
     	User user = null;
-        /*PersistenceManager pm = PMF.get().getPersistenceManager();
-
-        try {
-            Query query = pm.newQuery(User.class, "login == username");
-            query.setUnique(true);
-            query.declareParameters("String username");
-            user = (User) query.execute(username);          
-            if (user != null) {
-            	user.setLastLogonDate(new Date());
-                pm.makePersistent(user);
-            }
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
-        } finally {
-            pm.close();
-        }
-        */
         
         try {
         	String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "itemProvider";
@@ -124,31 +95,6 @@ public class UserPersistenceUtils {
 
         return user;
     }
-
-    /*
-    public static boolean confirmUserRegistration(String login, Boolean confirmation) {
-        PersistenceManager pm = PMF.get().getPersistenceManager();
-        User user = selectUserByLogin(login);
-        boolean result = false;
-
-        try {
-            if (user != null) {
-                user.setConfirmed(confirmation);
-                user.setConfirmDate(new Date());
-                pm.makePersistent(user);
-                result = true;
-                confirmRemoteRegistration(user.getLogin());
-            } else {
-                logger.log(Level.INFO, "User with key: {0} is null!. User wanted to confirm his account: {1}", new Object[]{login, confirmation});
-            }
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
-        } finally {
-            pm.close();
-        }
-
-        return result;
-    }*/
     
     public static boolean confirmUserRegistration(String login) {
     	boolean confirmed = false;
@@ -191,26 +137,6 @@ public class UserPersistenceUtils {
         	logger.log(Level.SEVERE, e.getMessage(), e);
         }
     }
-
-    /*public static List<User> selectUsers(int first, int last) {
-        List<User> results = new ArrayList<User>();
-        PersistenceManager pm = PMF.get().getPersistenceManager();
-
-        try {
-            Query query = pm.newQuery(User.class);
-            query.setRange(first, last);
-            query.setOrdering("regDate desc");
-
-            results = (List<User>) query.execute();
-            //results = (List<User>) pm.detachCopyAll(results);
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
-        } finally {
-            pm.close();
-        }
-
-        return results;
-    }*/
     
     private static User jsonToUser(JSONObject user) throws IllegalAccessException, InvocationTargetException {
 		User u = new User();
@@ -268,14 +194,12 @@ public class UserPersistenceUtils {
     	boolean auth = false;
     	try {
     		String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "itemProvider";
-    		String params = "type=user&login=" + URLEncoder.encode(login, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8");			 
+    		String passwordEnc = getHash(password);
+    		String params = "type=user&login=" + URLEncoder.encode(login, "UTF-8") + "&password=" + URLEncoder.encode(passwordEnc, "UTF-8") + "&enc=1";			 
     		String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
     		if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
     			JSONObject root = new JSONObject(gJson);
     			auth = root.optBoolean("auth", false);
-    			//TODO add request attributes
-    			//"email",
-    			//"name" = "firstname" + "lastname"
     		} else {
     			logger.log(Level.SEVERE, "Received following server response: " + gJson);
     		}
@@ -284,4 +208,10 @@ public class UserPersistenceUtils {
     	}
     	return auth;
     }
+    
+    private static String getHash(String password) throws Exception {
+		MessageDigest digester = MessageDigest.getInstance("SHA-256");
+	    digester.update(password.getBytes());
+	    return Base64.encode(digester.digest());
+	}
 }

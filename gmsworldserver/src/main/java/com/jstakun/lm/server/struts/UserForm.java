@@ -17,6 +17,7 @@ import org.apache.struts.action.ActionMessage;
 import org.apache.struts.validator.DynaValidatorForm;
 import org.json.JSONObject;
 
+import com.jstakun.lm.server.persistence.User;
 import com.jstakun.lm.server.utils.MailUtils;
 import com.jstakun.lm.server.utils.persistence.UserPersistenceUtils;
 
@@ -35,6 +36,15 @@ public class UserForm extends DynaValidatorForm {
 	@Override
     public void reset(ActionMapping mapping, HttpServletRequest request) {
         super.reset(mapping, request);
+        final String secret = request.getParameter("secret"); 
+		if  (StringUtils.isNotEmpty(secret)) {
+			 User user = UserPersistenceUtils.selectUserByLogin(null, secret);
+			 if (user != null) {
+				 set("login", user.getLogin());
+				 set("email", user.getEmail());
+				 set("action", "reset");
+			 }
+		}
     }
 
     /**
@@ -47,12 +57,13 @@ public class UserForm extends DynaValidatorForm {
     public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
 
+        String action = StringUtils.trimToEmpty((String) get("action"));
         String login = StringUtils.trimToEmpty((String) get("login"));
         if (StringUtils.isEmpty(login)) {
             errors.add("userForm", new ActionMessage("errors.login"));
         } else if (!regexLoginValidate(login)) {
             errors.add("userForm", new ActionMessage("errors.login.regex"));
-        } else if (UserPersistenceUtils.userExists(login)) {
+        } else if (!StringUtils.equals(action, "reset") && UserPersistenceUtils.userExists(login)) {
             errors.add("userForm", new ActionMessage("errors.uniqueLogin"));
         } 
 

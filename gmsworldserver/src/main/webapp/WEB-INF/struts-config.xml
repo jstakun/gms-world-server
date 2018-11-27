@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="windows-1250" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN" "http://struts.apache.org/dtds/struts-config_1_2.dtd">
 <struts-config>
     <form-beans>
@@ -30,6 +30,7 @@
             <form-property name="email" type="java.lang.String"/>
             <form-property name="firstname" type="java.lang.String"/>
             <form-property name="lastname" type="java.lang.String"/>
+            <form-property name="action" type="java.lang.String"/>
         </form-bean>
         <form-bean name="contactForm"
                    type="com.jstakun.lm.server.struts.ContactForm">
@@ -90,13 +91,21 @@
             <forward name="success" path="/confirm.jsp?step=1"/>
             <forward name="failure" path="/failure.jsp?step=1"/>
         </action>
-         <action path="/m/register"
+        <action path="/m/register"
                 name="userForm"
                 scope="request"
                 input="/m/register.jsp"
             type="com.jstakun.lm.server.struts.RegisterAction">
             <forward name="success" path="/m/confirm.jsp?step=1"/>
             <forward name="failure" path="/m/failure.jsp?step=1"/>
+        </action>
+        <action path="/m/reset"
+                name="userForm"
+                scope="request"
+                input="/m/reset.jsp"
+            type="com.jstakun.lm.server.struts.ResetAction">
+            <forward name="success" path="/m/confirm.jsp?step=4"/>
+            <forward name="failure" path="/m/failure.jsp?step=4"/>
         </action>
         <action path="/showGeocode"
                 scope="request"
