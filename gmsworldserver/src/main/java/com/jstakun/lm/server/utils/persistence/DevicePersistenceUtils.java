@@ -21,7 +21,7 @@ public class DevicePersistenceUtils {
 	
 	private static final String[] commands = {"resume","start","stop","route","locate","mute","unmute","normal","call","message",
 			"radius","gpshigh","gpsbalance","notify","audio","noaudio","photo", "ping","ring","ringoff",
-			"lock","pin","about", "hello", "config", "perimeter"}; 
+			"lock","pin","about", "hello", "config", "perimeter", "reset"}; 
 	
 	public static int isDeviceRegistered(String imei) throws Exception {
 		if (imei != null) {

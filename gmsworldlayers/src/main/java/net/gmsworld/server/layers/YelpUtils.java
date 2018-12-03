@@ -295,10 +295,7 @@ public class YelpUtils extends LayerHelper {
 
     @Override
 	public List<ExtendedLandmark> loadLandmarks(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String hasDeals, String language, Locale locale, boolean useCache) throws Exception {
-		if (language == null) {
-			language =  StringUtil.getLanguage(locale.getLanguage() + "_" + locale.getCountry(), "en_US", 5);
-		}
-    	int normalizedRadius = NumberUtils.normalizeNumber(radius, 1000, 40000);
+		int normalizedRadius = NumberUtils.normalizeNumber(radius, 1000, 40000);
         int normalizedLimit = NumberUtils.normalizeNumber(limit, 20, 100);
         
         List<ExtendedLandmark> landmarks = Collections.synchronizedList(new ArrayList<ExtendedLandmark>());

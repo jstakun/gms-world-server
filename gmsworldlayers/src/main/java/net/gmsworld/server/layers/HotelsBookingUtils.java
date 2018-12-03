@@ -637,6 +637,11 @@ public class HotelsBookingUtils extends LayerHelper {
         Long creationDate = null;
         try {
         	creationDate = (Long)hotel.getProperty("creationDate");
+        	String dateString = Long.toString(creationDate);
+        	if (dateString.length() > 13) {
+        		dateString = dateString.substring(0, 13);
+        		creationDate = Long.valueOf(dateString);
+        	}
         	cal.setTimeInMillis(creationDate);
         	desc += String.format(rb.getString("Landmark.creation_date"), prettyTime.format(cal)) + "<br/>";
 		} catch (Exception e) {
