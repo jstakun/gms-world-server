@@ -55,18 +55,18 @@ public class ImageUploadServlet extends HttpServlet {
 	 * @throws IOException
 	 *             if an I/O error occurs
 	 */
-	protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/plain;charset=UTF-8");
 		PrintWriter out = response.getWriter();
 		try {
-			double lat = NumberUtils.getDouble(request.getHeader(Commons.LAT_HEADER), Double.NaN);
-			double lng = NumberUtils.getDouble(request.getHeader(Commons.LNG_HEADER), Double.NaN);
-			boolean isMultipart = ServletFileUpload.isMultipartContent(request);
-			String myPosKey = request.getHeader(Commons.MYPOS_KEY_HEADER);
-			String cacheKey = "screenshot_" + StringUtil.formatCoordE2(lat) + "_" + StringUtil.formatCoordE2(lng);
-			boolean silent = StringUtils.equals(request.getHeader(Commons.SILENT_HEADER), "true");
-			String bucketName =  request.getHeader(Commons.BUCKET_NAME_HEADER);
+			final double lat = NumberUtils.getDouble(request.getHeader(Commons.LAT_HEADER), Double.NaN);
+			final double lng = NumberUtils.getDouble(request.getHeader(Commons.LNG_HEADER), Double.NaN);
+			final boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+			final String myPosKey = request.getHeader(Commons.MYPOS_KEY_HEADER);
+			final String cacheKey = "screenshot_" + StringUtil.formatCoordE2(lat) + "_" + StringUtil.formatCoordE2(lng);
+			final boolean silent = StringUtils.equals(request.getHeader(Commons.SILENT_HEADER), "true");
+			final String bucketName =  request.getHeader(Commons.BUCKET_NAME_HEADER);
+			final String deviceName =  request.getHeader(Commons.DEVICE_NAME_HEADER);
 
 			if (CacheUtil.containsKey(cacheKey)) {
 				logger.log(Level.WARNING, "This screenshot is similar to newest: " + cacheKey);
@@ -142,7 +142,11 @@ public class ImageUploadServlet extends HttpServlet {
 									if (!Double.isNaN(lat) && !Double.isNaN(lng)) {
 										message += "\nTaken at: https://maps.google.com/maps?q=" + StringUtil.formatCoordE6(lat) + "," + StringUtil.formatCoordE6(lng);  
 									}
-									MailUtils.sendAdminMail("New image", message);
+									String title = "New image";
+									if (StringUtils.isNotEmpty(deviceName)) {
+										title += " from device " + deviceName;
+									}
+									MailUtils.sendAdminMail(title, message);
 								}
 							}
 						} else {

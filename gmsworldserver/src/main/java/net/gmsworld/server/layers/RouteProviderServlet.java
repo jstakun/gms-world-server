@@ -21,6 +21,7 @@ import com.jstakun.lm.server.utils.MailUtils;
 import com.jstakun.lm.server.utils.RoutesUtils;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 
+import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.NumberUtils;
@@ -157,7 +158,8 @@ public class RouteProviderServlet extends HttpServlet {
         } else {
         	PrintWriter out = response.getWriter();
     		try {
-        		String routeStr = request.getParameter("route");
+    			final String routeStr = request.getParameter("route");
+    			final String deviceName =  request.getHeader(Commons.DEVICE_NAME_HEADER);
         		if (StringUtils.startsWith(routeStr, "{")) {
         			String[] resp = RoutesUtils.cache(routeStr);
         			if (! StringUtils.equals(resp[1], "200")) {
@@ -165,9 +167,9 @@ public class RouteProviderServlet extends HttpServlet {
         				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, resp[0]);
         			} else if (resp[0] != null) {
         				try {
-        					JSONObject root = new JSONObject(routeStr);
-        					String routeName = root.getString("name");
-        					String[] tokens = StringUtils.split(routeName, "_");
+        					final JSONObject root = new JSONObject(routeStr);
+        					final String routeName = root.getString("name");
+        					final String[] tokens = StringUtils.split(routeName, "_");
         					String message;
         					if (tokens.length == 5) {
         						message = "New route saved: " + routeName + "\n" + ConfigurationManager.SERVER_URL + "dlr/" + tokens[3] + "/" + tokens[4];
@@ -175,13 +177,17 @@ public class RouteProviderServlet extends HttpServlet {
         						message = "New route saved: " + routeName;
         					}
         					try {
-        						JSONObject route = root.getJSONArray("features").getJSONObject(0);
+        						final JSONObject route = root.getJSONArray("features").getJSONObject(0);
         						message += "\nDescription: " + route.getJSONObject("properties").getString("description");
         						message += "\nRoute waypoints count: " + route.getJSONObject("geometry").getJSONArray("coordinates").length();  
         					} catch (Exception e) {
         						logger.log(Level.SEVERE, e.getMessage(), e);
         					}
-        					MailUtils.sendAdminMail("New route", message);
+        					String title = "New route";
+        					if (StringUtils.isNotEmpty(deviceName)) {
+								title += " from device " + deviceName;
+							}
+        					MailUtils.sendAdminMail(title, message);
         				} catch (Exception e) {
         					logger.log(Level.SEVERE, e.getMessage(), e);
         				}
