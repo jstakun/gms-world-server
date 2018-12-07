@@ -10,7 +10,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
     <head>
-        <title>Download GMS World mobile applications</title>
+        <title>Download GMS World applications</title>
          <%@ include file="/WEB-INF/jspf/head.jspf" %>
     </head>
 
@@ -29,14 +29,10 @@
                 <!-- main -->
                 <div id="main">
 
-                <h3>Download Landmark Manager</h3>
+                <h3>Download GMS World applications</h3>
                   <p>
                         <b>Landmark Manager</b> is mashup aggregating places from multiple services including
-                        <b>Facebook</b>, <b>Foursquare</b>, <b>Google Places</b>, <b>Yelp</b>, <b>Qype</b>,
-                        <b>Wikipedia</b>, <b>Eventful</b>, <b>Last FM</b>, <b>YouTube</b>,
-                        <b>Webcam.Travel</b>, <b>Instagram</b>, <b>Flickr</b>, <b>Picasa</b>, <b>Panoramio</b>, 
-                        <b>OSM</b>, <b>Foursquare Merchant</b>, <b>Groupon</b>, <b>8 Coupons</b>,
-                        <b>Expedia</b> and <b>Hotels Combined</b>.
+                        <b>Facebook</b>, <b>Foursquare</b>, <b>Yelp</b>, <b>Booking.com</b> and others.
                         Check in at places you are visiting, find daily deals, book hotel, find route and many more...
                   </p>
                 <p>
@@ -49,38 +45,18 @@
                             Find Landmark Manager at <a href="http://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui">Google Play</a>,
                             <a href="http://www.amazon.com/gp/product/B004X2NR7O">Amazon Appstore</a> or <a href="http://apps.opera.com/landmark_manager.html">Opera Mobile Store</a>.
                             <i>Please note Android application is in Public Beta.</i><br/>
-                            <!--img src="/images/qr_android.png" alt="Landmark Manager Android download link QR Code" width="200" height="200"/-->
                         </li>
-                        <!--li>
-                            <a href="/download/j2me/LandmarkManager.jar">Nokia, Motorola, Sony or any other J2ME compilant smartphone</a>.
-                            <i>Please note J2ME application is in Public Beta.</i><br/>
-                            <img src="/images/qr_j2me.png" alt="Landmark Manager Nokia, Motorola, SonyErricson or any other J2ME compilant smartphone download link QR Code" width="200" height="200"/>
-                        </li-->
-                        <!--li>
-                            <a href="/download/blackberry/LandmarkManagerUIMIDlet.cod">Blackberry</a>.
-                            <i>Please note Blackberry application is in Public Beta.</i><br/>
-                            <img src="/images/qr_bb.png" alt="Landmark Manager BlackBerry download link QR Code" width="200" height="200"/>
-                        </li-->
                         <li>
                             <a href="mailto:support@gms-world.net?subject=iPhone version request">iPhone</a>.
                             <i>Please note iPhone application is in Private Alfa.</i>
                         </li>
                     </ul>
                 </p>
-                <!--p>
-                    <b>Download Deals Anywhere</b>  for your smartphone:
-                </p>
+                <br/>
                 <p>
-                    <ul>
-                        <li>
-                            <a href="https://github.com/jstakun/gms-world-client/raw/master/DealsAnywhereNext/DealsAnywhereNext.apk">Android</a>.
-                            Find Deals Anywhere at <a href="http://market.android.com/details?id=com.jstakun.gms.android.ui.deals">Google Play</a> or
-                            <a href="http://www.amazon.com/gp/product/B00AKICNG6">Amazon Appstore</a>.
-                            <i>Please note Android application is in Public Beta.</i><br/>
-                            <img src="/images/qr_android_da.png" alt="Deals Anywhere Android download link QR Code" width="200" height="200"/>
-                        </li>
-                    </ul>
-                </p-->
+                        With <b>Device Locator</b> you could manage your device remotely with SMS or cloud commands. 
+                        You can also track your device location and record route. Read more about Device Locator commands <a href="/dl">here</a>.
+                 </p> 
                 <p>
                     <b>Download Device Locator</b>  for your smartphone:
                 </p>
