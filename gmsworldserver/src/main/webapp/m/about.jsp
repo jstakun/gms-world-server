@@ -24,11 +24,12 @@
                         GMS World is startup delivering solutions based on smartphone geolocation functionality.
                     </p>
                     <p>
-                        Currently we are delivering number of projects including <b>Landmark Manager</b> and <b>Blogeo</b>.</p>
+                        Currently we are delivering number of projects including <b>Landmark Manager</b>, <b>Hotels on Map</b> and <b>Device Locator</b>.
+                    </p>
                     <p>
-                        <b>Landmark Manager</b> is mashup aggregating places from multiple providers including <b>Facebook</b>, <b>Twitter</b>, <b>Foursquare</b>, <b>Yelp</b>, <b>Google Places</b>, <b>Freebase</b>, <b>Wikipedia</b>, <b>Eventful</b>,
-                        <b>Last FM</b>, <b>YouTube</b>, <b>Flickr</b>, <b>Picasa</b>, <b>Foursquare Merchant</b>, <b>Panoramio</b>, <b>Groupon</b>, <b>8 Coupons</b>, <b>Expedia</b>, <b>Booking.com</b> and <b>Hotels Combined</b>.
-                        Automatically check-in at places you are visiting, find daily deals, book hotel, find parking, route or ATM and many more...<br/>
+                        <b>Landmark Manager</b> is mashup aggregating places from multiple services including
+                        <b>Facebook</b>, <b>Foursquare</b>, <b>Yelp</b>, <b>Booking.com</b> and others.
+                         Check in at places you are visiting, find daily deals, book hotel, find route and many more...<br/>
 
 						Key features:<br/>
 
@@ -58,10 +59,9 @@
                         <b>Hotels on Map</b> let's you search for hotels around location you'll choose on the map or based on your browser location. <a href="http://www.hotelsonmap.net">Try it now!</a>
                     </p>
                     <p>
-                        <a href="http://gms-blogeo.appspot.com"><b>Blogeo</b></a> is revolutionery GeoLocation Blog.<br/>
-                        <b>Blogeo</b> combines regular blog features with mobile geolocation allowing smartphones users to send post including
-                        their location. For more details please check my <a href="/blogeo/jstakun"><b>Blogeo</b></a>.
-                    </p>
+                        With <b>Device Locator</b> you could manage your device remotely with SMS or cloud commands. 
+                        You can also track your device location and record route. Read more about Device Locator commands <a href="/dl">here</a>.
+                    </p> 
                     <p>
                         Using our technology we are delivering following solutions:
                     	<ul>
@@ -69,9 +69,9 @@
                         	<li><b>QR codes based location</b></li>
                         	<li><b>Augmented reality apps</b></li>
                         	<li><b>Geo Games</b></li>
+                        	<li><b>Mobile security</b></li>
                     	</ul>
                     </p>
-                    
     	</article>
     	
     	<%@ include file="/WEB-INF/jspf/ad_small_baner.jspf" %>
