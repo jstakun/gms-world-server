@@ -21,7 +21,7 @@
     	<h3>About Us</h3>
 
                     <p>
-                        GMS World is startup delivering solutions based on smartphone geolocation functionality.
+                        GMS World is startup delivering solutions based on geolocation.
                     </p>
                     <p>
                         Currently we are delivering number of projects including <b>Landmark Manager</b>, <b>Hotels on Map</b> and <b>Device Locator</b>.

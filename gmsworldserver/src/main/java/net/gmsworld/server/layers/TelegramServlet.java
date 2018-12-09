@@ -117,64 +117,7 @@ public class TelegramServlet extends HttpServlet {
 					JSONObject messageJson = jsonObject.optJSONObject("message");
 					if (messageJson != null && messageJson.has("text") && messageJson.has("chat")) {
 						Long telegramId= messageJson.getJSONObject("chat").getLong("id");
-						//command imei pin -p args 
-						//command name pin username -p args 
-						String[] tokens = StringUtils.split(messageJson.getString("text"), " ");
-						String reply = "";
-						if (tokens.length >= 3 && StringUtils.isAlpha(tokens[0]) && StringUtils.isNumeric(tokens[2])) {
-							try {
-								String command = tokens[0];
-								String deviceId = tokens[1];
-								Integer pin = Integer.valueOf(tokens[2]);	
-								
-								int argsIndex = 4;
-								String username = null;
-								if (tokens.length > 3 && !StringUtils.equals(tokens[3], "-p")) {
-									argsIndex = 5;
-									username = tokens[3];
-								}
-								
-								String args = null; 
-								if (tokens.length == argsIndex+1) {
-									 args = tokens[argsIndex];
-								} else if (tokens.length > argsIndex+1) {
-									StringUtils.join(Arrays.copyOfRange(tokens, argsIndex, tokens.length-1), " ");
-								}
-								
-								reply = "Command " +  command + " has been sent to the device " + deviceId + ".";
-								
-								if (StringUtils.startsWith(command, "/")) {
-									command = command.substring(1);
-								}
-								if (! StringUtils.endsWithIgnoreCase(command, "dlt")) {
-									command += "dlt";
-								}
-								
-								final String correlationId = RandomStringUtils.randomAlphabetic(16) + System.currentTimeMillis();
-								final String commandName =  command.substring(0, command.length()-3);
-							
-								int status;
-								if (username == null) {
-									status = DevicePersistenceUtils.sendCommand(deviceId, pin, null, null, command, args, correlationId, null);
-								} else {
-									status = DevicePersistenceUtils.sendCommand(null, pin, deviceId, username, command, args, correlationId, null);
-								}
-								
-								if (status == 1)  {
-									CacheUtil.put(correlationId, telegramId + "_+_" + deviceId + "_+_" + commandName, CacheType.LANDMARK);
-								} else if (status == -2) { //400
-									reply = "Invalid command " + commandName + " or pin";
-								} else if (status == -4) { //404
-									reply = "Device " + deviceId + " not found";
-								} else  {
-									reply = "Failed to send command " + commandName + " to the device " + deviceId;
-								}  
-							} catch (Exception e) {
-								reply = "Failed to send command: " + e.getMessage();
-							}
-						} else {
-							reply = "Invalid command!";
-						}
+						final String reply = parseCommandString(messageJson.getString("text"), Long.toString(telegramId)); 
 						TelegramUtils.sendTelegram(Long.toString(telegramId), reply);
 					} else {
 						logger.log(Level.SEVERE, "Received invalid json: " + content);
@@ -191,5 +134,70 @@ public class TelegramServlet extends HttpServlet {
 		} finally {
 			out.close();
 		}
+	}
+	
+	//command pin imei -p args 
+	//command pin name username -p args 
+	public static String parseCommandString(final String commandString, final String socialId) {
+		final String[] commandTokens = StringUtils.split(commandString, " ");
+		String reply = "";
+		if (commandTokens.length >= 3 && StringUtils.isAlpha(commandTokens[0]) && StringUtils.isNumeric(commandTokens[1])) {
+			try {
+				String command = commandTokens[0];
+				final Integer pin = Integer.valueOf(commandTokens[1]);	
+				final String deviceId = commandTokens[2];
+				
+				int argsIndex = 4;
+				String username = null;
+				if (commandTokens.length > 3 && !StringUtils.equals(commandTokens[3], "-p")) {
+					argsIndex = 5;
+					username = commandTokens[3];
+				}
+				
+				String args = null; 
+				if (commandTokens.length == argsIndex+1) {
+					 args = commandTokens[argsIndex];
+				} else if (commandTokens.length > argsIndex+1) {
+					StringUtils.join(Arrays.copyOfRange(commandTokens, argsIndex, commandTokens.length-1), " ");
+				}
+				
+				reply = "Command " +  command + " has been sent to the device " + deviceId + ".";
+				
+				if (StringUtils.startsWith(command, "/")) {
+					command = command.substring(1);
+				}
+				
+				if (StringUtils.endsWithIgnoreCase(command, "dl")) {
+					command += "t";
+				} else if (!StringUtils.endsWithIgnoreCase(command, "dlt")) {
+					command += "dlt";
+				}
+				
+				final String correlationId = RandomStringUtils.randomAlphabetic(16) + System.currentTimeMillis();
+				final String commandName =  command.substring(0, command.length()-3);
+			
+				int status;
+				if (username == null) {
+					status = DevicePersistenceUtils.sendCommand(deviceId, pin, null, null, command, args, correlationId, null);
+				} else {
+					status = DevicePersistenceUtils.sendCommand(null, pin, deviceId, username, command, args, correlationId, null);
+				}
+				
+				if (status == 1)  {
+					CacheUtil.put(correlationId, socialId + "_+_" + deviceId + "_+_" + commandName, CacheType.LANDMARK);
+				} else if (status == -2) { //400
+					reply = "Invalid command " + commandName + " or pin";
+				} else if (status == -4) { //404
+					reply = "Device " + deviceId + " not found";
+				} else  {
+					reply = "Failed to send command " + commandName + " to the device " + deviceId;
+				}  
+			} catch (Exception e) {
+				reply = "Failed to send command: " + e.getMessage();
+			}
+		} else {
+			reply = "Invalid command!";
+		}
+		return reply;
 	}
 }
