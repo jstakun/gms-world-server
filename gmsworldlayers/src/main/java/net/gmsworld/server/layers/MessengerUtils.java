@@ -47,7 +47,7 @@ public class MessengerUtils {
 				logger.log(Level.SEVERE, e.getMessage(), e);
 			}
 		} else {
-			logger.log(Level.SEVERE, "Invalid paramters!");
+			logger.log(Level.SEVERE, "Invalid parameters!");
 		}
 	}
 	

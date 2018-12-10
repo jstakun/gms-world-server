@@ -99,8 +99,10 @@ public class TelegramServlet extends HttpServlet {
 									+ "Your chat id should be pasted automatically otherwise please paste it to \"Telegram chat or channel id\" form field.");
 						} else if (StringUtils.equalsIgnoreCase(message, "/hello") ||  StringUtils.equalsIgnoreCase(message, "hello")) {
 							TelegramUtils.sendTelegram(Long.toString(telegramId), "Hello there!");
-						}
-						   else {
+						} else if (DevicePersistenceUtils.isValidCommand(message)) {
+							final String reply = DevicePersistenceUtils.parseCommandString(message, Long.toString(telegramId)); 
+							TelegramUtils.sendTelegram(Long.toString(telegramId), reply);
+						} else {
 							TelegramUtils.sendTelegram(Long.toString(telegramId), "Oops! I didn't understand your message. Please check list of available commands.");
 						}
 					}	else {

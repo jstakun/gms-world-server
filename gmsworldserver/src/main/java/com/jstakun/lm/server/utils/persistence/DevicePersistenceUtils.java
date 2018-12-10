@@ -259,7 +259,7 @@ public class DevicePersistenceUtils {
 				reply = "Failed to send command: " + e.getMessage();
 			}
 		} else {
-				reply = "Invalid command!";
+			reply = "Oops! I didn't understand your message.";
 		}
 		return reply;
 	}
