@@ -15,6 +15,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
+import com.jstakun.lm.server.utils.persistence.DevicePersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.NotificationPersistenceUtils;
 
 import net.gmsworld.server.config.Commons;
@@ -103,6 +104,9 @@ public final class MessengerServlet extends HttpServlet {
 						logger.log(Level.WARNING, "Messenger psid " + psid + " doesn't exists in the whitelist!");
 					}
 					MessengerUtils.sendMessage(psid, null,  "You've been unregistered from Device Locator notifications.");
+				} else if (DevicePersistenceUtils.isValidCommand(text)) {
+					String reply = DevicePersistenceUtils.parseCommandString(text, psid);
+					MessengerUtils.sendMessage(psid, null, reply);
 				} else {
 					MessengerUtils.sendMessage(psid, null, "Oops! I didn't understand your message.");
 				}

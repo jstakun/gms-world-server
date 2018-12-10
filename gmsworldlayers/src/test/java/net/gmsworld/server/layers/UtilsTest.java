@@ -80,9 +80,9 @@ public class UtilsTest {
 		System.out.println(DateUtils.getFormattedDateTime(new Locale("pl"), date));		
 	}
 	
-	private static String asHex(String arg) {
-		return Integer.toHexString(arg.charAt(0));
-	}
+	//private static String asHex(String arg) {
+	//	return Integer.toHexString(arg.charAt(0));
+	//}
 	
 	private static String convertUtfHex(String arg)  {
 		StringBuffer sb = new StringBuffer();

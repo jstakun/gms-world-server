@@ -12,14 +12,6 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 
-import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.config.Commons.Property;
-import net.gmsworld.server.utils.HttpUtils;
-import net.gmsworld.server.utils.JSONUtils;
-import net.gmsworld.server.utils.NumberUtils;
-import net.gmsworld.server.utils.StringUtil;
-import net.gmsworld.server.utils.ThreadManager;
-
 import org.apache.commons.lang.StringUtils;
 import org.geojson.Feature;
 import org.geojson.FeatureCollection;
@@ -28,7 +20,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.ocpsoft.prettytime.PrettyTime;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
@@ -37,6 +28,14 @@ import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.openlapi.AddressInfo;
 import com.openlapi.QualifiedCoordinates;
+
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.utils.HttpUtils;
+import net.gmsworld.server.utils.JSONUtils;
+import net.gmsworld.server.utils.NumberUtils;
+import net.gmsworld.server.utils.StringUtil;
+import net.gmsworld.server.utils.ThreadManager;
 
 public class HotelsBookingUtils extends LayerHelper {
 
@@ -159,8 +158,8 @@ public class HotelsBookingUtils extends LayerHelper {
 			normalizedRadius = r * 1000;
 		}
 		FeatureCollection hotels = null;
-		String lngStr = StringUtil.formatCoordE2(lng);
-		String latStr = StringUtil.formatCoordE2(lat);	
+		final String lngStr = StringUtil.formatCoordE2(lng);
+		final String latStr = StringUtil.formatCoordE2(lat);	
 
 		String hotelsUrlPrefix = HOTELS_PROVIDER_URL;
 		if (StringUtils.equalsIgnoreCase(sortType, "stars")) {
@@ -169,7 +168,7 @@ public class HotelsBookingUtils extends LayerHelper {
 			hotelsUrlPrefix = HOTELS_CHEAPEST_URL;
 		}
 		
-		String hotelsUrl = hotelsUrlPrefix + latStr + "/" + lngStr + "/" + normalizedRadius + "/" + limit + "?user_key=" + Commons.getProperty(Property.RH_HOTELS_API_KEY);			
+		final String hotelsUrl = hotelsUrlPrefix + latStr + "/" + lngStr + "/" + normalizedRadius + "/" + limit + "?user_key=" + Commons.getProperty(Property.RH_HOTELS_API_KEY);			
 		logger.log(Level.INFO, "Calling: " + hotelsUrl);
 		String json = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), true);
 		if (StringUtils.startsWith(json, "[")) {
@@ -178,6 +177,8 @@ public class HotelsBookingUtils extends LayerHelper {
     			hotels = featureCollectionReader.readValue(json);
     		} catch (Exception e) {
     			logger.log(Level.SEVERE, e.getMessage(), e);
+    		} finally {
+    			json = null;
     		}
 		} else {
 			logger.log(Level.WARNING, "Received following server response " + json);
@@ -201,7 +202,7 @@ public class HotelsBookingUtils extends LayerHelper {
 			hotels.setProperty("creationDate", new Date());
 			hotels.setProperty("language", locale.getLanguage());
 			
-			String language = locale.getLanguage();
+			final String language = locale.getLanguage();
         	String country = locale.getCountry();
         	String tocc = null;
         	
@@ -221,10 +222,10 @@ public class HotelsBookingUtils extends LayerHelper {
         		logger.log(Level.WARNING, "Error getting currency for: " + country + "," + language + "\n" + e.getMessage());
         	}
         	
-        	Calendar cal = Calendar.getInstance();
-            PrettyTime prettyTime = new PrettyTime(locale); 
+        	final Calendar cal = Calendar.getInstance();
+        	final PrettyTime prettyTime = new PrettyTime(locale); 
             
-            ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource", locale);
+        	final ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource", locale);
 			
             if (size <= 100) {
             	for (int i=0; i<size; i++) {
@@ -255,13 +256,14 @@ public class HotelsBookingUtils extends LayerHelper {
 				hotels.setProperty("sortType", sortType);
 			}
 		}
+		
 		logger.log(Level.INFO, "Processed " + size + " hotels in " + (System.currentTimeMillis()-start) + " millis.");
 				
-		if (hotels != null) {
+		if (hotels != null && size > 0) {
 			String hotelsJson = null;
 			try {
     			hotelsJson = objectMapper.writeValueAsString(hotels);
-    			
+    		    	
     			if (size > 0 && StringUtils.isNotEmpty(hotelsJson)) {
     				logger.log(Level.INFO, "Saving geojson list to second level cache");
     				String key = "geojson/" + latStr + "/" + lngStr + "/" + Commons.HOTELS_LAYER;
@@ -276,9 +278,11 @@ public class HotelsBookingUtils extends LayerHelper {
     				logger.log(Level.INFO, "Saved geojson list to local in-memory cache with key: " + key);
     				cacheProvider.put(key, hotelsJson, 1);
     			}
-			} catch (JsonProcessingException e) {
+			} catch (Throwable e) {
     			logger.log(Level.SEVERE, e.getMessage(), e);
-			} 
+			} finally {
+				hotels = null;
+			}
 			return hotelsJson;
 		} else {
 			return null;

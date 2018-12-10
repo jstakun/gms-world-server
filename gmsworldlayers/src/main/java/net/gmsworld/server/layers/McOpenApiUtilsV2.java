@@ -8,8 +8,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 
-import javax.xml.bind.DatatypeConverter;
-
 import org.apache.commons.lang.StringUtils;
 
 import com.google.gdata.util.common.util.Base64;
