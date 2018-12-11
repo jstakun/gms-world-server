@@ -201,7 +201,7 @@ public class DevicePersistenceUtils {
 	
 	//command pin imei -p args 
 	//command pin name username -p args 
-	public static String parseCommandString(final String commandString, final String socialId) {
+	public static String sendCommand(final String commandString, final String socialId) {
 		final String[] commandTokens = StringUtils.split(commandString, " ");
 		String reply = "";
 		if (commandTokens.length >= 3 && isValidCommand(commandTokens[0]) && StringUtils.isNumeric(commandTokens[1])) {

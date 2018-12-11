@@ -105,7 +105,7 @@ public final class MessengerServlet extends HttpServlet {
 					}
 					MessengerUtils.sendMessage(psid, null,  "You've been unregistered from Device Locator notifications.");
 				} else if (DevicePersistenceUtils.isValidCommand(text)) {
-					String reply = DevicePersistenceUtils.parseCommandString(text, psid);
+					String reply = DevicePersistenceUtils.sendCommand(text, psid);
 					MessengerUtils.sendMessage(psid, null, reply);
 				} else {
 					MessengerUtils.sendMessage(psid, null, "Oops! I didn't understand your message.");

@@ -100,7 +100,7 @@ public class TelegramServlet extends HttpServlet {
 						} else if (StringUtils.equalsIgnoreCase(message, "/hello") ||  StringUtils.equalsIgnoreCase(message, "hello")) {
 							TelegramUtils.sendTelegram(Long.toString(telegramId), "Hello there!");
 						} else if (DevicePersistenceUtils.isValidCommand(message)) {
-							final String reply = DevicePersistenceUtils.parseCommandString(message, Long.toString(telegramId)); 
+							final String reply = DevicePersistenceUtils.sendCommand(message, Long.toString(telegramId)); 
 							TelegramUtils.sendTelegram(Long.toString(telegramId), reply);
 						} else {
 							TelegramUtils.sendTelegram(Long.toString(telegramId), "Oops! I didn't understand your message. Please check list of available commands.");
@@ -115,7 +115,7 @@ public class TelegramServlet extends HttpServlet {
 					JSONObject messageJson = jsonObject.optJSONObject("message");
 					if (messageJson != null && messageJson.has("text") && messageJson.has("chat")) {
 						Long telegramId= messageJson.getJSONObject("chat").getLong("id");
-						final String reply = DevicePersistenceUtils.parseCommandString(messageJson.getString("text"), Long.toString(telegramId)); 
+						final String reply = DevicePersistenceUtils.sendCommand(messageJson.getString("text"), Long.toString(telegramId)); 
 						TelegramUtils.sendTelegram(Long.toString(telegramId), reply);
 					} else {
 						logger.log(Level.SEVERE, "Received invalid json: " + content);

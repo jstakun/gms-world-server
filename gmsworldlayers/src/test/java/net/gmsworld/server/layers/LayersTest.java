@@ -29,7 +29,7 @@ import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 public class LayersTest {
 	
 	private static final int apiLevel = 1115;
-	private static final int limit = 93; //min 30, max 1000
+	private static final int limit = 110; //min 30, max 1000
 	private static final int radius = 5000; //50000; 
 	private static final int stringLength = StringUtil.XLARGE;
 	
@@ -175,12 +175,12 @@ public class LayersTest {
 			//assertNotNull(landmarks);
 			//assertEquals("Found " + size + " landmarks", limit, size);
 			
-			for (ExtendedLandmark landmark : landmarks) {
-				System.out.println(landmark.getName() + " :-> " + landmark.getDescription() + "---\n");
-				System.out.println(landmark.getThumbnail() + " " + landmark.getCategoryId() + "," + landmark.getSubCategoryId());
-				System.out.println(landmark.getUrl());
-				System.out.println(landmark.getLayer());
-			}
+			//for (ExtendedLandmark landmark : landmarks) {
+			//	System.out.println(landmark.getName() + " :-> " + landmark.getDescription() + "---\n");
+			//	System.out.println(landmark.getThumbnail() + " " + landmark.getCategoryId() + "," + landmark.getSubCategoryId());
+			//	System.out.println(landmark.getUrl());
+			//	System.out.println(landmark.getLayer());
+			//}
 			
 			String key = layer.cacheGeoJson(landmarks, lat, lng, layer.getLayerName(), locale, null);
 			System.out.println(cacheProvider.getString(key));

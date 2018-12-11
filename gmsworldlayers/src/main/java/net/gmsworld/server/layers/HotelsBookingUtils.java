@@ -222,12 +222,11 @@ public class HotelsBookingUtils extends LayerHelper {
         		logger.log(Level.WARNING, "Error getting currency for: " + country + "," + language + "\n" + e.getMessage());
         	}
         	
-        	final Calendar cal = Calendar.getInstance();
-        	final PrettyTime prettyTime = new PrettyTime(locale); 
-            
         	final ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource", locale);
 			
             if (size <= 100) {
+            	final Calendar cal = Calendar.getInstance();
+            	final PrettyTime prettyTime = new PrettyTime(locale); 
             	for (int i=0; i<size; i++) {
             		extendFeature(hotels.getFeatures().get(i), starsMap, pricesMap, exchangeRates, tocc, cal, rb, prettyTime, locale);			
             	}
@@ -240,7 +239,9 @@ public class HotelsBookingUtils extends LayerHelper {
             			last = size;
             		}
 
-            		threadManager.put(new HotelsProcessor(hotels.getFeatures().subList(first, last), starsMap, pricesMap, exchangeRates, tocc, cal, rb, prettyTime, locale));
+            		final Calendar cal = Calendar.getInstance();
+            		final PrettyTime prettyTime = new PrettyTime(locale); 
+                    threadManager.put(new HotelsProcessor(hotels.getFeatures().subList(first, last), starsMap, pricesMap, exchangeRates, tocc, cal, rb, prettyTime, locale));
 
             		first = last;
             		last += chunkSize;

@@ -2,6 +2,7 @@ package net.gmsworld.server.layers;
 
 import static org.junit.Assert.assertNotEquals;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -79,6 +80,19 @@ public class UtilsTest {
 		System.out.println(DateUtils.getFormattedDateTime(new Locale("us"), date));		
 		System.out.println(DateUtils.getFormattedDateTime(new Locale("pl"), date));		
 	}
+	
+	public void calendarTest() {
+		 Long creationDate = 1473102817567L;
+	     String dateString = Long.toString(creationDate);
+	     if (dateString.length() > 13) {
+	     		dateString = dateString.substring(0, 13);
+	     		creationDate = Long.valueOf(dateString);
+	      }
+	     Calendar c = Calendar.getInstance();
+	     c.setTimeInMillis(creationDate);
+	     System.out.println(c.getTime());
+	}
+	
 	
 	//private static String asHex(String arg) {
 	//	return Integer.toHexString(arg.charAt(0));
