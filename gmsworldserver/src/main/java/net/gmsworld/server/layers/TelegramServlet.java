@@ -96,7 +96,7 @@ public class TelegramServlet extends HttpServlet {
 							String id = Long.toString(telegramId);
 							TelegramUtils.sendTelegram(id, id);
 							TelegramUtils.sendTelegram(id, "Please click on message above containing your chat id, select copy and come back to Device Locator. "
-									+ "Your chat id should be pasted automatically otherwise please paste it to \"Telegram chat or channel id\" form field.");
+									+ "Your chat id should be pasted automatically otherwise please paste it to \"Telegram id\" notification field.");
 						} else if (StringUtils.equalsIgnoreCase(message, "/hello") ||  StringUtils.equalsIgnoreCase(message, "hello")) {
 							TelegramUtils.sendTelegram(Long.toString(telegramId), "Hello there!");
 						} else if (DevicePersistenceUtils.isValidCommand(message)) {
