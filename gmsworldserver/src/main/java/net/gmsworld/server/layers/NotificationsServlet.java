@@ -67,8 +67,7 @@ public class NotificationsServlet extends HttpServlet {
 	 * @throws IOException
 	 *             if an I/O error occurs
 	 */
-	protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/json;charset=UTF-8");
 		PrintWriter out = response.getWriter();
 		try {
