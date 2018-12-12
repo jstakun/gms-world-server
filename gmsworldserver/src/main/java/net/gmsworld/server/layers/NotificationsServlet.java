@@ -254,14 +254,14 @@ public class NotificationsServlet extends HttpServlet {
 					//register for telegram notifications
 					if (appId == Commons.DL_ID && StringUtils.startsWith(request.getRequestURI(), "/s/")) {
 						String telegramId = request.getParameter("chatId");
-						reply = registerTelegram(telegramId, appVersion, response);
+						reply = registerTelegram(telegramId, appVersion);
 					} else {
 						logger.log(Level.WARNING, "Wrong application " + appId);
 					}
 				} else if (StringUtils.equals(type, "register_m")) {
 					//register for email notifications
 					if (appId == Commons.DL_ID && StringUtils.startsWith(request.getRequestURI(), "/s/")) {
-						reply = registerEmail(request.getParameter("email"), appVersion, response);
+						reply = registerEmail(request.getParameter("email"), appVersion);
 					} else {
 						logger.log(Level.WARNING, "Wrong application " + appId);
 					}
@@ -301,6 +301,9 @@ public class NotificationsServlet extends HttpServlet {
 				//} else if (StringUtils.equals(type, "fbm_dl")) {
 				//}
 				out.print(reply.toString());
+				if (reply.has("code")) {
+					response.setStatus(reply.getInt("code"));
+				}
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
@@ -356,7 +359,7 @@ public class NotificationsServlet extends HttpServlet {
 		return "Notifications servlet";
 	}
 
-	private JSONObject registerEmail(String email, int appVersion, HttpServletResponse response) throws IOException {
+	private JSONObject registerEmail(String email, int appVersion) throws IOException {
 		JSONObject reply = null;
 		if (StringUtils.isNotEmpty(email)) {
 			if (NotificationPersistenceUtils.isVerified(email)) {
@@ -375,12 +378,10 @@ public class NotificationsServlet extends HttpServlet {
 					}
 				} else if (verificationStatus.getInt("responseCode") != 200) {
 					logger.log(Level.WARNING, email + " verification failed");
-					reply = new JSONObject().put("status", "failed");
-					response.setStatus(verificationStatus.getInt("responseCode")); 
+					reply = new JSONObject().put("status", "failed").put("code", verificationStatus.getInt("responseCode")); 
 				} else {
 					logger.log(Level.WARNING, email + " verification failed");
-					reply = new JSONObject().put("status", "failed");
-					response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+					reply = new JSONObject().put("status", "failed").put("code", HttpServletResponse.SC_BAD_REQUEST);
 				}
 			} else if (appVersion < 30) {
 				Notification n = NotificationPersistenceUtils.setVerified(email, false);
@@ -392,8 +393,7 @@ public class NotificationsServlet extends HttpServlet {
 				}
 			} else {
 				logger.log(Level.WARNING, "Email address " + email + " is invalid");
-				reply = new JSONObject().put("status", "failed");
-				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);   
+				reply = new JSONObject().put("status", "failed").put("code", HttpServletResponse.SC_BAD_REQUEST);   
 			}
 		} else {
 			logger.log(Level.WARNING, "Email is empty!"); 
@@ -401,7 +401,7 @@ public class NotificationsServlet extends HttpServlet {
 		return reply;
 	}
 	
-	private JSONObject registerTelegram(String telegramId, int appVersion, HttpServletResponse response) throws IOException {
+	private JSONObject registerTelegram(String telegramId, int appVersion) throws IOException {
 		JSONObject reply = null;
 		if (TelegramUtils.isValidTelegramId(telegramId)) {
 			if (NotificationPersistenceUtils.isVerified(telegramId)) {
@@ -424,19 +424,16 @@ public class NotificationsServlet extends HttpServlet {
 	            			TelegramUtils.sendTelegram(telegramId, "If this is correct here is your activation code: " + activationCode + ", otherwise please ignore this message.");
 	            			reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
 	            		} else {
-	            			reply = new JSONObject().put("status", "internalError");
-	    					response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+	            			reply = new JSONObject().put("status", "internalError").put("code", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 	            		}
 					} else {
 						TelegramUtils.sendTelegram(telegramId, "If this is correct please send us back /register command message, otherwise please ignore this message.");
 						reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
 					}				
 				} else if (responseCode != null && responseCode == 400) {
-				    reply = new JSONObject().put("status", "failed");
-				    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				    reply = new JSONObject().put("status", "failed").put("code", HttpServletResponse.SC_BAD_REQUEST);
 				} else {
-					reply = new JSONObject().put("status", "internalError");
-					response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+					reply = new JSONObject().put("status", "internalError").put("code", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 				}
 			} else if ((StringUtils.startsWithAny(telegramId, new String[]{"@","-100"}))) {
 				Integer responseCode = TelegramUtils.sendTelegram(telegramId, "We've received Device Locator notifications registration request for this Channel.");
@@ -449,29 +446,25 @@ public class NotificationsServlet extends HttpServlet {
 	            			TelegramUtils.sendTelegram(telegramId, "If this is correct here is your activation code: " + activationCode +  ", otherwise please ignore this message.");
 	            			reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
 	            		} else {
-	            			reply = new JSONObject().put("status", "internalError");
-	    					response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+	            			reply = new JSONObject().put("status", "internalError").put("code", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 	            		}
 					} else {
 						TelegramUtils.sendTelegram(telegramId, "If this is correct please contact us via email at: device-locator@gms-world.net and send your Channel ID: " + telegramId + ", otherwise please ignore this message.");
 						reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
 					}
 				} else if (responseCode != null && responseCode == 400) {
-					reply = new JSONObject().put("status", "badRequestError");
 					logger.log(Level.SEVERE, "Received response code " + responseCode + " for channel " + telegramId);
-					response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+					reply = new JSONObject().put("status", "badRequestError").put("code", HttpServletResponse.SC_BAD_REQUEST);
 				} else if (responseCode != null && responseCode == 403) {
-					reply = new JSONObject().put("status", "permissionDenied");
 					logger.log(Level.SEVERE, "Received response code " + responseCode + " for channel " + telegramId);
-					response.setStatus(HttpServletResponse.SC_FORBIDDEN);	
+					reply = new JSONObject().put("status", "permissionDenied").put("code", HttpServletResponse.SC_FORBIDDEN);	
 				} else {
 					logger.log(Level.SEVERE, "Received response code " + responseCode + " for channel " + telegramId);
-					reply = new JSONObject().put("status", "internalError");
-					response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+					reply = new JSONObject().put("status", "internalError").put("code", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 				}
 			}
 		} else {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			reply = new JSONObject().put("status", "invalidTelegramId").put("code", HttpServletResponse.SC_BAD_REQUEST);
 		}
 		return reply;
 	}
