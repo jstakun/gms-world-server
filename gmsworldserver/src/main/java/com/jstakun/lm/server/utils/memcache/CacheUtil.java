@@ -12,7 +12,6 @@ import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
 import com.google.appengine.api.memcache.Expiration;
-import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.appengine.api.memcache.jsr107cache.GCacheFactory;
 
@@ -36,7 +35,7 @@ public class CacheUtil {
     private static final Expiration TEN_MINUTES_EXPIRATION = Expiration.byDeltaSeconds(10 * 60);
     private static final Expiration LONG_CACHE_EXPIRATION = Expiration.byDeltaMillis(4 * 60 * 60 * 1000);
     public static final int LONG_CACHE_LIMIT = 4 * 60 * 60 * 1000; //4h
-    
+     
 	private static Cache getCache() {
 		if (cache == null) {
 			try {
@@ -117,26 +116,26 @@ public class CacheUtil {
 	
 	private static void putToFastCache(String key, Object value) {
 		//logger.log(Level.INFO, "putToShortCache " + key);
-		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
-		syncCache.put(key, value, ONE_MINUTE_EXPIRATION);
+		MemcacheServiceFactory.getMemcacheService().put(key, value, ONE_MINUTE_EXPIRATION);
 	}
 	
 	private static void putToLandmarkCache(String key, Object value) {
 		//logger.log(Level.INFO, "putToLandmarkCache " + key);
-		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
-		syncCache.put(key, value, TEN_MINUTES_EXPIRATION);
+		MemcacheServiceFactory.getMemcacheService().put(key, value, TEN_MINUTES_EXPIRATION);
 	}
 	
 	private static void putToLongCache(String key, Object value) {
 		//logger.log(Level.INFO, "putToLongCache " + key);
-		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
-		syncCache.put(key, value, LONG_CACHE_EXPIRATION);
+		MemcacheServiceFactory.getMemcacheService().put(key, value, LONG_CACHE_EXPIRATION);
 	}
 	
 	public static void updateJSONObjectHashMap(String key, String layer, JSONObject value) {
-		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
-		syncCache.increment(key, 1, 0L);
-		syncCache.put(key + "_" + layer, value, ONE_HOUR_EXPIRATION);
+		MemcacheServiceFactory.getMemcacheService().increment(key, 1, 0L);
+		MemcacheServiceFactory.getMemcacheService().put(key + "_" + layer, value, ONE_HOUR_EXPIRATION);
+	}
+	
+	public static Long increment(String key) {		
+		return MemcacheServiceFactory.getMemcacheService().increment(key, 1, 0L);
 	}
 	
 	public static void cacheDeviceLocation(String deviceId, Double latitude, Double longitude, String accuracy) {
@@ -151,11 +150,6 @@ public class CacheUtil {
 		}
 	}
 	
-	
-	public static Long increment(String key) {
-		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
-		return syncCache.increment(key, 1, 0L);
-	}
 	
 	public static void put(String key, Object value, CacheType type) {
 		if (type == CacheType.NORMAL) {
