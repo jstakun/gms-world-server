@@ -21,6 +21,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.json.JSONObject;
 
+import com.jstakun.lm.server.utils.memcache.CacheUtil;
+
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.config.ConfigurationManager;
@@ -62,13 +64,23 @@ public class MailUtils {
     }
     
     private static String sendRemoteMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType, String ccA, String ccP)  {
-    	if (AwsSesUtils.sendEmail(fromA, fromP, toA, toP, ccA, ccP, content, contentType, subject)) {
-   	    	 return "ok";
-   	    } else {
-   	    	logger.log(Level.SEVERE, "Failed to send mail with SES!");
-   	    	//return "failed";
-   	    	return sendJamesMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
-   	    }
+    	long count  = CacheUtil.increment("mailto:" + toA);
+    	if (count > 25 && count < 50) {
+    		logger.log(Level.WARNING, "Sending " + count + " email " + subject + " to " + toA); 
+    	}
+    	if (count < 50) {
+    		if (AwsSesUtils.sendEmail(fromA, fromP, toA, toP, ccA, ccP, content, contentType, subject)) {
+    			return "ok";
+    		} else {
+    			logger.log(Level.SEVERE, "Failed to send mail with SES!");
+    			//return "failed";
+    			return sendJamesMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
+    		}
+    	} else {
+    		logger.log(Level.SEVERE, "Sending " + count + " email " + subject + " to " + toA + " with James"); 
+    		//return "blocked";
+    		return sendJamesMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
+    	}
     }
     
     private static String sendJamesMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType, String ccA, String ccP)  {
