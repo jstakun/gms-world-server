@@ -23,6 +23,7 @@ import com.jstakun.lm.server.persistence.User;
 import com.jstakun.lm.server.utils.MailUtils;
 import com.jstakun.lm.server.utils.RoutesUtils;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
+import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceWebUtils;
 import com.jstakun.lm.server.utils.persistence.NotificationPersistenceUtils;
@@ -366,21 +367,27 @@ public class NotificationsServlet extends HttpServlet {
 				MailUtils.sendDeviceLocatorRegistrationNotification(email, email, n.getSecret(), this.getServletContext());
 				reply = new JSONObject().put("status", "registered");
 			} else if (appVersion >= 30) {
-				JSONObject verificationStatus = MailUtils.emailAccountExists(email);
-				if (verificationStatus.getInt("responseCode") == 200 && StringUtils.equals(verificationStatus.optString("status"), "ok")) {
-					Notification n = NotificationPersistenceUtils.setVerified(email, false);
-					String status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), this.getServletContext(), 2);
-					if (StringUtils.equals(status, "ok")) {
-						reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
+				if (!CacheUtil.containsKey("mailto:"+email+":invalid")) {
+					JSONObject verificationStatus = MailUtils.emailAccountExists(email);
+					if (verificationStatus.getInt("responseCode") == 200 && StringUtils.equals(verificationStatus.optString("status"), "ok")) {
+						Notification n = NotificationPersistenceUtils.setVerified(email, false);
+						String status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), this.getServletContext(), 2);
+						if (StringUtils.equals(status, "ok")) {
+							reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
+						} else {
+							reply = new JSONObject().put("status", status);
+						}
+					} else if (verificationStatus.getInt("responseCode") >= 400) {
+						logger.log(Level.WARNING, email + " verification failed");
+						reply = new JSONObject().put("status", "failed").put("code", verificationStatus.getInt("responseCode"));
+						CacheUtil.put("mailto:"+email+":invalid", verificationStatus.getInt("responseCode"), CacheType.NORMAL);
 					} else {
-						reply = new JSONObject().put("status", status);
+						logger.log(Level.WARNING, email + " verification failed");
+						reply = new JSONObject().put("status", "failed").put("code", HttpServletResponse.SC_BAD_REQUEST);
 					}
-				} else if (verificationStatus.getInt("responseCode") != 200) {
-					logger.log(Level.WARNING, email + " verification failed");
-					reply = new JSONObject().put("status", "failed").put("code", verificationStatus.getInt("responseCode")); 
 				} else {
 					logger.log(Level.WARNING, email + " verification failed");
-					reply = new JSONObject().put("status", "failed").put("code", HttpServletResponse.SC_BAD_REQUEST);
+					reply = new JSONObject().put("status", "failed").put("code", (Integer) CacheUtil.getObject("mailto:"+email+":invalid"));
 				}
 			} else if (appVersion < 30) {
 				Notification n = NotificationPersistenceUtils.setVerified(email, false);
@@ -413,53 +420,63 @@ public class NotificationsServlet extends HttpServlet {
 				}
 				reply = new JSONObject().put("status", "registered");
 			} else if (StringUtils.isNumeric(telegramId)) {
-				Integer responseCode =  TelegramUtils.sendTelegram(telegramId, "We've received Device Locator notifications registration request from you.");
-				if (responseCode != null && responseCode == 200) {
-					Notification n = NotificationPersistenceUtils.setVerified(telegramId, false);
-					if (appVersion >= 30) {
-						String tokens[] = StringUtils.split(n.getSecret(), ".");
-	            		if (tokens.length == 2 && tokens[1].length() == 4 && StringUtils.isNumeric(tokens[1])) {
-	            			String activationCode = tokens[1];
-	            			TelegramUtils.sendTelegram(telegramId, "If this is correct here is your activation code: " + activationCode + ", otherwise please ignore this message.");
-	            			reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
-	            		} else {
-	            			reply = new JSONObject().put("status", "internalError").put("code", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-	            		}
+				if (!CacheUtil.containsKey("telegramId:"+telegramId +":invalid")) {
+					Integer responseCode =  TelegramUtils.sendTelegram(telegramId, "We've received Device Locator notifications registration request from you.");
+					if (responseCode != null && responseCode == 200) {
+						Notification n = NotificationPersistenceUtils.setVerified(telegramId, false);
+						if (appVersion >= 30) {
+							String tokens[] = StringUtils.split(n.getSecret(), ".");
+							if (tokens.length == 2 && tokens[1].length() == 4 && StringUtils.isNumeric(tokens[1])) {
+								String activationCode = tokens[1];
+								TelegramUtils.sendTelegram(telegramId, "If this is correct here is your activation code: " + activationCode + ", otherwise please ignore this message.");
+								reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
+							} else {
+								reply = new JSONObject().put("status", "internalError").put("code", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+							}
+						} else {
+							TelegramUtils.sendTelegram(telegramId, "If this is correct please send us back /register command message, otherwise please ignore this message.");
+							reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
+						}				
+					} else if (responseCode != null && responseCode == 400) {
+						reply = new JSONObject().put("status", "failed").put("code", HttpServletResponse.SC_BAD_REQUEST);
+						CacheUtil.put("telegramId:"+telegramId +":invalid", 400, CacheType.NORMAL);
 					} else {
-						TelegramUtils.sendTelegram(telegramId, "If this is correct please send us back /register command message, otherwise please ignore this message.");
-						reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
-					}				
-				} else if (responseCode != null && responseCode == 400) {
-				    reply = new JSONObject().put("status", "failed").put("code", HttpServletResponse.SC_BAD_REQUEST);
+						reply = new JSONObject().put("status", "internalError").put("code", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+					} 
 				} else {
-					reply = new JSONObject().put("status", "internalError").put("code", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+					reply = new JSONObject().put("status", "failed").put("code", HttpServletResponse.SC_BAD_REQUEST);
 				}
 			} else if ((StringUtils.startsWithAny(telegramId, new String[]{"@","-100"}))) {
-				Integer responseCode = TelegramUtils.sendTelegram(telegramId, "We've received Device Locator notifications registration request for this Channel.");
-				if (responseCode != null && responseCode == 200) {
-					Notification n = NotificationPersistenceUtils.setVerified(telegramId, false);
-					if (appVersion >= 30) {
-						String tokens[] = StringUtils.split(n.getSecret(), ".");
-	            		if (tokens.length == 2 && tokens[1].length() == 4 && StringUtils.isNumeric(tokens[1])) {
-	            			String activationCode = tokens[1];
-	            			TelegramUtils.sendTelegram(telegramId, "If this is correct here is your activation code: " + activationCode +  ", otherwise please ignore this message.");
-	            			reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
-	            		} else {
-	            			reply = new JSONObject().put("status", "internalError").put("code", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-	            		}
+				if (!CacheUtil.containsKey("telegramId:"+telegramId +":invalid")) {
+					Integer responseCode = TelegramUtils.sendTelegram(telegramId, "We've received Device Locator notifications registration request for this Channel.");
+					if (responseCode != null && responseCode == 200) {
+						Notification n = NotificationPersistenceUtils.setVerified(telegramId, false);
+						if (appVersion >= 30) {
+							String tokens[] = StringUtils.split(n.getSecret(), ".");
+							if (tokens.length == 2 && tokens[1].length() == 4 && StringUtils.isNumeric(tokens[1])) {
+								String activationCode = tokens[1];
+								TelegramUtils.sendTelegram(telegramId, "If this is correct here is your activation code: " + activationCode +  ", otherwise please ignore this message.");
+								reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
+							} else {
+								reply = new JSONObject().put("status", "internalError").put("code", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+							}
+						} else {
+							TelegramUtils.sendTelegram(telegramId, "If this is correct please contact us via email at: device-locator@gms-world.net and send your Channel ID: " + telegramId + ", otherwise please ignore this message.");
+							reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
+						}
+					} else if (responseCode != null && responseCode == 400) {
+						logger.log(Level.SEVERE, "Received response code " + responseCode + " for channel " + telegramId);
+						reply = new JSONObject().put("status", "badRequestError").put("code", HttpServletResponse.SC_BAD_REQUEST);
+						CacheUtil.put("telegramId:"+telegramId +":invalid", 400, CacheType.NORMAL);
+					} else if (responseCode != null && responseCode == 403) {
+						logger.log(Level.SEVERE, "Received response code " + responseCode + " for channel " + telegramId);
+						reply = new JSONObject().put("status", "permissionDenied").put("code", HttpServletResponse.SC_FORBIDDEN);	
 					} else {
-						TelegramUtils.sendTelegram(telegramId, "If this is correct please contact us via email at: device-locator@gms-world.net and send your Channel ID: " + telegramId + ", otherwise please ignore this message.");
-						reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
+						logger.log(Level.SEVERE, "Received response code " + responseCode + " for channel " + telegramId);
+						reply = new JSONObject().put("status", "internalError").put("code", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 					}
-				} else if (responseCode != null && responseCode == 400) {
-					logger.log(Level.SEVERE, "Received response code " + responseCode + " for channel " + telegramId);
-					reply = new JSONObject().put("status", "badRequestError").put("code", HttpServletResponse.SC_BAD_REQUEST);
-				} else if (responseCode != null && responseCode == 403) {
-					logger.log(Level.SEVERE, "Received response code " + responseCode + " for channel " + telegramId);
-					reply = new JSONObject().put("status", "permissionDenied").put("code", HttpServletResponse.SC_FORBIDDEN);	
 				} else {
-					logger.log(Level.SEVERE, "Received response code " + responseCode + " for channel " + telegramId);
-					reply = new JSONObject().put("status", "internalError").put("code", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+					reply = new JSONObject().put("status", "badRequestError").put("code", HttpServletResponse.SC_BAD_REQUEST);
 				}
 			}
 		} else {
