@@ -161,38 +161,43 @@ public class RouteProviderServlet extends HttpServlet {
     			final String routeStr = request.getParameter("route");
     			final String deviceName =  request.getHeader(Commons.DEVICE_NAME_HEADER);
         		if (StringUtils.startsWith(routeStr, "{")) {
-        			String[] resp = RoutesUtils.cache(routeStr);
-        			if (! StringUtils.equals(resp[1], "200")) {
-        				logger.log(Level.SEVERE, "Server error: " + resp[1] + " " + resp[0]);
-        				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, resp[0]);
-        			} else if (resp[0] != null) {
-        				try {
-        					final JSONObject root = new JSONObject(routeStr);
-        					final String routeName = root.getString("name");
-        					final String[] tokens = StringUtils.split(routeName, "_");
-        					String message;
-        					if (tokens.length == 5) {
-        						message = "New route saved: " + routeName + "\n" + ConfigurationManager.SERVER_URL + "dlr/" + tokens[3] + "/" + tokens[4];
-        					} else {
-        						message = "New route saved: " + routeName;
-        					}
+        			final JSONObject root = new JSONObject(routeStr);
+        			if (root.has("name") && root.has("features")) {
+        				String[] resp = RoutesUtils.cache(routeStr);
+        				if (StringUtils.equals(resp[1], "200") && StringUtils.isNotEmpty(resp[0])) {
         					try {
-        						final JSONObject route = root.getJSONArray("features").getJSONObject(0);
-        						message += "\nDescription: " + route.getJSONObject("properties").getString("description");
-        						message += "\nRoute waypoints count: " + route.getJSONObject("geometry").getJSONArray("coordinates").length();  
+        						final String routeName = root.getString("name");
+        						final String[] tokens = StringUtils.split(routeName, "_");
+        						String message;
+        						if (tokens.length == 5) {
+        							message = "New route saved: " + routeName + "\n" + ConfigurationManager.SERVER_URL + "dlr/" + tokens[3] + "/" + tokens[4];
+        						} else {
+        							message = "New route saved: " + routeName;
+        						}
+        						try {
+        							final JSONObject route = root.getJSONArray("features").getJSONObject(0);
+        							message += "\nDescription: " + route.getJSONObject("properties").getString("description");
+        							message += "\nRoute waypoints count: " + route.getJSONObject("geometry").getJSONArray("coordinates").length();  
+        						} catch (Exception e) {
+        							logger.log(Level.SEVERE, e.getMessage(), e);
+        						}
+        						String title = "New route";
+        						if (StringUtils.isNotEmpty(deviceName)) {
+        							title += " from device " + deviceName;
+        						}
+        						MailUtils.sendAdminMail(title, message);
         					} catch (Exception e) {
         						logger.log(Level.SEVERE, e.getMessage(), e);
         					}
-        					String title = "New route";
-        					if (StringUtils.isNotEmpty(deviceName)) {
-								title += " from device " + deviceName;
-							}
-        					MailUtils.sendAdminMail(title, message);
-        				} catch (Exception e) {
-        					logger.log(Level.SEVERE, e.getMessage(), e);
+        					out.println(resp[0]);
+        					out.close();
+        				} else {
+        					logger.log(Level.SEVERE, "Server error: " + resp[1] + " " + resp[0]);
+        					response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         				}
-        				out.println(resp[0]);
-        				out.close();
+        			} else {
+        				logger.log(Level.WARNING, "Wrong route format: " + routeStr);
+            	 		response.sendError(HttpServletResponse.SC_BAD_REQUEST);
         			}
         		} else {
         			logger.log(Level.WARNING, "Wrong json format: " + routeStr);
