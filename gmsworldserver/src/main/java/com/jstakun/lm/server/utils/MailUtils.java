@@ -65,10 +65,7 @@ public class MailUtils {
     
     private static String sendRemoteMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType, String ccA, String ccP)  {
     	long count  = CacheUtil.increment("mailto:" + toA);
-    	if (count > 25 && count < 50) {
-    		logger.log(Level.WARNING, "Sending " + count + " email " + subject + " to " + toA); 
-    	}
-    	if (count < 50) {
+    	if (count < 20) {
     		if (AwsSesUtils.sendEmail(fromA, fromP, toA, toP, ccA, ccP, content, contentType, subject)) {
     			return "ok";
     		} else {
@@ -77,7 +74,7 @@ public class MailUtils {
     			return sendJamesMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
     		}
     	} else {
-    		logger.log(Level.SEVERE, "Sending " + count + " email " + subject + " to " + toA + " with James"); 
+    		logger.log(Level.WARNING, "Sending " + count + " email " + subject + " to " + toA + " with James"); 
     		//return "blocked";
     		return sendJamesMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
     	}

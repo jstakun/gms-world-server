@@ -161,7 +161,7 @@ public class RouteProviderServlet extends HttpServlet {
     			final String routeStr = request.getParameter("route");
     			final String deviceName =  request.getHeader(Commons.DEVICE_NAME_HEADER);
         		if (StringUtils.startsWith(routeStr, "{")) {
-        			final JSONObject root = new JSONObject(routeStr);
+        			JSONObject root = new JSONObject(routeStr);
         			if (root.has("name") && root.has("features")) {
         				String[] resp = RoutesUtils.cache(routeStr);
         				if (StringUtils.equals(resp[1], "200") && StringUtils.isNotEmpty(resp[0])) {
@@ -199,6 +199,7 @@ public class RouteProviderServlet extends HttpServlet {
         				logger.log(Level.WARNING, "Wrong route format: " + routeStr);
             	 		response.sendError(HttpServletResponse.SC_BAD_REQUEST);
         			}
+        			root = null;
         		} else {
         			logger.log(Level.WARNING, "Wrong json format: " + routeStr);
         	 		response.sendError(HttpServletResponse.SC_BAD_REQUEST);
