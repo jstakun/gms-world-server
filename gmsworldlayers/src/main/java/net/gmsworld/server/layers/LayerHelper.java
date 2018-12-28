@@ -353,9 +353,11 @@ public abstract class LayerHelper {
 		    				String key = "geojson/" + latStr + "/" + lngStr + "/" + layer;
 		    				cacheProvider.putToSecondLevelCache(key, json);							
 						}}).start();		*/
-    				logger.log(Level.INFO, "Saving geojson list to second level cache");
-    				String key = "geojson/" + latStr + "/" + lngStr + "/" + layer;
-    				cacheProvider.putToSecondLevelCache(key, json);					
+    				if (cacheProvider != null) {
+    					logger.log(Level.INFO, "Saving geojson list to second level cache");
+    					String key = "geojson/" + latStr + "/" + lngStr + "/" + layer;
+    					cacheProvider.putToSecondLevelCache(key, json);
+    				}
     			}
     			
     			if (cacheProvider != null) {

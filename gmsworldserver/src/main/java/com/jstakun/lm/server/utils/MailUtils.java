@@ -74,7 +74,7 @@ public class MailUtils {
     			return sendJamesMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
     		}
     	} else {
-    		logger.log(Level.WARNING, "Sending " + count + " email " + subject + " to " + toA + " with James"); 
+    		logger.log(Level.WARNING, "James is sending " + count + " email " + subject + " to " + toA); 
     		//return "blocked";
     		return sendJamesMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
     	}

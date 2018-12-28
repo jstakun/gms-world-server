@@ -9,6 +9,9 @@
     </system-properties>
     <!--url-stream-handler>urlfetch</url-stream-handler-->
     <runtime>java8</runtime>
+    <staging>
+        <enable-jar-classes>true</enable-jar-classes>
+    </staging>
     <!--manual-scaling>
     	<instances>1</instances>
   	</manual-scaling-->
