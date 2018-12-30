@@ -44,7 +44,7 @@ public class DevicePersistenceUtils {
 		   } else if (deviceJson == null || StringUtils.contains(deviceJson, "503 Service Temporarily Unavailable")) {
 		       return -1;
 		   } else {
-			   logger.log(Level.SEVERE, "Received following server response {0}", deviceJson);
+			   logger.log(Level.SEVERE, "Received server response {0}", deviceJson);
 			   return -1;
 		  }
 	   } else {
@@ -82,7 +82,7 @@ public class DevicePersistenceUtils {
 		   } else if (deviceJson == null || StringUtils.contains(deviceJson, "503 Service Temporarily Unavailable")) {
 		       return -1;
 		   } else {
-			   logger.log(Level.SEVERE, "Received following server response " +  deviceJson + " from\n" + deviceUrl);
+			   logger.log(Level.SEVERE, "Received server response " +  deviceJson + " from\n" + deviceUrl);
 			   return -1;
 		  }
 	   } else {
@@ -121,24 +121,24 @@ public class DevicePersistenceUtils {
 			    	if (root.optString("name") != null ) {
 			    		return 1;
 			    	} else {
-			    		logger.log(Level.SEVERE, "Received following server response {0}", deviceJson);
+			    		logger.log(Level.SEVERE, "Received server response {0}", deviceJson);
 			    		return -1;
 			    	}
 			    } else {
 			    	Integer responseCode = HttpUtils.getResponseCode(deviceUrl);
 			    	if (responseCode != null && responseCode == 400) {
-			    		logger.log(Level.SEVERE, "Received following response 400: {0}", deviceJson);
+			    		logger.log(Level.SEVERE, "Received server response 400: {0}", deviceJson);
 			    		return -2;
 			    	} else if (responseCode != null && responseCode == 404) {
-			    		logger.log(Level.SEVERE, "Received following response 404 {0}", deviceJson);
+			    		logger.log(Level.SEVERE, "Received server response 404 {0}", deviceJson);
 			    		return -4;
 			    	} else {
-			    		logger.log(Level.SEVERE, "Received following response {0} {1}",  new Object[]{responseCode, deviceJson});
+			    		logger.log(Level.SEVERE, "Received server response {0} {1}",  new Object[]{responseCode, deviceJson});
 			    		return -1;
 			    	}
 			    }
 		    } catch (Exception e) {
-		    	logger.log(Level.SEVERE, "Received following server response {0} {1} ", new Object[]{HttpUtils.getResponseCode(deviceUrl), deviceJson});
+		    	logger.log(Level.SEVERE, "Received server response {0} {1} ", new Object[]{HttpUtils.getResponseCode(deviceUrl), deviceJson});
 		    	return -1; 
 		    }
 	   } else {
@@ -169,11 +169,11 @@ public class DevicePersistenceUtils {
 			   if (output != null) {
 				   return output.toString();   
 			   } else {
-				   logger.log(Level.SEVERE, "Received following server response {0}", deviceJson);
+				   logger.log(Level.SEVERE, "Received server response {0}", deviceJson);
 				   return "[]";
 			   }
 		   } else {
-			   logger.log(Level.SEVERE, "Received following server response {0}", deviceJson);
+			   logger.log(Level.SEVERE, "Received server response {0}", deviceJson);
 			   return "[]";
 		  }
 	   } else {
@@ -190,7 +190,7 @@ public class DevicePersistenceUtils {
 		    if (StringUtils.startsWith(StringUtils.trim(deviceJson), "{")) {
 			   return 1;
 		   } else {
-			   logger.log(Level.SEVERE, "Received following server response {0}", deviceJson);
+			   logger.log(Level.SEVERE, "Received server response {0}", deviceJson);
 			   return -1;
 		  }
 	   } else {
