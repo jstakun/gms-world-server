@@ -124,14 +124,14 @@ public final class DeviceManagerServlet extends HttpServlet {
 			 			 }
 			        	 commandKey += command;
 			        	 Long count = CacheUtil.increment(commandKey);
-			        	 if (count > 10) {
-			        		 logger.log(Level.WARNING, "Command " + commandKey + " has been sent " + count + " times");
-			        		 //TODO status = -3;
-			        		 status = DevicePersistenceUtils.sendCommand(imei, pin, name, username, command, args, correlationId, flex);
+			        	 if (count < 5 || (StringUtils.equals(command, "messagedlapp") && count < 25)) {
+			        		 logger.log(Level.INFO, "Command " + commandKey + " has been sent " + count + " times");
+			        		  status = DevicePersistenceUtils.sendCommand(imei, pin, name, username, command, args, correlationId, flex);	  
 			        	 } else {
-			        		  logger.log(Level.INFO, "Command " + commandKey + " has been sent " + count + " times");
-			        		  status = DevicePersistenceUtils.sendCommand(imei, pin, name, username, command, args, correlationId, flex);
-			        	 }        		 
+			        		 logger.log(Level.SEVERE, "Command " + commandKey + " has been rejected after " + count + " attempts");
+			        		 status = -3;
+			        		 //status = DevicePersistenceUtils.sendCommand(imei, pin, name, username, command, args, correlationId, flex);
+					     }        		 
 		        	 } else if (StringUtils.equalsIgnoreCase(action, "delete")) {
 		        		 status = DevicePersistenceUtils.deleteDevice(imei);
 		        	 } else { 
