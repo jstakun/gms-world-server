@@ -43,7 +43,7 @@ public class IPFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		final String ip = request.getRemoteAddr();
 		final String ip_key = getClass().getName() + "_" + ip;
-		Long total_count = CacheUtil.increment(ip_key);
+		final Long total_count = CacheUtil.increment(ip_key);
 		logger.log(Level.INFO, "Added address to cache " + ip_key + ": " + total_count);	
 		if (total_count > NumberUtils.getInt(ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.IP_TOTAL_LIMIT, "90"), 90)) {
 				logger.log(Level.WARNING, "IP: " + ip + " is blocked after " + total_count + " requests");

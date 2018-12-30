@@ -64,7 +64,7 @@ public class MailUtils {
     }
     
     private static String sendRemoteMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType, String ccA, String ccP)  {
-    	long count  = CacheUtil.increment("mailto:" + toA);
+    	final long count  = CacheUtil.increment("mailto:" + toA);
     	if (count < 20) {
     		if (AwsSesUtils.sendEmail(fromA, fromP, toA, toP, ccA, ccP, content, contentType, subject)) {
     			return "ok";

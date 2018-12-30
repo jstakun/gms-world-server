@@ -42,7 +42,7 @@ public class TokenFilter implements Filter {
 			HttpServletRequest httpRequest = (HttpServletRequest)request;
 			String authHeader = httpRequest.getHeader(Commons.TOKEN_HEADER);
 			if (authHeader != null) {
-				Long token_count = CacheUtil.increment(authHeader);
+				final Long token_count = CacheUtil.increment(authHeader);
 				logger.log(Level.INFO, "Added token to cache " + authHeader + ": " + token_count);
 				if (token_count > 100) {
 					logger.log(Level.WARNING, "User with token {0} sent {1} requests.", new Object[]{authHeader, token_count});
