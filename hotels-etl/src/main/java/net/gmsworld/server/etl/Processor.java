@@ -271,7 +271,8 @@ public class Processor {
 		long start = System.currentTimeMillis();
 		System.out.println("Saving to db batch of " + featureCollection.getFeatures().size() + "...");
 		
-		String json = mapper.writeValueAsString(featureCollection).replace("\"id\"", "\"_id\"");
+		byte[] jsonBytes = mapper.writeValueAsBytes(featureCollection);
+		String json = new String(jsonBytes).replace("\"id\"", "\"_id\"");
 		//load to db 		    	
 		if (!dryrun) {
 			try {

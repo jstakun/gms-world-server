@@ -177,12 +177,11 @@ public class HotelsBookingUtils extends LayerHelper {
     			hotels = featureCollectionReader.readValue(json);
     		} catch (Exception e) {
     			logger.log(Level.SEVERE, e.getMessage(), e);
-    		} finally {
-    			json = null;
-    		}
+    		} 
 		} else {
-			logger.log(Level.WARNING, "Received following server response " + json);
+			logger.log(Level.WARNING, "Received server response " + json);
 		}
+		json = null;
 		
 		long start = System.currentTimeMillis();
 		logger.log(Level.INFO, "Processing hotels list with Jackson...");
@@ -193,10 +192,10 @@ public class HotelsBookingUtils extends LayerHelper {
 		}
 		
 		if (size > 0) {	
-		    Map<String, Double> exchangeRates = new HashMap<String, Double>();
+		    final Map<String, Double> exchangeRates = new HashMap<String, Double>();
 		    exchangeRates.put("EUR", 1d);
-			Map<Integer, Integer> starsMap = new HashMap<Integer, Integer>();
-			Map<Integer, Integer> pricesMap = new HashMap<Integer, Integer>();
+		    final Map<Integer, Integer> starsMap = new HashMap<Integer, Integer>();
+		    final Map<Integer, Integer> pricesMap = new HashMap<Integer, Integer>();
 			
 			hotels.setProperty("layer", Commons.HOTELS_LAYER);
 			hotels.setProperty("creationDate", new Date());
@@ -260,24 +259,22 @@ public class HotelsBookingUtils extends LayerHelper {
 		
 		logger.log(Level.INFO, "Processed " + size + " hotels in " + (System.currentTimeMillis()-start) + " millis.");
 				
-		if (hotels != null && size > 0) {
+		if (size > 0) {
 			String hotelsJson = null;
 			try {
-    			hotelsJson = objectMapper.writeValueAsString(hotels);
-    		    	
-    			if (size > 0 && StringUtils.isNotEmpty(hotelsJson)) {
+				final byte[] hotelsJsonBytes = objectMapper.writeValueAsBytes(hotels);
+				hotelsJson = new String(hotelsJsonBytes);
+				
+    			if (StringUtils.isNotEmpty(hotelsJson) && cacheProvider != null) {
     				logger.log(Level.INFO, "Saving geojson list to second level cache");
-    				String key = "geojson/" + latStr + "/" + lngStr + "/" + Commons.HOTELS_LAYER;
-    				cacheProvider.putToSecondLevelCache(key, hotelsJson);					
-    			}
-    			
-    			if (cacheProvider != null) {
-    				String key = "geojson_" + latStr + "_" + lngStr + "_" + Commons.HOTELS_LAYER + "_" + locale.getLanguage();
+    				final String slcKey = "geojson/" + latStr + "/" + lngStr + "/" + Commons.HOTELS_LAYER;
+    				cacheProvider.putToSecondLevelCache(slcKey, hotelsJson);					
+    				String cKey = "geojson_" + latStr + "_" + lngStr + "_" + Commons.HOTELS_LAYER + "_" + locale.getLanguage();
     				if (StringUtils.isNotEmpty(sortType)) {
-    					key += "_" + sortType;
+    					cKey += "_" + sortType;
     				}
-    				logger.log(Level.INFO, "Saved geojson list to local in-memory cache with key: " + key);
-    				cacheProvider.put(key, hotelsJson, 1);
+    				logger.log(Level.INFO, "Saved geojson list to local in-memory cache with key: " + cKey);
+    				cacheProvider.put(cKey, hotelsJson, 1);
     			}
 			} catch (Throwable e) {
     			logger.log(Level.SEVERE, e.getMessage(), e);

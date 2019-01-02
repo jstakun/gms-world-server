@@ -192,7 +192,7 @@ public class LayersTest {
 		}
 	}
 
-	//@Test
+	@Test
 	public void hotelsTest() throws Exception {
 		//LayerHelperFactory.getHotelsBookingUtils().loadHotelsAsync(lat, lng, radius, limit);  
 		try {

@@ -97,8 +97,9 @@ public class RoutesUtils {
 	           if (CacheUtil.containsKey(routeId)) {
 	        	   FeatureCollection fc = (FeatureCollection) CacheUtil.getObject(routeId);
 	        	   try {
-	        		   reply = new ObjectMapper().writeValueAsString(fc);
-	        	   } catch (Exception e) {
+	        		   byte[] routeBytes = new ObjectMapper().writeValueAsBytes(fc);
+	        		   reply = new String(routeBytes);
+	        	   } catch (Throwable e) {
 	        		   logger.log(Level.SEVERE, e.getMessage(), e);
 	        	   }
 	           } else if (!StringUtils.equalsIgnoreCase(live, "true")) {
