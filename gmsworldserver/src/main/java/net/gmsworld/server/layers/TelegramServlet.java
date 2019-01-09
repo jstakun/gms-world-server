@@ -104,24 +104,16 @@ public class TelegramServlet extends HttpServlet {
 							TelegramUtils.sendTelegram(Long.toString(telegramId), reply);
 						} else {
 							TelegramUtils.sendTelegram(Long.toString(telegramId), "Oops! I didn't understand your message. Please check list of available commands.");
+							logger.log(Level.SEVERE, "Received invalid message: " + message);
 						}
-					}	else {
-						logger.log(Level.SEVERE, "Received invalid json: " + content);
-						response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-					}	
-				} else if (StringUtils.equals(type, Commons.getProperty(Property.TELEGRAM_COMMANDS_TOKEN))) {
-					String content = IOUtils.toString(request.getReader());
-					JSONObject jsonObject = new JSONObject(content);
-					JSONObject messageJson = jsonObject.optJSONObject("message");
-					if (messageJson != null && messageJson.has("text") && messageJson.has("chat")) {
+					} else if (messageJson.has("chat")) {
 						Long telegramId= messageJson.getJSONObject("chat").getLong("id");
-						final String reply = DevicePersistenceUtils.sendCommand(messageJson.getString("text"), Long.toString(telegramId)); 
-						TelegramUtils.sendTelegram(Long.toString(telegramId), reply);
-					} else {
+						TelegramUtils.sendTelegram(Long.toString(telegramId), "Oops! I didn't understand your message. Please check list of available commands.");
+				    } else {
 						logger.log(Level.SEVERE, "Received invalid json: " + content);
 						response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 					}	
-				}	else {
+				} else {
 					logger.log(Level.SEVERE, "Received wrong paramter: " + type);
 					response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 				}
