@@ -90,7 +90,7 @@ public class GeoJsonProviderServlet extends HttpServlet {
 	        			json = layerHelper.getGeoJson(lat, lng, layer, flexString, flexString2);		
 	        		}
 			    
-	        		//Searching geojson document in layer provider
+	        		//Getting geojson document from layer provider
 					if (!StringUtils.startsWith(json, "{")  && layerHelper != null) {
 						try {
 							//layers specific code

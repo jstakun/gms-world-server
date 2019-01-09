@@ -71,41 +71,13 @@ public class HotelsBookingUtils extends LayerHelper {
 		if (r < 1000) {
 			normalizedRadius = r * 1000;
 		}	
-		return loadLandmarksJackson(lat, lng, query, normalizedRadius, version, limit, stringLimit, callCacheFirst, sortType, locale, useCache);
-	}
+	    final String lngStr = StringUtil.formatCoordE2(lng);
+		final String latStr = StringUtil.formatCoordE2(lat);	
 
-	private List<ExtendedLandmark> loadLandmarksJackson(double lat, double lng, String query, int radius, int version, int limit, int stringLimit, String callCacheFirst, String sortType, Locale locale, boolean useCache) throws Exception {
 		FeatureCollection hotels = null;
-		String lngStr = StringUtil.formatCoordE2(lng);
-		String latStr = StringUtil.formatCoordE2(lat);	
-
 		//first call hotels cache
 		if (useCache) {
-			//save to cache with sort type
-			String hotelsUrl = HOTELS_CACHE_URL + lngStr + "_" + latStr + "_" + radius + "_" + limit + "?user_key=" + Commons.getProperty(Property.RH_HOTELS_API_KEY);
-			if (StringUtils.equalsIgnoreCase(sortType, "stars")) {
-				hotelsUrl += "_stars";
-			} else if (StringUtils.equalsIgnoreCase(sortType, "cheapest")) {
-				hotelsUrl += "_cheapest";
-			}
-			logger.log(Level.INFO, "Calling: " + hotelsUrl);
-			String json = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), true);
-			if (StringUtils.startsWith(json, "[") && json.length() > 2) {
-	    		try {
-	    			json = json.substring(1, json.length()-1);
-	    			hotels = featureCollectionReader.readValue(json);
-	    		} catch (Exception e) {
-	    			logger.log(Level.SEVERE, e.getMessage(), e);
-	    		}
-			} else if (StringUtils.startsWith(json, "{") && json.length() > 2) {
-				try {
-	    			hotels = featureCollectionReader.readValue(json);
-	    		} catch (Exception e) {
-	    			logger.log(Level.SEVERE, e.getMessage(), e);
-	    		}
-			} else {
-				logger.log(Level.WARNING, "Received following hotels cache server response " + json);
-			}	
+			hotels = getHotelsFromRemoteCache(latStr, lngStr, normalizedRadius, limit, sortType);
 		}
 		
 		if (hotels == null) {
@@ -116,7 +88,7 @@ public class HotelsBookingUtils extends LayerHelper {
 				hotelsUrlPrefix = HOTELS_CHEAPEST_URL;
 			}
 			
-			String hotelsUrl = hotelsUrlPrefix + latStr + "/" + lngStr + "/" + radius + "/" + limit + "?user_key=" + Commons.getProperty(Property.RH_HOTELS_API_KEY);			
+			String hotelsUrl = hotelsUrlPrefix + latStr + "/" + lngStr + "/" + normalizedRadius + "/" + limit + "?user_key=" + Commons.getProperty(Property.RH_HOTELS_API_KEY);			
 			//logger.log(Level.INFO, "Calling: " + hotelsUrl);
 			String json = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), true);
 			if (StringUtils.startsWith(json, "[")) {
@@ -157,31 +129,34 @@ public class HotelsBookingUtils extends LayerHelper {
 		if (r < 1000) {
 			normalizedRadius = r * 1000;
 		}
-		FeatureCollection hotels = null;
 		final String lngStr = StringUtil.formatCoordE2(lng);
 		final String latStr = StringUtil.formatCoordE2(lat);	
-
-		String hotelsUrlPrefix = HOTELS_PROVIDER_URL;
-		if (StringUtils.equalsIgnoreCase(sortType, "stars")) {
-			hotelsUrlPrefix = HOTELS_STARS_URL;
-		} else if (StringUtils.equalsIgnoreCase(sortType, "cheapest")) {
-			hotelsUrlPrefix = HOTELS_CHEAPEST_URL;
-		}
 		
-		final String hotelsUrl = hotelsUrlPrefix + latStr + "/" + lngStr + "/" + normalizedRadius + "/" + limit + "?user_key=" + Commons.getProperty(Property.RH_HOTELS_API_KEY);			
-		logger.log(Level.INFO, "Calling: " + hotelsUrl);
-		String json = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), true);
-		if (StringUtils.startsWith(json, "[")) {
-    		try {
-    			json = "{\"type\": \"FeatureCollection\", \"features\":" + json + "}";
-    			hotels = featureCollectionReader.readValue(json);
-    		} catch (Exception e) {
-    			logger.log(Level.SEVERE, e.getMessage(), e);
-    		} 
-		} else {
-			logger.log(Level.WARNING, "Received server response " + json);
+		FeatureCollection hotels = getHotelsFromRemoteCache(latStr, lngStr, normalizedRadius, limit, sortType);;
+		
+		if (hotels == null) {
+			String hotelsUrlPrefix = HOTELS_PROVIDER_URL;
+			if (StringUtils.equalsIgnoreCase(sortType, "stars")) {
+				hotelsUrlPrefix = HOTELS_STARS_URL;
+			} else if (StringUtils.equalsIgnoreCase(sortType, "cheapest")) {
+				hotelsUrlPrefix = HOTELS_CHEAPEST_URL;
+			}
+		
+			final String hotelsUrl = hotelsUrlPrefix + latStr + "/" + lngStr + "/" + normalizedRadius + "/" + limit + "?user_key=" + Commons.getProperty(Property.RH_HOTELS_API_KEY);			
+			//logger.log(Level.INFO, "Calling: " + hotelsUrl);
+			String json = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), true);
+			if (StringUtils.startsWith(json, "[")) {
+				try {
+					json = "{\"type\": \"FeatureCollection\", \"features\":" + json + "}";
+					hotels = featureCollectionReader.readValue(json);
+				} catch (Exception e) {
+					logger.log(Level.SEVERE, e.getMessage(), e);
+				} 
+			} else {
+				logger.log(Level.WARNING, "Received server response " + json);
+			}
+			json = null;
 		}
-		json = null;
 		
 		long start = System.currentTimeMillis();
 		logger.log(Level.INFO, "Processing hotels list with Jackson...");
@@ -309,16 +284,17 @@ public class HotelsBookingUtils extends LayerHelper {
 		
 		if (!isCached) {
 			try {
-				logger.log(Level.INFO, "Calling: " + hotelsUrl);
-				HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), false);
+				//logger.log(Level.INFO, "Calling: " + hotelsUrl);
+				String reply = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), false);
 				Integer responseCode = HttpUtils.getResponseCode(hotelsUrl);
 				if (responseCode != null && responseCode >= 400) {
 					id = null;
-					logger.log(Level.SEVERE, "Received following server response code {0}", responseCode);
+					logger.log(Level.SEVERE, "Received server response code {0}", responseCode);
 				} else if (responseCode != null && responseCode == 200) {
 					 if ( cacheProvider != null) {
 						 cacheProvider.put(id, "1");
 					 }
+					 logger.log(Level.INFO, "Received server response " + reply);
 				} else if (responseCode == null ){
 					logger.log(Level.WARNING, "No response code found"); 
 				}
@@ -330,6 +306,38 @@ public class HotelsBookingUtils extends LayerHelper {
 		}
 		
 		return id;
+	}
+	
+	private static FeatureCollection getHotelsFromRemoteCache(String latStr, String lngStr, int radius, int limit, String sortType) {
+		FeatureCollection hotels = null;
+			
+		String hotelsUrl = HOTELS_CACHE_URL + lngStr + "_" + latStr + "_" + radius + "_" + limit;
+		if (StringUtils.equalsIgnoreCase(sortType, "stars")) {
+			hotelsUrl += "_stars";
+		} else if (StringUtils.equalsIgnoreCase(sortType, "cheapest")) {
+			hotelsUrl += "_cheapest";
+		}
+		hotelsUrl += "?user_key=" + Commons.getProperty(Property.RH_HOTELS_API_KEY);
+		//logger.log(Level.INFO, "Calling: " + hotelsUrl);
+		String json = null;
+		try {
+			json = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), true);
+			if (StringUtils.startsWith(json, "[") && json.length() > 2) {
+	    			hotels = featureCollectionReader.readValue(json.substring(1, json.length()-1));
+	    			logger.info("Found hotels list in db cache");
+	    	} else if (StringUtils.startsWith(json, "{") && json.length() > 2) {
+					hotels = featureCollectionReader.readValue(json);
+	    			logger.info("Found hotels list in db cache");
+	    	} else {
+				logger.log(Level.WARNING, "Received hotels cache server response " + json);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage(), e);
+		} finally {
+			json = null;
+		}
+		
+		return hotels;
 	}
 	
 	public String findCheapestHotel(double lat, double lng, int r, int limit) {
