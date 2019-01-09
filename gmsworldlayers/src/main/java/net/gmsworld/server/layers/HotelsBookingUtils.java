@@ -266,9 +266,6 @@ public class HotelsBookingUtils extends LayerHelper {
 				hotelsJson = new String(hotelsJsonBytes);
 				
     			if (StringUtils.isNotEmpty(hotelsJson) && cacheProvider != null) {
-    				logger.log(Level.INFO, "Saving geojson list to second level cache");
-    				final String slcKey = "geojson/" + latStr + "/" + lngStr + "/" + Commons.HOTELS_LAYER;
-    				cacheProvider.putToSecondLevelCache(slcKey, hotelsJson);					
     				String cKey = "geojson_" + latStr + "_" + lngStr + "_" + Commons.HOTELS_LAYER + "_" + locale.getLanguage();
     				if (StringUtils.isNotEmpty(sortType)) {
     					cKey += "_" + sortType;

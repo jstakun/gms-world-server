@@ -90,18 +90,6 @@ public class GeoJsonProviderServlet extends HttpServlet {
 	        			json = layerHelper.getGeoJson(lat, lng, layer, flexString, flexString2);		
 	        		}
 			    
-	        		//Searching geojson document in remote document cache
-	        		if (!StringUtils.startsWith(json, "{")) { 
-	        			String latStr = StringUtil.formatCoordE2(lat);
-	        			String lngStr = StringUtil.formatCoordE2(lng);
-	        			logger.log(Level.INFO, "Searching geojson document in remote document cache...");
-	        			String key = "geojson/" + layer + "/" + latStr + "/" + lngStr + "/" + flexString;
-	        			if (StringUtils.isNotEmpty(flexString2)) {
-	        				key += "/" + flexString2;
-	        			}
-	        			json = GoogleCacheProvider.getInstance().getFromSecondLevelCache(key);
-	        		}
-	        		
 	        		//Searching geojson document in layer provider
 					if (!StringUtils.startsWith(json, "{")  && layerHelper != null) {
 						try {

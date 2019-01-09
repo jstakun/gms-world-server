@@ -345,21 +345,6 @@ public abstract class LayerHelper {
     			final String latStr = StringUtil.formatCoordE2(lat);
     			final String lngStr = StringUtil.formatCoordE2(lng);
     			
-    			if (!landmarks.isEmpty() && StringUtils.isNotEmpty(json)) {
-    				/*threadProvider.newThread(new Runnable() {
-						@Override
-						public void run() {
-							logger.log(Level.INFO, "Saving geojson list to second level cache");
-		    				String key = "geojson/" + latStr + "/" + lngStr + "/" + layer;
-		    				cacheProvider.putToSecondLevelCache(key, json);							
-						}}).start();		*/
-    				if (cacheProvider != null) {
-    					logger.log(Level.INFO, "Saving geojson list to second level cache");
-    					String key = "geojson/" + latStr + "/" + lngStr + "/" + layer;
-    					cacheProvider.putToSecondLevelCache(key, json);
-    				}
-    			}
-    			
     			if (cacheProvider != null) {
     				String key = "geojson_" + latStr + "_" + lngStr + "_" + layer + "_" + locale.getLanguage();
     				if (StringUtils.isNotEmpty(flex)) {

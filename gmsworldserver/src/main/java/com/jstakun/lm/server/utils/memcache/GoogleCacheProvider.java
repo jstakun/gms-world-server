@@ -45,27 +45,6 @@ public class GoogleCacheProvider implements CacheProvider {
 	public boolean containsKey(String key) {
 		return CacheUtil.containsKey(key);
 	}
-	
-	public void putToSecondLevelCache(String key, String value) {
-		/*try {
-			URL cacheUrl = new URL("http://cache-gmsworld.rhcloud.com/rest/cache/" + key);
-			String resp = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, "POST", null, value, "application/json; charset=utf-8", Commons.getProperty(Property.RH_GMS_USER));
-			logger.log(Level.INFO, "Cache response: " + resp);
-		} catch (Exception e) {
-			logger.log(Level.SEVERE, e.getMessage(), e);
-		}*/
-		CacheUtil.put(key, value, CacheType.LONG);
-	}
-	
-	public String getFromSecondLevelCache(String key) {
-		/*try {
-			URL cacheUrl = new URL("http://cache-gmsworld.rhcloud.com/rest/cache/" + key);
-			return HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, Commons.getProperty(Property.RH_GMS_USER), false);
-		} catch (Exception e) {
-			logger.log(Level.SEVERE, e.getMessage(), e);
-		}*/
-		return CacheUtil.getString(key);
-	}
 
 	public <T> T getObject(Class<T> type, String key) {
 		return CacheUtil.getObject(type, key);
