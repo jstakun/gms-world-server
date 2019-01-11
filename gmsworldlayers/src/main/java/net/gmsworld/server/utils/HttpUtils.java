@@ -155,10 +155,10 @@ public class HttpUtils {
             if (responseCode == HttpServletResponse.SC_OK) {
                 is = conn.getInputStream(); 
                 logger.log(Level.INFO, "Received http status code {0} for url {1}", new Object[]{responseCode, urlSafe});
-            } else if (responseCode >= 400 ){
+            } else if (responseCode >= 400 && responseCode !=  HttpServletResponse.SC_NOT_FOUND){
                 is = conn.getErrorStream();
                 logger.log(Level.SEVERE, "Received http status code {0} for url {1}", new Object[]{responseCode, urlSafe});   
-            } else if (responseCode >= 300 && responseCode < 400) {
+            } else if (responseCode >= 300) {
             	logger.log(Level.WARNING, "Received http status code {0} for url {1}", new Object[]{responseCode, urlSafe});   
             } else if (responseCode > 200) {
             	logger.log(Level.INFO, "Received http status code {0} for url {1}", new Object[]{responseCode, urlSafe});

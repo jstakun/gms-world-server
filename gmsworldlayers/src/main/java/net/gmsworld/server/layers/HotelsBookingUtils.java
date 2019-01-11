@@ -328,7 +328,7 @@ public class HotelsBookingUtils extends LayerHelper {
 	    	} else if (StringUtils.startsWith(json, "{") && json.length() > 2) {
 					hotels = featureCollectionReader.readValue(json);
 	    			logger.info("Found hotels list in db cache");
-	    	} else {
+	    	} else if (json != null) {
 				logger.log(Level.WARNING, "Received hotels cache server response " + json);
 			}
 		} catch (Exception e) {
