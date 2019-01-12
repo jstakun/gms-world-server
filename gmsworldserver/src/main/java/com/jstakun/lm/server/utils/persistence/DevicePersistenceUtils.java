@@ -259,8 +259,7 @@ public class DevicePersistenceUtils {
 				reply = "Failed to send command: " + e.getMessage();
 			}
 		} else {
-			reply = "Oops! Your command seems to be invalid. Valid commands are:\n\ncommand pin deviceimei\ncommand pin devicename username\n" +
-		                  "\nIf command requires parameters append -p args at the end of the command.";
+			reply = "Oops! Your command seems to be invalid. Enter help for more details.";
 		}
 		return reply;
 	}

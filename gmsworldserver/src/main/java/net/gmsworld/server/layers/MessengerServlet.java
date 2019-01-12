@@ -1,6 +1,7 @@
 package net.gmsworld.server.layers;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -104,7 +105,24 @@ public final class MessengerServlet extends HttpServlet {
 						logger.log(Level.WARNING, "Messenger psid " + psid + " doesn't exists in the whitelist!");
 					}
 					MessengerUtils.sendMessage(psid, null,  "You've been unregistered from Device Locator notifications.");
-				} else if (DevicePersistenceUtils.isValidCommand(text)) {
+				} else if (StringUtils.equalsIgnoreCase(text, "help")) {
+					InputStream is = null;
+					try {
+						is= getServletContext().getResourceAsStream("/WEB-INF/emails/bot-dl.html");
+						String helpMessage = String.format(IOUtils.toString(is, "UTF-8"));
+						MessengerUtils.sendMessage(psid, null, helpMessage);
+					} catch (IOException ex) {
+			            logger.log(Level.SEVERE, ex.getMessage(), ex);
+			        } finally {
+			            if (is != null) {
+			                try {
+			                    is.close();
+			                } catch (IOException ex) {
+			                    logger.log(Level.SEVERE, null, ex);
+			                }
+			            }
+			        }
+			    } else if (DevicePersistenceUtils.isValidCommand(text)) {
 					String reply = DevicePersistenceUtils.sendCommand(text, psid);
 					MessengerUtils.sendMessage(psid, null, reply);
 				} else {

@@ -1,21 +1,21 @@
 Welcome to Device Locator mobile application bot!
 
-You should have installed and configured Device Locator mobile application on your devices.
+If you want to register or unregister your Telegram chat or channel for Device Locator notifications enter /register or /unregister commands respectively.
 
-If you want to register or unregister your Telegram chat or channel for Device Locator notifications
-enter /register or /unregister commands respectively
+If you want to send command to any of your devices use one of following syntax:
 
-If you want to send command to any of your devices here use one of following syntax:
-
-command pin imei
-command pin devicename username
+/command pin devicename username
+/command pin imei
 
 Where:
 
-command - is any Device Locator command http://www.gms-world.net/dl
+command - is valid Device Locator command http://www.gms-world.net/dl
 pin - is Security PIN set in Device Locator on target device
-imei - is target device IMEI number you can find in your device settings
 devicename - is device name you set in Device Locator on target device
 username - is your login you set in Device Locator on target device 
+imei - is target device IMEI number you can find in your mobile device settings
 		                  
-If command requires parameters append -p args at the end of the command 
+If command requires parameters append -p at the end of the command:
+
+command pin devicename username -p parameters
+command pin imei -p parameters
