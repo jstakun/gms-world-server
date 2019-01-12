@@ -103,7 +103,7 @@ public class TelegramServlet extends HttpServlet {
 						} else if (StringUtils.equalsIgnoreCase(message, "/help") ||  StringUtils.equalsIgnoreCase(message, "help")) {
 							InputStream is = null;
 							try {
-								is= getServletContext().getResourceAsStream("/WEB-INF/emails/bot-dl.html");
+								is= getServletContext().getResourceAsStream("/WEB-INF/emails/bot-dl.txt");
 								String helpMessage = String.format(IOUtils.toString(is, "UTF-8"));
 								TelegramUtils.sendTelegram(Long.toString(telegramId), helpMessage);
 							} catch (IOException ex) {

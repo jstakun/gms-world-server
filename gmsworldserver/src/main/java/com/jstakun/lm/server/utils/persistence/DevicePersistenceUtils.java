@@ -259,7 +259,7 @@ public class DevicePersistenceUtils {
 				reply = "Failed to send command: " + e.getMessage();
 			}
 		} else {
-			reply = "Oops! Your command seems to be invalid. Enter help for more details.";
+			reply = "Oops! Your entered invalid command. Type /help for more details.";
 		}
 		return reply;
 	}

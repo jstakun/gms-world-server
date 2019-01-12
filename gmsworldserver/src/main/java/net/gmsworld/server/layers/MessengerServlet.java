@@ -5,8 +5,6 @@ import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.servlet.Servlet;
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -31,19 +29,7 @@ public final class MessengerServlet extends HttpServlet {
 	private static final String PSID_PREFIX = "fb:"; 
 	
 	private static final Logger logger = Logger.getLogger(MessengerServlet.class.getName());
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public MessengerServlet() {
-        super();
-    }
-
-	/**
-	 * @see Servlet#init(ServletConfig)
-	 */
-	public void init(ServletConfig config) throws ServletException {
-	}
-
+   
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
@@ -77,7 +63,7 @@ public final class MessengerServlet extends HttpServlet {
 			if (StringUtils.equals(rcpt, Commons.getProperty(Property.DL_PAGE_ID)) && StringUtils.isNotEmpty(psid)) {
 				MessengerUtils.sendMessage(psid, MessengerUtils.ACTION_MARK_SEEN, null);
 				MessengerUtils.sendMessage(psid, MessengerUtils.ACTION_TYPING_ON, null);
-				if (StringUtils.equalsIgnoreCase(text, "register")) {
+				if (StringUtils.equalsIgnoreCase(text, "register") || StringUtils.equalsIgnoreCase(text, "/register")) {
 					//register
 					if (!NotificationPersistenceUtils.isVerified(PSID_PREFIX + psid)) {
 						NotificationPersistenceUtils.setVerified(PSID_PREFIX + psid, true);
@@ -86,16 +72,17 @@ public final class MessengerServlet extends HttpServlet {
 					}		
 					MessengerUtils.sendMessage(psid, null, "You've been registered to Device Locator notifications.\n"
 							+ "You can unregister at any time by sending unregister message.");
-				} else if (StringUtils.equalsIgnoreCase(text, "getmyid") || StringUtils.equalsIgnoreCase(text, "myid") ||  StringUtils.equalsIgnoreCase(text, "id")) {
+				} else if (StringUtils.equalsIgnoreCase(text, "getmyid") || StringUtils.equalsIgnoreCase(text, "myid") ||  StringUtils.equalsIgnoreCase(text, "id") ||
+						StringUtils.equalsIgnoreCase(text, "/getmyid") || StringUtils.equalsIgnoreCase(text, "/myid") ||  StringUtils.equalsIgnoreCase(text, "/id")) {
 					//return psid
 					MessengerUtils.sendMessage(psid, null, psid);
 					MessengerUtils.sendMessage(psid, MessengerUtils.ACTION_TYPING_ON, null);
 					MessengerUtils.sendMessage(psid, null, "Please long click on message above containing your psid, select Copy and come back to Device Locator.\n" 
 																+ "Your psid should be pasted automatically otherwise please paste it to \"Facebook Messenger psid\" form field.");
-				} else if (StringUtils.equalsIgnoreCase(text, "hello") ) {
+				} else if (StringUtils.equalsIgnoreCase(text, "hello") || StringUtils.equalsIgnoreCase(text, "/hello")) {
 					//hello
 					MessengerUtils.sendMessage(psid, null, "Hello there!");
-				} else if (StringUtils.equalsIgnoreCase(text, "unregister") ) {
+				} else if (StringUtils.equalsIgnoreCase(text, "unregister") || StringUtils.equalsIgnoreCase(text, "/unregister")) {
 					//unregister
 					if (NotificationPersistenceUtils.isVerified(PSID_PREFIX + psid)) {
 						if (!NotificationPersistenceUtils.remove(PSID_PREFIX + psid)) {
@@ -105,10 +92,10 @@ public final class MessengerServlet extends HttpServlet {
 						logger.log(Level.WARNING, "Messenger psid " + psid + " doesn't exists in the whitelist!");
 					}
 					MessengerUtils.sendMessage(psid, null,  "You've been unregistered from Device Locator notifications.");
-				} else if (StringUtils.equalsIgnoreCase(text, "help")) {
+				} else if (StringUtils.equalsIgnoreCase(text, "help") || StringUtils.equalsIgnoreCase(text, "/help")) {
 					InputStream is = null;
 					try {
-						is= getServletContext().getResourceAsStream("/WEB-INF/emails/bot-dl.html");
+						is= getServletContext().getResourceAsStream("/WEB-INF/emails/bot-dl.txt");
 						String helpMessage = String.format(IOUtils.toString(is, "UTF-8"));
 						MessengerUtils.sendMessage(psid, null, helpMessage);
 					} catch (IOException ex) {
