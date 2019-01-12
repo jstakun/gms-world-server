@@ -33,7 +33,7 @@ public class CacheUtil {
 	private static final Expiration ONE_HOUR_EXPIRATION = Expiration.byDeltaSeconds(60 * 60);
     private static final Expiration ONE_MINUTE_EXPIRATION = Expiration.byDeltaSeconds(60);
     private static final Expiration TEN_MINUTES_EXPIRATION = Expiration.byDeltaSeconds(10 * 60);
-    private static final Expiration LONG_CACHE_EXPIRATION = Expiration.byDeltaMillis(4 * 60 * 60 * 1000);
+    private static final Expiration LONG_CACHE_EXPIRATION = Expiration.byDeltaSeconds(4 * 60 * 60);
     public static final int LONG_CACHE_LIMIT = 4 * 60 * 60 * 1000; //4h
      
 	private static Cache getCache() {

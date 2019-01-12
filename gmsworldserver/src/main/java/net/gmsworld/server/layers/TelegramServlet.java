@@ -52,8 +52,7 @@ public class TelegramServlet extends HttpServlet {
 			if (HttpUtils.isEmptyAny(request, "type")) {
 				response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 			} else {
-				String type = request.getParameter("type");
-				
+				String type = request.getParameter("type");		
 				//device_locator_bot
 				if (StringUtils.equals(type, Commons.getProperty(Property.TELEGRAM_TOKEN))) {
 					String content = IOUtils.toString(request.getReader());
@@ -105,9 +104,10 @@ public class TelegramServlet extends HttpServlet {
 							TelegramUtils.sendTelegram(Long.toString(telegramId), "Hello there!");
 						} else if (StringUtils.startsWith(message, "/start ") && StringUtils.split(message, " ").length == 2) {
 							//add chat or channel id to white list
-							CacheUtil.put(StringUtils.split(message, " ")[1], telegramId, CacheType.NORMAL);
+							final String telegramSecret = StringUtils.split(message, " ")[1];
+							CacheUtil.put(telegramSecret, telegramId, CacheType.LONG);
 							TelegramUtils.sendTelegram(Long.toString(telegramId), "Please come back to Device Locator and confirm your registration.");
-							logger.log(Level.INFO, "Cached " + message + ": " + telegramId);
+							logger.log(Level.INFO, "Cached " + telegramSecret + ": " + telegramId);
 						} else if (StringUtils.equalsIgnoreCase(message, "/help") ||  StringUtils.equalsIgnoreCase(message, "help")) {
 							InputStream is = null;
 							try {
@@ -139,8 +139,15 @@ public class TelegramServlet extends HttpServlet {
 						logger.log(Level.SEVERE, "Received invalid json: " + content);
 						response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 					}	
+				} else if (StringUtils.equals(type, "getTelegramChatId")) {
+					final String telegramSecret = request.getParameter("telegramSecret");
+					if (StringUtils.isNotEmpty(telegramSecret) && CacheUtil.containsKey(telegramSecret)) {
+						out.println("{\""  + telegramSecret  + "\":" + CacheUtil.getObject(telegramSecret) + "}");
+					} else {
+						response.sendError(HttpServletResponse.SC_NOT_FOUND);
+					}
 				} else {
-					logger.log(Level.SEVERE, "Received wrong paramter: " + type);
+					logger.log(Level.SEVERE, "Received wrong parameter: " + type);
 					response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 				}
 			} 
