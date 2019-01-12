@@ -52,10 +52,6 @@ public class UtilsTest {
 		                + removed + " (" + asHex(removed) + ")");
 		}*/
 		
-		String utf8 = "POW[0xc4]\u0084ZKOWSKA G[0xc3]\u0093RCZEWSKA";
-		String text = convertUtfHex(utf8);
-		System.out.println(text);
-			
 		/*System.out.println("\nLocales:\n");
 		
 		for (Locale locale : Locale.getAvailableLocales()) {
@@ -92,32 +88,4 @@ public class UtilsTest {
 	     c.setTimeInMillis(creationDate);
 	     System.out.println(c.getTime());
 	}
-	
-	
-	//private static String asHex(String arg) {
-	//	return Integer.toHexString(arg.charAt(0));
-	//}
-	
-	private static String convertUtfHex(String arg)  {
-		StringBuffer sb = new StringBuffer();
-		if (StringUtils.isNotEmpty(arg)) {
-			for (int i=0;i<arg.length();i++) {
-				if (arg.charAt(i) == '[') {
-					StringBuffer hex = new StringBuffer();
-					hex.append(arg.charAt(i+3));
-					hex.append(arg.charAt(i+4));
-					hex.append(Integer.toHexString((int)arg.charAt(i+6)));
-					try {
-						sb.append(new String(DatatypeConverter.parseHexBinary(hex.toString()), "UTF-8"));
-					} catch (Exception e) {
-						return arg;
-					}
-					i += 6;
-				} else {
-					sb.append(arg.charAt(i));
-				}
-			}
-		}
-		return sb.toString();
- 	}
 }

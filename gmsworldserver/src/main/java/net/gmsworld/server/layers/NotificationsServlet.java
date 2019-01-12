@@ -204,7 +204,7 @@ public class NotificationsServlet extends HttpServlet {
 			            				TelegramUtils.sendTelegram(data[0], "Command " + data[2] + " has been received by device " + data[1] + ".");
 			            			}
 			            		} else {
-			            			logger.log(Level.WARNING, "Invalid " +  message + " entry value " + val); 
+			            			logger.log(Level.WARNING, "Invalid " +  message + " entry " + val); 
 			            		}
 			            	} else {
 			            		logger.log(Level.WARNING, "No entry found " +  message);
@@ -222,7 +222,7 @@ public class NotificationsServlet extends HttpServlet {
 				            	reply = new JSONObject().put("status", "unverified");
 				            }
 						} else {
-							logger.log(Level.WARNING, "Wrong message or chat/channel id " + telegramId);
+							logger.log(Level.WARNING, "Wrong message, chat or channel id " + telegramId);
 							reply = new JSONObject().put("status", "failed");
 						}
 					} else {
@@ -421,14 +421,14 @@ public class NotificationsServlet extends HttpServlet {
 				reply = new JSONObject().put("status", "registered");
 			} else if (StringUtils.isNumeric(telegramId)) {
 				if (!CacheUtil.containsKey("telegramId:"+telegramId +":invalid")) {
-					Integer responseCode =  TelegramUtils.sendTelegram(telegramId, "We've received Device Locator notifications registration request from you.");
+					Integer responseCode =  TelegramUtils.verifyTelegramChat(telegramId);
 					if (responseCode != null && responseCode == 200) {
 						Notification n = NotificationPersistenceUtils.setVerified(telegramId, false);
 						if (appVersion >= 30) {
 							String tokens[] = StringUtils.split(n.getSecret(), ".");
 							if (tokens.length == 2 && tokens[1].length() == 4 && StringUtils.isNumeric(tokens[1])) {
 								String activationCode = tokens[1];
-								TelegramUtils.sendTelegram(telegramId, "If this is correct here is your activation code: " + activationCode + ", otherwise please ignore this message.");
+								TelegramUtils.sendTelegram(telegramId, "Here is your activation code for Device Locator notifications: " + activationCode + "\nIf you didn\'t ask, please ignore this message.");
 								reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
 							} else {
 								reply = new JSONObject().put("status", "internalError").put("code", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

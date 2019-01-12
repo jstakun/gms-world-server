@@ -15,6 +15,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
+import com.jstakun.lm.server.utils.memcache.CacheUtil;
+import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 import com.jstakun.lm.server.utils.persistence.DevicePersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.NotificationPersistenceUtils;
 
@@ -61,7 +63,7 @@ public class TelegramServlet extends HttpServlet {
 						String message = messageJson.getString("text");
 						Long telegramId= messageJson.getJSONObject("chat").getLong("id");
 						if (StringUtils.equalsIgnoreCase(message, "/register") || StringUtils.equalsIgnoreCase(message, "register")) {
-							//add chat id to white list
+							//add chat or channel id to white list
 							if (!NotificationPersistenceUtils.isVerified(Long.toString(telegramId))) {
 								NotificationPersistenceUtils.setVerified(Long.toString(telegramId), true);
 							} else {
@@ -75,7 +77,7 @@ public class TelegramServlet extends HttpServlet {
 											+ "You can unregister at any time by sending /unregister " + telegramId +  " command message to @device_locator_bot");
 							}
 						} else if (StringUtils.startsWithIgnoreCase(message, "/unregister") || StringUtils.startsWithIgnoreCase(message, "unregister")) {
-								//remove chat or channel id from white list
+							//remove chat or channel id from white list
 							String[] tokens = StringUtils.split(message, " ");
 							String id = null;
 							if (tokens.length > 1 && ((StringUtils.startsWith(tokens[1], "-") && StringUtils.isNumeric(tokens[1].substring(1))) || StringUtils.startsWith(tokens[1], "@"))) {
@@ -92,6 +94,7 @@ public class TelegramServlet extends HttpServlet {
 								TelegramUtils.sendTelegram(Long.toString(telegramId), "Oops! I didn't understand your message. Please check list of available commands.");
 							} else {
 								logger.log(Level.WARNING, "Telegram chat or channel Id " + id + " doesn't exists in the whitelist!");
+								TelegramUtils.sendTelegram(id, "You are not registered for Device Locator notifications.");
 							}
 						} else if (StringUtils.equalsIgnoreCase(message, "/getmyid") || StringUtils.equalsIgnoreCase(message, "getmyid") || StringUtils.equalsIgnoreCase(message, "/myid") || StringUtils.equalsIgnoreCase(message, "myid") || StringUtils.equalsIgnoreCase(message, "/id") || StringUtils.equalsIgnoreCase(message, "id")) { 
 							String id = Long.toString(telegramId);
@@ -100,6 +103,11 @@ public class TelegramServlet extends HttpServlet {
 									+ "Your chat id should be pasted automatically otherwise please paste it to \"Telegram id\" notification field.");
 						} else if (StringUtils.equalsIgnoreCase(message, "/hello") ||  StringUtils.equalsIgnoreCase(message, "hello")) {
 							TelegramUtils.sendTelegram(Long.toString(telegramId), "Hello there!");
+						} else if (StringUtils.startsWith(message, "/start ") && StringUtils.split(message, " ").length == 2) {
+							//add chat or channel id to white list
+							CacheUtil.put(StringUtils.split(message, " ")[1], telegramId, CacheType.NORMAL);
+							TelegramUtils.sendTelegram(Long.toString(telegramId), "Please come back to Device Locator and confirm your registration.");
+							logger.log(Level.INFO, "Cached " + message + ": " + telegramId);
 						} else if (StringUtils.equalsIgnoreCase(message, "/help") ||  StringUtils.equalsIgnoreCase(message, "help")) {
 							InputStream is = null;
 							try {
@@ -142,5 +150,5 @@ public class TelegramServlet extends HttpServlet {
 		} finally {
 			out.close();
 		}
-	}
+	}	
 }
