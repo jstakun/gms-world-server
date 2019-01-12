@@ -299,7 +299,7 @@ public class MailUtils {
                 try {
                     is.close();
                 } catch (IOException ex) {
-                    logger.log(Level.SEVERE, null, ex);
+                    logger.log(Level.SEVERE, ex.getMessage(), ex);
                 }
             }
         }

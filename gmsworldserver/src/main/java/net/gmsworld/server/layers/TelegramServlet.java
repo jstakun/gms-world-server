@@ -1,6 +1,7 @@
 package net.gmsworld.server.layers;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -99,7 +100,24 @@ public class TelegramServlet extends HttpServlet {
 									+ "Your chat id should be pasted automatically otherwise please paste it to \"Telegram id\" notification field.");
 						} else if (StringUtils.equalsIgnoreCase(message, "/hello") ||  StringUtils.equalsIgnoreCase(message, "hello")) {
 							TelegramUtils.sendTelegram(Long.toString(telegramId), "Hello there!");
-						} else if (DevicePersistenceUtils.isValidCommand(message) || (StringUtils.startsWith(message, "/") && DevicePersistenceUtils.isValidCommand(message.substring(1)))) {
+						} else if (StringUtils.equalsIgnoreCase(message, "/help") ||  StringUtils.equalsIgnoreCase(message, "help")) {
+							InputStream is = null;
+							try {
+								is= getServletContext().getResourceAsStream("/WEB-INF/emails/bot-dl.html");
+								String helpMessage = String.format(IOUtils.toString(is, "UTF-8"));
+								TelegramUtils.sendTelegram(Long.toString(telegramId), helpMessage);
+							} catch (IOException ex) {
+					            logger.log(Level.SEVERE, ex.getMessage(), ex);
+					        } finally {
+					            if (is != null) {
+					                try {
+					                    is.close();
+					                } catch (IOException ex) {
+					                    logger.log(Level.SEVERE, null, ex);
+					                }
+					            }
+					        }
+					    } else if (DevicePersistenceUtils.isValidCommand(message) || (StringUtils.startsWith(message, "/") && DevicePersistenceUtils.isValidCommand(message.substring(1)))) {
 							final String reply = DevicePersistenceUtils.sendCommand(message, Long.toString(telegramId)); 
 							TelegramUtils.sendTelegram(Long.toString(telegramId), reply);
 						} else {
