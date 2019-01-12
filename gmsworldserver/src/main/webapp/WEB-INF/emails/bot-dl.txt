@@ -1,17 +1,19 @@
-Welcome to Device Locator mobile application bot!
+Welcome to Device Locator mobile application bot
 
-If you want to send command to any of your devices use one of following syntax:
+If you want to send command to device use one of following syntax:
 
 /command pin devicename username
 /command pin imei
 
 Where:
 
-command - is valid Device Locator command: http://www.gms-world.net/dl
-pin - is Security PIN set in Device Locator on target device
-devicename - is device name you set in Device Locator on target device
-username - is your login you set in Device Locator on target device 
-imei - is target device IMEI number you can find in target mobile device settings
+command - Valid Device Locator command
+pin - Security PIN set in Device Locator on the device
+devicename - Device name you set in Device Locator on the device
+username - Login you set in Device Locator on the device 
+imei - IMEI number you can find in the device Settings
+		                  
+You can find list of Device Locator commands here: http://www.gms-world.net/dl.
 		                  
 If command requires parameters append -p at the end of the command:
 

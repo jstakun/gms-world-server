@@ -20,7 +20,7 @@ public class TelegramUtils {
 		if (telegramId != null) {
         	String urlStr = "https://api.telegram.org/bot" + Commons.getProperty(Property.TELEGRAM_TOKEN) + "/sendMessage"; 
         	URL url = new URL(urlStr);
-            String response = HttpUtils.processFileRequest(url, "POST", null, "text=" + message + "&chat_id=" + telegramId);
+            String response = HttpUtils.processFileRequest(url, "POST", null, "text=" + message + "&chat_id=" + telegramId + "&parse_mode=HTML");
             responseCode = HttpUtils.getResponseCode(urlStr);
             if (responseCode == null || responseCode != 200) {
             	logger.log(Level.SEVERE,  "Received following server response: " + responseCode + " - " + response);
