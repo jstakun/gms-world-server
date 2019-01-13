@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,8 +16,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
-import com.jstakun.lm.server.utils.memcache.CacheUtil;
-import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
+import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.jstakun.lm.server.utils.persistence.DevicePersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.NotificationPersistenceUtils;
 
@@ -31,18 +31,25 @@ public class TelegramServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(TelegramServlet.class.getName());
+	
+	@Override
+	public void init(ServletConfig config) throws ServletException {
+			super.init(config);
+			GeocodeHelperFactory.setCacheProvider(GoogleCacheProvider.getInstance());
+	}
+	
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		processRequest(request, response);
+			processRequest(request, response);
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		processRequest(request, response);
+			processRequest(request, response);
 	}
 	
 	protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -98,16 +105,15 @@ public class TelegramServlet extends HttpServlet {
 						} else if (StringUtils.equalsIgnoreCase(message, "/getmyid") || StringUtils.equalsIgnoreCase(message, "getmyid") || StringUtils.equalsIgnoreCase(message, "/myid") || StringUtils.equalsIgnoreCase(message, "myid") || StringUtils.equalsIgnoreCase(message, "/id") || StringUtils.equalsIgnoreCase(message, "id")) { 
 							String id = Long.toString(telegramId);
 							TelegramUtils.sendTelegram(id, id);
-							TelegramUtils.sendTelegram(id, "Please click on message above containing your chat id, select copy and come back to Device Locator. "
-									+ "Your chat id should be pasted automatically otherwise please paste it to \"Telegram id\" notification field.");
+							TelegramUtils.sendTelegram(id, "Please click on message above containing your chat id and select copy. Next please come back to Device Locator and paste it to \"Telegram id\" notification field.");
 						} else if (StringUtils.equalsIgnoreCase(message, "/hello") ||  StringUtils.equalsIgnoreCase(message, "hello")) {
 							TelegramUtils.sendTelegram(Long.toString(telegramId), "Hello there!");
 						} else if (StringUtils.startsWith(message, "/start ") && StringUtils.split(message, " ").length == 2) {
 							//add chat or channel id to white list
+							JSONObject reply = NotificationPersistenceUtils.registerTelegram(Long.toString(telegramId), 45, GeocodeHelperFactory.getCacheProvider());
 							final String telegramSecret = StringUtils.split(message, " ")[1];
-							CacheUtil.put(telegramSecret, telegramId, CacheType.LONG);
-							TelegramUtils.sendTelegram(Long.toString(telegramId), "Please come back to Device Locator and confirm your registration.");
-							logger.log(Level.INFO, "Cached " + telegramSecret + ": " + telegramId);
+							reply.put("chatId", telegramId);
+							GeocodeHelperFactory.getCacheProvider().put(telegramSecret, reply);
 						} else if (StringUtils.equalsIgnoreCase(message, "/help") ||  StringUtils.equalsIgnoreCase(message, "help")) {
 							InputStream is = null;
 							try {
@@ -141,8 +147,8 @@ public class TelegramServlet extends HttpServlet {
 					}	
 				} else if (StringUtils.equals(type, "getTelegramChatId")) {
 					final String telegramSecret = request.getParameter("telegramSecret");
-					if (StringUtils.isNotEmpty(telegramSecret) && CacheUtil.containsKey(telegramSecret)) {
-						out.println("{\""  + telegramSecret  + "\":" + CacheUtil.getObject(telegramSecret) + "}");
+					if (StringUtils.isNotEmpty(telegramSecret) && GeocodeHelperFactory.getCacheProvider().containsKey(telegramSecret)) {
+						out.println(GeocodeHelperFactory.getCacheProvider().getObject(telegramSecret).toString());
 					} else {
 						response.sendError(HttpServletResponse.SC_NOT_FOUND);
 					}
