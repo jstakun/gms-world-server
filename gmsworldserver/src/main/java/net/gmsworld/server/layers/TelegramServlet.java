@@ -68,7 +68,7 @@ public class TelegramServlet extends HttpServlet {
 					if (messageJson != null && messageJson.has("text") && messageJson.has("chat")) {
 						String message = messageJson.getString("text");
 						Long telegramId= messageJson.getJSONObject("chat").getLong("id");
-						if (StringUtils.equalsIgnoreCase(message, "/register") || StringUtils.equalsIgnoreCase(message, "register")) {
+						if (StringUtils.startsWithIgnoreCase(message, "/register") || StringUtils.startsWithIgnoreCase(message, "register")) {
 							//add chat or channel id to white list
 							if (!NotificationPersistenceUtils.isVerified(Long.toString(telegramId))) {
 								NotificationPersistenceUtils.setVerified(Long.toString(telegramId), true);
@@ -102,20 +102,20 @@ public class TelegramServlet extends HttpServlet {
 								logger.log(Level.WARNING, "Telegram chat or channel Id " + id + " doesn't exists in the whitelist!");
 								TelegramUtils.sendTelegram(id, "You are not registered for Device Locator notifications.");
 							}
-						} else if (StringUtils.equalsIgnoreCase(message, "/getmyid") || StringUtils.equalsIgnoreCase(message, "getmyid") || StringUtils.equalsIgnoreCase(message, "/myid") || StringUtils.equalsIgnoreCase(message, "myid") || StringUtils.equalsIgnoreCase(message, "/id") || StringUtils.equalsIgnoreCase(message, "id")) { 
+						} else if (StringUtils.startsWithIgnoreCase(message, "/getmyid") || StringUtils.startsWithIgnoreCase(message, "getmyid") || StringUtils.startsWithIgnoreCase(message, "/myid") || StringUtils.startsWithIgnoreCase(message, "myid") || StringUtils.startsWithIgnoreCase(message, "/id") || StringUtils.startsWithIgnoreCase(message, "id")) { 
 							final String id = Long.toString(telegramId);
 							TelegramUtils.sendTelegram(id, id);
 							TelegramUtils.sendTelegram(id, "Please click on message above containing your chat id and select copy. Next please come back to Device Locator and paste it to \"Telegram id\" notification field.");
-						} else if (StringUtils.equalsIgnoreCase(message, "/hello") ||  StringUtils.equalsIgnoreCase(message, "hello")) {
+						} else if (StringUtils.startsWithIgnoreCase(message, "/hello") ||  StringUtils.startsWithIgnoreCase(message, "hello")) {
 							TelegramUtils.sendTelegram(Long.toString(telegramId), "Hello there!");
-						} else if (StringUtils.startsWith(message, "/start ") && StringUtils.split(message, " ").length == 2) {
+						} else if (StringUtils.startsWithIgnoreCase(message, "/start ") && StringUtils.split(message, " ").length == 2) {
 							//add chat or channel id to white list
 							JSONObject reply = NotificationPersistenceUtils.registerTelegram(Long.toString(telegramId), 45, GeocodeHelperFactory.getCacheProvider());
 							final String telegramSecret = StringUtils.split(message, " ")[1];
 							reply.put("chatId", telegramId);
 							GeocodeHelperFactory.getCacheProvider().put(telegramSecret, reply.toString());
 							logger.info("Cached "  + telegramSecret + ": " + reply);
-						} else if (StringUtils.equalsIgnoreCase(message, "/help") ||  StringUtils.equalsIgnoreCase(message, "help")) {
+						} else if (StringUtils.startsWithIgnoreCase(message, "/help") ||  StringUtils.startsWithIgnoreCase(message, "help")) {
 							InputStream is = null;
 							try {
 								is= getServletContext().getResourceAsStream("/WEB-INF/emails/bot-dl.txt");
