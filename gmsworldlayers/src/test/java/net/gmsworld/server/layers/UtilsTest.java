@@ -2,13 +2,11 @@ package net.gmsworld.server.layers;
 
 import static org.junit.Assert.assertNotEquals;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import javax.xml.bind.DatatypeConverter;
-
-import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 
 import net.gmsworld.server.utils.DateUtils;
@@ -87,5 +85,18 @@ public class UtilsTest {
 	     Calendar c = Calendar.getInstance();
 	     c.setTimeInMillis(creationDate);
 	     System.out.println(c.getTime());
+	}
+	
+	@Test
+	public void telegramTest() {
+		try {
+			TelegramUtils.sendTelegram("123456789", "test <b>bold</> <i>italic</i>, <em>italic</em>\n" + 
+					"<a href=\"http://www.example.com/\">inline URL</a>\n" + 
+					"<a href=\"tg://user?id=123456789\">inline mention of a user</a>\n" + 
+					"<code>inline fixed-width code</code>\n" + 
+					"<pre>pre-formatted fixed-width code block</pre>");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

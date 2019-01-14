@@ -103,7 +103,7 @@ public class TelegramServlet extends HttpServlet {
 								TelegramUtils.sendTelegram(id, "You are not registered for Device Locator notifications.");
 							}
 						} else if (StringUtils.equalsIgnoreCase(message, "/getmyid") || StringUtils.equalsIgnoreCase(message, "getmyid") || StringUtils.equalsIgnoreCase(message, "/myid") || StringUtils.equalsIgnoreCase(message, "myid") || StringUtils.equalsIgnoreCase(message, "/id") || StringUtils.equalsIgnoreCase(message, "id")) { 
-							String id = Long.toString(telegramId);
+							final String id = Long.toString(telegramId);
 							TelegramUtils.sendTelegram(id, id);
 							TelegramUtils.sendTelegram(id, "Please click on message above containing your chat id and select copy. Next please come back to Device Locator and paste it to \"Telegram id\" notification field.");
 						} else if (StringUtils.equalsIgnoreCase(message, "/hello") ||  StringUtils.equalsIgnoreCase(message, "hello")) {
@@ -113,7 +113,8 @@ public class TelegramServlet extends HttpServlet {
 							JSONObject reply = NotificationPersistenceUtils.registerTelegram(Long.toString(telegramId), 45, GeocodeHelperFactory.getCacheProvider());
 							final String telegramSecret = StringUtils.split(message, " ")[1];
 							reply.put("chatId", telegramId);
-							GeocodeHelperFactory.getCacheProvider().put(telegramSecret, reply);
+							GeocodeHelperFactory.getCacheProvider().put(telegramSecret, reply.toString());
+							logger.info("Cached "  + telegramSecret + ": " + reply);
 						} else if (StringUtils.equalsIgnoreCase(message, "/help") ||  StringUtils.equalsIgnoreCase(message, "help")) {
 							InputStream is = null;
 							try {
@@ -148,7 +149,7 @@ public class TelegramServlet extends HttpServlet {
 				} else if (StringUtils.equals(type, "getTelegramChatId")) {
 					final String telegramSecret = request.getParameter("telegramSecret");
 					if (StringUtils.isNotEmpty(telegramSecret) && GeocodeHelperFactory.getCacheProvider().containsKey(telegramSecret)) {
-						out.println(GeocodeHelperFactory.getCacheProvider().getObject(telegramSecret).toString());
+						out.println(GeocodeHelperFactory.getCacheProvider().getObject(telegramSecret));
 					} else {
 						response.sendError(HttpServletResponse.SC_NOT_FOUND);
 					}

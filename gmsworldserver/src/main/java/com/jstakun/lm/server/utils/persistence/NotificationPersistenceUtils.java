@@ -181,7 +181,7 @@ public class NotificationPersistenceUtils {
 							String tokens[] = StringUtils.split(n.getSecret(), ".");
 							if (tokens.length == 2 && tokens[1].length() == 4 && StringUtils.isNumeric(tokens[1])) {
 								String activationCode = tokens[1];
-								TelegramUtils.sendTelegram(telegramId, "Welcome to Device Locator! Here is your activation code for Device Locator notifications: " + activationCode + "\nIf you didn\'t ask, please ignore this message.");
+								TelegramUtils.sendTelegram(telegramId, "Welcome to Device Locator! Here is your activation code for Device Locator notifications: <b>" + activationCode + "</b>\nIf you didn\'t ask, please ignore this message.");
 								reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
 							} else {
 								reply = new JSONObject().put("status", "internalError").put("code", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -233,6 +233,7 @@ public class NotificationPersistenceUtils {
 				}
 			}
 		} else {
+			logger.severe("Invalid Telegram chat id: " + telegramId);
 			reply = new JSONObject().put("status", "invalidTelegramId").put("code", HttpServletResponse.SC_BAD_REQUEST);
 		}
 		return reply;
