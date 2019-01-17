@@ -64,30 +64,40 @@ public class MailUtils {
     }
     
     private static String sendRemoteMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType, String ccA, String ccP)  {
-    	final long count  = CacheUtil.increment("mailto:" + toA);
-    	if (count < 20) {
-    		if (AwsSesUtils.sendEmail(fromA, fromP, toA, toP, ccA, ccP, content, contentType, subject)) {
-    			return "ok";
+    	if (isValidEmailAddress(toA)) {
+    		final long count  = CacheUtil.increment("mailto:" + toA);
+        	if (count < 20) {
+    			if (AwsSesUtils.sendEmail(fromA, fromP, toA, toP, ccA, ccP, content, contentType, subject)) {
+    				return "ok";
+    			} else {
+    				logger.log(Level.SEVERE, "Failed to send mail with SES!");
+    				//return "failed";
+    				return sendJamesMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
+    			}
     		} else {
-    			logger.log(Level.SEVERE, "Failed to send mail with SES!");
-    			//return "failed";
+    			if (count % 100 == 0) {
+    				logger.log(Level.SEVERE, "James is sending " + count + " email " + subject + " to " + toA);
+    			} else {
+    				logger.log(Level.WARNING, "James is sending " + count + " email " + subject + " to " + toA);
+    			}
+    			//return "blocked";
     			return sendJamesMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
     		}
     	} else {
-    		if (count % 100 == 0) {
-    			logger.log(Level.SEVERE, "James is sending " + count + " email " + subject + " to " + toA);
-    		} else {
-    			logger.log(Level.WARNING, "James is sending " + count + " email " + subject + " to " + toA);
-    		}
-    		//return "blocked";
-    		return sendJamesMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
+    		logger.log(Level.SEVERE, "Invalid email address " + toA);
+    		return "failed";
     	}
     }
     
     private static String sendJamesMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType, String ccA, String ccP)  {
-    	String recipients = addEmailAddress("to", toA, toP); 
+    	String status = "failed";   
+    	
+    	String recipients = addEmailAddress("to", toA, toP);
+    	if (StringUtils.isEmpty(recipients)) {
+    		return status;
+    	}
     	if (StringUtils.isNotEmpty(ccA)) {
-    		recipients += "|" + addEmailAddress("to", ccA, ccP);
+    		recipients += "|" + addEmailAddress("cc", ccA, ccP);
     	}	 
     	String params = "from=" + fromA +
     	                                "&password=" + Commons.getProperty(Property.RH_MAILER_PWD) +
@@ -104,8 +114,7 @@ public class MailUtils {
     	 if (fromP != null) {
     		 	params +="&fromNick=" + fromP;
     	 }
-    	 
-    	 String status = "failed";   
+    	
     	 try {
     		 HttpUtils.processFileRequestWithBasicAuthn(new URL(MAILER_SERVER_URL), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
     		 Integer responseCode = HttpUtils.getResponseCode(MAILER_SERVER_URL);
@@ -408,7 +417,7 @@ public class MailUtils {
     
     private static String addEmailAddress(String type, String email, String nick) {
     	  String emailAddress = "";
-    	  if ((StringUtils.equals(type, "to") || StringUtils.equals(type, "cc") || StringUtils.equals(type, "bcc")) && StringUtils.isNotEmpty(email)) {
+    	  if ((StringUtils.equals(type, "to") || StringUtils.equals(type, "cc") || StringUtils.equals(type, "bcc")) && StringUtils.isNotEmpty(email) && isValidEmailAddress(email)) {
     		  try { 
     			  InternetAddress.parse(email);   
     		      if (StringUtils.isNotEmpty(nick) && !StringUtils.equals(nick, email)) {

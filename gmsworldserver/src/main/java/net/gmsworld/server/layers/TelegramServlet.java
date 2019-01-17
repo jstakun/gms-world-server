@@ -106,7 +106,7 @@ public class TelegramServlet extends HttpServlet {
 							final String id = Long.toString(telegramId);
 							TelegramUtils.sendTelegram(id, id);
 							TelegramUtils.sendTelegram(id, "Please click on message above containing your chat id and select copy. Next please come back to Device Locator and paste it to \"Telegram id\" notification field.");
-						} else if (StringUtils.startsWithIgnoreCase(message, "/hello") ||  StringUtils.startsWithIgnoreCase(message, "hello")) {
+						} else if (StringUtils.equalsIgnoreCase(message, "/hello") ||  StringUtils.equalsIgnoreCase(message, "hello")) {
 							TelegramUtils.sendTelegram(Long.toString(telegramId), "Hello there!");
 						} else if (StringUtils.startsWithIgnoreCase(message, "/start ") && StringUtils.split(message, " ").length == 2) {
 							//add chat or channel id to white list

@@ -40,7 +40,7 @@ public class TelegramUtils {
             String response = HttpUtils.processFileRequest(url, "POST", null, "chat_id=" + telegramId);
             responseCode = HttpUtils.getResponseCode(urlStr);
             if (responseCode == null || responseCode != 200) {
-            	logger.log(Level.SEVERE,  "Received server response: " + responseCode + " - " + response);
+            	logger.log(Level.SEVERE,  "Invalid Telegram id: " + telegramId + ". Server response: " + responseCode + " " + response);
             }
         }
 		return responseCode;

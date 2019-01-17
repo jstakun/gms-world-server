@@ -181,7 +181,13 @@ public class NotificationPersistenceUtils {
 							String tokens[] = StringUtils.split(n.getSecret(), ".");
 							if (tokens.length == 2 && tokens[1].length() == 4 && StringUtils.isNumeric(tokens[1])) {
 								String activationCode = tokens[1];
-								TelegramUtils.sendTelegram(telegramId, "Welcome to Device Locator! Here is your activation code for Device Locator notifications: <b>" + activationCode + "</b>\nIf you didn\'t ask, please ignore this message.");
+								TelegramUtils.sendTelegram(telegramId, "Welcome to Device Locator!\n"
+										+ "Here is your activation code: <b>" + activationCode + "</b>.\n"
+										+ "Please come back to Device Locator mobile application and enter this code when prompted.\n"
+										+ "Only after you confirm your registration, you will start receiving notifications from Device Locator. "
+										+ "If you didn\'t ask, please ignore this message.\n"
+										+ "Thank you\n"
+										+ "Device Locator Team");
 								reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
 							} else {
 								reply = new JSONObject().put("status", "internalError").put("code", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
