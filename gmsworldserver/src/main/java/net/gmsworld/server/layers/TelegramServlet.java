@@ -32,6 +32,8 @@ public class TelegramServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(TelegramServlet.class.getName());
 	
+	private static final String INVALID_COMMAND = "Oops! I didn't understand your message. Please check available commands <a href=\"https://www.gms-world.net/dl\">here</a>.";
+	
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 			super.init(config);
@@ -97,7 +99,7 @@ public class TelegramServlet extends HttpServlet {
 								}
 								TelegramUtils.sendTelegram(id, "You've been unregistered from Device Locator notifications.");
 							} else if (id == null) {
-								TelegramUtils.sendTelegram(Long.toString(telegramId), "Oops! I didn't understand your message. Please check list of available commands.");
+								TelegramUtils.sendTelegram(Long.toString(telegramId), INVALID_COMMAND);
 							} else {
 								logger.log(Level.WARNING, "Telegram chat or channel Id " + id + " doesn't exists in the whitelist!");
 								TelegramUtils.sendTelegram(id, "You are not registered for Device Locator notifications.");
@@ -136,12 +138,12 @@ public class TelegramServlet extends HttpServlet {
 							final String reply = DevicePersistenceUtils.sendCommand(message, Long.toString(telegramId)); 
 							TelegramUtils.sendTelegram(Long.toString(telegramId), reply);
 						} else {
-							TelegramUtils.sendTelegram(Long.toString(telegramId), "Oops! I didn't understand your message. Please check list of available commands.");
+							TelegramUtils.sendTelegram(Long.toString(telegramId), INVALID_COMMAND);
 							logger.log(Level.SEVERE, "Received invalid message: " + message);
 						}
 					} else if (messageJson.has("chat")) {
 						Long telegramId= messageJson.getJSONObject("chat").getLong("id");
-						TelegramUtils.sendTelegram(Long.toString(telegramId), "Oops! I didn't understand your message. Please check list of available commands.");
+						TelegramUtils.sendTelegram(Long.toString(telegramId), INVALID_COMMAND);
 				    } else {
 						logger.log(Level.SEVERE, "Received invalid json: " + content);
 						response.sendError(HttpServletResponse.SC_BAD_REQUEST);
