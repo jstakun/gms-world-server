@@ -21,7 +21,7 @@
     	
     	In order to get some commands to work on your device you'll need to grant number of permissions in the application.
     	Starting from Device Locator 0.4 in addition to SMS commands you can send cloud commands directly from Device Locator to other device with Device Locator installed using our cloud messaging system.  
-    	In order to execute command on remote device with Device Locator installed you need to send one of following commands using SMS, Telegram Messenger or Device Locator:<br/><br/>
+    	In order to execute command on remote device with Device Locator installed you need to send one of following commands using SMS, <a href="https://telegram.org/">Telegram Messenger</a> or Device Locator:<br/><br/>
     	
     	Device Locator: Go to Your devices card and click on device you want to send the command<br/> 
     	SMS to device: <b>&lt;command&gt; &lt;security pin&gt; &lt;optional parameters&gt;</b><br/>

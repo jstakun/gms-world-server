@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONObject;
 
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.persistence.DevicePersistenceUtils;
@@ -81,6 +82,7 @@ public final class DeviceManagerServlet extends HttpServlet {
 		         String correlationId = request.getParameter("correlationId");
 		         String action = request.getParameter("action");
 		         String flex = request.getParameter("flex"); 
+		         String replyToCommand = request.getParameter("replyToCommand"); 
 		         
 		         try {
 		        	 int version = NumberUtils.getInt(request.getHeader(Commons.APP_VERSION_HEADER), -1);
@@ -111,6 +113,7 @@ public final class DeviceManagerServlet extends HttpServlet {
 		        	 if (StringUtils.isNotEmpty(pinStr)) {
 		        		 pin = NumberUtils.getInt(pinStr.trim(), -1);
 				     }
+		        	 Long count = -1L;
 		        	 if (StringUtils.isNotEmpty(command) && pin >= 0) {
 			        	 String[] cid = StringUtils.split(correlationId, "=");
 			        	 String commandKey = "";
@@ -123,8 +126,8 @@ public final class DeviceManagerServlet extends HttpServlet {
 			 				 commandKey += username + "_" + name  + "_";
 			 			 }
 			        	 commandKey += command;
-			        	 Long count = CacheUtil.increment(commandKey);
-			        	 if (count < 10 || (StringUtils.equals(command, "messagedlapp") && count < 50)) {
+			        	 count = CacheUtil.increment(commandKey);
+			        	 if (count < 10 || (StringUtils.equals(command, "messagedlapp") && count < 50) || DevicePersistenceUtils.isValidCommand(replyToCommand)) {
 			        		 logger.log(Level.INFO, "Command " + commandKey + " has been sent " + count + " times");
 			        		  status = DevicePersistenceUtils.sendCommand(imei, pin, name, username, command, args, correlationId, flex);	  
 			        	 } else {
@@ -137,17 +140,24 @@ public final class DeviceManagerServlet extends HttpServlet {
 		        	 } else { 
 		        		 status = DevicePersistenceUtils.setupDevice(imei, name, username, token, flex);
 		        	 }	 
+		        	 JSONObject reply = new JSONObject();
 		        	 if (status == 1) {
-		        		 out.print("{\"status\":\"ok\"}");
+		        		 reply.put("status", "ok");
 		        	 } else if (status == -2) {
-		        		 response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+		        		 reply.put("status", "failed");
+		        		 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		        	 } else if (status == -3) {
-		        		 response.sendError(HttpServletResponse.SC_FORBIDDEN);
+		        		 reply.put("status", "failed");
+		        		 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		        	 } else if (status == -4) {
-		        		 response.sendError(HttpServletResponse.SC_NOT_FOUND);
+		        		 reply.put("status", "failed");
+		        		 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		        	 } else {
-		        		 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		        		 reply.put("status", "failed");
+		        		 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		        	 }
+		        	 reply.put("count", count).put("statusId", status);
+		        	 out.print(reply.toString());
 		         }
 			} else if (!HttpUtils.isEmptyAny(request, "username", "action"))  {
 				if (StringUtils.equalsIgnoreCase(request.getParameter("action"), "list")) {
