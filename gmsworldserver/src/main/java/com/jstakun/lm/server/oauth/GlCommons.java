@@ -18,7 +18,6 @@ import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson.JacksonFactory;
-import com.google.api.services.plus.model.Person;
 import com.google.common.collect.ImmutableMap;
 
 import net.gmsworld.server.config.Commons;
@@ -26,7 +25,6 @@ import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.utils.HttpUtils;
 
-import com.jstakun.lm.server.social.GooglePlusUtils;
 import com.jstakun.lm.server.social.NotificationUtils;
 import com.jstakun.lm.server.utils.persistence.TokenPersistenceUtils;
 
@@ -36,11 +34,8 @@ import com.jstakun.lm.server.utils.persistence.TokenPersistenceUtils;
  */
 public final class GlCommons {
 	
-    private static final String SCOPE = "https://www.googleapis.com/auth/blogger https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/userinfo.email";// https://www.googleapis.com/auth/plus.stream.write";
+    private static final String SCOPE = "https://www.googleapis.com/auth/blogger https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile";
     protected static final String CALLBACK_URI = ConfigurationManager.SSL_SERVER_URL + "s/glauth";
-    //public static final String BLOGGER_SCOPE = "http://www.blogger.com/feeds/";
-    //public static final String POSTS_FEED_URI_SUFFIX = "/posts/default";
-    //public static final String METAFEED_URL = "http://www.blogger.com/feeds/default/blogs";
     private static final Logger logger = Logger.getLogger(GlCommons.class.getName());
     
     private static final String AUTHORIZE_URL = "https://accounts.google.com/o/oauth2/auth?"
@@ -105,27 +100,6 @@ public final class GlCommons {
 	    Map<String, String> userData = new HashMap<String, String>();
 	
 	    try {
-	        Person person = GooglePlusUtils.getPlus(accessToken, refreshToken).people().get("me").execute();
-	
-	        userData.put(ConfigurationManager.GL_USERNAME,person.getId());
-	        userData.put(ConfigurationManager.GL_NAME, person.getDisplayName());
-	        userData.put(ConfigurationManager.GL_GENDER, person.getGender());
-	        userData.put(ConfigurationManager.GL_BIRTHDAY, person.getBirthday());
-	        String email = getUserEmail(accessToken, refreshToken);
-	        if (email != null) {
-	        	userData.put(ConfigurationManager.USER_EMAIL, email);
-	        }
-	
-	    } catch (Exception ex) {
-	        logger.log(Level.SEVERE, "GooglePlusUtils.getUserId() exception: ", ex);
-	    }
-	
-	    return userData;
-	}
-
-	private static String getUserEmail(String accessToken, String refreshToken) {
-	    String email = null;
-	    try {
 	        HttpTransport httpTransport = new UrlFetchTransport();
 	        JsonFactory jsonFactory = new JacksonFactory();
 	
@@ -140,15 +114,27 @@ public final class GlCommons {
 	        HttpRequest request = httpTransport.createRequestFactory(requestInitializer).buildGetRequest(url);
 	
 	        String response = request.execute().parseAsString();
-	        //logger.log(Level.INFO, response);
+	        
 	        JSONObject json = new JSONObject(response);
-	        if (json.has("email")) {
-	            email = json.getString("email");
+	        if (json.has("id")) {
+	        	userData.put(ConfigurationManager.GL_USERNAME,json.getString("id"));
 	        }
-	    } catch (Exception e) {
-	        logger.log(Level.SEVERE, "GoogglePlusUtils.getUserEmail exception", e);
+	        if (json.has("name")) {
+	        	userData.put(ConfigurationManager.GL_NAME, json.getString("name"));
+	        }
+	        if (json.has("gender")) {
+	        	userData.put(ConfigurationManager.GL_GENDER,  json.getString("gender"));
+	        }
+	        if (json.has("birthday")) {
+	        	userData.put(ConfigurationManager.GL_BIRTHDAY, json.getString("birthday"));
+	        }
+	        if (json.has("email")) {
+	        	userData.put(ConfigurationManager.USER_EMAIL, json.getString("email"));
+	        }
+	    } catch (Exception ex) {
+	        logger.log(Level.SEVERE, "GooglePlusUtils.getUserId() exception: ", ex);
 	    }
 	
-	    return email;
+	    return userData;
 	}
 }

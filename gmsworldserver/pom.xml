@@ -101,16 +101,6 @@
         	<version>${blogger.version}</version>
         </dependency>
         <dependency>
-        	<groupId>com.google.apis</groupId>
-        	<artifactId>google-api-services-plus</artifactId>
-        	<version>${plus.version}</version>
-        </dependency>
-        <dependency>
-			<groupId>com.google.apis</groupId>
-			<artifactId>google-api-services-plusDomains</artifactId>
-			<version>${plusDomains.version}</version>
-		</dependency>
-        <dependency>
 			<groupId>com.google.apis</groupId>
 			<artifactId>google-api-services-urlshortener</artifactId>
 			<version>${shortener.version}</version>
