@@ -94,11 +94,11 @@ public class LayersTest {
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.YOUTUBE_LAYER)});
 	   
-	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.FACEBOOK_LAYER)});
+	   data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.FACEBOOK_LAYER)});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.FOURSQUARE_LAYER)});
 	   
-	   data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)});
+	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.LM_SERVER_LAYER)});
 	 
@@ -192,7 +192,7 @@ public class LayersTest {
 		}
 	}
 
-	@Test
+	//@Test
 	public void hotelsTest() throws Exception {
 		//((HotelsBookingUtils)LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)).loadHotelsAsync(lat, lng, radius, limit, "nearby", true);  
 		try {

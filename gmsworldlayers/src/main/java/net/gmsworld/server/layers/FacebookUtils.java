@@ -430,7 +430,7 @@ public class FacebookUtils extends LayerHelper {
 	}
     
     public static FacebookClient getFacebookClient(String token) {
-    	return new DefaultFacebookClient(token, Version.VERSION_3_0);
+    	return new DefaultFacebookClient(token, Version.VERSION_3_2);
     }
     
     public String getLayerName() {
