@@ -26,7 +26,7 @@ public class FBTest {
 		LayerHelperFactory.getInstance().setThreadProvider(new JvmThreadProvider());	
 	}
 	
-	String token = Commons.getProperty(Property.FB_TEST_TOKEN_FULL);
+	String token = "";
 	double lat = 52.25;
 	double lng = 20.95;
 	int limit = 30;
@@ -64,13 +64,13 @@ public class FBTest {
 		printLandmarks(landmarks, "tagged places");
 	}
 	
-	//@Test
+	@Test
 	public void testPlaces() throws Exception {	
 		List<ExtendedLandmark> landmarks = LayerHelperFactory.getInstance().getByName(Commons.FACEBOOK_LAYER).processBinaryRequest(lat, lng, null, 10, 1126, limit, StringUtil.XLARGE, null, null, Locale.UK, false);
 		printLandmarks(landmarks, "places around");
 	}
     
-	@Test
+	//@Test
 	public void testMessenger() {
 		MessengerUtils.sendMessage(PSID, MessengerUtils.ACTION_MARK_SEEN, null);
 		MessengerUtils.sendMessage(PSID, null, "Hello");

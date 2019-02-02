@@ -1,24 +1,9 @@
 package net.gmsworld.server.layers;
 
-import org.json.JSONObject;
-
-import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.config.Commons.Property;
-import net.gmsworld.server.utils.HttpUtils;
-import net.gmsworld.server.utils.MathUtils;
-import net.gmsworld.server.utils.NumberUtils;
-
-import com.restfb.FacebookClient;
-import com.restfb.Parameter;
-import com.restfb.exception.FacebookOAuthException;
-import com.restfb.json.JsonArray;
-import com.restfb.json.JsonObject;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,6 +12,20 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.json.JSONObject;
+
+import com.restfb.FacebookClient;
+import com.restfb.Parameter;
+import com.restfb.exception.FacebookOAuthException;
+import com.restfb.json.JsonArray;
+import com.restfb.json.JsonObject;
+
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.utils.HttpUtils;
+import net.gmsworld.server.utils.MathUtils;
+import net.gmsworld.server.utils.NumberUtils;
 
 /**
  *
@@ -71,34 +70,32 @@ public class FBPlacesServlet extends HttpServlet {
                     placesSearch = facebookClient.fetchObject("search", JsonObject.class, Parameter.with("type", "place"), Parameter.with("center", latitude + "," + longitude), Parameter.with("distance", distance), Parameter.with("limit", limit));
                 }
 
-                JsonArray data = placesSearch.getJsonArray("data");
+                JsonArray data = placesSearch.get("data").asArray();
 
                 ArrayList<Object> jsonArray = new ArrayList<Object>();
                 String output = "";
 
                 if (request.getParameter("version") != null && request.getParameter("version").equals("3")) {
 
-                    for (int i = 0; i < data.length(); i++) {
+                    for (int i = 0; i < data.size(); i++) {
                         Map<String, Object> jsonObject = new HashMap<String, Object>();
                         JsonObject place = (JsonObject) data.get(i);
-                        jsonObject.put("name", place.getString("name"));
-                        jsonObject.put("url", place.getString("id"));
+                        jsonObject.put("name", place.get("name").asString());
+                        jsonObject.put("url", place.get("id").asString());
 
                         Map<String, String> desc = new HashMap<String, String>();
-                        if (place.has("category")) {
-                            desc.put("category", place.getString("category"));
+                        if (place.names().contains("category")) {
+                            desc.put("category", place.get("category").asString());
                         }
-                        JsonObject location = place.getJsonObject("location");
-                        Iterator<?> iter = location.sortedKeys();
-                        while (iter.hasNext()) {
-                            String next = (String)iter.next();
-                            if (!(next.equals("latitude") || next.equals("longitude"))) {
-                                desc.put(next, location.getString(next));
+                        JsonObject location = place.get("location").asObject();
+                        for (String name : location.names()) {
+                            if (!(name.equals("latitude") || name.equals("longitude"))) {
+                                desc.put(name, location.get(name).asString());
                             }
                         }
                         jsonObject.put("desc", desc);
-                        jsonObject.put("lat", MathUtils.normalizeE6(location.getDouble("latitude")));
-                        jsonObject.put("lng", MathUtils.normalizeE6(location.getDouble("longitude")));
+                        jsonObject.put("lat", MathUtils.normalizeE6(location.get("latitude").asDouble()));
+                        jsonObject.put("lng", MathUtils.normalizeE6(location.get("longitude").asDouble()));
                         jsonArray.add(jsonObject);
                     }
 
@@ -107,14 +104,14 @@ public class FBPlacesServlet extends HttpServlet {
 
                 } else if (request.getParameter("version") != null && request.getParameter("version").equals("2")) {
 
-                    for (int i = 0; i < data.length(); i++) {
+                    for (int i = 0; i < data.size(); i++) {
                         Map<String, Object> jsonObject = new HashMap<String, Object>();
                         JsonObject place = (JsonObject) data.get(i);
-                        jsonObject.put("name", place.getString("name"));
-                        jsonObject.put("desc", place.getString("id"));
-                        JsonObject location = place.getJsonObject("location");
-                        jsonObject.put("lat", MathUtils.normalizeE6(location.getDouble("latitude")));
-                        jsonObject.put("lng", MathUtils.normalizeE6(location.getDouble("longitude")));
+                        jsonObject.put("name", place.get("name").asString());
+                        jsonObject.put("desc", place.get("id").asString());
+                        JsonObject location = place.get("location").asObject();
+                        jsonObject.put("lat", MathUtils.normalizeE6(location.get("latitude").asDouble()));
+                        jsonObject.put("lng", MathUtils.normalizeE6(location.get("longitude").asDouble()));
                         jsonArray.add(jsonObject);
                     }
 
@@ -123,18 +120,18 @@ public class FBPlacesServlet extends HttpServlet {
 
                 } else {
                     //data               
-                    for (int i = 0; i < data.length(); i++) {
+                    for (int i = 0; i < data.size(); i++) {
                         Map<String, Object> jsonObject = new HashMap<String, Object>();
                         JsonObject place = (JsonObject) data.get(i);
-                        if (place.has("name")) {
-                            jsonObject.put("name", place.getString("name"));
+                        if (place.names().contains("name")) {
+                            jsonObject.put("name", place.get("name").asString());
                         } else {
-                            jsonObject.put("name", place.getString("id"));
+                            jsonObject.put("name", place.get("id").asString());
                         }
-                        jsonObject.put("id", place.getString("id"));
-                        JsonObject location = place.getJsonObject("location");
-                        jsonObject.put("lat", MathUtils.normalizeE6(location.getDouble("latitude")));
-                        jsonObject.put("lng", MathUtils.normalizeE6(location.getDouble("longitude")));
+                        jsonObject.put("id", place.get("id").asString());
+                        JsonObject location = place.get("location").asObject();
+                        jsonObject.put("lat", MathUtils.normalizeE6(location.get("latitude").asDouble()));
+                        jsonObject.put("lng", MathUtils.normalizeE6(location.get("longitude").asDouble()));
                         jsonArray.add(jsonObject);
                     }
 

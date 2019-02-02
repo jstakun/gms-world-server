@@ -32,11 +32,11 @@ public class FacebookSocialUtils {
         	if (verifyPermission) {
         		try {
         			JsonObject permissions = facebookClient.fetchObject("me/permissions", JsonObject.class);
-        			JsonArray data = permissions.getJsonArray("data");
-        			for (int i=0;i<data.length();i++) {
-        				JsonObject p = data.getJsonObject(i);
-        				if (StringUtils.equals(p.getString("permission"), "publish_actions") && 
-        						StringUtils.equals(p.getString("status"), "granted")) {
+        			JsonArray data = permissions.get("data").asArray();
+        			for (int i=0;i<data.size();i++) {
+        				JsonObject p = data.get(i).asObject();
+        				if (StringUtils.equals(p.get("permission").asString(), "publish_actions") && 
+        						StringUtils.equals(p.get("status").asString(), "granted")) {
         					hasPermission = true;
         					break;
         				}	
