@@ -101,11 +101,15 @@
 
 		//no_rooms=2&group_adults=2&group_children=2&age=5&age=9
 		hotelUrlSuffix += "&no_rooms=" + document.getElementById("checkinRooms").value;
+		Cookies.set('checkinRooms', document.getElementById("checkinRooms").value, '{ expires: 2, path: '/'}');	
 		hotelUrlSuffix += "&group_adults=" + document.getElementById("checkinAdults").value;
+		Cookies.set('checkinAdults', document.getElementById("checkinAdults").value, '{ expires: 2, path: '/'}');	
         var childrenCount = document.getElementById("checkinChildren").value;
         hotelUrlSuffix += "&group_children=" + childrenCount;  
-		for (var i = 0; i < childrenCount; i++) {
-			hotelUrlSuffix += "&age=" + document.getElementById("checkinChildren" + i + "Age").value;
+        Cookies.set('checkinChildren', childrenCount, '{ expires: 2, path: '/'}');	
+        for (var i = 0; i < childrenCount; i++) {
+			 hotelUrlSuffix += "&age=" + document.getElementById("checkinChildren" + i + "Age").value;
+			 Cookies.set("checkinChildren" + i + "Age", document.getElementById("checkinChildren" + i + "Age").value, '{ expires: 2, path: '/'}');	
         }
         
         //console.log('Opening ' + url + hotelUrlSuffix + '...')
@@ -450,9 +454,9 @@
 
 		        	 if (marker_counter > 1) {
 		       	    	//legend
-		        		var topLocationsDiv = document.createElement('div'); //scale
+		       	    	var topLocationsDiv = document.createElement('div'); 
 		        		var text = '<input type=\'checkbox\' id=\'singleVenueFilter\' checked onclick=\"filter()\"><img src=\'/images/layers/0stars_blue_32.png\' style=\'width:32px; height:32px; vertical-align: middle;\' title=\'Single room or apartment venue\'><span style=\'line-height:32px;\'>&nbsp;<bean:message key="hotels.single.venue" /></span><br/>' +
-			        		   '<input type=\'checkbox\' id=\'multiVenueFilter\' checked onclick=\"filter()\"><img src=\'/images/layers/star_0_32.png\' style=\'width:32px; height:32px; vertical-align: middle;\'><span style=\'line-height:32px;\' title=\'Multiple rooms or apartments venue\'>&nbsp;<bean:message key="hotels.multiple.venue" /></span>'; 
+			        		               '<input type=\'checkbox\' id=\'multiVenueFilter\' checked onclick=\"filter()\"><img src=\'/images/layers/star_0_32.png\' style=\'width:32px; height:32px; vertical-align: middle;\'><span style=\'line-height:32px;\' title=\'Multiple rooms or apartments venue\'>&nbsp;<bean:message key="hotels.multiple.venue" /></span>'; 
 		        		var topLocationsControl = new CenterControl(topLocationsDiv, 'left', text, '');
 		     	    	topLocationsDiv.index = 3
 		     	    	map.controls[google.maps.ControlPosition.RIGHT_TOP].push(topLocationsDiv);	
@@ -465,7 +469,6 @@
 		     	     
 		     	    	//filters
 		     	    	var filtersDiv = document.createElement('div');
-		     	    
 		     	    	var text = '<table style=\"width:100%;border-spacing: 0px;padding: 0px;font-family:Roboto,Arial,sans-serif;font-size:<%=fontSize%>;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;\">' + 
                                '<tr><td colspan=\"2\"><b><bean:message key="hotels.starrating" /></b></td></tr>' + 
 			     	           '<tr><td><input type=\"checkbox\" id=\"5s\" checked=\"checked\" onclick=\"filter()\"/></td><td><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/></td><td align=\'right\'>' + (results.properties['stats_stars']['5'] ? results.properties['stats_stars']['5'] : '0') + '</td></tr>' +
@@ -490,26 +493,38 @@
 		     	    	filtersDiv.index = 5
 		     	    	map.controls[google.maps.ControlPosition.LEFT_CENTER].push(filtersDiv);
 
-		     	    	//cookies
-		     	    	var filterStr = Cookies.get('filter');
-		     	    	if (filterStr) {
-		     	    		console.log('filter cookie: ' + filterStr);
-                        	var cids = filterStr.split(',');
-                        	if (cids.length > 0) {
-                            	for (var i=0;i<cids.length;i++) {
-                            		var cid = cids[i];
-                            		if (cid.length > 0 && document.getElementById(cid)) {
-                                		document.getElementById(cid).checked = false;
-                            		}
-                        		}     
-		     	    			filter();
-		     	    		} 	
-			     		} else {
-		     	    		console.log('no filter cookie set');
-			     		}
-			     	
-		     	    	//map.fitBounds(bounds); 
-		            }
+		     	    	//search filter cookies
+		     	    	//var filterStr = Cookies.get('filter');
+		     	    	//if (filterStr) {
+		     	    	//	console.log('filter cookie: ' + filterStr);
+                        //	var cids = filterStr.split(',');
+                        //	if (cids.length > 0) {
+                        //    	for (var i=0;i<cids.length;i++) {
+                        //   		var cid = cids[i];
+                        //            if (cid.length > 0 && document.getElementById(cid)) {
+                        //            	console.log('uncheck ' + cid);
+                        //    			document.getElementById(cid).checked = false;
+                        //            }
+                        //		}     
+		     	    	//	} else {
+		     	    	//		console.log('invalid filter cookie set');
+				     	//    }	
+			     		//} else {
+		     	    	//	console.log('no filter cookie set');
+			     		//}
+
+		     	    	//if (Cookies.get('multiVenueFilter') == 'false') {
+		       	    	//	document.getElementById('multiVenueFilter').checked = false;
+		       	    	//	console.log('uncheck mvf');
+				       	//}
+
+		     	    	//if (Cookies.get('singleVenueFilter') == 'false') {
+		       	    	//	document.getElementById('singleVenueFilter').checked = false;
+		       	    	//	console.log('uncheck svf');
+					    //}
+
+		       			//filter(); 
+			     	}
 			    }	 
 			} else if ((layer_counter + excluded_layers) == layers.length && marker_counter == 1) {
 				<% if (hotelsMode) { %>
@@ -557,6 +572,9 @@
       function filter() {
     	  var markersToAdd = [];
 
+    	  var singleVenueFilter = document.getElementById('singleVenueFilter').checked;
+          var multiVenueFilter = document.getElementById('multiVenueFilter').checked;
+    	  
           for (var i = 0; i < markers.length; i++) {
                var marker = markers[i];
                 
@@ -588,8 +606,7 @@
                }
                
                var isSingleRoom = marker.icon.indexOf("stars_blue.png") >= 0;
-               var checkedRooms = ((isSingleRoom && document.getElementById('singleVenueFilter').checked) ||
-            		   			   (!isSingleRoom && document.getElementById('multiVenueFilter').checked));
+               var checkedRooms = ((isSingleRoom && singleVenueFilter) || (!isSingleRoom && multiVenueFilter));
                        
                if (checkedStars && checkedPrice && checkedRooms) {
             	   markersToAdd.push(marker);		
@@ -618,23 +635,32 @@
 				  $(this).hide(); n();
 		  });     
 
-		  var filter = "";
-		  var filterStr = Cookies.get('filter');
-		  for (var i = 0; i < 6; i++) {
-			 if (document.getElementById(i + 's').checked == false) {
-                 filter += i + "s,"; 
-             } 
-             if (i > 0 && document.getElementById(i + 'p')) {
-                 if (document.getElementById(i + 'p').checked == false) {
-            	 	filter += i + 'p,';   
-                 }
-             } else if (i > 0 && filterStr && filterStr.indexOf(i + 'p,') >= 0) {
-            	 filter += i + 'p,';  //rewrite existing filter in price checkboxes are hidden
-             }
-		  }
-		  if (filter.length > 0) {
-			 Cookies.set('filter', filter, '{ expires: 365, path: '/'}');			
-	      }
+		  //search filters cookies
+		  //var filter = "";
+		  //var filterStr = Cookies.get('filter');
+		  //for (var i = 0; i < 6; i++) {
+		  //	 if (document.getElementById(i + 's').checked == false) {
+          //       filter += i + "s,"; 
+          //   } 
+          //   if (i > 0 && document.getElementById(i + 'p')) {
+          //       if (document.getElementById(i + 'p').checked == false) {
+          //  	 	filter += i + 'p,';   
+          //       }
+          //   } else if (i > 0 && filterStr && filterStr.indexOf(i + 'p,') >= 0) {
+          //  	 filter += i + 'p,';  //rewrite existing filter in price checkboxes are hidden
+          //   }
+		  //}
+		  //if (filter.length > 0) {
+		  //	 Cookies.set('filter', filter, '{ expires: 365, path: '/'}');			
+	      //}
+	      
+	      //var svfChecked = document.getElementById('singleVenueFilter').checked;
+          //console.log('svf checked: ' + svfChecked)
+		  //Cookies.set('singleVenueFilter', svfChecked, '{ expires: 365, path: '/'}'); 
+
+          //var mvfChecked = document.getElementById('multiVenueFilter').checked;
+          //console.log('mvf checked: ' + mvfChecked)
+		  //Cookies.set('multiVenueFilter', mvfChecked, '{ expires: 365, path: '/'}');		  
       }
 
       var checkinChildrenAges = [<%= (String)request.getAttribute("checkinChildrenAges") %>];
@@ -668,6 +694,9 @@
   	 function addChildrenAgeRow(pos) {
   		var res = "<select id=\"checkinChildren" + pos + "Age\">\n";
   		var selected = checkinChildrenAges[pos];
+  		if (isEmpty(selected)) {
+  			selected = Cookies.get("checkinChildren" + pos + "Age");
+       	}
   		for (var i = 0;i < 18;i++) {  	  		
   	  		if (i == selected) {
   	  			res += "<option value=\"" + i + "\" selected=\"selected\">" + i + "</option>\n"
@@ -811,6 +840,7 @@
 	     });                 
       })
   
+      //set values from Cookies
       var checkinDate = Cookies.get('checkinDate');
       if (!isEmpty(checkinDate)) {
  		   document.getElementById('checkinDate').value = checkinDate;
@@ -818,6 +848,7 @@
           var today = new Date();
     	  document.getElementById('checkinDate').value = today.toISOString().substring(0, 10); 
       }
+      
       var checkoutDate = Cookies.get('checkoutDate');
       if (!isEmpty(checkoutDate)) {
  		   document.getElementById('checkoutDate').value = checkoutDate;
@@ -825,6 +856,21 @@
     	  var tomorrow = new Date();
     	  tomorrow.setDate(tomorrow.getDate() + 1);  
     	  document.getElementById('checkoutDate').value = tomorrow.toISOString().substring(0, 10); 
+      }
+
+      var checkinRooms = Cookies.get('checkinRooms');
+      if (!isEmpty(checkinRooms)) {
+    	  document.getElementById("checkinRooms").value = checkinRooms;
+      }
+      
+      var checkinAdults = Cookies.get('checkinAdults');
+      if (!isEmpty(checkinAdults)) {
+    	  document.getElementById("checkinAdults").value = checkinAdults;
+      }
+       
+      var checkinChildren = Cookies.get('checkinChildren');
+      if (!isEmpty(checkinChildren)) {
+    	  document.getElementById("checkinChildren").value = checkinChildren;
       }
     </script>
   </body>
