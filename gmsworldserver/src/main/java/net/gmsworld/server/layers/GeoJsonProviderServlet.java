@@ -98,7 +98,6 @@ public class GeoJsonProviderServlet extends HttpServlet {
 							int limit = NumberUtils.getInt(request.getParameter("limit"), DEFAULT_LIMIT);
 							if (StringUtils.equals(layer, Commons.HOTELS_LAYER)) {
 								try {
-									ExchangeRatesApiUtils.loadAllCurrencies(GoogleCacheProvider.getInstance());
 									//if less that 30 hotels is range increase search radius
 									hotelsInRangeCount = ((HotelsBookingUtils)LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)).countNearbyHotels(lat, lng, RADIUS);
 									if (hotelsInRangeCount >= 0 && hotelsInRangeCount < 30) {
