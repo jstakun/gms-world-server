@@ -353,7 +353,7 @@ public class HotelsBookingUtils extends LayerHelper {
 			}			
 			if (StringUtils.isNotEmpty(currencycode) && minrate != null) {
 				if (!StringUtils.endsWithAny(currencycode, new String[]{"USD", "GBP", "EUR"})) {
-					Map<String, Double> ratesMap = cacheProvider.getObject(HashMap.class, "http://api.fixer.io/latest?base=EUR");
+					Map<String, Double> ratesMap = cacheProvider.getObject(HashMap.class, "CURRENCY_BASE_EUR");
 	        		if (ratesMap != null) {
 	        			Double exchangeRate = ratesMap.get(currencycode);
 	        			if (exchangeRate != null) {
@@ -536,7 +536,7 @@ public class HotelsBookingUtils extends LayerHelper {
         if (rate != null) {
         	boolean rateChanged = false;
         	if (tocc != null && fromcc != null && !StringUtils.equals(tocc, fromcc) && fromcc.length() == 3) {  	
-        		Map<String, Double> ratesMap = cacheProvider.getObject(HashMap.class, "http://api.fixer.io/latest?base=" + fromcc);
+        		Map<String, Double> ratesMap = cacheProvider.getObject(HashMap.class, "CURRENCY_BASE_" + fromcc);
         		if (ratesMap != null) {
         			Double toccrate = ratesMap.get(tocc);
         			if (toccrate != null) {
@@ -554,7 +554,7 @@ public class HotelsBookingUtils extends LayerHelper {
         	props.put("cc", tocc);
         	
         	s = 0;
-        	Map<String, Double> ratesMap = cacheProvider.getObject(HashMap.class, "http://api.fixer.io/latest?base=EUR");
+        	Map<String, Double> ratesMap = cacheProvider.getObject(HashMap.class, "CURRENCY_BASE_EUR");
     		if (ratesMap != null) {
     			Double exchangeRate = ratesMap.get(tocc);
     			if (exchangeRate != null) {

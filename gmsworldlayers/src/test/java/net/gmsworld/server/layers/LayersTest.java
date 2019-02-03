@@ -29,7 +29,7 @@ import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 public class LayersTest {
 	
 	private static final int apiLevel = 1115;
-	private static final int limit = 93; //min 30, max 1000
+	private static final int limit = 30; //min 30, max 1000
 	private static final int radius = 5000; //50000; 
 	private static final int stringLength = StringUtil.XLARGE;
 	
@@ -134,7 +134,7 @@ public class LayersTest {
 		}		
 	}
 	
-	@Test
+	//@Test
 	public void test() {
 		try {
 			List<ExtendedLandmark> landmarks = null;
@@ -192,10 +192,11 @@ public class LayersTest {
 		}
 	}
 
-	//@Test
-	public void hotelsTest() throws Exception {
+	@Test
+	public void hotelsTest() {
 		//((HotelsBookingUtils)LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)).loadHotelsAsync(lat, lng, radius, limit, "nearby", true);  
 		try {
+			ExchangeRatesApiUtils.loadAllCurrencies(cacheProvider);
 			String hotels = ((HotelsBookingUtils)LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)).extendFeatureCollection(lat, lng, radius, limit, "stars", locale);
 			System.out.println(hotels);
 		} catch (Exception e) {

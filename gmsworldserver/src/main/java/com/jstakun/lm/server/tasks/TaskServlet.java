@@ -22,6 +22,7 @@ import com.jstakun.lm.server.utils.RHCloudUtils;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.jstakun.lm.server.utils.persistence.ScreenshotPersistenceUtils;
 
+import net.gmsworld.server.layers.ExchangeRatesApiUtils;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.ImageUtils;
 import net.gmsworld.server.utils.NumberUtils;
@@ -36,9 +37,6 @@ public class TaskServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(TaskServlet.class.getName());
 	
-	private static final String[] currencies = {"EUR", "HUF","MXN","SEK","CHF","ILS","ZAR","MYR","CAD",
-		"TRY","DKK","SGD","BRL","USD","IDR","RON","KRW","NOK","HKD","CZK","AUD","PHP",
-		"CNY","HRK","BGN","NZD","JPY","INR","PLN","GBP","THB","RUB"};
 	/** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
@@ -93,12 +91,7 @@ public class TaskServlet extends HttpServlet {
                 	logger.log(Level.SEVERE, "Wrong latitude and/or longitude parameter(s) value.");
                 }   
              } else if (StringUtils.equalsIgnoreCase(action, "currency")) {
-            	 //for (Currency currency : Currency.getAvailableCurrencies()) {
-            	 //	 loadCurrency(currency.getCurrencyCode());
-            	 //}
-            	 for (int i=0;i<currencies.length;i++) {
-            		 loadCurrency(currencies[i]);
-            	 }
+            	  ExchangeRatesApiUtils.loadAllCurrencies(GoogleCacheProvider.getInstance());
              } else {
                 logger.log(Level.SEVERE, "Wrong parameter action: {0}", action);
              }            
@@ -139,32 +132,5 @@ public class TaskServlet extends HttpServlet {
     @Override
     public String getServletInfo() {
         return "Cron Tasks Servlet";
-    }
-    
-    private void loadCurrency(String fromcc) {
-    	final String currencyUrl = "http://api.fixer.io/latest?base=" + fromcc;
-    	Map<String, Double> ratesMap = new HashMap<String, Double>();
-		try {
-			logger.log(Level.INFO, "Calling " + currencyUrl + "...");
-			String resp = HttpUtils.processFileRequest(new URL(currencyUrl));							
-			if (StringUtils.startsWith(resp, "{")) {
-				JSONObject root = new JSONObject(resp);
-				if (root.has("error")) {
-					logger.log(Level.WARNING, "Currency " + fromcc + " response error: " + root.getString("error"));
-				} else {
-					JSONObject rates = root.getJSONObject("rates");
-					for (Iterator<String> keys=rates.keys();keys.hasNext();) {
-						String key = keys.next();
-						ratesMap.put(key, rates.getDouble(key));
-					}
-				}
-				logger.log(Level.INFO, "Saving to cache " + currencyUrl + "...");
-				GoogleCacheProvider.getInstance().put(currencyUrl, ratesMap, 1);
-			} else {
-				logger.log(Level.WARNING, currencyUrl + " received following response from the server: " + resp);
-			}
-		} catch (Exception e) {
-			logger.log(Level.SEVERE, e.getMessage(), e);
-		}
     }
 }

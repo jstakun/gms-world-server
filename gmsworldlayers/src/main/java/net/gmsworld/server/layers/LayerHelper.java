@@ -275,7 +275,7 @@ public abstract class LayerHelper {
 						Double exchangeRate = 1d;
 						String cc = landmark.getDeal().getCurrencyCode();
 						if (!StringUtils.equals(cc, "EUR")) {
-							Map<String, Double> ratesMap = cacheProvider.getObject(HashMap.class, "http://api.fixer.io/latest?base=EUR");
+							Map<String, Double> ratesMap = cacheProvider.getObject(HashMap.class, "CURRENCY_BASE_EUR");
 			        		if (ratesMap != null) {
 			        			exchangeRate = ratesMap.get(landmark.getDeal().getCurrencyCode());
 			        			if (exchangeRate != null) {
@@ -318,7 +318,7 @@ public abstract class LayerHelper {
 		        	String cc = Currency.getInstance(new Locale(language, country)).getCurrencyCode();
 					featureCollection.setProperty("currencycode", cc);
 					if (!StringUtils.equals(cc, "EUR") && !exchangeRates.containsKey(cc)) {
-						Map<String, Double> ratesMap = cacheProvider.getObject(HashMap.class, "http://api.fixer.io/latest?base=EUR");
+						Map<String, Double> ratesMap = cacheProvider.getObject(HashMap.class, "CURRENCY_BASE_EUR");
 		        		if (ratesMap != null) {
 		        			Double exchangeRate = ratesMap.get(cc);
 		        			if (exchangeRate != null) {
