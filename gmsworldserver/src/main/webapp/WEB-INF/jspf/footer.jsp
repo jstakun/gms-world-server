@@ -29,16 +29,16 @@
                 <li><a title="Twitter" href="http://twitter.com/geolocationms" rel="nofollow" target="_blank">
                         <img alt="Twitter" title="Twitter" src="/images/social_twitter.png" /></a>
                 </li>
-                <li><a title="Google+" href="https://plus.google.com/117623384724994541747" rel="nofollow" target="_blank">
-                        <img alt="Google+" title="Google+" src="/images/google_plus.png" /></a>
+                <li>
+                      <a href="#">
+                     <img alt="Rss" title="Rss" src="/images/social_rss.png" /></a>
                 </li>
             </ul>
 
             <p>Stay up to date. Subscribe via
                 <a href="http://blog.gms-world.net" target="_blank">Blog</a>,
-                <a href="http://www.facebook.com/pages/GMS-World/165436696841663" target="_blank">Facebook</a>,
-                <a href="http://twitter.com/geolocationms" target="_blank">Twitter</a> or 
-                <a href="https://plus.google.com/117623384724994541747" rel="publisher" target="_blank">Google+</a>
+                <a href="http://www.facebook.com/pages/GMS-World/165436696841663" target="_blank">Facebook</a> or
+                <a href="http://twitter.com/geolocationms" target="_blank">Twitter</a>
             </p>
 
         </div>

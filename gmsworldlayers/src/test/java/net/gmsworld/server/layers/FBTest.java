@@ -22,31 +22,31 @@ public class FBTest {
 	}
 	
 	final String PSID = "";
-	final String mytoken = "";
+	final String mytoken = "PUT_YOUR_TOKEN_HERE";
 	
 	final double lat = 52.25;
 	final double lng = 20.95;
 	final int limit = 30;
 
-	//@Test
+	@Test
 	public void testMyFriends() throws Exception {		
     	List<String> friends = ((FacebookUtils)LayerHelperFactory.getInstance().getByName(Commons.FACEBOOK_LAYER)).getMyFriends(mytoken);
 		System.out.println("Found " + friends.size() + " friends");
 	}
 	
-	//@Test
+	@Test
 	public void testMyCheckins() throws Exception {
 		List<ExtendedLandmark> landmarks = ((FacebookUtils)LayerHelperFactory.getInstance().getByName(Commons.FACEBOOK_LAYER)).getMyPlaces(1146, limit, StringUtil.XLARGE, mytoken, Locale.UK, false);
 		printLandmarks(landmarks, "checkins");
 	}
 	
-	//@Test
+	@Test
 	public void testMyPhotos() throws Exception {
 		List<ExtendedLandmark> landmarks =	((FacebookUtils)LayerHelperFactory.getInstance().getByName(Commons.FACEBOOK_LAYER)).getMyPhotos(1126, limit, StringUtil.XLARGE, mytoken, Locale.UK, false);
 	    printLandmarks(landmarks, "photos");
 	}
 	
-	//@Test
+	@Test
 	public void testMyTaggedPlaces() throws Exception {	
 		List<ExtendedLandmark> landmarks = ((FacebookUtils)LayerHelperFactory.getInstance().getByName(Commons.FACEBOOK_LAYER)).getMyTaggedPlaces(1126, limit, StringUtil.XLARGE, mytoken, Locale.UK, false);
 		printLandmarks(landmarks, "tagged places");
@@ -55,6 +55,7 @@ public class FBTest {
 	@Test
 	public void testPlaces() throws Exception {	
 		List<ExtendedLandmark> landmarks = LayerHelperFactory.getInstance().getByName(Commons.FACEBOOK_LAYER).processBinaryRequest(lat, lng, null, 10, 1126, limit, StringUtil.XLARGE, null, null, Locale.UK, false);
+		//LayerHelperFactory.getInstance().getByName(Commons.FACEBOOK_LAYER).processRequest(lat, lng, null, 10, 1126, limit, StringUtil.XLARGE, null, null);
 		printLandmarks(landmarks, "places around");
 	}
     

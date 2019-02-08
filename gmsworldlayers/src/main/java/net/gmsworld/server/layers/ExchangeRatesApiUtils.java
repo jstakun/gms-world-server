@@ -39,7 +39,7 @@ public class ExchangeRatesApiUtils {
 						ratesMap.put(key, rates.getDouble(key));
 					}
 				}
-				logger.log(Level.INFO, "Saving to cache " + currencyUrl + "...");
+				logger.log(Level.INFO, "Saving to cache entry CURRENCY_BASE_" + fromcc  + " ...");
 				cache.put("CURRENCY_BASE_" + fromcc, ratesMap, 1);
 			} else {
 				logger.log(Level.WARNING, currencyUrl + " received following response from the server: " + resp);

@@ -133,10 +133,12 @@ public class FacebookUtils extends LayerHelper {
                 jsonObject.put("lng", lng);
 
                 for (String name : location.names()) {
-                    String value = location.get(name).asString();
-                    if (StringUtils.isNotEmpty(value)) {
-                        desc.put(name, value);
-                    }
+                	if (!(name.equals("latitude") || name.equals("longitude"))) {
+                		String value = location.get(name).asString();
+                		if (StringUtils.isNotEmpty(value)) {
+                			desc.put(name, value);
+                		}
+                	}
                 }
                 jsonObject.put("desc", desc);
 
@@ -666,15 +668,15 @@ public class FacebookUtils extends LayerHelper {
                     }
                     
                     if (reply.names().contains("overall_star_rating")) {
-                    	details.put("rating", reply.get("overall_star_rating").asString());
+                    	details.put("rating", Double.toString(reply.get("overall_star_rating").asDouble()));
                     }
                     
                     if (reply.names().contains("rating_count")) {
-                    	details.put("numberOfReviews", reply.get("rating_count").asString());
+                    	details.put("numberOfReviews", Integer.toString(reply.get("rating_count").asInt()));
                     }
                     
                     if (reply.names().contains("fan_count")) {
-                    	details.put("Likes", reply.get("fan_count").asString());
+                    	details.put("Likes", Integer.toString(reply.get("fan_count").asInt()));
                     }
                     
                     if (reply.names().contains("price_range")) {
