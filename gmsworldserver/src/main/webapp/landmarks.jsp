@@ -453,12 +453,10 @@
 		       	    }); 
 
 		        	 if (marker_counter > 1) {
-		       	    	//legend
-		       	    	var topLocationsDiv = document.createElement('div'); 
-		        		var text = '<input type=\'checkbox\' id=\'singleVenueFilter\' checked onclick=\"filter()\"><img src=\'/images/layers/0stars_blue_32.png\' style=\'width:32px; height:32px; vertical-align: middle;\' title=\'Single room or apartment venue\'><span style=\'line-height:32px;\'>&nbsp;<bean:message key="hotels.single.venue" /></span><br/>' +
-			        		               '<input type=\'checkbox\' id=\'multiVenueFilter\' checked onclick=\"filter()\"><img src=\'/images/layers/star_0_32.png\' style=\'width:32px; height:32px; vertical-align: middle;\'><span style=\'line-height:32px;\' title=\'Multiple rooms or apartments venue\'>&nbsp;<bean:message key="hotels.multiple.venue" /></span>'; 
-		        		var topLocationsControl = new CenterControl(topLocationsDiv, 'left', text, '');
-		     	    	topLocationsDiv.index = 3
+		       	    	//venues
+		       	    	var topLocationsDiv = document.getElementById('venueTypes');
+		       	    	CenterControl2(topLocationsDiv, 'left', ''); 
+		       	    	topLocationsDiv.index = 3
 		     	    	map.controls[google.maps.ControlPosition.RIGHT_TOP].push(topLocationsDiv);	
 
 		     	    	//dates
@@ -468,62 +466,65 @@
 		     	    	checkinDiv.style.display = 'inline';	
 		     	     
 		     	    	//filters
-		     	    	var filtersDiv = document.createElement('div');
-		     	    	var text = '<table style=\"width:100%;border-spacing: 0px;padding: 0px;font-family:Roboto,Arial,sans-serif;font-size:<%=fontSize%>;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;\">' + 
-                               '<tr><td colspan=\"2\"><b><bean:message key="hotels.starrating" /></b></td></tr>' + 
-			     	           '<tr><td><input type=\"checkbox\" id=\"5s\" checked=\"checked\" onclick=\"filter()\"/></td><td><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/></td><td align=\'right\'>' + (results.properties['stats_stars']['5'] ? results.properties['stats_stars']['5'] : '0') + '</td></tr>' +
-		     	               '<tr><td><input type=\"checkbox\" id=\"4s\" checked=\"checked\" onclick=\"filter()\"/></td><td><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/></td><td align=\'right\'>' + (results.properties['stats_stars']['4'] ? results.properties['stats_stars']['4'] : '0') + '</td></tr>' +
-		     	               '<tr><td><input type=\"checkbox\" id=\"3s\" checked=\"checked\" onclick=\"filter()\"/></td><td><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/></td><td align=\'right\'>' + (results.properties['stats_stars']['3'] ? results.properties['stats_stars']['3'] : '0') + '</td></tr>' +
-		     	               '<tr><td><input type=\"checkbox\" id=\"2s\" checked=\"checked\" onclick=\"filter()\"/></td><td><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/></td><td align=\'right\'>' + (results.properties['stats_stars']['2'] ? results.properties['stats_stars']['2'] : '0') + '</td></tr>' +
-		     	               '<tr><td><input type=\"checkbox\" id=\"1s\" checked=\"checked\" onclick=\"filter()\"/></td><td><img src=\"/images/star_blue.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/></td><td align=\'right\'>' + (results.properties['stats_stars']['1'] ? results.properties['stats_stars']['1'] : '0') + '</td></tr>' +
-		     	               '<tr><td><input type=\"checkbox\" id=\"0s\" checked=\"checked\" onclick=\"filter()\"/></td><td><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/><img src=\"/images/star_grey.png\" style=\"margin: 0px 2px\"/></td><td align=\'right\'>' + (results.properties['stats_stars']['0'] ? results.properties['stats_stars']['0'] : '0') + '</td></tr>';
+		     	    	var filtersDiv = document.getElementById('filters');
+		     	    	document.getElementById('5s-text').innerHTML = (results.properties['stats_stars']['5'] ? results.properties['stats_stars']['5'] : '0');
+		     	    	document.getElementById('4s-text').innerHTML = (results.properties['stats_stars']['4'] ? results.properties['stats_stars']['4'] : '0');
+		     	    	document.getElementById('3s-text').innerHTML = (results.properties['stats_stars']['3'] ? results.properties['stats_stars']['3'] : '0');
+		     	    	document.getElementById('2s-text').innerHTML = (results.properties['stats_stars']['2'] ? results.properties['stats_stars']['2'] : '0');
+		     	    	document.getElementById('1s-text').innerHTML = (results.properties['stats_stars']['1'] ? results.properties['stats_stars']['1'] : '0');
+		     	    	document.getElementById('0s-text').innerHTML = (results.properties['stats_stars']['0'] ? results.properties['stats_stars']['0'] : '0');
 
 		     	    	if (currencycode && eurexchangerates[currencycode] && (results.properties['stats_price']['1'] || results.properties['stats_price']['2'] || results.properties['stats_price']['3'] || results.properties['stats_price']['4'] || results.properties['stats_price']['5'])) {
-                        	var value = parseInt(eurexchangerates[currencycode]*50, 10);
-                    		text += '<tr><td colspan=\"2\"><b><bean:message key="hotels.price" /></b</td></tr>' + 
-                                '<tr><td><input type=\"checkbox\" id=\"1p\" checked=\"checked\" onclick=\"filter()\"/></td><td>0 ' + currencycode + ' - ' + value + ' ' + currencycode + '</td><td align=\'right\'>&nbsp;' + (results.properties['stats_price']['1'] ? results.properties['stats_price']['1'] : '0') + '</td></tr>' + 
-                                '<tr><td><input type=\"checkbox\" id=\"2p\" checked=\"checked\" onclick=\"filter()\"/></td><td>' + value + ' ' + currencycode + ' - ' + (value*2) + ' ' + currencycode + '</td><td align=\'right\'>&nbsp;' + (results.properties['stats_price']['2'] ? results.properties['stats_price']['2'] : '0') + '</td></tr>' +
-                                '<tr><td><input type=\"checkbox\" id=\"3p\" checked=\"checked\" onclick=\"filter()\"/></td><td>' + (value*2) + ' ' + currencycode + ' - ' + (value*3) + ' ' + currencycode + '</td><td align=\'right\'>&nbsp;' + (results.properties['stats_price']['3'] ? results.properties['stats_price']['3'] : '0') +'</td></tr>' +
-                                '<tr><td><input type=\"checkbox\" id=\"4p\" checked=\"checked\" onclick=\"filter()\"/></td><td>' + (value*3) + ' ' + currencycode + ' - ' + (value*4) + ' ' + currencycode + '</td><td align=\'right\'>&nbsp;' + (results.properties['stats_price']['4'] ? results.properties['stats_price']['4'] : '0') +'</td></tr>' +
-                                '<tr><td><input type=\"checkbox\" id=\"5p\" checked=\"checked\" onclick=\"filter()\"/></td><td>' + (value*4) + ' ' + currencycode + ' +</td><td align=\'right\'>&nbsp;' + (results.properties['stats_price']['5'] ? results.properties['stats_price']['5'] : '0') + '</td></tr>'; 
-                    	}
+                        	 var value = parseInt(eurexchangerates[currencycode]*50, 10);
+                        	 document.getElementById('1p-text').innerHTML = '0 ' + currencycode + ' - ' + value + ' ' + currencycode;
+                        	 document.getElementById('2p-text').innerHTML = value + ' ' + currencycode + ' - ' + (value*2) + ' ' + currencycode;
+                        	 document.getElementById('3p-text').innerHTML = (value*2) + ' ' + currencycode + ' - ' + (value*3) + ' ' + currencycode;
+                        	 document.getElementById('4p-text').innerHTML = (value*3) + ' ' + currencycode + ' - ' + (value*4) + ' ' + currencycode;
+                        	 document.getElementById('5p-text').innerHTML = (value*4) + ' ' + currencycode + ' - ' + (value*5) + ' ' + currencycode;
+                        	 document.getElementById('1p-desc').innerHTML = '&nbsp;' + (results.properties['stats_price']['1'] ? results.properties['stats_price']['1'] : '0');
+                        	 document.getElementById('2p-desc').innerHTML = '&nbsp;' + (results.properties['stats_price']['2'] ? results.properties['stats_price']['2'] : '0');
+                        	 document.getElementById('3p-desc').innerHTML = '&nbsp;' + (results.properties['stats_price']['3'] ? results.properties['stats_price']['3'] : '0');
+                        	 document.getElementById('4p-desc').innerHTML = '&nbsp;' + (results.properties['stats_price']['4'] ? results.properties['stats_price']['4'] : '0');
+                        	 document.getElementById('5p-desc').innerHTML = '&nbsp;' + (results.properties['stats_price']['5'] ? results.properties['stats_price']['5'] : '0');
+		     	    	} else {
+                             $("#filterTable").find("tr:gt(6)").remove();
+		     	    	}
 
-	                	text += '</table>'; 
-		     	    	var filtersControl = new CenterControl(filtersDiv, 'center', text, '');
+		     	    	CenterControl2(filtersDiv, 'center', ''); 
 		     	    	filtersDiv.index = 5
 		     	    	map.controls[google.maps.ControlPosition.LEFT_CENTER].push(filtersDiv);
 
 		     	    	//search filter cookies
-		     	    	//var filterStr = Cookies.get('filter');
-		     	    	//if (filterStr) {
-		     	    	//	console.log('filter cookie: ' + filterStr);
-                        //	var cids = filterStr.split(',');
-                        //	if (cids.length > 0) {
-                        //    	for (var i=0;i<cids.length;i++) {
-                        //   		var cid = cids[i];
-                        //            if (cid.length > 0 && document.getElementById(cid)) {
-                        //            	console.log('uncheck ' + cid);
-                        //    			document.getElementById(cid).checked = false;
-                        //            }
-                        //		}     
-		     	    	//	} else {
-		     	    	//		console.log('invalid filter cookie set');
-				     	//    }	
-			     		//} else {
-		     	    	//	console.log('no filter cookie set');
-			     		//}
+		     	    	var filterStr = Cookies.get('filter');
+		     	    	if (filterStr) {
+		     	    		console.log('filter cookie: ' + filterStr);
+                        	var cids = filterStr.split(',');
+                        	if (cids.length > 0) {
+                            	for (var i=0;i<cids.length;i++) {
+                           			var cid = cids[i];
+                                    if (cid.length > 0 && document.getElementById(cid)) {
+                                    	console.log('uncheck ' + cid);
+                            			document.getElementById(cid).checked = false;
+                                    }
+                        		}     
+		     	    		} else {
+		     	    			console.log('invalid filter cookie set');
+				     	    }	
+			     		} else {
+		     	    		console.log('no filter cookie set');
+			     		}
 
-		     	    	//if (Cookies.get('multiVenueFilter') == 'false') {
-		       	    	//	document.getElementById('multiVenueFilter').checked = false;
-		       	    	//	console.log('uncheck mvf');
-				       	//}
+		     	    	if (Cookies.get('multiVenueFilter') == 'false') {
+		       	    		document.getElementById('multiVenueFilter').checked = false;
+		       	    		console.log('uncheck mvf');
+				       	}
 
-		     	    	//if (Cookies.get('singleVenueFilter') == 'false') {
-		       	    	//	document.getElementById('singleVenueFilter').checked = false;
-		       	    	//	console.log('uncheck svf');
-					    //}
+		     	    	if (Cookies.get('singleVenueFilter') == 'false') {
+		       	    		document.getElementById('singleVenueFilter').checked = false;
+		       	    		console.log('uncheck svf');
+					    }
 
-		       			//filter(); 
+		       			filter(); 
 			     	}
 			    }	 
 			} else if ((layer_counter + excluded_layers) == layers.length && marker_counter == 1) {
@@ -538,6 +539,31 @@
 					  $(this).hide(); n();
 				});
 			}
+      }
+
+      function CenterControl2(controlDiv, align, title) {
+
+          // Set CSS for the control border
+          controlDiv.style.display = "block";
+          controlDiv.style.backgroundColor = '#fff';
+          controlDiv.style.border = '2px solid #fff';
+          controlDiv.style.borderRadius = '3px';
+          controlDiv.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+          controlDiv.style.cursor = 'pointer';
+          controlDiv.style.marginTop = '10px';
+          controlDiv.style.marginLeft = '10px';
+          controlDiv.style.marginBottom = '10px';
+          controlDiv.style.marginRight = '10px';
+          controlDiv.style.textAlign = align; 
+          controlDiv.title = title;
+          
+          // Set CSS for the control interior
+          controlDiv.style.color = 'rgb(25,25,25)';
+          controlDiv.style.fontFamily = 'Roboto,Arial,sans-serif';
+          controlDiv.style.fontSize = '<%=fontSize%>';
+          controlDiv.style.lineHeight = '32px'; //scale
+          controlDiv.style.paddingLeft = '4px';
+          controlDiv.style.paddingRight = '4px';
       }
 
       function CenterControl(controlDiv, align, text, title) {
@@ -568,7 +594,7 @@
           controlText.innerHTML = text;
           controlUI.appendChild(controlText);
       }  
-      
+        
       function filter() {
     	  var markersToAdd = [];
 
@@ -636,31 +662,29 @@
 		  });     
 
 		  //search filters cookies
-		  //var filter = "";
-		  //var filterStr = Cookies.get('filter');
-		  //for (var i = 0; i < 6; i++) {
-		  //	 if (document.getElementById(i + 's').checked == false) {
-          //       filter += i + "s,"; 
-          //   } 
-          //   if (i > 0 && document.getElementById(i + 'p')) {
-          //       if (document.getElementById(i + 'p').checked == false) {
-          //  	 	filter += i + 'p,';   
-          //       }
-          //   } else if (i > 0 && filterStr && filterStr.indexOf(i + 'p,') >= 0) {
-          //  	 filter += i + 'p,';  //rewrite existing filter in price checkboxes are hidden
-          //   }
-		  //}
-		  //if (filter.length > 0) {
-		  //	 Cookies.set('filter', filter, '{ expires: 365, path: '/'}');			
-	      //}
+		  var filter = "";
+		  var filterStr = Cookies.get('filter');
+		  for (var i = 0; i < 6; i++) {
+		  	 if (document.getElementById(i + 's').checked == false) {
+                 filter += i + "s,"; 
+             } 
+             if (i > 0 && document.getElementById(i + 'p')) {
+                 if (document.getElementById(i + 'p').checked == false) {
+            	 	filter += i + 'p,';   
+                 }
+             } else if (i > 0 && filterStr && filterStr.indexOf(i + 'p,') >= 0) {
+            	 filter += i + 'p,';  //rewrite existing filter in price checkboxes are hidden
+             }
+		  }
+		  if (filter.length > 0) {
+		  	 Cookies.set('filter', filter, '{ expires: 365, path: '/'}');			
+	      }
 	      
-	      //var svfChecked = document.getElementById('singleVenueFilter').checked;
-          //console.log('svf checked: ' + svfChecked)
-		  //Cookies.set('singleVenueFilter', svfChecked, '{ expires: 365, path: '/'}'); 
+	      console.log('svf checked: ' + singleVenueFilter);
+		  Cookies.set('singleVenueFilter', singleVenueFilter, '{ expires: 365, path: '/'}'); 
 
-          //var mvfChecked = document.getElementById('multiVenueFilter').checked;
-          //console.log('mvf checked: ' + mvfChecked)
-		  //Cookies.set('multiVenueFilter', mvfChecked, '{ expires: 365, path: '/'}');		  
+          console.log('mvf checked: ' + multiVenueFilter);
+		  Cookies.set('multiVenueFilter', multiVenueFilter, '{ expires: 365, path: '/'}');		  
       }
 
       var checkinChildrenAges = [<%= (String)request.getAttribute("checkinChildrenAges") %>];
@@ -810,6 +834,27 @@
 				</td>
     		</tr>
     	</table>
+    </div>
+    <div id="venueTypes" style="display:none;">
+    	<input type="checkbox" id="singleVenueFilter" checked onclick="filter()"><img src="/images/layers/0stars_blue_32.png" style="width:32px; height:32px; vertical-align:middle;" title="Single room or apartment venue"><span style="line-height:32px;">&nbsp;<bean:message key="hotels.single.venue" /></span><br/>
+		<input type="checkbox" id="multiVenueFilter" checked onclick="filter()"><img src="/images/layers/star_0_32.png" style="width:32px; height:32px; vertical-align:middle;"><span style="line-height:32px;" title="Multiple rooms or apartments venue">&nbsp;<bean:message key="hotels.multiple.venue" /></span>
+    </div>
+    <div id="filters" style="display:none;">
+        <table id="filterTable" style="width:100%;border-spacing: 0px;padding: 0px;font-family:Roboto,Arial,sans-serif;font-size:<%=fontSize%>;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;"> 
+             <tr><td colspan="2"><b><bean:message key="hotels.starrating" /></b></td></tr> 
+			 <tr><td><input type="checkbox" id="5s" checked="checked" onclick="filter()"/></td><td><img src="/images/star_blue.png" style="margin: 0px 2px"/><img src="/images/star_blue.png" style="margin: 0px 2px"/><img src="/images/star_blue.png" style="margin: 0px 2px"/><img src="/images/star_blue.png" style="margin: 0px 2px"/><img src="/images/star_blue.png" style="margin: 0px 2px"/></td><td align="right"><span id="5s-text"></span></td></tr>
+		     <tr><td><input type="checkbox" id="4s" checked="checked" onclick="filter()"/></td><td><img src="/images/star_blue.png" style="margin: 0px 2px"/><img src="/images/star_blue.png" style="margin: 0px 2px"/><img src="/images/star_blue.png" style="margin: 0px 2px"/><img src="/images/star_blue.png" style="margin: 0px 2px"/><img src="/images/star_grey.png" style="margin: 0px 2px"/></td><td align="right"><span id="4s-text"></span></td></tr>
+		     <tr><td><input type="checkbox" id="3s" checked="checked" onclick="filter()"/></td><td><img src="/images/star_blue.png" style="margin: 0px 2px"/><img src="/images/star_blue.png" style="margin: 0px 2px"/><img src="/images/star_blue.png" style="margin: 0px 2px"/><img src="/images/star_grey.png" style="margin: 0px 2px"/><img src="/images/star_grey.png" style="margin: 0px 2px"/></td><td align="right"><span id="3s-text"></span></td></tr>
+		     <tr><td><input type="checkbox" id="2s" checked="checked" onclick="filter()"/></td><td><img src="/images/star_blue.png" style="margin: 0px 2px"/><img src="/images/star_blue.png" style="margin: 0px 2px"/><img src="/images/star_grey.png" style="margin: 0px 2px"/><img src="/images/star_grey.png" style="margin: 0px 2px"/><img src="/images/star_grey.png" style="margin: 0px 2px"/></td><td align="right"><span id="2s-text"></span></td></tr>
+		     <tr><td><input type="checkbox" id="1s" checked="checked" onclick="filter()"/></td><td><img src="/images/star_blue.png" style="margin: 0px 2px"/><img src="/images/star_grey.png" style="margin: 0px 2px"/><img src="/images/star_grey.png" style="margin: 0px 2px"/><img src="/images/star_grey.png" style="margin: 0px 2px"/><img src="/images/star_grey.png" style="margin: 0px 2px"/></td><td align="right"><span id="1s-text"></span></td></tr>
+		     <tr><td><input type="checkbox" id="0s" checked="checked" onclick="filter()"/></td><td><img src="/images/star_grey.png" style="margin: 0px 2px"/><img src="/images/star_grey.png" style="margin: 0px 2px"/><img src="/images/star_grey.png" style="margin: 0px 2px"/><img src="/images/star_grey.png" style="margin: 0px 2px"/><img src="/images/star_grey.png" style="margin: 0px 2px"/></td><td align="right"><span id="0s-text"></span></td></tr>
+		     <tr><td colspan="2"><b><bean:message key="hotels.price" /></b></td></tr>
+             <tr><td><input type="checkbox" id="1p" checked="checked" onclick="filter()"/></td><td><span id="1p-text"></span></td><td align="right"><span id="1p-desc"></span></td></tr>
+             <tr><td><input type="checkbox" id="2p" checked="checked" onclick="filter()"/></td><td><span id="2p-text"></span></td><td align="right"><span id="2p-desc"></span></td></tr>
+             <tr><td><input type="checkbox" id="3p" checked="checked" onclick="filter()"/></td><td><span id="3p-text"></span></td><td align="right"><span id="3p-desc"></span></td></tr>
+             <tr><td><input type="checkbox" id="4p" checked="checked" onclick="filter()"/></td><td><span id="4p-text"></span></td><td align="right"><span id="4p-desc"></span></td></tr>
+             <tr><td><input type="checkbox" id="5p" checked="checked" onclick="filter()"/></td><td><span id="5p-text"></span></td><td align="right"><span id="5p-desc"></span></td></tr> 
+        </table>
     </div>
     <script type="text/javascript">
      $(function() {
