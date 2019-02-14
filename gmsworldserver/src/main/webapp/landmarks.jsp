@@ -224,9 +224,9 @@
    			   			dataType: "json",
    			 		  	url: "/geoJsonProvider",
    				  	    data: data,
-     				 	    beforeSend: function(xhr) {
-         					   xhr.setRequestHeader("Accept-Encoding", "gzip, deflate");
-     			    }})
+     				 	   beforeSend: function(xhr) {
+         					   //xhr.setRequestHeader("Accept-Encoding", "gzip, deflate");
+     			           }})
    	 			  	.done(function(results) {
    				  		xhr = null;  
    				  		loadLayer(results, true);    
@@ -266,7 +266,7 @@
 		 				url: "/geoJsonProvider",
 		 				data: data,
 		   				beforeSend: function(xhr) {
-		       				xhr.setRequestHeader("Accept-Encoding", "gzip, deflate");
+		       				//xhr.setRequestHeader("Accept-Encoding", "gzip, deflate");
 		   				}})
 		 				.done(function(results) {
 		 					loadLayer(results, false);
@@ -425,18 +425,18 @@
 					  $(this).hide(); n();
 				});
 
-				var centerControlDiv = document.createElement('div');
+				var centerControlDiv = document.getElementById('centerMap');
 				centerControlDiv.index = 1;
-		        var centerControl = new CenterControl(centerControlDiv, 'center', '<bean:message key="landmarks.center.map" />', '<bean:message key="landmarks.center.map" />');
+		        CenterControl2(centerControlDiv, 'center','<bean:message key="landmarks.center.map" />');
 		        map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(centerControlDiv);
 		        google.maps.event.addDomListener(centerControlDiv, 'click', function() {
 		    	   	 map.setCenter(mapcenter)
 		    	});
 
 		        if (window.location.href.indexOf("?enabled=Hotels") == -1 && hotelsOnly == false) {
-					var hotelControlDiv = document.createElement('div');
+					var hotelControlDiv = document.getElementById('hotelsControl');
 		        	hotelControlDiv.index = 2;
-		        	var centerControl = new CenterControl(hotelControlDiv, 'center', '<img src=\'/images/hotel_search_64.png\' title=\'<bean:message key="hotels.discover.nearby" />\'/>', '<bean:message key="hotels.discover.nearby" />'); 
+		        	CenterControl2(hotelControlDiv, 'center','<bean:message key="hotels.discover.nearby" />'); 
 		        	map.controls[google.maps.ControlPosition.TOP_CENTER].push(hotelControlDiv);
 		        	google.maps.event.addDomListener(hotelControlDiv, 'click', function() { 
 		                window.location.href = window.location.pathname + '?enabled=Hotels';
@@ -444,9 +444,9 @@
 		       	    });
 		       } else {
 			        //new search button
-		        	var hotelControlDiv = document.createElement('div');
+		        	var hotelControlDiv = document.getElementById('hotelsControl2');
 		        	hotelControlDiv.index = 2;
-		        	var centerControl = new CenterControl(hotelControlDiv, 'center', '<b><bean:message key="landmarks.new.search" /></b>', '<bean:message key="landmarks.new.search" />'); 
+		        	CenterControl2(hotelControlDiv, 'center', '<bean:message key="landmarks.new.search" />'); 
 		        	map.controls[google.maps.ControlPosition.TOP_LEFT].push(hotelControlDiv);
 		        	google.maps.event.addDomListener(hotelControlDiv, 'click', function() { 
 		                window.location.href = '/hotels/' + map.getCenter().lat() + '/' + map.getCenter().lng() + '/' + map.getZoom();
@@ -565,35 +565,6 @@
           controlDiv.style.paddingLeft = '4px';
           controlDiv.style.paddingRight = '4px';
       }
-
-      function CenterControl(controlDiv, align, text, title) {
-
-          // Set CSS for the control border
-          var controlUI = document.createElement('div');
-          controlUI.style.backgroundColor = '#fff';
-          controlUI.style.border = '2px solid #fff';
-          controlUI.style.borderRadius = '3px';
-          controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
-          controlUI.style.cursor = 'pointer';
-          controlUI.style.marginTop = '10px';
-          controlUI.style.marginLeft = '10px';
-          controlUI.style.marginBottom = '10px';
-          controlUI.style.marginRight = '10px';
-          controlUI.style.textAlign = align; 
-          controlUI.title = title;
-          controlDiv.appendChild(controlUI);
-
-          // Set CSS for the control interior
-          var controlText = document.createElement('div');
-          controlText.style.color = 'rgb(25,25,25)';
-          controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
-          controlText.style.fontSize = '<%=fontSize%>';
-          controlText.style.lineHeight = '32px'; //scale
-          controlText.style.paddingLeft = '4px';
-          controlText.style.paddingRight = '4px';
-          controlText.innerHTML = text;
-          controlUI.appendChild(controlText);
-      }  
         
       function filter() {
     	  var markersToAdd = [];
@@ -661,7 +632,7 @@
 				  $(this).hide(); n();
 		  });     
 
-		  //search filters cookies
+		  //set filters cookies
 		  var filter = "";
 		  var filterStr = Cookies.get('filter');
 		  for (var i = 0; i < 6; i++) {
@@ -834,6 +805,15 @@
 				</td>
     		</tr>
     	</table>
+    </div>
+    <div id="centerMap" style="display:none;">
+    	<bean:message key="landmarks.center.map" />
+    </div>
+    <div id="hotelsControl" style="display:none;">
+    	<img src="/images/hotel_search_64.png" title="<bean:message key="hotels.discover.nearby" />"/>
+    </div>
+    <div id="hotelsControl2" style="display:none;">
+        <b><bean:message key="landmarks.new.search" /></b>
     </div>
     <div id="venueTypes" style="display:none;">
     	<input type="checkbox" id="singleVenueFilter" checked onclick="filter()"><img src="/images/layers/0stars_blue_32.png" style="width:32px; height:32px; vertical-align:middle;" title="Single room or apartment venue"><span style="line-height:32px;">&nbsp;<bean:message key="hotels.single.venue" /></span><br/>
