@@ -116,8 +116,8 @@ public class GeonamesUtils extends LayerHelper {
 		int r = NumberUtils.normalizeNumber(radius, 1, 20);
         List<ExtendedLandmark> output = new ArrayList<ExtendedLandmark>();
 
-        URL geonamesUrl = new URL("http://api.geonames.org/findNearbyWikipediaJSON?lat=" + lat + "&lng=" + lng + "&maxRows=" + MAXROWS + "&radius=" + r + "&username=" + Commons.getProperty(Property.GEONAMES_USERNAME) + "&lang=" + lang);
-
+        URL geonamesUrl = new URL("http://api.geonames.org/findNearbyWikipediaJSON?lat=" + lat + "&lng=" + lng + "&maxRows=" + MAXROWS + "&radius=" + r + "&lang=" + lang + "&username=" + Commons.getProperty(Property.GEONAMES_USERNAME));
+        //logger.log(Level.INFO, "Calling " + geonamesUrl);
         String geonamesResponse = HttpUtils.processFileRequest(geonamesUrl);
             
         if (StringUtils.startsWith(geonamesResponse, "{")) {
@@ -170,6 +170,8 @@ public class GeonamesUtils extends LayerHelper {
                     break;
                 }
             }
+        } else {
+        	logger.log(Level.WARNING, "Received following server response: " + jsonGeonames);
         }
 
         return landmarks;

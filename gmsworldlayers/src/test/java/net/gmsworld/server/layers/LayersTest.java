@@ -29,7 +29,7 @@ import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 public class LayersTest {
 	
 	private static final int apiLevel = 1115;
-	private static final int limit = 30; //min 30, max 1000
+	private static final int limit = 93; //min 30, max 1000
 	private static final int radius = 5000; //50000; 
 	private static final int stringLength = StringUtil.XLARGE;
 	
@@ -94,7 +94,7 @@ public class LayersTest {
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.YOUTUBE_LAYER)});
 	   
-	   data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.FACEBOOK_LAYER)});
+	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.FACEBOOK_LAYER)});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.FOURSQUARE_LAYER)});
 	   
@@ -103,6 +103,8 @@ public class LayersTest {
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.LM_SERVER_LAYER)});
 	 
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.EVENTFUL_LAYER)});
+	   
+	   data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.WIKIPEDIA_LAYER)});
 	   
 	   System.out.println("Found " + data.size() + " layers.");
 	   

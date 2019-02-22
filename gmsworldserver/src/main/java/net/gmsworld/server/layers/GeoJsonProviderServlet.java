@@ -147,9 +147,12 @@ public class GeoJsonProviderServlet extends HttpServlet {
 						} catch (Exception e) {
 				    		logger.log(Level.SEVERE, e.getMessage(), e);
 				    	}
-					} else {
+					} else if (StringUtils.startsWith(json, "{")) {
 						JSONObject layerJson = new JSONObject(json);
-						layerSize = layerJson.getJSONArray("features").length();
+						JSONArray features = layerJson.optJSONArray("features");
+						if (features != null) {
+							layerSize = features.length();
+						}
 					}
 	        	}
 			}	
