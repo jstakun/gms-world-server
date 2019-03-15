@@ -16,12 +16,16 @@ import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
+import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.jstakun.lm.server.utils.persistence.DevicePersistenceUtils;
+import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceWebUtils;
 
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
+import net.gmsworld.server.utils.persistence.Landmark;
+import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;
 
 /**
  * Servlet implementation class DeviceManagerServlet
@@ -193,7 +197,7 @@ public final class DeviceManagerServlet extends HttpServlet {
    			 }
    			 if (StringUtils.isNotEmpty(request.getHeader(Commons.ROUTE_ID_HEADER))) {
    				 flex += ",rid:" + request.getHeader(Commons.ROUTE_ID_HEADER);
-   			 }
+   			 } 
    	   	}
    	   	return flex;
 	}
@@ -201,7 +205,8 @@ public final class DeviceManagerServlet extends HttpServlet {
 	private String processHeadersV2(HttpServletRequest request, int version) {
 		List<String> tokens = new ArrayList<>();
 		Double latitude = null, longitude = null;
-		String accuracy = request.getHeader(Commons.ACC_HEADER);
+		String deviceId = request.getHeader(Commons.DEVICE_ID_HEADER);
+   	   	String accuracy = request.getHeader(Commons.ACC_HEADER);
 		if (request.getHeader(Commons.LAT_HEADER) != null) {
    	   		latitude = GeocodeUtils.getLatitude(request.getHeader(Commons.LAT_HEADER));
    	   	}
@@ -214,8 +219,22 @@ public final class DeviceManagerServlet extends HttpServlet {
    	   			geo += "+" + accuracy;
    	   		}
    	   		tokens.add(geo);
+   	   		if (StringUtils.isNotEmpty(request.getHeader(Commons.ROUTE_ID_HEADER))) {
+   	   			tokens.add("routeId:" + request.getHeader(Commons.ROUTE_ID_HEADER));
+   	   		} else 	if (StringUtils.isNotEmpty(deviceId)) {
+				Landmark l = new Landmark();
+				l.setLatitude(latitude);
+				l.setLongitude(longitude);
+				l.setName(Commons.MY_POSITION_LAYER);
+				l.setLayer(Commons.MY_POSITION_LAYER);
+				l.setUsername(deviceId);
+				LandmarkPersistenceWebUtils.setFlex(l, request);
+				LandmarkPersistenceUtils.persistLandmark(l, GoogleCacheProvider.getInstance());
+    			//if (l.getId() > 0) {
+    			//	LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), null, null);
+    			//}
+   	   		}
    	   	}	
-   	   	String deviceId = request.getHeader(Commons.DEVICE_ID_HEADER);
    	   	if (StringUtils.isNotEmpty(deviceId)) {
    	   		tokens.add("deviceId:" + deviceId);
    	 	    //add device location to cache
@@ -224,9 +243,6 @@ public final class DeviceManagerServlet extends HttpServlet {
    	   	if (StringUtils.isNotEmpty(request.getHeader(Commons.DEVICE_NAME_HEADER))) {
    	   		tokens.add("deviceName:" + request.getHeader(Commons.DEVICE_NAME_HEADER));
    	   	}
-   	   	if (StringUtils.isNotEmpty(request.getHeader(Commons.ROUTE_ID_HEADER))) {
-   	   		tokens.add("routeId:" + request.getHeader(Commons.ROUTE_ID_HEADER));
-   	   	} 
    	   	if (StringUtils.isNotEmpty(request.getParameter("replyToCommand"))) {
    	   		tokens.add("command:" + request.getParameter("replyToCommand"));
    	   	}
