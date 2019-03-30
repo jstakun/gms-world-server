@@ -39,12 +39,15 @@
     	   <li><a id="locate"><b>Locate</b></a> - send current device GPS location. Requires Location permission granted.<br/>
     	   SMS Example (assuming your security pin is 1234): <b>Locatedl 1234</b><br/>
     	   Telegram Messenger Example (assuming your security pin is 1234 and device id is 1234567890123456): <b>Locate 1234 1234567890123456</b></li>
-    	   <li><a id="hello"><b>Hello</b></a> - send hello message to check connectivity with the device. Requires Device Locator version 0.4-22. For previous versions use Ping instead of Hello.<br/>
+    	   <li><a id="hello"><b>Hello</b></a> - send hello message to check connectivity with the device. Requires Device Locator version 0.4-22. In previous versions use Ping command instead of Hello.<br/>
     	   SMS Example (assuming your security pin is 1234): <b>Hellodl 1234</b><br/>
     	   Telegram Messenger Example (assuming your security pin is 1234 and device id is 1234567890123456): <b>Hello 1234 1234567890123456</b></li>  
-    	   <li><a id="ring"><b>Ring</b></a> - start playing ring tone on the device. If your ring tone is stored on device storage requires Storage permission granted. <font color="red">You can send this command again to stop playing ring tone.</font><br/>
+    	   <li><a id="ring"><b>Ring</b></a> - start playing ring tone on the device. If your ring tone is stored on device storage requires Storage permission granted. <font color="red">Starting from version 0.4-49 use ringoff command to stop playing ring tone. In previous versions send ring command again to stop playing ring tone.</font><br/>
     	   SMS Example (assuming your security pin is 1234): <b>Ringdl 1234</b><br/>  
            Telegram Messenger Example (assuming your security pin is 1234 and device id is 1234567890123456): <b>Ring 1234 1234567890123456</b></li>  
+    	   <li><a id="ringoff"><b>Ringoff</b></a> - stop playing ring tone on the device.<br/>
+    	   SMS Example (assuming your security pin is 1234): <b>Ringoffdl 1234</b><br/>  
+           Telegram Messenger Example (assuming your security pin is 1234 and device id is 1234567890123456): <b>Ringoff 1234 1234567890123456</b></li>  
     	   <li><a id="call"><b>Call</b></a> -  call sender. Device should initiate phone call to SMS sender number or number specified as command parameter. Requires Phone permission granted.<br/>
            SMS Example (assuming your security pin is 1234): <b>Calldl 1234</b><br/>
            Telegram Messenger Example (assuming your security pin is 1234, device id is 1234567890123456, call to number is 123456789): <b>Call 1234 1234567890123456 -p 123456789</b></li>  
