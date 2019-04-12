@@ -130,7 +130,7 @@ public class FlickrUtils extends LayerHelper {
         try {
             photoList = photosIntf.search(sp, limit, 1);
         } catch (Exception e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
+            logger.log(Level.WARNING, e.getMessage(), e);
         }
 
         return photoList;

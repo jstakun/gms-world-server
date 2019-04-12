@@ -132,6 +132,9 @@ public class DevicePersistenceUtils {
 			    	} else if (responseCode != null && responseCode == 404) {
 			    		logger.log(Level.SEVERE, "Received server response 404 {0}", deviceJson);
 			    		return -4;
+			    	} else if (responseCode != null && responseCode == 410) {
+			    		logger.log(Level.SEVERE, "Received server response 410 {0}", deviceJson);
+			    		return -5;
 			    	} else {
 			    		logger.log(Level.SEVERE, "Received server response {0} {1}",  new Object[]{responseCode, deviceJson});
 			    		return -1;

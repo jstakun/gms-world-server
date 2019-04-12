@@ -156,6 +156,9 @@ public final class DeviceManagerServlet extends HttpServlet {
 		        	 } else if (status == -4) {
 		        		 reply.put("status", "failed");
 		        		 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+		        	 } else if (status == -5) {
+		        		 reply.put("status", "failed");
+		        		 response.setStatus(HttpServletResponse.SC_GONE);
 		        	 } else {
 		        		 reply.put("status", "failed");
 		        		 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
