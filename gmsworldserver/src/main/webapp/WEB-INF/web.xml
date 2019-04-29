@@ -87,6 +87,7 @@
     <url-pattern>/showImage/*</url-pattern>
     <url-pattern>/showUser/*</url-pattern>
     <url-pattern>/services/browserLandmark</url-pattern>
+    <url-pattern>/otp</url-pattern>
   </filter-mapping>
   <filter-mapping>
     <filter-name>BlockerFilter</filter-name>
@@ -140,6 +141,7 @@
     <url-pattern>/showUser/*</url-pattern>
     <url-pattern>/services/browserLandmark</url-pattern>
     <url-pattern>/routeProvider</url-pattern>
+    <url-pattern>/otp</url-pattern>
   </filter-mapping>
   <filter-mapping>
     <filter-name>ServicesAuthorizationFilter</filter-name>
@@ -222,10 +224,10 @@
     <servlet-name>ServiceLogAnalyticsServlet</servlet-name>
     <servlet-class>com.jstakun.lm.server.servlet.ServiceLogAnalyticsServlet</servlet-class>
   </servlet>
-   <servlet>
+   <!--servlet>
     <servlet-name>LetsEncryptAuthServlet</servlet-name>
     <servlet-class>com.jstakun.lm.server.servlet.LetsEncryptAuthServlet</servlet-class>
-  </servlet>
+  </servlet-->
   <servlet>
     <servlet-name>PanoramioProviderServlet</servlet-name>
     <servlet-class>net.gmsworld.server.layers.PanoramioProviderServlet</servlet-class>
@@ -340,6 +342,10 @@
   <servlet>
     <servlet-name>MessengerServlet</servlet-name>
     <servlet-class>net.gmsworld.server.layers.MessengerServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>OtpServlet</servlet-name>
+    <servlet-class>net.gmsworld.server.layers.OtpServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>action</servlet-name>
@@ -531,10 +537,10 @@
     <servlet-name>HotelsBookingServlet</servlet-name>
     <url-pattern>/bookingProvider</url-pattern>
   </servlet-mapping>
-  <servlet-mapping>
+  <!--servlet-mapping>
     <servlet-name>LetsEncryptAuthServlet</servlet-name>
     <url-pattern>/.well-known/acme-challenge/*</url-pattern>
-  </servlet-mapping>
+  </servlet-mapping-->
   <servlet-mapping>
     <servlet-name>DeviceManagerServlet</servlet-name>
     <url-pattern>/s/deviceManager</url-pattern>
@@ -546,6 +552,10 @@
   <servlet-mapping>
     <servlet-name>MessengerServlet</servlet-name>
     <url-pattern>/messenger</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>OtpServlet</servlet-name>
+    <url-pattern>/otp,/admin/otp</url-pattern>
   </servlet-mapping>
   <session-config>
     <session-timeout>30</session-timeout>

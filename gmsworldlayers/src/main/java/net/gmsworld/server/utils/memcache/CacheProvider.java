@@ -17,4 +17,6 @@ public interface CacheProvider {
 	public <T> List<T> getList(Class<T> clazz, String key);
 	
 	public boolean containsKey(String key);
+	
+	public Object remove(String key);
 }

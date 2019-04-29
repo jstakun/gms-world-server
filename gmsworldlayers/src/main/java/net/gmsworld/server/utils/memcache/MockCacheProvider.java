@@ -68,4 +68,9 @@ public class MockCacheProvider implements CacheProvider {
 		}
 	    return null;
 	}
+
+	@Override
+	public Object remove(String key) {
+		return cache.remove(key);
+	}
 }	
