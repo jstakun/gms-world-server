@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -41,6 +42,12 @@ public final class DeviceManagerServlet extends HttpServlet {
         super();
     }
 
+    @Override
+	public void init(ServletConfig config) throws ServletException {
+		super.init(config);
+		 GeocodeHelperFactory.setCacheProvider(GoogleCacheProvider.getInstance());
+	}
+    
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
