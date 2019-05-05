@@ -66,7 +66,14 @@ public class TelegramServlet extends HttpServlet {
 				if (StringUtils.equals(type, Commons.getProperty(Property.TELEGRAM_TOKEN))) {
 					String content = IOUtils.toString(request.getReader());
 					JSONObject jsonObject = new JSONObject(content);
-					JSONObject messageJson = jsonObject.optJSONObject("message");
+					JSONObject messageJson = null;
+					if (jsonObject.has("message")) {
+						messageJson = jsonObject.optJSONObject("message");
+					} else if (jsonObject.has("edited_message")) {
+						messageJson = jsonObject.optJSONObject("edited_message");
+					} else if (jsonObject.has("channel_post")) {
+						messageJson = jsonObject.optJSONObject("channel_post");
+					} 
 					if (messageJson != null && messageJson.has("text") && messageJson.has("chat")) {
 						String message = messageJson.getString("text");
 						Long telegramId= messageJson.getJSONObject("chat").getLong("id");
@@ -141,7 +148,7 @@ public class TelegramServlet extends HttpServlet {
 							TelegramUtils.sendTelegram(Long.toString(telegramId), INVALID_COMMAND);
 							logger.log(Level.SEVERE, "Received invalid message: " + message);
 						}
-					} else if (messageJson.has("chat")) {
+					} else if (messageJson != null && messageJson.has("chat")) {
 						Long telegramId= messageJson.getJSONObject("chat").getLong("id");
 						TelegramUtils.sendTelegram(Long.toString(telegramId), INVALID_COMMAND);
 				    } else {

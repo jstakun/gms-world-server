@@ -77,11 +77,11 @@ public class NotificationsServlet extends HttpServlet {
 			} else {
 				JSONObject reply = new JSONObject();
 				
-				String type = request.getParameter("type");
-				int appId = NumberUtils.getInt(request.getHeader(Commons.APP_HEADER), -1);
-				String routeId = request.getHeader(Commons.ROUTE_ID_HEADER);
-				int appVersion = NumberUtils.getInt(request.getHeader(Commons.APP_VERSION_HEADER), -1);
-				String deviceId = request.getHeader(Commons.DEVICE_ID_HEADER);
+				final String type = request.getParameter("type");
+				final int appId = NumberUtils.getInt(request.getHeader(Commons.APP_HEADER), -1);
+				final String routeId = request.getHeader(Commons.ROUTE_ID_HEADER);
+				final int appVersion = NumberUtils.getInt(request.getHeader(Commons.APP_VERSION_HEADER), -1);
+				final String deviceId = request.getHeader(Commons.DEVICE_ID_HEADER);
 
 				Double latitude = null;
 	            if (request.getParameter("lat") != null) {
