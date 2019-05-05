@@ -25,6 +25,7 @@ import com.jstakun.lm.server.utils.RoutesUtils;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
+import com.jstakun.lm.server.utils.persistence.DevicePersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceWebUtils;
 import com.jstakun.lm.server.utils.persistence.NotificationPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.UserPersistenceUtils;
@@ -143,8 +144,14 @@ public class NotificationsServlet extends HttpServlet {
 					}
 					
 					if (StringUtils.isNotEmpty(deviceId)) {
-						//add device location to cache
-			   	   		CacheUtil.cacheDeviceLocation(deviceId, latitude, longitude, request.getHeader(Commons.ACC_HEADER));
+						//add device location to cache and update geo
+						final String acc =  request.getHeader(Commons.ACC_HEADER);
+			   	   		CacheUtil.cacheDeviceLocation(deviceId, latitude, longitude, acc);
+			   	   		String geo = "geo:" + latitude + " " + longitude;
+			   	   		if (StringUtils.isNotEmpty(acc)) {
+			   	   			geo += " " + acc;
+			   	   		}
+			   	   		DevicePersistenceUtils.setupDevice(deviceId, null, null, null, geo);
 					}
 				}
 
