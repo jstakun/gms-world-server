@@ -182,7 +182,10 @@ public class YoutubeUtils extends LayerHelper {
     		String url = "https://www.youtube.com/watch?v=" + video.getId();
     		
     		String title = snippet.getTitle();
-    		long creationDate = snippet.getPublishedAt().getValue();
+    		long creationDate = -1;
+    		if (snippet.getPublishedAt() != null) {
+    			creationDate = snippet.getPublishedAt().getValue();
+    		}
     		String desc = snippet.getDescription();
     		
     		String thumbnail = snippet.getThumbnails().getDefault().getUrl();
