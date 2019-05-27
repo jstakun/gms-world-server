@@ -138,7 +138,8 @@ public final class DeviceManagerServlet extends HttpServlet {
 			 			 }
 			        	 commandKey += command;
 			        	 count = CacheUtil.increment(commandKey);
-			        	 if (count < 10 || (StringUtils.equals(command, "messagedlapp") && count < 50) || DevicePersistenceUtils.isValidCommand(replyToCommand)) {
+			        	 if (count < 10 || (StringUtils.equals(command, "messagedlapp") && count < 50) || DevicePersistenceUtils.isValidCommand(replyToCommand) ||
+			        		(StringUtils.equals(command, "messagedlapp") && StringUtils.isNotEmpty(request.getHeader(Commons.ROUTE_ID_HEADER)))) {
 			        		 logger.log(Level.INFO, "Command " + commandKey + " has been sent " + count + " times");
 			        		  status = DevicePersistenceUtils.sendCommand(imei, pin, name, username, command, args, correlationId, flex);	  
 			        	 } else {
