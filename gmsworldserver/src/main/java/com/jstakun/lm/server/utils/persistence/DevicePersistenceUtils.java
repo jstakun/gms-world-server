@@ -193,8 +193,17 @@ public class DevicePersistenceUtils {
 		    if (StringUtils.startsWith(StringUtils.trim(deviceJson), "{")) {
 			   return 1;
 		   } else {
-			   logger.log(Level.SEVERE, "Received server response {0}", deviceJson);
-			   return -1;
+			   Integer responseCode = HttpUtils.getResponseCode(deviceUrl);
+			   if (responseCode != null && responseCode == 404)	 {
+				   return -4;
+			   } else {
+				   if (deviceJson != null) {
+					   logger.log(Level.SEVERE, "Received server response {0}", deviceJson);
+				   } else {
+					   logger.log(Level.SEVERE, "Received server response code {0}", responseCode);
+				   }
+				   return -1;
+			   }
 		  }
 	   } else {
 		   logger.log(Level.SEVERE, "Imei can't be null!");

@@ -216,8 +216,10 @@ public final class DeviceManagerServlet extends HttpServlet {
 	private String processHeadersV2(HttpServletRequest request, int version) {
 		List<String> tokens = new ArrayList<>();
 		Double latitude = null, longitude = null;
-		String deviceId = request.getHeader(Commons.DEVICE_ID_HEADER);
-   	   	String accuracy = request.getHeader(Commons.ACC_HEADER);
+		final String deviceId = request.getHeader(Commons.DEVICE_ID_HEADER);
+		final String accuracy = request.getHeader(Commons.ACC_HEADER);
+		final String speed = request.getHeader("X-GMS-Speed");
+		
 		if (request.getHeader(Commons.LAT_HEADER) != null) {
    	   		latitude = GeocodeUtils.getLatitude(request.getHeader(Commons.LAT_HEADER));
    	   	}
@@ -228,6 +230,9 @@ public final class DeviceManagerServlet extends HttpServlet {
    	   		String geo = "geo:" + StringUtil.formatCoordE6(latitude) + "+" + StringUtil.formatCoordE6(longitude);
    	   		if (version > 31 && StringUtils.isNotEmpty(accuracy)) {
    	   			geo += "+" + accuracy;
+   	   			if (version > 52 && StringUtils.isNotEmpty(speed)) {
+   	   				geo += "+" + speed;
+   	   			}
    	   		}
    	   		tokens.add(geo);
    	   		if (StringUtils.isNotEmpty(request.getHeader(Commons.ROUTE_ID_HEADER))) {
