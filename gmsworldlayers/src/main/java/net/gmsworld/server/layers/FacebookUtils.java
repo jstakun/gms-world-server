@@ -66,9 +66,9 @@ public class FacebookUtils extends LayerHelper {
             	JsonObject placesSearch = null;
 
             	if (query != null && query.length() > 0) {
-                	placesSearch = facebookClient.fetchObject("search", JsonObject.class, Parameter.with("type", "place"), Parameter.with("center", latitude + "," + longitude), Parameter.with("distance", dist), Parameter.with("q", query), Parameter.with("limit", limit), Parameter.with("fields", "name,location,website,picture.type(large),phone,description"));
+                	placesSearch = facebookClient.fetchObject("search", JsonObject.class, Parameter.with("type", "place"), Parameter.with("center", latitude + "," + longitude), Parameter.with("distance", dist), Parameter.with("q", query), Parameter.with("limit", limit), Parameter.with("fields", "name,location,website,cover,phone,description"));
             	} else {
-                	placesSearch = facebookClient.fetchObject("search", JsonObject.class, Parameter.with("type", "place"), Parameter.with("center", latitude + "," + longitude), Parameter.with("distance", dist), Parameter.with("limit", limit), Parameter.with("fields", "name,location,website,picture.type(large),phone,description"));
+                	placesSearch = facebookClient.fetchObject("search", JsonObject.class, Parameter.with("type", "place"), Parameter.with("center", latitude + "," + longitude), Parameter.with("distance", dist), Parameter.with("limit", limit), Parameter.with("fields", "name,location,website,cover,phone,description"));
             	}
 
             	JsonArray data = placesSearch.get("data").asArray();
@@ -334,10 +334,12 @@ public class FacebookUtils extends LayerHelper {
                 ExtendedLandmark landmark = LandmarkFactory.getLandmark(name, null, qc, Commons.FACEBOOK_LAYER, address, creationDate, null);
      		    landmark.setUrl(url);
      		    
-     		    JsonObject picture = place.get("picture").asObject();
-    		    if (picture != null) {
-    		    	landmark.setThumbnail(picture.get("data").asObject().get("url").asString());
-    		    }
+     		    if (place.contains("cover")) {
+     		    	JsonObject picture = place.get("cover").asObject();
+     		    	if (picture != null) {
+     		    		landmark.setThumbnail(picture.get("source").asString());
+     		    	}
+     		    }
      		    
     		    if (place.names().contains("description")) {
     		    	pageDesc.put("description", StringUtils.abbreviate(place.get("description").asString(), stringLength));
@@ -417,15 +419,15 @@ public class FacebookUtils extends LayerHelper {
         FacebookClient facebookClient = getFacebookClient(token);
         JsonObject placesSearch = null;
         
-        String picture = "picture.type(normal)";
-        if (stringLength == StringUtil.XLARGE) {
-        	picture = "picture.type(large)";
-        }
+        //String picture = "picture.type(normal)";
+        //if (stringLength == StringUtil.XLARGE) {
+        //	picture = "picture.type(large)";
+        //}
 
         if (query != null && query.length() > 0) {
-        	placesSearch = facebookClient.fetchObject("search", JsonObject.class, Parameter.with("type", "place"), Parameter.with("center", latitude + "," + longitude), Parameter.with("distance", dist), Parameter.with("q", query), Parameter.with("limit", limit), Parameter.with("fields", "name,location,website,phone,description,category_list,overall_star_rating,rating_count,fan_count,price_range," + picture));
+        	placesSearch = facebookClient.fetchObject("search", JsonObject.class, Parameter.with("type", "place"), Parameter.with("center", latitude + "," + longitude), Parameter.with("distance", dist), Parameter.with("q", query), Parameter.with("limit", limit), Parameter.with("fields", "name,location,website,phone,description,category_list,overall_star_rating,rating_count,fan_count,price_range,cover"));
         } else {
-        	placesSearch = facebookClient.fetchObject("search", JsonObject.class, Parameter.with("type", "place"), Parameter.with("center", latitude + "," + longitude), Parameter.with("distance", dist), Parameter.with("limit", limit), Parameter.with("fields", "name,location,website,phone,description,category_list,overall_star_rating,rating_count,fan_count,price_range," + picture));
+        	placesSearch = facebookClient.fetchObject("search", JsonObject.class, Parameter.with("type", "place"), Parameter.with("center", latitude + "," + longitude), Parameter.with("distance", dist), Parameter.with("limit", limit), Parameter.with("fields", "name,location,website,phone,description,category_list,overall_star_rating,rating_count,fan_count,price_range,cover"));
         }
   
         return createCustomLandmarkFacebookList(placesSearch.get("data").asArray(), locale, stringLength);

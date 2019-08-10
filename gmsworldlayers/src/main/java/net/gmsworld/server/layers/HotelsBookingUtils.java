@@ -717,7 +717,6 @@ public class HotelsBookingUtils extends LayerHelper {
 			this.features = features;
 		}
 		
-		@Override
 		public void run() {
 			//long start = System.currentTimeMillis();
 			try {
