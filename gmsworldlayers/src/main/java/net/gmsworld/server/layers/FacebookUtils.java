@@ -46,6 +46,8 @@ import net.gmsworld.server.utils.ThreadManager;
  */
 public class FacebookUtils extends LayerHelper {
 
+	//https://developers.facebook.com/docs/graph-api/changelog/4-30-2019-endpoint-deprecations/
+	
 	private static final String FBPLACES_PREFIX = "http://touch.facebook.com/profile.php?id=";
 	
 	@Override

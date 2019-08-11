@@ -42,25 +42,41 @@ public class OAuthServlet extends HttpServlet {
 			
 			if (StringUtils.contains(uri, "fbauth")) {
 				String code = request.getParameter("code");
-				userData = FBCommons.authorize(code);
-			} else if (StringUtils.contains(uri, "cbauth")) {
-				String code = request.getParameter("code");
-				String state = request.getParameter("state");
-				userData = CbCommons.authorize(code, state);
+				if (StringUtils.isNotEmpty(code)) {
+					userData = FBCommons.authorize(code);
+				} else {
+					response.sendRedirect("/fblogin");
+				}
 			} else if (StringUtils.contains(uri, "fsauth")) {
 				String code = request.getParameter("code");
-				userData = FSCommons.authorize(code);
+				if (StringUtils.isNotEmpty(code)) {
+					userData = FSCommons.authorize(code);
+				} else {
+					response.sendRedirect("/fslogin");
+				}
 			} else if (StringUtils.contains(uri, "glauth")) {
 				String code = request.getParameter("code");
-				userData = GlCommons.authorize(code);
+				if (StringUtils.isNotEmpty(code)) {
+					userData = GlCommons.authorize(code);
+				} else {
+					response.sendRedirect("/gllogin");
+				}
 			} else if (StringUtils.contains(uri, "lnauth")) {
 				String code = request.getParameter("code");
                 String state = request.getParameter("state");
-                userData = LnCommons.authorize(code, state);
+                if (StringUtils.isNotEmpty(code)  && StringUtils.isNotEmpty(state)) {
+    				userData = LnCommons.authorize(code, state);
+                } else {
+                	response.sendRedirect("/lnlogin");
+                }
 			} else if (StringUtils.contains(uri, "twauth")) {
 				String verifier = request.getParameter("oauth_verifier");
 				String token = request.getParameter("oauth_token");
-				userData = TwCommons.authorize(token, verifier);
+				if (StringUtils.isNotEmpty(token)  && StringUtils.isNotEmpty(verifier)) {
+					userData = TwCommons.authorize(token, verifier);
+				} else {
+					response.sendRedirect("/twlogin");
+				}
 			} else {
 				logger.log(Level.SEVERE, "Unexpected uri: {0}", uri);
 				response.sendError(HttpServletResponse.SC_BAD_REQUEST);

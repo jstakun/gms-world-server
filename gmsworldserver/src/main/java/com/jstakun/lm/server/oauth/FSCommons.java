@@ -42,40 +42,42 @@ public final class FSCommons {
 	 }
 	 
 	 protected static Map<String, String> authorize(String code) throws Exception {
-		 	URL tokenUrl = new URL(getAccessTokenUrl(code));
+		 	Map<String, String> userData = null;
+		 	if (StringUtils.isNotEmpty(code)) {
+		 		URL tokenUrl = new URL(getAccessTokenUrl(code));
 
-			String result = HttpUtils.processFileRequest(tokenUrl, "POST", null, null);
-			String accessToken = null;
+		 		String result = HttpUtils.processFileRequest(tokenUrl, "POST", null, null);
+		 		String accessToken = null;
 
-			if (StringUtils.startsWith(result, "{")) {
-				JSONObject resp = new JSONObject(result);
-				accessToken = resp.getString("access_token");
-			}
+		 		if (StringUtils.startsWith(result, "{")) {
+		 			JSONObject resp = new JSONObject(result);
+		 			accessToken = resp.getString("access_token");
+		 		}
 
-			Map<String, String> userData = null;
-			
-			if (accessToken != null) {
+		 		if (accessToken != null) {
 
-				userData = getUserData(accessToken);
+		 			userData = getUserData(accessToken);
 				
-				if (!userData.isEmpty()) {
-					userData.put("token", accessToken);
+		 			if (!userData.isEmpty()) {
+		 				userData.put("token", accessToken);
 					
-					String key = TokenPersistenceUtils.generateToken("lm", userData.get(ConfigurationManager.FS_USERNAME) + "@" + Commons.FOURSQUARE);
-					userData.put("gmsToken", key); 
+		 				String key = TokenPersistenceUtils.generateToken("lm", userData.get(ConfigurationManager.FS_USERNAME) + "@" + Commons.FOURSQUARE);
+		 				userData.put("gmsToken", key); 
 
-					Map<String, String> params = new ImmutableMap.Builder<String, String>().
-                    	put("service", Commons.FOURSQUARE).
-             		put("accessToken", accessToken).
-             		put("email", userData.containsKey(ConfigurationManager.USER_EMAIL) ? userData.get(ConfigurationManager.USER_EMAIL) : "").
-             		put("username", userData.get(ConfigurationManager.FS_USERNAME)).
-             		put("name", userData.containsKey(ConfigurationManager.FS_NAME) ? userData.get(ConfigurationManager.FS_NAME) : "noname").build();
+		 				Map<String, String> params = new ImmutableMap.Builder<String, String>().
+		 						put("service", Commons.FOURSQUARE).
+		 						put("accessToken", accessToken).
+		 						put("email", userData.containsKey(ConfigurationManager.USER_EMAIL) ? userData.get(ConfigurationManager.USER_EMAIL) : "").
+		 						put("username", userData.get(ConfigurationManager.FS_USERNAME)).
+		 						put("name", userData.containsKey(ConfigurationManager.FS_NAME) ? userData.get(ConfigurationManager.FS_NAME) : "noname").build();
 					
-					NotificationUtils.createNotificationTask(params);	
-				
-             	} 
-			} else {
-        		throw new Exception("AccessToken is empty");
+		 				NotificationUtils.createNotificationTask(params);	
+		 			}	 
+		 		} else {
+		 			throw new Exception("AccessToken is empty");
+		 		}
+		 	} else {
+        		throw new Exception("Code is empty");
         	}
 			
 			return userData;

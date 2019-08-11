@@ -8,6 +8,8 @@ package com.jstakun.lm.server.oauth;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
@@ -46,34 +48,39 @@ public final class TwCommons {
     }
     
     protected static Map<String, String> authorize(String token, String verifier) throws Exception {
-    	Twitter twitter = new TwitterFactory().getInstance();
-		twitter.setOAuthConsumer(Commons.getProperty(Property.TW_CONSUMER_KEY), Commons.getProperty(Property.TW_CONSUMER_SECRET));
-		RequestToken requestToken = CacheUtil.getObject(RequestToken.class, "twRequestToken_" + token);
+    	Map<String, String> userData = null;
+    	if (StringUtils.isNotEmpty(token) && StringUtils.isNotEmpty(verifier)) {
+    		Twitter twitter = new TwitterFactory().getInstance();
+    		twitter.setOAuthConsumer(Commons.getProperty(Property.TW_CONSUMER_KEY), Commons.getProperty(Property.TW_CONSUMER_SECRET));
+    		RequestToken requestToken = CacheUtil.getObject(RequestToken.class, "twRequestToken_" + token);
 		
-		Map<String, String> userData = new HashMap<String, String>();
+    		userData = new HashMap<String, String>();
 		
-		if (requestToken != null) {
-			AccessToken accessToken = twitter.getOAuthAccessToken(requestToken, verifier);
+    		if (requestToken != null) {
+    			AccessToken accessToken = twitter.getOAuthAccessToken(requestToken, verifier);
 			
-			User me = twitter.showUser(twitter.getId());
+    			User me = twitter.showUser(twitter.getId());
 			
-			userData.put("token", accessToken.getToken());
-			userData.put("secret", accessToken.getTokenSecret());
-			userData.put(ConfigurationManager.TWEET_USERNAME, me.getScreenName());
-			userData.put(ConfigurationManager.TWEET_NAME, me.getName());
+    			userData.put("token", accessToken.getToken());
+    			userData.put("secret", accessToken.getTokenSecret());
+    			userData.put(ConfigurationManager.TWEET_USERNAME, me.getScreenName());
+    			userData.put(ConfigurationManager.TWEET_NAME, me.getName());
 
-			String key = TokenPersistenceUtils.generateToken("lm", me.getScreenName() + "@" + Commons.TWITTER);
-    		userData.put("gmsToken", key); 
+    			String key = TokenPersistenceUtils.generateToken("lm", me.getScreenName() + "@" + Commons.TWITTER);
+    			userData.put("gmsToken", key); 
 			
-    		Map<String, String> params = new ImmutableMap.Builder<String, String>().
-               	put("service", Commons.TWITTER).
-				put("accessToken", accessToken.getToken()).
-				put("tokenSecret", accessToken.getTokenSecret()).
-				put("username", userData.get(ConfigurationManager.TWEET_USERNAME)).
-				put("name", userData.get(ConfigurationManager.TWEET_NAME)).build();
-    		NotificationUtils.createNotificationTask(params);    
+    			Map<String, String> params = new ImmutableMap.Builder<String, String>().
+    					put("service", Commons.TWITTER).
+    					put("accessToken", accessToken.getToken()).
+    					put("tokenSecret", accessToken.getTokenSecret()).
+    					put("username", userData.get(ConfigurationManager.TWEET_USERNAME)).
+    					put("name", userData.get(ConfigurationManager.TWEET_NAME)).build();
+    			NotificationUtils.createNotificationTask(params);    
+    		} else {
+    			throw new Exception("AccessToken is empty");
+    		}
     	} else {
-    		throw new Exception("AccessToken is empty");
+    		throw new Exception("OauthToken or OauthVerifier is empty");
     	}
 		
 		return userData;

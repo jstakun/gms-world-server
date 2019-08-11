@@ -79,7 +79,6 @@
     <url-pattern>/lnlogin</url-pattern>
     <url-pattern>/gllogin</url-pattern>
     <url-pattern>/fblogin</url-pattern>
-    <url-pattern>/cblogin</url-pattern>
     <url-pattern>/token</url-pattern>
     <url-pattern>/showLandmark/*</url-pattern>
     <url-pattern>/showGeocode/*</url-pattern>
@@ -132,7 +131,6 @@
     <url-pattern>/lnlogin</url-pattern>
     <url-pattern>/gllogin</url-pattern>
     <url-pattern>/fblogin</url-pattern>
-    <url-pattern>/cblogin</url-pattern>
     <url-pattern>/token</url-pattern>
     <url-pattern>/showLandmark/*</url-pattern>
     <url-pattern>/showGeocode/*</url-pattern>
@@ -366,7 +364,6 @@
     <url-pattern>/lnauth,/s/lnauth</url-pattern>
     <url-pattern>/glauth,/s/glauth</url-pattern>
     <url-pattern>/fsauth,/s/fsauth</url-pattern>
-    <url-pattern>/cbauth,/s/cbauth</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>OAuthLoginServlet</servlet-name>
@@ -375,7 +372,6 @@
     <url-pattern>/lnlogin,/s/lnlogin</url-pattern>
     <url-pattern>/gllogin,/s/gllogin</url-pattern>
     <url-pattern>/fslogin,/s/fslogin</url-pattern>
-    <url-pattern>/cblogin,/s/cblogin</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>SocialMessageServlet</servlet-name>
@@ -671,7 +667,6 @@
       <url-pattern>/twauth</url-pattern>
       <url-pattern>/glauth</url-pattern>
       <url-pattern>/fbauth</url-pattern>
-      <url-pattern>/cbauth</url-pattern>
     </web-resource-collection>
     <web-resource-collection>
       <web-resource-name>Token</web-resource-name>

@@ -47,49 +47,51 @@ public final class GlCommons {
     }
     
     protected static Map<String, String> authorize(String code) throws Exception {
-        URL url = new URL("https://accounts.google.com/o/oauth2/token");
-
         Map<String, String> userData = null;
+        if (StringUtils.isNotEmpty(code)) {
+        	URL url = new URL("https://accounts.google.com/o/oauth2/token");
+        	String result = HttpUtils.processFileRequest(url, "POST", null, "code=" + code + "&client_id=" + Commons.getProperty(Property.GL_PLUS_KEY) + "&client_secret=" + Commons.getProperty(Property.GL_PLUS_SECRET) + "&redirect_uri=" + GlCommons.CALLBACK_URI + "&grant_type=authorization_code");
+        	String accessToken = null, refreshToken = null;
+        	long expires_in = -1;
         
-        String result = HttpUtils.processFileRequest(url, "POST", null, "code=" + code + "&client_id=" + Commons.getProperty(Property.GL_PLUS_KEY) + "&client_secret=" + Commons.getProperty(Property.GL_PLUS_SECRET) + "&redirect_uri=" + GlCommons.CALLBACK_URI + "&grant_type=authorization_code");
-        String accessToken = null, refreshToken = null;
-        long expires_in = -1;
-        
-        if (StringUtils.startsWith(result, "{")) {
-            JSONObject resp = new JSONObject(result);
-            accessToken = resp.optString("access_token");
-            refreshToken = resp.optString("refresh_token");
-            expires_in = resp.optInt("expires_in", -1);
-        }
+        	if (StringUtils.startsWith(result, "{")) {
+        		JSONObject resp = new JSONObject(result);
+        		accessToken = resp.optString("access_token");
+        		refreshToken = resp.optString("refresh_token");
+        		expires_in = resp.optInt("expires_in", -1);
+        	}
 
-        if (StringUtils.isNotEmpty(accessToken)) {
+        	if (StringUtils.isNotEmpty(accessToken)) {
 
-            userData = getUserData(accessToken, refreshToken);
+        		userData = getUserData(accessToken, refreshToken);
             
-            if (StringUtils.isNotEmpty(refreshToken)) {
-                userData.put("refresh_token", refreshToken);
-            } else {
-            	logger.log(Level.INFO, "Refresh token is empty!");
-            }
+        		if (StringUtils.isNotEmpty(refreshToken)) {
+        			userData.put("refresh_token", refreshToken);
+        		} else {
+        			logger.log(Level.INFO, "Refresh token is empty!");
+        		}
             
-            userData.put("token", accessToken);
-            if (expires_in > -1) {
-            	userData.put(ConfigurationManager.GL_EXPIRES_IN, Long.toString(expires_in));
-            }
+        		userData.put("token", accessToken);
+        		if (expires_in > -1) {
+        			userData.put(ConfigurationManager.GL_EXPIRES_IN, Long.toString(expires_in));
+        		}
            
-            String key = TokenPersistenceUtils.generateToken("lm", userData.get(ConfigurationManager.GL_USERNAME) + "@" + Commons.GOOGLE);
-            userData.put("gmsToken", key); 
+        		String key = TokenPersistenceUtils.generateToken("lm", userData.get(ConfigurationManager.GL_USERNAME) + "@" + Commons.GOOGLE);
+        		userData.put("gmsToken", key); 
             
-            Map<String, String> params = new ImmutableMap.Builder<String, String>().
+        		Map<String, String> params = new ImmutableMap.Builder<String, String>().
                		put("service", Commons.GOOGLE).
             		put("accessToken", accessToken).
             		put("email", userData.containsKey(ConfigurationManager.USER_EMAIL) ? userData.get(ConfigurationManager.USER_EMAIL) : "").
             		put("username", userData.get(ConfigurationManager.GL_USERNAME)).
             		put("name", userData.get(ConfigurationManager.GL_NAME)).build();
-            NotificationUtils.createNotificationTask(params);
+        		NotificationUtils.createNotificationTask(params);
+        	} else {
+        		throw new Exception("Access token is empty");
+        	}
         } else {
-    		throw new Exception("Access token is empty");
-    	}
+        	throw new Exception("Code is empty");
+        }
         
         return userData;
     }
