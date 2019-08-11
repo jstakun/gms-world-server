@@ -10,14 +10,13 @@ import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
 import com.google.common.collect.ImmutableMap;
-
-import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.config.ConfigurationManager;
-import net.gmsworld.server.config.Commons.Property;
-import net.gmsworld.server.utils.HttpUtils;
-
 import com.jstakun.lm.server.social.NotificationUtils;
 import com.jstakun.lm.server.utils.persistence.TokenPersistenceUtils;
+
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.config.ConfigurationManager;
+import net.gmsworld.server.utils.HttpUtils;
 
 /**
  *
@@ -25,7 +24,7 @@ import com.jstakun.lm.server.utils.persistence.TokenPersistenceUtils;
  */
 public final class LnCommons {
     private static final String CALLBACK_URI = ConfigurationManager.SSL_SERVER_URL + "s/lnauth";
-    private static final String SCOPE = "r_basicprofile%20r_emailaddress%20w_share";
+    private static final String SCOPE = "r_liteprofile%20r_emailaddress";
     private static final String AUTHORIZE_URL = "https://www.linkedin.com/uas/oauth2/authorization?response_type=code&client_id=%s" +
                                 "&scope=%s&state=%s&redirect_uri=%s";
     private static final Logger logger = Logger.getLogger(LnCommons.class.getName());
@@ -44,7 +43,7 @@ public final class LnCommons {
     
     protected static Map<String, String> authorize(String code, String state) throws Exception {
     	Map<String, String> userData = null;
-    	if (code != null && StringUtils.equals(state, Commons.getProperty(Property.LN_STATE))) {
+    	if (StringUtils.isNotEmpty(code) &&  StringUtils.equals(state, Commons.getProperty(Property.LN_STATE))) {
         	
         	URL tokenUrl = new URL(LnCommons.getAccessTokenUrl(code));
 	
@@ -82,7 +81,7 @@ public final class LnCommons {
         		throw new Exception("AccessToken is empty");
         	}
     	} else {
-    		throw new Exception("Wrong code ro state");
+    		throw new Exception("Wrong code or state");
     	}
     	
     	return userData;
@@ -90,30 +89,41 @@ public final class LnCommons {
     
     private LnCommons() {}
 
-	private static Map<String, String> getUserDate(String accessToken) {
+	public static Map<String, String> getUserDate(String accessToken) {
 		Map<String, String> userData = new HashMap<String, String>();
 		
 		try {
-			URL profileUrl = new URL("https://api.linkedin.com/v1/people/~:(id,first-name,last-name,email-address)?oauth2_access_token=" + accessToken + "&format=json");
+			URL profileUrl = new URL("https://api.linkedin.com/v2/me?oauth2_access_token=" + accessToken);
 			
-			String response = HttpUtils.processFileRequest(profileUrl, "GET", null, null);
+			String response = HttpUtils.processFileRequest(profileUrl);
 			
-			//logger.log(Level.INFO, response);
+			logger.log(Level.INFO, response);
 			
 			JSONObject json = new JSONObject(response);
 		    String id = json.optString("id");
 		    if (id != null) {
 		    	userData.put(ConfigurationManager.LN_USERNAME, id);
 		    }
-		    String fn = json.optString("firstName");
-		    String ln = json.optString("lastName");
+		    String fn = json.optString("localizedFirstName");
+		    String ln = json.optString("localizedLastName");
 		    if (StringUtils.isNotEmpty(fn) && StringUtils.isNotEmpty(ln)) {
 		    	userData.put(ConfigurationManager.LN_NAME, fn + " " + ln);
 		    }
 		  
-		    String email = json.optString("emailAddress"); 
-		    if (StringUtils.isNotEmpty(email)) {
-		        userData.put(ConfigurationManager.USER_EMAIL, email);
+		    URL emailUrl = new URL ("https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))&oauth2_access_token=" + accessToken);
+		    
+		    response = HttpUtils.processFileRequest(emailUrl);
+		    
+		    try {
+		    	json = new JSONObject(response);
+			    JSONObject handle = json.getJSONArray("elements").getJSONObject(0);
+		    	String email = handle.getJSONObject("handle~").getString("emailAddress");
+		    	if (StringUtils.isNotEmpty(email)) {
+		    		userData.put(ConfigurationManager.USER_EMAIL, email);
+		    	}
+		    } catch (Exception e) {
+		    	e.printStackTrace();
+		    	logger.log(Level.INFO, response);    	
 		    }
 			
 		} catch (Exception e) {

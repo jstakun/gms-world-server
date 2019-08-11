@@ -86,7 +86,7 @@ public class OAuthServlet extends HttpServlet {
 				logger.log(Level.INFO, "Setting attributes: " + StringUtils.join(userData.keySet(), ","));
 				request.setAttribute("title", new JSONObject(userData).toString());
         		request.getRequestDispatcher("/m/oauth_logon_confirmation.jsp").forward(request, response);
-			} else {
+			} else if (!response.isCommitted()) {
 				logger.log(Level.SEVERE, "userData is empty");
 				response.sendRedirect("/m/oauth_logon_error.jsp");
 			}
