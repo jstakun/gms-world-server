@@ -240,7 +240,7 @@ public class NotificationPersistenceUtils {
 				}
 			}
 		} else {
-			logger.severe("Cache response: Invalid Telegram chat id: " + telegramId);
+			logger.log(Level.SEVERE, "Cache response: Telegram id: " + telegramId + "is invalid");
 			reply = new JSONObject().put("status", "invalidTelegramId").put("code", HttpServletResponse.SC_BAD_REQUEST);
 		}
 		return reply;
