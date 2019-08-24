@@ -8,11 +8,13 @@ import org.junit.Test;
 
 import com.jstakun.lm.server.utils.HtmlUtils;
 
+import net.gmsworld.server.layers.TelegramUtils;
+
 public class StringTest {
 
 	private static volatile Map<String, Object> objectCache = new ConcurrentHashMap<String, Object>();
     
-	@Test
+	//@Test
 	public void test() {
 		objectCache.put("test", new Object());
 		org.junit.Assert.assertTrue(containsObject("test", Object.class));

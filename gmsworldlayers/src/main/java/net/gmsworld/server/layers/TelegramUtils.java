@@ -80,7 +80,7 @@ public class TelegramUtils {
                 } catch (Exception e) {
                 	logger.log(Level.SEVERE, "Invalid telegram chat or channel id: " + telegramId);
                 }
-            }
+            } 
         }
         return false;
     }

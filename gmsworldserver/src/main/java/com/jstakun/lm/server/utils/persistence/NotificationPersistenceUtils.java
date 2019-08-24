@@ -235,11 +235,12 @@ public class NotificationPersistenceUtils {
 						reply = new JSONObject().put("status", "internalError").put("code", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 					}
 				} else {
+					logger.log(Level.SEVERE, "Telegram id " + telegramId + " is invalid");
 					reply = new JSONObject().put("status", "badRequestError").put("code", HttpServletResponse.SC_BAD_REQUEST);
 				}
 			}
 		} else {
-			logger.severe("Invalid Telegram chat id: " + telegramId);
+			logger.severe("Cache response: Invalid Telegram chat id: " + telegramId);
 			reply = new JSONObject().put("status", "invalidTelegramId").put("code", HttpServletResponse.SC_BAD_REQUEST);
 		}
 		return reply;
