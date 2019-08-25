@@ -308,24 +308,33 @@ public class HttpUtils {
     }
 
     public static boolean isEmptyAny(HttpServletRequest request, String... params) {
-        for (String p : params) {
-            if (StringUtils.isEmpty(request.getParameter(p))) {
-                logger.log(Level.INFO, "Missing required parameter {0}", p);
-                return true;
-            }
-        }
-        return false;
+       try {
+    	   for (String p : params) {
+    		   if (StringUtils.isEmpty(request.getParameter(p))) {
+    			   logger.log(Level.INFO, "Request parameter {0} not found", p);
+    			   return true;
+    		   }
+    	   }
+       } catch (Exception e) {
+    	   logger.log(Level.SEVERE, e.getMessage(), e);
+       }
+       return false;
     }
     
     public static boolean isEmptyAnyDebug(HttpServletRequest request, String... params) {
         boolean isMissing = false;
     	for (String p : params) {
-    		String value = request.getParameter(p);
-            if (StringUtils.isEmpty(value)) {
-                logger.log(Level.INFO, "Missing required parameter {0}", p);
+    		String value= null;
+    		try {
+    			value = request.getParameter(p);
+    		} catch (Exception e) {
+    			logger.log(Level.SEVERE, "Request parameter " + p + " not found: " + e.getMessage(), e);
+    		}
+    		if (StringUtils.isEmpty(value)) {
+                logger.log(Level.INFO, "Request parameter {0} not found", p);
                 isMissing = true;
             } else {
-            	logger.log(Level.INFO, "Found parameter {0} : {1}", new Object[] {p, value});
+            	logger.log(Level.INFO, "Found request parameter {0} : {1}", new Object[] {p, value});
             }
         }
         return isMissing;

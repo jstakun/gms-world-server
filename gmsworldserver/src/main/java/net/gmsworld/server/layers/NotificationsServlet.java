@@ -77,7 +77,6 @@ public class NotificationsServlet extends HttpServlet {
 				response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 			} else {
 				JSONObject reply = new JSONObject();
-				
 				final String type = request.getParameter("type");
 				final int appId = NumberUtils.getInt(request.getHeader(Commons.APP_HEADER), -1);
 				final String routeId = request.getHeader(Commons.ROUTE_ID_HEADER);
