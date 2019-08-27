@@ -75,6 +75,8 @@ public class ServicesAuthorizationFilter implements Filter {
             	} else if (StringUtils.startsWith(authHeader, "Bearer")) {
             		token = getToken(authHeader);
             	}
+            } else {
+            	logger.log(Level.INFO, "No Authorization header.");
             }
             
             //>= 1101, 101
@@ -84,8 +86,8 @@ public class ServicesAuthorizationFilter implements Filter {
             	} else {
             		authHeader = httpRequest.getHeader(Commons.TOKEN_HEADER);
             	}
-            	String scope = httpRequest.getHeader(Commons.SCOPE_HEADER);
-            	if (authHeader != null && scope != null) {
+            	final String scope = httpRequest.getHeader(Commons.SCOPE_HEADER);
+            	if (StringUtils.isNotEmpty(authHeader) && StringUtils.isNotEmpty(scope)) {
             		try {
             			int isTokenValid = TokenPersistenceUtils.isTokenValid(authHeader, scope);
             			if (isTokenValid == 1) {
@@ -107,6 +109,8 @@ public class ServicesAuthorizationFilter implements Filter {
             			StringUtils.contains(httpRequest.getRequestURI(), "lnauth"))  {  //TODO fix
             		logger.log(Level.INFO, authHeader   + " " + scope);
             		auth = true; 
+            	} else {
+            		logger.log(Level.INFO, "No Token and Scope headers");
             	}
             }        
 
