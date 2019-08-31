@@ -366,7 +366,7 @@ public class MailUtils {
     public static void sendCrashReport(String title, String body) {
         String status = sendJamesMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, title, body, "text/plain", null, null);
         if (! StringUtils.equalsIgnoreCase(status, "ok")) {
-        	sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", null, title, body, "text/plain", null, null) ;
+        	sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, title, body, "text/plain", null, null) ;
         }
     }
 

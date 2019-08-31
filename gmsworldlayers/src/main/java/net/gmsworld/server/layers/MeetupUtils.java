@@ -211,4 +211,8 @@ public class MeetupUtils extends LayerHelper {
 	public String getLayerName() {
     	return Commons.MEETUP_LAYER;
     }
+	
+	public boolean isEnabled() {
+   		return false;
+   }
 }

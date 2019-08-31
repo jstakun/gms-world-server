@@ -79,6 +79,8 @@ public class LayersTest {
 	  
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.WEBCAM_LAYER)});
 	   
+	  data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.MEETUP_LAYER)});
+	   
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.OSM_TAXI_LAYER)});
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.OSM_ATM_LAYER)});
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.OSM_PARKING_LAYER)});
@@ -94,7 +96,7 @@ public class LayersTest {
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.YOUTUBE_LAYER)});
 	   
-	   data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.FACEBOOK_LAYER)});
+	  // data.add(new Object[]{LayerHelperFactory.getInsttance().getByName(Commons.FACEBOOK_LAYER)});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.FOURSQUARE_LAYER)});
 	   
