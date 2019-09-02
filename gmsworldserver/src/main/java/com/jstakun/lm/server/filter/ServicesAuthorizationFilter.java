@@ -52,8 +52,7 @@ public class ServicesAuthorizationFilter implements Filter {
             HttpServletRequest httpRequest = (HttpServletRequest) request;
             HttpServletResponse httpResponse = (HttpServletResponse) response;
             String authHeader = httpRequest.getHeader("Authorization");
-            boolean auth = false;
-            boolean noservice = false;
+            int authStatus = -10; //1 - ok, 0 - failed, -1 service unavailable, -10 - none
             String token = null;
             
             if (StringUtils.isNotEmpty(authHeader)) {
@@ -70,7 +69,11 @@ public class ServicesAuthorizationFilter implements Filter {
             		if (username != null) {
             			String usr = new String(username);
             			request.setAttribute("username", usr);                   
-            			auth = UserPersistenceUtils.login(usr, password);
+            			if (UserPersistenceUtils.login(usr, password)) {
+            				authStatus = 1;
+            			} else {
+            				authStatus = 0;
+            			}
             		}
             	} else if (StringUtils.startsWith(authHeader, "Bearer")) {
             		token = getToken(authHeader);
@@ -80,7 +83,7 @@ public class ServicesAuthorizationFilter implements Filter {
             }
             
             //>= 1101, 101
-            if (!auth) {
+            if (authStatus == -10) {
             	if (token != null) {
             		authHeader = token;
             	} else {
@@ -89,17 +92,10 @@ public class ServicesAuthorizationFilter implements Filter {
             	final String scope = httpRequest.getHeader(Commons.SCOPE_HEADER);
             	if (StringUtils.isNotEmpty(authHeader) && StringUtils.isNotEmpty(scope)) {
             		try {
-            			int isTokenValid = TokenPersistenceUtils.isTokenValid(authHeader, scope);
-            			if (isTokenValid == 1) {
-            				auth = true;
-            			} else if (isTokenValid == 0) {
-            				auth = false;
-            			} else if (isTokenValid == -1){
-            				noservice = true;
-            			}
+            			authStatus = TokenPersistenceUtils.isTokenValid(authHeader, scope);
             		} catch (Exception e) {
                 		logger.log(Level.SEVERE, e.getMessage(), e);
-                		noservice = true;
+                		authStatus = -1;
                 	}
             	} else if (StringUtils.contains(httpRequest.getRequestURI(), "crashReport") ||
             			StringUtils.contains(httpRequest.getRequestURI(), "fbauth") ||
@@ -108,15 +104,15 @@ public class ServicesAuthorizationFilter implements Filter {
             			StringUtils.contains(httpRequest.getRequestURI(), "fsauth") ||
             			StringUtils.contains(httpRequest.getRequestURI(), "lnauth"))  {  //TODO fix
             		logger.log(Level.INFO, authHeader   + " " + scope);
-            		auth = true; 
+            		authStatus = 1; 
             	} else {
             		logger.log(Level.INFO, "No Token and Scope headers");
             	}
             }        
 
-            if (auth) {
+            if (authStatus == 1) {
                 chain.doFilter(request, response);
-            } else if (noservice) {
+            } else if (authStatus == -1) {
             	logger.log(Level.SEVERE, "Service Unavailable!");
                 httpResponse.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
                 response.setContentType("text/html");
@@ -125,8 +121,12 @@ public class ServicesAuthorizationFilter implements Filter {
 			    out.println("<h3>Service Unavailable.</h3>");
 			    out.println("</body></html>");
 			    out.close();
-            } else {
-            	logger.log(Level.SEVERE, "Authorization failed!");
+            } else if (authStatus == 0 || authStatus == -10) {
+            	if (authStatus == 0) {
+            		logger.log(Level.SEVERE, "Authorization failed!");
+            	} else if (authStatus == -10) {
+            		logger.log(Level.WARNING, "Authorization failed!");
+            	}
                 httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.setContentType("text/html");
 			    PrintWriter out = response.getWriter();
