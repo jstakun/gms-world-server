@@ -2,6 +2,7 @@ package net.gmsworld.server.layers;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLDecoder;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.logging.Level;
@@ -238,8 +239,15 @@ public class NotificationsServlet extends HttpServlet {
 					//email notification
 					if (appId == Commons.DL_ID && StringUtils.startsWith(request.getRequestURI(), "/s/")) {
 						String message = request.getParameter("message");
-						String title = request.getParameter("title");
-						String emailTo = request.getParameter("emailTo");
+						try {
+							if (StringUtils.isNotEmpty(message)) {
+								message = URLDecoder.decode(message, "UTF-8");
+							}
+						} catch (Exception e) {
+							logger.log(Level.SEVERE, e.getMessage(), e);
+						}
+						final String title = request.getParameter("title");
+						final String emailTo = request.getParameter("emailTo");
 						if (StringUtils.isNotEmpty(emailTo) && (StringUtils.isNotEmpty(title) || StringUtils.isNotEmpty(message))) {
 							//check if email is on white list
 							if (NotificationPersistenceUtils.isVerified(emailTo)) {
