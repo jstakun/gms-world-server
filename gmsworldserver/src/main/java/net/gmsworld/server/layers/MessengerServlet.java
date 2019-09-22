@@ -110,7 +110,7 @@ public final class MessengerServlet extends HttpServlet {
 			            }
 			        }
 			    } else if (DevicePersistenceUtils.isValidCommand(text)) {
-					String reply = DevicePersistenceUtils.sendCommand(text, psid);
+					String reply = DevicePersistenceUtils.sendCommand(text, psid, "messenger");
 					MessengerUtils.sendMessage(psid, null, reply);
 				} else {
 					MessengerUtils.sendMessage(psid, null, "Oops! I didn't understand your message.");

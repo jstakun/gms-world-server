@@ -142,7 +142,7 @@ public class TelegramServlet extends HttpServlet {
 					            }
 					        }
 					    } else if (DevicePersistenceUtils.isValidCommand(message) || (StringUtils.startsWith(message, "/") && DevicePersistenceUtils.isValidCommand(message.substring(1)))) {
-							final String reply = DevicePersistenceUtils.sendCommand(message, Long.toString(telegramId)); 
+							final String reply = DevicePersistenceUtils.sendCommand(message, Long.toString(telegramId), "telegram"); 
 							TelegramUtils.sendTelegram(Long.toString(telegramId), reply);
 						} else {
 							TelegramUtils.sendTelegram(Long.toString(telegramId), INVALID_COMMAND);

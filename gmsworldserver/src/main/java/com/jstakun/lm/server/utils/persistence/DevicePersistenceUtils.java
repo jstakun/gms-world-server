@@ -213,7 +213,7 @@ public class DevicePersistenceUtils {
 	
 	//command pin imei -p args 
 	//command pin name username -p args 
-	public static String sendCommand(final String commandString, final String socialId) {
+	public static String sendCommand(final String commandString, final String socialId, final String socialNetwork) {
 		final String[] commandTokens = StringUtils.split(commandString, " ");
 		String reply = "";
 		if (commandTokens.length >= 3 && isValidCommand(commandTokens[0]) && StringUtils.isNumeric(commandTokens[1])) {
@@ -253,9 +253,9 @@ public class DevicePersistenceUtils {
 				
 					int status;
 					if (username == null) {
-						status = DevicePersistenceUtils.sendCommand(deviceId, pin, null, null, command, args, correlationId, null);
+						status = DevicePersistenceUtils.sendCommand(deviceId, pin, null, null, command, args, correlationId, socialNetwork+":"+socialId);
 					} else {
-						status = DevicePersistenceUtils.sendCommand(null, pin, deviceId, username, command, args, correlationId, null);
+						status = DevicePersistenceUtils.sendCommand(null, pin, deviceId, username, command, args, correlationId, socialNetwork+":"+socialId);
 					}
 					
 					if (status == 1)  {
