@@ -32,15 +32,14 @@ public class WelcomeAction extends org.apache.struts.action.Action {
         //http://www.
 		//http://hotels.
         //http://landmarks.
-        //http://hotelsonmap.net
 		
 		logger.log(Level.INFO, "Received request to " + request.getRequestURL() + " from locale " + request.getLocale().toString());
         
         String url = request.getRequestURL().toString();
         
-        if (StringUtils.startsWith(url, "http://hotels.") || StringUtils.contains(url, "hotelsonmap.net")) {
+        if (StringUtils.contains(url, "://hotels.") || StringUtils.contains(url, "://www.hotels")) {
         	return mapping.findForward("hotels");
-        } else if (StringUtils.startsWith(url, "http://landmarks.")) {
+        } else if (StringUtils.contains(url, "://landmarks.")) {
         	return mapping.findForward("landmarks");
         } else {
         	CacheAction newestLandmarksAction = new CacheAction(new CacheAction.CacheActionExecutor() {			

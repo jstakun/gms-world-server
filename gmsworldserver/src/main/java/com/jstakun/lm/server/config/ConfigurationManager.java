@@ -28,9 +28,9 @@ public final class ConfigurationManager {
     public static final String GMS_WORLD_ACCESS_TOKEN = "gmsWorldAccessToken";
     public static final String GMS_LANDMARK_URL = "gmsLandmarkUrl";
     private static final String LM_GOOGLE_PLAY_URL = "https://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui";
-    private static final String DA_GOOGLE_PLAY_URL = "https://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui.deals";
+    //private static final String DA_GOOGLE_PLAY_URL = "https://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui.deals";
     private static final String DL_GOOGLE_PLAY_URL = "https://play.google.com/store/apps/details?id=net.gmsworld.devicelocator";
-    private static final String BROWSER_URL = "https://www.gms-world.net/landmarks";
+    private static final String BROWSER_URL = "https://landmarks.gms-world.net/";
     public static final String BOOKING_URL = "http://www.booking.com/city/%s/%s.html?aid=864525";
     public static final String HOTELS_URL = "http://www.hotelsonmap.net/";
     public static final String BACKEND_SERVER_URL = "https://openapi-landmarks.b9ad.pro-us-east-1.openshiftapps.com/actions/";
@@ -108,8 +108,8 @@ public final class ConfigurationManager {
     public static String getAppUrl(int appId) {
     	if (appId == Commons.LM_ID) {
     		return LM_GOOGLE_PLAY_URL;
-    	} else if (appId == Commons.DA_ID) {
-    		return DA_GOOGLE_PLAY_URL;
+    	//} else if (appId == Commons.DA_ID) {
+    		//return DA_GOOGLE_PLAY_URL;
     	} else if (appId == Commons.DL_ID) {
     		return DL_GOOGLE_PLAY_URL;
     	}else if (appId == Commons.BROWSER_ID) {

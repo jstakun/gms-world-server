@@ -50,8 +50,8 @@
                     
                     <div class="post">
                         <p>
-                         	<a href="http://www.hotelsonmap.net" name="Discover hotels around selected location">Select location on the map and discover hotels around</a>.<br/>
-                         	<a href="http://www.hotelsonmap.net"><img src="/images/hotel2.jpg" alt="Discover hotels around selected location" title="Click to discover hotel around selected location" height="250" width="500" class="float-left"/></a>
+                         	<a href="<%= ConfigurationManager.HOTELS_URL %>" name="Discover hotels around selected location">Select location on the map and discover hotels around</a>.<br/>
+                         	<a href="<%= ConfigurationManager.HOTELS_URL %>"><img src="/images/hotel2.jpg" alt="Discover hotels around selected location" title="Click to discover hotel around selected location" height="250" width="500" class="float-left"/></a>
                     	</p>
                     </div>
                     

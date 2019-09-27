@@ -49,7 +49,7 @@
 
             <div class="footer-list">
                 <ul>
-                    <li><a href="http://www.hotelsonmap.net">Hotels</a></li>
+                    <li><a href="/hotels">Hotels</a></li>
                     <li><a href="/landmarks">Landmarks</a></li>
                     <li><a href="/index.jsp">Home</a></li>
                     <li><a href="/download.jsp">Download</a></li>

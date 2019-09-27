@@ -7,6 +7,7 @@
          net.gmsworld.server.utils.DateUtils,
          com.jstakun.lm.server.utils.HtmlUtils,
          com.jstakun.lm.server.utils.memcache.CacheUtil,
+         com.jstakun.lm.server.config.ConfigurationManager,
          java.util.List"%>
 <!DOCTYPE html>
 <html>
@@ -29,7 +30,7 @@
     	</article>
     	
         <article class="underline">
-        	<a href="http://www.hotelsonmap.net">Select location on the map and discover hotels around</a>.
+        	<a href="<%= ConfigurationManager.HOTELS_URL %>">Select location on the map and discover hotels around</a>.
         </article>
         
         <article class="underline">

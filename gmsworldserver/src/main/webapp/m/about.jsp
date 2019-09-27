@@ -1,5 +1,5 @@
 <%@page contentType="text/html" pageEncoding="utf-8"%>
-<!DOCTYPE html>
+<%@page import="com.jstakun.lm.server.config.ConfigurationManager" %>
 <html>
 
 <head>
@@ -55,8 +55,8 @@
                         </ul>
                     </p>
                     <p>
-                        <a href="http://www.hotelsonmap.net"><b>Hotels on Map</b></a> is hotels booking facility.<br/>
-                        <b>Hotels on Map</b> let's you search for hotels around location you'll choose on the map or based on your browser location. <a href="http://www.hotelsonmap.net">Try it now!</a>
+                        <a href="<%= ConfigurationManager.HOTELS_URL %>"><b>Hotels on Map</b></a> is hotels booking facility.<br/>
+                        <b>Hotels on Map</b> let's you search for hotels around location you'll choose on the map or based on your browser location. <a href="<%= ConfigurationManager.HOTELS_URL %>">Try it now!</a>
                     </p>
                     <p>
                         With <b>Device Locator</b> you could manage your device remotely with SMS or cloud commands. 
