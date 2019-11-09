@@ -153,6 +153,7 @@ public class TelegramServlet extends HttpServlet {
 						}
 					} else if (messageJson != null && messageJson.has("chat")) {
 						Long telegramId= messageJson.getJSONObject("chat").getLong("id");
+						logger.log(Level.INFO, "Received message " + messageJson + " from " + telegramId);
 						TelegramUtils.sendTelegram(Long.toString(telegramId), INVALID_COMMAND);
 				    } else {
 						logger.log(Level.SEVERE, "Received invalid json: " + content);

@@ -17,6 +17,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 
@@ -74,17 +75,23 @@ public class RoutesUtils {
                }	
          }
 	            
-	     public static String[] cache(String route) {
+	     public static String[] cache(String route, String name) {
 	           String[] resp = new String[2];
 	           try {
-	        	   logger.log(Level.INFO, "Saving route with lenght " + route.length());
-	        	    URL cacheUrl = new URL(ROUTES_URL + "?user_key=" + Commons.getProperty(Property.RH_ROUTES_API_KEY));
-	            	resp[0] = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, "POST", null, route, "application/json; charset=utf-8", Commons.getProperty(Property.RH_GMS_USER));
-	            	Integer responseCode= HttpUtils.getResponseCode(cacheUrl.toString());
-	            	if (responseCode != null) {
+	        	    logger.log(Level.INFO, "Saving route with size " + route.length());
+	        	    //old
+	        	    //final URL routesUrl = new URL(ROUTES_URL + "?user_key=" + Commons.getProperty(Property.RH_ROUTES_API_KEY));
+	            	//resp[0] = HttpUtils.processFileRequestWithBasicAuthn(routesUrl, "POST", null, route, "application/json; charset=utf-8", Commons.getProperty(Property.RH_GMS_USER));
+	        	    //new
+	        	    final URL routesUrl = new URL(ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "addItem");
+		        	final String content = "type=route&name=" + name + "&route=" + route;
+		        	resp[0] = HttpUtils.processFileRequestWithBasicAuthn(routesUrl, "POST", null, content, "application/x-www-form-urlencoded", Commons.getProperty(Property.RH_GMS_USER));
+		        	//
+		        	final Integer responseCode= HttpUtils.getResponseCode(routesUrl.toString()); 
+		            if (responseCode != null) {
 	            		resp[1] = responseCode.toString(); 
 	            	}
-	            	logger.log(Level.INFO, "Cache response: " + resp[1] + ": " + resp[0]);
+		            logger.log(Level.INFO, "Cache response: " + resp[1] + ": " + resp[0]);
 	           } catch (Exception e) {
 	           		logger.log(Level.SEVERE, e.getMessage(), e);
 	           }
@@ -104,17 +111,23 @@ public class RoutesUtils {
 	        	   }
 	           } else if (!StringUtils.equalsIgnoreCase(live, "true")) {
 	        	   try {
-	        		   URL cacheUrl = new URL(ROUTE_URL_NAME + routeId + "?user_key=" + Commons.getProperty(Property.RH_ROUTES_API_KEY));
-	        		   reply = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, "GET", null, null, "application/json; charset=utf-8", Commons.getProperty(Property.RH_GMS_USER));
-	        		   Integer responseCode = HttpUtils.getResponseCode(cacheUrl.toString());
+	        		   //old
+	        		   //URL routesUrl = new URL(ROUTE_URL_NAME + routeId + "?user_key=" + Commons.getProperty(Property.RH_ROUTES_API_KEY));
+		        	   //new
+	        		   final URL routesUrl = new URL(ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + 
+		        			   "itemProvider?type=route&name=" + routeId);			        	
+		        	   //
+		        	   reply = HttpUtils.processFileRequestWithBasicAuthn(routesUrl, "GET", null, null, "application/json; charset=utf-8", Commons.getProperty(Property.RH_GMS_USER));
+	        		   Integer responseCode = HttpUtils.getResponseCode(routesUrl.toString());
 	        		   if (responseCode == null || responseCode != 200 || !StringUtils.startsWith(reply, "{")) {
-	        			   logger.log(Level.SEVERE, "Received following response from " + cacheUrl.toString() + ": -" + reply + "-");
-	        			   cacheUrl = new URL(ROUTE_URL_ID  + routeId + "?user_key=" + Commons.getProperty(Property.RH_ROUTES_API_KEY));
-	        			   reply = HttpUtils.processFileRequestWithBasicAuthn(cacheUrl, "GET", null, null, "application/json; charset=utf-8", Commons.getProperty(Property.RH_GMS_USER));
-	        			   responseCode = HttpUtils.getResponseCode(cacheUrl.toString());
-	        	           if (responseCode == null || responseCode != 200 || !StringUtils.startsWith(reply, "{")) {
-	        				   logger.log(Level.SEVERE, "Received following response from " + cacheUrl.toString() + ": -" + reply + "-");
-	        			   }	
+	        			   logger.log(Level.SEVERE, "Received following response from " + routesUrl.toString() + ": -" + reply + "-");
+	        			   //old
+	        			   //routesUrl = new URL(ROUTE_URL_ID  + routeId + "?user_key=" + Commons.getProperty(Property.RH_ROUTES_API_KEY));
+	        			   //reply = HttpUtils.processFileRequestWithBasicAuthn(routesUrl, "GET", null, null, "application/json; charset=utf-8", Commons.getProperty(Property.RH_GMS_USER));
+	        			   //responseCode = HttpUtils.getResponseCode(routesUrl.toString());
+	        	           //if (responseCode == null || responseCode != 200 || !StringUtils.startsWith(reply, "{")) {
+	        			   //   logger.log(Level.SEVERE, "Received following response from " + routesUrl.toString() + ": -" + reply + "-");
+	        			   //}	
 	        		   }
 	        	   } catch (Exception e) {
 	        		   logger.log(Level.SEVERE, e.getMessage() + " from response: " +  reply, e);

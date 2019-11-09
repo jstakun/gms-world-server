@@ -124,7 +124,7 @@ public class FileUtils {
 	
 	public static Screenshot getScreenshot(final String key, boolean thumbnail, boolean isSecure) {
 		Screenshot s = null;
-    	if (StringUtils.isNotEmpty(key)) {
+    	if (StringUtils.isNumeric(key)) {
             CacheAction screenshotCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
 				public Object executeAction() {
 					return ScreenshotPersistenceUtils.selectScreenshot(key);

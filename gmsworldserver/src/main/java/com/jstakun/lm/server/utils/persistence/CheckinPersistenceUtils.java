@@ -38,7 +38,7 @@ public class CheckinPersistenceUtils {
     public static boolean persist(String username, String venueId, int landmarkKey, Integer type) {
     	boolean result = true;
     	try {
-        	String landmarksUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "addItem?";
+        	String landmarksUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "addItem";
         	String params = "username=" + username + "&itemType=" + type + "&type=checkin";
         	if (landmarkKey > 0) {
         		params += "&landmarkId=" + landmarkKey;
@@ -47,7 +47,7 @@ public class CheckinPersistenceUtils {
         		params += "&venueId=" + venueId;
         	}
         	//logger.log(Level.INFO, "Calling " + landmarksUrl + params);
-        	String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl + params), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
+        	String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
         	logger.log(Level.INFO, "Received following server response: " + landmarksJson);
             if (StringUtils.contains(landmarksJson, "error")) {
             	result = false;
