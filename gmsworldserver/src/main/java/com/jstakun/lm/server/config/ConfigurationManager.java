@@ -32,7 +32,7 @@ public final class ConfigurationManager {
     private static final String DL_GOOGLE_PLAY_URL = "https://play.google.com/store/apps/details?id=net.gmsworld.devicelocator";
     private static final String BROWSER_URL = "https://landmarks.gms-world.net/";
     public static final String BOOKING_URL = "http://www.booking.com/city/%s/%s.html?aid=864525";
-    public static final String HOTELS_URL = "http://www.hotelsonmap.net/";
+    public static final String HOTELS_URL = "https://hotels.gms-world.net/";
     public static final String BACKEND_SERVER_URL = "https://openapi-landmarks.b9ad.pro-us-east-1.openshiftapps.com/actions/";
     
     public static void populateConfig()

@@ -34,13 +34,13 @@ public class RoutesUtils {
 				
     	private static final Logger logger = Logger.getLogger(RoutesUtils.class.getName());
     			
-    	private static final String ROUTES_API_URL =  "https://routes-api.b9ad.pro-us-east-1.openshiftapps.com";
+    	//private static final String ROUTES_API_URL =  "https://routes-api.b9ad.pro-us-east-1.openshiftapps.com";
     			
-    	private static final String ROUTES_URL = ROUTES_API_URL + "/camel/v1/cache/features/routes";
+    	//private static final String ROUTES_URL = ROUTES_API_URL + "/camel/v1/cache/features/routes";
 	
-    	private static final String ROUTE_URL_NAME = ROUTES_API_URL + "/camel/v1/one/routes/name/";
+    	//private static final String ROUTE_URL_NAME = ROUTES_API_URL + "/camel/v1/one/routes/name/";
     			
-    	private static final String ROUTE_URL_ID = ROUTES_API_URL + "/camel/v1/getById/routes/"; //"/camel/v1/one/routes/_id/" ;
+    	//private static final String ROUTE_URL_ID = ROUTES_API_URL + "/camel/v1/getById/routes/"; //"/camel/v1/one/routes/_id/" ;
     							
 	    public static JSONObject getFromServer(String lat_start, String lng_start, String lat_end, String lng_end, String type, String username) {
                 JSONObject route = null;
@@ -119,7 +119,7 @@ public class RoutesUtils {
 		        	   //
 		        	   reply = HttpUtils.processFileRequestWithBasicAuthn(routesUrl, "GET", null, null, "application/json; charset=utf-8", Commons.getProperty(Property.RH_GMS_USER));
 	        		   Integer responseCode = HttpUtils.getResponseCode(routesUrl.toString());
-	        		   if (responseCode == null || responseCode != 200 || !StringUtils.startsWith(reply, "{")) {
+	        		   if (responseCode == null || responseCode != 200 || !StringUtils.startsWith(reply, "{") || !StringUtils.contains(reply, "features")) {
 	        			   logger.log(Level.SEVERE, "Received following response from " + routesUrl.toString() + ": -" + reply + "-");
 	        			   //old
 	        			   //routesUrl = new URL(ROUTE_URL_ID  + routeId + "?user_key=" + Commons.getProperty(Property.RH_ROUTES_API_KEY));
