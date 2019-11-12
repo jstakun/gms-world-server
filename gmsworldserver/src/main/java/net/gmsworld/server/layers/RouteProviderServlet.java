@@ -167,11 +167,12 @@ public class RouteProviderServlet extends HttpServlet {
     			final String deviceName =  request.getHeader(Commons.DEVICE_NAME_HEADER);
         		if (StringUtils.startsWith(routeStr, "{")) {
         			JSONObject root = new JSONObject(routeStr);
+        			//logger.log(Level.INFO, "Route string:\n" + routeStr);
         			if (root.has("name") && root.has("features")) {
-        				String[] resp = RoutesUtils.cache(routeStr, root.getString("name"));
+        				final String routeName = root.getString("name");
+						String[] resp = RoutesUtils.cache(routeStr, routeName);
         				if (StringUtils.equals(resp[1], "200") && StringUtils.isNotEmpty(resp[0])) {
         					try {
-        						final String routeName = root.getString("name");
         						final String[] tokens = StringUtils.split(routeName, "_");
         						String message;
         						if (tokens.length == 5) {
@@ -184,7 +185,7 @@ public class RouteProviderServlet extends HttpServlet {
         							message += "\nDescription: " + route.getJSONObject("properties").getString("description");
         							message += "\nRoute waypoints count: " + route.getJSONObject("geometry").getJSONArray("coordinates").length();  
         						} catch (Exception e) {
-        							logger.log(Level.SEVERE, e.getMessage(), e);
+        							logger.log(Level.SEVERE, "Invalid route format: " + routeStr, e);
         						}
         						String title = "New route";
         						if (StringUtils.isNotEmpty(deviceName)) {
@@ -201,12 +202,12 @@ public class RouteProviderServlet extends HttpServlet {
         					response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         				}
         			} else {
-        				logger.log(Level.WARNING, "Wrong route format: " + routeStr);
+        				logger.log(Level.SEVERE, "Invalid route format: " + routeStr);
             	 		response.sendError(HttpServletResponse.SC_BAD_REQUEST);
         			}
         			root = null;
         		} else {
-        			logger.log(Level.WARNING, "Wrong json format: " + routeStr);
+        			logger.log(Level.SEVERE, "Invalid route format: " + routeStr);
         	 		response.sendError(HttpServletResponse.SC_BAD_REQUEST);
         		}
         	} catch (Exception e) {
