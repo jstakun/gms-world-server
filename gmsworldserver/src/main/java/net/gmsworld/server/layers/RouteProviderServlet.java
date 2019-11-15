@@ -185,7 +185,7 @@ public class RouteProviderServlet extends HttpServlet {
         							message += "\nDescription: " + route.getJSONObject("properties").getString("description");
         							message += "\nRoute waypoints count: " + route.getJSONObject("geometry").getJSONArray("coordinates").length();  
         						} catch (Exception e) {
-        							logger.log(Level.SEVERE, "Invalid route format: " + routeStr, e);
+        							logger.log(Level.SEVERE, "Invalid route format: " + StringUtils.abbreviate(routeStr, 512), e);
         						}
         						String title = "New route";
         						if (StringUtils.isNotEmpty(deviceName)) {
@@ -202,12 +202,12 @@ public class RouteProviderServlet extends HttpServlet {
         					response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         				}
         			} else {
-        				logger.log(Level.SEVERE, "Invalid route format: " + routeStr);
+        				logger.log(Level.SEVERE, "Invalid route format: " + StringUtils.abbreviate(routeStr, 512));
             	 		response.sendError(HttpServletResponse.SC_BAD_REQUEST);
         			}
         			root = null;
         		} else {
-        			logger.log(Level.SEVERE, "Invalid route format: " + routeStr);
+        			logger.log(Level.SEVERE, "Invalid route format: " + StringUtils.abbreviate(routeStr, 512));
         	 		response.sendError(HttpServletResponse.SC_BAD_REQUEST);
         		}
         	} catch (Exception e) {
