@@ -17,7 +17,7 @@
                 <li><a title="Blog" href="http://blog.gms-world.net" rel="nofollow">
                         <img alt="Blog" title="Blog" src="/images/blogger.png" /></a>
                 </li>
-                <li><a title="Facebook" href="http://www.facebook.com/pages/GMS-World/165436696841663" rel="nofollow">
+                <li><a title="Facebook" href="http://www.facebook.com/pages/GMS-World-165436696841663/" rel="nofollow">
                         <img alt="Facebook" title="Facebook" src="/images/social_facebook.png" /></a>
                 </li>
                 <li><a title="Twitter" href="http://twitter.com/geolocationms" rel="nofollow">
@@ -30,7 +30,7 @@
 
             <p>Stay up to date. Subscribe via
                 <a href="http://blog.gms-world.net/">Blog</a>,
-                <a href="http://www.facebook.com/pages/GeoLocation-Mobile-Solutions/165436696841663">Facebook</a>,
+                <a href="http://www.facebook.com/GMS-World-165436696841663/">Facebook</a>,
                 <a href="http://twitter.com/geolocationms">Twitter</a> or 
                 <a href="https://plus.google.com/117623384724994541747">Google+</a>
             </p>

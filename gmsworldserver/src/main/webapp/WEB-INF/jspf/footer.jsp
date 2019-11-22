@@ -23,7 +23,7 @@
                 <li><a title="Blog" href="http://blog.gms-world.net" rel="nofollow" target="_blank">
                         <img alt="Blog" title="Blog" src="/images/blogger.png" /></a>
                 </li>
-                <li><a title="Facebook" href="http://www.facebook.com/pages/GMS-World/165436696841663" rel="nofollow" target="_blank">
+                <li><a title="Facebook" href="http://www.facebook.com/GMS-World-165436696841663/" rel="nofollow" target="_blank">
                         <img alt="Facebook" title="Facebook" src="/images/social_facebook.png" /></a>
                 </li>
                 <li><a title="Twitter" href="http://twitter.com/geolocationms" rel="nofollow" target="_blank">
@@ -37,7 +37,7 @@
 
             <p>Stay up to date. Subscribe via
                 <a href="http://blog.gms-world.net" target="_blank">Blog</a>,
-                <a href="http://www.facebook.com/pages/GMS-World/165436696841663" target="_blank">Facebook</a> or
+                <a href="http://www.facebook.com/GMS-World-165436696841663/" target="_blank">Facebook</a> or
                 <a href="http://twitter.com/geolocationms" target="_blank">Twitter</a>
             </p>
 
