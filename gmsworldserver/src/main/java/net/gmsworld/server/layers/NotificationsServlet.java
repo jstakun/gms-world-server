@@ -136,7 +136,9 @@ public class NotificationsServlet extends HttpServlet {
 						} catch (Exception e) {
 							logger.log(Level.SEVERE, e.getMessage(), e);
 						}
-					} 
+					} else {
+						logger.log(Level.WARNING, "No valid latitude and/or longitude: " + latitude + "," + longitude);
+					}
 				   
 					if (StringUtils.isNotEmpty(routeId)) {
 						//add route point to cache
@@ -310,10 +312,10 @@ public class NotificationsServlet extends HttpServlet {
 						response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 					}
 				}
-				
 				//else if (StringUtils.equals(type, "register_fbm")) {
 				//} else if (StringUtils.equals(type, "fbm_dl")) {
 				//}
+				
 				out.print(reply.toString());
 				if (reply.has("code")) {
 					response.setStatus(reply.getInt("code"));
