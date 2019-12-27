@@ -85,58 +85,59 @@ public class LayersProvider2Servlet extends HttpServlet {
              outFormat = Format.JSON;
          }
          
-         try {
-
-             double latitude;
-             if (request.getParameter("lat") != null) {
-                 latitude = GeocodeUtils.getLatitude(request.getParameter("lat"));
-             } else {
-                 latitude = GeocodeUtils.getLatitude(request.getParameter("latitude"));
-             }
-
-             double longitude;
-             if (request.getParameter("lng") != null) {
-                 longitude = GeocodeUtils.getLongitude(request.getParameter("lng"));
-             } else {
-                 longitude = GeocodeUtils.getLongitude(request.getParameter("longitude"));
-             }
-
-             Locale l = request.getLocale();
-             String language;
-             if (request.getParameter("lang") != null) {
-                 language = StringUtil.getLanguage(request.getParameter("lang"), "en", 2);
-             } else if (request.getParameter("language") != null) {
-                 language = StringUtil.getLanguage(request.getParameter("language"), "en", 2);
-             } else {
-                 language = StringUtil.getLanguage(l.getLanguage(), "en", 2);
-             }
-             String locale = StringUtil.getLanguage(l.getLanguage() + "_" + l.getCountry(), "en_US", 5);
-
-             double latitudeMin = GeocodeUtils.getLatitude(request.getParameter("latitudeMin"));
-             double longitudeMin = GeocodeUtils.getLongitude(request.getParameter("longitudeMin"));
-             //double latitudeMax = GeocodeUtils.getLatitude(request.getParameter("latitudeMax"));
-             //double longitudeMax = GeocodeUtils.getLongitude(request.getParameter("longitudeMax"));
-
-             //String layer = StringUtil.getStringParam(request.getParameter("layer"), "Public");
-             int radiusInKm = NumberUtils.getRadius(request.getParameter("radius"), 3, 100);
-             int radiusInMeters = radiusInKm * 1000;
-             int limit = NumberUtils.getInt(request.getParameter("limit"), 30);
-             //int dealLimit = NumberUtils.getInt(request.getParameter("dealLimit"), 300);
-             int stringLimit = StringUtil.getStringLengthLimit(request.getParameter("display"));
-             
-             String uri = request.getRequestURI();
-             
-             String flexString = null;
-             String flexString2 = null;
-             String query = null;
-             boolean useCache = true;
-             int radius = radiusInMeters;
-             
+         try {             
              if (HttpUtils.isEmptyAny(request, "lat", "lng") && HttpUtils.isEmptyAny(request, "latitude", "longitude")) {
                  response.sendError(HttpServletResponse.SC_BAD_REQUEST);
              } else {
+            	 Double latitude;
+                 if (request.getParameter("lat") != null) {
+                     latitude = GeocodeUtils.getLatitude(request.getParameter("lat"));
+                 } else {
+                     latitude = GeocodeUtils.getLatitude(request.getParameter("latitude"));
+                 }
+
+                 Double longitude;
+                 if (request.getParameter("lng") != null) {
+                     longitude = GeocodeUtils.getLongitude(request.getParameter("lng"));
+                 } else {
+                     longitude = GeocodeUtils.getLongitude(request.getParameter("longitude"));
+                 }
+
+                 Locale l = request.getLocale();
+                 String language;
+                 if (request.getParameter("lang") != null) {
+                     language = StringUtil.getLanguage(request.getParameter("lang"), "en", 2);
+                 } else if (request.getParameter("language") != null) {
+                     language = StringUtil.getLanguage(request.getParameter("language"), "en", 2);
+                 } else {
+                     language = StringUtil.getLanguage(l.getLanguage(), "en", 2);
+                 }
+                 String locale = StringUtil.getLanguage(l.getLanguage() + "_" + l.getCountry(), "en_US", 5);
+
+                 if (latitude == null) {
+                 	latitude = GeocodeUtils.getLatitude(request.getParameter("latitudeMin"));
+                 }
+                 if (longitude == null) {
+                 	longitude = GeocodeUtils.getLongitude(request.getParameter("longitudeMin"));
+                 }
+                 
+                 //String layer = StringUtil.getStringParam(request.getParameter("layer"), "Public");
+                 int radiusInKm = NumberUtils.getRadius(request.getParameter("radius"), 3, 100);
+                 int radiusInMeters = radiusInKm * 1000;
+                 int limit = NumberUtils.getInt(request.getParameter("limit"), 30);
+                 //int dealLimit = NumberUtils.getInt(request.getParameter("dealLimit"), 300);
+                 int stringLimit = StringUtil.getStringLengthLimit(request.getParameter("display"));
+                 
+                 String uri = request.getRequestURI();
+                 
+                 String flexString = null;
+                 String flexString2 = null;
+                 String query = null;
+                 boolean useCache = true;
+                 int radius = radiusInMeters;
+
             	 LayerHelper layerHelper = LayerHelperFactory.getInstance().getByURI(uri);
-            	 if (layerHelper != null) {
+            	 if (layerHelper != null && latitude != null && longitude != null) {
             		 //set layer specific params here
             		 //flexString, flexString2, query, useCache, radius, ...
             		 if (StringUtils.equals(layerHelper.getLayerName(), Commons.FACEBOOK_LAYER)) {
@@ -199,10 +200,10 @@ public class LayersProvider2Servlet extends HttpServlet {
             			 if (HttpUtils.isEmptyAny(request, "minx", "miny", "maxx", "maxy")) {
                              response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                          } else {
-                             double miny = GeocodeUtils.getLatitude(request.getParameter("miny"));
-                             double minx = GeocodeUtils.getLongitude(request.getParameter("minx"));
-                             double maxy = GeocodeUtils.getLatitude(request.getParameter("maxy"));
-                             double maxx = GeocodeUtils.getLongitude(request.getParameter("maxx"));
+                             Double miny = GeocodeUtils.getLatitude(request.getParameter("miny"));
+                             Double minx = GeocodeUtils.getLongitude(request.getParameter("minx"));
+                             Double maxy = GeocodeUtils.getLatitude(request.getParameter("maxy"));
+                             Double maxx = GeocodeUtils.getLongitude(request.getParameter("maxx"));
                              
                              //minx, miny, maxx, maxy -> minimum longitude, latitude, maximum longitude and latitude,
                              
@@ -235,8 +236,6 @@ public class LayersProvider2Servlet extends HttpServlet {
             		 } else if (StringUtils.equals(layerHelper.getLayerName(), Commons.HOTELS_LAYER)) {
             			 flexString = language;
             			 useCache = false;
-            			 latitude = latitudeMin;
-            			 longitude = longitudeMin;
             		 } 
             		 //not for layer Flickr, Public, Eventful, OSM, Hotels, 
             		 

@@ -42,27 +42,29 @@ public class GeocodeUtils {
         return "{\"status\":\"OK\",\"lat\":\"" + StringUtil.formatCoordE6(landmark.getLatitude()) + "\",\"lng\":\"" + StringUtil.formatCoordE6(landmark.getLongitude()) + "\",\"type\":\"l\"}";
     }
 
-    protected static double getLatitude(String latitudeString) {
-        double latitude = 90.0;
+    protected static Double getLatitude(String latitudeString) {
+        Double latitude = null;
         if (StringUtils.isNotEmpty(latitudeString)) {
             try {
                 double l = Double.parseDouble(latitudeString.replace(',', '.'));
                 Validate.isTrue(!(l > 90.0 || l < -90.0), "Latitude must be in [-90, 90]  but was ", l);
                 latitude = MathUtils.normalizeE6(l);
-            } finally {
+            } catch (Exception e) {
+            	logger.log(Level.SEVERE, e.getMessage(), e);
             }
         }
         return latitude;
     }
 
-    protected static double getLongitude(String longitudeString) {
-        double longitude = 180.0;
+    protected static Double getLongitude(String longitudeString) {
+        Double longitude = null;
         if (StringUtils.isNotEmpty(longitudeString)) {
             try {
                 double l = Double.parseDouble(longitudeString.replace(',', '.'));
                 Validate.isTrue(!(l > 180.0 || l < -180.0), "Longitude must be in [-180, 180] but was ", l);
                 longitude = MathUtils.normalizeE6(l);
-            } finally {
+            } catch (Exception e) {
+            	logger.log(Level.SEVERE, e.getMessage(), e);
             }
         }
         return longitude;

@@ -76,8 +76,8 @@ public class GeoJsonProviderServlet extends HttpServlet {
 				layer = request.getParameter("layer"); 
         		if (! UserAgentUtils.isUnknown(request.getHeader("User-Agent"))) {
 	        		response.setContentType("text/javascript;charset=UTF-8");
-	        		double lat = GeocodeUtils.getLatitude(request.getParameter("lat"));
-	        		double lng =  GeocodeUtils.getLongitude(request.getParameter("lng"));
+	        		Double lat = GeocodeUtils.getLatitude(request.getParameter("lat"));
+	        		Double lng =  GeocodeUtils.getLongitude(request.getParameter("lng"));
 	        		Locale locale = request.getLocale();
 	        		String flexString = StringUtil.getLanguage(locale.getLanguage(), "en", 2);
 	        		String flexString2 = request.getParameter("sortType");
@@ -85,13 +85,13 @@ public class GeoJsonProviderServlet extends HttpServlet {
 	        		
 	        		//Searching geojson document in local in-memory cache
 	        		LayerHelper layerHelper = LayerHelperFactory.getInstance().getByName(layer);
-	        		if (layerHelper != null) { 
+	        		if (layerHelper != null && lat != null && lng != null) { 
 	        			logger.log(Level.INFO, "Searching geojson document in local in-memory cache...");
 	        			json = layerHelper.getGeoJson(lat, lng, layer, flexString, flexString2);		
 	        		}
 			    
 	        		//Getting geojson document from layer provider
-					if (!StringUtils.startsWith(json, "{")  && layerHelper != null) {
+					if (!StringUtils.startsWith(json, "{")  && layerHelper != null && lat != null && lng != null) {
 						try {
 							//layers specific code
 							int radius = RADIUS;

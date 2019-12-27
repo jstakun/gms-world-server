@@ -38,7 +38,7 @@ public class Search2Servlet extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(Search2Servlet.class.getName());
-    private double latitude, longitude;
+    private Double latitude, longitude;
     private String query, ftoken;
     private int radius, limit, stringLimit, dealLimit;
     private List<ExtendedLandmark> foundLandmarks = new ArrayList<ExtendedLandmark>();

@@ -85,14 +85,14 @@ public class LayersProviderServlet extends HttpServlet {
 
         try {
 
-            double latitude;
+            Double latitude;
             if (request.getParameter("lat") != null) {
                 latitude = GeocodeUtils.getLatitude(request.getParameter("lat"));
             } else {
                 latitude = GeocodeUtils.getLatitude(request.getParameter("latitude"));
             }
 
-            double longitude;
+            Double longitude;
             if (request.getParameter("lng") != null) {
                 longitude = GeocodeUtils.getLongitude(request.getParameter("lng"));
             } else {
@@ -110,10 +110,10 @@ public class LayersProviderServlet extends HttpServlet {
             }
             String locale = StringUtil.getLanguage(l.getLanguage() + "_" + l.getCountry(), "en_US", 5);
 
-            double latitudeMin = GeocodeUtils.getLatitude(request.getParameter("latitudeMin"));
-            double longitudeMin = GeocodeUtils.getLongitude(request.getParameter("longitudeMin"));
-            double latitudeMax = GeocodeUtils.getLatitude(request.getParameter("latitudeMax"));
-            double longitudeMax = GeocodeUtils.getLongitude(request.getParameter("longitudeMax"));
+            Double latitudeMin = GeocodeUtils.getLatitude(request.getParameter("latitudeMin"));
+            Double longitudeMin = GeocodeUtils.getLongitude(request.getParameter("longitudeMin"));
+            Double latitudeMax = GeocodeUtils.getLatitude(request.getParameter("latitudeMax"));
+            Double longitudeMax = GeocodeUtils.getLongitude(request.getParameter("longitudeMax"));
 
             String layer = StringUtil.getStringParam(request.getParameter("layer"), "Public");
             int radiusInKm = NumberUtils.getRadius(request.getParameter("radius"), 3, 100);

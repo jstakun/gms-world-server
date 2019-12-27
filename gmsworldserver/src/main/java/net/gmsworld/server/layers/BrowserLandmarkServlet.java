@@ -62,42 +62,47 @@ public class BrowserLandmarkServlet extends HttpServlet {
 			if (HttpUtils.isEmptyAny(request, "latitude", "longitude") && HttpUtils.isEmptyAny(request, "lat", "lng")) {
 				response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 			} else {
-				double latitude;
+				Double latitude;
 	            if (request.getParameter("lat") != null) {
 	                latitude = GeocodeUtils.getLatitude(request.getParameter("lat"));
 	            } else {
 	                latitude = GeocodeUtils.getLatitude(request.getParameter("latitude"));
 	            }
 
-	            double longitude;
+	            Double longitude;
 	            if (request.getParameter("lng") != null) {
 	                longitude = GeocodeUtils.getLongitude(request.getParameter("lng"));
 	            } else {
 	                longitude = GeocodeUtils.getLongitude(request.getParameter("longitude"));
 	            }
-	            Landmark l = new Landmark();
-	    		l.setLatitude(latitude);
-    			l.setLongitude(longitude);
-                l.setName(Commons.MY_POSITION_LAYER);
-    			l.setLayer(Commons.MY_POSITION_LAYER);
-    			l.setUsername(Commons.getProperty(Commons.Property.MYPOS_USER));
+	            
+	            if (latitude != null && longitude != null) {
+	            	Landmark l = new Landmark();
+	            	l.setLatitude(latitude);
+	            	l.setLongitude(longitude);
+	            	l.setName(Commons.MY_POSITION_LAYER);
+	            	l.setLayer(Commons.MY_POSITION_LAYER);
+	            	l.setUsername(Commons.getProperty(Commons.Property.MYPOS_USER));
     			
-    			//load hotels layer in asynchronous mode 
-    			if (StringUtils.equals(request.getParameter("hotelsMode"), "true")) {
-    				((HotelsBookingUtils)LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)).loadHotelsAsync(latitude, longitude, RADIUS, HOTELS_LIMIT, request.getParameter("sortType"), true); 
-    			}
+	            	//load hotels layer in asynchronous mode 
+	            	if (StringUtils.equals(request.getParameter("hotelsMode"), "true")) {
+	            		((HotelsBookingUtils)LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)).loadHotelsAsync(latitude, longitude, RADIUS, HOTELS_LIMIT, request.getParameter("sortType"), true); 
+	            	}
     			
-    			LandmarkPersistenceWebUtils.setFlex(l, request);
+	            	LandmarkPersistenceWebUtils.setFlex(l, request);
         		
-    			LandmarkPersistenceUtils.persistLandmark(l, GoogleCacheProvider.getInstance());
-    			if (l.getId() > 0) {
-    				LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), null, null);
-    				response.setContentType("text/javascript;charset=UTF-8");
-    				response.getWriter().println("{\"id\": " + l.getId() +"}");
-    				response.getWriter().close();
-    			} else {
-    				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-    			}
+	            	LandmarkPersistenceUtils.persistLandmark(l, GoogleCacheProvider.getInstance());
+	            	if (l.getId() > 0) {
+	            		LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), null, null);
+	            		response.setContentType("text/javascript;charset=UTF-8");
+	            		response.getWriter().println("{\"id\": " + l.getId() +"}");
+	            		response.getWriter().close();
+	            	} else {
+	            		response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+	            	}
+	            }else {
+	            	logger.log(Level.SEVERE, "Invalid latitude " + latitude + " and/or longitude " + longitude);
+	            }
 			}
 		} catch (Exception e) {
 	    	logger.log(Level.SEVERE, e.getMessage(), e);

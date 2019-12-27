@@ -76,7 +76,7 @@ public class MailUtils {
     			}
     		} else {
     			if (count % 100 == 0) {
-    				logger.log(Level.SEVERE, "James is sending " + count + " email " + subject + " to " + toA);
+    				logger.log(Level.WARNING, "James is sending " + count + " email " + subject + " to " + toA);
     			} else {
     				logger.log(Level.WARNING, "James is sending " + count + " email " + subject + " to " + toA);
     			}

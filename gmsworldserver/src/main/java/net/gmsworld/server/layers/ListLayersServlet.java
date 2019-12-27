@@ -53,10 +53,10 @@ public class ListLayersServlet extends HttpServlet {
 
         PrintWriter out = response.getWriter();
 
-        double latitudeMin = GeocodeUtils.getLatitude(request.getParameter("latitudeMin"));
-        double longitudeMin = GeocodeUtils.getLongitude(request.getParameter("longitudeMin"));
-        double latitudeMax = GeocodeUtils.getLatitude(request.getParameter("latitudeMax"));
-        double longitudeMax = GeocodeUtils.getLongitude(request.getParameter("longitudeMax"));
+        Double latitudeMin = GeocodeUtils.getLatitude(request.getParameter("latitudeMin"));
+        Double longitudeMin = GeocodeUtils.getLongitude(request.getParameter("longitudeMin"));
+        Double latitudeMax = GeocodeUtils.getLatitude(request.getParameter("latitudeMax"));
+        Double longitudeMax = GeocodeUtils.getLongitude(request.getParameter("longitudeMax"));
         int version = NumberUtils.getVersion(request.getParameter("version"), 1);
         int radius = NumberUtils.getRadius(request.getParameter("radius"), 3, 6371);
 
