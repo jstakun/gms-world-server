@@ -98,12 +98,16 @@ public class Search2Servlet extends HttpServlet {
                 
                 locale = request.getLocale();
                 
-                logger.log(Level.INFO, "Searching for " + query);
+                if (latitude != null && longitude != null) {
+                	logger.log(Level.INFO, "Searching for " + query);
                 
-                if (format.equals("json")) { 
-                	jsonResponse = ((SearchUtils)LayerHelperFactory.getInstance().getByName(Commons.SEARCH_LAYER)).processRequest(latitude, longitude, query, radius, version, limit, stringLimit, flexString, ftoken, locale);
+                	if (format.equals("json")) { 
+                		jsonResponse = ((SearchUtils)LayerHelperFactory.getInstance().getByName(Commons.SEARCH_LAYER)).processRequest(latitude, longitude, query, radius, version, limit, stringLimit, flexString, ftoken, locale);
+                	} else {
+                		foundLandmarks = LayerHelperFactory.getInstance().getByName(Commons.SEARCH_LAYER).processBinaryRequest(latitude, longitude, query, radius, version, limit, stringLimit, flexString, ftoken, locale, false);
+                	}
                 } else {
-                	foundLandmarks = LayerHelperFactory.getInstance().getByName(Commons.SEARCH_LAYER).processBinaryRequest(latitude, longitude, query, radius, version, limit, stringLimit, flexString, ftoken, locale, false);
+                	logger.log(Level.SEVERE, "Invalid latitude " + latitude + " and/or longitude " + longitude);
                 }
             }
         } catch (Exception e) {

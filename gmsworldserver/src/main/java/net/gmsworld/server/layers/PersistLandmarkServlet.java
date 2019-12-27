@@ -63,81 +63,82 @@ public class PersistLandmarkServlet extends HttpServlet {
             if (HttpUtils.isEmptyAny(request, "latitude", "longitude", "name", "username")) {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             } else {
-            	l.setLatitude(GeocodeUtils.getLatitude(request.getParameter("latitude")));
-                l.setLongitude(GeocodeUtils.getLongitude(request.getParameter("longitude")));
-                l.setAltitude(NumberUtils.getDouble(request.getParameter("altitude"), 0.0));
-                l.setName(request.getParameter("name"));
-                String desc = request.getParameter("description");
-                if (StringUtils.isNotEmpty(desc)) {
-                	l.setDescription(desc);
-                }
+            	Double latitude = GeocodeUtils.getLatitude(request.getParameter("latitude"));
+            	Double longitude = GeocodeUtils.getLatitude(request.getParameter("longitude"));
+            	if (latitude != null && longitude != null) {
+            		l.setLatitude(latitude);
+            		l.setLongitude(longitude);
+            		l.setAltitude(NumberUtils.getDouble(request.getParameter("altitude"), 0.0));
+            		l.setName(request.getParameter("name"));
+            		String desc = request.getParameter("description");
+            		if (StringUtils.isNotEmpty(desc)) {
+            			l.setDescription(desc);
+            		}
 
-                String validityStr = request.getParameter("validityDate");
-                if (StringUtils.isNotEmpty(validityStr)) {
-                    long validity = Long.parseLong(validityStr);
-                    Date current = new Date();
-                    l.setValidityDate(new Date(current.getTime() + validity));
-                } 
-                
-                String layer = StringUtil.getStringParam(request.getParameter("layer"), Commons.LM_SERVER_LAYER);
-                logger.log(Level.INFO, "Creating new landmark in layer: " + layer);
-                
-                AddressInfo addressInfo = null;
-                if (layer.equals(Commons.MY_POS_CODE)) {
-                	addressInfo = GeocodeHelperFactory.processReverseGeocodeAddress(l.getLatitude(), l.getLongitude());
-                	String address = addressInfo.getField(AddressInfo.EXTENSION);
-                	if (StringUtils.isNotEmpty(address)) {
-                		l.setDescription(address);
-                	}
-    			}
-                l.setLayer(layer);
-               
-                String u = StringUtil.getUsername(request.getAttribute("username"), request.getParameter("username"));
-                if (u != null && u.length() % 4 == 0) {
-                	try {
-                		u = new String(Base64.decode(u));
-                	} catch (Exception e) {
-                			//from version 1086, 86 username is Base64 encoded string
-                	}
-                }	
-                //logger.log(Level.INFO, "New landmark created by " + u);
-                l.setUsername(u);
-                
-                String socialIds = request.getParameter("socialIds");
-                //if (StringUtils.isNotEmpty(socialIds)) {
-                //	logger.log(Level.INFO, "User social ids: " + socialIds);
-                //}
-                
-                boolean anonymous = StringUtil.getStringParam(request.getParameter("anonymous"), "1").equals("0");
-                if (!anonymous) {
-                	String email = request.getParameter("email");
-                	if (StringUtils.isNotEmpty(email)) {
-                		try {
-                			email = new String(CryptoTools.decrypt(Base64.decode(email.getBytes())));
-                		} catch (Exception e) {
-                			email = "";
-                		}
-                		l.setEmail(email);
-                	}            	
-                }
-
-                //check if this landmark has the same name and location as newest (last saved) landmark
-                boolean isSimilarToNewest = LandmarkPersistenceWebUtils.isSimilarToNewest(l);
-            	if (!isSimilarToNewest) {
-            		LandmarkPersistenceWebUtils.setFlex(l, request);          		
-            		LandmarkPersistenceUtils.persistLandmark(l, GeocodeHelperFactory.getGoogleGeocodeUtils().cacheProvider);
-
-                	if (l.getId() > 0) {	
-                    	//After adding landmark remove from cache layer list for the location
-                    	//in order to make it visible immediately.
-                    	int radius = NumberUtils.getRadius(request.getParameter("radius"), 3, 6371);
-                    	String layerKey = JSON_LAYER_LIST + "_" + StringUtil.formatCoordE2(l.getLatitude()) + "_" + StringUtil.formatCoordE2(l.getLongitude()) + "_" + radius;
-                    	logger.log(Level.INFO, "Removed from cache layer list {0}: {1}", new Object[]{layerKey, (CacheUtil.remove(layerKey) != null)});           
-                	    
-                    	//send notification to social networks
-                    	LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), socialIds, addressInfo);
+                	String validityStr = request.getParameter("validityDate");
+                	if (StringUtils.isNotEmpty(validityStr)) {
+                		long validity = Long.parseLong(validityStr);
+                		Date current = new Date();
+                		l.setValidityDate(new Date(current.getTime() + validity));
                 	} 
-                }
+                
+                	String layer = StringUtil.getStringParam(request.getParameter("layer"), Commons.LM_SERVER_LAYER);
+                	logger.log(Level.INFO, "Creating new landmark in layer: " + layer);
+                
+                	AddressInfo addressInfo = null;
+                	if (layer.equals(Commons.MY_POS_CODE)) {
+                		addressInfo = GeocodeHelperFactory.processReverseGeocodeAddress(l.getLatitude(), l.getLongitude());
+                		String address = addressInfo.getField(AddressInfo.EXTENSION);
+                		if (StringUtils.isNotEmpty(address)) {
+                			l.setDescription(address);
+                		}
+    				}
+                	l.setLayer(layer);
+               
+                	String u = StringUtil.getUsername(request.getAttribute("username"), request.getParameter("username"));
+                	if (u != null && u.length() % 4 == 0) {
+                		try {
+                			u = new String(Base64.decode(u));
+                		} catch (Exception e) {
+                			//from version 1086, 86 username is Base64 encoded string
+                		}
+                	}	
+                	//logger.log(Level.INFO, "New landmark created by " + u);
+                	l.setUsername(u);
+                
+                	String socialIds = request.getParameter("socialIds");
+                
+                	boolean anonymous = StringUtil.getStringParam(request.getParameter("anonymous"), "1").equals("0");
+                	if (!anonymous) {
+                		String email = request.getParameter("email");
+                		if (StringUtils.isNotEmpty(email)) {
+                			try {
+                				email = new String(CryptoTools.decrypt(Base64.decode(email.getBytes())));
+                			} catch (Exception e) {
+                				email = "";
+                			}
+                			l.setEmail(email);
+                		}            	
+                	}
+
+                	//check if this landmark has the same name and location as newest (last saved) landmark
+                	boolean isSimilarToNewest = LandmarkPersistenceWebUtils.isSimilarToNewest(l);
+            		if (!isSimilarToNewest) {
+            			LandmarkPersistenceWebUtils.setFlex(l, request);          		
+            			LandmarkPersistenceUtils.persistLandmark(l, GeocodeHelperFactory.getGoogleGeocodeUtils().cacheProvider);
+
+            			if (l.getId() > 0) {	
+            				//After adding landmark remove from cache layer list for the location
+            				//in order to make it visible immediately.
+            				int radius = NumberUtils.getRadius(request.getParameter("radius"), 3, 6371);
+            				String layerKey = JSON_LAYER_LIST + "_" + StringUtil.formatCoordE2(l.getLatitude()) + "_" + StringUtil.formatCoordE2(l.getLongitude()) + "_" + radius;
+            				logger.log(Level.INFO, "Removed from cache layer list {0}: {1}", new Object[]{layerKey, (CacheUtil.remove(layerKey) != null)});           
+                	    
+            				//send notification to social networks
+            				LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), socialIds, addressInfo);
+            			} 
+                	}
+            	}
             }
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getMessage(), e);

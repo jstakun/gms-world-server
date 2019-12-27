@@ -60,7 +60,7 @@ public class ListLayersServlet extends HttpServlet {
         int version = NumberUtils.getVersion(request.getParameter("version"), 1);
         int radius = NumberUtils.getRadius(request.getParameter("radius"), 3, 6371);
 
-        if (format.equals("json")) {
+        if (format.equals("json") && latitudeMin != null && latitudeMax != null && longitudeMin != null && longitudeMax != null) {
             String key = JSON_LAYER_LIST + "_" + StringUtil.formatCoordE2(latitudeMin) + "_" + StringUtil.formatCoordE2(longitudeMin) + "_" + radius;
 
             if (version == 1) {
