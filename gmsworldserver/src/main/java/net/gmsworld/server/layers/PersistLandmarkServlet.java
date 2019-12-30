@@ -63,8 +63,10 @@ public class PersistLandmarkServlet extends HttpServlet {
             if (HttpUtils.isEmptyAny(request, "latitude", "longitude", "name", "username")) {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             } else {
-            	Double latitude = GeocodeUtils.getLatitude(request.getParameter("latitude"));
-            	Double longitude = GeocodeUtils.getLatitude(request.getParameter("longitude"));
+            	final String latitudeStr = request.getParameter("latitude");
+            	final String longitudeStr = request.getParameter("longitude");
+            	final Double latitude = GeocodeUtils.getLatitude(latitudeStr);
+            	final Double longitude = GeocodeUtils.getLatitude(longitudeStr);
             	if (latitude != null && longitude != null) {
             		l.setLatitude(latitude);
             		l.setLongitude(longitude);
@@ -138,6 +140,9 @@ public class PersistLandmarkServlet extends HttpServlet {
             				LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), socialIds, addressInfo);
             			} 
                 	}
+            	} else {
+            		logger.log(Level.SEVERE, "Invalid latitude and/or longitude " + latitudeStr + "," + longitudeStr);
+            		response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             	}
             }
         } catch (Exception e) {
