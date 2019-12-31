@@ -66,7 +66,7 @@ public class PersistLandmarkServlet extends HttpServlet {
             	final String latitudeStr = request.getParameter("latitude");
             	final String longitudeStr = request.getParameter("longitude");
             	final Double latitude = GeocodeUtils.getLatitude(latitudeStr);
-            	final Double longitude = GeocodeUtils.getLatitude(longitudeStr);
+            	final Double longitude = GeocodeUtils.getLongitude(longitudeStr);
             	if (latitude != null && longitude != null) {
             		l.setLatitude(latitude);
             		l.setLongitude(longitude);
