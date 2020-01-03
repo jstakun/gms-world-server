@@ -436,40 +436,35 @@ public class MailUtils {
         return EmailValidator.getInstance().isValid(aEmailAddress);
     }
     
-    public static JSONObject emailAccountExists( String address ) {
-    	JSONObject reply = new JSONObject();
+    public static int emailAccountExists( String address ) {
     	if (StringUtils.isEmpty(address)) {
-    		reply.put("responseCode",500); 
-    		return reply;
-    	}
-  
-    	try {
-    		final String url =  VALIDATE_MAIL_URL + "?to="+ address;
-   	 		String response = HttpUtils.processFileRequestWithBasicAuthn(new URL(url), "GET", null, null, Commons.getProperty(Property.RH_GMS_USER));
-   	 		Integer responseCode = HttpUtils.getResponseCode(url);
-   	 		logger.log(Level.INFO, "Received response code: " + responseCode);
-   	 		if (responseCode != null && responseCode == 200 && StringUtils.startsWith(response, "{")) {
-   	 			JSONObject root = new JSONObject(response);
-   	 		    reply.put("responseCode",responseCode);
-   	 		    if (StringUtils.equals(root.optString("status"), "ok")) {
-   	 		    	reply.put("status", "ok");
-   	 		    } else {
-   	 		    	reply.put("status", "failed");
-   	 		    }
-   	 		} else {
-   	 			reply.put("status", "failed");
-   	 			logger.log(Level.SEVERE, "Received following response: " + response);
-   	 			if (responseCode != null) {
-   	 				reply.put("responseCode", responseCode);
+    		logger.log(Level.SEVERE, "Empty email address");
+    		return 400;
+    	} else {
+    		try {
+    			final String url =  VALIDATE_MAIL_URL + "?to="+ address;
+   	 			String response = HttpUtils.processFileRequestWithBasicAuthn(new URL(url), "GET", null, null, Commons.getProperty(Property.RH_GMS_USER));
+   	 			Integer responseCode = HttpUtils.getResponseCode(url);
+   	 			if (responseCode != null && responseCode == 200 && StringUtils.startsWith(response, "{")) {
+   	 				logger.log(Level.INFO, "Received response code: " + responseCode);
+   	 				JSONObject root = new JSONObject(response);
+   	 		    	if (StringUtils.equals(root.optString("status"), "ok")) {
+   	 		    		return 200;
+   	 		    	} else {
+   	 		    		return 500;
+   	 		    	}
    	 			} else {
-   	 				reply.put("responseCode", 500);
+   	 				logger.log(Level.SEVERE, "Received following response " + responseCode + ": " + response);
+   	 				if (responseCode != null && responseCode >= 400) {
+   	 					return responseCode;
+   	 				} else {
+   	 					return 500;
+   	 				}
    	 			}
+   	 		} catch (Exception e) {
+   	 			logger.log(Level.SEVERE, e.getMessage(), e);
+   	 			return 500;
    	 		}
-   	 	} catch (Exception e) {
-   	 		logger.log(Level.SEVERE, e.getMessage(), e);
-   	 		reply.put("responseCode", 500);
-   	 	}
-    	
-    	return reply;
+    	}
     }
 }

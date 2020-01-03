@@ -277,7 +277,7 @@ public class NotificationsServlet extends HttpServlet {
 				} else if (StringUtils.equals(type, "register_m")) {
 					//register for email notifications
 					if (appId == Commons.DL_ID && StringUtils.startsWith(request.getRequestURI(), "/s/")) {
-						reply = registerEmail(request.getParameter("email"), appVersion);
+						reply = registerEmail(request.getParameter("email"), StringUtils.equalsIgnoreCase(request.getParameter("validate"), "false"), appVersion);
 					} else {
 						logger.log(Level.WARNING, "Wrong application " + appId);
 					}
@@ -375,7 +375,7 @@ public class NotificationsServlet extends HttpServlet {
 		return "Notifications servlet";
 	}
 
-	private JSONObject registerEmail(String email, int appVersion) throws IOException {
+	private JSONObject registerEmail(String email, boolean skipVerify, int appVersion) throws IOException {
 		JSONObject reply = null;
 		if (StringUtils.isNotEmpty(email)) {
 			if (NotificationPersistenceUtils.isVerified(email)) {
@@ -384,8 +384,13 @@ public class NotificationsServlet extends HttpServlet {
 				reply = new JSONObject().put("status", "registered");
 			} else if (appVersion >= 30) {
 				if (!CacheUtil.containsKey("mailto:"+email+":invalid")) {
-					JSONObject verificationStatus = MailUtils.emailAccountExists(email);
-					if (verificationStatus.getInt("responseCode") == 200 && StringUtils.equals(verificationStatus.optString("status"), "ok")) {
+					int verificationStatus;
+					if (skipVerify) {
+						verificationStatus = 200;
+					} else {
+						verificationStatus = MailUtils.emailAccountExists(email);
+					}
+					if (verificationStatus == 200) {
 						Notification n = NotificationPersistenceUtils.setVerified(email, false);
 						String status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), this.getServletContext(), 2);
 						if (StringUtils.equals(status, "ok")) {
@@ -393,10 +398,10 @@ public class NotificationsServlet extends HttpServlet {
 						} else {
 							reply = new JSONObject().put("status", status);
 						}
-					} else if (verificationStatus.getInt("responseCode") >= 400) {
+					} else if (verificationStatus >= 400) {
 						logger.log(Level.WARNING, email + " verification failed");
-						reply = new JSONObject().put("status", "failed").put("code", verificationStatus.getInt("responseCode"));
-						CacheUtil.put("mailto:"+email+":invalid", verificationStatus.getInt("responseCode"), CacheType.NORMAL);
+						reply = new JSONObject().put("status", "failed").put("code", verificationStatus);
+						CacheUtil.put("mailto:"+email+":invalid", verificationStatus, CacheType.NORMAL);
 					} else {
 						logger.log(Level.WARNING, email + " verification failed");
 						reply = new JSONObject().put("status", "failed").put("code", HttpServletResponse.SC_BAD_REQUEST);
