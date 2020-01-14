@@ -2,6 +2,7 @@ package com.jstakun.lm.server.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Map;
@@ -461,6 +462,9 @@ public class MailUtils {
    	 					return 500;
    	 				}
    	 			}
+   	 		} catch (SocketTimeoutException ste) { 
+   	 			logger.log(Level.SEVERE, ste.getMessage(), ste);
+	 			return 504;
    	 		} catch (Exception e) {
    	 			logger.log(Level.SEVERE, e.getMessage(), e);
    	 			return 500;
