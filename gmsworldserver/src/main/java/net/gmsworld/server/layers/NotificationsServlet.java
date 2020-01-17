@@ -398,12 +398,12 @@ public class NotificationsServlet extends HttpServlet {
 						} else {
 							reply = new JSONObject().put("status", status);
 						}
+					} else if (verificationStatus == 504) {
+						reply = new JSONObject().put("status", "failed").put("code", HttpServletResponse.SC_GATEWAY_TIMEOUT); 
 					} else if (verificationStatus >= 400) {
 						logger.log(Level.WARNING, email + " verification failed");
 						reply = new JSONObject().put("status", "failed").put("code", verificationStatus);
 						CacheUtil.put("mailto:"+email+":invalid", verificationStatus, CacheType.NORMAL);
-					} else if (verificationStatus == 504) {
-						reply = new JSONObject().put("status", "failed").put("code", HttpServletResponse.SC_GATEWAY_TIMEOUT); 
 					} else {
 						logger.log(Level.WARNING, email + " verification failed");
 						reply = new JSONObject().put("status", "failed").put("code", HttpServletResponse.SC_BAD_REQUEST);
