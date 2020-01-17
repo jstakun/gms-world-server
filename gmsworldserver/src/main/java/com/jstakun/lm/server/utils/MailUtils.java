@@ -462,9 +462,6 @@ public class MailUtils {
    	 					return 500;
    	 				}
    	 			}
-   	 		} catch (SocketTimeoutException ste) { 
-   	 			logger.log(Level.SEVERE, ste.getMessage(), ste);
-	 			return 504;
    	 		} catch (Exception e) {
    	 			logger.log(Level.SEVERE, e.getMessage(), e);
    	 			return 500;

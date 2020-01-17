@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -175,8 +176,12 @@ public class HttpUtils {
             
             logger.log(Level.INFO, "Request with status " + responseCode + " processed in " + (System.currentTimeMillis()-start) + " millis.");
             
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
+        } catch (SocketTimeoutException ste) {
+        	logger.log(Level.SEVERE, ste.getMessage(), ste);
+            httpResponseStatuses.put(fileUrl.toExternalForm(), 504);	
+        } catch (IOException ioe) {
+            logger.log(Level.SEVERE, ioe.getMessage(), ioe);
+            httpResponseStatuses.put(fileUrl.toExternalForm(), 500);
             //httpResponseStatuses.remove(fileUrl.toExternalForm());
         } finally {
             if (is != null) {
