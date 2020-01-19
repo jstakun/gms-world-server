@@ -377,7 +377,9 @@ public class NotificationsServlet extends HttpServlet {
 
 	private JSONObject registerEmail(String email, boolean skipVerify, int appVersion) throws IOException {
 		JSONObject reply = null;
-		if (StringUtils.isNotEmpty(email)) {
+		if (StringUtils.endsWithIgnoreCase(email, "@cloudtestlabaccounts.com")) {
+			reply = new JSONObject().put("status", "blacklisted").put("code", HttpServletResponse.SC_BAD_REQUEST);
+		} else if (StringUtils.isNotEmpty(email)) {
 			if (NotificationPersistenceUtils.isVerified(email)) {
 				Notification n = NotificationPersistenceUtils.setVerified(email, true);
 				MailUtils.sendDeviceLocatorRegistrationNotification(email, email, n.getSecret(), this.getServletContext());
@@ -426,6 +428,7 @@ public class NotificationsServlet extends HttpServlet {
 				reply = new JSONObject().put("status", "failed").put("code", HttpServletResponse.SC_BAD_REQUEST);   
 			}
 		} else {
+			reply = new JSONObject().put("status", "failed").put("code", HttpServletResponse.SC_BAD_REQUEST);
 			logger.log(Level.WARNING, "Email is empty!"); 
 		}
 		return reply;
