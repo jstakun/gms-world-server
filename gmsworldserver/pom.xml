@@ -10,7 +10,7 @@
 
     <properties>
         <appengine.app.version>1</appengine.app.version>
-        <appengine.target.version>1.9.67</appengine.target.version>
+        <appengine.target.version>1.9.78</appengine.target.version>
         <appengine.gsc.client.version>0.5</appengine.gsc.client.version>
         <blogger.version>v3-rev52-1.22.0</blogger.version>
         <plus.version>v1-rev455-1.22.0</plus.version>
@@ -58,7 +58,7 @@
         <dependency>
         	<groupId>org.json</groupId>
         	<artifactId>json</artifactId>
-        	<version>20180813</version>
+        	<version>20190722</version>
         </dependency>
         <dependency>
         	<groupId>org.apache.struts</groupId>

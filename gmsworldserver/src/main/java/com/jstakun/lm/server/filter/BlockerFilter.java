@@ -51,8 +51,7 @@ public class BlockerFilter implements Filter {
 
             //blocked user agents
         	final String userAgent = httpRequest.getHeader("User-Agent");    
-            //Browser browser = Browser.parseUserAgentString(userAgent);
-        
+            
             if (appIdVal == -1) {
             	final String blockedAgents = com.jstakun.lm.server.config.ConfigurationManager.getParam("blockedAgents", "");
             	final String[] blockedAgentsList = StringUtils.split(blockedAgents, "|");
