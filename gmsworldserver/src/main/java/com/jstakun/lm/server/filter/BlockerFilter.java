@@ -28,16 +28,12 @@ import com.jstakun.lm.server.config.ConfigurationManager;
 public class BlockerFilter implements Filter {
 
 	private static final Logger logger = Logger.getLogger(BlockerFilter.class.getName());
-	/**
-	 * Default constructor.
-	 */
-	public BlockerFilter() {
-	}
-
+	
 	/**
 	 * @see Filter#destroy()
 	 */
 	public void destroy() {
+		logger.log(Level.INFO, "Destroying filter " + getClass().getName());
 	}
 
 	/**
@@ -50,16 +46,16 @@ public class BlockerFilter implements Filter {
         if (request instanceof HttpServletRequest) {
         	HttpServletRequest httpRequest = (HttpServletRequest) request;
             
-        	String username = StringUtil.getUsername(request.getAttribute("username"), httpRequest.getHeader("username"));
-            int appIdVal = NumberUtils.getInt(httpRequest.getHeader(Commons.APP_HEADER), -1);
+        	final String username = StringUtil.getUsername(request.getAttribute("username"), httpRequest.getHeader("username"));
+        	final int appIdVal = NumberUtils.getInt(httpRequest.getHeader(Commons.APP_HEADER), -1);
 
             //blocked user agents
-            String userAgent = httpRequest.getHeader("User-Agent");    
+        	final String userAgent = httpRequest.getHeader("User-Agent");    
             //Browser browser = Browser.parseUserAgentString(userAgent);
         
             if (appIdVal == -1) {
-                String blockedAgents = com.jstakun.lm.server.config.ConfigurationManager.getParam("blockedAgents", "");
-                String[] blockedAgentsList = StringUtils.split(blockedAgents, "|");
+            	final String blockedAgents = com.jstakun.lm.server.config.ConfigurationManager.getParam("blockedAgents", "");
+            	final String[] blockedAgentsList = StringUtils.split(blockedAgents, "|");
             
                 if (blockedAgentsList != null && blockedAgentsList.length > 0) {
                 	for (int i=0;i<blockedAgentsList.length;i++) {
@@ -76,10 +72,10 @@ public class BlockerFilter implements Filter {
             //blocked urls
             if (!block) {
             	logger.log(Level.INFO, "User agent: " + userAgent + ", appId: " + appIdVal);    
-            	String closed = ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.CLOSED_URLS, "");
-            	String[] closedUrlsList = StringUtils.split(closed, ",");
+            	final String closed = ConfigurationManager.getParam(net.gmsworld.server.config.ConfigurationManager.CLOSED_URLS, "");
+            	final String[] closedUrlsList = StringUtils.split(closed, ",");
                 if (closedUrlsList != null && closedUrlsList.length > 0) {
-                	String uri = httpRequest.getRequestURI();
+                	final String uri = httpRequest.getRequestURI();
                 	for (int i=0;i<closedUrlsList.length;i++) {
                 		if (StringUtils.equals(uri, closedUrlsList[i])) {
                 			logger.log(Level.WARNING, "Remote Addr: " + ip + ", User agent: " + userAgent + ", username: " + username + ", AppId = " + appIdVal);
@@ -114,6 +110,7 @@ public class BlockerFilter implements Filter {
 	 * @see Filter#init(FilterConfig)
 	 */
 	public void init(FilterConfig fConfig) throws ServletException {
+		logger.log(Level.INFO, "Initializing filter " + getClass().getName());
 	}
 
 }
