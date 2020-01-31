@@ -87,6 +87,7 @@
     <url-pattern>/showUser/*</url-pattern>
     <url-pattern>/services/browserLandmark</url-pattern>
     <url-pattern>/otp</url-pattern>
+    <url-pattern>/image</url-pattern>
   </filter-mapping>
   <filter-mapping>
     <filter-name>BlockerFilter</filter-name>
@@ -140,6 +141,7 @@
     <url-pattern>/services/browserLandmark</url-pattern>
     <url-pattern>/routeProvider</url-pattern>
     <url-pattern>/otp</url-pattern>
+    <url-pattern>/image</url-pattern>
   </filter-mapping>
   <filter-mapping>
     <filter-name>ServicesAuthorizationFilter</filter-name>
