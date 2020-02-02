@@ -17,6 +17,7 @@ import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
+import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.jstakun.lm.server.utils.persistence.DevicePersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceWebUtils;
@@ -84,19 +85,19 @@ public final class DeviceManagerServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		try {
 			if (!HttpUtils.isEmptyAny(request, "imei")) {
-				 String imei = request.getParameter("imei").trim();
-				 String token = request.getParameter("token");
-		         String username = request.getParameter("username");
-		         String name = request.getParameter("name");
-		         String command = request.getParameter("command");
-		         String args = request.getParameter("args");
-		         String correlationId = request.getParameter("correlationId");
-		         String action = request.getParameter("action");
-		         String flex = request.getParameter("flex"); 
-		         String replyToCommand = request.getParameter("replyToCommand"); 
-		         
+				 final String imei = request.getParameter("imei").trim();
+				 final String token = request.getParameter("token");
+				 final String username = request.getParameter("username");
+				 final String name = request.getParameter("name");
+				 final String command = request.getParameter("command");
+				 final String args = request.getParameter("args");
+				 final String correlationId = request.getParameter("correlationId");
+				 final String action = request.getParameter("action");
+				 final String replyToCommand = request.getParameter("replyToCommand"); 
+				 String flex = request.getParameter("flex"); 
+				 
 		         try {
-		        	 int version = NumberUtils.getInt(request.getHeader(Commons.APP_VERSION_HEADER), -1);
+		        	 final int version = NumberUtils.getInt(request.getHeader(Commons.APP_VERSION_HEADER), -1);
 		        	 if (version >= 28) {
 		        		 if (flex == null) {
 		        			 flex = processHeadersV2(request, version);
@@ -126,26 +127,19 @@ public final class DeviceManagerServlet extends HttpServlet {
 				     }
 		        	 Long count = -1L;
 		        	 if (StringUtils.isNotEmpty(command) && pin >= 0) {
-			        	 String[] cid = StringUtils.split(correlationId, "=");
-			        	 String commandKey = "";
-			        	 if (cid != null && cid.length == 2) {
-			        		 commandKey += cid[0].trim() + "_";
-			        	 }
-			        	 if (imei != null) {
-			 				 commandKey +=  imei  + "_";
-			 			 } else if (username != null && name != null) {
-			 				 commandKey += username + "_" + name  + "_";
-			 			 }
-			        	 commandKey += command;
+			        	 String commandKey = getCommandKey(correlationId, imei, username, name, command);
 			        	 count = CacheUtil.increment(commandKey);
-			        	 if (count < 10 || (StringUtils.equals(command, "messagedlapp") && count < 50) || DevicePersistenceUtils.isValidCommand(replyToCommand) ||
+			        	 if (StringUtils.equalsIgnoreCase(action, "reset_quota")) {
+			        		 CacheUtil.put(commandKey, 0, CacheType.NORMAL);
+			        		 logger.log(Level.INFO, "Command " + commandKey + " has been set to 0");
+			        		 status = 1;
+			        	 } else if (count < 10 || (StringUtils.equals(command, "messagedlapp") && count < 50) || DevicePersistenceUtils.isValidCommand(replyToCommand) ||
 			        		(StringUtils.equals(command, "messagedlapp") && StringUtils.isNotEmpty(request.getHeader(Commons.ROUTE_ID_HEADER)))) {
 			        		 logger.log(Level.INFO, "Command " + commandKey + " has been sent " + count + " times");
 			        		  status = DevicePersistenceUtils.sendCommand(imei, pin, name, username, command, args, correlationId, flex);	  
 			        	 } else {
 			        		 logger.log(Level.SEVERE, "Command " + commandKey + " has been rejected after " + count + " attempts");
 			        		 status = -3;
-			        		 //status = DevicePersistenceUtils.sendCommand(imei, pin, name, username, command, args, correlationId, flex);
 					     }        		 
 		        	 } else if (StringUtils.equalsIgnoreCase(action, "delete")) {
 		        		 status = DevicePersistenceUtils.deleteDevice(imei);
@@ -267,6 +261,21 @@ public final class DeviceManagerServlet extends HttpServlet {
    	   	} else {
    	   		return null;
    	   	}
+	}
+	
+	private static String getCommandKey(final String correlationId, final String imei, final String username, final String name, final String command) {
+		String commandKey = "";
+   	 	String[] cid = StringUtils.split(correlationId, "=");
+		if (cid != null && cid.length == 2) {
+   	 		commandKey += cid[0].trim() + "_";
+   	 	}
+   	 	if (imei != null) {
+			 commandKey +=  imei  + "_";
+		} else if (username != null && name != null) {
+			 commandKey += username + "_" + name  + "_";
+		}
+   	 	commandKey += command;
+   	 	return commandKey;
 	}
 	
 }
