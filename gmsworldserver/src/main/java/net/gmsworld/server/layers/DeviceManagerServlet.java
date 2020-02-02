@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
+import com.jstakun.lm.server.utils.MailUtils;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
@@ -131,6 +132,7 @@ public final class DeviceManagerServlet extends HttpServlet {
 			        	 count = CacheUtil.increment(commandKey);
 			        	 if (StringUtils.equalsIgnoreCase(action, "reset_quota")) {
 			        		 CacheUtil.put(commandKey, 0, CacheType.NORMAL);
+			        		 MailUtils.sendAdminMail("Quota reset request", "Quota reset for " + commandKey + " has been requested");
 			        		 logger.log(Level.INFO, "Command " + commandKey + " has been set to 0");
 			        		 status = 1;
 			        	 } else if (count < 10 || (StringUtils.equals(command, "messagedlapp") && count < 50) || DevicePersistenceUtils.isValidCommand(replyToCommand) ||
@@ -267,7 +269,7 @@ public final class DeviceManagerServlet extends HttpServlet {
 		String commandKey = "";
    	 	String[] cid = StringUtils.split(correlationId, "=");
 		if (cid != null && cid.length == 2) {
-   	 		commandKey += cid[0].trim() + "_";
+   	 		commandKey += cid[0].trim().replace("+", "") + "_";
    	 	}
    	 	if (imei != null) {
 			 commandKey +=  imei  + "_";
