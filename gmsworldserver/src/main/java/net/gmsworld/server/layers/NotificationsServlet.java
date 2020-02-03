@@ -415,7 +415,7 @@ public class NotificationsServlet extends HttpServlet {
 					logger.log(Level.WARNING, email + " verification failed");
 					reply = new JSONObject().put("status", "failed").put("code", (Integer) CacheUtil.getObject("mailto:"+email+":invalid"));
 				}
-			} else if (appVersion < 30) {
+			} else {
 				Notification n = NotificationPersistenceUtils.setVerified(email, false);
 				String status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), this.getServletContext(), 0);
 				if (StringUtils.equals(status, "ok")) {
@@ -423,10 +423,7 @@ public class NotificationsServlet extends HttpServlet {
 				} else {
 					reply = new JSONObject().put("status", status);
 				}
-			} else {
-				logger.log(Level.WARNING, "Email address " + email + " is invalid");
-				reply = new JSONObject().put("status", "failed").put("code", HttpServletResponse.SC_BAD_REQUEST);   
-			}
+			} 
 		} else {
 			reply = new JSONObject().put("status", "failed").put("code", HttpServletResponse.SC_BAD_REQUEST);
 			logger.log(Level.WARNING, "Email is empty!"); 

@@ -76,7 +76,8 @@ public class TaskServlet extends HttpServlet {
         				if (thumbnail != null && thumbnail.length > 0) {
         					FileUtils.saveFileV2(null, image, thumbnail, latitude, longitude);
         				} else {
-        					response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        					//response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        					logger.log(Level.WARNING, "Failed to load image");
         				}
         			} else {
         				logger.log(Level.INFO, "Image {0} found in the storage.", imageUrl);

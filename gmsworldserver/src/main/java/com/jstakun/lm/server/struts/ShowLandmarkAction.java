@@ -59,7 +59,6 @@ public class ShowLandmarkAction extends Action {
             	    
             	  CacheAction landmarkCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
         				public Object executeAction() {
-        					//TODO remove UserAgentUtils.isBot(request.getHeader("User-Agent")) check because we've got IP filter
         					if (UserAgentUtils.isBot(request.getHeader("User-Agent"))) {
         		            	return null;
         		            } else if (CommonPersistenceUtils.isKeyValid(key)) {

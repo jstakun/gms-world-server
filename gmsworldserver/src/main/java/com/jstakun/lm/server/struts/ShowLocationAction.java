@@ -117,7 +117,6 @@ public class ShowLocationAction extends org.apache.struts.action.Action {
 
         if (StringUtils.isNotEmpty(request.getParameter("fullScreen")) && lat != null && lng != null) {
         	//load hotels layer in asynchronous mode 
-        	//TODO UserAgentUtils.isBot(request.getHeader("User-Agent")) check because we've got IP filter
         	if (StringUtils.contains(request.getParameter("enabled"), "Hotels") && ! UserAgentUtils.isBot(request.getHeader("User-Agent"))) {
 				((HotelsBookingUtils)LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)).loadHotelsAsync(lat, lng, RADIUS, HOTELS_LIMIT, request.getParameter("sortType"), true); 
 			}
