@@ -139,16 +139,6 @@ public class UrlUtils {
         return respUrl;
     }
 
-    /*public static String getHash(String url) {
-        try {
-            Url shortUrl = bitly.call(shorten(url));
-            return shortUrl.getUserHash();
-        } catch (Exception ex) {
-            logger.log(Level.WARNING, "Bitly API exception: ", ex);
-            return null;
-        }
-    }*/
-    
     public static String getLandmarkUrl(Landmark landmark) {
         String hash = landmark.getHash();
         Date creationDate = landmark.getCreationDate();
