@@ -77,7 +77,7 @@ public class HttpUtils {
         return processFileRequest(fileUrl, true, authn, null, method, null, accept, urlParams, contentType, false, null, null);
     }
     
-    public static String processFileRequestWithOtherAuthn(URL fileUrl, String method, String accept, String urlParams, String contentType, String authn) throws IOException {
+    public static String processFileRequestWithAuthn(URL fileUrl, String method, String accept, String urlParams, String contentType, String authn) throws IOException {
         return processFileRequest(fileUrl, true, null, authn, method, null, accept, urlParams, contentType, false, null, null);
     }
     

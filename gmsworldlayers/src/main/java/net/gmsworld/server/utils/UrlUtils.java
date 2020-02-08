@@ -1,8 +1,5 @@
 package net.gmsworld.server.utils;
 
-import static com.rosaloves.bitlyj.Bitly.as;
-import static com.rosaloves.bitlyj.Bitly.shorten;
-
 import java.net.URL;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
@@ -10,16 +7,13 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang.StringUtils;
+import org.json.JSONObject;
+
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.utils.persistence.Landmark;
-
-import org.apache.commons.lang.StringUtils;
-import org.json.JSONObject;
-
-import com.rosaloves.bitlyj.Bitly.Provider;
-import com.rosaloves.bitlyj.Url;
 
 /**
  *
@@ -27,9 +21,9 @@ import com.rosaloves.bitlyj.Url;
  */
 public class UrlUtils {
 
-    private static final Logger logger = Logger.getLogger(UrlUtils.class.getName());
-    private static final Provider bitly = as(Commons.getProperty(Property.BITLY_USERNAME), Commons.getProperty(Property.BITLY_APIKEY));
-    public final static String BITLY_URL = "http://bit.ly/";
+	public final static String BITLY_URL = "http://bit.ly/";
+    
+	private static final Logger logger = Logger.getLogger(UrlUtils.class.getName());
     private static final long DB_MIGRATION_DATE = 1373846399000L; //14-07-13 23:59:59
     
     //http://www.facebook.com/profile.php?id=uid
@@ -132,12 +126,11 @@ public class UrlUtils {
         return result.toString();
     }
 
-    public static String getShortUrl(String longUrl) {
+    public static String getShortUrl(final String longUrl) {
     	String respUrl = longUrl;
         if (!StringUtils.startsWith(longUrl, BITLY_URL)) {
             try {
-                Url shortUrl = bitly.call(shorten(longUrl));
-                respUrl = shortUrl.getShortUrl();
+                respUrl = shortenUrlWithBitly(longUrl);
             } catch (Exception e) {
                 logger.log(Level.WARNING, "Bitly API exception: ", e);
                 respUrl = getGoogleShortUrl(longUrl);
@@ -146,7 +139,7 @@ public class UrlUtils {
         return respUrl;
     }
 
-    public static String getHash(String url) {
+    /*public static String getHash(String url) {
         try {
             Url shortUrl = bitly.call(shorten(url));
             return shortUrl.getUserHash();
@@ -154,7 +147,7 @@ public class UrlUtils {
             logger.log(Level.WARNING, "Bitly API exception: ", ex);
             return null;
         }
-    }
+    }*/
     
     public static String getLandmarkUrl(Landmark landmark) {
         String hash = landmark.getHash();
@@ -167,7 +160,7 @@ public class UrlUtils {
         }
     }
   
-    public static String getGoogleShortUrl(String longUrl) {
+    private static String getGoogleShortUrl(String longUrl) {
     	if (!StringUtils.startsWith(longUrl, BITLY_URL)) {
     		try {
     			URL url = new URL("https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=" + Commons.getProperty(Property.FCM_LM_WEB_API_KEY));
@@ -203,6 +196,26 @@ public class UrlUtils {
     	} else {
     		return ConfigurationManager.SERVER_URL + "showLandmark/" + id;
     	}
+    }
+    
+    private static String shortenUrlWithBitly(final String longUrl) {
+    	String shortUrl = longUrl;
+    	try {
+			final String response = HttpUtils.processFileRequestWithAuthn(new URL("https://api-ssl.bitly.com/v4/shorten"), "POST", "application/json", "{\"long_url\": \"http://www.gms-world.net\",\"group_guid\": \"" + Commons.getProperty(Property.BITLY_GUID)  + "\"}", "application/json", "Bearer " + Commons.getProperty(Property.BITLY_APIKEY));
+		    if (StringUtils.startsWith(response, "{")) {
+		    	JSONObject bitlyResponse = new JSONObject(response);
+		    	if (bitlyResponse.has("link")) {
+		    		shortUrl = bitlyResponse.getString("link");
+		    	} else {
+		    		logger.log(Level.WARNING, "Received following Bitly response: " + bitlyResponse);
+		    	}
+		    } else {
+		    	logger.log(Level.WARNING, "Received following Bitly response: " +response);
+		    }
+    	} catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage(), e);
+		} 
+    	return shortUrl;
     }
 
 }

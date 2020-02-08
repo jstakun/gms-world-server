@@ -9,19 +9,21 @@ import java.util.Locale;
 
 import org.junit.Test;
 
+import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.UrlUtils;
 
 public class UtilsTest {
 
+	@Test
 	public void test() {
-		String longUrl = "http://www.gms-world.net/showLandmark/23159";
+		String longUrl = ConfigurationManager.SSL_SERVER_URL;
 		String shortUrl1 = UrlUtils.getShortUrl(longUrl);
 		System.out.println("Short url #1: " + shortUrl1);
-		String shortUrl2 = UrlUtils.getGoogleShortUrl(longUrl);
-		System.out.println("Short url #2: " + shortUrl2);
+		//String shortUrl2 = UrlUtils.getGoogleShortUrl(longUrl);
+		//System.out.println("Short url #2: " + shortUrl2);
+		//assertNotEquals("Shortening url 2 failed!", longUrl, shortUrl2);
 		assertNotEquals("Shortening url 1 failed!", longUrl, shortUrl1);
-		assertNotEquals("Shortening url 2 failed!", longUrl, shortUrl2);
 	}
 	
 	public void geocodeTest() {
@@ -29,7 +31,6 @@ public class UtilsTest {
 		System.out.println(GeocodeUtils.getLatitude("52.23455"));
 	}
 	
-	@Test
 	public void stringTest() throws Exception {
 		//String original = "aáeéiíoóöőuúüű AÁEÉIÍOÓÖŐUÚÜŰ";
 		/*String original = "ążźćółęńś ĄŻŹĆÓŁĘŃŚ";
@@ -87,7 +88,6 @@ public class UtilsTest {
 	     System.out.println(c.getTime());
 	}
 	
-	@Test
 	public void telegramTest() {
 		try {
 			TelegramUtils.sendTelegram("123456789", "test <b>bold</> <i>italic</i>, <em>italic</em>\n" + 

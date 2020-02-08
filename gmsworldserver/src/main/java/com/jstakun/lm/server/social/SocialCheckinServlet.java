@@ -116,7 +116,7 @@ public final class SocialCheckinServlet extends HttpServlet {
     						    Map<String, String> params = new ImmutableMap.Builder<String, String>().
     								put("user", "Google User").
     								put("name", landmark.getName()).
-    								put("url", UrlUtils.getGoogleShortUrl(url)). 
+    								put("url", UrlUtils.getShortUrl(url)). 
     								put("lat", lat != null ? lat : "").
     		    					put("lng", lng != null ? lng : "").
     		    					put("imageUrl", ConfigurationManager.SERVER_URL + "images/checkin.png").build();
