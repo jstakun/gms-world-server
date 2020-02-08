@@ -27,7 +27,7 @@ public class LayersLoaderTest {
 				Commons.FLICKR_LAYER, Commons.YOUTUBE_LAYER, Commons.FOURSQUARE_MERCHANT_LAYER,
 				Commons.GOOGLE_PLACES_LAYER, Commons.LASTFM_LAYER, Commons.TWITTER_LAYER,
 				Commons.INSTAGRAM_LAYER, Commons.MEETUP_LAYER, Commons.EXPEDIA_LAYER,
-				Commons.WEBCAM_LAYER, Commons.MC_ATM_LAYER, Commons.FREEBASE_LAYER, Commons.LM_SERVER_LAYER,
+				Commons.WEBCAM_LAYER, Commons.MC_ATM_LAYER, Commons.LM_SERVER_LAYER,
 				Commons.COUPONS_LAYER, Commons.GROUPON_LAYER,}); 
 		        //Commons.PANORAMIO_LAYER, Commons.PICASA_LAYER, Commons.OSM_PARKING_LAYER, Commons.OSM_ATM_LAYER
 		System.out.println("Testing " + layers.size() + " layers");

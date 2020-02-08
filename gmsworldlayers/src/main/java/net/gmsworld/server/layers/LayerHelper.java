@@ -243,13 +243,7 @@ public abstract class LayerHelper {
     				}
         		} else if (StringUtils.equals(layer, Commons.PANORAMIO_LAYER)) {
         			f.setProperty("url", StringUtils.replace(landmark.getUrl(), "/m/photo", "/photo")); 
-        		} else if (StringUtils.equals(layer, Commons.FREEBASE_LAYER)) {
-        			String thumbnail = landmark.getThumbnail(); 
-    				if (thumbnail != null) {
-    					f.setProperty("thumbnail", thumbnail);
-    				}
-    				f.setProperty("desc", StringUtils.replace(landmark.getDescription(), "<a href=", "<a target=\"_blank\" href=")); //desc
-        		}
+        		} 
     			f.setProperty("mobile_url", landmark.getUrl());
     			featureCollection.add(f);
     		}

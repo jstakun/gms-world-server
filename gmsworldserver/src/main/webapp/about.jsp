@@ -7,7 +7,7 @@
 <%@page contentType="text/html" pageEncoding="utf-8"%>
 <%@page import="com.jstakun.lm.server.config.ConfigurationManager" %>
 <!-- content-outer -->
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html>
 
     <head>
         <title>GMS World - About Us</title>

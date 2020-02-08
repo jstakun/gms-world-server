@@ -2,7 +2,6 @@ package com.jstakun.lm.server.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Map;

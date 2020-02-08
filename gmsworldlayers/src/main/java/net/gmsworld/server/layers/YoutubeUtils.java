@@ -60,6 +60,9 @@ import com.openlapi.QualifiedCoordinates;
  * @author jstakun
  */
 public class YoutubeUtils extends LayerHelper {
+	
+	//test api
+	//https://developers.google.com/youtube/v3/docs/search/list?apix=true&apix_params=%7B%22part%22%3A%22snippet%22%2C%22location%22%3A%2252.25%2C20.95%22%2C%22locationRadius%22%3A%225mi%22%2C%22maxResults%22%3A10%2C%22order%22%3A%22date%22%2C%22type%22%3A%22video%22%7D
 
     private static YouTube getYouTube() {
     	HttpTransport httpTransport = new NetHttpTransport();
@@ -82,15 +85,18 @@ public class YoutubeUtils extends LayerHelper {
             search.setQ(query);
         }
         
+        final String location = StringUtil.formatCoordE2(latitude) + "," + StringUtil.formatCoordE2(longitude);
         search.setLocation(StringUtil.formatCoordE2(latitude) + "," + StringUtil.formatCoordE2(longitude));
         
-        int r = NumberUtils.normalizeNumber(radius, 1, 999);
-        search.setLocationRadius(r + "mi");
+        final String r = NumberUtils.normalizeNumber(radius, 1, 500) + "mi";
+        search.setLocationRadius(r);
+        
+        logger.info("Searching for location " + location + " with radius: " + r);
         
         int l = NumberUtils.normalizeNumber(limit, 1, 50);
         search.setMaxResults(new Long(l));
         
-        search.setOrder("date"); //("viewCount");
+        search.setOrder("date"); //("date"); //("viewCount"); //("rating");
         //search.setPublishedAfter(DateTime.)
         
         SearchListResponse searchResponse = search.execute();
@@ -253,90 +259,6 @@ public class YoutubeUtils extends LayerHelper {
 
     }
     
-    /*private static List<ExtendedLandmark> createCustomLandmarkVideoList(List<VideoEntry> vel, int version, int stringLimit, Locale locale) {
-    	List<ExtendedLandmark> landmarks = new ArrayList<ExtendedLandmark>();
-    	
-    	logger.info("Found " + vel.size() + " video entries...");
-
-        for (VideoEntry ve : vel) {
-            YouTubeMediaGroup mediaGroup = ve.getMediaGroup();
-            if (mediaGroup != null) {
-            	GeoRssWhere geo = ve.getGeoCoordinates();
-                MediaPlayer mediaPlayer = mediaGroup.getPlayer();
-                
-                String title = "";
-                if (mediaGroup.getTitle() != null) {
-                    title = mediaGroup.getTitle().getPlainTextContent();
-                }
-                
-                long creationDate = -1;
-                if (ve.getPublished() != null) {
-                    creationDate = ve.getPublished().getValue();
-                }
-                
-                Map<String, String> tokens = new HashMap<String, String>();
-
-                if (mediaGroup.getDescription() != null) {
-                    JSONUtils.putOptValue(tokens, "description", mediaGroup.getDescription().getPlainTextContent(), stringLimit, false);
-                }
-
-                Set<com.google.gdata.data.Category> categories = ve.getCategories();
-                String categoryStr = "";
-                if (categories.size() > 0) {
-                    Iterator<com.google.gdata.data.Category> iter = categories.iterator();
-                    com.google.gdata.data.Category category = (com.google.gdata.data.Category) iter.next();
-                    if (StringUtils.isNotEmpty(category.getLabel())) {
-                        if (categoryStr.length() > 0) {
-                            categoryStr += ", ";
-                        }
-                        categoryStr += category.getLabel();
-                    }
-                }
-
-                if (StringUtils.isNotEmpty(categoryStr)) {
-                    tokens.put("category", categoryStr);
-                }
-
-                List<Person> authors = ve.getAuthors();
-                String artist = "";
-                for (Person p : authors) {
-                   if (artist.length() > 0) {
-                       artist += ", ";
-                   }
-                   artist += p.getName();
-                }
-                JSONUtils.putOptValue(tokens, "artist", artist, stringLimit, false);
-
-                QualifiedCoordinates qc = new QualifiedCoordinates(geo.getLatitude(), geo.getLongitude(), 0f, 0f, 0f);
-            	ExtendedLandmark landmark = LandmarkFactory.getLandmark(title, null, qc, Commons.YOUTUBE_LAYER, new AddressInfo(), creationDate, null);
-            	landmark.setUrl(UrlUtils.forXML(mediaPlayer.getUrl()));
-            	
-            	List<MediaThumbnail> thumbnails = mediaGroup.getThumbnails();
-                if (thumbnails.size() > 0) {
-                    MediaThumbnail thumbnail = thumbnails.get(0);
-                    landmark.setThumbnail(thumbnail.getUrl());
-                }
-                
-                Rating rating = ve.getRating();
-                if (rating != null) {
-                   landmark.setRating(rating.getAverage());
-                }
-                
-                YtStatistics stats = ve.getStatistics();
-                if (stats != null) {
-                   landmark.setNumberOfReviews((int)stats.getViewCount());
-                }
-            	
-            	String description = JSONUtils.buildLandmarkDesc(landmark, tokens, locale);
-            	landmark.setDescription(description);
-            	
-            	landmarks.add(landmark);
-            }
-            
-        }       	
-    	return landmarks;
-    }*/
-
     private static JSONObject createCustomJSonVideoList(List<VideoEntry> vel, int version, int stringLimit) throws JSONException, UnsupportedEncodingException {
         ArrayList<Map<String, Object>> jsonArray = new ArrayList<Map<String, Object>>();
         

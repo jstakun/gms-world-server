@@ -79,7 +79,7 @@ public class LayersTest {
 	  
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.WEBCAM_LAYER)});
 	   
-	  //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.MEETUP_LAYER)});
+	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.MEETUP_LAYER)});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.OSM_TAXI_LAYER)});
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.OSM_ATM_LAYER)});
@@ -88,15 +88,15 @@ public class LayersTest {
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.COUPONS_LAYER)});
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.GROUPON_LAYER)});
 	   
-	   data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.MC_ATM_LAYER)});
+	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.MC_ATM_LAYER)});
 	 
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.GOOGLE_PLACES_LAYER)});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.YELP_LAYER)});
 	   
-	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.YOUTUBE_LAYER)});
+	   data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.YOUTUBE_LAYER)});
 	   
-	  // data.add(new Object[]{LayerHelperFactory.getInsttance().getByName(Commons.FACEBOOK_LAYER)});
+	   //data.add(new Object[]{LayerHelperFactory.getInsttance().getByName(Commons.FACEBOOK_LAYER)});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.FOURSQUARE_LAYER)});
 	   
@@ -107,6 +107,8 @@ public class LayersTest {
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.EVENTFUL_LAYER)});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.WIKIPEDIA_LAYER)});
+	   
+	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.FLICKR_LAYER)});
 	   
 	   System.out.println("Found " + data.size() + " layers.");
 	   
@@ -170,6 +172,8 @@ public class LayersTest {
 				landmarks = layer.processBinaryRequest(lat, lng, "restaurant", radius, apiLevel, limit, stringLength, "0_0_50", null, locale, true);
 			} else if (StringUtils.equals(layer.getLayerName(), Commons.HOTELS_LAYER)) {
 				landmarks = layer.processBinaryRequest(lat, lng, null, radius, apiLevel, limit, stringLength, "true", null, locale, true);
+			} else if (StringUtils.equals(layer.getLayerName(), Commons.YOUTUBE_LAYER)) {
+				landmarks = layer.processBinaryRequest(lat, lng, null, radius / 1000, apiLevel, limit, stringLength, null, null, locale, true);
 			} else {
 				landmarks = layer.processBinaryRequest(lat, lng, null, radius, apiLevel, limit, stringLength, null, null, locale, true);
 			}
