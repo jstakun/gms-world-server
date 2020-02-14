@@ -137,7 +137,7 @@ public class NotificationsServlet extends HttpServlet {
 							logger.log(Level.SEVERE, e.getMessage(), e);
 						}
 					} else {
-						logger.log(Level.WARNING, "No valid latitude and/or longitude: " + latitude + "," + longitude);
+						logger.log(Level.WARNING, "Not valid latitude: " + latitude + " and/or longitude: " + longitude);
 					}
 				   
 					if (StringUtils.isNotEmpty(routeId)) {

@@ -89,13 +89,13 @@ public class GeocodeTest {
         ai = GeocodeHelperFactory.processReverseGeocode(39.457651,-0.400439);
         System.out.println("generic 1: city: " + ai.getField(AddressInfo.CITY) + ", country: " + ai.getField(AddressInfo.COUNTRY_CODE) + ", all: " + ai.getField(AddressInfo.EXTENSION));
      
-        System.out.println(GeocodeUtils.isValidLatitude(99d));
+        System.out.println(GeocodeUtils.isValidLatitude(10.763859));
         
         System.out.println(GeocodeUtils.isValidLongitude(199d));
         
         System.out.println(GeocodeUtils.isValidLatitude(89d));
         
-        System.out.println(GeocodeUtils.isValidLongitude(179d));
+        System.out.println(GeocodeUtils.isValidLongitude(106.614632));
         
         String addressString = GeocodeHelperFactory.processReverseGeocodeAddress(54.352025, 18.646638).getField(AddressInfo.EXTENSION);
         System.out.println(addressString);
