@@ -191,7 +191,7 @@ public class UrlUtils {
     private static String shortenUrlWithBitly(final String longUrl) {
     	String shortUrl = longUrl;
     	try {
-			final String response = HttpUtils.processFileRequestWithAuthn(new URL("https://api-ssl.bitly.com/v4/shorten"), "POST", "application/json", "{\"long_url\": \"http://www.gms-world.net\",\"group_guid\": \"" + Commons.getProperty(Property.BITLY_GUID)  + "\"}", "application/json", "Bearer " + Commons.getProperty(Property.BITLY_APIKEY));
+			final String response = HttpUtils.processFileRequestWithAuthn(new URL("https://api-ssl.bitly.com/v4/shorten"), "POST", "application/json", "{\"long_url\": \"" + longUrl + "\",\"group_guid\": \"" + Commons.getProperty(Property.BITLY_GUID)  + "\"}", "application/json", "Bearer " + Commons.getProperty(Property.BITLY_APIKEY));
 		    if (StringUtils.startsWith(response, "{")) {
 		    	JSONObject bitlyResponse = new JSONObject(response);
 		    	if (bitlyResponse.has("link")) {
