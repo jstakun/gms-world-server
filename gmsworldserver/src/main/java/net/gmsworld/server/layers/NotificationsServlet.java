@@ -136,8 +136,6 @@ public class NotificationsServlet extends HttpServlet {
 						} catch (Exception e) {
 							logger.log(Level.SEVERE, e.getMessage(), e);
 						}
-					} else {
-						logger.log(Level.WARNING, "Not valid latitude: " + latitude + " and/or longitude: " + longitude);
 					}
 				   
 					if (StringUtils.isNotEmpty(routeId)) {
@@ -155,7 +153,9 @@ public class NotificationsServlet extends HttpServlet {
 			   	   		}
 			   	   		DevicePersistenceUtils.setupDevice(deviceId, null, null, null, geo);
 					}
-				}
+	            } else {
+					logger.log(Level.WARNING, "Invalid latitude: " + latitude + " and/or longitude: " + longitude);
+				}	
 
 				if (StringUtils.equals(type, "v")) {
 					// check for version
