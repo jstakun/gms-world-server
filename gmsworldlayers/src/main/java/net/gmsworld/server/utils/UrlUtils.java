@@ -129,12 +129,10 @@ public class UrlUtils {
     public static String getShortUrl(final String longUrl) {
     	String respUrl = longUrl;
         if (!StringUtils.startsWith(longUrl, BITLY_URL)) {
-            try {
-                respUrl = shortenUrlWithBitly(longUrl);
-            } catch (Exception e) {
-                logger.log(Level.WARNING, "Bitly API exception: ", e);
-                respUrl = getGoogleShortUrl(longUrl);
-            }
+           respUrl = shortenUrlWithBitly(longUrl);
+           if (StringUtils.equals(longUrl, respUrl) ) {
+        	   respUrl = getGoogleShortUrl(longUrl);
+           }
         }
         return respUrl;
     }
@@ -191,16 +189,17 @@ public class UrlUtils {
     private static String shortenUrlWithBitly(final String longUrl) {
     	String shortUrl = longUrl;
     	try {
-			final String response = HttpUtils.processFileRequestWithAuthn(new URL("https://api-ssl.bitly.com/v4/shorten"), "POST", "application/json", "{\"long_url\": \"" + longUrl + "\",\"group_guid\": \"" + Commons.getProperty(Property.BITLY_GUID)  + "\"}", "application/json", "Bearer " + Commons.getProperty(Property.BITLY_APIKEY));
+    		final URL bitlyApiUrl = new URL("https://api-ssl.bitly.com/v4/shorten");
+			final String response = HttpUtils.processFileRequestWithAuthn(bitlyApiUrl, "POST", "application/json", "{\"long_url\": \"" + longUrl + "\",\"group_guid\": \"" + Commons.getProperty(Property.BITLY_GUID)  + "\"}", "application/json", "Bearer " + Commons.getProperty(Property.BITLY_APIKEY));
 		    if (StringUtils.startsWith(response, "{")) {
 		    	JSONObject bitlyResponse = new JSONObject(response);
 		    	if (bitlyResponse.has("link")) {
 		    		shortUrl = bitlyResponse.getString("link");
 		    	} else {
-		    		logger.log(Level.WARNING, "Received following Bitly response: " + bitlyResponse);
+		    		logger.log(Level.WARNING, "Received following Bitly response " + HttpUtils.getResponseCode(bitlyApiUrl.toString()) + bitlyResponse);
 		    	}
 		    } else {
-		    	logger.log(Level.WARNING, "Received following Bitly response: " +response);
+		    	logger.log(Level.WARNING, "Received following Bitly response " + HttpUtils.getResponseCode(bitlyApiUrl.toString()) + response);
 		    }
     	} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);

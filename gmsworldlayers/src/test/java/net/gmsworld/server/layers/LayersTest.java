@@ -94,7 +94,7 @@ public class LayersTest {
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.YELP_LAYER)});
 	   
-	   data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.YOUTUBE_LAYER)});
+	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.YOUTUBE_LAYER)});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getInsttance().getByName(Commons.FACEBOOK_LAYER)});
 	   
@@ -104,7 +104,7 @@ public class LayersTest {
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.LM_SERVER_LAYER)});
 	 
-	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.EVENTFUL_LAYER)});
+	   data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.EVENTFUL_LAYER)});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.WIKIPEDIA_LAYER)});
 	   

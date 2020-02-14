@@ -191,8 +191,8 @@ public class EventfulUtils extends LayerHelper {
 	private static ExtendedLandmark createEventfulLandmark(JSONObject event, int stringLimit, Locale locale) throws JSONException {
 		ExtendedLandmark landmark = null;
 		try {
-            	Double lat = NumberUtils.getDouble(event.get("latitude"));
-            	Double lng = NumberUtils.getDouble(event.get("longitude"));
+            	Double lat = NumberUtils.getDouble(event.opt("latitude"));
+            	Double lng = NumberUtils.getDouble(event.opt("longitude"));
             	
             	if (lat != null && lng != null) {          	
             		String name = event.getString("title");

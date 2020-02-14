@@ -139,6 +139,8 @@ public class RoutesUtils {
 	    	 Feature f = null;
 	    	 if (CacheUtil.containsKey(routeId)) {
 	    		 fc = (FeatureCollection) CacheUtil.getObject(routeId);
+	    	 }
+	    	 if (fc != null) {
 	    	     f = fc.getFeatures().get(0);
 	    	 } else {
 	    		 fc = new FeatureCollection();

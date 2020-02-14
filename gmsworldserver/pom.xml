@@ -176,11 +176,6 @@
         	<artifactId>gmsworldlayers</artifactId>
         	<version>0.0.4.28</version>
         </dependency>
-        <dependency>
-        	<groupId>de.grundid.opendatalab</groupId>
-        	<artifactId>geojson-jackson</artifactId>
-        	<version>1.12</version>
-        </dependency>
         <dependency>  
   			<groupId>org.apache.geronimo.specs</groupId>  
   			<artifactId>geronimo-jpa_2.0_spec</artifactId>  

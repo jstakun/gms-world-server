@@ -20,10 +20,10 @@ public class UtilsTest {
 		String longUrl = ConfigurationManager.SSL_SERVER_URL;
 		String shortUrl1 = UrlUtils.getShortUrl(longUrl);
 		System.out.println("Short url #1: " + shortUrl1);
+		assertNotEquals("Shortening url 1 failed!", longUrl, shortUrl1);
 		//String shortUrl2 = UrlUtils.getGoogleShortUrl(longUrl);
 		//System.out.println("Short url #2: " + shortUrl2);
 		//assertNotEquals("Shortening url 2 failed!", longUrl, shortUrl2);
-		assertNotEquals("Shortening url 1 failed!", longUrl, shortUrl1);
 	}
 	
 	public void geocodeTest() {
