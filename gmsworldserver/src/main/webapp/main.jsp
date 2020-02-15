@@ -64,7 +64,7 @@
                     <div class="post">
                     	<p>
                     		<a href="/share">Share your location</a> or <a href="/landmarks">select location on the map</a> and discover landmarks nearby.<br/>
-                            <a href="/share"><img src="/images/LM_banner_512x250.jpg" alt="GMS World Baner" title="Click to share you location" height="250" width="512" class="float-left"/></a>                    	
+                            <a href="/share"><img src="/images/LM_banner_512x250.jpg" alt="GMS World Banner" title="Click to share you location" height="250" width="512" class="float-left"/></a>                    	
                     	</p>
                     </div>
                     
@@ -84,7 +84,7 @@
                     %>
                     <div class="post">
                         <p>
-                            <a href="<%=response.encodeURL("/showLandmark/" + landmark.getId())%>"><img src="/image?lat=<%=landmark.getLatitude()%>&lng=<%=landmark.getLongitude()%>" alt="Landmark on the map" title="See landmark on the map" height="128" width="128" class="float-left"/></a>
+                            <a href="<%=response.encodeURL("/showLandmark/" + landmark.getId())%>"><img src="/image/<%=landmark.getLatitude()%>/<%=landmark.getLongitude()%>" alt="Landmark on the map" title="See landmark on the map" height="128" width="128" class="float-left"/></a>
                             <h4><a href="<%=response.encodeURL("/showLandmark/" + landmark.getId())%>"><%=landmark.getName()%></a></h4>
                             <%= HtmlUtils.getLandmarkDesc(landmark, request.getLocale()) %>
                         </p>

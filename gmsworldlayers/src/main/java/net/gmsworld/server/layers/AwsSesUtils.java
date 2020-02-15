@@ -76,7 +76,7 @@ public class AwsSesUtils {
 			
 			boolean status = false;
 			try {
-				SendEmailResult result = getSesClient(DEFAULT_REGION ).sendEmail(new SendEmailRequest().
+				SendEmailResult result = getSesClient(DEFAULT_REGION).sendEmail(new SendEmailRequest().
 					withDestination(dest).
 					withMessage(new Message().withBody(body).withSubject(new Content().withData(title))).
 					withSource(from));

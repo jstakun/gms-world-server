@@ -148,6 +148,11 @@
             <to>/image?key=$1</to>
     </rule>
     
+    <rule>
+            <from>^/image/([0-9.,-]+)/([0-9.,-]+)$</from>
+            <to>/image?lat=$1&amp;lng=$2</to>
+    </rule>
+    
     <!-- freebaseView rules -->
     
     <rule>
@@ -372,6 +377,11 @@
     <rule>
        		<from>^/booking$</from>
        		<to type="redirect">http://www.booking.com?aid=864525</to>
+    </rule>
+    
+    <rule>
+       		<from>^/booking/([0-9.-]+)/([0-9.-]+)/(.*)$</from>
+       		<to>/booking.jsp?lat=$1&amp;lng=$2&amp;address=$3</to>
     </rule>
     
     <!-- verify notification rule -->
