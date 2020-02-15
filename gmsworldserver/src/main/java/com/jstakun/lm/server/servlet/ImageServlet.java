@@ -58,7 +58,7 @@ public class ImageServlet extends HttpServlet {
 			thumbnail = false;
 		}
 		if (StringUtils.isNotEmpty(key)) {
-			Screenshot s = FileUtils.getScreenshot(key, thumbnail, request.isSecure());
+			final Screenshot s = FileUtils.getScreenshot(key, thumbnail, request.isSecure());
 			if (s != null) {
 				imageUrl = s.getUrl();
 			} 
