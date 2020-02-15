@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.gmsworld.server.config.ConfigurationManager;
+import net.gmsworld.server.layers.GeocodeUtils;
 import net.gmsworld.server.utils.ImageUtils;
 import net.gmsworld.server.utils.StringUtil;
 
@@ -63,12 +64,14 @@ public class ImageServlet extends HttpServlet {
 			} 
 		} else if (StringUtils.isNotEmpty(request.getParameter("lat")) && StringUtils.isNotEmpty(request.getParameter("lng"))) {
 			try {
-				final double lat = Double.valueOf(request.getParameter("lat")).doubleValue();
-				final double lng = Double.valueOf(request.getParameter("lng")).doubleValue();
-				String image = "landmark_" + StringUtil.formatCoordE6(lat) + "_" + StringUtil.formatCoordE6(lng) + ".jpg";
-				imageUrl = FileUtils.getImageUrlV2(null, image, thumbnail, request.isSecure());
-				if (imageUrl == null) {					
-					imageUrl = ImageUtils.getImageUrl(lat, lng, "170x170", 9, thumbnail, ConfigurationManager.MAP_PROVIDER.OSM_MAPS, request.isSecure());
+				final Double lat = GeocodeUtils.getLatitude(request.getParameter("lat"));
+				final Double lng = GeocodeUtils.getLongitude(request.getParameter("lng"));
+				if (lat != null && lng != null) {
+					final String image = "landmark_" + StringUtil.formatCoordE6(lat) + "_" + StringUtil.formatCoordE6(lng) + ".jpg";
+					imageUrl = FileUtils.getImageUrlV2(null, image, thumbnail, request.isSecure());
+					if (imageUrl == null) {					
+						imageUrl = ImageUtils.getImageUrl(lat, lng, "170x170", 9, thumbnail, ConfigurationManager.MAP_PROVIDER.OSM_MAPS, request.isSecure());
+					}
 				}
 			} catch (Exception e) {
 				logger.log(Level.SEVERE, e.getMessage(), e);
@@ -76,13 +79,14 @@ public class ImageServlet extends HttpServlet {
 		} else if (StringUtils.isNotEmpty(request.getParameter("lat_start")) && StringUtils.isNotEmpty(request.getParameter("lng_start")) &&
 				   StringUtils.isNotEmpty(request.getParameter("lat_end")) && StringUtils.isNotEmpty(request.getParameter("lng_end"))) {
 			try {
-				final double lat_start = Double.valueOf(request.getParameter("lat_start")).doubleValue();
-				final double lng_start = Double.valueOf(request.getParameter("lng_start")).doubleValue();
-				final double lat_end = Double.valueOf(request.getParameter("lat_end")).doubleValue();
-				final double lng_end = Double.valueOf(request.getParameter("lng_end")).doubleValue();
-			
-				String image = "path_" + StringUtil.formatCoordE6(lat_start) + "_" + StringUtil.formatCoordE6(lng_start) + "_" + StringUtil.formatCoordE6(lat_end) + "_" + StringUtil.formatCoordE6(lng_end) + ".jpg";
-				imageUrl = FileUtils.getImageUrlV2(null, image, thumbnail, request.isSecure());
+				final Double lat_start = GeocodeUtils.getLatitude(request.getParameter("lat_start"));
+				final Double lng_start = GeocodeUtils.getLongitude(request.getParameter("lng_start"));
+				final Double lat_end = GeocodeUtils.getLatitude(request.getParameter("lat_end"));
+				final Double lng_end = GeocodeUtils.getLongitude(request.getParameter("lng_end"));
+				if (lat_start != null && lng_start != null && lat_end != null && lng_end != null) {
+					final String image = "path_" + StringUtil.formatCoordE6(lat_start) + "_" + StringUtil.formatCoordE6(lng_start) + "_" + StringUtil.formatCoordE6(lat_end) + "_" + StringUtil.formatCoordE6(lng_end) + ".jpg";
+					imageUrl = FileUtils.getImageUrlV2(null, image, thumbnail, request.isSecure());
+				}
 			} catch (Exception e) {
 				logger.log(Level.SEVERE, e.getMessage(), e);
 			}	

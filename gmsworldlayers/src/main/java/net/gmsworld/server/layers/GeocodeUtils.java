@@ -42,7 +42,7 @@ public class GeocodeUtils {
         return "{\"status\":\"OK\",\"lat\":\"" + StringUtil.formatCoordE6(landmark.getLatitude()) + "\",\"lng\":\"" + StringUtil.formatCoordE6(landmark.getLongitude()) + "\",\"type\":\"l\"}";
     }
 
-    protected static Double getLatitude(String latitudeString) {
+    public static Double getLatitude(String latitudeString) {
         Double latitude = null;
         if (StringUtils.isNotEmpty(latitudeString)) {
             try {
@@ -56,7 +56,7 @@ public class GeocodeUtils {
         return latitude;
     }
 
-    protected static Double getLongitude(String longitudeString) {
+    public static Double getLongitude(String longitudeString) {
         Double longitude = null;
         if (StringUtils.isNotEmpty(longitudeString)) {
             try {

@@ -6,12 +6,16 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.config.Commons.Property;
-import net.gmsworld.server.utils.UrlUtils;
-
 import org.apache.commons.lang.StringUtils;
 
+import com.jstakun.lm.server.utils.FileUtils;
+
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.config.ConfigurationManager;
+import net.gmsworld.server.utils.ImageUtils;
+import net.gmsworld.server.utils.StringUtil;
+import net.gmsworld.server.utils.UrlUtils;
 import twitter4j.GeoLocation;
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
@@ -79,7 +83,14 @@ public class TwitterUtils {
             	   update.setLocation(new GeoLocation(latitude, longitude));
                         if (imageUrl != null) {
                         	try {
-                            	InputStream is  = new URL(imageUrl).openStream();
+                        		if (StringUtils.contains(imageUrl, "/image")) {
+                        			final String image = "landmark_" + StringUtil.formatCoordE6(latitude) + "_" + StringUtil.formatCoordE6(longitude) + ".jpg";
+                					imageUrl = FileUtils.getImageUrlV2(null, image, false, false);
+                					if (imageUrl == null) {					
+                						imageUrl = ImageUtils.getImageUrl(latitude, longitude, "170x170", 9, false, ConfigurationManager.MAP_PROVIDER.OSM_MAPS, false);
+                					}
+                        		}
+                				InputStream is  = new URL(imageUrl).openStream();
                             	if (is != null && imageUrl.endsWith("png")) {
                             		update.setMedia("checkin.png", is);
                             	} else if (is != null) {
