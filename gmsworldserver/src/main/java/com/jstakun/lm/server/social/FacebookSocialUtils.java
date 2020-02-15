@@ -116,12 +116,12 @@ public class FacebookSocialUtils {
         Parameter params[] = null;
         
         if (type == Commons.SERVER) {
-        		//message, picture, link, name, caption, description, source, place, tags
-           if (imageUrl == null) {
-        	   final String[] images = {"blogeo_j.png", "blogeo_a.png", "poi_j.png", "poi_a.png"};
-               int imageId = NumberUtils.normalizeNumber(random.nextInt(4), 0, 3);
-        	   imageUrl = ConfigurationManager.SERVER_URL + "images/" + images[imageId];
-           }
+           //message, picture, link, name, caption, description, source, place, tags
+           //if (imageUrl == null) {
+           //	   final String[] images = {"blogeo_j.png", "blogeo_a.png", "poi_j.png", "poi_a.png"};
+           //      final int imageId = NumberUtils.normalizeNumber(random.nextInt(4), 0, 3);
+           //	   imageUrl = ConfigurationManager.SERVER_URL + "images/" + images[imageId];
+           //}
            params = new Parameter[]{
                    Parameter.with("message", String.format(rb.getString("Social.fb.message.server"), name)),
                    //Parameter.with("name", name),

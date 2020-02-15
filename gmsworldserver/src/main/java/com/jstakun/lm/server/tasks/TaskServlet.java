@@ -73,12 +73,12 @@ public class TaskServlet extends HttpServlet {
                 	final String image = "landmark_" + StringUtil.formatCoordE6(latitude) + "_" + StringUtil.formatCoordE6(longitude) + ".jpg";
         			final String imageUrl = FileUtils.getImageUrlV2(null, image, true, request.isSecure());
         			if (imageUrl == null) {					
-        				byte[] thumbnail = ImageUtils.loadImage(latitude, longitude, "170x170", 9, net.gmsworld.server.config.ConfigurationManager.MAP_PROVIDER.OSM_MAPS, request.isSecure()); 
+        				final byte[] thumbnail = ImageUtils.loadImage(latitude, longitude, "170x170", 9, net.gmsworld.server.config.ConfigurationManager.MAP_PROVIDER.OSM_MAPS, request.isSecure()); 
         				if (thumbnail != null && thumbnail.length > 0) {
         					FileUtils.saveFileV2(null, image, thumbnail, latitude, longitude);
         				} else {
         					//response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        					logger.log(Level.SEVERE, "Failed to load image ");
+        					logger.log(Level.SEVERE, "Failed to load map image ");
         				}
         			} else {
         				logger.log(Level.INFO, "Image {0} found in the storage.", imageUrl);
@@ -87,9 +87,9 @@ public class TaskServlet extends HttpServlet {
                 	logger.log(Level.SEVERE, "Wrong latitude and/or longitude parameter(s) value.");
                 }   
              } else if (StringUtils.equalsIgnoreCase(action, "currency")) {
-            	  ExchangeRatesApiUtils.loadAllCurrencies(GoogleCacheProvider.getInstance());
+            	 ExchangeRatesApiUtils.loadAllCurrencies(GoogleCacheProvider.getInstance());
              } else {
-                logger.log(Level.SEVERE, "Wrong parameter action: {0}", action);
+            	 logger.log(Level.SEVERE, "Wrong parameter action: {0}", action);
              }            
         } catch (Exception e) {
     	    logger.log(Level.SEVERE, e.getMessage(), e);
