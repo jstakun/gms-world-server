@@ -110,8 +110,10 @@
         <action path="/showGeocode"
                 scope="request"
                 type="com.jstakun.lm.server.struts.ShowGeocodeAction">
-            <forward name="success" path="/geocode.jsp"/>
-            <forward name="mobile" path="/m/geocode.jsp"/>
+            <!--forward name="success" path="/geocode.jsp"/>
+            <forward name="mobile" path="/m/geocode.jsp"/-->
+            <forward name="success" path="/booking.jsp"/>
+            <forward name="mobile" path="/m/booking.jsp"/>
             <forward name="fullScreen" path="/fullScreenGeocodeMap.jsp"/>
             <forward name="landmarks" path="/landmarks.jsp"/>
             <forward name="landmarksMobile" path="/landmarks.jsp?mobile=true"/>

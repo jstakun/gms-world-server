@@ -1,16 +1,8 @@
 package com.jstakun.lm.server.social;
 
-import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.config.Commons.Property;
-import net.gmsworld.server.config.ConfigurationManager;
-import net.gmsworld.server.layers.FacebookUtils;
-import net.gmsworld.server.utils.NumberUtils;
-import net.gmsworld.server.utils.UrlUtils;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -21,9 +13,15 @@ import com.restfb.json.JsonArray;
 import com.restfb.json.JsonObject;
 import com.restfb.types.FacebookType;
 
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.config.ConfigurationManager;
+import net.gmsworld.server.layers.FacebookUtils;
+import net.gmsworld.server.utils.UrlUtils;
+
 public class FacebookSocialUtils {
 	
-	private static final Random random = new Random();
+	//private static final Random random = new Random();
 	private static final Logger logger = Logger.getLogger(FacebookSocialUtils.class.getName());
 	
 	private static String sendMessage(FacebookClient facebookClient, String connection, Parameter[] params, boolean verifyPermission) {

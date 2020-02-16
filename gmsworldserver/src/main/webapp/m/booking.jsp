@@ -1,5 +1,8 @@
 <%@page contentType="text/html" pageEncoding="utf-8"%>
-<%@page import="net.gmsworld.server.utils.NumberUtils"%>
+<%@page import="net.gmsworld.server.utils.NumberUtils,
+                               net.gmsworld.server.utils.persistence.GeocodeCache,
+                               net.gmsworld.server.layers.GeocodeUtils,
+                               org.apache.commons.lang.StringUtils"%>
 <!DOCTYPE html>
 <html>
 
@@ -20,19 +23,38 @@
     	
                <h3>Select accommodation place on the map</h3>
 <% 
-if (request.getParameter("lat") != null && request.getParameter("lng") != null) 
+Double latitude = null, longitude = null;
+String address = null;
+
+if (request.getAttribute("geocodeCache") != null) {
+	GeocodeCache gc = (GeocodeCache) request.getAttribute("geocodeCache");
+   if (gc != null) {
+   		latitude = gc.getLatitude();
+        longitude = gc.getLongitude();
+        address =  StringUtils.capitalize(gc.getLocation());
+   }    
+} else if (request.getParameter("lat") != null && request.getParameter("lng") != null) {
+	address = request.getParameter("address");
+	latitude = GeocodeUtils.getLatitude(request.getParameter("lat"));
+	longitude = GeocodeUtils.getLongitude(request.getParameter("lng"));
+} else if (request.getAttribute("lat") != null && request.getAttribute("lng") != null) {
+	address = (String)request.getAttribute("address");
+	latitude = GeocodeUtils.getLatitude((String)request.getAttribute("lat"));
+	longitude = GeocodeUtils.getLongitude((String)request.getAttribute("lng"));
+}
+if (latitude != null && longitude != null) 
 {
-	String address = request.getParameter("address");
 	if (address == null) {
 		address = "Selected location"; 
 	}
 	int zoom = NumberUtils.getInt(request.getParameter("zoom"), 12);
 %>
+
                 <ins class="bookingaff" data-aid="864526" data-target_aid="864526" 
                         data-prod="map" data-width="100%" data-height="1000" 
                         data-lang="ualng" data-dest_id="0" data-dest_type="landmark" 
-                        data-latitude="<%= request.getParameter("lat") %>" 
-                        data-longitude="<%= request.getParameter("lng") %>" 
+                        data-latitude="<%= latitude %>" 
+                        data-longitude="<%= longitude %>" 
                         data-landmark_name="<%= address %>" data-mwhsb="0" 
                         data-address="<%= address %>" data-zoom="<%= zoom %>">
     					<!-- Anything inside will go away once widget is loaded. -->

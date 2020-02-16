@@ -221,7 +221,6 @@ public class HtmlUtils {
 		PrettyTime prettyTime = new PrettyTime(locale);
 		ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource", locale);
 		String hotelsText = rb.getString("hotels.discover.nearby");	
-		String description = landmark.getDescription();
 		String userUrl = null;		
 		if (landmark.isSocial()) {
 			userUrl = "/blogeo/" + URLEncoder.encode(landmark.getUsername(), "UTF-8");
@@ -230,12 +229,12 @@ public class HtmlUtils {
 		}
 		String layerUrl = "/showLayer/" + landmark.getLayer();
 		//String bookingUrl = "/showHotels/" + landmark.getId() + "/" + HtmlUtils.encodeDouble(landmark.getLatitude()) + "/" + HtmlUtils.encodeDouble(landmark.getLongitude()) + "/300";
-		String bookingUrl = "/booking/" + landmark.getLatitude() + "/" + landmark.getLongitude();
+		String bookingUrl = "/booking/" + landmark.getId();
 		
+		String description = landmark.getDescription();
 		String desc = "";
 		if (StringUtils.isNotEmpty(description)) {
 			desc = description + "<br/>";
-			bookingUrl += "/" + description;
 		}	
 		desc += "Posted " + prettyTime.format(landmark.getCreationDate()) + " on " + DateUtils.getFormattedDateTime(locale, landmark.getCreationDate()) + " by <a href=\"" + userUrl + "\">" + UrlUtils.createUsernameMask(landmark.getUsername()) + "</a>&nbsp;" + 
         "| Created in layer <a href=\"" + layerUrl + "\">" + LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer()) + "</a> using <a href=\"" + ConfigurationManager.getAppUrl(landmark.getAppId()) + "\" target=\"_blank\">" +  ConfigurationManager.getAppName(landmark.getAppId()) + "</a>" +

@@ -384,6 +384,11 @@
        		<to>/booking.do?lat=$1&amp;lng=$2&amp;address=$3</to>
     </rule>
     
+    <rule>
+       		<from>^/booking/([0-9]+)$</from>
+       		<to>/booking.do?key=$1</to>
+    </rule>
+    
     <!-- verify notification rule -->
     <rule>
             <from>^/verify/([a-zA-Z0-9.-]+)/(.+)$</from>

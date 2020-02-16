@@ -33,11 +33,11 @@
 			</a>
         </p>
        
-        <p>
+        <!--p>
             <a href="http://www.amazon.com/gp/product/B004X2NR7O/ref=mas_pm_Landmark_Manager" target="_blank">
             	<img alt="Get it on Amazon AppStore" title="Get it on Amazon AppStore" src="/images/amazon-apps-store.png"/>
             </a>	
-        </p>
+        </p-->
         
         <!--p>
             <a href="http://apps.opera.com/badge.php?a=c&v=dark&did=7629&pid=36609" target="_blank">
@@ -45,11 +45,11 @@
             </a>  
         </p-->
         
-        <p>
+        <!--p>
             <a href="https://store.yandex.com/" target="_blank">
             	<img alt="Get it on Yandex Mobile Store" title="Get in on Yandex Mobile Store" src="/images/yandex.jpg" width="160" height="52"/>
             </a>  
-        </p>
+        </p-->
     </div>
 
     <div class="sidemenu">

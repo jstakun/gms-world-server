@@ -16,7 +16,7 @@
         net.gmsworld.server.utils.DateUtils" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <!-- content-outer -->
-<html xmlns="http://www.cw3.org/1999/xhtml" xml:lang="en" lang="en">
+<html>
     <head>
         <%@ include file="/WEB-INF/jspf/head.jspf" %>
         <title>GMS World landmark details</title>
