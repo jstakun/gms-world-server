@@ -5,7 +5,7 @@
 <html>
 
     <head>
-        <title>Book your stay. Select location on the map...</title>
+        <title>Book your stay. Select accommodation place on the map...</title>
          <%@ include file="/WEB-INF/jspf/head.jspf" %>
     </head>
 
@@ -22,7 +22,7 @@
                 <!-- main -->
                 <div id="main">
 
-                <h3>Select location on the map</h3>
+                <h3>Select accommodation place on the map</h3>
 <% 
 if (request.getParameter("lat") != null && request.getParameter("lng") != null) 
 {

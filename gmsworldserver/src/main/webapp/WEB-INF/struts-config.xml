@@ -172,6 +172,10 @@
             <forward name="hotels" path="/selectLandmark.jsp?hotels=true"/>
             <forward name="landmarks" path="/selectLandmark.jsp"/>
         </action>
+        <action path="/booking" type="com.jstakun.lm.server.struts.BookingAction">
+            <forward name="success" path="/booking.jsp"/>
+            <forward name="mobile" path="/m/booking.jsp"/>
+        </action>
     </action-mappings>
     <controller locale="false"/>
     <message-resources parameter="com.jstakun.lm.server.struts.ApplicationResource"/>

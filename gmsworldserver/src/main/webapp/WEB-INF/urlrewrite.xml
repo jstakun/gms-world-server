@@ -381,7 +381,7 @@
     
     <rule>
        		<from>^/booking/([0-9.-]+)/([0-9.-]+)/(.*)$</from>
-       		<to>/booking.jsp?lat=$1&amp;lng=$2&amp;address=$3</to>
+       		<to>/booking.do?lat=$1&amp;lng=$2&amp;address=$3</to>
     </rule>
     
     <!-- verify notification rule -->
