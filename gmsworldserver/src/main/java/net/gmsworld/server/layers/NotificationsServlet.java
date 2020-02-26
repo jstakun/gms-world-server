@@ -153,7 +153,7 @@ public class NotificationsServlet extends HttpServlet {
 			   	   		}
 			   	   		DevicePersistenceUtils.setupDevice(deviceId, null, null, null, geo);
 					}
-	            } else {
+	            } else if (latitude != null || longitude != null) {
 					logger.log(Level.WARNING, "Invalid latitude: " + latitude + " and/or longitude: " + longitude);
 				}	
 
@@ -213,10 +213,10 @@ public class NotificationsServlet extends HttpServlet {
 			            				TelegramUtils.sendTelegram(data[0], "Command " + data[2] + " has been received by device " + data[1] + ".");
 			            			}
 			            		} else {
-			            			logger.log(Level.WARNING, "Invalid " +  message + " entry " + val); 
+			            			logger.log(Level.SEVERE, "Invalid " +  message + " entry " + val); 
 			            		}
 			            	} else {
-			            		logger.log(Level.WARNING, "No entry found " +  message);
+			            		logger.log(Level.SEVERE, "No entry found " +  message);
 			            	}
 			            } else if (TelegramUtils.isValidTelegramId(telegramId) && StringUtils.isNotEmpty(message)) {
 							// check if chat id is on white list
@@ -227,15 +227,15 @@ public class NotificationsServlet extends HttpServlet {
 				            	}
 				            	reply = new JSONObject().put("status", "sent");
 				            }  else {
-				            	logger.log(Level.WARNING, "Telegram chat or channel Id " + telegramId + " is not on whitelist!");
+				            	logger.log(Level.SEVERE, "Telegram chat or channel Id " + telegramId + " is not on the whitelist!");
 				            	reply = new JSONObject().put("status", "unverified");
 				            }
 						} else {
-							logger.log(Level.WARNING, "Wrong message, chat or channel id " + telegramId);
+							logger.log(Level.SEVERE, "Wrong message, chat or channel id " + telegramId);
 							reply = new JSONObject().put("status", "failed");
 						}
 					} else {
-						logger.log(Level.WARNING, "Wrong application " + appId);
+						logger.log(Level.SEVERE, "Wrong application " + appId);
 					}
 				} else if (StringUtils.equals(type, "m_dl")) {
 					//email notification
@@ -256,15 +256,15 @@ public class NotificationsServlet extends HttpServlet {
 				            	MailUtils.sendDeviceLocatorMessage(emailTo, message, title);
 				            	reply = new JSONObject().put("status", "sent");	
 				            } else {
-				            	logger.log(Level.WARNING, "Email address " + emailTo + " is not on whitelist!");
+				            	logger.log(Level.SEVERE, "Email address " + emailTo + " is not on the whitelist!");
 				            	reply = new JSONObject().put("status", "unverified");
 				            }
 						} else {
-							logger.log(Level.WARNING, "Wrong email to  " + emailTo);
+							logger.log(Level.SEVERE, "Wrong email to " + emailTo);
 							reply = new JSONObject().put("status", "failed");
 						}
 					} else {
-						logger.log(Level.WARNING, "Wrong application " + appId);
+						logger.log(Level.SEVERE, "Wrong application id " + appId);
 					}
 				} else if (StringUtils.equals(type, "register_t")) {
 					//register for telegram notifications
@@ -272,14 +272,14 @@ public class NotificationsServlet extends HttpServlet {
 						String telegramId = request.getParameter("chatId");
 						reply = NotificationPersistenceUtils.registerTelegram(telegramId, appVersion, GeocodeHelperFactory.getCacheProvider());
 					} else {
-						logger.log(Level.WARNING, "Wrong application " + appId);
+						logger.log(Level.SEVERE, "Wrong application id " + appId);
 					}
 				} else if (StringUtils.equals(type, "register_m")) {
 					//register for email notifications
 					if (appId == Commons.DL_ID && StringUtils.startsWith(request.getRequestURI(), "/s/")) {
 						reply = registerEmail(request.getParameter("email"), StringUtils.equalsIgnoreCase(request.getParameter("validate"), "false"), appVersion);
 					} else {
-						logger.log(Level.WARNING, "Wrong application " + appId);
+						logger.log(Level.SEVERE, "Wrong application id " + appId);
 					}
 				} else if (StringUtils.equals(type, "unregister")) {
 					if (appId == Commons.DL_ID && StringUtils.startsWith(request.getRequestURI(), "/s/")) {
@@ -290,7 +290,7 @@ public class NotificationsServlet extends HttpServlet {
 							reply = new JSONObject().put("status", "failed");
 						}
 					} else {
-							logger.log(Level.WARNING, "Wrong application " + appId);
+							logger.log(Level.SEVERE, "Wrong application id " + appId);
 					}
 				} else if (StringUtils.equals(type, "reset")) {
 					String login = request.getParameter("login");
@@ -316,9 +316,14 @@ public class NotificationsServlet extends HttpServlet {
 				//} else if (StringUtils.equals(type, "fbm_dl")) {
 				//}
 				
-				out.print(reply.toString());
-				if (reply.has("code")) {
-					response.setStatus(reply.getInt("code"));
+				if (reply != null) {
+					out.print(reply.toString());
+					if (reply.has("code")) {
+						response.setStatus(reply.getInt("code"));
+					}
+				} else {
+					//reply is empty
+					response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 				}
 			}
 		} catch (Exception e) {
@@ -401,19 +406,20 @@ public class NotificationsServlet extends HttpServlet {
 							reply = new JSONObject().put("status", status);
 						}
 					} else if (verificationStatus == 504) {
-						logger.log(Level.WARNING, email + " verification failed");
+						logger.log(Level.SEVERE, email + " verification failed");
 						reply = new JSONObject().put("status", "failed").put("code", HttpServletResponse.SC_GATEWAY_TIMEOUT); 
 					} else if (verificationStatus >= 400) {
-						logger.log(Level.WARNING, email + " verification failed");
+						logger.log(Level.SEVERE, email + " verification failed");
 						reply = new JSONObject().put("status", "failed").put("code", verificationStatus);
 						CacheUtil.put("mailto:"+email+":invalid", verificationStatus, CacheType.NORMAL);
 					} else {
-						logger.log(Level.WARNING, email + " verification failed");
+						logger.log(Level.SEVERE, email + " verification failed");
 						reply = new JSONObject().put("status", "failed").put("code", HttpServletResponse.SC_BAD_REQUEST);
 					}
 				} else {
-					logger.log(Level.WARNING, email + " verification failed");
-					reply = new JSONObject().put("status", "failed").put("code", (Integer) CacheUtil.getObject("mailto:"+email+":invalid"));
+					final Integer code = (Integer) CacheUtil.getObject("mailto:"+email+":invalid");
+					logger.log(Level.SEVERE, email + " verification failed " + code);
+					reply = new JSONObject().put("status", "failed").put("code", code);
 				}
 			} else {
 				Notification n = NotificationPersistenceUtils.setVerified(email, false);
@@ -426,7 +432,7 @@ public class NotificationsServlet extends HttpServlet {
 			} 
 		} else {
 			reply = new JSONObject().put("status", "failed").put("code", HttpServletResponse.SC_BAD_REQUEST);
-			logger.log(Level.WARNING, "Email is empty!"); 
+			logger.log(Level.SEVERE, "Email is empty!"); 
 		}
 		return reply;
 	}
