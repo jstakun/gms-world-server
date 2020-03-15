@@ -38,7 +38,7 @@
   	<dependency>
   		<groupId>com.restfb</groupId>
   		<artifactId>restfb</artifactId>
-  		<version>3.2.0</version>
+  		<version>3.4.0</version>
   	</dependency>
   	<dependency>
   		<groupId>com.flickr4java</groupId>
@@ -56,16 +56,16 @@
   		<version>${google.http.client.version}</version>
   	</dependency>
   	<dependency>
-    <groupId>com.mastercard.api</groupId>
-    <artifactId>locations</artifactId>
-    <version>1.0.4</version>
-</dependency>
-<dependency>
-    <groupId>org.apache.httpcomponents</groupId>
-    <artifactId>httpclient</artifactId>
-    <version>4.5.11</version>
-</dependency>
-  <dependency>
+       <groupId>com.mastercard.api</groupId>
+       <artifactId>locations</artifactId>
+       <version>1.0.4</version> 
+    </dependency>
+    <dependency>
+       <groupId>org.apache.httpcomponents</groupId>
+       <artifactId>httpclient</artifactId>
+       <version>4.5.12</version>
+    </dependency>
+    <dependency>
   		<groupId>org.twitter4j</groupId>
   		<artifactId>twitter4j-core</artifactId>
   		<version>4.0.7</version>
@@ -78,7 +78,7 @@
   	<dependency>
   		<groupId>org.ocpsoft.prettytime</groupId>
   		<artifactId>prettytime</artifactId>
-  		<version>4.0.3.Final</version>
+  		<version>4.0.4.Final</version>
   	</dependency>
   	<dependency>
   		<groupId>commons-validator</groupId>
@@ -125,20 +125,20 @@
     <dependency>
     	<groupId>com.amazonaws</groupId>
     	<artifactId>aws-java-sdk-ses</artifactId>
-    	<version>1.11.718</version>
+    	<version>1.11.744</version>
 	</dependency>
-  </dependencies>
-  
-   <distributionManagement>
-  <repository>
-     <id>deployment</id>
-     <name>Internal Releases</name>
-     <url>http://192.168.122.1:8081/repository/maven-releases/</url>
-  </repository>
-  <snapshotRepository>
-     <id>deployment</id>
-     <name>Internal Releases</name>
-     <url>http://192.168.122.1:8081/repository/maven-snapshots/</url>
-  </snapshotRepository>
-</distributionManagement> 
+   </dependencies>
+   
+  <distributionManagement>
+    <repository>
+       <id>deployment</id>
+       <name>Internal Releases</name>
+       <url>http://192.168.122.1:8081/repository/maven-releases/</url>
+    </repository>
+    <snapshotRepository>
+       <id>deployment</id>
+       <name>Internal Releases</name>
+       <url>http://192.168.122.1:8081/repository/maven-snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement> 
 </project>

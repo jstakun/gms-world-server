@@ -5,15 +5,10 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.mail.Message;
-import javax.mail.Session;
-import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import javax.servlet.ServletContext;
 
 import org.apache.commons.io.IOUtils;
@@ -41,7 +36,7 @@ public class MailUtils {
 	 
 	// ---------------------------------------------------------------------------------------------------------------------------
     
-    private static String sendLocalMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType, String ccA, String ccP) {
+    /*private static String sendLocalMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType, String ccA, String ccP) {
         try {
             Properties props = new Properties();
             Session session = Session.getDefaultInstance(props, null);
@@ -61,26 +56,22 @@ public class MailUtils {
         	logger.log(Level.SEVERE, ex.getMessage(), ex);
             return "failed";
         }
-    }
+    }*/
+    
+    // ---------------------------------------------------------------------------------------------------------------------------
     
     private static String sendRemoteMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType, String ccA, String ccP)  {
     	if (isValidEmailAddress(toA)) {
     		final long count  = CacheUtil.increment("mailto:" + toA);
-        	if (count < 20) {
+        	if (count <= 20 || (count <= 100 && count % 10 == 0) || count % 100 == 0) {
     			if (AwsSesUtils.sendEmail(fromA, fromP, toA, toP, ccA, ccP, content, contentType, subject)) {
     				return "ok";
     			} else {
-    				logger.log(Level.SEVERE, "Failed to send mail with SES!");
-    				//return "failed";
+    				logger.log(Level.SEVERE, "Failed to send mail with SES! Trying with James...");
     				return sendJamesMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
     			}
     		} else {
-    			if (count % 100 == 0) {
-    				logger.log(Level.WARNING, "James is sending " + count + " email " + subject + " to " + toA);
-    			} else {
-    				logger.log(Level.WARNING, "James is sending " + count + " email " + subject + " to " + toA);
-    			}
-    			//return "blocked";
+    			logger.log(Level.WARNING, "James is sending " + count + " email " + subject + " to " + toA);
     			return sendJamesMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
     		}
     	} else {
