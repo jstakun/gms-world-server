@@ -206,5 +206,17 @@ public class UrlUtils {
 		} 
     	return shortUrl;
     }
+    
+    public static String getBitlyHash(String longUrl) {
+    	String shortUrl = longUrl;
+    	if (!StringUtils.startsWith(longUrl, BITLY_URL)) {
+    		shortUrl = shortenUrlWithBitly(longUrl);
+    	}
+    	if (StringUtils.startsWith(shortUrl, BITLY_URL)) {
+    		return shortUrl.substring(14);
+    	} else {
+    		return null;
+    	}
+    }
 
 }

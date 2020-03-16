@@ -21,8 +21,8 @@ public class UtilsTest {
 		String shortUrl1 = UrlUtils.getShortUrl(longUrl);
 		System.out.println("Short url #1: " + shortUrl1);
 		assertNotEquals("Shortening url 1 failed!", longUrl, shortUrl1);
-		//String shortUrl2 = UrlUtils.getGoogleShortUrl(longUrl);
-		//System.out.println("Short url #2: " + shortUrl2);
+		String shortUrl2 = UrlUtils.getBitlyHash(longUrl);
+		System.out.println("Short url #2: " + shortUrl2);
 		//assertNotEquals("Shortening url 2 failed!", longUrl, shortUrl2);
 	}
 	

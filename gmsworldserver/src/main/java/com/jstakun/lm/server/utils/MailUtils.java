@@ -67,12 +67,12 @@ public class MailUtils {
     			if (AwsSesUtils.sendEmail(fromA, fromP, toA, toP, ccA, ccP, content, contentType, subject)) {
     				return "ok";
     			} else {
-    				logger.log(Level.SEVERE, "Failed to send mail with SES! Trying with James...");
-    				return sendJamesMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
+    				logger.log(Level.SEVERE, "Failed to send email message with SES! Trying with James...");
+    				return sendBackendMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
     			}
     		} else {
     			logger.log(Level.WARNING, "James is sending " + count + " email " + subject + " to " + toA);
-    			return sendJamesMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
+    			return sendBackendMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
     		}
     	} else {
     		logger.log(Level.SEVERE, "Invalid email address " + toA);
@@ -80,7 +80,7 @@ public class MailUtils {
     	}
     }
     
-    private static String sendJamesMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType, String ccA, String ccP)  {
+    private static String sendBackendMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType, String ccA, String ccP)  {
     	String status = "failed";   
     	
     	String recipients = addEmailAddress("to", toA, toP);
@@ -127,11 +127,11 @@ public class MailUtils {
     }
     
     public static void sendAdminMail(String title, String message) {
-    	sendJamesMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, title, message, "text/plain", null, null);
+    	sendBackendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, title, message, "text/plain", null, null);
     }
 
     public static String sendLandmarkCreationNotification(String title, String body) {
-        return sendJamesMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, title, body, "text/plain", null, null);
+        return sendBackendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, title, body, "text/plain", null, null);
     }
 
     public static void sendEmailingMessage(String toA, String nick, String message) {
