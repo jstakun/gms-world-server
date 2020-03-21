@@ -134,8 +134,12 @@ public class CacheUtil {
 		MemcacheServiceFactory.getMemcacheService().put(key + "_" + layer, value, ONE_HOUR_EXPIRATION);
 	}
 	
-	public static Long increment(String key) {		
-		return MemcacheServiceFactory.getMemcacheService().increment(key, 1, 0L);
+	public static Long increment(String key) {	
+		try {
+			return MemcacheServiceFactory.getMemcacheService().increment(key, 1, 0L);
+		} catch (Exception e) {
+			return 0L;
+		}
 	}
 	
 	public static void cacheDeviceLocation(String deviceId, Double latitude, Double longitude, String accuracy) {
