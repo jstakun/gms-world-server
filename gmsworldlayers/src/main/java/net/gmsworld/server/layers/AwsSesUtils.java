@@ -87,6 +87,9 @@ public class AwsSesUtils {
 					    } 
 				  }
 			 }
+			 if (StringUtils.isNotEmpty(fromNick)) {
+				  from = "\"" + fromNick + "\" <" + from + ">";
+			 }
 		}
 	    if (!to.isEmpty()) {
 	    	Destination dest = new Destination().withToAddresses(to);
