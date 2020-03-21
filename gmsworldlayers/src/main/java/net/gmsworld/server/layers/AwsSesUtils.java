@@ -1,9 +1,14 @@
 package net.gmsworld.server.layers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -45,27 +50,61 @@ public class AwsSesUtils {
 		 }
 	}
 	
-	
 	public static boolean sendEmail(String from, final String fromNick, String to, final String toNick, String cc, final String ccNick, final String message, final String contentType, final String title) {
-		if (StringUtils.isNotEmpty(from) && StringUtils.isNotEmpty(to) && StringUtils.isNotEmpty(title) && message != null) {
-
-			if (StringUtils.isNotEmpty(toNick)) {
-				 to = "\"" + toNick + "\" <" + to + ">";
-			}
-			
-			if (StringUtils.isNotEmpty(fromNick)) {
-				 from = "\"" + fromNick + "\" <" + from + ">";
-			}
-			
-			Destination dest = new Destination().withToAddresses(to);
-			
-			if (StringUtils.isNotEmpty(cc)) {
-				if (StringUtils.isNotEmpty(ccNick)) {
-					 cc = "\"" + ccNick + "\" <" + cc + ">";
-				}
-				dest.withCcAddresses(cc);
-			}
+		if (StringUtils.isNotEmpty(toNick)) {
+			 to = "\"" + toNick + "\" <" + to + ">";
+		}
 		
+		if (StringUtils.isNotEmpty(fromNick)) {
+			 from = "\"" + fromNick + "\" <" + from + ">";
+		}
+		
+		Destination dest = new Destination().withToAddresses(to);
+		
+		if (StringUtils.isNotEmpty(cc)) {
+			if (StringUtils.isNotEmpty(ccNick)) {
+				 cc = "\"" + ccNick + "\" <" + cc + ">";
+			}
+			dest.withCcAddresses(cc);
+		}
+	
+		return sendEmail(from, dest, message, contentType, title);
+	}		
+	
+	public static boolean sendEmail(String from, final String fromNick, final String recipients, final String message, final String contentType, final String title) throws AddressException {
+		List<String> to = new ArrayList<String>(), cc = new ArrayList<String>(), bcc = new ArrayList<String>(); 
+		if (StringUtils.isNotEmpty(recipients)) {
+			String[] allrecipients = StringUtils.split(recipients, "|");
+			for (int i = 0; i<allrecipients.length; i++) {
+				  String[] r = StringUtils.split(allrecipients[i], ":");
+				  if (r.length == 2) {
+					    if (StringUtils.equalsIgnoreCase(r[0], "to")) {
+					    	to.add(InternetAddress.parse(r[1])[0].toString());
+					    } else if (StringUtils.equalsIgnoreCase(r[0], "cc")) {
+					    	cc.add(InternetAddress.parse(r[1])[0].toString());
+					    } else if (StringUtils.equalsIgnoreCase(r[0], "bcc")) {
+					    	bcc.add(InternetAddress.parse(r[1])[0].toString());
+					    } 
+				  }
+			 }
+		}
+	    if (!to.isEmpty()) {
+	    	Destination dest = new Destination().withToAddresses(to);
+	    	if (!cc.isEmpty()) {
+	    		dest.withCcAddresses(cc);
+	    	}
+	    	if (!bcc.isEmpty()) {
+	    		dest.withBccAddresses(bcc);
+	    	}
+	    	return sendEmail(from, dest, message, contentType, title);
+	    } else {
+	    	logger.log(Level.SEVERE, "Invalid recipients list " + recipients);
+	    	return false;
+	    }
+	}	
+	
+	private static boolean sendEmail(final String from, final Destination dest, final String message, final String contentType, final String title) {
+		if (dest != null && StringUtils.isNotEmpty(title) && message != null) {	
 			Body body = null;
 			
 			if (StringUtils.contains(contentType, "html")) {

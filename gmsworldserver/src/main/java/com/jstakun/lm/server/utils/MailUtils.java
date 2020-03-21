@@ -113,6 +113,7 @@ public class MailUtils {
     	 }
     	
     	 try {
+    		 //logger.log(Level.INFO, "Params: " + params);
     		 HttpUtils.processFileRequestWithBasicAuthn(new URL(MAILER_SERVER_URL), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
     		 Integer responseCode = HttpUtils.getResponseCode(MAILER_SERVER_URL);
     		 logger.log(Level.INFO, "Received response code: " + responseCode);
@@ -210,11 +211,7 @@ public class MailUtils {
             	}
             	message = String.format(IOUtils.toString(is, "UTF-8"), link);
             } 
-            //result = sendLocalMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html",  ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK);
-       		//logger.log(Level.INFO, "Email verification request status: " + result);
-            //if (! StringUtils.equalsIgnoreCase(result, "ok")) {
-            	return sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick,  "Device Locator Registration", message, "text/html", ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK);
-       		//}	
+            return sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick,  "Device Locator Registration", message, "text/html", ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK);	
         } catch (Exception ex) {
             logger.log(Level.SEVERE, null, ex);
             result = "failed";
