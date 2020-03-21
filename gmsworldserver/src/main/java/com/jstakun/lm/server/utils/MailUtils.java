@@ -21,7 +21,6 @@ import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.config.ConfigurationManager;
-import net.gmsworld.server.layers.AwsSesUtils;
 import net.gmsworld.server.utils.HttpUtils;
 
 /**
@@ -64,15 +63,17 @@ public class MailUtils {
     	if (isValidEmailAddress(toA)) {
     		final long count  = CacheUtil.increment("mailto:" + toA);
         	if (count <= 20 || (count <= 100 && count % 10 == 0) || count % 100 == 0) {
-    			if (AwsSesUtils.sendEmail(fromA, fromP, toA, toP, ccA, ccP, content, contentType, subject)) {
-    				return "ok";
-    			} else {
+        		//if (AwsSesUtils.sendEmail(fromA, fromP, toA, toP, ccA, ccP, content, contentType, subject)) {
+    			final String status = sendBackendMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP, "ses");
+    			if (StringUtils.equalsIgnoreCase(status, "ok")) {
+    				return "ok"; 
+        	    } else {
     				logger.log(Level.SEVERE, "Failed to send email message with SES! Trying with James...");
-    				return sendBackendMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
+    				return sendBackendMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP, "james");
     			}
     		} else {
     			logger.log(Level.WARNING, "James is sending " + count + " email " + subject + " to " + toA);
-    			return sendBackendMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
+    			return sendBackendMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP, "james");
     		}
     	} else {
     		logger.log(Level.SEVERE, "Invalid email address " + toA);
@@ -80,7 +81,7 @@ public class MailUtils {
     	}
     }
     
-    private static String sendBackendMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType, String ccA, String ccP)  {
+    private static String sendBackendMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType, String ccA, String ccP, String type)  {
     	String status = "failed";   
     	
     	String recipients = addEmailAddress("to", toA, toP);
@@ -93,6 +94,11 @@ public class MailUtils {
     	String params = "from=" + fromA +
     	                                "&password=" + Commons.getProperty(Property.RH_MAILER_PWD) +
     	                                "&recipients=" + recipients;
+    	 
+    	 if (StringUtils.equalsIgnoreCase(type, "ses")) {
+    		  params += "&type=ses";
+    	 }
+    	
     	 if (subject != null) {
     		  params +=  "&subject=" + subject;
     	 }
@@ -127,11 +133,11 @@ public class MailUtils {
     }
     
     public static void sendAdminMail(String title, String message) {
-    	sendBackendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, title, message, "text/plain", null, null);
+    	sendBackendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, title, message, "text/plain", null, null, "james");
     }
 
     public static String sendLandmarkCreationNotification(String title, String body) {
-        return sendBackendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, title, body, "text/plain", null, null);
+        return sendBackendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, title, body, "text/plain", null, null, "james");
     }
 
     public static void sendEmailingMessage(String toA, String nick, String message) {
