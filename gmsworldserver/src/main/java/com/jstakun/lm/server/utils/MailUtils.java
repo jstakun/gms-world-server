@@ -62,18 +62,18 @@ public class MailUtils {
     private static String sendRemoteMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType, String ccA, String ccP)  {
     	if (isValidEmailAddress(toA)) {
     		final long count  = CacheUtil.increment("mailto:" + toA);
-        	if (count <= 20 || (count <= 100 && count % 10 == 0) || count % 100 == 0) {
+        	if (count <= 30 || (count <= 100 && count % 10 == 0) || count % 100 == 0) {
         		//if (AwsSesUtils.sendEmail(fromA, fromP, toA, toP, ccA, ccP, content, contentType, subject)) {
-    			final String status = sendBackendMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP, "ses");
+    			final String status = sendSesMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
     			if (StringUtils.equalsIgnoreCase(status, "ok")) {
     				return "ok"; 
         	    } else {
     				logger.log(Level.SEVERE, "Failed to send email message with SES! Trying with James...");
-    				return sendBackendMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP, "james");
+    				return sendJamesMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
     			}
     		} else {
     			logger.log(Level.WARNING, "James is sending " + count + " email " + subject + " to " + toA);
-    			return sendBackendMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP, "james");
+    			return sendJamesMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
     		}
     	} else {
     		logger.log(Level.SEVERE, "Invalid email address " + toA);
@@ -81,6 +81,14 @@ public class MailUtils {
     	}
     }
     
+    private static String sendSesMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType, String ccA, String ccP)  {
+    	return sendBackendMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP, "ses");
+    }
+    
+    private static String sendJamesMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType, String ccA, String ccP)  {
+    	return sendBackendMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP, "james");
+    }
+        
     private static String sendBackendMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType, String ccA, String ccP, String type)  {
     	String status = "failed";   
     	
@@ -134,11 +142,11 @@ public class MailUtils {
     }
     
     public static void sendAdminMail(String title, String message) {
-    	sendBackendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, title, message, "text/plain", null, null, "james");
+    	sendJamesMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, title, message, "text/plain", null, null);
     }
 
     public static String sendLandmarkCreationNotification(String title, String body) {
-        return sendBackendMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, title, body, "text/plain", null, null, "james");
+        return sendJamesMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, title, body, "text/plain", null, null);
     }
 
     public static void sendEmailingMessage(String toA, String nick, String message) {
