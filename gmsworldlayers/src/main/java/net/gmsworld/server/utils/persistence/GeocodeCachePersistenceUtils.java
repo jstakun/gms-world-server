@@ -22,6 +22,7 @@ import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.HttpUtils;
+import net.gmsworld.server.utils.StringUtil;
 
 /**
  *
@@ -33,25 +34,10 @@ public class GeocodeCachePersistenceUtils {
     private static final String BACKEND_SERVER_URL = "https://openapi-landmarks.b9ad.pro-us-east-1.openshiftapps.com/actions/";//"https://landmarks-gmsworld.rhcloud.com/actions/";//
     
     public static void persistGeocode(String location, int status, String message, double latitude, double longitude) {
-        /*String loc = StringUtils.replace(location, "\n", " ");
-        
-        GeocodeCache gc = new GeocodeCache(loc, status, message, latitude, longitude);
-
-        PersistenceManager pm = PMF.get().getPersistenceManager();
-
         try {
-            pm.makePersistent(gc);
-
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
-        } finally {
-            pm.close();
-        }*/
-    	try {
         	String gUrl = BACKEND_SERVER_URL + "addItem";
-        	String params = "type=geocode&latitude=" + latitude + "&longitude=" + longitude + 
+        	String params = "type=geocode&latitude=" + StringUtil.formatCoordE6(latitude) + "&longitude=" + StringUtil.formatCoordE6(longitude) + 
         			"&address=" + URLEncoder.encode(location, "UTF-8");			 
-        	//logger.log(Level.INFO, "Calling: " + gUrl);
         	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
         	logger.log(Level.INFO, "Received response: " + gJson);
         } catch (Exception e) {
@@ -61,28 +47,10 @@ public class GeocodeCachePersistenceUtils {
 
     public static GeocodeCache checkIfGeocodeExists(String address) {
     	GeocodeCache gc = null;
-        /*PersistenceManager pm = PMF.get().getPersistenceManager();
-        try {
-            Query cacheQuery = pm.newQuery(GeocodeCache.class);
-            cacheQuery.setFilter("location == address && status == 0");
-            cacheQuery.declareParameters("String address");
-            List<GeocodeCache> gcl = (List<GeocodeCache>) cacheQuery.execute(address);
-
-            if (!gcl.isEmpty()) {
-                gc = gcl.get(0);
-                gc.setCreationDate(new Date(System.currentTimeMillis()));
-            }
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
-        } finally {
-            pm.close();
-        }*/
-    	try {
+       	try {
         	String gUrl = BACKEND_SERVER_URL + "itemProvider";
         	String params = "type=geocode&address=" + URLEncoder.encode(address, "UTF-8");			 
-        	//logger.log(Level.INFO, "Calling: " + gUrl);
         	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
-        	//logger.log(Level.INFO, "Received response: " + gJson);
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
         		JSONObject root = new JSONObject(gJson);
         		if (root.has("latitude") && root.has("longitude")) {
@@ -100,34 +68,12 @@ public class GeocodeCachePersistenceUtils {
     }
 
     public static List<GeocodeCache> selectNewestGeocodes() {
-    	List<GeocodeCache> gcl = new ArrayList<GeocodeCache>();
-        /*PersistenceManager pm = PMF.get().getPersistenceManager();
-        
-        try {
-            String lastStr = ConfigurationManager.getParam(ConfigurationManager.NUM_OF_GEOCODES, "5");
-            int last = Integer.parseInt(lastStr);
-            if (last > 0) {
-                Query cacheQuery = pm.newQuery(GeocodeCache.class);
-                cacheQuery.setFilter("status == 0");
-                cacheQuery.setRange(0, last);
-                cacheQuery.setOrdering("creationDate desc");
-                gcl = (List<GeocodeCache>) cacheQuery.execute();
-                pm.retrieveAll(gcl);
-                gcl = (List<GeocodeCache>) pm.detachCopyAll(gcl);
-            }
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
-        } finally {
-            pm.close();
-        }*/
-    	
+    	List<GeocodeCache> gcl = new ArrayList<GeocodeCache>();    	
     	try {
     		String limit = "10";
         	String gUrl = BACKEND_SERVER_URL + "itemProvider";
         	String params = "type=geocode&limit=" + limit;			 
-        	//logger.log(Level.INFO, "Calling: " + gUrl);
         	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
-        	//logger.log(Level.INFO, "Received response: " + gJson);
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "[")) {
         		JSONArray root = new JSONArray(gJson);
         		for (int i=0;i<root.length();i++) {
@@ -153,22 +99,10 @@ public class GeocodeCachePersistenceUtils {
 
     public static GeocodeCache selectGeocodeCache(String k) {
         GeocodeCache gc = null;
-        /*PersistenceManager pm = PMF.get().getPersistenceManager();
-
-        try {
-            Key key = KeyFactory.stringToKey(k);
-            geocodeCache = pm.getObjectById(GeocodeCache.class, key);
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
-        } finally {
-            pm.close();
-        }*/
         try {
         	String gUrl = BACKEND_SERVER_URL + "itemProvider";
         	String params = "type=geocode&id=" + k;			 
-        	//logger.log(Level.INFO, "Calling: " + gUrl);
         	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
-        	//logger.log(Level.INFO, "Received response: " + gJson);
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
         		JSONObject root = new JSONObject(gJson);
         		if (root.has("latitude") && root.has("longitude")) {
@@ -187,10 +121,8 @@ public class GeocodeCachePersistenceUtils {
         GeocodeCache gc = null;
          try {
         	String gUrl = BACKEND_SERVER_URL + "itemProvider";
-        	String params = "type=geocode&lat=" + lat + "&lng=" + lng;			 
-        	//logger.log(Level.INFO, "Calling: " + gUrl);
+        	String params = "type=geocode&lat=" + StringUtil.formatCoordE6(lat) + "&lng=" + StringUtil.formatCoordE6(lng);			 
         	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
-        	//logger.log(Level.INFO, "Received response: " + gJson);
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
         		JSONObject root = new JSONObject(gJson);
         		if (root.has("latitude") && root.has("longitude")) {
