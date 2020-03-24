@@ -142,11 +142,11 @@ public class MailUtils {
     }
     
     public static void sendAdminMail(String title, String message) {
-    	sendJamesMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, title, message, "text/plain", null, null);
+    	sendSesMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, title, message, "text/plain", null, null);
     }
 
     public static String sendLandmarkCreationNotification(String title, String body) {
-        return sendJamesMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, title, body, "text/plain", null, null);
+        return sendSesMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, title, body, "text/plain", null, null);
     }
 
     public static void sendEmailingMessage(String toA, String nick, String message) {
@@ -177,13 +177,10 @@ public class MailUtils {
     public static void sendVerificationRequest(String toA, String nick, String secret, ServletContext context) {
         InputStream is = null;
         try {
-            String link = ConfigurationManager.SSL_SERVER_URL + "verifyUser/" + secret;
+            final String link = ConfigurationManager.SSL_SERVER_URL + "verifyUser/" + secret;
             is = context.getResourceAsStream("/WEB-INF/emails/verification.html");
-            String message = String.format(IOUtils.toString(is, "UTF-8"), nick, link);
-            //String result = sendLocalMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "Welcome to GMS World", message, "text/html",  "landmark-manager@gms-world.net", ConfigurationManager.ADMIN_NICK);
-       		//if (! StringUtils.equalsIgnoreCase(result, "ok")) {
-       			sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "Welcome to GMS World", message, "text/html",  "landmark-manager@gms-world.net", ConfigurationManager.ADMIN_NICK);
-       		//}
+            final String message = String.format(IOUtils.toString(is, "UTF-8"), nick, link);
+            sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "Welcome to GMS World", message, "text/html",  "landmark-manager@gms-world.net", ConfigurationManager.ADMIN_NICK);
         } catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
         } finally {
@@ -244,10 +241,7 @@ public class MailUtils {
             }
             String link = ConfigurationManager.SSL_SERVER_URL + "unregisterUser/" + secret;
             String message = String.format(IOUtils.toString(is, "UTF-8"), nick, link);
-            //String result = sendLocalMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "GMS World Registration", message, "text/html",  "landmark-manager@gms-world.net", ConfigurationManager.ADMIN_NICK);
-       		//if (! StringUtils.equalsIgnoreCase(result, "ok")) {
-       			sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "GMS World Registration", message, "text/html",  "landmark-manager@gms-world.net", ConfigurationManager.ADMIN_NICK);
-       		//}
+            sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "GMS World Registration", message, "text/html",  "landmark-manager@gms-world.net", ConfigurationManager.ADMIN_NICK);
        	} catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
         } finally {
@@ -271,10 +265,7 @@ public class MailUtils {
             }
             String link = ConfigurationManager.SSL_SERVER_URL + "reset/" + secret;
             String message = String.format(IOUtils.toString(is, "UTF-8"), nick, link);
-            //result = sendLocalMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "GMS World Password Reset", message, "text/html",  null, null);
-       		//if (! StringUtils.equalsIgnoreCase(result, "ok")) {
-       			result = sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "GMS World Password Reset", message, "text/html",  null, null);
-       		//}
+            result = sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "GMS World Password Reset", message, "text/html",  null, null);
        	} catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
         } finally {
@@ -299,10 +290,7 @@ public class MailUtils {
         		is = context.getResourceAsStream("/WEB-INF/emails/notification-dl.html");
         		message =String.format(IOUtils.toString(is, "UTF-8"), link);
         	}
-            //status = sendLocalMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html",  ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK);
-        	//if (! StringUtils.equalsIgnoreCase(status, "ok")) {
-        		status = sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html",  ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK);	
-        	//}
+            status = sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html",  ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK);	
         } catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
         } finally {
@@ -366,10 +354,7 @@ public class MailUtils {
     }
 
     public static String sendCrashReport(String title, String body) {
-        //String status = sendJamesMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, title, body, "text/plain", null, null);
-        //if (! StringUtils.equalsIgnoreCase(status, "ok")) {
         return sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, title, body, "text/plain", null, null) ;
-        //}
     }
 
     public static void sendContactMessage(String fromA, String nick, String subject, String body) {
