@@ -358,7 +358,16 @@ public class MailUtils {
     }
 
     public static void sendContactMessage(String fromA, String nick, String subject, String body) {
-        sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, subject, "Message from: " + nick + " " + fromA + "\n" + body, "text/plain", null, null);
+    	String message =  "\nFrom: ";
+        if (StringUtils.isNotEmpty(nick)) {
+        	message += nick + " "; 
+        }
+        message += fromA + "\n\n";
+    	if (StringUtils.isNotEmpty(subject)) {
+    		message += "Subject: " + subject + "\n\n";
+    	}
+    	message += body;
+        sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "Contact form Message", message , "text/plain", null, null);
     }
 
     public static void sendSearchQueryNotification(String query, boolean isDeal, int counter, String uri) {
@@ -423,7 +432,7 @@ public class MailUtils {
         return EmailValidator.getInstance().isValid(aEmailAddress);
     }
     
-    public static int emailAccountExists( String address ) {
+    public static int emailAccountExists(String address) {
     	if (StringUtils.isEmpty(address)) {
     		logger.log(Level.SEVERE, "Empty email address");
     		return 400;

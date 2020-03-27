@@ -40,7 +40,8 @@ public class ContactForm extends DynaValidatorForm {
     @Override
     public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
-        if (!MailUtils.isValidEmailAddress((String) get("email"))) {
+        final String email = (String) get("email");
+        if (StringUtils.isEmpty(email) || !MailUtils.isValidEmailAddress(email) || MailUtils.emailAccountExists(email) != 200) {
             errors.add("contactForm", new ActionMessage("errors.email"));
         }
         if (StringUtils.isEmpty((String) get("message"))) {
@@ -48,9 +49,9 @@ public class ContactForm extends DynaValidatorForm {
         }
         
         //Re-Captcha verification
-        String uresponse = request.getParameter("g-recaptcha-response");
-        String remoteAddr = request.getRemoteAddr();
-        String urlParams = "secret=" + Commons.getProperty(Property.RECAPTCHA_PRIVATE_KEY) +"&response=" + uresponse + "&remoteip=" + remoteAddr;
+        final String uresponse = request.getParameter("g-recaptcha-response");
+        final String remoteAddr = request.getRemoteAddr();
+        final String urlParams = "secret=" + Commons.getProperty(Property.RECAPTCHA_PRIVATE_KEY) +"&response=" + uresponse + "&remoteip=" + remoteAddr;
         
         try {
  			String response = HttpUtils.processFileRequest(new URL("https://www.google.com/recaptcha/api/siteverify"), "POST", null, urlParams);
