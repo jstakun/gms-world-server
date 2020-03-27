@@ -67,4 +67,10 @@ public class ContactForm extends DynaValidatorForm {
 
         return errors;
     }
+    
+    @Override
+    public void reset(ActionMapping mapping, HttpServletRequest request) {
+    	super.reset(mapping, request);
+    	getMap().clear();
+    }
 }
