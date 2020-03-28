@@ -151,7 +151,7 @@ public class GeocodeUtils {
                 if (landmark != null) {
                     jsonResp = processLandmark(landmark);
                 } else {
-                    jsonResp = processGeocode(addr, email, appId);
+                    jsonResp = GeocodeHelperFactory.getInstance().processGeocode(addr, email, appId);
                 }
             }
         }
@@ -248,18 +248,5 @@ public class GeocodeUtils {
             }
         }
         return resp;
-    }
-    
-    private static String processGeocode(String address, String email, int appId) {
-    	JSONObject resp = GeocodeHelperFactory.getGoogleGeocodeUtils().processGeocode(address, email, appId, true);
-        try {
-            if (resp.getString("status").equals("Error")) {
-                logger.log(Level.INFO, "Search geocode response {0}", resp.toString());
-                resp = GeocodeHelperFactory.getMapQuestUtils().processGeocode(address, email, appId, true);
-            }
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
-        }
-        return resp.toString();
     }
 }

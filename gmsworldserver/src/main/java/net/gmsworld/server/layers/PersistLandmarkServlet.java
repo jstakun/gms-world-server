@@ -44,7 +44,7 @@ public class PersistLandmarkServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        GeocodeHelperFactory.setCacheProvider(GoogleCacheProvider.getInstance());
+        GeocodeHelperFactory.getInstance().setCacheProvider(GoogleCacheProvider.getInstance());
     }
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -89,7 +89,7 @@ public class PersistLandmarkServlet extends HttpServlet {
                 
                 	AddressInfo addressInfo = null;
                 	if (layer.equals(Commons.MY_POS_CODE)) {
-                		addressInfo = GeocodeHelperFactory.processReverseGeocodeAddress(l.getLatitude(), l.getLongitude());
+                		addressInfo = GeocodeHelperFactory.getInstance().processReverseGeocode(l.getLatitude(), l.getLongitude());
                 		String address = addressInfo.getField(AddressInfo.EXTENSION);
                 		if (StringUtils.isNotEmpty(address)) {
                 			l.setDescription(address);
@@ -127,7 +127,7 @@ public class PersistLandmarkServlet extends HttpServlet {
                 	boolean isSimilarToNewest = LandmarkPersistenceWebUtils.isSimilarToNewest(l);
             		if (!isSimilarToNewest) {
             			LandmarkPersistenceWebUtils.setFlex(l, request);          		
-            			LandmarkPersistenceUtils.persistLandmark(l, GeocodeHelperFactory.getGoogleGeocodeUtils().cacheProvider);
+            			LandmarkPersistenceUtils.persistLandmark(l, GoogleCacheProvider.getInstance());
 
             			if (l.getId() > 0) {	
             				//After adding landmark remove from cache layer list for the location

@@ -128,7 +128,7 @@ public class LandmarkPersistenceWebUtils {
 		}
     	
     	if (addressInfo == null) {
-    		addressInfo = GeocodeHelperFactory.processReverseGeocode(l.getLatitude(), l.getLongitude()); 
+    		addressInfo = GeocodeHelperFactory.getInstance().processReverseGeocode(l.getLatitude(), l.getLongitude()); 
     	}    
     	
     	Map<String, String> params = new ImmutableMap.Builder<String, String>().

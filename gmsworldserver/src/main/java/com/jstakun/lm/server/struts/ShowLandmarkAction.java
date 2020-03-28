@@ -42,7 +42,7 @@ public class ShowLandmarkAction extends Action {
     
     public ShowLandmarkAction() {
     	super();
-    	GeocodeHelperFactory.setCacheProvider(GoogleCacheProvider.getInstance());
+    	GeocodeHelperFactory.getInstance().setCacheProvider(GoogleCacheProvider.getInstance());
     }
 
     @Override

@@ -29,12 +29,11 @@ public class MapQuestUtils extends GeocodeHelper {
 	private static final char[] delim = new char[]{',',' '};
 	
 	@Override
-	public JSONObject processGeocode(String location, String email, int appId, boolean persistAsLandmark) {
+	protected JSONObject processGeocode(String location, String email, int appId, boolean persistAsLandmark) {
 		JSONObject jsonResponse = new JSONObject();
 
         try {
         	String urlString = "http://open.mapquestapi.com/geocoding/v1/address?key=" + Commons.getProperty(Property.MAPQUEST_APPKEY) + "&location=" + URLEncoder.encode(location, "UTF-8");
-    		//System.out.println(urlString);
     		URL routeUrl = new URL(urlString);
         	String resp = HttpUtils.processFileRequest(routeUrl, "GET", null, null);
         	if (StringUtils.startsWith(resp, "{")) {
@@ -64,8 +63,7 @@ public class MapQuestUtils extends GeocodeHelper {
                 			String cc = locationJson.optString("adminArea1");
                 		
         					try {
-        						GeocodeCachePersistenceUtils.persistGeocode(location, 0, "", lat, lng);
-        						//if (ConfigurationManager.getParam(ConfigurationManager.SAVE_GEOCODE_AS_LANDMARK, ConfigurationManager.OFF).equals(ConfigurationManager.ON)) {
+        						GeocodeCachePersistenceUtils.persistGeocode(location, lat, lng);
         						if (persistAsLandmark) {
         							String name = WordUtils.capitalize(location, delim);
         							JSONObject flex = new JSONObject();
@@ -180,6 +178,8 @@ public class MapQuestUtils extends GeocodeHelper {
                 		}
                 		
                 		addressInfo.setField(AddressInfo.EXTENSION, JSONUtils.formatAddress(addressInfo));
+                		//persist geocode
+                		GeocodeCachePersistenceUtils.persistGeocode(addressInfo.getField(AddressInfo.EXTENSION), lat, lng);
                 		
                 		if (location.has("geocodeQuality")) {
                 			logger.log(Level.INFO, "Found reverse geocode with quality {0}", location.getString("geocodeQuality"));

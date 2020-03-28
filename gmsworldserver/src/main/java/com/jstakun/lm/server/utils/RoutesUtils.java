@@ -43,7 +43,7 @@ public class RoutesUtils {
 	    public static JSONObject getFromServer(String lat_start, String lng_start, String lat_end, String lng_end, String type, String username) {
                 JSONObject route = null;
                 try {
-                	route = GeocodeHelperFactory.getMapQuestUtils().getRoute(lat_start, lng_start, lat_end, lng_end, type, username);
+                	route = GeocodeHelperFactory.getInstance().getRoute(lat_start, lng_start, lat_end, lng_end, type, username);
                 	if (route != null) {
                 		route.put("source", "MapQuest");
                 		route.put("creationDate", System.currentTimeMillis());

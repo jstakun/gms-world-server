@@ -37,7 +37,7 @@ public class TelegramServlet extends HttpServlet {
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 			super.init(config);
-			GeocodeHelperFactory.setCacheProvider(GoogleCacheProvider.getInstance());
+			GeocodeHelperFactory.getInstance().setCacheProvider(GoogleCacheProvider.getInstance());
 	}
 	
 	/**
@@ -122,10 +122,10 @@ public class TelegramServlet extends HttpServlet {
 							TelegramUtils.sendTelegram(Long.toString(telegramId), "Hello there!");
 						} else if (StringUtils.startsWithIgnoreCase(message, "/start ") && StringUtils.split(message, " ").length == 2) {
 							//add chat or channel id to white list
-							JSONObject reply = NotificationPersistenceUtils.registerTelegram(Long.toString(telegramId), 45, GeocodeHelperFactory.getCacheProvider());
+							JSONObject reply = NotificationPersistenceUtils.registerTelegram(Long.toString(telegramId), 45, GoogleCacheProvider.getInstance());
 							final String telegramSecret = StringUtils.split(message, " ")[1];
 							reply.put("chatId", telegramId);
-							GeocodeHelperFactory.getCacheProvider().put(telegramSecret, reply.toString());
+							GoogleCacheProvider.getInstance().put(telegramSecret, reply.toString());
 							logger.info("Cached "  + telegramSecret + ": " + reply);
 						} else if (StringUtils.startsWithIgnoreCase(message, "/help") ||  StringUtils.startsWithIgnoreCase(message, "help")) {
 							InputStream is = null;
@@ -161,8 +161,8 @@ public class TelegramServlet extends HttpServlet {
 					}	
 				} else if (StringUtils.equals(type, "getTelegramChatId")) {
 					final String telegramSecret = request.getParameter("telegramSecret");
-					if (StringUtils.isNotEmpty(telegramSecret) && GeocodeHelperFactory.getCacheProvider().containsKey(telegramSecret)) {
-						out.println(GeocodeHelperFactory.getCacheProvider().getObject(telegramSecret));
+					if (StringUtils.isNotEmpty(telegramSecret) && GoogleCacheProvider.getInstance().containsKey(telegramSecret)) {
+						out.println(GoogleCacheProvider.getInstance().getObject(telegramSecret));
 					} else {
 						response.sendError(HttpServletResponse.SC_NOT_FOUND);
 					}

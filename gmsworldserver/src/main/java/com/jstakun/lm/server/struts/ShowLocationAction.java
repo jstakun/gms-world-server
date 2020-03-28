@@ -35,7 +35,7 @@ public class ShowLocationAction extends org.apache.struts.action.Action {
 
     public ShowLocationAction() {
     	super();
-    	GeocodeHelperFactory.setCacheProvider(GoogleCacheProvider.getInstance());
+    	GeocodeHelperFactory.getInstance().setCacheProvider(GoogleCacheProvider.getInstance());
     }
     
     /**
@@ -76,7 +76,7 @@ public class ShowLocationAction extends org.apache.struts.action.Action {
                 
                 String address = null;
                 if (!StringUtils.equals(request.getParameter("enabled"), "Hotels")) {
-                	AddressInfo addressInfo = GeocodeHelperFactory.processReverseGeocodeAddress(lat, lng);
+                	AddressInfo addressInfo = GeocodeHelperFactory.getInstance().processReverseGeocode(lat, lng);
                 	address = addressInfo.getField(AddressInfo.EXTENSION);
                 	if (StringUtils.isNotEmpty(address)) {
                 		request.setAttribute("address", address);

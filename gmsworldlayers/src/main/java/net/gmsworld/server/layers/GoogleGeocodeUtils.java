@@ -23,7 +23,6 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
 
 	@Override
 	protected JSONObject processGeocode(String addressIn, String email, int appId, boolean persistAsLandmark) {
-		//TODO read first from geocode cache
 		JSONObject jsonResponse = new JSONObject();
         try {
             logger.log(Level.INFO, "Calling Google geocode: {0}", addressIn);
@@ -60,7 +59,7 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
                         	jsonResponse.put("type", "g");
 
                         	try {
-                        		GeocodeCachePersistenceUtils.persistGeocode(addressIn, 0, null, lat, lng);
+                        		GeocodeCachePersistenceUtils.persistGeocode(addressIn, lat, lng);
 
                         		if (persistAsLandmark) {
                         			//if (ConfigurationManager.getParam(ConfigurationManager.SAVE_GEOCODE_AS_LANDMARK, ConfigurationManager.OFF).equals(ConfigurationManager.ON)) {
@@ -134,7 +133,6 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
         if (addressInfo == null) {      
         	try {
                 URL geocodeUrl = new URL("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + coords + "&language=en&key=" + Commons.getProperty(Property.GOOGLE_API_KEY));
-                //logger.log(Level.INFO, "Calling: " + geocodeUrl.toString());
                 addressInfo = getAddressInfo(geocodeUrl);
             } catch (Exception ex) {
                 logger.log(Level.SEVERE, ex.getMessage(), ex);
@@ -142,6 +140,8 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
 
             if (addressInfo != null && StringUtils.isNotEmpty(addressInfo.getField(AddressInfo.EXTENSION))) {
             	cacheProvider.put(key, addressInfo);
+            	//persist geocode
+            	GeocodeCachePersistenceUtils.persistGeocode(addressInfo.getField(AddressInfo.EXTENSION), lat, lng);
             }
         } else {
             logger.log(Level.INFO, "Reading Google geocode from cache with key {0}", addressInfo.getField(AddressInfo.EXTENSION));

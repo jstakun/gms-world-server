@@ -43,7 +43,7 @@ public class RouteProviderServlet extends HttpServlet {
 	@Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        GeocodeHelperFactory.setCacheProvider(GoogleCacheProvider.getInstance());
+        GeocodeHelperFactory.getInstance().setCacheProvider(GoogleCacheProvider.getInstance());
     }
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.

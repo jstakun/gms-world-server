@@ -54,7 +54,7 @@ public class NotificationsServlet extends HttpServlet {
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
-		 GeocodeHelperFactory.setCacheProvider(GoogleCacheProvider.getInstance());
+		 GeocodeHelperFactory.getInstance().setCacheProvider(GoogleCacheProvider.getInstance());
 	}
 
 	/**
@@ -272,7 +272,7 @@ public class NotificationsServlet extends HttpServlet {
 					//register for telegram notifications
 					if (appId == Commons.DL_ID && StringUtils.startsWith(request.getRequestURI(), "/s/")) {
 						String telegramId = request.getParameter("chatId");
-						reply = NotificationPersistenceUtils.registerTelegram(telegramId, appVersion, GeocodeHelperFactory.getCacheProvider());
+						reply = NotificationPersistenceUtils.registerTelegram(telegramId, appVersion, GoogleCacheProvider.getInstance());
 					} else {
 						logger.log(Level.SEVERE, "Wrong application id " + appId);
 					}

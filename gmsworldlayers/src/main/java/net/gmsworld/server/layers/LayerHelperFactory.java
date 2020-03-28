@@ -27,11 +27,11 @@ public class LayerHelperFactory {
 	
 	private static final Logger logger = Logger.getLogger(LayerHelperFactory.class.getName());
 	
-	private static List<String> enabledLayers = new ArrayList<String>();
-	
-	private static Map<String, LayerHelper> allLayers = new HashMap<String, LayerHelper>();
-	
 	private static final LayerHelperFactory instance = new LayerHelperFactory();
+	
+	private List<String> enabledLayers = new ArrayList<String>();
+	
+	private Map<String, LayerHelper> allLayers = new HashMap<String, LayerHelper>();
 	
 	private LayerHelperFactory() {
 		final Class<LayerHelper> parentClass = LayerHelper.class;

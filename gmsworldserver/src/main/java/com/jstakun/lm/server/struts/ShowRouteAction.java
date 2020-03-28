@@ -25,7 +25,7 @@ public class ShowRouteAction extends org.apache.struts.action.Action {
 
 	public ShowRouteAction() {
 		super();
-		GeocodeHelperFactory.setCacheProvider(GoogleCacheProvider.getInstance());
+		GeocodeHelperFactory.getInstance().setCacheProvider(GoogleCacheProvider.getInstance());
 	}
      /**
      * This is the action called from the Struts framework.

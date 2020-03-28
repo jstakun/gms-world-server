@@ -24,7 +24,7 @@ public class ShowImageAction extends org.apache.struts.action.Action {
 
 	public ShowImageAction() {
 		super();
-		GeocodeHelperFactory.setCacheProvider(GoogleCacheProvider.getInstance());
+		GeocodeHelperFactory.getInstance().setCacheProvider(GoogleCacheProvider.getInstance());
 	}
      /**
      * This is the action called from the Struts framework.
@@ -43,7 +43,7 @@ public class ShowImageAction extends org.apache.struts.action.Action {
         Screenshot s = FileUtils.getScreenshot(key, false, request.isSecure());
         
         if (s != null) {
-        	String address = GeocodeHelperFactory.processReverseGeocodeAddress(s.getLatitude(),s.getLongitude()).getField(AddressInfo.EXTENSION);
+        	String address = GeocodeHelperFactory.getInstance().processReverseGeocode(s.getLatitude(),s.getLongitude()).getField(AddressInfo.EXTENSION);
         	if (StringUtils.isNotEmpty(address)) {
         		request.setAttribute("address", address);
         	}
