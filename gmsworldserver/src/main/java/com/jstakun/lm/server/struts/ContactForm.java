@@ -43,27 +43,30 @@ public class ContactForm extends DynaValidatorForm {
         final String email = (String) get("email");
         if (StringUtils.isEmpty(email) || !MailUtils.isValidEmailAddress(email) || MailUtils.emailAccountExists(email) != 200) {
             errors.add("contactForm", new ActionMessage("errors.email"));
+            logger.log(Level.WARNING, "Invalid email address " + email);
         }
         if (StringUtils.isEmpty((String) get("message"))) {
             errors.add("contactForm", new ActionMessage("errors.required", "Message"));
         }
         
-        //Re-Captcha verification
-        final String uresponse = request.getParameter("g-recaptcha-response");
-        final String remoteAddr = request.getRemoteAddr();
-        final String urlParams = "secret=" + Commons.getProperty(Property.RECAPTCHA_PRIVATE_KEY) +"&response=" + uresponse + "&remoteip=" + remoteAddr;
+        if (errors.isEmpty()) {
+        	//Re-Captcha verification
+        	final String uresponse = request.getParameter("g-recaptcha-response");
+        	final String remoteAddr = request.getRemoteAddr();
+        	final String urlParams = "secret=" + Commons.getProperty(Property.RECAPTCHA_PRIVATE_KEY) +"&response=" + uresponse + "&remoteip=" + remoteAddr;
         
-        try {
- 			String response = HttpUtils.processFileRequest(new URL("https://www.google.com/recaptcha/api/siteverify"), "POST", null, urlParams);
- 			JSONObject json = new JSONObject(response);
- 			if (!json.getBoolean("success") == true) {
- 				logger.log(Level.WARNING, "Recaptcha verification error", response);
- 				errors.add("userForm", new ActionMessage("errors.captcha"));
- 			}
- 	    } catch (Exception e) {
-			logger.log(Level.SEVERE, e.getMessage(), e);
-			errors.add("userForm", new ActionMessage("errors.captcha"));
-		}
+        	try {
+        		String response = HttpUtils.processFileRequest(new URL("https://www.google.com/recaptcha/api/siteverify"), "POST", null, urlParams);
+        		JSONObject json = new JSONObject(response);
+        		if (json.getBoolean("success") == false) {
+        			logger.log(Level.WARNING, "Recaptcha verification error", response);
+        			errors.add("userForm", new ActionMessage("errors.captcha"));
+        		}
+        	} catch (Exception e) {
+        		logger.log(Level.SEVERE, e.getMessage(), e);
+        		errors.add("userForm", new ActionMessage("errors.captcha"));
+        	}
+        }
 
         return errors;
     }
