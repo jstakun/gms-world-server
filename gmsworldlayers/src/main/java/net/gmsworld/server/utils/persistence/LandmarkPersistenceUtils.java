@@ -73,14 +73,28 @@ public class LandmarkPersistenceUtils {
         return response;
     }
     
-    public static void persistLandmark(Landmark landmark, CacheProvider cacheProvider) {
+    public static JSONObject persistLandmark(Landmark landmark, CacheProvider cacheProvider) {
     	Map<String, String> persistResponse = persistLandmark(landmark.getName(), landmark.getDescription(), landmark.getLatitude(), landmark.getLongitude(), landmark.getAltitude(), landmark.getUsername(), landmark.getValidityDate(), landmark.getLayer(), landmark.getEmail(), landmark.getFlex());
-    	landmark.setId(NumberUtils.getInt(persistResponse.get("id"),-1));
+    	landmark.setId(NumberUtils.getInt(persistResponse.get("id"), -1));
     	landmark.setHash(persistResponse.get("hash"));
+    	JSONObject flexJSon;
+    	if (landmark.getFlex() != null) {
+    		flexJSon = new JSONObject(landmark.getFlex()); 
+    	} else {
+    		flexJSon = new JSONObject();
+    	}
+		if (persistResponse.containsKey("cc")) {
+    		flexJSon.put("cc", persistResponse.get("cc"));
+    	}
+		if (persistResponse.containsKey("city")) {
+    		flexJSon.put("city", persistResponse.get("city"));
+    	}
+		landmark.setFlex(flexJSon.toString());
     	if (landmark.getId() > 0 && cacheProvider != null) {
     		cacheProvider.put(Integer.toString(landmark.getId()), landmark);
     		logger.log(Level.INFO, "Saved landmark to local in-memory cache with key: " + landmark.getId());
     	}
+    	return flexJSon;
     }
 
     public static Landmark selectLandmarkByHash(String hash, CacheProvider cacheProvider) {

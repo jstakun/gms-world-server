@@ -196,10 +196,10 @@ public class UrlUtils {
 		    	if (bitlyResponse.has("link")) {
 		    		shortUrl = bitlyResponse.getString("link");
 		    	} else {
-		    		logger.log(Level.WARNING, "Received following Bitly response " + HttpUtils.getResponseCode(bitlyApiUrl.toString()) + bitlyResponse);
+		    		logger.log(Level.WARNING, "Received following Bitly response " + HttpUtils.getResponseCode(bitlyApiUrl.toString()) + ": " + bitlyResponse);
 		    	}
 		    } else {
-		    	logger.log(Level.WARNING, "Received following Bitly response " + HttpUtils.getResponseCode(bitlyApiUrl.toString()) + response);
+		    	logger.log(Level.WARNING, "Received following Bitly response " + HttpUtils.getResponseCode(bitlyApiUrl.toString()) + ": " + response);
 		    }
     	} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);

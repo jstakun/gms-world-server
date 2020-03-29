@@ -73,7 +73,7 @@ public class LandmarkPersistenceWebUtils {
         return isSimilarToNewest;
     }
     
-    public static void notifyOnLandmarkCreation(Landmark l, String userAgent, String socialIds) {
+    public static void notifyOnLandmarkCreation(Landmark l, String userAgent, String socialIds, String ccIn, String cityIn) {
     	//load image
     	Queue queue = QueueFactory.getDefaultQueue();
     	queue.add(withUrl("/tasks/execute").param("action", "loadImage").param("latitude", Double.toString(l.getLatitude())).param("longitude", Double.toString(l.getLongitude())));
@@ -127,7 +127,15 @@ public class LandmarkPersistenceWebUtils {
 			 hotelsUrl = UrlUtils.getShortUrl(com.jstakun.lm.server.config.ConfigurationManager.HOTELS_URL + "hotelLandmark/" + HtmlUtils.encodeDouble(l.getLatitude()) + "/" + HtmlUtils.encodeDouble(l.getLongitude()));		 
 		}
     	
-    	AddressInfo addressInfo = GeocodeHelperFactory.getInstance().processReverseGeocodeBackend(l.getLatitude(), l.getLongitude()); 
+    	String cc = ccIn;
+    	String city = cityIn;
+    	
+    	if (StringUtils.isEmpty(cc)) {
+    		AddressInfo addressInfo = GeocodeHelperFactory.getInstance().processReverseGeocodeBackend(l.getLatitude(), l.getLongitude()); 
+    		cc = addressInfo.getField(AddressInfo.COUNTRY_CODE);
+    		city = addressInfo.getField(AddressInfo.CITY);
+    	}
+    	
     	
     	Map<String, String> params = new ImmutableMap.Builder<String, String>().
                 put("key", Integer.toString(l.getId())).
@@ -147,8 +155,8 @@ public class LandmarkPersistenceWebUtils {
         		put("hotelsCount", Integer.toString(hotelsCount)).
     	 		put("cheapestPrice", cheapestPrice).
     	 		put("hotelsUrl", hotelsUrl).
-    	 		put("cc", addressInfo.getField(AddressInfo.COUNTRY_CODE) == null ? "" : addressInfo.getField(AddressInfo.COUNTRY_CODE)).
-    	    	put("city", addressInfo.getField(AddressInfo.CITY) == null ? "" : addressInfo.getField(AddressInfo.CITY)).
+    	 		put("cc", cc == null ? "" : cc).
+    	    	put("city", city == null ? "" : city).
     	 		build();  
     	
     	NotificationUtils.createLadmarkCreationNotificationTask(params);

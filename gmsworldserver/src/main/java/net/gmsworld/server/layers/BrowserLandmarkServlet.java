@@ -93,7 +93,7 @@ public class BrowserLandmarkServlet extends HttpServlet {
         		
 	            	LandmarkPersistenceUtils.persistLandmark(l, GoogleCacheProvider.getInstance());
 	            	if (l.getId() > 0) {
-	            		LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), null);
+	            		LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), null, null, null);
 	            		response.setContentType("text/javascript;charset=UTF-8");
 	            		response.getWriter().println("{\"id\": " + l.getId() +"}");
 	            		response.getWriter().close();

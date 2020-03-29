@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONObject;
 
 import com.google.gdata.util.common.util.Base64;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
@@ -124,7 +125,7 @@ public class PersistLandmarkServlet extends HttpServlet {
                 	boolean isSimilarToNewest = LandmarkPersistenceWebUtils.isSimilarToNewest(l);
             		if (!isSimilarToNewest) {
             			LandmarkPersistenceWebUtils.setFlex(l, request);          		
-            			LandmarkPersistenceUtils.persistLandmark(l, GoogleCacheProvider.getInstance());
+            			JSONObject flexJSon = LandmarkPersistenceUtils.persistLandmark(l, GoogleCacheProvider.getInstance());
 
             			if (l.getId() > 0) {	
             				//After adding landmark remove from cache layer list for the location
@@ -134,7 +135,7 @@ public class PersistLandmarkServlet extends HttpServlet {
             				logger.log(Level.INFO, "Removed from cache layer list {0}: {1}", new Object[]{layerKey, (CacheUtil.remove(layerKey) != null)});           
                 	    
             				//send notification to social networks
-            				LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), socialIds);
+            				LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), socialIds, flexJSon.optString("cc"), flexJSon.optString("city"));
             			} 
                 	}
             	} else {
