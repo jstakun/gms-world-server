@@ -130,7 +130,7 @@ public class NotificationsServlet extends HttpServlet {
 								LandmarkPersistenceUtils.persistLandmark(l, GoogleCacheProvider.getInstance());
 
 								if (l.getId() > 0) {
-									LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), socialIds, null);
+									LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), socialIds);
 								}
 							}
 						} catch (Exception e) {

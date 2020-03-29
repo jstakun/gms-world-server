@@ -243,7 +243,7 @@ public final class DeviceManagerServlet extends HttpServlet {
 				LandmarkPersistenceWebUtils.setFlex(l, request);
 				LandmarkPersistenceUtils.persistLandmark(l, GoogleCacheProvider.getInstance());
     			if (l.getId() > 0) {
-    				LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), null, null);
+    				LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), null);
     			}
    	   		}
    	   	}	

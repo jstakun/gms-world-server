@@ -14,7 +14,6 @@ import org.apache.struts.action.ActionMapping;
 import com.jstakun.lm.server.utils.HtmlUtils;
 import com.jstakun.lm.server.utils.UserAgentUtils;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
-import com.openlapi.AddressInfo;
 
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.layers.GeocodeHelperFactory;
@@ -76,8 +75,7 @@ public class ShowLocationAction extends org.apache.struts.action.Action {
                 
                 String address = null;
                 if (!StringUtils.equals(request.getParameter("enabled"), "Hotels")) {
-                	AddressInfo addressInfo = GeocodeHelperFactory.getInstance().processReverseGeocode(lat, lng);
-                	address = addressInfo.getField(AddressInfo.EXTENSION);
+                	address = GeocodeHelperFactory.getInstance().processReverseGeocode(lat, lng);
                 	if (StringUtils.isNotEmpty(address)) {
                 		request.setAttribute("address", address);
                 	}

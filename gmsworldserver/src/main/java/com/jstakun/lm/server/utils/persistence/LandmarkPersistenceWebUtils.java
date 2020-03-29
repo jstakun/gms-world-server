@@ -73,7 +73,7 @@ public class LandmarkPersistenceWebUtils {
         return isSimilarToNewest;
     }
     
-    public static void notifyOnLandmarkCreation(Landmark l, String userAgent, String socialIds, AddressInfo addressInfo) {
+    public static void notifyOnLandmarkCreation(Landmark l, String userAgent, String socialIds) {
     	//load image
     	Queue queue = QueueFactory.getDefaultQueue();
     	queue.add(withUrl("/tasks/execute").param("action", "loadImage").param("latitude", Double.toString(l.getLatitude())).param("longitude", Double.toString(l.getLongitude())));
@@ -127,9 +127,7 @@ public class LandmarkPersistenceWebUtils {
 			 hotelsUrl = UrlUtils.getShortUrl(com.jstakun.lm.server.config.ConfigurationManager.HOTELS_URL + "hotelLandmark/" + HtmlUtils.encodeDouble(l.getLatitude()) + "/" + HtmlUtils.encodeDouble(l.getLongitude()));		 
 		}
     	
-    	if (addressInfo == null) {
-    		addressInfo = GeocodeHelperFactory.getInstance().processReverseGeocode(l.getLatitude(), l.getLongitude()); 
-    	}    
+    	AddressInfo addressInfo = GeocodeHelperFactory.getInstance().processReverseGeocodeBackend(l.getLatitude(), l.getLongitude()); 
     	
     	Map<String, String> params = new ImmutableMap.Builder<String, String>().
                 put("key", Integer.toString(l.getId())).

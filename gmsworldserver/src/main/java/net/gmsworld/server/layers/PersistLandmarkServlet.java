@@ -18,7 +18,6 @@ import com.google.gdata.util.common.util.Base64;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.jstakun.lm.server.utils.persistence.LandmarkPersistenceWebUtils;
-import com.openlapi.AddressInfo;
 
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.utils.CryptoTools;
@@ -87,10 +86,8 @@ public class PersistLandmarkServlet extends HttpServlet {
                 	String layer = StringUtil.getStringParam(request.getParameter("layer"), Commons.LM_SERVER_LAYER);
                 	logger.log(Level.INFO, "Creating new landmark in layer: " + layer);
                 
-                	AddressInfo addressInfo = null;
                 	if (layer.equals(Commons.MY_POS_CODE)) {
-                		addressInfo = GeocodeHelperFactory.getInstance().processReverseGeocode(l.getLatitude(), l.getLongitude());
-                		String address = addressInfo.getField(AddressInfo.EXTENSION);
+                		final String address = GeocodeHelperFactory.getInstance().processReverseGeocode(l.getLatitude(), l.getLongitude());
                 		if (StringUtils.isNotEmpty(address)) {
                 			l.setDescription(address);
                 		}
@@ -137,7 +134,7 @@ public class PersistLandmarkServlet extends HttpServlet {
             				logger.log(Level.INFO, "Removed from cache layer list {0}: {1}", new Object[]{layerKey, (CacheUtil.remove(layerKey) != null)});           
                 	    
             				//send notification to social networks
-            				LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), socialIds, addressInfo);
+            				LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), socialIds);
             			} 
                 	}
             	} else {

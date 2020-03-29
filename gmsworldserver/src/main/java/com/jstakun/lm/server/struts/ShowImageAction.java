@@ -12,7 +12,6 @@ import com.jstakun.lm.server.persistence.Screenshot;
 import com.jstakun.lm.server.utils.FileUtils;
 import com.jstakun.lm.server.utils.UserAgentUtils;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
-import com.openlapi.AddressInfo;
 
 import net.gmsworld.server.layers.GeocodeHelperFactory;
 
@@ -43,7 +42,7 @@ public class ShowImageAction extends org.apache.struts.action.Action {
         Screenshot s = FileUtils.getScreenshot(key, false, request.isSecure());
         
         if (s != null) {
-        	String address = GeocodeHelperFactory.getInstance().processReverseGeocode(s.getLatitude(),s.getLongitude()).getField(AddressInfo.EXTENSION);
+        	final String address = GeocodeHelperFactory.getInstance().processReverseGeocode(s.getLatitude(),s.getLongitude());
         	if (StringUtils.isNotEmpty(address)) {
         		request.setAttribute("address", address);
         	}

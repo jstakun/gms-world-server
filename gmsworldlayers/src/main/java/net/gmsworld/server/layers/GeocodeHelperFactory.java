@@ -48,32 +48,30 @@ public class GeocodeHelperFactory {
     	cacheProvider = cp;
     }
 	
-	private AddressInfo processReverseGeocodeBackend(double latitude, double longitude) {
+	public AddressInfo processReverseGeocodeBackend(double latitude, double longitude) {
 		 AddressInfo addressInfo = null;
 		 try {
 			 addressInfo = getGoogleGeocodeUtils().processReverseGeocode(latitude, longitude);
 			 if (addressInfo == null) {
 			 	 addressInfo = getMapQuestUtils().processReverseGeocode(latitude, longitude);
 			 }
-			 if (addressInfo == null) {
-				 addressInfo = new AddressInfo();
-			 }
 		 } catch (Exception e) {
 	         logger.log(Level.SEVERE, e.getMessage(), e);
 	     } 
+		 if (addressInfo == null) {
+			 addressInfo = new AddressInfo();
+		 }
 		 return addressInfo;
 	}
 	
-	public AddressInfo processReverseGeocode(double latitude, double longitude) {
-		AddressInfo addressInfo = new AddressInfo();
+	public String processReverseGeocode(double latitude, double longitude) {
 		final GeocodeCache gc = GeocodeCachePersistenceUtils.selectGeocodeCache(latitude, longitude);
 		
 		if (gc != null && gc.getLocation() != null) {
-			addressInfo.setField(AddressInfo.EXTENSION, gc.getLocation());
+			return gc.getLocation();
 		} else {
-			 addressInfo = processReverseGeocodeBackend(latitude, longitude);
+			 return processReverseGeocodeBackend(latitude, longitude).getField(AddressInfo.EXTENSION);
 		}
-		return addressInfo;
 	}
 	
 	public String processGeocode(String address, String email, int appId) {
