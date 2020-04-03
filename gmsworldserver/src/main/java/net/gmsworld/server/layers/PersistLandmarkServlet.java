@@ -53,12 +53,11 @@ public class PersistLandmarkServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         Landmark l = new Landmark();           	
-         
+        
         try {
             if (HttpUtils.isEmptyAny(request, "latitude", "longitude", "name", "username")) {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -76,7 +75,7 @@ public class PersistLandmarkServlet extends HttpServlet {
             		if (StringUtils.isNotEmpty(desc)) {
             			l.setDescription(desc);
             		}
-
+            		
                 	String validityStr = request.getParameter("validityDate");
                 	if (StringUtils.isNotEmpty(validityStr)) {
                 		long validity = Long.parseLong(validityStr);

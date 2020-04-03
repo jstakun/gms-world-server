@@ -12,6 +12,7 @@
     <staging>
         <enable-jar-classes>true</enable-jar-classes>
     </staging>
+    <warmup-requests-enabled>false</warmup-requests-enabled>
     <!--manual-scaling>
     	<instances>1</instances>
   	</manual-scaling-->
