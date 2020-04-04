@@ -32,6 +32,9 @@ public class MailUtils {
     private static final Logger logger = Logger.getLogger(MailUtils.class.getName());
     private static final String VALIDATE_MAIL_URL = com.jstakun.lm.server.config.ConfigurationManager.BACKEND_SERVER_URL + "validateEmail";
     private static final String MAILER_SERVER_URL = com.jstakun.lm.server.config.ConfigurationManager.BACKEND_SERVER_URL + "emailer"; 
+    
+    public static final String STATUS_OK = "ok";
+    public static final String STATUS_FAILED = "failed";
 	 
 	// ---------------------------------------------------------------------------------------------------------------------------
     
@@ -50,10 +53,10 @@ public class MailUtils {
             msg.setSubject(subject);
             msg.setContent(content, contentType);
             Transport.send(msg);
-            return "ok";
+            return STATUS_OK;
         } catch (Exception ex) {
         	logger.log(Level.SEVERE, ex.getMessage(), ex);
-            return "failed";
+            return STATUS_FAILED;
         }
     }*/
     
@@ -62,22 +65,30 @@ public class MailUtils {
     private static String sendRemoteMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType, String ccA, String ccP)  {
     	if (isValidEmailAddress(toA)) {
     		final long count  = CacheUtil.increment("mailto:" + toA);
-        	if (count <= 30 || (count <= 100 && count % 10 == 0) || count % 100 == 0) {
-        		//if (AwsSesUtils.sendEmail(fromA, fromP, toA, toP, ccA, ccP, content, contentType, subject)) {
-    			final String status = sendSesMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
-    			if (StringUtils.equalsIgnoreCase(status, "ok")) {
-    				return "ok"; 
+        	if (count <= 50 || (count <= 200 && count % 10 == 0) || count % 100 == 0) {
+        		//send first 50, every 10th > 50 && <= 200, every 100th > 200
+        		final String status = sendSesMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
+    			if (StringUtils.equalsIgnoreCase(status, STATUS_OK)) {
+    				return STATUS_OK; 
         	    } else {
-    				logger.log(Level.SEVERE, "Failed to send email message with SES! Trying with James...");
-    				return sendJamesMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
+    				//logger.log(Level.SEVERE, "Failed to send email message with SES! Trying with James...");
+    				//return sendJamesMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
+        	    	logger.log(Level.SEVERE, "Failed to send email message with SES! Trying one more time ...");
+    				return sendSesMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
     			}
     		} else {
-    			logger.log(Level.WARNING, "James is sending " + count + " email " + subject + " to " + toA);
-    			return sendJamesMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
+    			//logger.log(Level.WARNING, "James is sending " + count + " email " + subject + " to " + toA);
+    			//return sendJamesMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
+    			if (count % 100 == 0) {
+    				logger.log(Level.SEVERE, "Skipping to send " + count + " email " + subject + " to " + toA);
+    			} else {
+    				logger.log(Level.WARNING, "Skipping to send " + count + " email " + subject + " to " + toA);
+    			}
+    			return STATUS_FAILED;
     		}
     	} else {
     		logger.log(Level.SEVERE, "Invalid email address " + toA);
-    		return "failed";
+    		return STATUS_FAILED;
     	}
     }
     
@@ -85,12 +96,12 @@ public class MailUtils {
     	return sendBackendMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP, "ses");
     }
     
-    private static String sendJamesMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType, String ccA, String ccP)  {
+    /*private static String sendJamesMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType, String ccA, String ccP)  {
     	return sendBackendMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP, "james");
-    }
+    }*/
         
     private static String sendBackendMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType, String ccA, String ccP, String type)  {
-    	String status = "failed";   
+    	String status = STATUS_FAILED;   
     	
     	String recipients = addEmailAddress("to", toA, toP);
     	if (StringUtils.isEmpty(recipients)) {
@@ -126,7 +137,7 @@ public class MailUtils {
     		 Integer responseCode = HttpUtils.getResponseCode(MAILER_SERVER_URL);
     		 logger.log(Level.INFO, "Received response code: " + responseCode);
     		 if (responseCode != null && responseCode == 200) {
-    			 status = "ok";
+    			 status = STATUS_OK;
     		 } 
     	 } catch (Exception e) {
     		 logger.log(Level.SEVERE, e.getMessage(), e);
@@ -219,7 +230,7 @@ public class MailUtils {
             return sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick,  "Device Locator Registration", message, "text/html", ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK);	
         } catch (Exception ex) {
             logger.log(Level.SEVERE, null, ex);
-            result = "failed";
+            result = STATUS_FAILED;
         } finally {
             if (is != null) {
                 try {
@@ -444,7 +455,7 @@ public class MailUtils {
    	 			if (responseCode != null && responseCode == 200 && StringUtils.startsWith(response, "{")) {
    	 				logger.log(Level.INFO, "Received response code: " + responseCode);
    	 				JSONObject root = new JSONObject(response);
-   	 		    	if (StringUtils.equals(root.optString("status"), "ok")) {
+   	 		    	if (StringUtils.equals(root.optString("status"), STATUS_OK)) {
    	 		    		return 200;
    	 		    	} else {
    	 		    		return 500;
