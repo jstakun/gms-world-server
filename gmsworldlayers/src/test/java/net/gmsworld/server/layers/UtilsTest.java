@@ -24,6 +24,8 @@ public class UtilsTest {
 		String shortUrl2 = UrlUtils.getBitlyHash(longUrl);
 		System.out.println("Short url #2: " + shortUrl2);
 		//assertNotEquals("Shortening url 2 failed!", longUrl, shortUrl2);
+		
+		System.out.println(UrlUtils.findWhois("google.com"));
 	}
 	
 	public void geocodeTest() {

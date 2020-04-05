@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.net.whois.WhoisClient;
 import org.json.JSONObject;
 
 import net.gmsworld.server.config.Commons;
@@ -218,5 +219,23 @@ public class UrlUtils {
     		return null;
     	}
     }
-
+    
+    public static String findWhois(final String domainName) {
+		StringBuilder whoisResult = new StringBuilder("");
+		 
+		WhoisClient whoisClient = new WhoisClient();
+		try {
+			whoisClient.connect(WhoisClient.DEFAULT_HOST);
+			String whoisData = whoisClient.query("=" + domainName);
+			logger.log(Level.INFO, "Whois =" + domainName + "\n" + whoisData);
+			whoisResult.append(whoisData);
+			whoisClient.disconnect();
+ 
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage(), e);
+		} 
+		
+		return whoisResult.toString();
+    }
+    
 }

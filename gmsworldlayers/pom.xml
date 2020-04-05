@@ -125,8 +125,13 @@
     <dependency>
     	<groupId>com.amazonaws</groupId>
     	<artifactId>aws-java-sdk-ses</artifactId>
-    	<version>1.11.744</version>
+    	<version>1.11.759</version>
 	</dependency>
+	<dependency>
+    	<groupId>commons-net</groupId>
+    	<artifactId>commons-net</artifactId>
+    	<version>3.6</version>
+</dependency>
    </dependencies>
    
   <distributionManagement>
