@@ -41,10 +41,12 @@ public class ContactForm extends DynaValidatorForm {
     public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
         ActionErrors errors = new ActionErrors();
         final String email = (String) get("email");
-        if (StringUtils.isEmpty(email) || !MailUtils.isValidEmailAddress(email) || MailUtils.emailAccountExists(email) != 200) {
+        
+        if (StringUtils.isEmpty(email) || !MailUtils.isValidEmailAddress(email)) {
             errors.add("contactForm", new ActionMessage("errors.email"));
             logger.log(Level.WARNING, "Invalid email address " + email);
         }
+        
         if (StringUtils.isEmpty((String) get("message"))) {
             errors.add("contactForm", new ActionMessage("errors.required", "Message"));
         }
@@ -65,6 +67,13 @@ public class ContactForm extends DynaValidatorForm {
         	} catch (Exception e) {
         		logger.log(Level.SEVERE, e.getMessage(), e);
         		errors.add("userForm", new ActionMessage("errors.captcha"));
+        	}
+        }
+        
+        if (errors.isEmpty()) {
+        	if (MailUtils.emailAccountExists(email) != 200) {
+        		errors.add("contactForm", new ActionMessage("errors.email"));
+                logger.log(Level.SEVERE, "Invalid email address " + email);
         	}
         }
 
