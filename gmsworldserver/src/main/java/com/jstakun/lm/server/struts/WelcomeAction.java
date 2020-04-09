@@ -14,8 +14,11 @@ import org.apache.struts.action.ActionMapping;
 
 import com.jstakun.lm.server.utils.UserAgentUtils;
 import com.jstakun.lm.server.utils.memcache.CacheAction;
+import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 
+import net.gmsworld.server.layers.GeocodeHelperFactory;
+import net.gmsworld.server.layers.LayerHelperFactory;
 import net.gmsworld.server.utils.persistence.Landmark;
 import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;
 
@@ -23,9 +26,19 @@ public class WelcomeAction extends org.apache.struts.action.Action {
 	
 	private static final Logger logger = Logger.getLogger(WelcomeAction.class.getName());
 
+	public WelcomeAction() {
+		 super();
+		 logger.log(Level.INFO, "Initializing layer providers...");
+		 LayerHelperFactory.getInstance();
+		 logger.log(Level.INFO, "Initializing geocode providers...");
+		 GeocodeHelperFactory.getInstance();
+		 logger.log(Level.INFO, "Initializing cache provider...");
+	     LayerHelperFactory.getInstance().setCacheProvider(GoogleCacheProvider.getInstance());
+		 GeocodeHelperFactory.getInstance().setCacheProvider(GoogleCacheProvider.getInstance());
+	}
+	
 	@Override
-    public ActionForward execute(ActionMapping mapping, ActionForm form,
-            HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		//handle different request urls
         //http://m.
