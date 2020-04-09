@@ -362,11 +362,9 @@ public class HotelsBookingUtils extends LayerHelper {
 	        			}
 	        		}
 				}
-				
 				response = Math.round(minrate) + " " + currencycode;
 			}
 		}
-		
 		return response;
 	}
 	
