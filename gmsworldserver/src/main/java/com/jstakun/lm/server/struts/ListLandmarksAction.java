@@ -15,6 +15,8 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import com.jstakun.lm.server.utils.memcache.CacheUtil;
+
 public class ListLandmarksAction extends Action {
     /**This is the main action called from the Struts framework.
      * @param mapping The ActionMapping used to select this instance.
@@ -23,13 +25,10 @@ public class ListLandmarksAction extends Action {
      * @param response The HTTP Response we are processing.
      */
     @Override
-    public ActionForward execute(ActionMapping mapping, ActionForm form,
-                                 HttpServletRequest request,
-                                 HttpServletResponse response) throws IOException,
-                                                                      ServletException {
+    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
         List<Landmark> landmarkList = LandmarkPersistenceUtils.selectNewestLandmarks();     
-        
+        CacheUtil.put("newestLandmarks", landmarkList, CacheUtil.CacheType.FAST);
         request.setAttribute("landmarkList", landmarkList);
 
         return mapping.findForward( "success");

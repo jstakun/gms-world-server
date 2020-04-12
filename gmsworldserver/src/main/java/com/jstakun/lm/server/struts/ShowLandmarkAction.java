@@ -108,6 +108,8 @@ public class ShowLandmarkAction extends Action {
                                 }                               
                            }
                       }
+                 } else {
+                	 logger.log(Level.INFO, "Landmark {0} not found", key);
                  }
             } catch (Exception e) {
                 logger.log(Level.SEVERE, e.getMessage(), e);

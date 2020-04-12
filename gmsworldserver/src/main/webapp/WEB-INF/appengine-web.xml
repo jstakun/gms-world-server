@@ -13,6 +13,15 @@
         <enable-jar-classes>true</enable-jar-classes>
     </staging>
     <warmup-requests-enabled>false</warmup-requests-enabled>
+    <static-files>
+  		<include path="/**.css" expiration="7d"/>
+  		<include path="/**.png" expiration="7d"/>
+  		<include path="/**.jpg" expiration="7d"/>
+  		<include path="/**.gif" expiration="7d"/>
+  		<include path="/**.js" expiration="1h"/>
+  		<include path="/demo/lib/*.jar" expiration="7d"/>
+  		<include path="/download/**" expiration="7d"/>
+	</static-files>
     <!--manual-scaling>
     	<instances>1</instances>
   	</manual-scaling-->
@@ -21,10 +30,13 @@
     	<idle-timeout>3m</idle-timeout>
     </basic-scaling-->
     <automatic-scaling>
-       <target-cpu-utilization>0.90</target-cpu-utilization>
-       <target-throughput-utilization>0.90</target-throughput-utilization>
+       <target-cpu-utilization>0.95</target-cpu-utilization>
+       <target-throughput-utilization>0.95</target-throughput-utilization>
        <min-instances>1</min-instances>
        <max-instances>1</max-instances>
-       <max-concurrent-requests>50</max-concurrent-requests>
+       <max-pending-latency>5s</max-pending-latency>
+       <!-- max min-pending-latence is 5s -->
+       <min-pending-latency>5s</min-pending-latency>
+       <max-concurrent-requests>80</max-concurrent-requests>
      </automatic-scaling>
 </appengine-web-app>

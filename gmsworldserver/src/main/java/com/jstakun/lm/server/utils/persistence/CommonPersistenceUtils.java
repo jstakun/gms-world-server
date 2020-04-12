@@ -22,7 +22,6 @@ public class CommonPersistenceUtils {
                 return true;
             } else {
                 try {
-                    //KeyFactory.stringToKey(key);
                     return StringUtils.isNumeric(key);
                 } catch (IllegalArgumentException iae) {
                     logger.log(Level.SEVERE, "Wrong key format: {0}", key);

@@ -3,6 +3,7 @@
 <%@ page import="net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils,
                  net.gmsworld.server.utils.persistence.Landmark,
                  com.jstakun.lm.server.utils.HtmlUtils,
+                 com.jstakun.lm.server.utils.memcache.CacheUtil,
                  net.gmsworld.server.utils.UrlUtils,
                  org.apache.commons.lang.StringUtils,
                  java.util.Calendar,
@@ -71,10 +72,11 @@
             <div class="recent-comments">
                 <ul>
 <%
-	List<Landmark> landmarkList1 = HtmlUtils.getList(Landmark.class, request, "newestLandmarkList");
+	List<Landmark> landmarkList1 = CacheUtil.getList(Landmark.class, "newestLandmarks");
 
    if (landmarkList1 == null) {
 	   landmarkList1 = LandmarkPersistenceUtils.selectNewestLandmarks();
+	   CacheUtil.put("newestLandmarks", landmarkList1, CacheUtil.CacheType.FAST);
    }
    
    if (landmarkList1 != null) {

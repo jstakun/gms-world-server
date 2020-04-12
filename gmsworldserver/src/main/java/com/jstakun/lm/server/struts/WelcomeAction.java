@@ -62,7 +62,7 @@ public class WelcomeAction extends org.apache.struts.action.Action {
     		});
     				
     		List<Landmark> landmarkList = newestLandmarksAction.getListFromCache(Landmark.class, "newestLandmarks", CacheType.FAST);
-            request.setAttribute("newestLandmarkList", landmarkList);   
+            request.setAttribute("newestLandmarks", landmarkList);   
             
         	if (UserAgentUtils.isMobile(request.getHeader("User-Agent"))) {
         		return mapping.findForward("mobile");

@@ -26,7 +26,7 @@ public class CacheAction {
 			logger.log(Level.INFO, "Found object {0} in cache", key);
 		} else {
 			o = executor.executeAction();
-			logger.log(Level.INFO, "Execution action for {0}", key);
+			logger.log(Level.INFO, "Executing action for key {0}", key);
 			if (o != null) {
 				CacheUtil.put(key, o, cacheType);
 			}
