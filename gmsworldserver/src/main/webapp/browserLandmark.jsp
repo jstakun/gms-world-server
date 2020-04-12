@@ -81,9 +81,9 @@
   	    		longitude: "<%= longitude %>"
   			},
     		beforeSend: function( xhr ) {
-        		xhr.setRequestHeader(Commons.TOKEN_HEADER, "<%= token  %>");
-        		xhr.setRequestHeader(Commons.SCOPE_HEADER, "lm");
-        		xhr.setRequestHeader(Commons.APP_HEADER, "10");
+        		xhr.setRequestHeader("<%= Commons.TOKEN_HEADER %>", "<%= token  %>");
+        		xhr.setRequestHeader("<%= Commons.SCOPE_HEADER %>", "lm");
+        		xhr.setRequestHeader("<%= Commons.APP_HEADER %>", "10");
     		}})
   		.done(function( data ) {
   	  		var link = "/showLandmark/" + data.id + "<%= enabled %>";

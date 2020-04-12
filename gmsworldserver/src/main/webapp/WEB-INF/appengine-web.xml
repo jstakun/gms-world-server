@@ -34,9 +34,9 @@
        <target-throughput-utilization>0.95</target-throughput-utilization>
        <min-instances>1</min-instances>
        <max-instances>1</max-instances>
-       <max-pending-latency>5s</max-pending-latency>
-       <!-- max min-pending-latence is 5s -->
-       <min-pending-latency>5s</min-pending-latency>
+       <max-pending-latency>10s</max-pending-latency>
+       <!-- max min-pending-latence is 15s -->
+       <min-pending-latency>10s</min-pending-latency>
        <max-concurrent-requests>80</max-concurrent-requests>
      </automatic-scaling>
 </appengine-web-app>
