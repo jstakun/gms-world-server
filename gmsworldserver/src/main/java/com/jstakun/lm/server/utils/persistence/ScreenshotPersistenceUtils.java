@@ -37,7 +37,7 @@ public class ScreenshotPersistenceUtils {
     	String key = null;
     	
         try {
-        	final String landmarksUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/addItem";
+        	final String landmarksUrl = ConfigurationManager.getBackendUrl() + "/addItem";
         	String params = "filename=" + filename + "&latitude=" + latitude + "&longitude=" + longitude + "&type=screenshot";
         	if (username != null) {
         		params += "&username=" + username;
@@ -90,7 +90,7 @@ public class ScreenshotPersistenceUtils {
     	 int result = 0;
     	 
     	 try {
-         	final String gUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/itemProvider";
+         	final String gUrl = ConfigurationManager.getBackendUrl() + "/itemProvider";
          	final String params = "type=screenshot&ndays=" + ndays;			 
          	final String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
          	if (StringUtils.startsWith(StringUtils.trim(gJson), "[")) {
@@ -121,7 +121,7 @@ public class ScreenshotPersistenceUtils {
     		if (!FileUtils.deleteFileV2(null, filename)) {
     			logger.log(Level.SEVERE, "Failed to delete file {0} from screeshot {1}", new Object[] {filename, id});
     		}
-    		final String gUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/itemProvider";
+    		final String gUrl = ConfigurationManager.getBackendUrl() + "/itemProvider";
             final String params = "type=screenshot&id=" + id + "&action=remove";
     		final String response = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
     		logger.log(Level.INFO, "Deleting screenshot " + id + " response: " + response);
@@ -177,7 +177,7 @@ public class ScreenshotPersistenceUtils {
     {
     	Screenshot s = null;
     	try {
-        	final String gUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/itemProvider";
+        	final String gUrl = ConfigurationManager.getBackendUrl() + "/itemProvider";
         	final String params = "type=screenshot&id=" + k;			 
         	final String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {

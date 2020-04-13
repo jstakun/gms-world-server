@@ -28,11 +28,13 @@ public final class ConfigurationManager {
     private static final String DL_GOOGLE_PLAY_URL = "https://play.google.com/store/apps/details?id=net.gmsworld.devicelocator";
     private static final String BROWSER_URL = "https://landmarks.gms-world.net";
     private static final String BACKEND_SERVER_URL = "https://openapi-landmarks.b9ad.pro-us-east-1.openshiftapps.com/actions";
-    
-    public static final String CONFIG = "config";
+    private static final String GMS_LANDMARK_URL = "gmsLandmarkUrl";
+
+    private static final String CONFIG = "config";
+
     public static final String GMS_WORLD_PAGE_TOKEN = "gmsWorldPageToken";
     public static final String GMS_WORLD_ACCESS_TOKEN = "gmsWorldAccessToken";
-    public static final String GMS_LANDMARK_URL = "gmsLandmarkUrl";
+
     public static final String BOOKING_URL = "http://www.booking.com/city/%s/%s.html?aid=864525";
     public static final String HOTELS_URL = "https://hotels.gms-world.net";
     
@@ -119,10 +121,6 @@ public final class ConfigurationManager {
     }
     
     public static String getBackendUrl() {
-    	return BACKEND_SERVER_URL;
-    }
-    
-    public static String getBackendUrl(String parameterName) {
-    	return getParam(parameterName, getBackendUrl());
+    	return getParam(GMS_LANDMARK_URL, BACKEND_SERVER_URL);
     }
 }

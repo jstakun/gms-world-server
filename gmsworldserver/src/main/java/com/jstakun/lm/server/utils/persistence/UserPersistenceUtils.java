@@ -36,7 +36,7 @@ public class UserPersistenceUtils {
     public static String persist(String login, String password, String email, String firstname, String lastname, boolean local) {
         
         try {
-        	final String landmarksUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/addItem";
+        	final String landmarksUrl = ConfigurationManager.getBackendUrl() + "/addItem";
         	String params = "login=" + URLEncoder.encode(login, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8") + "&type=user";
         	
         	if (StringUtils.isNotEmpty(firstname)) {
@@ -70,7 +70,7 @@ public class UserPersistenceUtils {
     	User user = null;
         
         try {
-        	final String gUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/itemProvider";
+        	final String gUrl = ConfigurationManager.getBackendUrl() + "/itemProvider";
         	String params = "type=user";
         	if (StringUtils.isNotEmpty(username)) {
        		 	 params += "&login=" + username;
@@ -98,7 +98,7 @@ public class UserPersistenceUtils {
     public static boolean confirmUserRegistration(String login) {
     	boolean confirmed = false;
     	try {
-        	final String gUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/itemProvider";
+        	final String gUrl = ConfigurationManager.getBackendUrl() + "/itemProvider";
         	final String params = "type=user&confirm=1&login=" + URLEncoder.encode(login, "UTF-8");			 
         	final String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
@@ -120,7 +120,7 @@ public class UserPersistenceUtils {
     
     public static void removeUser(String secret) {
     	try {
-        	final String gUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/deleteItem";
+        	final String gUrl = ConfigurationManager.getBackendUrl() + "/deleteItem";
         	final String params = "type=user&secret=" + secret;			 
         	final String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
@@ -188,7 +188,7 @@ public class UserPersistenceUtils {
     private static boolean loginRemote(String login, String password) {
     	boolean auth = false;
     	try {
-    		final String gUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/itemProvider";
+    		final String gUrl = ConfigurationManager.getBackendUrl() + "/itemProvider";
     		final String passwordEnc = getHash(password);
     		final String params = "type=user&login=" + URLEncoder.encode(login, "UTF-8") + "&password=" + URLEncoder.encode(passwordEnc, "UTF-8") + "&enc=1";			 
     		final String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));

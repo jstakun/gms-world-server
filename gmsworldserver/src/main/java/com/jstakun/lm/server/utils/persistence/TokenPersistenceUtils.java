@@ -21,7 +21,7 @@ public class TokenPersistenceUtils {
 	
 	public static String generateToken(String scope, String user) throws Exception {
 		if (scope != null) {
-    		String tokenUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/generateToken?scope="+ scope;
+    		String tokenUrl = ConfigurationManager.getBackendUrl() + "/generateToken?scope="+ scope;
     		if (user != null) {
     			tokenUrl += "&user=" + user;
     		}
@@ -60,7 +60,7 @@ public class TokenPersistenceUtils {
 						return 0;
 					}
 				} else {
-					final String tokenUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/isValidToken?scope=" + scope + "&key=" + token;
+					final String tokenUrl = ConfigurationManager.getBackendUrl() + "/isValidToken?scope=" + scope + "&key=" + token;
 					final String tokenJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(tokenUrl), Commons.getProperty(Property.RH_GMS_USER), false);		
 					if (StringUtils.startsWith(tokenJson, "{")) {
 						JSONObject root = new JSONObject(tokenJson);

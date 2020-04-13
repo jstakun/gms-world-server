@@ -71,7 +71,7 @@ public class RoutesUtils {
 	           String[] resp = new String[2];
 	           try {
 	        	    logger.log(Level.INFO, "Saving route with size " + route.length());
-	        	    final URL routesUrl = new URL(ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.getBackendUrl()) + "/addItem");
+	        	    final URL routesUrl = new URL(ConfigurationManager.getBackendUrl() + "/addItem");
 		        	final String content = "type=route&name=" + name + "&route=" + route;
 		        	resp[0] = HttpUtils.processFileRequestWithBasicAuthn(routesUrl, "POST", null, content, "application/x-www-form-urlencoded", Commons.getProperty(Property.RH_GMS_USER));
 		        	//
@@ -99,7 +99,7 @@ public class RoutesUtils {
 	        	   }
 	           } else if (!StringUtils.equalsIgnoreCase(live, "true")) {
 	        	   try {
-	        		   final String routesUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/itemProvider?type=route&name=" + routeId;
+	        		   final String routesUrl = ConfigurationManager.getBackendUrl() + "/itemProvider?type=route&name=" + routeId;
 	        		   reply = HttpUtils.processFileRequestWithBasicAuthn(new URL(routesUrl), "GET", null, null, "application/json; charset=utf-8", Commons.getProperty(Property.RH_GMS_USER));
 	        		   Integer responseCode = HttpUtils.getResponseCode(routesUrl.toString());
 	        		   if (responseCode == null || responseCode != 200 || !StringUtils.startsWith(reply, "{") || !StringUtils.contains(reply, "features")) {

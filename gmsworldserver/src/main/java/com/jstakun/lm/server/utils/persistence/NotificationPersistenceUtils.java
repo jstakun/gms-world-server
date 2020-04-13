@@ -37,7 +37,7 @@ public class NotificationPersistenceUtils {
 		Notification n = null;
 		if (StringUtils.isNotEmpty(id)) {
 			try {
-				final String landmarksUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/addItem";
+				final String landmarksUrl = ConfigurationManager.getBackendUrl() + "/addItem";
 	        	String params = "id=" + id + "&type=notification";
 	        	if (status.equals(Notification.Status.VERIFIED)) {
 	        		params += "&status=1";
@@ -60,7 +60,7 @@ public class NotificationPersistenceUtils {
 		boolean removed = false;
 		if (StringUtils.isNotEmpty(id)) {
 			try {
-	        	final String gUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/deleteItem";
+	        	final String gUrl = ConfigurationManager.getBackendUrl() + "/deleteItem";
 	        	final String params = "type=notification&id=" + id;			 
 	        	final String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
 	        	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
@@ -82,7 +82,7 @@ public class NotificationPersistenceUtils {
 	private static Notification findById(String id) {
 		Notification n = null;
 		try {
-        	final String gUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/itemProvider";
+        	final String gUrl = ConfigurationManager.getBackendUrl() + "/itemProvider";
         	String params = "type=notification";
         	if (StringUtils.isNotEmpty(id)) {
        		 	 params += "&id=" + id;
@@ -106,7 +106,7 @@ public class NotificationPersistenceUtils {
 		Notification n = null;
 		if (StringUtils.isNotEmpty(secret)) {
 			try {
-	        	final String gUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/itemProvider";
+	        	final String gUrl = ConfigurationManager.getBackendUrl() + "/itemProvider";
 	        	String params = "type=notification";
 	        	if (StringUtils.isNotEmpty(secret)) {
 	       		 	 params += "&secret=" + secret;

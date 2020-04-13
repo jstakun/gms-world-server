@@ -93,7 +93,7 @@ public class LayerPersistenceUtils {
             pm.close();
         }*/
     	try {
-        	final String landmarksUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/addItem";
+        	final String landmarksUrl = ConfigurationManager.getBackendUrl() + "/addItem";
         	final String params = "name=" + name + "&desc=" + URLEncoder.encode(desc, "UTF-8") + 
         			        "&formatted=" + URLEncoder.encode(formatted, "UTF-8") + "&type=layer" +
         			        "&e=" + enabled + "&m=" + manageable + "&c=" + checkinable;
@@ -148,7 +148,7 @@ public class LayerPersistenceUtils {
 			public Object executeAction() {
 				try {
 					List<Layer> layers = new ArrayList<Layer>();
-					final String gUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/itemProvider";
+					final String gUrl = ConfigurationManager.getBackendUrl() + "/itemProvider";
 					String params = "type=layer";			 
 					//logger.log(Level.INFO, "Calling: " + gUrl);
 					String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
