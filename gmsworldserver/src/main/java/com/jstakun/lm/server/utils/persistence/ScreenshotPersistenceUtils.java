@@ -37,14 +37,12 @@ public class ScreenshotPersistenceUtils {
     	String key = null;
     	
         try {
-        	String landmarksUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "addItem";
+        	final String landmarksUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/addItem";
         	String params = "filename=" + filename + "&latitude=" + latitude + "&longitude=" + longitude + "&type=screenshot";
         	if (username != null) {
         		params += "&username=" + username;
         	}
-        	//logger.log(Level.INFO, "Calling: " + landmarksUrl);
-        	String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
-        	logger.log(Level.INFO, "Received response: " + landmarksJson);
+        	final String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
         	if (StringUtils.startsWith(StringUtils.trim(landmarksJson), "{")) {
         		JSONObject resp = new JSONObject(landmarksJson);
         		key = resp.optString("id");
@@ -92,14 +90,12 @@ public class ScreenshotPersistenceUtils {
     	 int result = 0;
     	 
     	 try {
-         	String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "itemProvider";
-         	String params = "type=screenshot&ndays=" + ndays;			 
-         	//logger.log(Level.INFO, "Calling: " + gUrl);
-         	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
-         	//logger.log(Level.INFO, "Received response: " + gJson);
+         	final String gUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/itemProvider";
+         	final String params = "type=screenshot&ndays=" + ndays;			 
+         	final String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
          	if (StringUtils.startsWith(StringUtils.trim(gJson), "[")) {
          		JSONArray root = new JSONArray(gJson);
-         		int size = root.length();
+         		final int size = root.length();
          		logger.log(Level.INFO, size + " screenshots will be deleted...");
              	for (int i=0;i<size; i++) {
          			JSONObject screenshot = root.getJSONObject(i);
@@ -125,9 +121,9 @@ public class ScreenshotPersistenceUtils {
     		if (!FileUtils.deleteFileV2(null, filename)) {
     			logger.log(Level.SEVERE, "Failed to delete file {0} from screeshot {1}", new Object[] {filename, id});
     		}
-    		String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "itemProvider";
-            String params = "type=screenshot&id=" + id + "&action=remove";
-    		String response = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
+    		final String gUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/itemProvider";
+            final String params = "type=screenshot&id=" + id + "&action=remove";
+    		final String response = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
     		logger.log(Level.INFO, "Deleting screenshot " + id + " response: " + response);
     		Integer responseCode = HttpUtils.getResponseCode(gUrl);
     		if (responseCode != null && responseCode == 200) {
@@ -181,11 +177,9 @@ public class ScreenshotPersistenceUtils {
     {
     	Screenshot s = null;
     	try {
-        	String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "itemProvider";
-        	String params = "type=screenshot&id=" + k;			 
-        	//logger.log(Level.INFO, "Calling: " + gUrl);
-        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
-        	//logger.log(Level.INFO, "Received response: " + gJson);
+        	final String gUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/itemProvider";
+        	final String params = "type=screenshot&id=" + k;			 
+        	final String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
         		JSONObject root = new JSONObject(gJson);
         		if (root.has("latitude") && root.has("longitude")) {

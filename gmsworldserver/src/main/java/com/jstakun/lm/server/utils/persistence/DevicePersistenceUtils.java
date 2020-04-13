@@ -29,9 +29,8 @@ public class DevicePersistenceUtils {
 	
 	public static int isDeviceRegistered(String imei) throws Exception {
 		if (imei != null) {
-		    final String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "getDevice?" + 
-	                 "imei="+  imei;
-		    String deviceJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(deviceUrl), Commons.getProperty(Property.RH_GMS_USER), false);		
+		    final String deviceUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/getDevice?imei="+  imei;
+		    final String deviceJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(deviceUrl), Commons.getProperty(Property.RH_GMS_USER), false);		
 		    if (StringUtils.startsWith(deviceJson, "{")) {
 			   JSONObject root = new JSONObject(deviceJson);
 			   JSONObject output = root.optJSONObject("output");
@@ -55,7 +54,7 @@ public class DevicePersistenceUtils {
 	
 	public static int setupDevice(String imei, String name, String username, String token, String flex) throws Exception {
 		if (imei != null) {
-		    final String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "setupDevice";
+		    final String deviceUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/setupDevice";
 		    String params = "imei="+  imei;
 		    if (StringUtils.isNotEmpty(username)) {
 		    	params += "&username=" + username;
@@ -93,7 +92,7 @@ public class DevicePersistenceUtils {
 
 	public static int sendCommand(String imei, Integer pin, String name, String username, String command, String args, String correlationId, String flex) throws Exception {
 		if (pin != null && isValidCommand(command)) {
-			final String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "commandDevice";
+			final String deviceUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/commandDevice";
 			String params = "command=" + command + "&pin=" + pin;
 			if (imei != null) {
 				params += "&imei="+  imei;
@@ -163,9 +162,8 @@ public class DevicePersistenceUtils {
 	
 	public static String getUserDevices(String username) throws Exception {
 		if (username != null) {
-		    String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "getUserDevices?" + 
-	                 "username="+  username;
-		    String deviceJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(deviceUrl), Commons.getProperty(Property.RH_GMS_USER), false);		
+		    final String deviceUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/getUserDevices?username="+  username;
+		    final String deviceJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(deviceUrl), Commons.getProperty(Property.RH_GMS_USER), false);		
 		    if (StringUtils.startsWith(deviceJson, "{")) {
 			   JSONObject root = new JSONObject(deviceJson);
 			   JSONArray output = root.optJSONArray("output");
@@ -187,9 +185,8 @@ public class DevicePersistenceUtils {
 	
 	public static int deleteDevice(String imei) throws Exception {
 		if (imei != null) {
-		    String deviceUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "deleteDevice?" + 
-	                 "imei="+  imei;
-		    String deviceJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(deviceUrl), Commons.getProperty(Property.RH_GMS_USER), false);		
+		    final String deviceUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/deleteDevice?imei="+  imei;
+		    final String deviceJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(deviceUrl), Commons.getProperty(Property.RH_GMS_USER), false);		
 		    if (StringUtils.startsWith(StringUtils.trim(deviceJson), "{")) {
 			   return 1;
 		   } else {

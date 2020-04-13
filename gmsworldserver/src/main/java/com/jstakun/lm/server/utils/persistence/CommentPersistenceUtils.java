@@ -46,7 +46,7 @@ public class CommentPersistenceUtils implements Serializable {
             pm.close();
         }*/
     	try {
-        	String landmarksUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "addItem";
+        	final String landmarksUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/addItem";
         	String params = "username=" + username + "&landmarkId=" + landmarkKey + "&message=" + URLEncoder.encode(message, "UTF-8") + "&type=comment";
         	//logger.log(Level.INFO, "Calling: " + landmarksUrl);
         	String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
@@ -75,11 +75,10 @@ public class CommentPersistenceUtils implements Serializable {
         }*/
     	
     	try {
-        	String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "itemProvider";
+        	final String gUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/itemProvider";
         	String params = "type=comment&landmarkId=" + landmarkKey;			 
-        	//logger.log(Level.INFO, "Calling: " + gUrl);
         	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
-        	//logger.log(Level.INFO, "Received response: " + gJson);
+        	
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "[")) {
         		JSONArray arr = new JSONArray(gJson);
     		    for (int i=0;i<arr.length();i++) {

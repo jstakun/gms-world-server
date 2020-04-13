@@ -37,20 +37,17 @@ public class NotificationPersistenceUtils {
 		Notification n = null;
 		if (StringUtils.isNotEmpty(id)) {
 			try {
-				String landmarksUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "addItem";
+				final String landmarksUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/addItem";
 	        	String params = "id=" + id + "&type=notification";
 	        	if (status.equals(Notification.Status.VERIFIED)) {
 	        		params += "&status=1";
 	        	}
-	        	//logger.log(Level.INFO, "Calling: " + landmarksUrl);
-	        	String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
-	        	logger.log(Level.INFO, "Received response: " + landmarksJson);
+	        	final String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
 	        	if (StringUtils.startsWith(StringUtils.trim(landmarksJson), "{")) {
 	        		JSONObject resp = new JSONObject(landmarksJson);
 	        		if (resp.has("id")) {
 	        			n = jsonToNotification(resp);
 	        		}
-	        		//logger.log(Level.INFO, "Received response: " + landmarksJson);
 	        	}	
 			} catch (Exception ex) {
 				logger.log(Level.SEVERE, ex.getMessage(), ex);
@@ -63,9 +60,9 @@ public class NotificationPersistenceUtils {
 		boolean removed = false;
 		if (StringUtils.isNotEmpty(id)) {
 			try {
-	        	String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "deleteItem";
-	        	String params = "type=notification&id=" + id;			 
-	        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
+	        	final String gUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/deleteItem";
+	        	final String params = "type=notification&id=" + id;			 
+	        	final String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
 	        	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
 	        		JSONObject root = new JSONObject(gJson);
 	        		if  (StringUtils.equals(root.optString("status"), "ok")) {
@@ -85,14 +82,12 @@ public class NotificationPersistenceUtils {
 	private static Notification findById(String id) {
 		Notification n = null;
 		try {
-        	String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "itemProvider";
+        	final String gUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/itemProvider";
         	String params = "type=notification";
         	if (StringUtils.isNotEmpty(id)) {
        		 	 params += "&id=" + id;
         	} 
-        	//logger.log(Level.INFO, "Calling: " + gUrl);
-        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
-        	//logger.log(Level.INFO, "Received response: " + gJson);
+        	final String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
         		JSONObject root = new JSONObject(gJson);
         		if (root.has("id")) {
@@ -111,14 +106,12 @@ public class NotificationPersistenceUtils {
 		Notification n = null;
 		if (StringUtils.isNotEmpty(secret)) {
 			try {
-	        	String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "itemProvider";
+	        	final String gUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/itemProvider";
 	        	String params = "type=notification";
 	        	if (StringUtils.isNotEmpty(secret)) {
 	       		 	 params += "&secret=" + secret;
 	        	} 
-	        	//logger.log(Level.INFO, "Calling: " + gUrl);
-	        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
-	        	//logger.log(Level.INFO, "Received response: " + gJson);
+	        	final String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
 	        	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
 	        		JSONObject root = new JSONObject(gJson);
 	        		if (root.has("id")) {

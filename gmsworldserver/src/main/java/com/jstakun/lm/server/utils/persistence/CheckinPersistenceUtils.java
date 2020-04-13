@@ -38,7 +38,7 @@ public class CheckinPersistenceUtils {
     public static boolean persist(String username, String venueId, int landmarkKey, Integer type) {
     	boolean result = true;
     	try {
-        	String landmarksUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "addItem";
+        	final String landmarksUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/addItem";
         	String params = "username=" + username + "&itemType=" + type + "&type=checkin";
         	if (landmarkKey > 0) {
         		params += "&landmarkId=" + landmarkKey;
@@ -46,8 +46,7 @@ public class CheckinPersistenceUtils {
         	if (StringUtils.isNotEmpty(venueId)) {
         		params += "&venueId=" + venueId;
         	}
-        	//logger.log(Level.INFO, "Calling " + landmarksUrl + params);
-        	String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
+        	final String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
         	logger.log(Level.INFO, "Received following server response: " + landmarksJson);
             if (StringUtils.contains(landmarksJson, "error")) {
             	result = false;
@@ -62,7 +61,7 @@ public class CheckinPersistenceUtils {
     	List<Checkin> results = new ArrayList<Checkin>();
         
     	try {
-        	String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "itemProvider";
+        	final String gUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/itemProvider";
         	String params = "type=checkin&landmarkId=" + landmarkid;			 
         	//logger.log(Level.INFO, "Calling: " + gUrl);
         	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));

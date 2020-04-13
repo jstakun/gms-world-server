@@ -124,7 +124,7 @@ public class LandmarkPersistenceWebUtils {
     	int hotelsCount = ((HotelsBookingUtils)LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)).countNearbyHotels(l.getLatitude(), l.getLongitude(), 50);
     	if (hotelsCount > 0) {	
 			 cheapestPrice = ((HotelsBookingUtils)LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER)).findCheapestHotel(l.getLatitude(), l.getLongitude(), 50, 1);
-			 hotelsUrl = UrlUtils.getShortUrl(com.jstakun.lm.server.config.ConfigurationManager.HOTELS_URL + "hotelLandmark/" + HtmlUtils.encodeDouble(l.getLatitude()) + "/" + HtmlUtils.encodeDouble(l.getLongitude()));		 
+			 hotelsUrl = UrlUtils.getShortUrl(com.jstakun.lm.server.config.ConfigurationManager.HOTELS_URL + "/hotelLandmark/" + HtmlUtils.encodeDouble(l.getLatitude()) + "/" + HtmlUtils.encodeDouble(l.getLongitude()));		 
 		}
     	
     	String cc = ccIn;

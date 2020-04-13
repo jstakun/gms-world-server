@@ -34,13 +34,7 @@ public class RoutesUtils {
 				
     	private static final Logger logger = Logger.getLogger(RoutesUtils.class.getName());
     			
-    	//old api
-    	//private static final String ROUTES_API_URL =  "https://routes-api.b9ad.pro-us-east-1.openshiftapps.com";
-    	//private static final String ROUTES_URL = ROUTES_API_URL + "/camel/v1/cache/features/routes";
-    	//private static final String ROUTE_URL_NAME = ROUTES_API_URL + "/camel/v1/one/routes/name/";
-    	//private static final String ROUTE_URL_ID = ROUTES_API_URL + "/camel/v1/getById/routes/"; //"/camel/v1/one/routes/_id/" ;
-    							
-	    public static JSONObject getFromServer(String lat_start, String lng_start, String lat_end, String lng_end, String type, String username) {
+    	public static JSONObject getFromServer(String lat_start, String lng_start, String lat_end, String lng_end, String type, String username) {
                 JSONObject route = null;
                 try {
                 	route = GeocodeHelperFactory.getInstance().getRoute(lat_start, lng_start, lat_end, lng_end, type, username);
@@ -77,11 +71,7 @@ public class RoutesUtils {
 	           String[] resp = new String[2];
 	           try {
 	        	    logger.log(Level.INFO, "Saving route with size " + route.length());
-	        	    //old api
-	        	    //final URL routesUrl = new URL(ROUTES_URL + "?user_key=" + Commons.getProperty(Property.RH_ROUTES_API_KEY));
-	            	//resp[0] = HttpUtils.processFileRequestWithBasicAuthn(routesUrl, "POST", null, route, "application/json; charset=utf-8", Commons.getProperty(Property.RH_GMS_USER));
-	        	    //new api
-	        	    final URL routesUrl = new URL(ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "addItem");
+	        	    final URL routesUrl = new URL(ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.getBackendUrl()) + "/addItem");
 		        	final String content = "type=route&name=" + name + "&route=" + route;
 		        	resp[0] = HttpUtils.processFileRequestWithBasicAuthn(routesUrl, "POST", null, content, "application/x-www-form-urlencoded", Commons.getProperty(Property.RH_GMS_USER));
 		        	//
@@ -109,23 +99,11 @@ public class RoutesUtils {
 	        	   }
 	           } else if (!StringUtils.equalsIgnoreCase(live, "true")) {
 	        	   try {
-	        		   //old api
-	        		   //URL routesUrl = new URL(ROUTE_URL_NAME + routeId + "?user_key=" + Commons.getProperty(Property.RH_ROUTES_API_KEY));
-		        	   //new api
-	        		   final URL routesUrl = new URL(ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + 
-		        			   "itemProvider?type=route&name=" + routeId);			        	
-		        	   //
-		        	   reply = HttpUtils.processFileRequestWithBasicAuthn(routesUrl, "GET", null, null, "application/json; charset=utf-8", Commons.getProperty(Property.RH_GMS_USER));
+	        		   final String routesUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/itemProvider?type=route&name=" + routeId;
+	        		   reply = HttpUtils.processFileRequestWithBasicAuthn(new URL(routesUrl), "GET", null, null, "application/json; charset=utf-8", Commons.getProperty(Property.RH_GMS_USER));
 	        		   Integer responseCode = HttpUtils.getResponseCode(routesUrl.toString());
 	        		   if (responseCode == null || responseCode != 200 || !StringUtils.startsWith(reply, "{") || !StringUtils.contains(reply, "features")) {
-	        			   logger.log(Level.SEVERE, "Received following response from " + routesUrl.toString() + ": -" + reply + "-");
-	        			   //old api
-	        			   //routesUrl = new URL(ROUTE_URL_ID  + routeId + "?user_key=" + Commons.getProperty(Property.RH_ROUTES_API_KEY));
-	        			   //reply = HttpUtils.processFileRequestWithBasicAuthn(routesUrl, "GET", null, null, "application/json; charset=utf-8", Commons.getProperty(Property.RH_GMS_USER));
-	        			   //responseCode = HttpUtils.getResponseCode(routesUrl.toString());
-	        	           //if (responseCode == null || responseCode != 200 || !StringUtils.startsWith(reply, "{")) {
-	        			   //   logger.log(Level.SEVERE, "Received following response from " + routesUrl.toString() + ": -" + reply + "-");
-	        			   //}	
+	        			   logger.log(Level.SEVERE, "Received following response from " + routesUrl + ": -" + reply + "-");
 	        		   }
 	        	   } catch (Exception e) {
 	        		   logger.log(Level.SEVERE, e.getMessage() + " from response: " +  reply, e);

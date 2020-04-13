@@ -23,7 +23,7 @@ public class RHCloudUtils {
 			 logger.log(Level.SEVERE, e.getMessage(), e);
 		}
 		try {
-			rhcloudHealthCheck("landmarks", ConfigurationManager.BACKEND_SERVER_URL + "landmarksProvider?limit=10");
+			rhcloudHealthCheck("landmarks", ConfigurationManager.getBackendUrl() + "/landmarksProvider?limit=10");
 		} catch (Exception e) {
 			 logger.log(Level.SEVERE, e.getMessage(), e);
 		}

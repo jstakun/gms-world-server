@@ -23,17 +23,18 @@ import com.jstakun.lm.server.utils.persistence.ConfigPersistenceUtils;
 public final class ConfigurationManager {
     
     private static Map<String, String> configuration;
+    
+    private static final String LM_GOOGLE_PLAY_URL = "https://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui";
+    private static final String DL_GOOGLE_PLAY_URL = "https://play.google.com/store/apps/details?id=net.gmsworld.devicelocator";
+    private static final String BROWSER_URL = "https://landmarks.gms-world.net";
+    private static final String BACKEND_SERVER_URL = "https://openapi-landmarks.b9ad.pro-us-east-1.openshiftapps.com/actions";
+    
     public static final String CONFIG = "config";
     public static final String GMS_WORLD_PAGE_TOKEN = "gmsWorldPageToken";
     public static final String GMS_WORLD_ACCESS_TOKEN = "gmsWorldAccessToken";
     public static final String GMS_LANDMARK_URL = "gmsLandmarkUrl";
-    private static final String LM_GOOGLE_PLAY_URL = "https://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui";
-    //private static final String DA_GOOGLE_PLAY_URL = "https://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui.deals";
-    private static final String DL_GOOGLE_PLAY_URL = "https://play.google.com/store/apps/details?id=net.gmsworld.devicelocator";
-    private static final String BROWSER_URL = "https://landmarks.gms-world.net/";
     public static final String BOOKING_URL = "http://www.booking.com/city/%s/%s.html?aid=864525";
-    public static final String HOTELS_URL = "https://hotels.gms-world.net/";
-    public static final String BACKEND_SERVER_URL = "https://openapi-landmarks.b9ad.pro-us-east-1.openshiftapps.com/actions/";
+    public static final String HOTELS_URL = "https://hotels.gms-world.net";
     
     public static void populateConfig()
     {
@@ -108,8 +109,6 @@ public final class ConfigurationManager {
     public static String getAppUrl(int appId) {
     	if (appId == Commons.LM_ID) {
     		return LM_GOOGLE_PLAY_URL;
-    	//} else if (appId == Commons.DA_ID) {
-    		//return DA_GOOGLE_PLAY_URL;
     	} else if (appId == Commons.DL_ID) {
     		return DL_GOOGLE_PLAY_URL;
     	}else if (appId == Commons.BROWSER_ID) {
@@ -117,5 +116,13 @@ public final class ConfigurationManager {
     	} else {	
     		return LM_GOOGLE_PLAY_URL;
     	}
+    }
+    
+    public static String getBackendUrl() {
+    	return BACKEND_SERVER_URL;
+    }
+    
+    public static String getBackendUrl(String parameterName) {
+    	return getParam(parameterName, getBackendUrl());
     }
 }

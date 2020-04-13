@@ -36,7 +36,7 @@ public class UserPersistenceUtils {
     public static String persist(String login, String password, String email, String firstname, String lastname, boolean local) {
         
         try {
-        	String landmarksUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "addItem";
+        	final String landmarksUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/addItem";
         	String params = "login=" + URLEncoder.encode(login, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8") + "&type=user";
         	
         	if (StringUtils.isNotEmpty(firstname)) {
@@ -49,9 +49,8 @@ public class UserPersistenceUtils {
         	   params += "&email=" + URLEncoder.encode(email, "UTF-8");
             }
             
-        	//logger.log(Level.INFO, "Calling: " + landmarksUrl);
-        	String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
-        	logger.log(Level.INFO, "Received response: " + landmarksJson);
+        	final String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
+        	
         	if (StringUtils.startsWith(StringUtils.trim(landmarksJson), "{")) {
         		JSONObject resp = new JSONObject(landmarksJson);
         		if (resp.optString("login") == null) {
@@ -71,16 +70,16 @@ public class UserPersistenceUtils {
     	User user = null;
         
         try {
-        	String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "itemProvider";
+        	final String gUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/itemProvider";
         	String params = "type=user";
         	if (StringUtils.isNotEmpty(username)) {
        		 	 params += "&login=" + username;
         	} else if (StringUtils.isNotEmpty(secret)) {
         		 params += "&secret=" + secret;
         	}
-        	//logger.log(Level.INFO, "Calling: " + gUrl);
-        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
-        	//logger.log(Level.INFO, "Received response: " + gJson);
+        	
+        	final String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
+        	
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
         		JSONObject root = new JSONObject(gJson);
         		if (root.has("login") && root.has("password")) {
@@ -99,11 +98,9 @@ public class UserPersistenceUtils {
     public static boolean confirmUserRegistration(String login) {
     	boolean confirmed = false;
     	try {
-        	String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "itemProvider";
-        	String params = "type=user&confirm=1&login=" + URLEncoder.encode(login, "UTF-8");			 
-        	//logger.log(Level.INFO, "Calling: " + gUrl);
-        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
-        	//logger.log(Level.INFO, "Received response: " + gJson);
+        	final String gUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/itemProvider";
+        	final String params = "type=user&confirm=1&login=" + URLEncoder.encode(login, "UTF-8");			 
+        	final String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
         		JSONObject root = new JSONObject(gJson);
         		confirmed = root.optBoolean("confirmed", false);
@@ -123,11 +120,9 @@ public class UserPersistenceUtils {
     
     public static void removeUser(String secret) {
     	try {
-        	String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "deleteItem";
-        	String params = "type=user&secret=" + secret;			 
-        	//logger.log(Level.INFO, "Calling: " + gUrl);
-        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
-        	//logger.log(Level.INFO, "Received response: " + gJson);
+        	final String gUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/deleteItem";
+        	final String params = "type=user&secret=" + secret;			 
+        	final String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
         		logger.log(Level.INFO, "User removal status: " + gJson);
         	} else {
@@ -193,10 +188,10 @@ public class UserPersistenceUtils {
     private static boolean loginRemote(String login, String password) {
     	boolean auth = false;
     	try {
-    		String gUrl = ConfigurationManager.getParam(ConfigurationManager.GMS_LANDMARK_URL, ConfigurationManager.BACKEND_SERVER_URL) + "itemProvider";
-    		String passwordEnc = getHash(password);
-    		String params = "type=user&login=" + URLEncoder.encode(login, "UTF-8") + "&password=" + URLEncoder.encode(passwordEnc, "UTF-8") + "&enc=1";			 
-    		String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
+    		final String gUrl = ConfigurationManager.getBackendUrl(ConfigurationManager.GMS_LANDMARK_URL) + "/itemProvider";
+    		final String passwordEnc = getHash(password);
+    		final String params = "type=user&login=" + URLEncoder.encode(login, "UTF-8") + "&password=" + URLEncoder.encode(passwordEnc, "UTF-8") + "&enc=1";			 
+    		final String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
     		if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
     			JSONObject root = new JSONObject(gJson);
     			auth = root.optBoolean("auth", false);

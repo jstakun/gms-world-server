@@ -30,8 +30,8 @@ import net.gmsworld.server.utils.HttpUtils;
 public class MailUtils {
 
     private static final Logger logger = Logger.getLogger(MailUtils.class.getName());
-    private static final String VALIDATE_MAIL_URL = com.jstakun.lm.server.config.ConfigurationManager.BACKEND_SERVER_URL + "validateEmail";
-    private static final String MAILER_SERVER_URL = com.jstakun.lm.server.config.ConfigurationManager.BACKEND_SERVER_URL + "emailer"; 
+    private static final String VALIDATE_MAIL_URL = com.jstakun.lm.server.config.ConfigurationManager.getBackendUrl() + "/validateEmail";
+    private static final String MAILER_SERVER_URL = com.jstakun.lm.server.config.ConfigurationManager.getBackendUrl() + "/emailer"; 
     
     public static final String STATUS_OK = "ok";
     public static final String STATUS_FAILED = "failed";
