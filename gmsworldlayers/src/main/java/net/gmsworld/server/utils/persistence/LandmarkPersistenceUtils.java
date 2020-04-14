@@ -32,7 +32,7 @@ import net.gmsworld.server.utils.memcache.CacheProvider;
 public class LandmarkPersistenceUtils {
 
     private static final Logger logger = Logger.getLogger(LandmarkPersistenceUtils.class.getName());
-    private static final String BACKEND_SERVER_URL = "https://landmarks-api.b9ad.pro-us-east-1.openshiftapps.com:443/api/v1"; 
+    private static final String BACKEND_SERVER_URL = "https://landmarks-api.b9ad.pro-us-east-1.openshiftapps.com/api/v1"; 
     
     public static Map<String, String> persistLandmark(String name, String description, double latitude, double longitude, double altitude, String username, Date validityDate, String layer, String email, String flex) {
 

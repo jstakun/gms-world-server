@@ -30,7 +30,7 @@ public final class ConfigurationManager {
     private static final String BACKEND_SERVER_URL = "https://openapi-landmarks.b9ad.pro-us-east-1.openshiftapps.com/actions";
     private static final String GMS_LANDMARK_URL = "gmsLandmarkUrl";
 
-    private static final String CONFIG = "config";
+    public static final String CONFIG = "config";
 
     public static final String GMS_WORLD_PAGE_TOKEN = "gmsWorldPageToken";
     public static final String GMS_WORLD_ACCESS_TOKEN = "gmsWorldAccessToken";

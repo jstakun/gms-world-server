@@ -31,7 +31,7 @@ import net.gmsworld.server.utils.StringUtil;
 public class GeocodeCachePersistenceUtils {
 
     private static final Logger logger = Logger.getLogger(GeocodeCachePersistenceUtils.class.getName());
-    private static final String BACKEND_SERVER_URL = "https://landmarks-api.b9ad.pro-us-east-1.openshiftapps.com:443/api/v1"; 
+    private static final String BACKEND_SERVER_URL = "https://landmarks-api.b9ad.pro-us-east-1.openshiftapps.com/api/v1"; 
     
     public static void persistGeocode(final String location, final double latitude, final double longitude) {
         if (StringUtils.isNotEmpty(location)) {
