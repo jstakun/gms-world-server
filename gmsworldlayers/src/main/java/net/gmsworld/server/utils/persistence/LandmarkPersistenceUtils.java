@@ -41,7 +41,7 @@ public class LandmarkPersistenceUtils {
         try {
         	final String landmarksUrl = BACKEND_SERVER_URL + "/addItem";
         	String params = "type=landmark&latitude=" + latitude + "&longitude=" + longitude + "&name=" + URLEncoder.encode(name, "UTF-8") + 
-        			"&altitude=" + altitude + "&username=" + username + "&layer=" + layer + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);						 
+        			"&altitude=" + altitude + "&username=" + URLEncoder.encode(username, "UTF-8") + "&layer=" + URLEncoder.encode(layer, "UTF-8") + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);						 
         	if (validityDate != null) {
         		params +=	"&validityDate=" + validityDate.getTime();
         	}	

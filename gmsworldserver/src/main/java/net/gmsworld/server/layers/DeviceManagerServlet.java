@@ -233,7 +233,7 @@ public final class DeviceManagerServlet extends HttpServlet {
    	   		tokens.add(geo);
    	   		if (StringUtils.isNotEmpty(request.getHeader(Commons.ROUTE_ID_HEADER))) {
    	   			tokens.add("routeId:" + request.getHeader(Commons.ROUTE_ID_HEADER));
-   	   		} else 	if (StringUtils.isNotEmpty(deviceId)) {
+   	   		} else if (StringUtils.isNotEmpty(deviceId)) {
 				Landmark l = new Landmark();
 				l.setLatitude(latitude);
 				l.setLongitude(longitude);
