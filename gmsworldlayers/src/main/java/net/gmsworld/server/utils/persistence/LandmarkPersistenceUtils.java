@@ -32,16 +32,16 @@ import net.gmsworld.server.utils.memcache.CacheProvider;
 public class LandmarkPersistenceUtils {
 
     private static final Logger logger = Logger.getLogger(LandmarkPersistenceUtils.class.getName());
-    private static final String BACKEND_SERVER_URL = "https://openapi-landmarks.b9ad.pro-us-east-1.openshiftapps.com/actions/"; 
+    private static final String BACKEND_SERVER_URL = "https://landmarks-api.b9ad.pro-us-east-1.openshiftapps.com:443/api/v1"; 
     
     public static Map<String, String> persistLandmark(String name, String description, double latitude, double longitude, double altitude, String username, Date validityDate, String layer, String email, String flex) {
 
         Map<String, String> response = new HashMap<String, String>();
     	
         try {
-        	String landmarksUrl = BACKEND_SERVER_URL + "addItem";
+        	final String landmarksUrl = BACKEND_SERVER_URL + "/addItem";
         	String params = "type=landmark&latitude=" + latitude + "&longitude=" + longitude + "&name=" + URLEncoder.encode(name, "UTF-8") + 
-        			"&altitude=" + altitude + "&username=" + username + "&layer=" + layer;			 
+        			"&altitude=" + altitude + "&username=" + username + "&layer=" + layer + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);						 
         	if (validityDate != null) {
         		params +=	"&validityDate=" + validityDate.getTime();
         	}	
@@ -54,8 +54,7 @@ public class LandmarkPersistenceUtils {
         	if (StringUtils.isNotEmpty(flex)) {
         		params += "&flex=" + URLEncoder.encode(flex, "UTF-8");
         	}
-        	//logger.log(Level.INFO, "Calling: " + landmarksUrl);
-        	String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
+        	final String landmarksJson = HttpUtils.processFileRequest(new URL(landmarksUrl + "?" + params));
         	if (StringUtils.startsWith(StringUtils.trim(landmarksJson), "{")) {
         		JSONObject resp = new JSONObject(landmarksJson);
         		logger.log(Level.INFO, "Landmark created: " + landmarksJson);
@@ -107,11 +106,8 @@ public class LandmarkPersistenceUtils {
     
     	if (landmark == null) {
     		try {
-    			String gUrl = BACKEND_SERVER_URL + "landmarksProvider";
-    			String params = "hash=" + hash;			 
-    			//logger.log(Level.INFO, "Calling: " + gUrl);
-    			String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
-    			//logger.log(Level.INFO, "Received response: " + gJson);
+    			final String gUrl = BACKEND_SERVER_URL + "/landmarksProvider?hash=" + hash + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);			 
+    			final String gJson = HttpUtils.processFileRequest(new URL(gUrl));
     			if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
     				JSONObject l = new JSONObject(gJson);
     				if (l.has("error")) {
@@ -142,11 +138,8 @@ public class LandmarkPersistenceUtils {
         
         if (landmark == null) {
         	try {
-        		String gUrl = BACKEND_SERVER_URL + "landmarksProvider";
-        		String params = "id=" + id;			 
-        		//logger.log(Level.INFO, "Calling: " + gUrl);
-        		String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
-        		//logger.log(Level.INFO, "Received response: " + gJson);
+        		final String gUrl = BACKEND_SERVER_URL + "/landmarksProvider?id=" + id + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);			 
+        		final String gJson = HttpUtils.processFileRequest(new URL(gUrl));
         		if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
         			JSONObject l = new JSONObject(gJson);
         			if (l.has("error")) {
@@ -172,11 +165,9 @@ public class LandmarkPersistenceUtils {
     	List<Landmark> results = new ArrayList<Landmark>();
         
         try {
-    		String gUrl = BACKEND_SERVER_URL + "landmarksProvider";
-        	String params = "limit=" + limit + "&lat=" + latitude + "&lng=" + longitude + "&radius=" + radius + "&layer=" + layer;			 
-        	//logger.log(Level.INFO, "Calling: " + gUrl);
-        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
-        	//logger.log(Level.INFO, "Received response: " + gJson);
+    		final String gUrl = BACKEND_SERVER_URL + "/landmarksProvider?limit=" + limit + "&lat=" + latitude + "&lng=" + longitude + 
+    				"&radius=" + radius + "&layer=" + layer + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);			 
+        	final String gJson = HttpUtils.processFileRequest(new URL(gUrl));
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "[")) {
         		JSONArray root = new JSONArray(gJson);
         		for (int i=0;i<root.length();i++) {
@@ -202,11 +193,9 @@ public class LandmarkPersistenceUtils {
     	int result = 0;
     	
     	try {
-   			String gUrl = BACKEND_SERVER_URL + "landmarksProvider";
-   			String params = "count=1&lat=" + latitude + "&lng=" + longitude + "&radius=" + radius + "&layer=" + layer;			 
-   			//logger.log(Level.INFO, "Calling: " + gUrl);
-   			String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
-   			//logger.log(Level.INFO, "Received response: " + gJson);
+   			final String gUrl = BACKEND_SERVER_URL + "/landmarksProvider?count=1&lat=" + latitude + "&lng=" + longitude 
+   					+ "&radius=" + radius + "&layer=" + layer + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);			 
+   			final String gJson = HttpUtils.processFileRequest(new URL(gUrl));
    			if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
    				JSONObject count = new JSONObject(gJson);
    				result = count.getInt("count");     
@@ -223,11 +212,9 @@ public class LandmarkPersistenceUtils {
     public static Map<String, Integer> countLandmarksByCoords(double latitude, double longitude, int radius) {
     	Map<String, Integer> bucket = new HashMap<String, Integer>();
     	try {
-   			String gUrl = BACKEND_SERVER_URL + "landmarksProvider";
-   			String params = "count=1&lat=" + latitude + "&lng=" + longitude + "&radius=" + radius;			 
-   			logger.log(Level.INFO, "Calling: " + gUrl + "?" + params);
-   			String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
-   			//logger.log(Level.INFO, "Received response: " + gJson);
+   			final String gUrl = BACKEND_SERVER_URL + "/landmarksProvider?count=1&lat=" + latitude + 
+   					"&lng=" + longitude + "&radius=" + radius + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);			 
+   			final String gJson = HttpUtils.processFileRequest(new URL(gUrl));
    			if (StringUtils.startsWith(StringUtils.trim(gJson), "[")) {
    				JSONArray count = new JSONArray(gJson);
    				for (int i=0;i<count.length();i++) {
@@ -247,11 +234,9 @@ public class LandmarkPersistenceUtils {
     	List<Landmark> landmarks = new ArrayList<Landmark>();
 
     	try {
-        	String gUrl = BACKEND_SERVER_URL + "landmarksProvider";
-        	String params = "query=" + URLEncoder.encode(query, "UTF-8") + "&limit=" + limit;			 
-        	//logger.log(Level.INFO, "Calling: " + gUrl);
-        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
-        	//logger.log(Level.INFO, "Received response: " + gJson);
+        	final String gUrl = BACKEND_SERVER_URL + "/landmarksProvider?query=" + URLEncoder.encode(query, "UTF-8") 
+        		+ "&limit=" + limit + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);			 
+        	final String gJson = HttpUtils.processFileRequest(new URL(gUrl));
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "[")) {
         		JSONArray root = new JSONArray(gJson);
         		for (int i=0;i<root.length();i++) {
@@ -277,18 +262,16 @@ public class LandmarkPersistenceUtils {
         List<Landmark> results = new ArrayList<Landmark>();
         
         try {
-        	int limit = last - first;
-    		String gUrl = BACKEND_SERVER_URL + "landmarksProvider";
-        	String params = "limit=" + limit + "&first=" + first; 
+        	final int limit = last - first;
+    		final String gUrl = BACKEND_SERVER_URL + "/landmarksProvider";
+        	String params = "limit=" + limit + "&first=" + first + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY); 
         	if (user != null) {
    				params += "&username=" + user;			 
    			} 
    			if (layer != null) {
    			    params += "&layer=" + layer;
    			}
-        	logger.log(Level.INFO, "Calling: " + gUrl +"?" + params);
-        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
-        	//logger.log(Level.INFO, "Received response: " + gJson);
+        	final String gJson = HttpUtils.processFileRequest(new URL(gUrl + "?" + params));
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "[")) {
         		JSONArray root = new JSONArray(gJson);
         		for (int i=0;i<root.length();i++) {
@@ -314,12 +297,9 @@ public class LandmarkPersistenceUtils {
     	List<Landmark> results = new ArrayList<Landmark>();
         
     	try {
-    		String limit = "10";
-        	String gUrl = BACKEND_SERVER_URL + "landmarksProvider";
-        	String params = "limit=" + limit;			 
-        	//logger.log(Level.INFO, "Calling: " + gUrl);
-        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
-        	//logger.log(Level.INFO, "Received response: " + gJson);
+    		final String limit = "10";
+        	final String gUrl = BACKEND_SERVER_URL + "/landmarksProvider?limit=" + limit + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);			 
+        	final String gJson = HttpUtils.processFileRequest(new URL(gUrl));
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "[")) {
         		JSONArray root = new JSONArray(gJson);
         		for (int i=0;i<root.length();i++) {
@@ -373,11 +353,8 @@ public class LandmarkPersistenceUtils {
     	
     	try {
     		int limit = last - first;
-        	String gUrl = BACKEND_SERVER_URL + "landmarksProvider";
-        	String params = "limit=" + limit + "&month=" + month + "&first=" + first;			 
-        	logger.log(Level.INFO, "Calling: " + gUrl + "?" + params);
-        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
-        	//logger.log(Level.INFO, "Received response: " + gJson);
+        	final String gUrl = BACKEND_SERVER_URL + "/landmarksProvider?limit=" + limit + "&month=" + month + "&first=" + first + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);			 
+        	final String gJson = HttpUtils.processFileRequest(new URL(gUrl));
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "[")) {
         		JSONArray root = new JSONArray(gJson);
         		for (int i=0;i<root.length();i++) {
@@ -405,11 +382,8 @@ public class LandmarkPersistenceUtils {
     	Map<String, Integer> bucket = new HashMap<String, Integer>();
 
     	try {
-   			String gUrl = BACKEND_SERVER_URL + "landmarksProvider";
-   			String params = "heatMap=1&days=" + nDays;			 
-   			//logger.log(Level.INFO, "Calling: " + gUrl);
-   			String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
-   			//logger.log(Level.INFO, "Received response: " + gJson);
+   			final String gUrl = BACKEND_SERVER_URL + "/landmarksProvider?heatMap=1&days=" + nDays + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);			 
+   			final String gJson = HttpUtils.processFileRequest(new URL(gUrl));
    			if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
    				JSONObject root = new JSONObject(gJson);
    				for (Iterator<String> keys = root.keys();keys.hasNext();) {
@@ -441,11 +415,8 @@ public class LandmarkPersistenceUtils {
 	    int result = 0;
 	   
 	    try {
-   			String gUrl = BACKEND_SERVER_URL + "landmarksProvider";
-   			String params = "count=1&month=" + month;			 
-   			logger.log(Level.INFO, "Calling: " + gUrl);
-   			String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
-   			logger.log(Level.INFO, "Received response: " + gJson);
+   			final String gUrl = BACKEND_SERVER_URL + "/landmarksProvider?count=1&month=" + month + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);			 
+   			final String gJson = HttpUtils.processFileRequest(new URL(gUrl));
    			if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
    				JSONObject count = new JSONObject(gJson);
    				result = count.getInt("count");     
@@ -463,17 +434,15 @@ public class LandmarkPersistenceUtils {
         int result = 0;
 
         try {
-   			String gUrl = BACKEND_SERVER_URL + "landmarksProvider";
-   			String params = "count=1";
+   			final String gUrl = BACKEND_SERVER_URL + "/landmarksProvider";
+   			String params = "count=1" + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);
    			if (user != null) {
    				params += "&username=" + user;			 
    			} 
    			if (layer != null) {
    			    params += "&layer=" + layer;
    			}
-   			logger.log(Level.INFO, "Calling: " + gUrl + "?" + params);
-   			String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
-   			logger.log(Level.INFO, "Received response: " + gJson);
+   			final String gJson = HttpUtils.processFileRequest(new URL(gUrl + "?" + params));
    			if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
    				JSONObject count = new JSONObject(gJson);
    				result = count.optInt("count", 0);     
