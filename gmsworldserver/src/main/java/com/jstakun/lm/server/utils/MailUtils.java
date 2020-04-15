@@ -134,7 +134,7 @@ public class MailUtils {
    	 		 params += "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);
     	
     		 final String sendMailUrl = com.jstakun.lm.server.config.ConfigurationManager.getBackendUrl() + "/emailer"; 
-    		 HttpUtils.processFileRequest(new URL(sendMailUrl + "?" + params));
+    		 HttpUtils.processFileRequest(new URL(sendMailUrl), "POST", null, params);
     		 Integer responseCode = HttpUtils.getResponseCode(sendMailUrl);
     		 logger.log(Level.INFO, "Received response code: " + responseCode);
     		 if (responseCode != null && responseCode == 200) {
