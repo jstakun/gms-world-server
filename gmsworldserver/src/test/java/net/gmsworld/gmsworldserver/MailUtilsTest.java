@@ -12,6 +12,6 @@ public class MailUtilsTest {
 	public void test() {
 		MailUtils.sendDeviceLocatorVerificationRequest(MAIL, "Admin", "abcd", null, 0);
 		
-		//System.out.println(MAIL + " exists: " + MailUtils.emailAccountExists(MAIL));
+		System.out.println(MAIL + " exists: " + MailUtils.emailAccountExists(MAIL));
 	}
 }

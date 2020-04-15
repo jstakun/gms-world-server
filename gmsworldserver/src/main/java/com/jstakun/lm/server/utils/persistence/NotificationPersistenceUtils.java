@@ -3,6 +3,7 @@ package com.jstakun.lm.server.utils.persistence;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -84,8 +85,8 @@ public class NotificationPersistenceUtils {
 		if (StringUtils.isNotEmpty(id)) {
        		try {
        			final String gUrl = ConfigurationManager.getBackendUrl() + "/itemProvider";
-       			final String params = "type=notification&id=" + id + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);
-       			final String gJson = HttpUtils.processFileRequest(new URL(gUrl + " ?" + params));
+       			final String params = "type=notification&id=" + URLEncoder.encode(id, "UTF-8") + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);
+       			final String gJson = HttpUtils.processFileRequest(new URL(gUrl + "?" + params));
        			if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
        				JSONObject root = new JSONObject(gJson);
        				if (root.has("id")) {

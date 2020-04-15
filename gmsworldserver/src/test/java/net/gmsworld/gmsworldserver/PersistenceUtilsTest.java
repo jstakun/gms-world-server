@@ -16,33 +16,30 @@ public class PersistenceUtilsTest {
 
 	private static final int landmarkId = 77000;
 	
-	private static final String email = "test@localhost";
+	private static final String email = "test@example.com";
 	
 	private static final String device = "test";
 	
 	//@Test
 	public void checkInPersistenceUtils() {
-		CheckinPersistenceUtils.persist("test", null, landmarkId, 0);
-		
+		CheckinPersistenceUtils.persist("test", null, landmarkId, 0);	
 		CheckinPersistenceUtils.persist("test", "test", -1, 2);
-		
 		List<Checkin> checkins = CheckinPersistenceUtils.selectCheckinsByLandmark(Integer.toString(landmarkId));
-		
 		assertEquals(checkins.size(), 1);
 	}
 	
-	//@Test
+	@Test
 	public void devicePersistenceUtils() throws Exception {
 		 System.out.println(DevicePersistenceUtils.getUserDevices(device));
 	}
 
-	@Test
+	//@Test
 	public void notificationPersistenceUtils() throws Exception {
 		 Notification n = NotificationPersistenceUtils.setVerified(email, false);
-		 System.out.println(NotificationPersistenceUtils.isVerified(email));
+		 System.out.println("isVerified1: " + NotificationPersistenceUtils.isVerified(email));
 		 System.out.println("Veryfing with secret: " + n.getSecret());
 		 NotificationPersistenceUtils.verifyWithSecret(n.getSecret());
-		 System.out.println(NotificationPersistenceUtils.isVerified(email));
-		 System.out.println("Deleted " + n.getId() + ": " + NotificationPersistenceUtils.remove(n.getId()));
+		 System.out.println("isVerified2: " + NotificationPersistenceUtils.isVerified(email));
+		 System.out.println("Deleted: " + n.getId() + ": " + NotificationPersistenceUtils.remove(n.getId()));
 	}
 }
