@@ -71,9 +71,9 @@ public class RoutesUtils {
 	           String[] resp = new String[2];
 	           try {
 	        	    logger.log(Level.INFO, "Saving route with size " + route.length());
+	        	    final String content = "type=route&name=" + name + "&route=" + route + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);
 	        	    final URL routesUrl = new URL(ConfigurationManager.getBackendUrl() + "/addItem");
-		        	final String content = "type=route&name=" + name + "&route=" + route;
-		        	resp[0] = HttpUtils.processFileRequestWithBasicAuthn(routesUrl, "POST", null, content, "application/x-www-form-urlencoded", Commons.getProperty(Property.RH_GMS_USER));
+		        	resp[0] = HttpUtils.processFileRequest(routesUrl, "POST", null, content, "application/x-www-form-urlencoded");
 		        	//
 		        	final Integer responseCode= HttpUtils.getResponseCode(routesUrl.toString()); 
 		            if (responseCode != null) {
@@ -99,9 +99,9 @@ public class RoutesUtils {
 	        	   }
 	           } else if (!StringUtils.equalsIgnoreCase(live, "true")) {
 	        	   try {
-	        		   final String routesUrl = ConfigurationManager.getBackendUrl() + "/itemProvider?type=route&name=" + routeId;
-	        		   reply = HttpUtils.processFileRequestWithBasicAuthn(new URL(routesUrl), "GET", null, null, "application/json; charset=utf-8", Commons.getProperty(Property.RH_GMS_USER));
-	        		   Integer responseCode = HttpUtils.getResponseCode(routesUrl.toString());
+	        		   final String routesUrl = ConfigurationManager.getBackendUrl() + "/itemProvider?type=route&name=" + routeId + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);
+	        		   reply = HttpUtils.processFileRequest(new URL(routesUrl));
+	        		   final Integer responseCode = HttpUtils.getResponseCode(routesUrl.toString());
 	        		   if (responseCode == null || responseCode != 200 || !StringUtils.startsWith(reply, "{") || !StringUtils.contains(reply, "features")) {
 	        			   logger.log(Level.SEVERE, "Received following response from " + routesUrl + ": -" + reply + "-");
 	        		   }

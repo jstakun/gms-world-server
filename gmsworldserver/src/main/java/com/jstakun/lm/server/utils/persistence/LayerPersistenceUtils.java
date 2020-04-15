@@ -39,19 +39,6 @@ public class LayerPersistenceUtils {
 
     public static List<LabelValueBean> selectAllLayers() {
         List<LabelValueBean> results = new ArrayList<LabelValueBean>();
-        /*PersistenceManager pm = PMF.get().getPersistenceManager();
-
-        try {
-            Query query = pm.newQuery(Layer.class);
-            List<Layer> result = (List<Layer>) query.execute();
-            for (Layer l : result) {
-                results.add(new LabelValueBean(l.getFormatted(), l.getName()));
-            }
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
-        } finally {
-            pm.close();
-        }*/
         List<Layer> allLayers = getAllLayers();
 		for (Layer l : allLayers) {
 			results.add(new LabelValueBean(l.getFormatted(), l.getName()));
@@ -82,22 +69,12 @@ public class LayerPersistenceUtils {
     }
 
     public static void persist(String name, String desc, boolean enabled, boolean manageable, boolean checkinable, String formatted) {
-        /*Layer layer = new Layer(name, desc, enabled, manageable, checkinable, formatted);
-        PersistenceManager pm = PMF.get().getPersistenceManager();
-
         try {
-            pm.makePersistent(layer);
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
-        } finally {
-            pm.close();
-        }*/
-    	try {
         	final String landmarksUrl = ConfigurationManager.getBackendUrl() + "/addItem";
-        	final String params = "name=" + name + "&desc=" + URLEncoder.encode(desc, "UTF-8") + 
+        	final String params = "name=" + URLEncoder.encode(name, "UTF-8") + "&desc=" + URLEncoder.encode(desc, "UTF-8") + 
         			        "&formatted=" + URLEncoder.encode(formatted, "UTF-8") + "&type=layer" +
         			        "&e=" + enabled + "&m=" + manageable + "&c=" + checkinable;
-        	final String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
+        	final String landmarksJson = HttpUtils.processFileRequest(new URL(landmarksUrl + "?" + params));
         	logger.log(Level.INFO, "Received response: " + landmarksJson);
         } catch (Exception e) {
         	logger.log(Level.SEVERE, e.getMessage(), e);
@@ -149,10 +126,8 @@ public class LayerPersistenceUtils {
 				try {
 					List<Layer> layers = new ArrayList<Layer>();
 					final String gUrl = ConfigurationManager.getBackendUrl() + "/itemProvider";
-					String params = "type=layer";			 
-					//logger.log(Level.INFO, "Calling: " + gUrl);
-					String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
-					//logger.log(Level.INFO, "Received response: " + gJson);
+					final String params = "type=layer&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);			 
+					final String gJson = HttpUtils.processFileRequest(new URL(gUrl + "?" + params));
 					if (StringUtils.startsWith(StringUtils.trim(gJson), "[")) {
 						JSONArray root = new JSONArray(gJson);
 						for (int i=0;i<root.length();i++) {

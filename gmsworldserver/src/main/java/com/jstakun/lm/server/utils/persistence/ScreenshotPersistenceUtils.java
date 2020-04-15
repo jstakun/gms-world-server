@@ -2,6 +2,7 @@ package com.jstakun.lm.server.utils.persistence;
 
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -38,11 +39,11 @@ public class ScreenshotPersistenceUtils {
     	
         try {
         	final String landmarksUrl = ConfigurationManager.getBackendUrl() + "/addItem";
-        	String params = "filename=" + filename + "&latitude=" + latitude + "&longitude=" + longitude + "&type=screenshot";
+        	String params = "filename=" + filename + "&latitude=" + latitude + "&longitude=" + longitude + "&type=screenshot" + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);
         	if (username != null) {
-        		params += "&username=" + username;
+        		params += "&username=" + URLEncoder.encode(username, "UTF-8");
         	}
-        	final String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
+        	final String landmarksJson = HttpUtils.processFileRequest(new URL(landmarksUrl + "?" + params));
         	if (StringUtils.startsWith(StringUtils.trim(landmarksJson), "{")) {
         		JSONObject resp = new JSONObject(landmarksJson);
         		key = resp.optString("id");
@@ -53,46 +54,14 @@ public class ScreenshotPersistenceUtils {
 
         return key;
     }
-
-    /*public static long deleteScreenshotsOlderThanDate(Date day) {
-        int result = 0;
-        DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
-        BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-        com.google.appengine.api.datastore.Query query = new com.google.appengine.api.datastore.Query("Screenshot");
-        //query.setKeysOnly();
-        Filter loginFilter =  new FilterPredicate("creationDate", FilterOperator.LESS_THAN, day);
-        query.setFilter(loginFilter);
-        final int chunk = 128;
-        int count = 128;
-        long startTime = System.currentTimeMillis();
-        long currentTime = System.currentTimeMillis();
-        //5 mins limit
-        while (count > 0 && (currentTime - startTime) < Commons.FIVE_MINS) {
-            count = 0;
-            for (Entity entity : ds.prepare(query).asIterable(FetchOptions.Builder.withLimit(chunk))) {
-
-                BlobKey blobKey = (BlobKey)entity.getProperty("blobKey");
-
-                //delete blob with blobkey
-                blobstoreService.delete(blobKey);
-
-                ds.delete(entity.getKey());
-                count++;
-            }
-            result += count;
-            currentTime = System.currentTimeMillis();
-        }
-
-        return result;
-    }*/
-    
+       
     public static int deleteScreenshotsOlderThanDate(int ndays) {
     	 int result = 0;
     	 
     	 try {
          	final String gUrl = ConfigurationManager.getBackendUrl() + "/itemProvider";
-         	final String params = "type=screenshot&ndays=" + ndays;			 
-         	final String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
+         	final String params = "type=screenshot&ndays=" + ndays + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);			 
+         	final String gJson = HttpUtils.processFileRequest(new URL(gUrl + "?" + params));
          	if (StringUtils.startsWith(StringUtils.trim(gJson), "[")) {
          		JSONArray root = new JSONArray(gJson);
          		final int size = root.length();
@@ -122,8 +91,8 @@ public class ScreenshotPersistenceUtils {
     			logger.log(Level.SEVERE, "Failed to delete file {0} from screeshot {1}", new Object[] {filename, id});
     		}
     		final String gUrl = ConfigurationManager.getBackendUrl() + "/itemProvider";
-            final String params = "type=screenshot&id=" + id + "&action=remove";
-    		final String response = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
+            final String params = "type=screenshot&id=" + id + "&action=remove" + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);
+    		final String response = HttpUtils.processFileRequest(new URL(gUrl + "?" + params));
     		logger.log(Level.INFO, "Deleting screenshot " + id + " response: " + response);
     		Integer responseCode = HttpUtils.getResponseCode(gUrl);
     		if (responseCode != null && responseCode == 200) {
@@ -134,52 +103,14 @@ public class ScreenshotPersistenceUtils {
         }
     	return deleted;
     }
-
-    /*public static Screenshot selectScreenshot(String k) {
-    	if (StringUtils.isNumeric(k)){
-    		return getRemoteScreenshot(k);
-    	} else {
-    		return getLocalScreenshot(k);
-    	}
-    }*/
-    
-    /*private static Screenshot getLocalScreenshot(String k) {
-        Screenshot s = null;
-
-        PersistenceManager pm = PMF.get().getPersistenceManager();
-
-        try {
-        	if (StringUtil.isAllLowerCaseAndDigit(k)) {
-        		Query query = pm.newQuery(Screenshot.class, "keyString == :k");
-        		query.setUnique(true);
-        		//query.declareParameters("String k");
-        		s = (Screenshot) query.execute(k);
-        	} else {
-        		Key key = KeyFactory.stringToKey(k);
-        		s = pm.getObjectById(Screenshot.class, key);
-        		if (s != null) {
-                    s.setKeyString(k.toLowerCase());
-                    pm.makePersistent(s);
-                }
-        	}
-        } catch (JDOObjectNotFoundException ex) {
-        	logger.log(Level.SEVERE, ex.getMessage());
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
-        } finally {
-            pm.close();
-        }
-
-        return s;
-    }*/
     
     public static Screenshot selectScreenshot(String k)
     {
     	Screenshot s = null;
     	try {
         	final String gUrl = ConfigurationManager.getBackendUrl() + "/itemProvider";
-        	final String params = "type=screenshot&id=" + k;			 
-        	final String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
+        	final String params = "type=screenshot&id=" + k + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);			 
+        	final String gJson = HttpUtils.processFileRequest(new URL(gUrl + "?" + params));
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
         		JSONObject root = new JSONObject(gJson);
         		if (root.has("latitude") && root.has("longitude")) {

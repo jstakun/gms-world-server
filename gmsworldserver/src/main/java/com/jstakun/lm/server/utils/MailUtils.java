@@ -3,6 +3,7 @@ package com.jstakun.lm.server.utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.Map;
 import java.util.logging.Level;
@@ -30,8 +31,6 @@ import net.gmsworld.server.utils.HttpUtils;
 public class MailUtils {
 
     private static final Logger logger = Logger.getLogger(MailUtils.class.getName());
-    private static final String VALIDATE_MAIL_URL = com.jstakun.lm.server.config.ConfigurationManager.getBackendUrl() + "/validateEmail";
-    private static final String MAILER_SERVER_URL = com.jstakun.lm.server.config.ConfigurationManager.getBackendUrl() + "/emailer"; 
     
     public static final String STATUS_OK = "ok";
     public static final String STATUS_FAILED = "failed";
@@ -103,38 +102,40 @@ public class MailUtils {
     private static String sendBackendMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType, String ccA, String ccP, String type)  {
     	String status = STATUS_FAILED;   
     	
-    	String recipients = addEmailAddress("to", toA, toP);
-    	if (StringUtils.isEmpty(recipients)) {
-    		return status;
-    	}
-    	if (StringUtils.isNotEmpty(ccA)) {
-    		recipients += "|" + addEmailAddress("cc", ccA, ccP);
-    	}	 
-    	String params = "from=" + fromA +
+   	 	try {
+   	 		 String recipients = addEmailAddress("to", toA, toP);
+   	 		 if (StringUtils.isEmpty(recipients)) {
+   	 			 return status;
+   	 		 }
+   	 		 if (StringUtils.isNotEmpty(ccA)) {
+   	 			 recipients += "|" + addEmailAddress("cc", ccA, ccP);
+   	 		 }	 
+   	 		 String params = "from=" + URLEncoder.encode(fromA, "UTF-8") +
     	                                "&password=" + Commons.getProperty(Property.RH_MAILER_PWD) +
-    	                                "&recipients=" + recipients;
+    	                                "&recipients=" + URLEncoder.encode(recipients, "UTF-8");
     	 
-    	 if (StringUtils.equalsIgnoreCase(type, "ses")) {
-    		  params += "&type=ses";
-    	 }
+   	 		 if (StringUtils.equalsIgnoreCase(type, "ses")) {
+   	 			 params += "&type=ses";
+   	 		 }
     	
-    	 if (subject != null) {
-    		  params +=  "&subject=" + subject;
-    	 }
-    	 if (content != null) {
-    			params += "&body=" + content;
-    			if (contentType != null) {
-    				 params += "&contentType=" + contentType;
-    			}
-    	 }		                        
-    	 if (fromP != null) {
-    		 	params +="&fromNick=" + fromP;
-    	 }
+   	 		 if (subject != null) {
+   	 			 params +=  "&subject=" + URLEncoder.encode(subject, "UTF-8");
+   	 		 }
+   	 		 if (content != null) {
+    			 params += "&body=" + URLEncoder.encode(content, "UTF-8");
+    			 if (contentType != null) {
+    				  params += "&contentType=" + contentType;
+    			 }
+   	 		 }		                        
+   	 		 if (fromP != null) {
+   	 			 params +="&fromNick=" + URLEncoder.encode(fromP, "UTF-8");
+   	 		 }
+   	 		 
+   	 		 params += "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);
     	
-    	 try {
-    		 //logger.log(Level.INFO, "Params: " + params);
-    		 HttpUtils.processFileRequestWithBasicAuthn(new URL(MAILER_SERVER_URL), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
-    		 Integer responseCode = HttpUtils.getResponseCode(MAILER_SERVER_URL);
+    		 final String sendMailUrl = com.jstakun.lm.server.config.ConfigurationManager.getBackendUrl() + "/emailer"; 
+    		 HttpUtils.processFileRequest(new URL(sendMailUrl + "?" + params));
+    		 Integer responseCode = HttpUtils.getResponseCode(sendMailUrl);
     		 logger.log(Level.INFO, "Received response code: " + responseCode);
     		 if (responseCode != null && responseCode == 200) {
     			 status = STATUS_OK;
@@ -449,8 +450,9 @@ public class MailUtils {
     		return 400;
     	} else {
     		try {
-    			final String url =  VALIDATE_MAIL_URL + "?to="+ address;
-   	 			String response = HttpUtils.processFileRequestWithBasicAuthn(new URL(url), "GET", null, null, Commons.getProperty(Property.RH_GMS_USER));
+    			final String url =  com.jstakun.lm.server.config.ConfigurationManager.getBackendUrl() + "/validateEmail?to=" 
+    					+ URLEncoder.encode(address, "UTF-8") + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);
+   	 			String response = HttpUtils.processFileRequest(new URL(url));
    	 			Integer responseCode = HttpUtils.getResponseCode(url);
    	 			if (responseCode != null && responseCode == 200 && StringUtils.startsWith(response, "{")) {
    	 				logger.log(Level.INFO, "Received response code: " + responseCode);

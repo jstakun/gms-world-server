@@ -38,11 +38,11 @@ public class NotificationPersistenceUtils {
 		if (StringUtils.isNotEmpty(id)) {
 			try {
 				final String landmarksUrl = ConfigurationManager.getBackendUrl() + "/addItem";
-	        	String params = "id=" + id + "&type=notification";
+	        	String params = "id=" + id + "&type=notification&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);
 	        	if (status.equals(Notification.Status.VERIFIED)) {
 	        		params += "&status=1";
 	        	}
-	        	final String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
+	        	final String landmarksJson = HttpUtils.processFileRequest(new URL(landmarksUrl + "?" + params));
 	        	if (StringUtils.startsWith(StringUtils.trim(landmarksJson), "{")) {
 	        		JSONObject resp = new JSONObject(landmarksJson);
 	        		if (resp.has("id")) {
@@ -61,8 +61,8 @@ public class NotificationPersistenceUtils {
 		if (StringUtils.isNotEmpty(id)) {
 			try {
 	        	final String gUrl = ConfigurationManager.getBackendUrl() + "/deleteItem";
-	        	final String params = "type=notification&id=" + id;			 
-	        	final String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
+	        	final String params = "type=notification&id=" + id + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);			 
+	        	final String gJson = HttpUtils.processFileRequest(new URL(gUrl + "?" + params));
 	        	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
 	        		JSONObject root = new JSONObject(gJson);
 	        		if  (StringUtils.equals(root.optString("status"), "ok")) {
@@ -81,24 +81,23 @@ public class NotificationPersistenceUtils {
 	
 	private static Notification findById(String id) {
 		Notification n = null;
-		try {
-        	final String gUrl = ConfigurationManager.getBackendUrl() + "/itemProvider";
-        	String params = "type=notification";
-        	if (StringUtils.isNotEmpty(id)) {
-       		 	 params += "&id=" + id;
-        	} 
-        	final String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
-        	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
-        		JSONObject root = new JSONObject(gJson);
-        		if (root.has("id")) {
-        			n = jsonToNotification(root);
-        		}
-        	} else {
-        		logger.log(Level.SEVERE, "Received following server response: " + gJson);
-        	}
-        } catch (Exception e) {
-        	logger.log(Level.SEVERE, e.getMessage(), e);
-        }
+		if (StringUtils.isNotEmpty(id)) {
+       		try {
+       			final String gUrl = ConfigurationManager.getBackendUrl() + "/itemProvider";
+       			final String params = "type=notification&id=" + id + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);
+       			final String gJson = HttpUtils.processFileRequest(new URL(gUrl + " ?" + params));
+       			if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
+       				JSONObject root = new JSONObject(gJson);
+       				if (root.has("id")) {
+       					n = jsonToNotification(root);
+       				}
+       			} else {
+       				logger.log(Level.SEVERE, "Received following server response: " + gJson);
+       			}
+       		} catch (Exception e) {
+       			logger.log(Level.SEVERE, e.getMessage(), e);
+       		}
+		}
 		return n;
 	 }
 	
@@ -107,11 +106,8 @@ public class NotificationPersistenceUtils {
 		if (StringUtils.isNotEmpty(secret)) {
 			try {
 	        	final String gUrl = ConfigurationManager.getBackendUrl() + "/itemProvider";
-	        	String params = "type=notification";
-	        	if (StringUtils.isNotEmpty(secret)) {
-	       		 	 params += "&secret=" + secret;
-	        	} 
-	        	final String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
+	        	final String params = "type=notification&secret=" + secret + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);
+	        	final String gJson = HttpUtils.processFileRequest(new URL(gUrl + "?" + params));
 	        	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
 	        		JSONObject root = new JSONObject(gJson);
 	        		if (root.has("id")) {

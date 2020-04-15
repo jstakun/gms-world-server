@@ -27,7 +27,7 @@ public final class ConfigurationManager {
     private static final String LM_GOOGLE_PLAY_URL = "https://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui";
     private static final String DL_GOOGLE_PLAY_URL = "https://play.google.com/store/apps/details?id=net.gmsworld.devicelocator";
     private static final String BROWSER_URL = "https://landmarks.gms-world.net";
-    private static final String BACKEND_SERVER_URL = "https://openapi-landmarks.b9ad.pro-us-east-1.openshiftapps.com/actions";
+    private static final String BACKEND_SERVER_URL = "https://landmarks-api.b9ad.pro-us-east-1.openshiftapps.com/api/v1";
     private static final String GMS_LANDMARK_URL = "gmsLandmarkUrl";
 
     public static final String CONFIG = "config";

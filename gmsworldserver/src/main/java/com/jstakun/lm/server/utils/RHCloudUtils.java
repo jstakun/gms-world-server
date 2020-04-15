@@ -5,6 +5,8 @@ import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.jstakun.lm.server.config.ConfigurationManager;
 
 import net.gmsworld.server.config.Commons;
@@ -18,21 +20,25 @@ public class RHCloudUtils {
 	
 	public static void rhcloudHealthCheck() {
 		try {
-			rhcloudHealthCheck("hotels", HotelsBookingUtils.HOTELS_API_URL + "/camel/v1/ping" + "?user_key=" + Commons.getProperty(Property.RH_HOTELS_API_KEY));
+			rhcloudHealthCheck("hotels", HotelsBookingUtils.HOTELS_API_URL + "/camel/v1/ping" + "?user_key=" + Commons.getProperty(Property.RH_HOTELS_API_KEY), Commons.getProperty(Property.RH_GMS_USER));
 		} catch (Exception e) {
 			 logger.log(Level.SEVERE, e.getMessage(), e);
 		}
 		try {
-			rhcloudHealthCheck("landmarks", ConfigurationManager.getBackendUrl() + "/landmarksProvider?limit=10");
+			rhcloudHealthCheck("landmarks", ConfigurationManager.getBackendUrl() + "/landmarksProvider?limit=10&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY), null);
 		} catch (Exception e) {
 			 logger.log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
    	
-	private static Integer rhcloudHealthCheck(String appname, String healthCheckUrl) throws IOException {
+	private static Integer rhcloudHealthCheck(String appname, String healthCheckUrl, String credentials) throws IOException {
     	logger.log(Level.INFO, "Checking if {0} app is running...", appname);
     	URL rhcloudUrl = new URL(healthCheckUrl);
-    	HttpUtils.processFileRequestWithBasicAuthn(rhcloudUrl, Commons.getProperty(Property.RH_GMS_USER), true);
+    	if (StringUtils.isNotEmpty(credentials)) {
+    		HttpUtils.processFileRequestWithBasicAuthn(rhcloudUrl, credentials, true);
+    	} else {
+    		HttpUtils.processFileRequest(rhcloudUrl);
+    	}
     	Integer status = HttpUtils.getResponseCode(rhcloudUrl.toExternalForm()); 
     	if (status != null && status == 503) {
     		logger.log(Level.SEVERE, "Received Service Unavailable error response!");

@@ -29,8 +29,8 @@ public class DevicePersistenceUtils {
 	
 	public static int isDeviceRegistered(String imei) throws Exception {
 		if (imei != null) {
-		    final String deviceUrl = ConfigurationManager.getBackendUrl() + "/getDevice?imei="+  imei;
-		    final String deviceJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(deviceUrl), Commons.getProperty(Property.RH_GMS_USER), false);		
+		    final String deviceUrl = ConfigurationManager.getBackendUrl() + "/getDevice?imei="+  imei + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);
+		    final String deviceJson = HttpUtils.processFileRequest(new URL(deviceUrl));		
 		    if (StringUtils.startsWith(deviceJson, "{")) {
 			   JSONObject root = new JSONObject(deviceJson);
 			   JSONObject output = root.optJSONObject("output");
@@ -55,7 +55,7 @@ public class DevicePersistenceUtils {
 	public static int setupDevice(String imei, String name, String username, String token, String flex) throws Exception {
 		if (imei != null) {
 		    final String deviceUrl = ConfigurationManager.getBackendUrl() + "/setupDevice";
-		    String params = "imei="+  imei;
+		    String params = "imei="+  imei + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);
 		    if (StringUtils.isNotEmpty(username)) {
 		    	params += "&username=" + username;
 		    }
@@ -68,7 +68,7 @@ public class DevicePersistenceUtils {
 		    if (StringUtils.isNotEmpty(flex)) {
 		    	params += "&flex=" + flex;
 		    }
-		    String deviceJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(deviceUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));		
+		    final String deviceJson = HttpUtils.processFileRequest(new URL(deviceUrl), "POST", null, params);		
 		    if (StringUtils.startsWith(deviceJson, "{")) {
 			   JSONObject root = new JSONObject(deviceJson);
 			   JSONObject output = root.optJSONObject("output");
@@ -93,7 +93,7 @@ public class DevicePersistenceUtils {
 	public static int sendCommand(String imei, Integer pin, String name, String username, String command, String args, String correlationId, String flex) throws Exception {
 		if (pin != null && isValidCommand(command)) {
 			final String deviceUrl = ConfigurationManager.getBackendUrl() + "/commandDevice";
-			String params = "command=" + command + "&pin=" + pin;
+			String params = "command=" + command + "&pin=" + pin + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);
 			if (imei != null) {
 				params += "&imei="+  imei;
 			} else if (username != null && name != null) {
@@ -113,8 +113,7 @@ public class DevicePersistenceUtils {
 		    }
 		    String deviceJson = null;
 		    try {
-		    	//logger.log(Level.INFO, "Calling: " + deviceUrl);
-			    deviceJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(deviceUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));		
+		    	deviceJson = HttpUtils.processFileRequest(new URL(deviceUrl), "POST", null, params);		
 			    if (StringUtils.startsWith(deviceJson, "{")) {
 			    	JSONObject root = new JSONObject(deviceJson);
 			    	if (root.optString("name") != null ) {
@@ -162,8 +161,9 @@ public class DevicePersistenceUtils {
 	
 	public static String getUserDevices(String username) throws Exception {
 		if (username != null) {
-		    final String deviceUrl = ConfigurationManager.getBackendUrl() + "/getUserDevices?username="+  username;
-		    final String deviceJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(deviceUrl), Commons.getProperty(Property.RH_GMS_USER), false);		
+		    final String deviceUrl = ConfigurationManager.getBackendUrl() + "/getUserDevices?username="+  URLEncoder.encode(username, "UTF-8")
+		    									+ "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);	
+		    final String deviceJson = HttpUtils.processFileRequest(new URL(deviceUrl));		
 		    if (StringUtils.startsWith(deviceJson, "{")) {
 			   JSONObject root = new JSONObject(deviceJson);
 			   JSONArray output = root.optJSONArray("output");
@@ -185,8 +185,8 @@ public class DevicePersistenceUtils {
 	
 	public static int deleteDevice(String imei) throws Exception {
 		if (imei != null) {
-		    final String deviceUrl = ConfigurationManager.getBackendUrl() + "/deleteDevice?imei="+  imei;
-		    final String deviceJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(deviceUrl), Commons.getProperty(Property.RH_GMS_USER), false);		
+		    final String deviceUrl = ConfigurationManager.getBackendUrl() + "/deleteDevice?imei=" +  imei + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);
+		    final String deviceJson = HttpUtils.processFileRequest(new URL(deviceUrl));		
 		    if (StringUtils.startsWith(StringUtils.trim(deviceJson), "{")) {
 			   return 1;
 		   } else {
@@ -250,9 +250,9 @@ public class DevicePersistenceUtils {
 				
 					int status;
 					if (username == null) {
-						status = DevicePersistenceUtils.sendCommand(deviceId, pin, null, null, command, args, correlationId, socialNetwork+":"+socialId);
+						status = sendCommand(deviceId, pin, null, null, command, args, correlationId, socialNetwork+":"+socialId);
 					} else {
-						status = DevicePersistenceUtils.sendCommand(null, pin, deviceId, username, command, args, correlationId, socialNetwork+":"+socialId);
+						status = sendCommand(null, pin, deviceId, username, command, args, correlationId, socialNetwork+":"+socialId);
 					}
 					
 					if (status == 1)  {

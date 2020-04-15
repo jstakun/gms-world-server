@@ -39,14 +39,14 @@ public class CheckinPersistenceUtils {
     	boolean result = true;
     	try {
         	final String landmarksUrl = ConfigurationManager.getBackendUrl() + "/addItem";
-        	String params = "username=" + username + "&itemType=" + type + "&type=checkin";
+        	String params = "username=" + username + "&itemType=" + type + "&type=checkin" + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);						 
         	if (landmarkKey > 0) {
         		params += "&landmarkId=" + landmarkKey;
         	}
         	if (StringUtils.isNotEmpty(venueId)) {
         		params += "&venueId=" + venueId;
         	}
-        	final String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
+        	final String landmarksJson = HttpUtils.processFileRequest(new URL(landmarksUrl + "?" + params));
         	logger.log(Level.INFO, "Received following server response: " + landmarksJson);
             if (StringUtils.contains(landmarksJson, "error")) {
             	result = false;
@@ -62,10 +62,8 @@ public class CheckinPersistenceUtils {
         
     	try {
         	final String gUrl = ConfigurationManager.getBackendUrl() + "/itemProvider";
-        	String params = "type=checkin&landmarkId=" + landmarkid;			 
-        	//logger.log(Level.INFO, "Calling: " + gUrl);
-        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
-        	//logger.log(Level.INFO, "Received response: " + gJson);
+        	final String params = "type=checkin&landmarkId=" + landmarkid + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);			 
+        	final String gJson = HttpUtils.processFileRequest(new URL(gUrl + "?" + params));
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "[")) {
         		JSONArray arr = new JSONArray(gJson);
     		    for (int i=0;i<arr.length();i++) {

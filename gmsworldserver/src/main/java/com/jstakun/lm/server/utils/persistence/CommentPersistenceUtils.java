@@ -36,20 +36,11 @@ public class CommentPersistenceUtils implements Serializable {
 	private static final Logger logger = Logger.getLogger(CommentPersistenceUtils.class.getName());
 
     public static void persist(String username, String landmarkKey, String message) {
-        /*PersistenceManager pm = PMF.get().getPersistenceManager();
-
         try {
-            pm.makePersistent(new Comment(username, landmarkKey, message));
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
-        } finally {
-            pm.close();
-        }*/
-    	try {
         	final String landmarksUrl = ConfigurationManager.getBackendUrl() + "/addItem";
-        	String params = "username=" + username + "&landmarkId=" + landmarkKey + "&message=" + URLEncoder.encode(message, "UTF-8") + "&type=comment";
-        	//logger.log(Level.INFO, "Calling: " + landmarksUrl);
-        	String landmarksJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(landmarksUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
+        	final String params = "username=" + URLEncoder.encode (username, "UTF-8") + "&landmarkId=" + landmarkKey + "&message=" + URLEncoder.encode(message, "UTF-8") 
+        	                   + "&type=comment" + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);;
+        	final String landmarksJson = HttpUtils.processFileRequest(new URL(landmarksUrl + "?" + params));
         	logger.log(Level.INFO, "Received response: " + landmarksJson);
         } catch (Exception e) {
         	logger.log(Level.SEVERE, e.getMessage(), e);
@@ -59,25 +50,10 @@ public class CommentPersistenceUtils implements Serializable {
     public static List<Comment> selectCommentsByLandmark(String landmarkKey){
     	List<Comment> results = new ArrayList<Comment>();
     	
-    	/*PersistenceManager pm = PMF.get().getPersistenceManager();
-        
-        try {
-            Query query = pm.newQuery(Comment.class);
-            query.setOrdering("creationDate desc");
-            query.setFilter("landmarkKey == lk");
-            query.declareParameters("String lk");
-            results = (List<Comment>) query.execute(landmarkKey);
-            results = (List<Comment>) pm.detachCopyAll(results);
-         } catch (Exception ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
-        } finally {
-            pm.close();
-        }*/
-    	
     	try {
         	final String gUrl = ConfigurationManager.getBackendUrl() + "/itemProvider";
-        	String params = "type=comment&landmarkId=" + landmarkKey;			 
-        	String gJson = HttpUtils.processFileRequestWithBasicAuthn(new URL(gUrl), "POST", null, params, Commons.getProperty(Property.RH_GMS_USER));
+        	final String params = "type=comment&landmarkId=" + landmarkKey + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);			 
+        	final String gJson = HttpUtils.processFileRequest(new URL(gUrl + "?" + params));
         	
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "[")) {
         		JSONArray arr = new JSONArray(gJson);
