@@ -45,7 +45,7 @@ public class ShowGeocodeAction extends org.apache.struts.action.Action {
         if (request.getParameter("key") != null) {
             try {
                 String key = (String) request.getParameter("key");
-                gc = GeocodeCachePersistenceUtils.selectGeocodeCache(key);
+                gc = GeocodeCachePersistenceUtils.selectGeocodeCacheById(key);
                 request.setAttribute("geocodeCache", gc);
             } catch (Exception e) {
                 logger.log(Level.SEVERE, e.getMessage(), e);

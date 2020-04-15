@@ -96,10 +96,10 @@ public class GeocodeCachePersistenceUtils {
         return gcl;
     }
 
-    public static GeocodeCache selectGeocodeCache(String k) {
+    public static GeocodeCache selectGeocodeCacheById(String id) {
         GeocodeCache gc = null;
         try {
-        	final String gUrl = BACKEND_SERVER_URL + "/itemProvider?type=geocode&id=" + k + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);			 
+        	final String gUrl = BACKEND_SERVER_URL + "/itemProvider?type=geocode&id=" + id + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);			 
         	final String gJson = HttpUtils.processFileRequest(new URL(gUrl));
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
         		JSONObject root = new JSONObject(gJson);
@@ -115,7 +115,7 @@ public class GeocodeCachePersistenceUtils {
     	return gc;
     }
     
-    public static GeocodeCache selectGeocodeCache(double lat, double lng) {
+    public static GeocodeCache selectGeocodeCacheByCoords(double lat, double lng) {
         GeocodeCache gc = null;
          try {
         	final String gUrl = BACKEND_SERVER_URL + "/itemProvider?type=geocode&lat=" + StringUtil.formatCoordE6(lat) + "&lng=" + StringUtil.formatCoordE6(lng) + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);			 

@@ -49,7 +49,7 @@ public class LandmarkPersistenceUtils {
         		params += "&description=" + URLEncoder.encode(description, "UTF-8"); 
         	}
         	if (StringUtils.isNotEmpty(email)) {
-        		params += "&email=" + email;
+        		params += "&email=" + URLEncoder.encode(email, "UTF-8");
         	}
         	if (StringUtils.isNotEmpty(flex)) {
         		params += "&flex=" + URLEncoder.encode(flex, "UTF-8");
@@ -161,12 +161,12 @@ public class LandmarkPersistenceUtils {
         return landmark;
     }
 
-    public static List<Landmark> selectLandmarksByCoordsAndLayer(double latitude, double longitude, String layer, int limit, int radius) {
+    public static List<Landmark> selectLandmarksByCoordsAndLayer(double latitude, double longitude, String layer, int radius, int limit) {
     	List<Landmark> results = new ArrayList<Landmark>();
         
         try {
     		final String gUrl = BACKEND_SERVER_URL + "/landmarksProvider?limit=" + limit + "&lat=" + latitude + "&lng=" + longitude + 
-    				"&radius=" + radius + "&layer=" + layer + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);			 
+    				"&radius=" + radius + "&layer=" + URLEncoder.encode(layer, "UTF-8") + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);			 
         	final String gJson = HttpUtils.processFileRequest(new URL(gUrl));
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "[")) {
         		JSONArray root = new JSONArray(gJson);
@@ -189,12 +189,12 @@ public class LandmarkPersistenceUtils {
         return results;
     }
 
-    public static int countLandmarksByCoordsAndLayer(String layer, double latitude, double longitude, int radius) {
+    public static int countLandmarksByCoordsAndLayer(double latitude, double longitude, String layer, int radius) {
     	int result = 0;
     	
     	try {
    			final String gUrl = BACKEND_SERVER_URL + "/landmarksProvider?count=1&lat=" + latitude + "&lng=" + longitude 
-   					+ "&radius=" + radius + "&layer=" + layer + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);			 
+   					+ "&radius=" + radius + "&layer=" + URLEncoder.encode(layer, "UTF-8") + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);			 
    			final String gJson = HttpUtils.processFileRequest(new URL(gUrl));
    			if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
    				JSONObject count = new JSONObject(gJson);
@@ -266,10 +266,10 @@ public class LandmarkPersistenceUtils {
     		final String gUrl = BACKEND_SERVER_URL + "/landmarksProvider";
         	String params = "limit=" + limit + "&first=" + first + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY); 
         	if (user != null) {
-   				params += "&username=" + user;			 
+   				params += "&username=" + URLEncoder.encode(user, "UTF-8");			 
    			} 
    			if (layer != null) {
-   			    params += "&layer=" + layer;
+   			    params += "&layer=" + URLEncoder.encode(layer, "UTF-8");
    			}
         	final String gJson = HttpUtils.processFileRequest(new URL(gUrl + "?" + params));
         	if (StringUtils.startsWith(StringUtils.trim(gJson), "[")) {
@@ -437,10 +437,10 @@ public class LandmarkPersistenceUtils {
    			final String gUrl = BACKEND_SERVER_URL + "/landmarksProvider";
    			String params = "count=1" + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);
    			if (user != null) {
-   				params += "&username=" + user;			 
+   				params += "&username=" + URLEncoder.encode(user, "UTF-8");			 
    			} 
    			if (layer != null) {
-   			    params += "&layer=" + layer;
+   			    params += "&layer=" + URLEncoder.encode(layer, "UTF-8");
    			}
    			final String gJson = HttpUtils.processFileRequest(new URL(gUrl + "?" + params));
    			if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {

@@ -65,7 +65,7 @@ public class GMSUtils extends LayerHelper {
 	        	if (StringUtils.isNotEmpty(query)) {
 	        		landmarkList = LandmarkPersistenceUtils.selectLandmarkMatchingQuery(query, limit);
 	        	} else {
-	        		landmarkList = LandmarkPersistenceUtils.selectLandmarksByCoordsAndLayer(latitude, longitude, layer, limit, radius);
+	        		landmarkList = LandmarkPersistenceUtils.selectLandmarksByCoordsAndLayer(latitude, longitude, layer, radius, limit);
 	        	}
 	        	
 	            json = createCustomJSonLandmarkList(landmarkList, version, stringLimit);
@@ -93,7 +93,7 @@ public class GMSUtils extends LayerHelper {
             double longitude = (longitudeMin + longitudeMax) / 2;
             int radius = (int)(NumberUtils.distanceInKilometer(latitudeMin, latitudeMax, longitudeMin, longitudeMax) * 1000 / 2);
             
-            List<Landmark> landmarkList = LandmarkPersistenceUtils.selectLandmarksByCoordsAndLayer(latitude, longitude, layer, limit, radius);
+            List<Landmark> landmarkList = LandmarkPersistenceUtils.selectLandmarksByCoordsAndLayer(latitude, longitude, layer, radius, limit);
         	
             if (format.equals("kml")) {
                 output = XMLUtils.createKmlLandmarkList(landmarkList, landingPage);
@@ -169,7 +169,7 @@ public class GMSUtils extends LayerHelper {
         if (StringUtils.isNotEmpty(query)) {
         	landmarkList = LandmarkPersistenceUtils.selectLandmarkMatchingQuery(query, limit);
         } else {
-        	landmarkList = LandmarkPersistenceUtils.selectLandmarksByCoordsAndLayer(latitude, longitude, layer, limit, radius);
+        	landmarkList = LandmarkPersistenceUtils.selectLandmarksByCoordsAndLayer(latitude, longitude, layer, radius, limit);
         }
         	
         if (!landmarkList.isEmpty()) {
