@@ -35,7 +35,7 @@ public class CommentPersistenceUtils implements Serializable {
     private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(CommentPersistenceUtils.class.getName());
 
-    public static void persist(String username, String landmarkKey, String message) {
+    public static void persist(String username, int landmarkKey, String message) {
         try {
         	final String landmarksUrl = ConfigurationManager.getBackendUrl() + "/addItem";
         	final String params = "username=" + URLEncoder.encode (username, "UTF-8") + "&landmarkId=" + landmarkKey + "&message=" + URLEncoder.encode(message, "UTF-8") 
@@ -47,7 +47,7 @@ public class CommentPersistenceUtils implements Serializable {
         }
     }
 
-    public static List<Comment> selectCommentsByLandmark(String landmarkKey){
+    public static List<Comment> selectCommentsByLandmark(int landmarkKey){
     	List<Comment> results = new ArrayList<Comment>();
     	
     	try {

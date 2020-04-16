@@ -35,7 +35,7 @@ public class RegisterAction extends Action {
         String status = "success";
         try
         {
-            String secret = UserPersistenceUtils.persist(login, password, email, firstname, lastname, true);
+            String secret = UserPersistenceUtils.persist(login, password, email, firstname, lastname);
             if (StringUtils.isNotEmpty(secret)) {
             	MailUtils.sendVerificationRequest(email, login, secret, getServlet().getServletContext());
             	MailUtils.sendUserCreationNotification("User " + ConfigurationManager.SERVER_URL + "showUser/" + login + " created");

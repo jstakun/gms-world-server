@@ -82,22 +82,6 @@ public class LayerPersistenceUtils {
     }
 
     public static String getLayerFormattedName(final String name) {
-    	/*String response = CacheUtil.getString(name);
-        if (response == null) {
-        	response = name;
-        	PersistenceManager pm = PMF.get().getPersistenceManager();
-        	try {
-        		Layer layer = pm.getObjectById(Layer.class, name);
-        		if (layer != null) {
-        			response = layer.getFormatted();
-        			CacheUtil.put(name, response);
-        		}
-        	} catch (Exception ex) {
-        		logger.log(Level.SEVERE, ex.getMessage(), ex);
-        	} finally {
-        		pm.close();
-        	}
-        }*/
     	final String key = "layer_" + name;
     	CacheAction layersCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
 			public Object executeAction() {
@@ -178,8 +162,6 @@ public class LayerPersistenceUtils {
     }
     	
     public static String createCustomJSonLayersList(List<Layer> layerList, double latitudeMin, double longitudeMin, double latitudeMax, double longitudeMax) throws JSONException {
-    	//BoundingBox bb = new BoundingBox(latitudeMax, longitudeMax, latitudeMin, longitudeMin);
-    	//List<String> cells = GeocellManager.bestBboxSearchCells(bb, null);
     	List<Map<String, Object>> jsonArray = new ArrayList<Map<String, Object>>();
     	double latitude = (latitudeMin + latitudeMax) / 2;
     	double longitude = (longitudeMin + longitudeMax) / 2;

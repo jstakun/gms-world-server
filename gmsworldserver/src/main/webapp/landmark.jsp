@@ -101,7 +101,7 @@
                                        List<Comment> commentList = HtmlUtils.getList(Comment.class, request, "comments");
                             %>
                         </p>
-                        <h4><%=commentList.size()%> comments</h4>
+                        <h4><%=commentList.size()%> comment<%=commentList.size()!=1?"s":""%></h4>
                         <div>
                            <ol class="commentlist">
 <%

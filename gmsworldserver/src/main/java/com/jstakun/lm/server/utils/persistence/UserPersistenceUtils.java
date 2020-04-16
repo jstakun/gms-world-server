@@ -33,8 +33,8 @@ public class UserPersistenceUtils {
 
     private static final Logger logger = Logger.getLogger(UserPersistenceUtils.class.getName());
 
-    public static String persist(String login, String password, String email, String firstname, String lastname, boolean local) {
-        
+    public static String persist(String login, String password, String email, String firstname, String lastname) {
+        //login, password, email are mandatory
         try {
         	final String landmarksUrl = ConfigurationManager.getBackendUrl() + "/addItem";
         	String params = "login=" + URLEncoder.encode(login, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8") 
@@ -59,6 +59,7 @@ public class UserPersistenceUtils {
         		}
         		return resp.optString("secret");
         	}	else {
+        		logger.log(Level.SEVERE, "Received following response: " + landmarksJson);
         		return null;
         	}
         } catch (Exception e) {

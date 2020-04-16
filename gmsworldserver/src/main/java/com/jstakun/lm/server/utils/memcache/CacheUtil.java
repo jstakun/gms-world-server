@@ -88,25 +88,29 @@ public class CacheUtil {
 	}
 	
 	public static <T> List<T> getList(Class<T> type, String key) {
-		//return getObject(List.class, key);
-	    Collection<?> c = (Collection<?>) getCache().get(key);
-	    if (c != null) {
-	    	List<T> r = new ArrayList<T>(c.size());
-	    	for (Object o : c) {
-				if (type.isAssignableFrom(o.getClass())) {
-					r.add(type.cast(o));
+		try {
+			Collection<?> c = (Collection<?>) getCache().get(key);
+			if (c != null) {
+				List<T> r = new ArrayList<T>(c.size());
+				for (Object o : c) {
+					if (type.isAssignableFrom(o.getClass())) {
+						r.add(type.cast(o));
+					}
 				}
+				return r;
 			}
-	    	return r;
+		} catch (Exception e) {
+			 logger.log(Level.SEVERE, e.getMessage(), e);
 		}
 	    return null;
 	}
 	
 	public static boolean containsKey(String key) {
-		if (cache == null) {
-			return false;
-		} else {
+		try {	
 			return getCache().containsKey(key);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage(), e);
+			return false;
 		}
 	}
 
@@ -156,14 +160,18 @@ public class CacheUtil {
 	
 	
 	public static void put(String key, Object value, CacheType type) {
-		if (type == CacheType.NORMAL) {
-			put(key, value); //putAsync(key, value);
-		} else if (type == CacheType.FAST) {
-			putToFastCache(key, value);
-		} else if (type == CacheType.LONG) {
-			putToLongCache(key, value);
-		} else if (type == CacheType.LANDMARK) {
-			putToLandmarkCache(key, value);
+		try {
+			if (type == CacheType.NORMAL) {
+				put(key, value); //putAsync(key, value);
+			} else if (type == CacheType.FAST) {
+				putToFastCache(key, value);
+			} else if (type == CacheType.LONG) {
+				putToLongCache(key, value);
+			} else if (type == CacheType.LANDMARK) {
+				putToLandmarkCache(key, value);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage(), e);
 		}
 	}
 	

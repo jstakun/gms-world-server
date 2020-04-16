@@ -83,7 +83,7 @@
                     {
                 %>
             </p>
-            <h4><%=commentList.size()%> comments</h4>
+            <h4><%=commentList.size()%> comment<%=commentList.size()!=1?"s":""%></h4>
               <div>
                 <ul class="vertical comments">
 				<%

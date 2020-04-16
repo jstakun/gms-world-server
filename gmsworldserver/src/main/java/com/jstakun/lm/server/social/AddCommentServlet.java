@@ -74,7 +74,7 @@ public class AddCommentServlet extends HttpServlet {
                 } 
                 
                 if (landmark != null) {
-                    CommentPersistenceUtils.persist(username, landmark.getId() + "", message);
+                    CommentPersistenceUtils.persist(username, landmark.getId(), message);
                     out.println("Comment saved");
                 } else {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);

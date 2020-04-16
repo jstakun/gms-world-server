@@ -1,6 +1,7 @@
 package com.jstakun.lm.server.struts;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -80,7 +81,11 @@ public class ShowLandmarkAction extends Action {
              	    
                        CacheAction commentsCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
             				public Object executeAction() {
-            					return CommentPersistenceUtils.selectCommentsByLandmark(key);
+            					if (StringUtils.isNumeric(key)) {
+            						return CommentPersistenceUtils.selectCommentsByLandmark(Integer.valueOf(key));
+            					} else {
+            						return new ArrayList<Comment>();
+            					}
             				}
             		   });
                        List<Comment> comments = commentsCacheAction.getListFromCache(Comment.class, "comments_" + key, CacheType.NORMAL);
