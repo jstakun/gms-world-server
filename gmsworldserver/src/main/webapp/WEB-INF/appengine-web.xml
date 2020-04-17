@@ -32,10 +32,10 @@
     <automatic-scaling>
        <target-cpu-utilization>0.95</target-cpu-utilization>
        <target-throughput-utilization>0.95</target-throughput-utilization>
-       <min-instances>1</min-instances>
+       <min-instances>0</min-instances>
        <max-instances>1</max-instances>
        <max-pending-latency>10s</max-pending-latency>
-       <!-- max min-pending-latence is 15s -->
+       <!-- min-pending-latency should be 0.1 - 15s -->
        <min-pending-latency>10s</min-pending-latency>
        <max-concurrent-requests>80</max-concurrent-requests>
      </automatic-scaling>

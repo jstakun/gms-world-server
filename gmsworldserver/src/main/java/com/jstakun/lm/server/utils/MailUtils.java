@@ -111,11 +111,13 @@ public class MailUtils {
    	 			 recipients += "|" + addEmailAddress("cc", ccA, ccP);
    	 		 }	 
    	 		 String params = "from=" + URLEncoder.encode(fromA, "UTF-8") +
-    	                                "&password=" + Commons.getProperty(Property.RH_MAILER_PWD) +
     	                                "&recipients=" + URLEncoder.encode(recipients, "UTF-8");
     	 
    	 		 if (StringUtils.equalsIgnoreCase(type, "ses")) {
    	 			 params += "&type=ses";
+   	 		 } else {
+   	 			 //james
+   	 			 params += "&password=" + Commons.getProperty(Property.RH_MAILER_PWD);
    	 		 }
     	
    	 		 if (subject != null) {
