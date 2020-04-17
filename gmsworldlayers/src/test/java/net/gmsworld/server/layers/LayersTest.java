@@ -203,8 +203,8 @@ public class LayersTest {
 		}
 	}
 
-	@Test
-	public void hotelsTest() {
+	//@Test
+	public void hotelsBookingUtilsTest() {
 		HotelsBookingUtils hotelsBookingUtils = (HotelsBookingUtils)LayerHelperFactory.getInstance().getByName(Commons.HOTELS_LAYER);
 		hotelsBookingUtils.loadHotelsAsync(lat, lng, radius, limit, "nearby", true);  
 		try {
