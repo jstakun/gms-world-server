@@ -12,7 +12,7 @@ import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;
 
 import org.junit.Test;
 
-public class GeocodeTest {
+public class GeocodeCachePersistenceTest {
 
 	@Test
 	public void test() throws IOException {
@@ -30,15 +30,7 @@ public class GeocodeTest {
 		}
 		
 		Landmark landmark = null;
-        /*String[] token = address.split(",");
-        if (token.length > 1 && token[1].length() > 0) {
-        	System.out.println("Searching for landmark: " + token[1]);
-        	List<Landmark> landmarks = LandmarkPersistenceUtils.selectLandmarkMatchingQuery(token[1],1);
-        	if (!landmarks.isEmpty()) {
-        		landmark = landmarks.get(0);
-        	}
-        }*/
-		System.out.println("Searching for landmark: " + address);
+        System.out.println("Searching for landmark: " + address);
     	List<Landmark> landmarks = LandmarkPersistenceUtils.selectLandmarkMatchingQuery(address, 1);
     	if (!landmarks.isEmpty()) {
     		landmark = landmarks.get(0);
@@ -63,6 +55,8 @@ public class GeocodeTest {
         
         String addressString = GeocodeHelperFactory.getInstance().processReverseGeocode(54.352025, 18.646638);
         System.out.println("processReverseGeocode 10: " + addressString);
+        
+        //GeocodeHelperFactory.getInstance().getRoute(lat_start, lng_start, lat_end, lng_end, type, username)
 	}
 
 }

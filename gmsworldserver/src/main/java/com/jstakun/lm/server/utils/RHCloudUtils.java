@@ -20,7 +20,7 @@ public class RHCloudUtils {
 	
 	public static void rhcloudHealthCheck() {
 		try {
-			rhcloudHealthCheck("hotels", HotelsBookingUtils.HOTELS_API_URL + "/camel/v1/ping" + "?user_key=" + Commons.getProperty(Property.RH_HOTELS_API_KEY), Commons.getProperty(Property.RH_GMS_USER));
+			rhcloudHealthCheck("hotels", HotelsBookingUtils.HOTELS_API_URL + "/camel/v1/ping" + "?user_key=" + Commons.getProperty(Property.RH_HOTELS_API_KEY), null);
 		} catch (Exception e) {
 			 logger.log(Level.SEVERE, e.getMessage(), e);
 		}
