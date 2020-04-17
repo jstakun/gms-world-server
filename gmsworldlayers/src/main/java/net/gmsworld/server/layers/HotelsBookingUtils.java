@@ -90,7 +90,7 @@ public class HotelsBookingUtils extends LayerHelper {
 			
 			String hotelsUrl = hotelsUrlPrefix + latStr + "/" + lngStr + "/" + normalizedRadius + "/" + limit + "?user_key=" + Commons.getProperty(Property.RH_HOTELS_API_KEY);			
 			//logger.log(Level.INFO, "Calling: " + hotelsUrl);
-			String json = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), true);
+			String json = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), null, true);
 			if (StringUtils.startsWith(json, "[")) {
 	    		try {
 	    			json = "{\"type\": \"FeatureCollection\", \"features\":" + json + "}";
@@ -144,7 +144,7 @@ public class HotelsBookingUtils extends LayerHelper {
 		
 			final String hotelsUrl = hotelsUrlPrefix + latStr + "/" + lngStr + "/" + normalizedRadius + "/" + limit + "?user_key=" + Commons.getProperty(Property.RH_HOTELS_API_KEY);			
 			//logger.log(Level.INFO, "Calling: " + hotelsUrl);
-			String json = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), true);
+			String json = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), null, true);
 			if (StringUtils.startsWith(json, "[")) {
 				try {
 					json = "{\"type\": \"FeatureCollection\", \"features\":" + json + "}";
@@ -285,7 +285,7 @@ public class HotelsBookingUtils extends LayerHelper {
 		if (!isCached) {
 			try {
 				//logger.log(Level.INFO, "Calling: " + hotelsUrl);
-				String reply = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), false);
+				String reply = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), null, false);
 				Integer responseCode = HttpUtils.getResponseCode(hotelsUrl);
 				if (responseCode != null && responseCode >= 400) {
 					id = null;
@@ -321,7 +321,7 @@ public class HotelsBookingUtils extends LayerHelper {
 		//logger.log(Level.INFO, "Calling: " + hotelsUrl);
 		String json = null;
 		try {
-			json = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), true);
+			json = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), null, true);
 			if (StringUtils.startsWith(json, "[") && json.length() > 2) {
 	    			hotels = featureCollectionReader.readValue(json.substring(1, json.length()-1));
 	    			logger.info("Found hotels list in db cache");
@@ -353,7 +353,12 @@ public class HotelsBookingUtils extends LayerHelper {
 			}			
 			if (StringUtils.isNotEmpty(currencycode) && minrate != null) {
 				if (!StringUtils.endsWithAny(currencycode, new String[]{"USD", "GBP", "EUR"})) {
-					Map<String, Double> ratesMap = cacheProvider.getObject(HashMap.class, "CURRENCY_BASE_EUR");
+					Map<String, Double> ratesMap = null;
+					try {
+						ratesMap = cacheProvider.getObject(HashMap.class, "CURRENCY_BASE_EUR");
+					} catch (Exception e) {
+						logger.log(Level.SEVERE, e.getMessage(), e);
+					}
 	        		if (ratesMap != null) {
 	        			Double exchangeRate = ratesMap.get(currencycode);
 	        			if (exchangeRate != null) {
@@ -381,7 +386,7 @@ public class HotelsBookingUtils extends LayerHelper {
 		
 		try {
 			//logger.log(Level.INFO, "Calling: " + hotelsUrl);
-			String json = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), true);
+			String json = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), null, true);
 			if (StringUtils.startsWith(StringUtils.trim(json), "[")) {
 	    		try {
 	    			JSONArray root = new JSONArray(json);
@@ -674,7 +679,7 @@ public class HotelsBookingUtils extends LayerHelper {
 		
 		try {
 			String hotelsUrl = HOTELS_COUNTER_URL + StringUtil.formatCoordE2(lat) + "/" + StringUtil.formatCoordE2(lng) + "/" + normalizedRadius + "?user_key=" + Commons.getProperty(Property.RH_HOTELS_API_KEY);			
-			hotelsCount = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), Commons.getProperty(Property.RH_GMS_USER), false);
+			hotelsCount = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), null, false);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 		}
