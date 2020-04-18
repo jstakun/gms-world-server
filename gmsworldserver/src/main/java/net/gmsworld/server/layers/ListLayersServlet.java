@@ -26,24 +26,12 @@ import com.jstakun.lm.server.utils.xml.XMLUtils;
  */
 public class ListLayersServlet extends HttpServlet {
 
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(ListLayersServlet.class.getName());
     private static final String XML_KEY = "customXmlLayersList";
-    //private static final String JSON_KEY = "customJsonLayersList";
     private static final String JSON_LAYER_LIST = "jsonLayersList";
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String format = StringUtil.getStringParam(request.getParameter("format"), "xml");
         if (format.equals("json")) {
             response.setContentType("text/json;charset=UTF-8");
@@ -60,10 +48,10 @@ public class ListLayersServlet extends HttpServlet {
         int version = NumberUtils.getVersion(request.getParameter("version"), 1);
         int radius = NumberUtils.getRadius(request.getParameter("radius"), 3, 6371);
 
-        if (format.equals("json") && latitudeMin != null && latitudeMax != null && longitudeMin != null && longitudeMax != null) {
+        if (format.equals("json") && latitudeMin != null && longitudeMin != null) {
             String key = JSON_LAYER_LIST + "_" + StringUtil.formatCoordE2(latitudeMin) + "_" + StringUtil.formatCoordE2(longitudeMin) + "_" + radius;
 
-            if (version == 1) {
+            if (version == 1 && latitudeMax != null && longitudeMax != null) {
                 key += "_" + StringUtil.formatCoordE2(latitudeMax) + "_" + StringUtil.formatCoordE2(longitudeMax);
             }
             String json = CacheUtil.getString(key);
@@ -113,39 +101,18 @@ public class ListLayersServlet extends HttpServlet {
         out.close();
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /** 
-     * Handles the HTTP <code>GET</code> method.
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)  throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    /** 
-     * Handles the HTTP <code>POST</code> method.
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    /** 
-     * Returns a short description of the servlet.
-     * @return a String containing servlet description
-     */
     @Override
     public String getServletInfo() {
         return "List Layers Servlet";
-    }// </editor-fold>
+    }
 }
