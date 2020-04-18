@@ -55,6 +55,7 @@ public class NotificationsServlet extends HttpServlet {
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
 		 GeocodeHelperFactory.getInstance().setCacheProvider(GoogleCacheProvider.getInstance());
+		 LayerHelperFactory.getInstance().setCacheProvider(GoogleCacheProvider.getInstance());
 	}
 
 	/**

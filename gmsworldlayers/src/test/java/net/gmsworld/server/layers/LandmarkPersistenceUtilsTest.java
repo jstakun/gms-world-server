@@ -10,7 +10,6 @@ class LandmarkPersistenceUtilsTest {
 
 	@Test
 	void test() {
-		//LandmarkPersistenceUtils.persistLandmark(name, description, latitude, longitude, altitude, username, validityDate, layer, email, flex)
 		//LandmarkPersistenceUtils.persistLandmark(landmark, cacheProvider)
 		
 		//LandmarkPersistenceUtils.countLandmarksByCoords(latitude, longitude, radius)

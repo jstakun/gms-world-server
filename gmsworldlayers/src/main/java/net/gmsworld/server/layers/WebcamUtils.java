@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Level;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
@@ -38,9 +39,9 @@ public class WebcamUtils extends LayerHelper {
 		if (normalizedRadius > 250) {
 			normalizedRadius = 250;
 		}
-		String url = "https://webcamstravel.p.mashape.com/webcams/list/nearby=" + lat + "," + lng + "," + normalizedRadius + "/limit=" + limit + "?show=webcams:basic,image,location,url&lang=" + locale.getLanguage();
+		String url = "https://webcamstravel.p.rapidapi.com/webcams/list/nearby=" + lat + "," + lng + "," + normalizedRadius + "/limit=" + limit + "?show=webcams:basic,image,location,url&lang=" + locale.getLanguage();
 		URL webcamUrl = new URL(url);
-	    String webcamResponse = HttpUtils.processFileRequest(webcamUrl, "X-Mashape-Key", Commons.getProperty(Property.MASHAPE_KEY));
+	    String webcamResponse = HttpUtils.processFileRequest(webcamUrl, "x-rapidapi-key", Commons.getProperty(Property.RAPIDAPI_KEY));
 	    return createLandmarksWebcamList(webcamResponse, stringLimit, locale);        
 	}
 	
@@ -49,7 +50,7 @@ public class WebcamUtils extends LayerHelper {
 
         if (StringUtils.startsWith(webcamJson,"{")) {
             JSONObject jsonRoot = new JSONObject(webcamJson);
-            if (StringUtils.equals(jsonRoot.getString("status") ,"OK")) {
+            if (StringUtils.equals(jsonRoot.optString("status") ,"OK")) {
             	JSONObject result = jsonRoot.getJSONObject("result");
             	int total = result.getInt("total");
             	if (total > 0) {
@@ -98,6 +99,8 @@ public class WebcamUtils extends LayerHelper {
             			landmarks.add(landmark);
             		}
             	}
+            } else {
+            	 logger.log(Level.SEVERE, "Received following server response: " + webcamJson);
             }
         }
 

@@ -34,7 +34,7 @@ public class LandmarkPersistenceUtils {
     private static final Logger logger = Logger.getLogger(LandmarkPersistenceUtils.class.getName());
     private static final String BACKEND_SERVER_URL = "https://landmarks-api.b9ad.pro-us-east-1.openshiftapps.com/api/v1"; 
     
-    public static Map<String, String> persistLandmark(String name, String description, double latitude, double longitude, double altitude, String username, Date validityDate, String layer, String email, String flex) {
+    private static Map<String, String> persistLandmark(String name, String description, double latitude, double longitude, double altitude, String username, Date validityDate, String layer, String email, String flex) {
 
         Map<String, String> response = new HashMap<String, String>();
     	
@@ -93,6 +93,7 @@ public class LandmarkPersistenceUtils {
     	if (landmark.getId() > 0 && cacheProvider != null) {
     		cacheProvider.put(Integer.toString(landmark.getId()), landmark);
     		logger.log(Level.INFO, "Saved landmark to local in-memory cache with key: " + landmark.getId());
+    		//TODO update newest landmarks list
     	}
     	return flexJSon;
     }

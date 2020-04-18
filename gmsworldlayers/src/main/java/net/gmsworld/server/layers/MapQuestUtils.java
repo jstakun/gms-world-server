@@ -15,6 +15,7 @@ import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.JSONUtils;
 import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.persistence.GeocodeCachePersistenceUtils;
+import net.gmsworld.server.utils.persistence.Landmark;
 import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;
 
 import org.apache.commons.lang.StringUtils;
@@ -74,9 +75,16 @@ public class MapQuestUtils extends GeocodeHelper {
                          	   		if (appId >= 0) {
                          	   			flex.put("appId", appId);
                          	   		}
-                         	   		LandmarkPersistenceUtils.persistLandmark(name, "", lat, lng, 0.0, "geocode", null, Commons.GEOCODES_LAYER, email, flex.toString());
+                         	   		Landmark l = new Landmark();
+                         	   		l.setName(name);
+                         	   		l.setLatitude(lat);
+                         	   		l.setLongitude(lng);
+                         	   		l.setUsername("geocode");
+                         	   		l.setLayer(Commons.GEOCODES_LAYER);
+                         	   		l.setEmail(email);
+                         	   		l.setFlex(flex.toString());
+                         	   		LandmarkPersistenceUtils.persistLandmark(l, cacheProvider);
         						}
-        						//}
         					} catch (Exception ex) {
         						logger.log(Level.SEVERE, ex.getMessage(), ex);
         					}
