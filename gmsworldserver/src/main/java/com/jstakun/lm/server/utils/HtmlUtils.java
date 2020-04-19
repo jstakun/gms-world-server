@@ -38,7 +38,6 @@ import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.utils.memcache.CacheAction;
 import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
-import com.jstakun.lm.server.utils.persistence.CommonPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils;
 import com.openlapi.QualifiedCoordinates;
 
