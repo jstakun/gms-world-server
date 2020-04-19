@@ -1,8 +1,7 @@
 <%-- any content can be specified here e.g.: --%>
 <%@ page pageEncoding="utf-8" %>
-<%@ page import="net.gmsworld.server.utils.persistence.GeocodeCachePersistenceUtils,
-                 net.gmsworld.server.utils.persistence.GeocodeCache,
-                 com.jstakun.lm.server.utils.memcache.CacheUtil,
+<%@ page import="net.gmsworld.server.utils.persistence.GeocodeCache,
+                 com.jstakun.lm.server.utils.HtmlUtils,
                  java.util.List,
                  net.gmsworld.server.utils.DateUtils" %>
 <div id="sidebar">
@@ -69,17 +68,15 @@
         <ul>
 <%
 	
-	List<GeocodeCache> geocodeCacheList = CacheUtil.getList(GeocodeCache.class, "newestGeocodes");
-	if (geocodeCacheList == null) {
-		geocodeCacheList = GeocodeCachePersistenceUtils.selectNewestGeocodes();
-		CacheUtil.put("newestGeocodes", geocodeCacheList, CacheUtil.CacheType.FAST);
-	}
-	    
-    for (GeocodeCache geocodeCache : geocodeCacheList)
-    {
+	List<GeocodeCache> geocodeCacheList = HtmlUtils.getNewestGeocodes();
+	
+    if (geocodeCacheList != null) {
+    	for (GeocodeCache geocodeCache : geocodeCacheList)
+    	{
 %>
             <li><a href="/showGeocode/<%= geocodeCache.getId() %>"><%= geocodeCache.getLocation() %></a><br/><span>Posted on <%= DateUtils.getFormattedDateTime(request.getLocale(), geocodeCache.getCreationDate()) %></span></li>
 <%
+    	}
     }
 %>
         </ul>

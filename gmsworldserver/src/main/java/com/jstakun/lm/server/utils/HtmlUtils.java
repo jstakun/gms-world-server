@@ -24,6 +24,7 @@ import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.UrlUtils;
 import net.gmsworld.server.utils.persistence.GeocodeCache;
+import net.gmsworld.server.utils.persistence.GeocodeCachePersistenceUtils;
 import net.gmsworld.server.utils.persistence.Landmark;
 
 import org.apache.commons.lang.StringEscapeUtils;
@@ -35,6 +36,9 @@ import org.ocpsoft.prettytime.PrettyTime;
 import com.jstakun.gms.android.landmarks.ExtendedLandmark;
 import com.jstakun.gms.android.landmarks.LandmarkFactory;
 import com.jstakun.lm.server.config.ConfigurationManager;
+import com.jstakun.lm.server.utils.memcache.CacheAction;
+import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
+import com.jstakun.lm.server.utils.persistence.CommonPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils;
 import com.openlapi.QualifiedCoordinates;
 
@@ -228,7 +232,6 @@ public class HtmlUtils {
 			userUrl = "/showUser/" + URLEncoder.encode( landmark.getUsername(), "UTF-8");
 		}
 		String layerUrl = "/showLayer/" + landmark.getLayer();
-		//String bookingUrl = "/showHotels/" + landmark.getId() + "/" + HtmlUtils.encodeDouble(landmark.getLatitude()) + "/" + HtmlUtils.encodeDouble(landmark.getLongitude()) + "/300";
 		String bookingUrl = "/booking/" + landmark.getId();
 		
 		String description = landmark.getDescription();
@@ -329,6 +332,15 @@ public class HtmlUtils {
     
     public static Double decodeDouble(String val) {
     	return instance.decode(val);
+    }
+    
+    public static List<GeocodeCache> getNewestGeocodes() {	
+    	CacheAction geocodeCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
+			public Object executeAction() {
+				return GeocodeCachePersistenceUtils.selectNewestGeocodes();
+			}
+        });
+        return (List<GeocodeCache>) geocodeCacheAction.getObjectFromCache("NewestGeocodes", CacheType.NORMAL);  
     }
 }
 
