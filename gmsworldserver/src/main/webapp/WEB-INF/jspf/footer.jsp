@@ -71,10 +71,10 @@
             <div class="recent-comments">
                 <ul>
 <%
-   List<Landmark> landmarkList1 = (List<Landmark>) request.getAttribute("newestLandmarks");
+   List<Landmark> landmarkList1 = HtmlUtils.getList(Landmark.class, request, "NewestLandmarks");
    
    if (landmarkList1 == null) {
-	   landmarkList1 = CacheUtil.getList(Landmark.class, "newestLandmarks");
+	   landmarkList1 = CacheUtil.getList(Landmark.class, "NewestLandmarks");
    }
    
    if (landmarkList1 != null) {

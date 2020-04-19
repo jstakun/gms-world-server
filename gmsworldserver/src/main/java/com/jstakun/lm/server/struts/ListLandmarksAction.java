@@ -28,7 +28,7 @@ public class ListLandmarksAction extends Action {
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
         List<Landmark> landmarkList = LandmarkPersistenceUtils.selectNewestLandmarks();     
-        CacheUtil.put("newestLandmarks", landmarkList, CacheUtil.CacheType.FAST);
+        CacheUtil.put("NewestLandmarks", landmarkList, CacheUtil.CacheType.FAST);
         request.setAttribute("landmarkList", landmarkList);
 
         return mapping.findForward( "success");

@@ -23,6 +23,7 @@ import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.StringUtil;
+import net.gmsworld.server.utils.memcache.CacheProvider;
 
 /**
  *
@@ -33,13 +34,16 @@ public class GeocodeCachePersistenceUtils {
     private static final Logger logger = Logger.getLogger(GeocodeCachePersistenceUtils.class.getName());
     private static final String BACKEND_SERVER_URL = "https://landmarks-api.b9ad.pro-us-east-1.openshiftapps.com/api/v1"; 
     
-    public static void persistGeocode(final String location, final double latitude, final double longitude) {
+    public static void persistGeocode(final String location, final double latitude, final double longitude, CacheProvider cacheProvider) {
         if (StringUtils.isNotEmpty(location)) {
         	try {
         		final String gUrl = BACKEND_SERVER_URL + "/addItem?type=geocode&latitude=" + StringUtil.formatCoordE6(latitude) + "&longitude=" + StringUtil.formatCoordE6(longitude) + 
         			"&address=" + URLEncoder.encode(location, "UTF-8") + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);			 
         		final String gJson = HttpUtils.processFileRequest(new URL(gUrl));
         		logger.log(Level.INFO, "Received response: " + gJson);
+        		if (cacheProvider != null) {
+        			cacheProvider.remove("NewestGeocodes");
+        		}
         	} catch (Exception e) {
         		logger.log(Level.SEVERE, e.getMessage(), e);
         	}

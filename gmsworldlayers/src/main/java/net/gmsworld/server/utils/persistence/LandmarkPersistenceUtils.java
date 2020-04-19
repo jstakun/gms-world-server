@@ -93,7 +93,7 @@ public class LandmarkPersistenceUtils {
     	if (landmark.getId() > 0 && cacheProvider != null) {
     		cacheProvider.put(Integer.toString(landmark.getId()), landmark);
     		logger.log(Level.INFO, "Saved landmark to local in-memory cache with key: " + landmark.getId());
-    		//TODO update newest landmarks list
+    		cacheProvider.remove("NewestLandmarks");
     	}
     	return flexJSon;
     }

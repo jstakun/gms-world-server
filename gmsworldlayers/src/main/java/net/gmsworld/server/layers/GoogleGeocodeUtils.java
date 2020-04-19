@@ -60,7 +60,7 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
                         	jsonResponse.put("type", "g");
 
                         	try {
-                        		GeocodeCachePersistenceUtils.persistGeocode(addressIn, lat, lng);
+                        		GeocodeCachePersistenceUtils.persistGeocode(addressIn, lat, lng, cacheProvider);
 
                         		if (persistAsLandmark) {
                         			//if (ConfigurationManager.getParam(ConfigurationManager.SAVE_GEOCODE_AS_LANDMARK, ConfigurationManager.OFF).equals(ConfigurationManager.ON)) {
@@ -149,7 +149,7 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
             if (addressInfo != null && StringUtils.isNotEmpty(addressInfo.getField(AddressInfo.EXTENSION))) {
             	cacheProvider.put(key, addressInfo);
             	//persist geocode
-            	GeocodeCachePersistenceUtils.persistGeocode(addressInfo.getField(AddressInfo.EXTENSION), lat, lng);
+            	GeocodeCachePersistenceUtils.persistGeocode(addressInfo.getField(AddressInfo.EXTENSION), lat, lng, cacheProvider);
             }
         } else {
             logger.log(Level.INFO, "Reading Google geocode from cache with key {0}", addressInfo.getField(AddressInfo.EXTENSION));

@@ -59,10 +59,9 @@ public class WelcomeAction extends org.apache.struts.action.Action {
     			public Object executeAction() {
     				return LandmarkPersistenceUtils.selectNewestLandmarks();
     			}
-    		});
-    				
-    		List<Landmark> landmarkList = newestLandmarksAction.getListFromCache(Landmark.class, "newestLandmarks", CacheType.FAST);
-            request.setAttribute("newestLandmarks", landmarkList);   
+    		});		
+    		List<Landmark> landmarkList = newestLandmarksAction.getListFromCache(Landmark.class, "NewestLandmarks", CacheType.FAST);
+            request.setAttribute("NewestLandmarks", landmarkList);   
             
         	if (UserAgentUtils.isMobile(request.getHeader("User-Agent"))) {
         		return mapping.findForward("mobile");
