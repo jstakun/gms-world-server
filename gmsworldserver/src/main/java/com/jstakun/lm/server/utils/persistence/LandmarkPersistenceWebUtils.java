@@ -51,8 +51,7 @@ public class LandmarkPersistenceWebUtils {
         		public Object executeAction() {
         			return net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils.selectNewestLandmarks();
         		}
-        	});
-        	
+        	});     	
         	List<Landmark> landmarkList = newestLandmarksAction.getListFromCache(Landmark.class, "newestLandmarks", CacheType.FAST);
         	if (!landmarkList.isEmpty()) {
         		Landmark newestLandmark = landmarkList.get(0);

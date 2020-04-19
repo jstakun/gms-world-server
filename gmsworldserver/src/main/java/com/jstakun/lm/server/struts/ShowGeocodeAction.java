@@ -13,6 +13,9 @@ import org.apache.struts.action.ActionMapping;
 
 import com.jstakun.lm.server.utils.HtmlUtils;
 import com.jstakun.lm.server.utils.UserAgentUtils;
+import com.jstakun.lm.server.utils.memcache.CacheAction;
+import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
+import com.jstakun.lm.server.utils.persistence.CommonPersistenceUtils;
 
 import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.persistence.GeocodeCache;
@@ -45,8 +48,23 @@ public class ShowGeocodeAction extends org.apache.struts.action.Action {
         if (request.getParameter("key") != null) {
             try {
                 String key = (String) request.getParameter("key");
-                gc = GeocodeCachePersistenceUtils.selectGeocodeCacheById(key);
-                request.setAttribute("geocodeCache", gc);
+                CacheAction geocodeCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
+    				public Object executeAction() {
+    					if (UserAgentUtils.isBot(request.getHeader("User-Agent"))) {
+    		            	return null;
+    		            } else if (CommonPersistenceUtils.isKeyValid(key)) {
+    		            	return GeocodeCachePersistenceUtils.selectGeocodeCacheById(key);
+    		            } else {
+    		            	logger.log(Level.SEVERE, "Wrong key format " + key);
+    		            	return null;
+    		            }
+    				}
+                });
+                gc = (GeocodeCache) geocodeCacheAction.getObjectFromCache(key, CacheType.NORMAL);
+                           
+                if (gc != null) {
+                	request.setAttribute("geocodeCache", gc);
+                }
             } catch (Exception e) {
                 logger.log(Level.SEVERE, e.getMessage(), e);
             }

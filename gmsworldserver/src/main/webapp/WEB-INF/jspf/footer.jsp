@@ -1,7 +1,6 @@
 <%-- any content can be specified here e.g.: --%>
 <%@ page pageEncoding="utf-8" %>
-<%@ page import="net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils,
-                 net.gmsworld.server.utils.persistence.Landmark,
+<%@ page import="net.gmsworld.server.utils.persistence.Landmark,
                  com.jstakun.lm.server.utils.HtmlUtils,
                  com.jstakun.lm.server.utils.memcache.CacheUtil,
                  net.gmsworld.server.utils.UrlUtils,
@@ -72,11 +71,10 @@
             <div class="recent-comments">
                 <ul>
 <%
-	List<Landmark> landmarkList1 = CacheUtil.getList(Landmark.class, "newestLandmarks");
-
+   List<Landmark> landmarkList1 = (List<Landmark>) request.getAttribute("newestLandmarks");
+   
    if (landmarkList1 == null) {
-	   landmarkList1 = LandmarkPersistenceUtils.selectNewestLandmarks();
-	   CacheUtil.put("newestLandmarks", landmarkList1, CacheUtil.CacheType.FAST);
+	   landmarkList1 = CacheUtil.getList(Landmark.class, "newestLandmarks");
    }
    
    if (landmarkList1 != null) {

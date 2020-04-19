@@ -412,7 +412,8 @@ public class LandmarkPersistenceUtils {
         return bucket;
     }
 
-   public static int countLandmarksByMonth(String month) {
+    //mm-yyyy 01-2017
+    public static int countLandmarksByMonth(String month) {
 	    int result = 0;
 	   
 	    try {

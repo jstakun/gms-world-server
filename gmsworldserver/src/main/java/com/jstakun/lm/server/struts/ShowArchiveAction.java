@@ -2,12 +2,14 @@ package com.jstakun.lm.server.struts;
 
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.NumberUtils;
+import net.gmsworld.server.utils.persistence.GeocodeCachePersistenceUtils;
 import net.gmsworld.server.utils.persistence.Landmark;
 import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;
 
@@ -15,6 +17,11 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+
+import com.jstakun.lm.server.utils.UserAgentUtils;
+import com.jstakun.lm.server.utils.memcache.CacheAction;
+import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
+import com.jstakun.lm.server.utils.persistence.CommonPersistenceUtils;
 
 /**
  *
@@ -45,6 +52,7 @@ public class ShowArchiveAction extends org.apache.struts.action.Action {
         int next = -1;
         int prev = -1;
 
+        //mm-yyyy
         String m = null;
         try {
         	if (StringUtils.isNumeric(year) && StringUtils.isNumeric(month)) {
@@ -56,22 +64,39 @@ public class ShowArchiveAction extends org.apache.struts.action.Action {
             month = DateUtils.formatDate(df, now);
             m = DateUtils.getLongMonthYearString(now);
         }
-
-        int count = LandmarkPersistenceUtils.countLandmarksByMonth(month);
-
-        if (count - first - INTERVAL > 0) {
-            next = first + INTERVAL;
-        }
-        if (first - INTERVAL >= 0) {
-            prev = first - INTERVAL;
-        }
-
-        request.setAttribute("next", new Integer(next));
-        request.setAttribute("prev", new Integer(prev));
- 
         request.setAttribute("month", m);
-        List<Landmark> landmarkList = LandmarkPersistenceUtils.selectLandmarksByMonth(first, first+INTERVAL, month);
-        request.setAttribute("landmarkList", landmarkList);
+        
+        final String monthStr = month;
+        CacheAction landmarkCountCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
+			public Object executeAction() {
+				if (UserAgentUtils.isBot(request.getHeader("User-Agent"))) {
+	            	return 0;
+	            } else {
+	            	return LandmarkPersistenceUtils.countLandmarksByMonth(monthStr);
+	            }
+			}
+        });
+        int count = (Integer) landmarkCountCacheAction.getObjectFromCache(month + "-count", CacheType.NORMAL);
+
+        if (count > 0) {
+            if (count - first - INTERVAL > 0) {
+            	next = first + INTERVAL;
+            }
+            if (first - INTERVAL >= 0) {
+            	prev = first - INTERVAL;
+            }
+
+            request.setAttribute("next", new Integer(next));
+            request.setAttribute("prev", new Integer(prev));
+ 
+            CacheAction landmarkCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
+    			public Object executeAction() {
+    				return LandmarkPersistenceUtils.selectLandmarksByMonth(first, first+INTERVAL, monthStr);
+    			}
+            });
+            List<Landmark> landmarkList = (List<Landmark>) landmarkCacheAction.getObjectFromCache(month + "-" + first + "-" + (first+INTERVAL) + "-list", CacheType.NORMAL);
+            request.setAttribute("landmarkList", landmarkList);
+        }
 
         return mapping.findForward("success");
     }
