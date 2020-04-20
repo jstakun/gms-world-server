@@ -48,7 +48,7 @@ public class BookingAction extends Action {
         		            }
         				}
         		 });
-            	 landmark = (Landmark) landmarkCacheAction.getObjectFromCache("landmark-" + key, CacheType.NORMAL);
+            	 landmark = (Landmark) landmarkCacheAction.getObjectFromCache(key, CacheType.NORMAL);
             } catch (Exception e) {
             	logger.log(Level.SEVERE, e.getMessage(), e);
             }

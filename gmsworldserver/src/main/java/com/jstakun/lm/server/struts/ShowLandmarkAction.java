@@ -70,7 +70,7 @@ public class ShowLandmarkAction extends Action {
         		            }
         				}
         		 });
-            	 landmark = (Landmark) landmarkCacheAction.getObjectFromCache("landamrk-" + key, CacheType.NORMAL);
+            	 landmark = (Landmark) landmarkCacheAction.getObjectFromCache(key, CacheType.NORMAL);
                     
             	 isFullScreenLandmark = false; 
             	    
