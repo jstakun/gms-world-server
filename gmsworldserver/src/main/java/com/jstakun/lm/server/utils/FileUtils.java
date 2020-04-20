@@ -125,19 +125,21 @@ public class FileUtils {
 	public static Screenshot getScreenshot(final String key, boolean thumbnail, boolean isSecure) {
 		Screenshot s = null;
     	if (StringUtils.isNumeric(key)) {
-            CacheAction screenshotCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
-				public Object executeAction() {
-					return ScreenshotPersistenceUtils.selectScreenshot(key);
-				}
-			});
-        	s = (Screenshot) screenshotCacheAction.getObjectFromCache(key, CacheType.NORMAL);
-        	if (s != null) {
-        		try {
-                	s.setUrl(FileUtils.getImageUrlV2(null, s.getFilename(), thumbnail, isSecure));
-                } catch (Exception e) {
-                	logger.log(Level.SEVERE, "FileUtils.getScreenshot() exception", e);
-                }
-        	}	
+            synchronized(key.intern()) {
+            	CacheAction screenshotCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
+            		public Object executeAction() {
+            			return ScreenshotPersistenceUtils.selectScreenshot(key);
+            		}
+            	});
+            	s = (Screenshot) screenshotCacheAction.getObjectFromCache("screenshot-" + key, CacheType.NORMAL);
+            	if (s != null && StringUtils.isEmpty(s.getUrl())) {
+            		try {
+            			s.setUrl(getImageUrlV2(null, s.getFilename(), thumbnail, isSecure));
+            		} catch (Exception e) {
+            			logger.log(Level.SEVERE, "FileUtils.getScreenshot() exception", e);
+            		}
+            	}	
+            }
 		} 	
     	return s;
 	}

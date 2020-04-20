@@ -2,16 +2,9 @@ package com.jstakun.lm.server.struts;
 
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import net.gmsworld.server.utils.DateUtils;
-import net.gmsworld.server.utils.NumberUtils;
-import net.gmsworld.server.utils.persistence.GeocodeCachePersistenceUtils;
-import net.gmsworld.server.utils.persistence.Landmark;
-import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
@@ -21,7 +14,11 @@ import org.apache.struts.action.ActionMapping;
 import com.jstakun.lm.server.utils.UserAgentUtils;
 import com.jstakun.lm.server.utils.memcache.CacheAction;
 import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
-import com.jstakun.lm.server.utils.persistence.CommonPersistenceUtils;
+
+import net.gmsworld.server.utils.DateUtils;
+import net.gmsworld.server.utils.NumberUtils;
+import net.gmsworld.server.utils.persistence.Landmark;
+import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;
 
 /**
  *

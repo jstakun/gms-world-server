@@ -27,8 +27,7 @@ public class BookingAction extends Action {
 	private static final Logger logger = Logger.getLogger(BookingAction.class.getName());
     
 	@Override
-    public ActionForward execute(ActionMapping mapping, ActionForm form,
-            HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		final String key = (String) request.getParameter("key");
         Landmark landmark = null;
@@ -49,7 +48,7 @@ public class BookingAction extends Action {
         		            }
         				}
         		 });
-            	 landmark = (Landmark) landmarkCacheAction.getObjectFromCache(key, CacheType.NORMAL);
+            	 landmark = (Landmark) landmarkCacheAction.getObjectFromCache("landmark-" + key, CacheType.NORMAL);
             } catch (Exception e) {
             	logger.log(Level.SEVERE, e.getMessage(), e);
             }

@@ -60,7 +60,7 @@ public class ShowGeocodeAction extends org.apache.struts.action.Action {
     		            }
     				}
                 });
-                gc = (GeocodeCache) geocodeCacheAction.getObjectFromCache(key, CacheType.NORMAL);
+                gc = (GeocodeCache) geocodeCacheAction.getObjectFromCache("geocode-" + key, CacheType.NORMAL);
                            
                 if (gc != null) {
                 	request.setAttribute("geocodeCache", gc);
