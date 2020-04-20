@@ -28,22 +28,6 @@ public class FileUtils {
 
 	private static final Logger logger = Logger.getLogger(FileUtils.class.getName());
 	
-	/*public static BlobKey saveFile(String fileName, InputStream is) throws IOException {
-		FileService fileService = FileServiceFactory.getFileService();
-        AppEngineFile file = fileService.createNewBlobFile("image/jpeg", fileName);
-        FileWriteChannel writeChannel = fileService.openWriteChannel(file, true);
-        
-        int nRead;
-        byte[] data = new byte[8192];
-        while ((nRead = is.read(data, 0, data.length)) != -1) {
-            writeChannel.write(ByteBuffer.wrap(data, 0, nRead));
-        }
-
-        writeChannel.closeFinally();
-        
-        return fileService.getBlobKey(file);
-	}*/	
-	
 	public static void saveFileV2(String bucketName, String fileName, byte[] file, double lat, double lng) throws IOException {
         if (bucketName == null) {			
         	 bucketName = AppIdentityServiceFactory.getAppIdentityService().getDefaultGcsBucketName();
@@ -125,22 +109,20 @@ public class FileUtils {
 	public static Screenshot getScreenshot(final String key, boolean thumbnail, boolean isSecure) {
 		Screenshot s = null;
     	if (StringUtils.isNumeric(key)) {
-            synchronized(key.intern()) {
-            	CacheAction screenshotCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
-            		public Object executeAction() {
-            			return ScreenshotPersistenceUtils.selectScreenshot(key);
-            		}
-            	});
-            	s = (Screenshot) screenshotCacheAction.getObjectFromCache("screenshot-" + key, CacheType.NORMAL);
-            	if (s != null && StringUtils.isEmpty(s.getUrl())) {
-            		try {
-            			s.setUrl(getImageUrlV2(null, s.getFilename(), thumbnail, isSecure));
-            		} catch (Exception e) {
-            			logger.log(Level.SEVERE, "FileUtils.getScreenshot() exception", e);
-            		}
-            	}	
-            }
-		} 	
+    		CacheAction screenshotCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
+            	public Object executeAction() {
+            		return ScreenshotPersistenceUtils.selectScreenshot(key);
+            	}
+            });
+            s = (Screenshot) screenshotCacheAction.getObjectFromCache("screenshot-" + key, CacheType.NORMAL);
+            if (s != null && StringUtils.isEmpty(s.getUrl())) {
+            	try {
+            		s.setUrl(getImageUrlV2(null, s.getFilename(), thumbnail, isSecure));
+            	} catch (Exception e) {
+            		logger.log(Level.SEVERE, "FileUtils.getScreenshot() exception", e);
+            	}
+            }	
+    	} 	
     	return s;
 	}
 }

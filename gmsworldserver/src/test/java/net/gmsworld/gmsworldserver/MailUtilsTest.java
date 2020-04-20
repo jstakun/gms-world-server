@@ -10,8 +10,8 @@ public class MailUtilsTest {
 	
 	@Test
 	public void test() {
-		MailUtils.sendDeviceLocatorVerificationRequest(MAIL, "Admin", "abcd", null, 0);
-		
+		//MailUtils.sendDeviceLocatorVerificationRequest(MAIL, "Admin", "abcd", null, 0);
+		MailUtils.sendCrashReport("New crash report", "test");
 		System.out.println(MAIL + " exists: " + MailUtils.emailAccountExists(MAIL));
 	}
 }

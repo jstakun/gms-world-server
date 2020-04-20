@@ -111,8 +111,13 @@ public class MailUtils {
    	 			 recipients += "|" + addEmailAddress("cc", ccA, ccP);
    	 		 }	 
    	 		 String params = "from=" + URLEncoder.encode(fromA, "UTF-8") +
-    	                                "&recipients=" + URLEncoder.encode(recipients, "UTF-8");
-    	 
+    	                                "&recipients=" + URLEncoder.encode(recipients, "UTF-8") +
+    	                       		    "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);
+    	     
+   	 		 if (fromP != null) {
+  	 			 params +="&fromNick=" + URLEncoder.encode(fromP, "UTF-8");
+  	 		 }
+   	 		 
    	 		 if (StringUtils.equalsIgnoreCase(type, "ses")) {
    	 			 params += "&type=ses";
    	 		 } else {
@@ -123,18 +128,14 @@ public class MailUtils {
    	 		 if (subject != null) {
    	 			 params +=  "&subject=" + URLEncoder.encode(subject, "UTF-8");
    	 		 }
+   	 		 
    	 		 if (content != null) {
     			 params += "&body=" + URLEncoder.encode(content, "UTF-8");
     			 if (contentType != null) {
     				  params += "&contentType=" + contentType;
     			 }
    	 		 }		                        
-   	 		 if (fromP != null) {
-   	 			 params +="&fromNick=" + URLEncoder.encode(fromP, "UTF-8");
-   	 		 }
-   	 		 
-   	 		 params += "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);
-    	
+   	 		 	
     		 final String sendMailUrl = com.jstakun.lm.server.config.ConfigurationManager.getBackendUrl() + "/emailer"; 
     		 HttpUtils.processFileRequest(new URL(sendMailUrl), "POST", null, params);
     		 Integer responseCode = HttpUtils.getResponseCode(sendMailUrl);
