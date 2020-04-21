@@ -129,7 +129,7 @@ public class UrlUtils {
 
     public static String getShortUrl(final String longUrl) {
     	String respUrl = longUrl;
-        if (!StringUtils.startsWith(longUrl, BITLY_URL)) {
+        if (longUrl != null && !StringUtils.startsWith(longUrl, BITLY_URL)) {
            respUrl = shortenUrlWithBitly(longUrl);
            if (StringUtils.equals(longUrl, respUrl) ) {
         	   respUrl = getGoogleShortUrl(longUrl);

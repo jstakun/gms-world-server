@@ -86,7 +86,7 @@ public class FileUtils {
 		}
 		BlobKey bk = getCloudStorageBlobKey(bucketName, fileName);
 		if (bk != null) {
-			String imageUrl = getImageUrl(bk, thumbnail);
+			final String imageUrl = getImageUrl(bk, thumbnail);
 			if (isSecure && StringUtils.startsWith(imageUrl, "http://")) {
 				return StringUtils.replace(imageUrl, "http://", "https://");
 			} else if (!isSecure && StringUtils.startsWith(imageUrl, "https://")) {
@@ -117,7 +117,10 @@ public class FileUtils {
             s = (Screenshot) screenshotCacheAction.getObjectFromCache("screenshot-" + key, CacheType.NORMAL);
             if (s != null && StringUtils.isEmpty(s.getUrl())) {
             	try {
-            		s.setUrl(getImageUrlV2(null, s.getFilename(), thumbnail, isSecure));
+            		final String url = getImageUrlV2(null, s.getFilename(), thumbnail, isSecure);
+            		if (StringUtils.isNotEmpty(url)) {
+            			s.setUrl(url);
+            		}
             	} catch (Exception e) {
             		logger.log(Level.SEVERE, "FileUtils.getScreenshot() exception", e);
             	}
