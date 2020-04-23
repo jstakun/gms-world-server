@@ -124,7 +124,9 @@ public class HttpUtils {
             }
              
             if (StringUtils.isNotEmpty(content)) {
-                conn.setRequestProperty("Content-Length", Integer.toString(content.getBytes().length));
+                final int contentLength = content.getBytes().length;
+            	conn.setRequestProperty("Content-Length", Integer.toString(contentLength));
+                logger.log(Level.INFO, "Sending " + contentLength + " bytes request");
                 //conn.setRequestProperty("Content-Language", "en-US");
                 
                 if (contentType != null) {

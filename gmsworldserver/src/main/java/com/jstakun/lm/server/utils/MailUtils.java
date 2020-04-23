@@ -142,7 +142,6 @@ public class MailUtils {
    	 		 	
     		 final String sendMailUrl = com.jstakun.lm.server.config.ConfigurationManager.getBackendUrl() + "/emailer"; 
     		 HttpUtils.processFileRequest(new URL(sendMailUrl), "POST", null, params);
-    		 logger.log(Level.INFO, "Sending " + params.length() + " bytes");
     		 Integer responseCode = HttpUtils.getResponseCode(sendMailUrl);
     		 logger.log(Level.INFO, "Received response code: " + responseCode);
     		 if (responseCode != null && responseCode == 200) {
