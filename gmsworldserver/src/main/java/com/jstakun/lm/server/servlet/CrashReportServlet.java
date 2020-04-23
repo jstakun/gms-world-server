@@ -29,7 +29,9 @@ public class CrashReportServlet extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(CrashReportServlet.class.getName());
-    private static final String[] params = new String[]{"PACKAGE_NAME", "APP_VERSION_CODE", "APP_VERSION_NAME"};
+    private static final String[] titleParams = new String[]{"PACKAGE_NAME", "APP_VERSION_CODE", "APP_VERSION_NAME"};
+    private static final String[] bodyParams = new String[] {"PHONE_MODEL", "BRAND", "ANDROID_VERSION", "USER_APP_START_DATE", 
+    		"USER_CRASH_DATE","SHARED_PREFERENCES","STACK_TRACE", "LOGCAT"};
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -48,24 +50,29 @@ public class CrashReportServlet extends HttpServlet {
 
             if (!requestParams.isEmpty()) {
                 StringBuilder sb = new StringBuilder();
-
+                sb.append("\n");
                 for (Iterator<Map.Entry<String, String[]>> iter = requestParams.entrySet().iterator(); iter.hasNext();) {
                     Map.Entry<String, String[]> entry = iter.next();
-                    String key = entry.getKey();
-                    //logger.log(Level.INFO, "Parameter: {0}", key);
-                    sb.append("Parameter: ").append(key).append("\n");
-                    String[] value = entry.getValue();
-                    for (String v : value) {
-                        //logger.log(Level.INFO, "Value: {0}", v);
-                        sb.append("Value: ").append(v).append("\n");
-                    }
-                    if (StringUtils.indexOfAny(key, params) >= 0 && value.length > 0) {
+                    final String key = entry.getKey();
+                    final String[] value = entry.getValue();
+                    
+                    if (StringUtils.indexOfAny(key, titleParams) >= 0 && value.length > 0) {
                         titleSuffix += " " + key + ": " + value[0];
                     }
                     
-                    if (key.equals("APP_VERSION_CODE")) {
-                    	versionCode = NumberUtils.getInt(value[0], 0);
+                    if (StringUtils.indexOfAny(key, bodyParams) >= 0 && value.length > 0) {
+                    	sb.append("Parameter: ").append(key).append("\n");
+                    	for (String v : value) {
+                            sb.append("Value: ").append(v).append("\n");
+                        }
                     }
+                }
+                
+                if (requestParams.containsKey("APP_VERSION_CODE")) {
+                	String[] versionStr = requestParams.get("APP_VERSION_CODE");
+                	if (versionStr.length > 0) {
+                		versionCode = NumberUtils.getInt(versionStr[0], 0);
+                	}
                 }
 
                 if (StringUtils.isNotEmpty(titleSuffix)) {
@@ -80,6 +87,9 @@ public class CrashReportServlet extends HttpServlet {
                 	if (!StringUtils.equals(MailUtils.sendCrashReport(title, sb.toString()), "ok")) {
                 		logger.log(Level.WARNING, "App version code: " + versionCode);
                     	logger.log(Level.SEVERE, sb.toString());
+                	} else {
+                		logger.log(Level.WARNING, "App version code: " + versionCode);
+                    	logger.log(Level.WARNING, sb.toString());
                 	}
                 } else {
                 	logger.log(Level.INFO, "App version code: " + versionCode);
