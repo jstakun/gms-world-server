@@ -109,7 +109,7 @@ public class NotificationsServlet extends HttpServlet {
 							l.setName(Commons.MY_POSITION_LAYER);
 						
 							String u = StringUtil.getUsername(request.getAttribute("username"), request.getParameter("username"));
-							if (u != null && u.length() % 4 == 0) {
+							if (appId != Commons.DL_ID && StringUtils.isNotEmpty(u) && u.length() % 4 == 0) {
 								try {
 									u = new String(Base64.decode(u));
 								} catch (Exception e) {
@@ -350,8 +350,7 @@ public class NotificationsServlet extends HttpServlet {
 	 *             if an I/O error occurs
 	 */
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		processRequest(request, response);
 	}
 
@@ -368,8 +367,7 @@ public class NotificationsServlet extends HttpServlet {
 	 *             if an I/O error occurs
 	 */
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		processRequest(request, response);
 	}
 
