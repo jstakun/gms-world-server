@@ -114,7 +114,7 @@ public class NotificationsServlet extends HttpServlet {
 								try {
 									u = new String(Base64.decode(u));
 								} catch (Exception e) {
-									logger.log(Level.SEVERE, u + " failed Base64 decoding: " + e.getMessage());
+									logger.log(Level.SEVERE, u + " failed Base64 decoding appId: " + appId + ", version: " + appVersion + ", error: " + e.getMessage());
 								}
 							}
 							if (u == null) {
