@@ -23,6 +23,7 @@ import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.NumberUtils;
+import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.memcache.CacheProvider;
 
 /**
@@ -40,7 +41,7 @@ public class LandmarkPersistenceUtils {
     	
         try {
         	final String landmarksUrl = BACKEND_SERVER_URL + "/addItem";
-        	String params = "type=landmark&latitude=" + latitude + "&longitude=" + longitude + "&name=" + URLEncoder.encode(name, "UTF-8") + 
+        	String params = "type=landmark&latitude=" + StringUtil.formatCoordE6(latitude) + "&longitude=" + StringUtil.formatCoordE6(longitude) + "&name=" + URLEncoder.encode(name, "UTF-8") + 
         			"&altitude=" + altitude + "&username=" + URLEncoder.encode(username, "UTF-8") + "&layer=" + URLEncoder.encode(layer, "UTF-8") + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);						 
         	if (validityDate != null) {
         		params +=	"&validityDate=" + validityDate.getTime();

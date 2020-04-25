@@ -72,7 +72,7 @@ public class LandmarkPersistenceWebUtils {
         return isSimilarToNewest;
     }
     
-    public static void notifyOnLandmarkCreation(Landmark l, String userAgent, String socialIds, String ccIn, String cityIn) {
+    public static void notifyOnLandmarkCreation(Landmark l, String userAgent, String socialIds, String ccIn, String cityIn, int appId) {
     	//load image
     	Queue queue = QueueFactory.getDefaultQueue();
     	queue.add(withUrl("/tasks/execute").param("action", "loadImage").param("latitude", Double.toString(l.getLatitude())).param("longitude", Double.toString(l.getLongitude())));
@@ -98,7 +98,7 @@ public class LandmarkPersistenceWebUtils {
 
     	String messageSuffix = "";
     	if (l.getUseCount() > 0) {
-    		messageSuffix = " User has opened LM " + l.getUseCount() + " times.";
+    		messageSuffix = " User has opened " + com.jstakun.lm.server.config.ConfigurationManager.getAppName(appId) + " " + l.getUseCount() + " times.";
     	}
     	
     	String title = "New landmark";
@@ -107,7 +107,7 @@ public class LandmarkPersistenceWebUtils {
     	}
 
     	String body = "Landmark: " + l.getName() + " has been created by user " + 
-    			ConfigurationManager.SERVER_URL + "socialProfile?uid=" + l.getUsername() + "." + messageSuffix;
+    			ConfigurationManager.SERVER_URL + "showUser/" + l.getUsername() + "." + messageSuffix;
     
     	String userUrl = ConfigurationManager.SERVER_URL;
     	if (l.isSocial()) {
@@ -162,10 +162,10 @@ public class LandmarkPersistenceWebUtils {
     }
     
     public static void setFlex(Landmark l, HttpServletRequest request) {
-     	int useCount = NumberUtils.getInt(request.getHeader(Commons.USE_COUNT_HEADER), 1);
-		int appId = NumberUtils.getInt(request.getHeader(Commons.APP_HEADER), -1);
-		int version = NumberUtils.getInt(request.getHeader(Commons.APP_VERSION_HEADER), -1);
-		String deviceId = request.getHeader(Commons.DEVICE_ID_HEADER);
+     	final int useCount = NumberUtils.getInt(request.getHeader(Commons.USE_COUNT_HEADER), 1);
+     	final int appId = NumberUtils.getInt(request.getHeader(Commons.APP_HEADER), -1);
+     	final int version = NumberUtils.getInt(request.getHeader(Commons.APP_VERSION_HEADER), -1);
+     	final String deviceId = request.getHeader(Commons.DEVICE_ID_HEADER);
     	
     	JSONObject flex = new JSONObject();
 		flex.put("useCount", useCount);

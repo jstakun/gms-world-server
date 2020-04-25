@@ -129,12 +129,12 @@ public class PersistLandmarkServlet extends HttpServlet {
             			if (l.getId() > 0) {	
             				//After adding landmark remove from cache layer list for the location
             				//in order to make it visible immediately.
-            				int radius = NumberUtils.getRadius(request.getParameter("radius"), 3, 6371);
-            				String layerKey = JSON_LAYER_LIST + "_" + StringUtil.formatCoordE2(l.getLatitude()) + "_" + StringUtil.formatCoordE2(l.getLongitude()) + "_" + radius;
+            				final int radius = NumberUtils.getRadius(request.getParameter("radius"), 3, 6371);
+            				final String layerKey = JSON_LAYER_LIST + "_" + StringUtil.formatCoordE2(l.getLatitude()) + "_" + StringUtil.formatCoordE2(l.getLongitude()) + "_" + radius;
             				logger.log(Level.INFO, "Removed from cache layer list {0}: {1}", new Object[]{layerKey, (CacheUtil.remove(layerKey) != null)});           
-                	    
+            				final int appId = NumberUtils.getInt(request.getHeader(Commons.APP_HEADER), -1);	    
             				//send notification to social networks
-            				LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), socialIds, flexJSon.optString("cc"), flexJSon.optString("city"));
+            				LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), socialIds, flexJSon.optString("cc"), flexJSon.optString("city"), appId);
             			} 
                 	}
             	} else {
