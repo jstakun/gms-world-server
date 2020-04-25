@@ -15,9 +15,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.net.util.Base64;
 import org.json.JSONObject;
 
-import com.google.gdata.util.common.util.Base64;
 import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.persistence.Notification;
 import com.jstakun.lm.server.persistence.User;
@@ -110,11 +110,11 @@ public class NotificationsServlet extends HttpServlet {
 						
 							String u = StringUtil.getUsername(request.getAttribute("username"), request.getParameter("username"));
 							//in LM from v1086, DA from v86 username is Base64 encoded string
-							if (((appId == Commons.LM_ID && appVersion >= 1086) || (appId == Commons.DA_ID && appVersion >= 86)) && StringUtils.isNotEmpty(u)) {
+							if (((appId == Commons.LM_ID && appVersion >= 1086) || (appId == Commons.DA_ID && appVersion >= 86)) && StringUtils.isNotEmpty(u) && Base64.isArrayByteBase64(u.getBytes())) {
 								try {
-									u = new String(Base64.decode(u));
+									u = new String(Base64.decodeBase64(u));
 								} catch (Exception e) {
-									logger.log(Level.SEVERE, u + " failed Base64 decoding appId: " + appId + ", version: " + appVersion + ", error: " + e.getMessage());
+									logger.log(Level.SEVERE, " Username " + u + " failed Base64 decoding appId: " + appId + ", version: " + appVersion + ", error: " + e.getMessage());
 								}
 							}
 							if (u == null) {
