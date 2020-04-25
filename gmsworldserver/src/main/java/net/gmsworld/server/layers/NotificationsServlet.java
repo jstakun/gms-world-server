@@ -109,11 +109,12 @@ public class NotificationsServlet extends HttpServlet {
 							l.setName(Commons.MY_POSITION_LAYER);
 						
 							String u = StringUtil.getUsername(request.getAttribute("username"), request.getParameter("username"));
-							if (appId != Commons.DL_ID && StringUtils.isNotEmpty(u) && u.length() % 4 == 0) {
+							//in LM from v1086, DA from v86 username is Base64 encoded string
+							if (((appId == Commons.LM_ID && appVersion >= 1086) || (appId == Commons.DA_ID && appVersion >= 86)) && StringUtils.isNotEmpty(u)) {
 								try {
 									u = new String(Base64.decode(u));
 								} catch (Exception e) {
-									// from version 1086, 86 username is Base64 encoded string
+									logger.log(Level.SEVERE, u + " failed Base64 decoding: " + e.getMessage());
 								}
 							}
 							if (u == null) {
