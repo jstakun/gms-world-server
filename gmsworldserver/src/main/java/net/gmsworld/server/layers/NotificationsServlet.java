@@ -99,7 +99,7 @@ public class NotificationsServlet extends HttpServlet {
 	                 longitude = GeocodeUtils.getLongitude(request.getHeader(Commons.LNG_HEADER));
 	            }
 	            
-	            if (GeocodeUtils.isValidLatitude(latitude) && GeocodeUtils.isValidLongitude(longitude)) {
+	            if (GeocodeUtils.isValidLatitude(latitude) && GeocodeUtils.isValidLongitude(longitude) && appId >= 0) {
 					if (StringUtils.isEmpty(routeId)) {
 						//create new landmark but skip dl route points
 						try {
@@ -158,7 +158,7 @@ public class NotificationsServlet extends HttpServlet {
 			   	   		DevicePersistenceUtils.setupDevice(deviceId, null, null, null, geo);
 					}
 	            } else if (latitude != null || longitude != null) {
-					logger.log(Level.WARNING, "Invalid latitude: " + latitude + " and/or longitude: " + longitude);
+					logger.log(Level.SEVERE, "Invalid request: latitude " + latitude + ", longitude: " + longitude + ", appId: " + appId);
 				}	
 
 				if (StringUtils.equals(type, "v")) {
@@ -178,7 +178,7 @@ public class NotificationsServlet extends HttpServlet {
 						reply.put("value", version);
 					}
 				} else if (StringUtils.equals(type, "u")) {
-					//mail engagement
+					//email engagement
 					String email = request.getParameter("e");
 					long lastStartupTime = NumberUtils.getLong(request.getParameter("lst"), -1);
 					String useCount = request.getParameter("uc");
@@ -190,8 +190,8 @@ public class NotificationsServlet extends HttpServlet {
 					int maxInterval = 31;
 					long interval = System.currentTimeMillis() - lastStartupTime;
 					if (interval > (minInterval * ONE_DAY) && interval < (maxInterval * ONE_DAY) && email != null) {
-						// send email notification if lastStartupTime > week ago
-						// send not more that once a week
+						//send email notification if lastStartupTime > week ago
+						//send not more that once a week
 						logger.log(Level.WARNING, email + " should be engaged to run Landmark Manager!");
 						MailUtils.sendEngagementMessage(email, getServletContext());
 						reply = new JSONObject().put("status", "engaged").put("timestamp", System.currentTimeMillis());

@@ -54,7 +54,7 @@ public class UserPersistenceUtils {
         	
         	if (StringUtils.startsWith(StringUtils.trim(landmarksJson), "{")) {
         		JSONObject resp = new JSONObject(landmarksJson);
-        		if (resp.optString("login") == null) {
+        		if (resp.optString("login") == null && resp.optString("secret") == null) {
         			logger.log(Level.SEVERE, "Failed to save user: " + landmarksJson);
         		}
         		return resp.optString("secret");

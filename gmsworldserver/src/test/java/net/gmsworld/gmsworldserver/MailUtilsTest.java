@@ -21,11 +21,7 @@ public class MailUtilsTest {
 
 		try (FileInputStream inputStream = new FileInputStream(file)) {
 			String fileContents = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
-			int pos = fileContents.indexOf("SHARED_PREFERENCES");
-			if (pos  < 0) {
-				pos = 0;
-			}
-			MailUtils.sendCrashReport("New crash report", fileContents.substring(pos));
+			MailUtils.sendCrashReport("New crash report", fileContents);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
