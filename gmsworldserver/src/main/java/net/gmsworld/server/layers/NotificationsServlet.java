@@ -110,14 +110,16 @@ public class NotificationsServlet extends HttpServlet {
 						
 							String u = StringUtil.getUsername(request.getAttribute("username"), request.getParameter("username"));
 							//in LM from v1086, DA from v86 username is Base64 encoded string
-							if (((appId == Commons.LM_ID && appVersion >= 1086) || (appId == Commons.DA_ID && appVersion >= 86)) && StringUtils.isNotEmpty(u) && Base64.isArrayByteBase64(u.getBytes())) {
+							if (((appId == Commons.LM_ID && appVersion >= 1086) || (appId == Commons.DA_ID && appVersion >= 86)) 
+									&& StringUtils.isNotEmpty(u) && !StringUtils.equalsIgnoreCase(u, "mypos") && Base64.isArrayByteBase64(u.getBytes())) {
 								try {
+									//u = new String(com.google.gdata.util.common.util.Base64.decode(u));
 									u = new String(Base64.decodeBase64(u));
 								} catch (Exception e) {
 									logger.log(Level.SEVERE, " Username " + u + " failed Base64 decoding appId: " + appId + ", version: " + appVersion + ", error: " + e.getMessage());
 								}
 							}
-							if (u == null) {
+							if (StringUtils.isEmpty(u)) {
 								throw new Exception("Username can't be null!");
 							} 
 							
