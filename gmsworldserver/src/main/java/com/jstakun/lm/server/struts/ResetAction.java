@@ -30,7 +30,7 @@ public class ResetAction extends Action {
         String status = "success";
         try
         {
-        	String secret = UserPersistenceUtils.persist(login, password, email, null, null);
+        	final String secret = UserPersistenceUtils.persist(login, password, email, null, null);
             request.setAttribute("login", login);
             if (StringUtils.isEmpty(secret)) {
             	status = "failure";

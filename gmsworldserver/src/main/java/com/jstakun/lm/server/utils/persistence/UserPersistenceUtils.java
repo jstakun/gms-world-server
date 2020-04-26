@@ -37,7 +37,7 @@ public class UserPersistenceUtils {
         //login, password, email are mandatory
         try {
         	final String landmarksUrl = ConfigurationManager.getBackendUrl() + "/addItem";
-        	String params = "login=" + URLEncoder.encode(login, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8") 
+        	String params = "login=" + URLEncoder.encode(login, "UTF-8") + "&password=" + URLEncoder.encode(getHash(password), "UTF-8") 
         							+ "&type=user&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);
         	
         	if (StringUtils.isNotEmpty(firstname)) {
