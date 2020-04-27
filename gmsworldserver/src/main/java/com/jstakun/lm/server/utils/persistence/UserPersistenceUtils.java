@@ -37,9 +37,8 @@ public class UserPersistenceUtils {
         //login, password, email are mandatory
         try {
         	final String landmarksUrl = ConfigurationManager.getBackendUrl() + "/addItem";
-        	String params = "login=" + URLEncoder.encode(login, "UTF-8") + "&password=" + URLEncoder.encode(getHash(password), "UTF-8") 
+        	String params = "login=" + URLEncoder.encode(login, "UTF-8") + "&password=" + URLEncoder.encode(password, "UTF-8") 
         							+ "&type=user&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);
-        	
         	if (StringUtils.isNotEmpty(firstname)) {
         	   params += "&firstname=" + URLEncoder.encode(firstname, "UTF-8");
         	}
@@ -50,7 +49,7 @@ public class UserPersistenceUtils {
         	   params += "&email=" + URLEncoder.encode(email, "UTF-8");
             }
             
-        	final String landmarksJson = HttpUtils.processFileRequest(new URL(landmarksUrl + "?" + params));
+        	final String landmarksJson = HttpUtils.processFileRequest(new URL(landmarksUrl), "POST", "application/json", params);
         	
         	if (StringUtils.startsWith(StringUtils.trim(landmarksJson), "{")) {
         		JSONObject resp = new JSONObject(landmarksJson);

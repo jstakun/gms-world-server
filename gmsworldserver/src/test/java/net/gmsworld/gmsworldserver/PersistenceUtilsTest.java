@@ -91,19 +91,22 @@ public class PersistenceUtilsTest {
 		}
 	}
 	
-	//@Test
+	@Test
 	public void userPersistenceUtils() {
 		//done
 		String login = "test";
-		String password = "test";
-		String secret = UserPersistenceUtils.persist(login, password, email, null, null);
+		String password = "test1test2";
+		String secret = UserPersistenceUtils.persist(login, password, email, "testing", "testing");
 		if (StringUtils.isNotEmpty(secret)) {
-			System.out.println(UserPersistenceUtils.confirmUserRegistration(login));
-			System.out.println(UserPersistenceUtils.login(login, password.getBytes()));
-			System.out.println(UserPersistenceUtils.userExists(login));
+			System.out.println("Confirm User Registration: " + UserPersistenceUtils.confirmUserRegistration(login));
+			System.out.println("Login: " + UserPersistenceUtils.login(login, password.getBytes()));
+			System.out.println("User Exists: " +  UserPersistenceUtils.userExists(login));
 			User u = UserPersistenceUtils.selectUserByLogin(login, secret);
-			System.out.println("User login: " + u.getLogin());
+			if (u != null) {
+				System.out.println("User Name: " + u.getLogin());
+			}
 			UserPersistenceUtils.removeUser(secret);
+			//
 		}
 	}
 }
