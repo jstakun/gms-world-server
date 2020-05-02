@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -26,10 +27,10 @@ public class DeleteLandmarkAction extends Action {
                                                                       ServletException {
 
 
-        if (request.getParameter("key") != null)
+    	final String key = request.getParameter("key");
+        if (StringUtils.isNumeric(key))
         {
-            String key = (String)request.getParameter("key"); 
-            LandmarkPersistenceUtils.deleteLandmark(key);
+            LandmarkPersistenceUtils.removeLandmark(Integer.valueOf(key));
         }
 
         return mapping.findForward( "success");
