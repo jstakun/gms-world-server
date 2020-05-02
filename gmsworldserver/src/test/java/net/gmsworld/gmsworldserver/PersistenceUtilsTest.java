@@ -76,7 +76,7 @@ public class PersistenceUtilsTest {
 	//@Test
 	public void screenshotPersistenceUtils() {
 		//ScreenshotPersistenceUtils.persist(username, latitude, longitude, filename);
-		//ScreenshotPersistenceUtils.selectScreenshot(k);
+		ScreenshotPersistenceUtils.selectScreenshot("12345");
 		//ScreenshotPersistenceUtils.deleteScreenshot(filename, id);
 		//ScreenshotPersistenceUtils.deleteScreenshotsOlderThanDate(ndays);
 	}

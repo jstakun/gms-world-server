@@ -200,7 +200,11 @@ public class LandmarkPersistenceUtils {
    			final String gJson = HttpUtils.processFileRequest(new URL(gUrl));
    			if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
    				JSONObject count = new JSONObject(gJson);
-   				result = count.getInt("count");     
+   				if (count.has("count")) {
+   					result = count.getInt("count");
+   				} else {
+   					logger.log(Level.SEVERE, "Received following server response: " + gJson);
+   				}
    			} else {
    				logger.log(Level.SEVERE, "Received following server response: " + gJson);
    			}
@@ -459,8 +463,19 @@ public class LandmarkPersistenceUtils {
         return result;
     }
     
-    public static void deleteLandmark(String key) {
-    	//TODO not yet implemented
+    public static void removeLandmark(int id) {
+    	try {
+        	final String gUrl = BACKEND_SERVER_URL + "/deleteItem";
+        	final String params = "type=landmark&id=" + id + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);			 
+        	final String gJson = HttpUtils.processFileRequest(new URL(gUrl + "?" + params));
+        	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
+        		logger.log(Level.INFO, "Landmark " + id + " remove status: " + gJson);
+        	} else {
+        		logger.log(Level.SEVERE, "Received following server response: " + gJson);
+        	}
+        } catch (Exception e) {
+        	logger.log(Level.SEVERE, e.getMessage(), e);
+        }
     }
     
     public static void updateLandmark(String key, Map<String, Object> update) {

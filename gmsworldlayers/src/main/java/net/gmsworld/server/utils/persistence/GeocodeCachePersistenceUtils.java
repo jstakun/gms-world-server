@@ -160,4 +160,19 @@ public class GeocodeCachePersistenceUtils {
 		   
 		return gc;
 	}
+    
+    public static void removeGeocode(int id) {
+    	try {
+        	final String gUrl = BACKEND_SERVER_URL + "/deleteItem";
+        	final String params = "type=geocode&id=" + id + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);			 
+        	final String gJson = HttpUtils.processFileRequest(new URL(gUrl + "?" + params));
+        	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
+        		logger.log(Level.INFO, "Geocode " + id + " remove status: " + gJson);
+        	} else {
+        		logger.log(Level.SEVERE, "Received following server response: " + gJson);
+        	}
+        } catch (Exception e) {
+        	logger.log(Level.SEVERE, e.getMessage(), e);
+        }
+    }
 }
