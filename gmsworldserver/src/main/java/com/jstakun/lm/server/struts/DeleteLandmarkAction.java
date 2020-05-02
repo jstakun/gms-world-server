@@ -21,18 +21,12 @@ public class DeleteLandmarkAction extends Action {
      * @param request The HTTP Request we are processing.
      * @param response The HTTP Response we are processing.
      */
-    public ActionForward execute(ActionMapping mapping, ActionForm form,
-                                 HttpServletRequest request,
-                                 HttpServletResponse response) throws IOException,
-                                                                      ServletException {
-
-
+    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
     	final String key = request.getParameter("key");
         if (StringUtils.isNumeric(key))
         {
             LandmarkPersistenceUtils.removeLandmark(Integer.valueOf(key));
         }
-
         return mapping.findForward( "success");
     }
 }
