@@ -1,8 +1,8 @@
 package net.gmsworld.server.layers;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertEquals;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.utils.memcache.MockCacheProvider;
