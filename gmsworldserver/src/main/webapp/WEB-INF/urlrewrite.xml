@@ -440,10 +440,10 @@
 	</rule>
     
     <!-- gae startup -->
-    <rule>
+    <!--rule>
             <from>^/_ah/start</from>
             <to>/welcome.do</to>
-    </rule>
+    </rule-->
     
 </urlrewrite>
 
