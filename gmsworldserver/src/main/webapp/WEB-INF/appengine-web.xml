@@ -25,20 +25,19 @@
     <!--manual-scaling>
     	<instances>1</instances>
   	</manual-scaling-->
-    <!--basic-scaling>
+    <basic-scaling>
     	<max-instances>1</max-instances>
-    	<idle-timeout>3m</idle-timeout>
-    </basic-scaling-->
-    <automatic-scaling>
+    	<idle-timeout>5m</idle-timeout>
+    </basic-scaling>
+    <!--automatic-scaling>
        <target-cpu-utilization>0.95</target-cpu-utilization>
        <target-throughput-utilization>0.95</target-throughput-utilization>
        <min-instances>1</min-instances>
        <max-instances>1</max-instances>
-       <!--max-idle-instances>0</max-idle-instances>
-       <min-idle-instances>0</min-idle-instances-->
-       <max-pending-latency>30s</max-pending-latency>
-       <!-- min-pending-latency max 15s -->
+       <max-idle-instances>0</max-idle-instances>
+       <min-idle-instances>0</min-idle-instances>
+       <max-pending-latency>15s</max-pending-latency>
        <min-pending-latency>15s</min-pending-latency>
        <max-concurrent-requests>80</max-concurrent-requests>
-     </automatic-scaling>
+     </automatic-scaling-->
 </appengine-web-app>

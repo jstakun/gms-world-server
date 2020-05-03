@@ -439,6 +439,11 @@
     	<to type="permanent-redirect" last="true">https://www.gms-world.net/m/reset.jsp</to>
 	</rule>
     
+    <!-- gae startup -->
+    <rule>
+            <from>^/_ah/start</from>
+            <to>/welcome.do</to>
+    </rule>
     
 </urlrewrite>
 
