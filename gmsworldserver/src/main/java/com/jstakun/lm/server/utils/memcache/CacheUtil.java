@@ -71,8 +71,11 @@ public class CacheUtil {
 	}
 
 	public static Object getObject(String key) {
-		//logger.log(Level.INFO, "getObject " + key);
-		return getCache().get(key);
+		try {
+			return getCache().get(key);
+		} catch (Exception e) {
+			return false;
+		}
 	}
 	
 	public static <T> T getObject(Class<T> type, String key) {
@@ -115,21 +118,22 @@ public class CacheUtil {
 	}
 
 	public static Object remove(String key) {
-		return getCache().remove(key) ;
+		try {
+			return getCache().remove(key) ;
+		} catch (Exception e) {
+			return null;
+		}
 	}
 	
 	private static void putToFastCache(String key, Object value) {
-		//logger.log(Level.INFO, "putToShortCache " + key);
 		MemcacheServiceFactory.getMemcacheService().put(key, value, ONE_MINUTE_EXPIRATION);
 	}
 	
-	private static void putToLandmarkCache(String key, Object value) {
-		//logger.log(Level.INFO, "putToLandmarkCache " + key);
+	private static void putToNormalCache(String key, Object value) {
 		MemcacheServiceFactory.getMemcacheService().put(key, value, TEN_MINUTES_EXPIRATION);
 	}
 	
 	private static void putToLongCache(String key, Object value) {
-		//logger.log(Level.INFO, "putToLongCache " + key);
 		MemcacheServiceFactory.getMemcacheService().put(key, value, LONG_CACHE_EXPIRATION);
 	}
 	
@@ -168,7 +172,7 @@ public class CacheUtil {
 			} else if (type == CacheType.LONG) {
 				putToLongCache(key, value);
 			} else if (type == CacheType.LANDMARK) {
-				putToLandmarkCache(key, value);
+				putToNormalCache(key, value);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);

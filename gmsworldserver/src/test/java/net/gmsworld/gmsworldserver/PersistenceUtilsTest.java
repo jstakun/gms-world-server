@@ -62,7 +62,7 @@ public class PersistenceUtilsTest {
 		//LayerPersistenceUtils.persist(name, desc, enabled, manageable, checkinable, formatted);
 	}	
 	
-	//@Test
+	@Test
 	public void notificationPersistenceUtils() throws Exception {
 		//done
 		Notification n = NotificationPersistenceUtils.setVerified(email, false);
@@ -91,7 +91,7 @@ public class PersistenceUtilsTest {
 		}
 	}
 	
-	@Test
+	//@Test
 	public void userPersistenceUtils() {
 		//done
 		String login = "test";

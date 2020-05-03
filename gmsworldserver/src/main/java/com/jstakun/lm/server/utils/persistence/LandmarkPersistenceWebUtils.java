@@ -18,6 +18,7 @@ import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.UrlUtils;
 import net.gmsworld.server.utils.persistence.Landmark;
+import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
@@ -49,7 +50,7 @@ public class LandmarkPersistenceWebUtils {
         } else {
         	CacheAction newestLandmarksAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
         		public Object executeAction() {
-        			return net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils.selectNewestLandmarks();
+        			return LandmarkPersistenceUtils.selectNewestLandmarks();
         		}
         	});     	
         	List<Landmark> landmarkList = newestLandmarksAction.getListFromCache(Landmark.class, "NewestLandmarks", CacheType.FAST);

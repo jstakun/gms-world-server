@@ -39,7 +39,7 @@ public class NotificationPersistenceUtils {
 		if (StringUtils.isNotEmpty(id)) {
 			try {
 				final String landmarksUrl = ConfigurationManager.getBackendUrl() + "/addItem";
-	        	String params = "id=" + id + "&type=notification&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);
+	        	String params = "id=" + URLEncoder.encode(id, "UTF-8") + "&type=notification&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);
 	        	if (status.equals(Notification.Status.VERIFIED)) {
 	        		params += "&status=1";
 	        	}
@@ -62,7 +62,7 @@ public class NotificationPersistenceUtils {
 		if (StringUtils.isNotEmpty(id)) {
 			try {
 	        	final String gUrl = ConfigurationManager.getBackendUrl() + "/deleteItem";
-	        	final String params = "type=notification&id=" + id + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);			 
+	        	final String params = "type=notification&id=" + URLEncoder.encode(id, "UTF-8") + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);			 
 	        	final String gJson = HttpUtils.processFileRequest(new URL(gUrl + "?" + params));
 	        	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
 	        		JSONObject root = new JSONObject(gJson);
