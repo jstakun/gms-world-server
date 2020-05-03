@@ -74,7 +74,7 @@ public class CacheUtil {
 		try {
 			return getCache().get(key);
 		} catch (Exception e) {
-			return false;
+			return null;
 		}
 	}
 	
