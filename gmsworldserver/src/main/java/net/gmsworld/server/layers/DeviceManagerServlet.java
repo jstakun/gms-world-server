@@ -97,19 +97,30 @@ public final class DeviceManagerServlet extends HttpServlet {
 				 final String replyToCommand = request.getParameter("replyToCommand"); 
 				 String flex = request.getParameter("flex"); 
 				 
+				 final String deviceId = request.getHeader(Commons.DEVICE_ID_HEADER);
+				 final String accuracy = request.getHeader(Commons.ACC_HEADER);
+				 
+				 Double latitude = null, longitude = null;
+				 if (request.getHeader(Commons.LAT_HEADER) != null) {
+			   	   	latitude = GeocodeUtils.getLatitude(request.getHeader(Commons.LAT_HEADER));
+			   	 }
+			   	 if (request.getHeader(Commons.LNG_HEADER) != null) {
+			   	    longitude = GeocodeUtils.getLongitude(request.getHeader(Commons.LNG_HEADER));
+			   	 }
+				 
 		         try {
 		        	 final int version = NumberUtils.getInt(request.getHeader(Commons.APP_VERSION_HEADER), -1);
 		        	 if (version >= 28) {
 		        		 if (flex == null) {
-		        			 flex = processHeadersV2(request, version);
+		        			 flex = processHeadersV2(request, deviceId, latitude, longitude, accuracy, version);
 		        		 } else {
-		        			 flex += "," + processHeadersV2(request, version);
+		        			 flex += "," + processHeadersV2(request, deviceId, latitude, longitude, accuracy, version);
 		        		 }
 		        	 } else {
 		        		 if (flex == null) {
-		        			 flex = processHeaders(request);
+		        			 flex = processHeaders(request, latitude, longitude);
 		        		 } else {
-		        			 flex += "," + processHeaders(request);
+		        			 flex += "," + processHeaders(request, latitude, longitude);
 		        		 }
 		        	 }
 		         } catch (Exception e) {
@@ -135,18 +146,26 @@ public final class DeviceManagerServlet extends HttpServlet {
 			        		 MailUtils.sendAdminMail("Quota reset request", "Quota reset for " + commandKey + " has been requested");
 			        		 logger.log(Level.INFO, "Command " + commandKey + " has been set to 0");
 			        		 status = 1;
+			        		 persistDeviceLocation(deviceId, latitude, longitude, accuracy);
 			        	 } else if (count < 10 || (StringUtils.equals(command, "messagedlapp") && count < 50) || DevicePersistenceUtils.isValidCommand(replyToCommand) ||
 			        		(StringUtils.equals(command, "messagedlapp") && StringUtils.isNotEmpty(request.getHeader(Commons.ROUTE_ID_HEADER)))) {
 			        		 logger.log(Level.INFO, "Command " + commandKey + " has been sent " + count + " times");
-			        		  status = DevicePersistenceUtils.sendCommand(imei, pin, name, username, command, args, correlationId, flex);	  
+			        		 status = DevicePersistenceUtils.sendCommand(imei, pin, name, username, command, args, correlationId, flex);	 
+			        		 if (status == 1 && StringUtils.isNotEmpty(deviceId) && latitude != null && longitude != null) {
+			        			 CacheUtil.cacheDeviceLocation(deviceId, latitude, longitude, accuracy);
+			        		 }
 			        	 } else {
 			        		 logger.log(Level.SEVERE, "Command " + commandKey + " has been rejected after " + count + " attempts");
 			        		 status = -3;
+			        		 persistDeviceLocation(deviceId, latitude, longitude, accuracy); 
 					     }        		 
 		        	 } else if (StringUtils.equalsIgnoreCase(action, "delete")) {
 		        		 status = DevicePersistenceUtils.deleteDevice(imei);
 		        	 } else { 
 		        		 status = DevicePersistenceUtils.setupDevice(imei, name, username, token, flex);
+		        		 if (status == 1 && StringUtils.isNotEmpty(deviceId) && latitude != null && longitude != null) {
+		        			 CacheUtil.cacheDeviceLocation(deviceId, latitude, longitude, accuracy);
+		        		 }
 		        	 }	 
 		        	 JSONObject reply = new JSONObject();
 		        	 if (status == 1) {
@@ -188,15 +207,8 @@ public final class DeviceManagerServlet extends HttpServlet {
 		}
 	}
  
-	private String processHeaders(HttpServletRequest request) {
-		Double latitude = null, longitude = null;
+	private String processHeaders(HttpServletRequest request, Double latitude, Double longitude) {
 		String flex = null;
-   	   	if (request.getHeader(Commons.LAT_HEADER) != null) {
-   	   		latitude = GeocodeUtils.getLatitude(request.getHeader(Commons.LAT_HEADER));
-   	   	}
-   	   	if (request.getHeader(Commons.LNG_HEADER) != null) {
-   	   		longitude = GeocodeUtils.getLongitude(request.getHeader(Commons.LNG_HEADER));
-   	   	}
    	   	if (latitude != null && longitude != null) {
    	   		flex = "geo:" + latitude + "," + longitude;
    	   		if (StringUtils.isNotEmpty(request.getHeader(Commons.DEVICE_NAME_HEADER))) {
@@ -209,20 +221,11 @@ public final class DeviceManagerServlet extends HttpServlet {
    	   	return flex;
 	}
 	
-	private String processHeadersV2(HttpServletRequest request, int version) {
+	private String processHeadersV2(HttpServletRequest request, String deviceId, Double latitude, Double longitude, String accuracy, int version) {
 		List<String> tokens = new ArrayList<>();
-		Double latitude = null, longitude = null;
-		final String deviceId = request.getHeader(Commons.DEVICE_ID_HEADER);
-		final String accuracy = request.getHeader(Commons.ACC_HEADER);
 		final String speed = request.getHeader("X-GMS-Speed");
 		
-		if (request.getHeader(Commons.LAT_HEADER) != null) {
-   	   		latitude = GeocodeUtils.getLatitude(request.getHeader(Commons.LAT_HEADER));
-   	   	}
-   	   	if (request.getHeader(Commons.LNG_HEADER) != null) {
-   	   		longitude = GeocodeUtils.getLongitude(request.getHeader(Commons.LNG_HEADER));
-   	   	}
-   	   	if (latitude != null && longitude != null) {
+		if (latitude != null && longitude != null) {
    	   		String geo = "geo:" + StringUtil.formatCoordE6(latitude) + "+" + StringUtil.formatCoordE6(longitude);
    	   		if (version > 31 && StringUtils.isNotEmpty(accuracy)) {
    	   			geo += "+" + accuracy;
@@ -251,8 +254,6 @@ public final class DeviceManagerServlet extends HttpServlet {
    	   	}	
    	   	if (StringUtils.isNotEmpty(deviceId)) {
    	   		tokens.add("deviceId:" + deviceId);
-   	 	    //add device location to cache
-   	   		CacheUtil.cacheDeviceLocation(deviceId, latitude, longitude, accuracy);
    	   	}
    	   	if (StringUtils.isNotEmpty(request.getHeader(Commons.DEVICE_NAME_HEADER))) {
    	   		tokens.add("deviceName:" + request.getHeader(Commons.DEVICE_NAME_HEADER));
@@ -267,7 +268,22 @@ public final class DeviceManagerServlet extends HttpServlet {
    	   	}
 	}
 	
-	private static String getCommandKey(final String correlationId, final String imei, final String username, final String name, final String command) {
+	private void persistDeviceLocation(String deviceId, Double latitude, Double longitude, String accuracy) throws Exception {
+		if (StringUtils.isNotEmpty(deviceId) && latitude != null && longitude != null) {
+			Double[] coords = CacheUtil.getDeviceLocation(deviceId);
+			if (coords == null || (coords != null && NumberUtils.distanceInKilometer(latitude, longitude, coords[0], coords[1]) >= 0.005)) {
+				String geo = "geo:" + latitude + " " + longitude;
+				if (StringUtils.isNotEmpty(accuracy)) {
+					geo += " " + accuracy;
+				}
+				if (DevicePersistenceUtils.setupDevice(deviceId, null, null, null, geo) == 1) {
+					CacheUtil.cacheDeviceLocation(deviceId, latitude, longitude, accuracy);
+				}
+			}
+		}
+	}
+	
+	private String getCommandKey(final String correlationId, final String imei, final String username, final String name, final String command) {
 		String commandKey = "";
    	 	String[] cid = StringUtils.split(correlationId, "=");
 		if (cid != null && cid.length == 2) {

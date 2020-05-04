@@ -150,12 +150,16 @@ public class NotificationsServlet extends HttpServlet {
 					if (StringUtils.isNotEmpty(deviceId)) {
 						//add device location to cache and update geo
 						final String acc =  request.getHeader(Commons.ACC_HEADER);
-			   	   		CacheUtil.cacheDeviceLocation(deviceId, latitude, longitude, acc);
-			   	   		String geo = "geo:" + latitude + " " + longitude;
-			   	   		if (StringUtils.isNotEmpty(acc)) {
-			   	   			geo += " " + acc;
+			   	   		Double[] coords = CacheUtil.getDeviceLocation(deviceId);
+			   	   		if (coords == null || (coords != null && NumberUtils.distanceInKilometer(latitude, longitude, coords[0], coords[1]) >= 0.005)) {
+			   	   			String geo = "geo:" + latitude + " " + longitude;
+			   	   			if (StringUtils.isNotEmpty(acc)) {
+			   	   				geo += " " + acc;
+			   	   			}
+			   	   			if (DevicePersistenceUtils.setupDevice(deviceId, null, null, null, geo) == 1) {
+			   	   				CacheUtil.cacheDeviceLocation(deviceId, latitude, longitude, acc);
+			   	   			}
 			   	   		}
-			   	   		DevicePersistenceUtils.setupDevice(deviceId, null, null, null, geo);
 					}
 	            } else if (latitude != null || longitude != null) {
 					logger.log(Level.SEVERE, "Invalid request: latitude " + latitude + ", longitude: " + longitude + ", appId: " + appId);
