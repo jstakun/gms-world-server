@@ -151,7 +151,7 @@ public class NotificationsServlet extends HttpServlet {
 						//add device location to cache and update geo
 						final String acc =  request.getHeader(Commons.ACC_HEADER);
 			   	   		Double[] coords = CacheUtil.getDeviceLocation(deviceId);
-			   	   		if (coords == null || (coords != null && NumberUtils.distanceInKilometer(latitude, longitude, coords[0], coords[1]) >= 0.005)) {
+			   	   		if (coords == null || (coords != null && NumberUtils.distanceInKilometer(latitude, longitude, coords[0], coords[1]) >= DeviceManagerServlet.CACHE_DEVICE_DISTANCE)) {
 			   	   			String geo = "geo:" + latitude + " " + longitude;
 			   	   			if (StringUtils.isNotEmpty(acc)) {
 			   	   				geo += " " + acc;

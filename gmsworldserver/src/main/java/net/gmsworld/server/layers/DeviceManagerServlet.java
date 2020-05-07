@@ -37,7 +37,9 @@ public final class DeviceManagerServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(DeviceManagerServlet.class.getName());   
-    /**
+    public static final double CACHE_DEVICE_DISTANCE = 0.005;
+	
+	/**
      * @see HttpServlet#HttpServlet()
      */
     public DeviceManagerServlet() {
@@ -151,7 +153,7 @@ public final class DeviceManagerServlet extends HttpServlet {
 			        		(StringUtils.equals(command, "messagedlapp") && StringUtils.isNotEmpty(request.getHeader(Commons.ROUTE_ID_HEADER)))) {
 			        		 logger.log(Level.INFO, "Command " + commandKey + " has been sent " + count + " times");
 			        		 status = DevicePersistenceUtils.sendCommand(imei, pin, name, username, command, args, correlationId, flex);	 
-			        		 if (status == 1 && StringUtils.isNotEmpty(deviceId) && latitude != null && longitude != null) {
+			        		 if (status == 1) {
 			        			 CacheUtil.cacheDeviceLocation(deviceId, latitude, longitude, accuracy);
 			        		 }
 			        	 } else {
@@ -163,7 +165,7 @@ public final class DeviceManagerServlet extends HttpServlet {
 		        		 status = DevicePersistenceUtils.deleteDevice(imei);
 		        	 } else { 
 		        		 status = DevicePersistenceUtils.setupDevice(imei, name, username, token, flex);
-		        		 if (status == 1 && StringUtils.isNotEmpty(deviceId) && latitude != null && longitude != null) {
+		        		 if (status == 1) {
 		        			 CacheUtil.cacheDeviceLocation(deviceId, latitude, longitude, accuracy);
 		        		 }
 		        	 }	 
@@ -271,7 +273,7 @@ public final class DeviceManagerServlet extends HttpServlet {
 	private void persistDeviceLocation(String deviceId, Double latitude, Double longitude, String accuracy) throws Exception {
 		if (StringUtils.isNotEmpty(deviceId) && latitude != null && longitude != null) {
 			Double[] coords = CacheUtil.getDeviceLocation(deviceId);
-			if (coords == null || (coords != null && NumberUtils.distanceInKilometer(latitude, longitude, coords[0], coords[1]) >= 0.005)) {
+			if (coords == null || (coords != null && NumberUtils.distanceInKilometer(latitude, longitude, coords[0], coords[1]) >= CACHE_DEVICE_DISTANCE)) {
 				String geo = "geo:" + latitude + " " + longitude;
 				if (StringUtils.isNotEmpty(accuracy)) {
 					geo += " " + accuracy;
