@@ -36,7 +36,6 @@
 	<meta HTTP-EQUIV="CACHE-CONTROL" CONTENT="no-cache, no-store, must-revalidate"/>
 	<meta HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE"/>
 	<meta HTTP-EQUIV="EXPIRES" CONTENT="0"/>
-	<meta HTTP-EQUIV="X-Frame-Options"  CONTENT="DENY"/>
 <% if (hotelsMode) { %>	
 	<title><bean:message key="hotels.wait" /></title>
 <% } else { %>

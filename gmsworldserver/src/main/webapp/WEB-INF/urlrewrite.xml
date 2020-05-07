@@ -10,6 +10,13 @@
 -->
 <urlrewrite>
 
+    <!--  set headers -->
+    
+    <rule>
+        <from>.*</from>
+        <set type="response-header" name="X-Frame-Options">DENY</set>
+    </rule> 
+
     <!--  HEAD request -->
     
      <rule>

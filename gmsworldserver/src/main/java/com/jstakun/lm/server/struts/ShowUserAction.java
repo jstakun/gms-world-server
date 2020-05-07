@@ -49,9 +49,11 @@ public class ShowUserAction extends org.apache.struts.action.Action {
 
         String userStr = request.getParameter("user");
 
-        int sid = userStr.indexOf(";jsessionid=");
-        if (sid != -1) {
-            userStr = userStr.substring(0, sid);
+        if (StringUtils.isNotEmpty(userStr)) {
+        	int sid = userStr.indexOf(";jsessionid=");
+        	if (sid != -1) {
+        		userStr = userStr.substring(0, sid);
+        	}
         }
         final String user = userStr;
 

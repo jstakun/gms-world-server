@@ -21,7 +21,6 @@
         <meta HTTP-EQUIV="CACHE-CONTROL" CONTENT="no-cache, no-store, must-revalidate"/>
         <meta HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE"/>
         <meta HTTP-EQUIV="EXPIRES" CONTENT="0"/>
-        <meta HTTP-EQUIV="X-Frame-Options"  CONTENT="DENY"/>
         <meta name="author" content="GMS World - www.gms-world.net" />
         <meta name="description" content="GMS World - discover power of geo location" />
         <meta name="keywords" content="geo, location, geolocation, blogeo, j2me, nokia, blackberry, gps, iphone, android, htc, palm, windows phone, windows ce, samsung, galaxy" />
