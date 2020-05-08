@@ -374,11 +374,6 @@
             <to>/archive.do?year=$1&amp;month=01</to>
     </rule>
     
-    <rule>
-            <from>^/archive</from>
-            <to>/archive.do</to>
-    </rule>
-    
     <!--  telegram -->
     
     <rule>
