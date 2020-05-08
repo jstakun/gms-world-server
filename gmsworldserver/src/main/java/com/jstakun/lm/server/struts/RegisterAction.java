@@ -25,31 +25,34 @@ public class RegisterAction extends Action {
 
     @Override
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        UserForm userForm = (UserForm)form;
-        String login = StringUtils.trimToEmpty((String) userForm.get("login"));
-        String email = StringUtils.trimToEmpty((String) userForm.get("email"));
-        String password = StringUtils.trimToEmpty((String) userForm.get("password"));
-        String firstname = StringUtils.trimToEmpty((String) userForm.get("firstname"));
-        String lastname = StringUtils.trimToEmpty((String) userForm.get("lastname"));
+    	String status = "failure";
+    	if (isTokenValid(request)) {
+    		status = "success";	
+    		UserForm userForm = (UserForm)form;
+        
+    		final String login = StringUtils.trimToEmpty((String) userForm.get("login"));
+    		final String email = StringUtils.trimToEmpty((String) userForm.get("email"));
+    		final String password = StringUtils.trimToEmpty((String) userForm.get("password"));
+    		final String firstname = StringUtils.trimToEmpty((String) userForm.get("firstname"));
+    		final String lastname = StringUtils.trimToEmpty((String) userForm.get("lastname"));
 
-        String status = "success";
-        try
-        {
-            String secret = UserPersistenceUtils.persist(login, password, email, firstname, lastname);
-            if (StringUtils.isNotEmpty(secret)) {
-            	MailUtils.sendVerificationRequest(email, login, secret, getServlet().getServletContext());
-            	MailUtils.sendUserCreationNotification("User " + ConfigurationManager.SERVER_URL + "showUser/" + login + " created");
-            	request.setAttribute("email", email);
-            } else {
-            	status = "failure";
-            }
+    		try
+    		{
+    			final String secret = UserPersistenceUtils.persist(login, password, email, firstname, lastname);
+    			if (StringUtils.isNotEmpty(secret)) {
+    				MailUtils.sendVerificationRequest(email, login, secret, getServlet().getServletContext());
+    				MailUtils.sendUserCreationNotification("User " + ConfigurationManager.SERVER_URL + "showUser/" + login + " created");
+    				request.setAttribute("email", email);
+    			} else {
+    				status = "failure";
+    			}
+    		}
+    		catch (Exception e)
+    		{
+    			logger.log(Level.SEVERE, e.getMessage(), e);
+    			status = "failure";
+    		}
         }
-        catch (Exception e)
-        {
-            logger.log(Level.SEVERE, e.getMessage(), e);
-            status = "failure";
-        }
-
         return mapping.findForward(status);
     }
 

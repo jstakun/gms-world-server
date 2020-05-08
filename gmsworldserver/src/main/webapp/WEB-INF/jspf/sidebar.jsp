@@ -59,9 +59,9 @@
             <li><a href="/landmarks">Landmarks</a></li>
             <li><a href="/index.jsp">Home</a></li>
             <li><a href="/download.jsp">Download</a></li>
-            <li><a href="/register.jsp">Register</a></li>
+            <li><a href="/registerPage">Register</a></li>
             <li><a href="http://blog.gms-world.net">Blog</a></li>
-            <li><a href="/archive.do">Archives</a></li>
+            <li><a href="/archive">Archives</a></li>
             <li><a href="/about.jsp">About</a></li>
         </ul>
         <h3 id="rgc">Recent Geocodes</h3>

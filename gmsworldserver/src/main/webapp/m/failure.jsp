@@ -25,7 +25,7 @@
     if (step.equals("1")) {
  %>
                     <h3>Account registration failed</h3>
-                    <p><a href="register.jsp">Please try again</a></p>
+                    <p><a href="/registerPage">Please try again</a></p>
  <%
     } else if (step.equals("2") && request.getAttribute("login") != null) {
  %>

@@ -15,6 +15,7 @@
     <rule>
         <from>.*</from>
         <set type="response-header" name="X-Frame-Options">DENY</set>
+        <set type="response-header" name="X-Content-Type-Options">'nosniff'</set>
     </rule> 
 
     <!--  HEAD request -->
@@ -373,6 +374,11 @@
             <to>/archive.do?year=$1&amp;month=01</to>
     </rule>
     
+    <rule>
+            <from>^/archive</from>
+            <to>/archive.do</to>
+    </rule>
+    
     <!--  telegram -->
     
     <rule>
@@ -429,13 +435,13 @@
     	<condition type="scheme" operator="notequal">https</condition>
         <condition name="host" operator="equal">www.gms-world.net</condition>
         <from>^/m/register.jsp</from>
-    	<to type="permanent-redirect" last="true">https://www.gms-world.net/m/register.jsp</to>
+    	<to type="permanent-redirect" last="true">https://www.gms-world.net/m/registerPage</to>
 	</rule>
     <rule>
     	<condition type="scheme" operator="notequal">https</condition>
         <condition name="host" operator="equal">www.gms-world.net</condition>
         <from>^/register.jsp</from>
-    	<to type="permanent-redirect" last="true">https://www.gms-world.net/register.jsp</to>
+    	<to type="permanent-redirect" last="true">https://www.gms-world.net/registerPage</to>
 	</rule>
     
     <!-- reset.jsp https -->
@@ -446,11 +452,18 @@
     	<to type="permanent-redirect" last="true">https://www.gms-world.net/m/reset.jsp</to>
 	</rule>
     
-    <!-- gae startup -->
-    <!--rule>
-            <from>^/_ah/start</from>
-            <to>/welcome.do</to>
-    </rule-->
+    <!-- contact form -->
+    <rule>
+            <from>^/contactPage</from>
+            <to>/contactPage.do</to>
+    </rule>
+    
+    <!-- register form -->
+    <rule>
+            <from>^/registerPage</from>
+            <to>/registerPage.do</to>
+    </rule>
+    
     
 </urlrewrite>
 

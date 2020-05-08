@@ -26,9 +26,9 @@
                 <li<%= current.equals("landmarks") ? " id=\"current\"" : "" %>><a href="/landmarks">Landmarks</a></li>
                 <li<%= current.equals("home") ? " id=\"current\"" : "" %>><a href="/index.jsp">Home</a></li>
                 <li<%= current.equals("download") ? " id=\"current\"" : "" %>><a href="/d">Download</a></li>
-                <li<%= current.equals("register") ? " id=\"current\"" : "" %>><a href="/register.jsp">Register</a></li>
+                <li<%= current.equals("register") ? " id=\"current\"" : "" %>><a href="/registerPage">Register</a></li>
                 <li><a href="http://blog.gms-world.net">Blog</a></li>
-                <li<%= current.equals("archive") ? " id=\"current\"" : "" %>><a href="/archive.do">Archives</a></li>
+                <li<%= current.equals("archive") ? " id=\"current\"" : "" %>><a href="/archive">Archives</a></li>
                 <!-- li<%= current.equals("demo") ? " id=\"current\"" : "" %>><a href="/demo/run.jsp">Online demo</a></li -->
                 <li<%= current.equals("about") ? " id=\"current\"" : "" %>><a href="/about.jsp">About</a></li>
             </ul>

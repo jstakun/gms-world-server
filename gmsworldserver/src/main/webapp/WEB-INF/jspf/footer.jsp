@@ -15,7 +15,7 @@
 
             <p><strong>Address: </strong>Warsaw, Poland</p>
             <p><strong>E-mail: </strong><a href="mailto:support@gms-world.net">support@gms-world.net</a></p>
-            <p>Want more info - go to our <a href="/contact.jsp">contact page</a></p>
+            <p>Want more info - go to our <a href="/contactPage">contact page</a></p>
 
             <h3>Updates</h3>
 
@@ -54,9 +54,9 @@
                     <li><a href="/index.jsp">Home</a></li>
                     <li><a href="/download.jsp">Download</a></li>
                     <li><a href="http://blog.gms-world.net">Blog</a></li>
-                    <li><a href="/archive.do">Archives</a></li>
+                    <li><a href="/archive">Archives</a></li>
                     <li><a href="/about.jsp">About</a></li>
-                    <li><a href="/register.jsp">Register</a></li>
+                    <li><a href="/registerPage">Register</a></li>
                     <li><a href="/privacy.jsp">Privacy policy</a></li>
                 </ul>
             </div>

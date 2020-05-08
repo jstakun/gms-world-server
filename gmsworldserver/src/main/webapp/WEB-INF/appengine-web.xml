@@ -2,7 +2,7 @@
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://kenai.com/projects/nbappengine/downloads/download/schema/appengine-web.xsd appengine-web.xsd">
     <!--application>gms-world</application>
     <version>1</version-->
-    <sessions-enabled>false</sessions-enabled>
+    <sessions-enabled>true</sessions-enabled>
     <threadsafe>true</threadsafe>
     <system-properties>
         <property name="java.util.logging.config.file" value="WEB-INF/logging.properties" />
@@ -14,13 +14,27 @@
     </staging>
     <warmup-requests-enabled>false</warmup-requests-enabled>
     <static-files>
-  		<include path="/**.css" expiration="7d"/>
-  		<include path="/**.png" expiration="7d"/>
-  		<include path="/**.jpg" expiration="7d"/>
-  		<include path="/**.gif" expiration="7d"/>
-  		<include path="/**.js" expiration="1h"/>
-  		<include path="/demo/lib/*.jar" expiration="7d"/>
-  		<include path="/download/**" expiration="7d"/>
+  		<include path="/**.css" expiration="7d">
+  		     <http-header name="X-Content-Type-Options" value="nosniff" />  		     
+  		</include>
+  		<include path="/**.png" expiration="7d">
+  		     <http-header name="X-Content-Type-Options" value="nosniff" />  		     
+  		</include>
+  		<include path="/**.jpg" expiration="7d">
+  		     <http-header name="X-Content-Type-Options" value="nosniff" />  		     
+  		</include>
+  		<include path="/**.gif" expiration="7d">
+  		     <http-header name="X-Content-Type-Options" value="nosniff" />  		     
+  		</include>
+  		<include path="/**.js" expiration="1h">
+  		     <http-header name="X-Content-Type-Options" value="nosniff" />  		     
+  		</include>
+  		<include path="/demo/lib/*.jar" expiration="7d">
+  		     <http-header name="X-Content-Type-Options" value="nosniff" />  		     
+  		</include>
+  		<include path="/download/**" expiration="7d">
+  		     <http-header name="X-Content-Type-Options" value="nosniff" />  		     
+  		</include>
 	</static-files>
     <!--manual-scaling>
     	<instances>1</instances>
@@ -32,9 +46,9 @@
     <automatic-scaling>
        <target-cpu-utilization>0.95</target-cpu-utilization>
        <target-throughput-utilization>0.95</target-throughput-utilization>
-       <min-instances>1</min-instances>
+       <min-instances>0</min-instances>
        <max-instances>1</max-instances>
-       <max-idle-instances>0</max-idle-instances>
+       <max-idle-instances>1</max-idle-instances>
        <min-idle-instances>0</min-idle-instances>
        <max-pending-latency>15s</max-pending-latency>
        <min-pending-latency>15s</min-pending-latency>

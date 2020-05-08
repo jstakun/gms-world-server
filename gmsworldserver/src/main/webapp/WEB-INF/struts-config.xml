@@ -178,6 +178,14 @@
             <forward name="success" path="/booking.jsp"/>
             <forward name="mobile" path="/m/booking.jsp"/>
         </action>
+        <action path="/registerPage" type="com.jstakun.lm.server.struts.RegisterPageAction">
+            <forward name="success" path="/register.jsp"/>
+            <forward name="mobile" path="/m/register.jsp"/>
+        </action>
+        <action path="/contactPage" type="com.jstakun.lm.server.struts.ContactPageAction">
+            <forward name="success" path="/contact.jsp"/>
+            <forward name="mobile" path="/contact.jsp"/>
+        </action>
     </action-mappings>
     <controller locale="false"/>
     <message-resources parameter="com.jstakun.lm.server.struts.ApplicationResource"/>

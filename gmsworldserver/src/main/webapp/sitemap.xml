@@ -9,13 +9,10 @@
   <loc>http://www.gms-world.net/</loc>
 </url>
 <url>
-  <loc>http://www.gms-world.net/index.jsp</loc>
-</url>
-<url>
   <loc>http://www.gms-world.net/download.jsp</loc>
 </url>
 <url>
-  <loc>http://www.gms-world.net/register.jsp</loc>
+  <loc>http://www.gms-world.net/registerPage</loc>
 </url>
 <url>
   <loc>http://www.gms-world.net/demo/run.jsp</loc>
@@ -24,6 +21,6 @@
   <loc>http://www.gms-world.net/about.jsp</loc>
 </url>
 <url>
-  <loc>http://www.gms-world.net/contact.jsp</loc>
+  <loc>http://www.gms-world.net/contactPage</loc>
 </url>
 </urlset>

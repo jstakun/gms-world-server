@@ -20,7 +20,7 @@
 	    	    <li><a href="/landmarks">Landmarks</a></li>
 	            <li><a href="/m/index.jsp">Home</a></li>
 	            <li><a href="http://blog.gms-world.net/">Blog</a></li>
-	            <li><a href="/m/register.jsp">Register</a></li>
+	            <li><a href="/m/registerPage">Register</a></li>
 	            <li><a href="/m/about.jsp">About</a></li>
         	</ul>
 	    </nav>
