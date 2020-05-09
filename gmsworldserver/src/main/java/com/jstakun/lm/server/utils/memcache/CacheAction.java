@@ -38,7 +38,7 @@ public class CacheAction {
 					CacheUtil.put(key, o, cacheType);
 				}
 			}
-			lockSyncMap.remove(key);
+			removeSyncLock(key);
 		}
 		return o;
 	}
@@ -57,7 +57,7 @@ public class CacheAction {
 					CacheUtil.put(key, l, cacheType);
 				}
 			}
-			lockSyncMap.remove(key);
+			removeSyncLock(key);
 		}
 		return l;
 	}
