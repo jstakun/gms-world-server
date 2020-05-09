@@ -76,7 +76,7 @@ public class CacheAction {
 					CacheUtil.put(key, i, cacheType);
 				}
 			}
-			lockSyncMap.remove(key);
+			removeSyncLock(key);
 		}
 		return i;
 	}
@@ -92,5 +92,11 @@ public class CacheAction {
 			}
 		}
 		return lockSync;
+	}
+	
+	private void removeSyncLock(final String key) {
+		synchronized (lockSyncMap) {
+			lockSyncMap.remove(key);
+		}
 	}
 }
