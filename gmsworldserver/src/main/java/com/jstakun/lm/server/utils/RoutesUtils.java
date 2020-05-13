@@ -136,7 +136,7 @@ public class RoutesUtils {
     		 if (lsSize > 0) {
     			 final LngLatAlt coord1 = ls.getCoordinates().get(lsSize-1);
 			     final double pointsDistance = NumberUtils.distanceInKilometer(coord1.getLatitude(), coord1.getLongitude(), coord2.getLatitude(), coord2.getLongitude())*1000d;
-			     logger.log(Level.INFO, "Distance between points is " + pointsDistance);
+			     logger.log(Level.INFO, "Distance between points is " + pointsDistance + " meters");
 			     if (pointsDistance >= 1d) {
 			    	 ls.add(coord2);
 			    	 Map<String, Object> props = f.getProperties();
@@ -144,6 +144,9 @@ public class RoutesUtils {
     				 double distance = 0d;
     				 if (props.containsKey("distance")) {
     					 distance = (Double)props.get("distance");
+    					 if (distance == Double.NaN) {
+    						 distance = 0d;
+    					 }
     				 }
     				 distance += pointsDistance;
     				 f.setProperty("distance", distance);
