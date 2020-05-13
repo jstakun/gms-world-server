@@ -112,7 +112,7 @@ public class RoutesUtils {
 	           return reply;
 	     }       
 	     
-	     public static void addRoutePointToCache(String routeId, double latitude, double longitude) {
+	     public static boolean addRoutePointToCache(String routeId, double latitude, double longitude) {
 	    	 FeatureCollection fc = null;
 	    	 Feature f = null;
 	    	 if (CacheUtil.containsKey(routeId)) {
@@ -151,10 +151,14 @@ public class RoutesUtils {
     				 distance += pointsDistance;
     				 f.setProperty("distance", distance);
     				 CacheUtil.put(routeId, fc, CacheType.LONG);
+    				 return true;
+			     } else {
+			    	 return false;
 			     }
     		 } else {
     			 ls.add(coord2);
     			 CacheUtil.put(routeId, fc, CacheType.LONG);
+    			 return true;
     		 }
 	    	 /*ls.add(new LngLatAlt(longitude, latitude));
     		 int lsSize = ls.getCoordinates().size();

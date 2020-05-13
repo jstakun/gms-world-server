@@ -99,6 +99,7 @@ public class NotificationsServlet extends HttpServlet {
 	                 longitude = GeocodeUtils.getLongitude(request.getHeader(Commons.LNG_HEADER));
 	            }
 	            
+	            boolean routePointAdded = false;
 	            logger.log(Level.INFO, "Received request " + type);
 	            
 	            if (GeocodeUtils.isValidLatitude(latitude) && GeocodeUtils.isValidLongitude(longitude) && appId >= 0) {
@@ -148,7 +149,7 @@ public class NotificationsServlet extends HttpServlet {
 					if (StringUtils.isNotEmpty(routeId)) {
 						logger.log(Level.INFO, "Sending route " + routeId + " point...");
 						//add route point to cache
-						RoutesUtils.addRoutePointToCache(routeId, latitude, longitude);
+						routePointAdded = RoutesUtils.addRoutePointToCache(routeId, latitude, longitude);
 					}
 					
 					if (StringUtils.isNotEmpty(deviceId)) {
@@ -232,18 +233,24 @@ public class NotificationsServlet extends HttpServlet {
 			            		logger.log(Level.SEVERE, "No entry found " +  message);
 			            	}
 			            } else if (TelegramUtils.isValidTelegramId(telegramId) && StringUtils.isNotEmpty(message)) {
-							// check if chat id is on white list
-							if (NotificationPersistenceUtils.isVerified(telegramId)) {
-				            	TelegramUtils.sendTelegram(telegramId, message);
-				            	if (GeocodeUtils.isValidLatitude(latitude) && GeocodeUtils.isValidLongitude(longitude)) {
-				            		TelegramUtils.sendLocationTelegram(telegramId, latitude, longitude);
-				            	}
-				            	reply = new JSONObject().put("status", "sent");
-				            }  else {
-				            	logger.log(Level.SEVERE, "Telegram chat or channel Id " + telegramId + " is not on the whitelist!");
-				            	logger.log(Level.WARNING, "Message won't be delivered to device " + deviceId + ":\n" + message);
-				            	reply = new JSONObject().put("status", "unverified");
-				            }
+			            	if (StringUtils.isNotEmpty(routeId) && !routePointAdded) {
+								//route point has not been added skipping sending email
+								logger.log(Level.WARNING, "Skipping sending telegram notification with route point update");
+								reply = new JSONObject().put("status", "skipped");
+							} else {
+								// check if chat id is on white list
+								if (NotificationPersistenceUtils.isVerified(telegramId)) {
+									TelegramUtils.sendTelegram(telegramId, message);
+									if (GeocodeUtils.isValidLatitude(latitude) && GeocodeUtils.isValidLongitude(longitude)) {
+										TelegramUtils.sendLocationTelegram(telegramId, latitude, longitude);
+									}
+									reply = new JSONObject().put("status", "sent");
+								}  else {
+									logger.log(Level.SEVERE, "Telegram chat or channel Id " + telegramId + " is not on the whitelist!");
+									logger.log(Level.WARNING, "Message won't be delivered to device " + deviceId + ":\n" + message);
+									reply = new JSONObject().put("status", "unverified");
+								}
+							}
 						} else {
 							logger.log(Level.SEVERE, "Wrong message, chat or channel id " + telegramId);
 							reply = new JSONObject().put("status", "failed");
@@ -265,15 +272,21 @@ public class NotificationsServlet extends HttpServlet {
 						final String title = request.getParameter("title");
 						final String emailTo = request.getParameter("emailTo");
 						if (StringUtils.isNotEmpty(emailTo) && (StringUtils.isNotEmpty(title) || StringUtils.isNotEmpty(message))) {
-							//check if email is on white list
-							if (NotificationPersistenceUtils.isVerified(emailTo)) {
-				            	MailUtils.sendDeviceLocatorMessage(emailTo, message, title);
-				            	reply = new JSONObject().put("status", "sent");	
-				            } else {
-				            	logger.log(Level.SEVERE, "Email address " + emailTo + " is not on the whitelist!");
-				            	logger.log(Level.WARNING, "Message won't be delivered to device " + deviceId + ":\n" + message);
-				            	reply = new JSONObject().put("status", "unverified");
-				            }
+							if (StringUtils.isNotEmpty(routeId) && !routePointAdded) {
+								//route point has not been added skipping sending email
+								logger.log(Level.WARNING, "Skipping sending email notification with route point update");
+								reply = new JSONObject().put("status", "skipped");
+							} else {
+								//check if email is on white list
+								if (NotificationPersistenceUtils.isVerified(emailTo)) {
+									MailUtils.sendDeviceLocatorMessage(emailTo, message, title);
+									reply = new JSONObject().put("status", "sent");	
+								} else {
+									logger.log(Level.SEVERE, "Email address " + emailTo + " is not on the whitelist!");
+									logger.log(Level.WARNING, "Message won't be delivered to device " + deviceId + ":\n" + message);
+									reply = new JSONObject().put("status", "unverified");
+								}
+							}
 						} else {
 							logger.log(Level.SEVERE, "Wrong email to " + emailTo);
 							reply = new JSONObject().put("status", "failed");

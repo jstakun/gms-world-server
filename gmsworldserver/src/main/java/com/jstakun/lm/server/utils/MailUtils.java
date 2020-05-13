@@ -80,8 +80,10 @@ public class MailUtils {
     			//return sendJamesMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
     			if (count % 100 == 0) {
     				logger.log(Level.SEVERE, "Skipping to send " + count + " email " + subject + " to " + toA);
+    				logger.log(Level.INFO, "Message:\n" + content);
     			} else {
     				logger.log(Level.WARNING, "Skipping to send " + count + " email " + subject + " to " + toA);
+    				logger.log(Level.INFO, "Message:\n" + content);
     			}
     			return STATUS_FAILED;
     		}
