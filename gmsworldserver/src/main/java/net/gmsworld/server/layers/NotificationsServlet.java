@@ -236,6 +236,7 @@ public class NotificationsServlet extends HttpServlet {
 			            	if (StringUtils.isNotEmpty(routeId) && !routePointAdded) {
 								//route point has not been added skipping sending notification
 								logger.log(Level.WARNING, "Skipping sending telegram notification with route point update");
+								logger.log(Level.INFO, "Message:\n" + message);
 								reply = new JSONObject().put("status", "skipped");
 							} else {
 								// check if chat id is on white list
@@ -275,6 +276,7 @@ public class NotificationsServlet extends HttpServlet {
 							if (StringUtils.isNotEmpty(routeId) && !routePointAdded) {
 								//route point has not been added skipping sending notification
 								logger.log(Level.WARNING, "Skipping sending email notification with route point update");
+								logger.log(Level.INFO, "Message:\n" + message);
 								reply = new JSONObject().put("status", "skipped");
 							} else {
 								//check if email is on white list
