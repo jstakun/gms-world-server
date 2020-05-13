@@ -130,7 +130,30 @@ public class RoutesUtils {
 	    		 fc.add(f);
 	    	 }
 	    	 LineString ls = (LineString) f.getGeometry();
-    		 ls.add(new LngLatAlt(longitude, latitude));
+	    	 //testing
+	    	 final int lsSize = ls.getCoordinates().size();
+	    	 final LngLatAlt coord2 = new LngLatAlt(longitude, latitude);
+    		 if (lsSize > 0) {
+    			 final LngLatAlt coord1 = ls.getCoordinates().get(lsSize-1);
+			     final double pointsDistance = NumberUtils.distanceInKilometer(coord1.getLatitude(), coord1.getLongitude(), coord2.getLatitude(), coord2.getLongitude())*1000d;
+			     logger.log(Level.INFO, "Distance between points is " + pointsDistance);
+			     if (pointsDistance >= 1d) {
+			    	 ls.add(coord2);
+			    	 Map<String, Object> props = f.getProperties();
+    				 f.setProperty("time", System.currentTimeMillis() - (Long)props.get("creationTime"));
+    				 double distance = 0d;
+    				 if (props.containsKey("distance")) {
+    					 distance = (Double)props.get("distance");
+    				 }
+    				 distance += pointsDistance;
+    				 f.setProperty("distance", distance);
+    				 CacheUtil.put(routeId, fc, CacheType.LONG);
+			     }
+    		 } else {
+    			 ls.add(coord2);
+    			 CacheUtil.put(routeId, fc, CacheType.LONG);
+    		 }
+	    	 /*ls.add(new LngLatAlt(longitude, latitude));
     		 int lsSize = ls.getCoordinates().size();
     		 if (lsSize > 1) {
     			 try {
@@ -149,6 +172,7 @@ public class RoutesUtils {
     			 }
     		 }
     		 //logger.log(Level.INFO, "Adding to cache route " + routeId + ":" + fc.toString());
-	    	 CacheUtil.put(routeId, fc, CacheType.LONG);
+	    	 CacheUtil.put(routeId, fc, CacheType.LONG);*/
+	    	 
 	     }
 }

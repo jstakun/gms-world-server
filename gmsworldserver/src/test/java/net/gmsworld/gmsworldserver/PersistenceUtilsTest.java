@@ -71,6 +71,7 @@ public class PersistenceUtilsTest {
 		NotificationPersistenceUtils.verifyWithSecret(n.getSecret());
 		System.out.println("isVerified2: " + NotificationPersistenceUtils.isVerified(email));
 		System.out.println("Deleted: " + n.getId() + ": " + NotificationPersistenceUtils.remove(n.getId()));
+		//System.out.println("Delete non existing item: " + NotificationPersistenceUtils.remove("abcd"));
 	}
 	
 	//@Test

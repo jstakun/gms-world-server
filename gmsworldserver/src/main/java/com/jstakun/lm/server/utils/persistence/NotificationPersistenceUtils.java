@@ -49,6 +49,7 @@ public class NotificationPersistenceUtils {
 	        		if (resp.has("id")) {
 	        			n = jsonToNotification(resp);
 	        		}
+	        		//TODO cache notification status
 	        	}	
 			} catch (Exception ex) {
 				logger.log(Level.SEVERE, ex.getMessage(), ex);
@@ -63,13 +64,18 @@ public class NotificationPersistenceUtils {
 			try {
 	        	final String gUrl = ConfigurationManager.getBackendUrl() + "/deleteItem";
 	        	final String params = "type=notification&id=" + URLEncoder.encode(id, "UTF-8") + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);			 
-	        	final String gJson = HttpUtils.processFileRequest(new URL(gUrl + "?" + params));
-	        	if (StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
+	        	final URL url = new URL(gUrl + "?" + params);
+	        	final String gJson = HttpUtils.processFileRequest(url);
+	        	final Integer status = HttpUtils.getResponseCode(url.toExternalForm());
+	        	if (status != null && status == 200 && StringUtils.startsWith(StringUtils.trim(gJson), "{")) {
 	        		JSONObject root = new JSONObject(gJson);
 	        		if  (StringUtils.equals(root.optString("status"), "ok")) {
 	        			removed = true;
 	        		}
 	        		logger.log(Level.INFO, "Notification removal status: " + gJson);
+	        	} else if (status != null && status == 404) {
+	        		logger.log(Level.INFO, "Notification " + id + " doesn't exists!");
+	        		removed = true;
 	        	} else {
 	        		logger.log(Level.SEVERE, "Received following server response: " + gJson);
 	        	}
@@ -77,13 +83,17 @@ public class NotificationPersistenceUtils {
 	        	logger.log(Level.SEVERE, e.getMessage(), e);
 	        }
 		}	
+		//TODO remove notification status
+		//if (removed) {
+		//}
         return removed;
     }
 	
 	private static Notification findById(String id) {
 		Notification n = null;
 		if (StringUtils.isNotEmpty(id)) {
-       		try {
+			//TODO check for notification status in cache
+			try {
        			final String gUrl = ConfigurationManager.getBackendUrl() + "/itemProvider";
        			final String params = "type=notification&id=" + URLEncoder.encode(id, "UTF-8") + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);
        			final String gJson = HttpUtils.processFileRequest(new URL(gUrl + "?" + params));
@@ -92,6 +102,7 @@ public class NotificationPersistenceUtils {
        				if (root.has("id")) {
        					n = jsonToNotification(root);
        				}
+       				//TODO cache notification status
        			} else {
        				logger.log(Level.SEVERE, "Received following server response: " + gJson);
        			}
@@ -105,6 +116,7 @@ public class NotificationPersistenceUtils {
 	private static Notification findBySecret(String secret) {
 		Notification n = null;
 		if (StringUtils.isNotEmpty(secret)) {
+			//TODO check for notification status in cache
 			try {
 	        	final String gUrl = ConfigurationManager.getBackendUrl() + "/itemProvider";
 	        	final String params = "type=notification&secret=" + secret + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);
@@ -114,6 +126,7 @@ public class NotificationPersistenceUtils {
 	        		if (root.has("id")) {
 	        			n = jsonToNotification(root);
 	        		}
+	        		//TODO cache notification status
 	        	} else {
 	        		logger.log(Level.SEVERE, "Received following server response: " + gJson);
 	        	}

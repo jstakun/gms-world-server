@@ -99,9 +99,12 @@ public class NotificationsServlet extends HttpServlet {
 	                 longitude = GeocodeUtils.getLongitude(request.getHeader(Commons.LNG_HEADER));
 	            }
 	            
+	            logger.log(Level.INFO, "Received request " + type);
+	            
 	            if (GeocodeUtils.isValidLatitude(latitude) && GeocodeUtils.isValidLongitude(longitude) && appId >= 0) {
 					if (StringUtils.isEmpty(routeId)) {
 						//create new landmark but skip dl route points
+						logger.log(Level.INFO, "Creating landmark...");
 						try {
 							Landmark l = new Landmark();
 							l.setLatitude(latitude);
@@ -143,6 +146,7 @@ public class NotificationsServlet extends HttpServlet {
 					}
 				   
 					if (StringUtils.isNotEmpty(routeId)) {
+						logger.log(Level.INFO, "Sending route " + routeId + " point...");
 						//add route point to cache
 						RoutesUtils.addRoutePointToCache(routeId, latitude, longitude);
 					}
@@ -152,6 +156,7 @@ public class NotificationsServlet extends HttpServlet {
 						final String acc =  request.getHeader(Commons.ACC_HEADER);
 			   	   		Double[] coords = CacheUtil.getDeviceLocation(deviceId);
 			   	   		if (coords == null || (coords != null && NumberUtils.distanceInKilometer(latitude, longitude, coords[0], coords[1]) >= DeviceManagerServlet.CACHE_DEVICE_DISTANCE)) {
+			   	   			logger.log(Level.INFO, "Saving device " + deviceId + " location...");
 			   	   			String geo = "geo:" + latitude + " " + longitude;
 			   	   			if (StringUtils.isNotEmpty(acc)) {
 			   	   				geo += " " + acc;
