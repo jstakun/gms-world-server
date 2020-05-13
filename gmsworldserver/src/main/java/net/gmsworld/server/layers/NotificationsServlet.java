@@ -234,7 +234,7 @@ public class NotificationsServlet extends HttpServlet {
 			            	}
 			            } else if (TelegramUtils.isValidTelegramId(telegramId) && StringUtils.isNotEmpty(message)) {
 			            	if (StringUtils.isNotEmpty(routeId) && !routePointAdded) {
-								//route point has not been added skipping sending email
+								//route point has not been added skipping sending notification
 								logger.log(Level.WARNING, "Skipping sending telegram notification with route point update");
 								reply = new JSONObject().put("status", "skipped");
 							} else {
@@ -273,7 +273,7 @@ public class NotificationsServlet extends HttpServlet {
 						final String emailTo = request.getParameter("emailTo");
 						if (StringUtils.isNotEmpty(emailTo) && (StringUtils.isNotEmpty(title) || StringUtils.isNotEmpty(message))) {
 							if (StringUtils.isNotEmpty(routeId) && !routePointAdded) {
-								//route point has not been added skipping sending email
+								//route point has not been added skipping sending notification
 								logger.log(Level.WARNING, "Skipping sending email notification with route point update");
 								reply = new JSONObject().put("status", "skipped");
 							} else {
