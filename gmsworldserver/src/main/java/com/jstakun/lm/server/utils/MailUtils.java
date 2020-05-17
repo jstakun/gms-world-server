@@ -64,8 +64,8 @@ public class MailUtils {
     private static String sendRemoteMail(String fromA, String fromP, String toA, String toP, String subject, String content, String contentType, String ccA, String ccP)  {
     	if (isValidEmailAddress(toA)) {
     		final long count  = CacheUtil.increment("mailto:" + toA);
-        	if (count <= 50 || (count <= 200 && count % 10 == 0) || count % 100 == 0) {
-        		//send first 50, every 10th > 50 && <= 200, every 100th > 200
+        	if (count <= 50 || (count <= 100 && count % 2 == 0) || (count <= 200 && count % 10 == 0) || count % 100 == 0) {
+        		//send first 50, every second > 50 && <= 100 every 10th > 100 && <= 200, every 100th > 200
         		final String status = sendSesMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
     			if (StringUtils.equalsIgnoreCase(status, STATUS_OK)) {
     				return STATUS_OK; 
@@ -78,7 +78,7 @@ public class MailUtils {
     		} else {
     			//logger.log(Level.WARNING, "James is sending " + count + " email " + subject + " to " + toA);
     			//return sendJamesMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
-    			if (count % 100 == 0) {
+    			if (count % 50 == 0) {
     				logger.log(Level.SEVERE, "Skipping to send " + count + " email " + subject + " to " + toA);
     				logger.log(Level.INFO, "Message:\n" + content);
     			} else {
