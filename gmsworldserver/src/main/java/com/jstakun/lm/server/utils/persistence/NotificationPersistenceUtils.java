@@ -185,9 +185,9 @@ public class NotificationPersistenceUtils {
 							if (tokens.length == 2 && tokens[1].length() == 4 && StringUtils.isNumeric(tokens[1])) {
 								String activationCode = tokens[1];
 								TelegramUtils.sendTelegram(telegramId, "Welcome to Device Locator!\n"
-										+ "Here is your activation code: <b>" + activationCode + "</b>.\n"
+										+ "Your Telegram notifications activation code is <b>" + activationCode + "</b>.\n"
 										+ "Please come back to Device Locator mobile application and enter this code when prompted.\n"
-										+ "Only after you confirm your registration, you will start receiving notifications from Device Locator. "
+										+ "Only after you confirm your registration, you will start receiving notifications from Device Locator.\n"
 										+ "If you didn\'t ask, please ignore this message.\n"
 										+ "Thank you\n"
 										+ "Device Locator Team");
