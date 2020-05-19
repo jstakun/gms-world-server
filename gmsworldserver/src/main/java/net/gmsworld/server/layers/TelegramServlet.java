@@ -77,9 +77,9 @@ public class TelegramServlet extends HttpServlet {
 					if (messageJson != null && messageJson.has("text") && messageJson.has("chat")) {
 						String message = messageJson.getString("text");
 						Long telegramId= messageJson.getJSONObject("chat").getLong("id");
-						logger.log(Level.INFO, "Received message " + message + " from " + telegramId);
+						logger.log(Level.INFO, "Received message from " + telegramId);
 						if (StringUtils.contains(message, "OsmAnd")) { //blacklisted
-							logger.log(Level.WARNING, "This message is invalid!");
+							logger.log(Level.SEVERE, "This message is invalid: " + message);
 						} else if (StringUtils.startsWithIgnoreCase(message, "/register") || StringUtils.startsWithIgnoreCase(message, "register")) {
 							//add chat or channel id to white list
 							if (!NotificationPersistenceUtils.isVerified(Long.toString(telegramId))) {
@@ -149,7 +149,7 @@ public class TelegramServlet extends HttpServlet {
 							TelegramUtils.sendTelegram(Long.toString(telegramId), reply);
 						} else {
 							TelegramUtils.sendTelegram(Long.toString(telegramId), INVALID_COMMAND);
-							logger.log(Level.SEVERE, "This message is invalid");
+							logger.log(Level.SEVERE, "This message is invalid: " + message);
 						}
 					} else if (messageJson != null && messageJson.has("chat")) {
 						Long telegramId= messageJson.getJSONObject("chat").getLong("id");
