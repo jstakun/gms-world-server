@@ -52,47 +52,50 @@
     	   <li><a id="ringoff"><b>Ringoff</b></a> - stop playing ring tone on the device.<br/>
     	   SMS Example (assuming your security pin is 1234): <b>Ringoffdl 1234</b><br/>  
            Telegram Messenger Example (assuming your security pin is 1234 and device id is 1234567890123456): <b>Ringoff 1234 1234567890123456</b></li>  
-    	   <li><a id="call"><b>Call</b></a> -  call sender. Device should initiate phone call to SMS sender number or number specified as command parameter. Requires Phone permission granted.<br/>
-           SMS Example (assuming your security pin is 1234): <b>Calldl 1234</b><br/>
-           Telegram Messenger Example (assuming your security pin is 1234, device id is 1234567890123456, call to number is 123456789): <b>Call 1234 1234567890123456 -p 123456789</b></li>  
     	   <li><a id="photo"><b>Photo</b></a> -  take photo with front camera. You'll receive link to photo image. Requires enabled failed login service and granted Camera permission.<br/>
     	   SMS Example (assuming your security pin is 1234): <b>Photodl 1234</b><br/>
     	   Telegram Messenger Example (assuming your security pin is 1234 and device id is 1234567890123456): <b>Photo 1234 1234567890123456</b></li>  
     	   <li><a id="lock"><b>Lock</b></a> -  lock device screen. Requires Lock Screen permission granted.<br/>
     	   SMS Example (assuming your security pin is 1234): <b>Lockdl 1234</b><br/>
     	   Telegram Messenger Example (assuming your security pin is 1234 and device id is 1234567890123456): <b>Lock 1234 1234567890123456</b></li>  
-    	   <li><a id="reset"><b>Reset</b></a> - reset device to factory defaults and wipe all data and applications. Requires Device Reset permission granted.<br/>
-    	   SMS Example (assuming your security pin is 1234): <b>Resetdl 1234</b><br/>
-           Telegram Messenger Example (assuming your security pin is 1234 and device id is 1234567890123456): <b>Reset 1234 1234567890123456</b></li>  
-    	   <li><a id="start"><b>Start</b></a> - start device location tracking and location recoding. Requires Location permission granted.<br/>
+    	   <li><a id="call"><b>Call</b></a> -  call sender. Device should initiate phone call to SMS sender number or number specified as command parameter. Requires Phone permission granted.<br/>
+           SMS Example (assuming your security pin is 1234): <b>Calldl 1234</b><br/>
+           Telegram Messenger Example (assuming your security pin is 1234, device id is 1234567890123456, call to number is 123456789): <b>Call 1234 1234567890123456 -p 123456789</b></li>  
+    	   <li><a id="perimeter"><b>Perimeter</b></a> - start device location tracking and receive notifications when device is within specific perimeter from you. Requires Location permission granted.<br/>
+           SMS Example (assuming your security pin is 1234, and perimeter is 500 meters): <b>Startdl 1234 500</b><br/>
+           Telegram Messenger Example (assuming your security pin is 1234, device id is 1234567890123456 and perimeter is 500 meters): <b>Start 1234 1234567890123456 -p 500</b></li>  
+           <li><a id="start"><b>Start</b></a> - start device location tracking and location recoding. Requires Location permission granted.<br/>
            SMS Example (assuming your security pin is 1234): <b>Startdl 1234</b><br/>
            Telegram Messenger Example (assuming your security pin is 1234 and device id is 1234567890123456): <b>Start 1234 1234567890123456</b></li>  
            <li><a id="stop"><b>Stop</b></a> - stop device location tracking.<br/>
            SMS Example (assuming your security pin is 1234): <b>Stopdl 1234</b><br/>
            Telegram Messenger Example (assuming your security pin is 1234 and device id is 1234567890123456): <b>Stop 1234 1234567890123456</b></li>  
-           <li><a id="resume"><b>Resume</b></a> - resume or start device location tracking and location recoding. Requires Location permission granted.<br/>
-           SMS Example (assuming your security pin is 1234): <b>Resumedl 1234</b><br/>
-           Telegram Messenger Example (assuming your security pin is 1234 and device id is 1234567890123456): <b>Resume 1234 1234567890123456</b></li>  
-           <li><a id="route"><b>Route</b></a> - save currently recorded locations route to our backend. You'll receive link to route map.<br/>
-           SMS Example (assuming your security pin is 1234): <b>Routedl 1234</b><br/> 
-           Telegram Messenger Example (assuming your security pin is 1234 and device id is 1234567890123456): <b>Route 1234 1234567890123456</b></li>  
-    	   <li><a id="radius"><b>Radius</b></a> - change device tracking service radius in meters. Every time device will move outside the area within the radius you'll be notified according to your Notification settings.<br/>
-           SMS Example (assuming your security pin is 1234, and radius is 500 meters): <b>Radiusdl 1234 500</b><br/>
-           Telegram Messenger Example (assuming your security pin is 1234, device id is 1234567890123456 and radius is 500 meters): <b>Radius 1234 1234567890123456 -p 500</b></li>  
            <li><a id="mute"><b>Mute</b></a> - mute device audio. Requires Don't Disturb permission on some devices with Android 6+<br/>
            SMS Example (assuming your security pin is 1234): <b>Mutedl 1234</b><br/>
            Telegram Messenger Example (assuming your security pin is 1234 and device id is 1234567890123456): <b>Mute 1234 1234567890123456</b></li>  
            <li><a id="unmute"><b>Unmute</b></a> - unmute device audio.<br/>
            SMS Example (assuming your security pin is  1234): <b>Unmutedl 1234</b><br/>
            Telegram Messenger Example (assuming your security pin is 1234 and device id is 1234567890123456): <b>Unmute 1234 1234567890123456</b></li>  
-           <li><a id="notify"><b>Nofity</b></a> - set or change who should be notified by location tracking service.<br/>
-           SMS Example (assuming your security pin is 1234, phone number is  123456789, email address is name@domain.com and Telegram chat id is 987654321): <b>Notifydl 1234 p:123456789 m:name@domain.com t:987654321</b><br/>
-           Telegram Messenger Example (assuming your security pin is 1234, phone number is  123456789, email address is name@domain.com and Telegram chat id is 987654321 and device id is 1234567890123456): <b>Notify 1234 1234567890123456 -p p:123456789 m:name@domain.com t:987654321</b></li>  
-           <li><a id="config"><b>Config</b></a> - change some Device Locator configuration.<br/>
-           Usage: Configdl &lt;security pin&gt; x  where x can be any of: <b>lm:on</b> to enable Acknowledge Location notification message, <b>lm:off</b> to disable Acknowledge Location notification message, <b>gpsm:on</b> to enable GPS Location notification message, <b>gpsm:off</b> to disable GPS Location notification message, <b>mapm:on</b> to enable Map link Location notification message, <b>mapm:off</b> to disable Map link Location notification message, 
+           <li><a id="reset"><b>Reset</b></a> - reset device to factory defaults and wipe all data and applications. Requires Device Reset permission granted.<br/>
+    	   SMS Example (assuming your security pin is 1234): <b>Resetdl 1234</b><br/>
+           Telegram Messenger Example (assuming your security pin is 1234 and device id is 1234567890123456): <b>Reset 1234 1234567890123456</b></li>  
+    	   <li><a id="resume"><b>Resume</b></a> - resume or start device location tracking and location recoding. Requires Location permission granted.<br/>
+           SMS Example (assuming your security pin is 1234): <b>Resumedl 1234</b><br/>
+           Telegram Messenger Example (assuming your security pin is 1234 and device id is 1234567890123456): <b>Resume 1234 1234567890123456</b></li>  
+           <li><a id="route"><b>Route</b></a> - save currently recorded locations route to our backend. You'll receive link to route map.<br/>
+           SMS Example (assuming your security pin is 1234): <b>Routedl 1234</b><br/> 
+           Telegram Messenger Example (assuming your security pin is 1234 and device id is 1234567890123456): <b>Route 1234 1234567890123456</b></li>  
+    	   <li><a id="config"><b>Config</b></a> - change Device Locator configuration.<br/>
+           This command accepts following parameters: <b>lm:on</b> to enable Acknowledge Location notification message, <b>lm:off</b> to disable Acknowledge Location notification message, <b>gpsm:on</b> to enable GPS Location notification message, <b>gpsm:off</b> to disable GPS Location notification message, <b>mapm:on</b> to enable Map link Location notification message, <b>mapm:off</b> to disable Map link Location notification message, 
            <b>gpsb:on</b> and <b>gpsh:off</b> to set balanced GPS accuracy for device location tracking service, <b>gpsh:on</b> and <b>gpsb:off</b> to set high GPS accuracy for device location tracking service, <b>nt:on</b> to send test notification to registered notifiers. You could set all parameters separately or together. <br/>
            SMS Example (assuming your security pin is 1234, and you want to enable Acknowledge Location messages and Map link Location notification message): <b>Configdl 1234 lm:on mapm:on</b><br/>
            Telegram Messenger Example (assuming your security pin is 1234, assuming your security pin is 1234, you want to enable Acknowledge Location messages and Map link Location notification message and device id is 1234567890123456): <b>Config 1234 1234567890123456 -p lm:on mapm:on</b></li>
+           <li><a id="radius"><b>Radius</b></a> - change device tracking service radius in meters. Every time device will move outside the area within the radius you'll be notified according to your Notification settings.<br/>
+           SMS Example (assuming your security pin is 1234, and radius is 500 meters): <b>Radiusdl 1234 500</b><br/>
+           Telegram Messenger Example (assuming your security pin is 1234, device id is 1234567890123456 and radius is 500 meters): <b>Radius 1234 1234567890123456 -p 500</b></li>  
+           <li><a id="notify"><b>Nofity</b></a> - set or change who should be notified by location tracking service.<br/>
+           SMS Example (assuming your security pin is 1234, phone number is  123456789, email address is name@domain.com and Telegram chat id is 987654321): <b>Notifydl 1234 p:123456789 m:name@domain.com t:987654321</b><br/>
+           Telegram Messenger Example (assuming your security pin is 1234, phone number is  123456789, email address is name@domain.com and Telegram chat id is 987654321 and device id is 1234567890123456): <b>Notify 1234 1234567890123456 -p p:123456789 m:name@domain.com t:987654321</b></li>  
            <li><a id="about"><b>About</b></a> - send Device Locator version information.<br/>
            SMS Example (assuming your security pin is 1234): <b>Aboutdl 1234</b><br/>
            Telegram Messenger Example (assuming your security pin is 1234 and device id is 1234567890123456): <b>About 1234 1234567890123456</b></li>    
