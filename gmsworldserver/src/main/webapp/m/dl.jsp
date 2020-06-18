@@ -61,12 +61,12 @@
     	   <li><a id="call"><b>Call</b></a> -  call sender. Device should initiate phone call to SMS sender number or number specified as command parameter. Requires Phone permission granted.<br/>
            SMS Example (assuming your security pin is 1234): <b>Calldl 1234</b><br/>
            Telegram Messenger Example (assuming your security pin is 1234, device id is 1234567890123456, call to number is 123456789): <b>Call 1234 1234567890123456 -p 123456789</b></li>  
-    	   <li><a id="perimeter"><b>Perimeter</b></a> - start device location tracking and receive notifications when device is within specific perimeter from you. Requires Location permission granted.<br/>
-           SMS Example (assuming your security pin is 1234, and perimeter is 500 meters): <b>Startdl 1234 500</b><br/>
-           Telegram Messenger Example (assuming your security pin is 1234, device id is 1234567890123456 and perimeter is 500 meters): <b>Start 1234 1234567890123456 -p 500</b></li>  
-           <li><a id="start"><b>Start</b></a> - start device location tracking and location recoding. Requires Location permission granted.<br/>
+    	   <li><a id="start"><b>Start</b></a> - start device location tracking and location recoding. Requires Location permission granted.<br/>
            SMS Example (assuming your security pin is 1234): <b>Startdl 1234</b><br/>
            Telegram Messenger Example (assuming your security pin is 1234 and device id is 1234567890123456): <b>Start 1234 1234567890123456</b></li>  
+           <li><a id="perimeter"><b>Perimeter</b></a> - start device location tracking and receive notifications when device is within specific perimeter from you. Requires Location permission granted.<br/>
+           SMS Example (assuming your security pin is 1234, and perimeter is 500 meters): <b>Startdl 1234 500</b><br/>
+           Telegram Messenger Example (assuming your security pin is 1234, device id is 1234567890123456 and perimeter is 500 meters): <b>Start 1234 1234567890123456 -p 500</b></li>  
            <li><a id="stop"><b>Stop</b></a> - stop device location tracking.<br/>
            SMS Example (assuming your security pin is 1234): <b>Stopdl 1234</b><br/>
            Telegram Messenger Example (assuming your security pin is 1234 and device id is 1234567890123456): <b>Stop 1234 1234567890123456</b></li>  
