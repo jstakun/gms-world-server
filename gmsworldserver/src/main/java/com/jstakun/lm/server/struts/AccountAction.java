@@ -92,8 +92,8 @@ public class AccountAction extends Action {
         } else if (!HttpUtils.isEmptyAny(request, "sc","u")) {
         	//unregister from DL notifications
         	String secret = request.getParameter("sc");
-        	Notification n = NotificationPersistenceUtils.verifyWithSecret(secret);
-        	if (n != null) {
+        	Notification n = NotificationPersistenceUtils.findBySecret(secret);
+        	if (n != null && n.getId() != null) {
         		if (NotificationPersistenceUtils.remove(n.getId())) {
         			if (MailUtils.isValidEmailAddress(n.getId())) {
         				request.setAttribute("email", n.getId());
@@ -103,7 +103,10 @@ public class AccountAction extends Action {
         			}
         			result = true;
         		}
-        	} 
+        	} else if (n != null && n.getId() == null) {
+        		request.setAttribute("email", "has been");
+                result = true;
+        	}
         } else if (!HttpUtils.isEmptyAny(request, "k", "u")) {
         	//unregister user from GMS World
             String login = URLDecoder.decode(request.getParameter("k"),"UTF-8");

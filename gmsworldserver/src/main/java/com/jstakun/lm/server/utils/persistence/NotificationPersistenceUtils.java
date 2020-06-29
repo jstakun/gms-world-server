@@ -113,7 +113,7 @@ public class NotificationPersistenceUtils {
 		return n;
 	 }
 	
-	private static Notification findBySecret(String secret) {
+	public static Notification findBySecret(String secret) {
 		Notification n = null;
 		if (StringUtils.isNotEmpty(secret)) {
 			//TODO check for notification status in cache
@@ -125,6 +125,9 @@ public class NotificationPersistenceUtils {
 	        		JSONObject root = new JSONObject(gJson);
 	        		if (root.has("id")) {
 	        			n = jsonToNotification(root);
+	        		} else {
+	        			logger.log(Level.WARNING, "Received following server response: " + gJson);
+	        			return new Notification();
 	        		}
 	        		//TODO cache notification status
 	        	} else {
@@ -155,7 +158,7 @@ public class NotificationPersistenceUtils {
 	
 	public static synchronized Notification verifyWithSecret(String secret) {
 		Notification n = findBySecret(secret);
-		if (n != null) {
+		if (n != null && n.getId() != null) {
 			if (n.getStatus() == Notification.Status.UNVERIFIED) {
 				persist(n.getId(), Notification.Status.VERIFIED);
 			}

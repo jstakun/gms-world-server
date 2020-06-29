@@ -1,5 +1,6 @@
 package com.jstakun.lm.server.utils.persistence;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -40,14 +41,22 @@ public class ConfigPersistenceUtils {
     }
 
    public static List<Config> selectAllConfigParams() {
-	    EntityManager pm = EMF.get().createEntityManager();    
-	    TypedQuery<Config> query = pm.createNamedQuery(Config.CONFIG_FINDALL, Config.class);
-        return query.getResultList(); 
+	   try {
+		   EntityManager pm = EMF.get().createEntityManager();    
+		   TypedQuery<Config> query = pm.createNamedQuery(Config.CONFIG_FINDALL, Config.class);
+		   return query.getResultList();
+	   } catch (Throwable e) {
+		   return new ArrayList<Config>();
+	   }
     }
    
    private static Config findByKey(String key, EntityManager pm) {
-	   TypedQuery<Config> query = pm.createNamedQuery(Config.CONFIG_FINDBYKEY, Config.class);
-	   query.setParameter("key", key);
-	   return query.getSingleResult();
+	   try {
+		   TypedQuery<Config> query = pm.createNamedQuery(Config.CONFIG_FINDBYKEY, Config.class);
+		   query.setParameter("key", key);
+		   return query.getSingleResult();
+	   } catch (Exception e) {
+		   return null;
+	   }
    }
 }
