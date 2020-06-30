@@ -433,16 +433,16 @@ public class NotificationsServlet extends HttpServlet {
 						} else {
 							reply = new JSONObject().put("status", status);
 						}
-					} else if (verificationStatus == 504) {
+					} else if (verificationStatus >= 500) {
 						logger.log(Level.SEVERE, email + " verification failed");
-						reply = new JSONObject().put("status", "failed").put("code", HttpServletResponse.SC_GATEWAY_TIMEOUT); 
+						reply = new JSONObject().put("status", "failed").put("code", verificationStatus); 
 					} else if (verificationStatus >= 400) {
 						logger.log(Level.SEVERE, email + " verification failed");
 						reply = new JSONObject().put("status", "failed").put("code", verificationStatus);
 						CacheUtil.put("mailto:"+email+":invalid", verificationStatus, CacheType.NORMAL);
 					} else {
 						logger.log(Level.SEVERE, email + " verification failed");
-						reply = new JSONObject().put("status", "failed").put("code", HttpServletResponse.SC_BAD_REQUEST);
+						reply = new JSONObject().put("status", "failed").put("code", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 					}
 				} else {
 					final Integer code = (Integer) CacheUtil.getObject("mailto:"+email+":invalid");
