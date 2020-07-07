@@ -427,7 +427,12 @@ public class NotificationsServlet extends HttpServlet {
 					}
 					if (verificationStatus == 200) {
 						Notification n = NotificationPersistenceUtils.setVerified(email, false);
-						String status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), this.getServletContext(), 2);
+						String status = null;
+						if (appVersion >= 68) {
+							status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), this.getServletContext(), 3);
+						} else {
+							status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), this.getServletContext(), 2);
+						}
 						if (StringUtils.equals(status, "ok")) {
 							reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
 						} else {

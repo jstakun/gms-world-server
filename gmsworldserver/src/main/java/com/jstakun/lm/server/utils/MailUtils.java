@@ -234,6 +234,8 @@ public class MailUtils {
             		if (tokens.length == 2 && tokens[1].length() == 4 && StringUtils.isNumeric(tokens[1])) {
             			link = tokens[1];
             		}
+            	} else if (version == 3) {
+            		is = context.getResourceAsStream("/WEB-INF/emails/verification-dl-v3.html");
             	}
             	message = String.format(IOUtils.toString(is, "UTF-8"), link);
             } 
