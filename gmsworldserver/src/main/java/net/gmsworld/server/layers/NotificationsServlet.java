@@ -428,7 +428,7 @@ public class NotificationsServlet extends HttpServlet {
 					if (verificationStatus == 200) {
 						Notification n = NotificationPersistenceUtils.setVerified(email, false);
 						String status = null;
-						if (appVersion >= 68) {
+						if (appVersion > 68) {
 							status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), this.getServletContext(), 3);
 						} else {
 							status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), this.getServletContext(), 2);

@@ -236,8 +236,9 @@ public class MailUtils {
             		}
             	} else if (version == 3) {
             		is = context.getResourceAsStream("/WEB-INF/emails/verification-dl-v3.html");
+            		link = ConfigurationManager.SSL_SERVER_URL + "verify/" + secret;
             	}
-            	message = String.format(IOUtils.toString(is, "UTF-8"), link);
+            	message = String.format(IOUtils.toString(is, "UTF-8"), link, link);
             } 
             return sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick,  "Device Locator Registration", message, "text/html", ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK);	
         } catch (Exception ex) {
