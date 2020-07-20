@@ -285,8 +285,10 @@ public class NotificationsServlet extends HttpServlet {
 									reply = new JSONObject().put("status", "sent");	
 								} else {
 									logger.log(Level.SEVERE, "Email address " + emailTo + " is not on the whitelist!");
-									logger.log(Level.WARNING, "Message won't be delivered to device " + deviceId + ":\n" + message);
-									reply = new JSONObject().put("status", "unverified");
+									//logger.log(Level.WARNING, "Message won't be delivered to device " + deviceId + ":\n" + message);
+									//reply = new JSONObject().put("status", "unverified");
+									logger.log(Level.WARNING, "Sending email registration request");
+									reply = registerEmail(emailTo, false, appVersion);
 								}
 							}
 						} else {
