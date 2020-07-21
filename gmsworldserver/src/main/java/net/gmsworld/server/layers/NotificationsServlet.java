@@ -441,19 +441,19 @@ public class NotificationsServlet extends HttpServlet {
 							reply = new JSONObject().put("status", status);
 						}
 					} else if (verificationStatus >= 500) {
-						logger.log(Level.SEVERE, email + " verification failed");
+						logger.log(Level.SEVERE, email + " verification failed with code " + verificationStatus);
 						reply = new JSONObject().put("status", "failed").put("code", verificationStatus); 
 					} else if (verificationStatus >= 400) {
-						logger.log(Level.SEVERE, email + " verification failed");
+						logger.log(Level.SEVERE, email + " verification failed with code " + verificationStatus);
 						reply = new JSONObject().put("status", "failed").put("code", verificationStatus);
 						CacheUtil.put("mailto:"+email+":invalid", verificationStatus, CacheType.NORMAL);
 					} else {
-						logger.log(Level.SEVERE, email + " verification failed");
+						logger.log(Level.SEVERE, email + " verification failed with code " + verificationStatus);
 						reply = new JSONObject().put("status", "failed").put("code", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 					}
 				} else {
 					final Integer code = (Integer) CacheUtil.getObject("mailto:"+email+":invalid");
-					logger.log(Level.SEVERE, email + " verification failed " + code);
+					logger.log(Level.SEVERE, email + " verification failed with code " + code + ". Check older logs for root cause.");
 					reply = new JSONObject().put("status", "failed").put("code", code);
 				}
 			} else {
