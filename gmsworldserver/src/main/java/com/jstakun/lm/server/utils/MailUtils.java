@@ -116,7 +116,7 @@ public class MailUtils {
     	                                "&recipients=" + URLEncoder.encode(recipients, "UTF-8") +
     	                       		    "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);
     	     
-   	 		 if (fromP != null) {
+   	 		 if (StringUtils.isNotEmpty(fromP)) {
   	 			 params +="&fromNick=" + URLEncoder.encode(fromP, "UTF-8");
   	 		 }
    	 		 
@@ -266,6 +266,25 @@ public class MailUtils {
             String link = ConfigurationManager.SSL_SERVER_URL + "unregisterUser/" + secret;
             String message = String.format(IOUtils.toString(is, "UTF-8"), nick, link);
             sendRemoteMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, toA, nick, "GMS World Registration", message, "text/html",  "landmark-manager@gms-world.net", ConfigurationManager.ADMIN_NICK);
+       	} catch (IOException ex) {
+            logger.log(Level.SEVERE, null, ex);
+        } finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException ex) {
+                    logger.log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+    }
+    
+    public static void sendUnregisterNotification(String toA, String nick, ServletContext context) {
+        InputStream is = null;
+        try {
+            is = context.getResourceAsStream("/WEB-INF/emails/unregister.html");
+            String message = IOUtils.toString(is, "UTF-8");
+            sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick,  "Device Locator Unregistration", message, "text/html", ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK);	
        	} catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
         } finally {

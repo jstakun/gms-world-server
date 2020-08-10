@@ -95,9 +95,11 @@ public class AccountAction extends Action {
         	Notification n = NotificationPersistenceUtils.findBySecret(secret);
         	if (n != null && n.getId() != null) {
         		if (NotificationPersistenceUtils.remove(n.getId())) {
-        			MailUtils.sendAdminMail("Notifications service unregistration", n.getId() + " has unregistered from Notifications service.");
         			if (MailUtils.isValidEmailAddress(n.getId())) {
-        				request.setAttribute("email", n.getId());
+        				MailUtils.sendUnregisterNotification(n.getId(), "", getServlet().getServletContext());
+            			request.setAttribute("email", n.getId());
+        			} else {
+        				MailUtils.sendAdminMail("Notifications Service unregistration", n.getId() + " has unregistered from Notifications service.");
         			}
         			if (api) {
         				output = "{\"status\":\"ok\"}";
@@ -114,7 +116,7 @@ public class AccountAction extends Action {
             User user = UserPersistenceUtils.selectUserByLogin(login, null);
             if (user != null) {
             	UserPersistenceUtils.removeUser(user.getSecret());
-            	MailUtils.sendAdminMail("GMS World user unregistration", user.getLogin() + " has unregistered from GMS World.");
+            	MailUtils.sendAdminMail("GMS World User Unregistration", user.getLogin() + " has unregistered from GMS World.");
             	request.setAttribute("login", user.getLogin());
             	request.setAttribute("email", user.getEmail());
                 result = true;
@@ -125,7 +127,7 @@ public class AccountAction extends Action {
             User user = UserPersistenceUtils.selectUserByLogin(null, secret);
             if (user != null) {
             	UserPersistenceUtils.removeUser(secret);
-            	MailUtils.sendAdminMail("GMS World user unregistration", user.getLogin() + " has unregistered from GMS World.");
+            	MailUtils.sendAdminMail("GMS World User Unregistration", user.getLogin() + " has unregistered from GMS World.");
     			request.setAttribute("login", user.getLogin());
             	request.setAttribute("email", user.getEmail());
                 result = true;
