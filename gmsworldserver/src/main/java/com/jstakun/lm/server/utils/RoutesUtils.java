@@ -70,7 +70,6 @@ public class RoutesUtils {
 	     public static String[] cache(String route, String name) {
 	           String[] resp = new String[2];
 	           try {
-	        	    logger.log(Level.INFO, "Saving route with size " + route.length());
 	        	    final String content = "type=route&name=" + name + "&route=" + route + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);
 	        	    final URL routesUrl = new URL(ConfigurationManager.getBackendUrl() + "/addItem");
 		        	resp[0] = HttpUtils.processFileRequest(routesUrl, "POST", null, content, "application/x-www-form-urlencoded");

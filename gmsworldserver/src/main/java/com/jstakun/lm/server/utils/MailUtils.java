@@ -135,11 +135,11 @@ public class MailUtils {
    	 			 if (contentType != null) {
    	 				 params += "&contentType=" + contentType;
    	 			 }	
-   	 			 if (content.length() > 8 * 1024) {
-   	 				 params += "&body=" + URLEncoder.encode(content.substring(0, 8 * 1024), "UTF-8");
-   	 			 } else {
-   	 				 params += "&body=" + URLEncoder.encode(content, "UTF-8");
-   	 			 }
+   	 			 //if (content.length() > 8 * 1024) {
+   	 			 //	 params += "&body=" + URLEncoder.encode(content.substring(0, 8 * 1024), "UTF-8");
+   	 			 //} else {
+   	 		     params += "&body=" + URLEncoder.encode(content, "UTF-8");
+   	 			 //}
    	 		 }		                        
    	 		 	
     		 final String sendMailUrl = com.jstakun.lm.server.config.ConfigurationManager.getBackendUrl() + "/emailer"; 
