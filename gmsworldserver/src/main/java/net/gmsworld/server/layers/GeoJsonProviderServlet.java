@@ -169,9 +169,9 @@ public class GeoJsonProviderServlet extends HttpServlet {
 			} 
 			logger.log(Level.INFO, "Sending " + layerSize + " landmarks from layer " + layer);
         	final String callBackJavaScripMethodName = request.getParameter("callback");
-        	if (StringUtils.isNotEmpty(callBackJavaScripMethodName)) {
+        	if (StringUtils.isAlphanumeric(callBackJavaScripMethodName)) {
         		json = callBackJavaScripMethodName + "("+ json + ");";
-        	}
+        	} 
         	response.getWriter().write(json);
         	response.getWriter().close();
         }

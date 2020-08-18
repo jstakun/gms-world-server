@@ -69,7 +69,7 @@
  </div>
  <script>
 	(function() {
-   		var gmsAPI = "/services/browserLandmark?callback=landmark_callback&hotelsMode=<%= hotelsMode %>";
+   		var gmsAPI = "/services/browserLandmark?callback=landmarkCallback&hotelsMode=<%= hotelsMode %>";
    		$.ajaxSetup({
    		    timeout: 60000 //Time in milliseconds
    		});

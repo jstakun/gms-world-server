@@ -123,7 +123,7 @@ public class RouteProviderServlet extends HttpServlet {
             		//response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             	}
             	final String callBackJavaScripMethodName = request.getParameter("callback");
-            	if (StringUtils.isNotEmpty(callBackJavaScripMethodName)) {
+            	if (StringUtils.isAlphanumeric(callBackJavaScripMethodName)) {
                 		json = callBackJavaScripMethodName + "("+ json + ");";
                 }
             	out.println(json);
