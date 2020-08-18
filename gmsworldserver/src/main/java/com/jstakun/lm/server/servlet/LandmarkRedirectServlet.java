@@ -57,8 +57,8 @@ public class LandmarkRedirectServlet extends HttpServlet {
             	} else {
             		try {
             			URL redirectURL = new URL(url);
-            			if (!StringUtils.contains(redirectURL.getHost(), layer)) {
-            				logger.log(Level.SEVERE, "Suspicious url " + url + " for layer " + layer);
+            			if (!StringUtils.containsIgnoreCase(redirectURL.getHost(), layer)) {
+            				logger.log(Level.SEVERE, "Suspicious url " + redirectURL.getHost() + " for layer " + layer);
             			}
             		} catch (Exception e) {
             			logger.log(Level.SEVERE, "Invalid url " + url);
