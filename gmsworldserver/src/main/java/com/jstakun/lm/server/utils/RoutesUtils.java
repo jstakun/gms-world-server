@@ -143,9 +143,9 @@ public class RoutesUtils {
     				 double distance = 0d;
     				 if (props.containsKey("distance")) {
     					 try {
-    						 distance = Double.parseDouble((String)props.get("distance"));
+    						 distance = (Double)props.get("distance");
     					 } catch (Exception e) { 
-    						 logger.log(Level.SEVERE, "Invalid distance value: " + props.get("distance"));
+    						 logger.log(Level.SEVERE, "Invalid distance value: " + props.get("distance"), e);
     					 }
     				 }
     				 distance += pointsDistance;

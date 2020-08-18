@@ -43,7 +43,6 @@ public class StringTest {
 		u = "bXlwb3M=";
 		if (Base64.isArrayByteBase64(u.getBytes())) {
 			 System.out.println("Decoded base64: " + new String(Base64.decodeBase64(u)));
-		}
-		
+		}	
 	}
 }
