@@ -14,10 +14,10 @@ import org.apache.commons.lang.WordUtils;
  */
 public class StringUtil {
 
-    public static int SMALL = 128;
-    public static int NORMAL = 256;
-    public static int LARGE = 512;
-    public static int XLARGE = 1024;
+    public static final int SMALL = 128;
+    public static final int NORMAL = 256;
+    public static final int LARGE = 512;
+    public static final int XLARGE = 1024;
     private static final DecimalFormat coordsFormatE6 = new DecimalFormat("##.######");
     private static final DecimalFormat coordsFormatE2 = new DecimalFormat("##.##");
     

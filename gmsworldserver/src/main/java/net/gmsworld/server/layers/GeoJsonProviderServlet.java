@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -167,7 +168,7 @@ public class GeoJsonProviderServlet extends HttpServlet {
 				json = resp.toString();			
 			} 
 			logger.log(Level.INFO, "Sending " + layerSize + " landmarks from layer " + layer);
-        	String callBackJavaScripMethodName = request.getParameter("callback");
+        	final String callBackJavaScripMethodName = request.getParameter("callback");
         	if (StringUtils.isNotEmpty(callBackJavaScripMethodName)) {
         		json = callBackJavaScripMethodName + "("+ json + ");";
         	}

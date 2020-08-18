@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.layers.HotelsBookingUtils;
 import net.gmsworld.server.utils.HttpUtils;
 import net.gmsworld.server.utils.persistence.Landmark;
 import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;

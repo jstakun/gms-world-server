@@ -41,7 +41,7 @@ public class UrlUtils {
 
         try {
             if (StringUtils.isNotEmpty(user) && user.length() > 3 && user.charAt(user.length() - 3) == '@') {
-                String id = user.substring(0, user.length() - 3);
+                final String id = user.substring(0, user.length() - 3);
                 if (user.endsWith("@fb")) {
                     url = "http://www.facebook.com/profile.php?id=" + id;
                 } else if (user.endsWith("@tw")) {
@@ -66,7 +66,11 @@ public class UrlUtils {
                     url = "http://foursquare.com/user/" + id;
                 } else if (user.endsWith("@gw")) {
                     url = "http://gowalla.com/users/" + id;
+                } else {
+                	logger.log(Level.SEVERE, "Invalid user "  + user);
                 }
+            } else {
+            	logger.log(Level.SEVERE, "Invalid user "  + user);
             }
         } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.getMessage(), ex);

@@ -1,6 +1,7 @@
 package com.jstakun.lm.server.servlet;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -46,13 +47,22 @@ public class LandmarkRedirectServlet extends HttpServlet {
             if (HttpUtils.isEmptyAny(request, "layer", "lat", "lng")) {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             } else {
-            	String layer = request.getParameter("layer");
-            	String lat = request.getParameter("lat");
-            	String lng = request.getParameter("lng");
+            	final String layer = request.getParameter("layer");
+            	final String lat = request.getParameter("lat");
+            	final String lng = request.getParameter("lng");
             	String url = request.getParameter("url");
 	        
             	if (url == null || StringUtils.indexOfAny(layer, remote) >= 0) {
             		url = String.format("%sshowLocation/%s/%s", ConfigurationManager.SERVER_URL, lat, lng);
+            	} else {
+            		try {
+            			URL redirectURL = new URL(url);
+            			if (!StringUtils.contains(redirectURL.getHost(), layer)) {
+            				logger.log(Level.SEVERE, "Suspicious url " + url + " for layer " + layer);
+            			}
+            		} catch (Exception e) {
+            			logger.log(Level.SEVERE, "Invalid url " + url);
+            		}
             	}
             	
             	if (!url.startsWith("http")) {

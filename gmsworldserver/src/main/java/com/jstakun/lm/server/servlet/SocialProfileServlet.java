@@ -41,7 +41,7 @@ public class SocialProfileServlet extends HttpServlet {
             if (StringUtils.isEmpty(uid)) {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             } else {
-                String profileUrl = UrlUtils.createUserProfileUrl(uid);
+                final String profileUrl = UrlUtils.createUserProfileUrl(uid);
                 if (StringUtils.startsWith(profileUrl, "http://") || StringUtils.startsWith(profileUrl, "https://")) {
                     response.sendRedirect(profileUrl);
                 } else {         

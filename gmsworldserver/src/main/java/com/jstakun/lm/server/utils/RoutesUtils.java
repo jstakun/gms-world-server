@@ -85,7 +85,7 @@ public class RoutesUtils {
 	           return resp;
          }
 	            
-	     public static String loadFromCache(String routeId, String live) {
+	     public static String loadFromCache(final String routeId, final String live) {
 	           //check first if route is cached
 	           String reply = null;
 	           if (CacheUtil.containsKey(routeId)) {
@@ -142,9 +142,10 @@ public class RoutesUtils {
     				 f.setProperty("time", System.currentTimeMillis() - (Long)props.get("creationTime"));
     				 double distance = 0d;
     				 if (props.containsKey("distance")) {
-    					 distance = (Double)props.get("distance");
-    					 if (distance == Double.NaN) {
-    						 distance = 0d;
+    					 try {
+    						 distance = Double.parseDouble((String)props.get("distance"));
+    					 } catch (Exception e) { 
+    						 logger.log(Level.SEVERE, "Invalid distance value: " + props.get("distance"));
     					 }
     				 }
     				 distance += pointsDistance;
