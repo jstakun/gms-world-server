@@ -422,7 +422,7 @@ public class NotificationsServlet extends HttpServlet {
 			} else if (appVersion >= 30) {
 				if (CacheUtil.containsKey("mailto:"+email+":sent")) {
 					reply = new JSONObject().put("status", "unverified").put("secret", CacheUtil.getObject("mailto:"+email+":sent"));
-					logger.log(Level.INFO, "Skipping sending registation request...");
+					logger.log(Level.INFO, "Skipping sending registration request...");
 				} else if (!CacheUtil.containsKey("mailto:"+email+":invalid")) {
 					int verificationStatus;
 					if (skipVerify) {
