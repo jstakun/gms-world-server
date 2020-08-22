@@ -82,7 +82,7 @@ public class ShowLandmarkAction extends Action {
                        CacheAction commentsCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
             				public Object executeAction() {
             					if (StringUtils.isNumeric(key)) {
-            						return CommentPersistenceUtils.selectCommentsByLandmark(Integer.valueOf(key));
+            						return CommentPersistenceUtils.selectCommentsByLandmark(Integer.parseInt(key));
             					} else {
             						return new ArrayList<Comment>();
             					}

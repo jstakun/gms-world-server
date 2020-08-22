@@ -420,7 +420,10 @@ public class NotificationsServlet extends HttpServlet {
 				MailUtils.sendDeviceLocatorRegistrationNotification(email, email, n.getSecret(), this.getServletContext());
 				reply = new JSONObject().put("status", "registered");
 			} else if (appVersion >= 30) {
-				if (!CacheUtil.containsKey("mailto:"+email+":invalid")) {
+				if (CacheUtil.containsKey("mailto:"+email+":sent")) {
+					reply = new JSONObject().put("status", "unverified").put("secret", CacheUtil.getObject("mailto:"+email+":sent"));
+					logger.log(Level.INFO, "Skipping sending registation request...");
+				} else if (!CacheUtil.containsKey("mailto:"+email+":invalid")) {
 					int verificationStatus;
 					if (skipVerify) {
 						verificationStatus = 200;
@@ -437,6 +440,7 @@ public class NotificationsServlet extends HttpServlet {
 						}
 						if (StringUtils.equals(status, "ok")) {
 							reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
+							CacheUtil.put("mailto:"+email+":sent", n.getSecret(), CacheType.FAST);
 						} else {
 							reply = new JSONObject().put("status", status);
 						}
@@ -461,6 +465,7 @@ public class NotificationsServlet extends HttpServlet {
 				String status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), this.getServletContext(), 0);
 				if (StringUtils.equals(status, "ok")) {
 					reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
+					CacheUtil.put("mailto:"+email+":sent", n.getSecret(), CacheType.FAST);
 				} else {
 					reply = new JSONObject().put("status", status);
 				}

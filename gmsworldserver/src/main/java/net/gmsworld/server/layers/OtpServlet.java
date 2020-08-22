@@ -39,7 +39,7 @@ public final class OtpServlet extends HttpServlet {
 				int count = 8;
 				final String countStr = request.getParameter("count");
 				if (StringUtils.isNumeric(countStr)) {
-					count = Integer.valueOf(countStr).intValue();
+					count = Integer.parseInt(countStr);
 				}
 				final String token = RandomStringUtils.random(count, false, true);
 				CacheUtil.put(PREFIX + key, token, CacheType.FAST);

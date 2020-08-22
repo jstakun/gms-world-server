@@ -25,7 +25,7 @@ public class DeleteLandmarkAction extends Action {
     	final String key = request.getParameter("key");
         if (StringUtils.isNumeric(key))
         {
-            LandmarkPersistenceUtils.removeLandmark(Integer.valueOf(key));
+            LandmarkPersistenceUtils.removeLandmark(Integer.parseInt(key));
         }
         return mapping.findForward( "success");
     }
