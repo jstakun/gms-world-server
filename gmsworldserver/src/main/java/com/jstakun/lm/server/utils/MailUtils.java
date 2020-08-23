@@ -215,7 +215,7 @@ public class MailUtils {
         }
     }
     
-    public static String sendDeviceLocatorVerificationRequest(String toA, String nick, String secret, ServletContext context, int version) {
+    public static String sendDeviceLocatorVerificationRequest(String toA, String nick, String secret, ServletContext context, int version, String deviceName) {
         InputStream is = null;
         String result = null; 
         try {
@@ -225,20 +225,27 @@ public class MailUtils {
             	if (version == 0) {
             		is = context.getResourceAsStream("/WEB-INF/emails/verification-dl.html");
             		link = ConfigurationManager.SSL_SERVER_URL + "verify/" + secret;
-            	} else if (version == 1) {
+                 	message = String.format(IOUtils.toString(is, "UTF-8"), link, link);
+                } else if (version == 1) {
             		is = context.getResourceAsStream("/WEB-INF/emails/verification-next-dl.html");
             		link = ConfigurationManager.SSL_SERVER_URL + "verify/" + secret;
-            	} else if (version == 2) {
+            	 	message = String.format(IOUtils.toString(is, "UTF-8"), link, link);
+                } else if (version == 2) {
             		is = context.getResourceAsStream("/WEB-INF/emails/verification-dl-v2.html");
             		String tokens[] = StringUtils.split(secret, ".");
             		if (tokens.length == 2 && tokens[1].length() == 4 && StringUtils.isNumeric(tokens[1])) {
             			link = tokens[1];
             		}
-            	} else if (version == 3) {
+            	 	message = String.format(IOUtils.toString(is, "UTF-8"), link, link);
+                } else if (version == 3) {
             		is = context.getResourceAsStream("/WEB-INF/emails/verification-dl-v3.html");
             		link = ConfigurationManager.SSL_SERVER_URL + "verify/" + secret;
-            	}
-            	message = String.format(IOUtils.toString(is, "UTF-8"), link, link);
+            	 	message = String.format(IOUtils.toString(is, "UTF-8"), link, link);
+                } else if (version == 4) {
+                	is = context.getResourceAsStream("/WEB-INF/emails/verification-dl-v4.html");
+            		link = ConfigurationManager.SSL_SERVER_URL + "verify/" + secret;
+            	 	message = String.format(IOUtils.toString(is, "UTF-8"), link, link, deviceName);
+                }
             } 
             return sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick,  "Device Locator Registration", message, "text/html", ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK);	
         } catch (Exception ex) {

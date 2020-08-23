@@ -84,6 +84,7 @@ public class NotificationsServlet extends HttpServlet {
 				final String routeId = request.getHeader(Commons.ROUTE_ID_HEADER);
 				final int appVersion = NumberUtils.getInt(request.getHeader(Commons.APP_VERSION_HEADER), -1);
 				final String deviceId = request.getHeader(Commons.DEVICE_ID_HEADER);
+				final String deviceName = request.getHeader(Commons.DEVICE_NAME_HEADER);
 
 				Double latitude = null;
 	            if (request.getParameter("lat") != null) {
@@ -288,7 +289,7 @@ public class NotificationsServlet extends HttpServlet {
 									//logger.log(Level.WARNING, "Message won't be delivered to device " + deviceId + ":\n" + message);
 									//reply = new JSONObject().put("status", "unverified");
 									logger.log(Level.WARNING, "Sending email registration request");
-									reply = registerEmail(emailTo, false, appVersion);
+									reply = registerEmail(emailTo, false, appVersion, deviceName);
 								}
 							}
 						} else {
@@ -309,7 +310,7 @@ public class NotificationsServlet extends HttpServlet {
 				} else if (StringUtils.equals(type, "register_m")) {
 					//register for email notifications
 					if (appId == Commons.DL_ID && StringUtils.startsWith(request.getRequestURI(), "/s/")) {
-						reply = registerEmail(request.getParameter("email"), StringUtils.equalsIgnoreCase(request.getParameter("validate"), "false"), appVersion);
+						reply = registerEmail(request.getParameter("email"), StringUtils.equalsIgnoreCase(request.getParameter("validate"), "false"), appVersion, deviceName);
 					} else {
 						logger.log(Level.SEVERE, "Wrong application id " + appId);
 					}
@@ -410,7 +411,7 @@ public class NotificationsServlet extends HttpServlet {
 		return "Notifications servlet";
 	}
 
-	private JSONObject registerEmail(String email, boolean skipVerify, int appVersion) throws IOException {
+	private JSONObject registerEmail(String email, boolean skipVerify, int appVersion, String deviceName) throws IOException {
 		JSONObject reply = null;
 		if (StringUtils.endsWithIgnoreCase(email, "@cloudtestlabaccounts.com")) {
 			reply = new JSONObject().put("status", "blacklisted").put("code", HttpServletResponse.SC_BAD_REQUEST);
@@ -433,10 +434,14 @@ public class NotificationsServlet extends HttpServlet {
 					if (verificationStatus == 200) {
 						Notification n = NotificationPersistenceUtils.setVerified(email, false);
 						String status = null;
-						if (appVersion > 68) {
-							status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), this.getServletContext(), 3);
+						if (appVersion >= 69) {
+							if (StringUtils.isNotEmpty(deviceName)) {
+								status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), this.getServletContext(), 4, deviceName);
+							} else {
+								status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), this.getServletContext(), 3, null);
+							}
 						} else {
-							status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), this.getServletContext(), 2);
+							status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), this.getServletContext(), 2, null);
 						}
 						if (StringUtils.equals(status, "ok")) {
 							reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
@@ -462,7 +467,7 @@ public class NotificationsServlet extends HttpServlet {
 				}
 			} else {
 				Notification n = NotificationPersistenceUtils.setVerified(email, false);
-				String status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), this.getServletContext(), 0);
+				String status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), this.getServletContext(), 0, null);
 				if (StringUtils.equals(status, "ok")) {
 					reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
 					CacheUtil.put("mailto:"+email+":sent", n.getSecret(), CacheType.FAST);
