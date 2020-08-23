@@ -81,7 +81,7 @@ public class AccountAction extends Action {
         	Notification n = NotificationPersistenceUtils.verifyWithSecret(secret);
         	if (n != null) {
         		if (MailUtils.isValidEmailAddress(n.getId())) {
-        			MailUtils.sendDeviceLocatorRegistrationNotification(n.getId(), n.getId(), secret, getServlet().getServletContext());
+        			MailUtils.sendDeviceLocatorRegistrationNotification(n.getId(), n.getId(), secret, getServlet().getServletContext(), null);
         			request.setAttribute("email", n.getId());
         		} 
         		if (api) {

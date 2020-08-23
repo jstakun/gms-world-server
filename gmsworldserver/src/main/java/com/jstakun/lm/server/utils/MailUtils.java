@@ -332,15 +332,20 @@ public class MailUtils {
         return result;
     }
     
-    public static String sendDeviceLocatorRegistrationNotification(String toA, String nick, String secret, ServletContext context) {
+    public static String sendDeviceLocatorRegistrationNotification(String toA, String nick, String secret, ServletContext context, String deviceName) {
         InputStream is = null;
         String status = null;
         try {
         	String message = "";
         	String link = ConfigurationManager.SSL_SERVER_URL + "unregister/" + secret;
         	if (context != null) {
-        		is = context.getResourceAsStream("/WEB-INF/emails/notification-dl.html");
-        		message =String.format(IOUtils.toString(is, "UTF-8"), link);
+        		if (StringUtils.isNotEmpty(deviceName)) {
+        			is = context.getResourceAsStream("/WEB-INF/emails/notification-dl-v2.html");
+        			message =String.format(IOUtils.toString(is, "UTF-8"), link, deviceName);		
+        		} else {
+        			is = context.getResourceAsStream("/WEB-INF/emails/notification-dl.html");
+        			message =String.format(IOUtils.toString(is, "UTF-8"), link);
+        		}
         	}
             status = sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html",  ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK);	
         } catch (IOException ex) {

@@ -418,7 +418,7 @@ public class NotificationsServlet extends HttpServlet {
 		} else if (StringUtils.isNotEmpty(email)) {
 			if (NotificationPersistenceUtils.isVerified(email)) {
 				Notification n = NotificationPersistenceUtils.setVerified(email, true);
-				MailUtils.sendDeviceLocatorRegistrationNotification(email, email, n.getSecret(), this.getServletContext());
+				MailUtils.sendDeviceLocatorRegistrationNotification(email, email, n.getSecret(), this.getServletContext(), deviceName);
 				reply = new JSONObject().put("status", "registered");
 			} else if (appVersion >= 30) {
 				if (CacheUtil.containsKey("mailto:"+email+":sent")) {
