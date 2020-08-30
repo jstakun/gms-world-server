@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
-import com.google.appengine.api.search.query.QueryParser.comparable_return;
 import com.jstakun.lm.server.utils.MailUtils;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
