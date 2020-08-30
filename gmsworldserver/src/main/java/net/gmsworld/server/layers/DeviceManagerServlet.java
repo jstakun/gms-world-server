@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
+import com.google.appengine.api.search.query.QueryParser.comparable_return;
 import com.jstakun.lm.server.utils.MailUtils;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
@@ -135,23 +136,24 @@ public final class DeviceManagerServlet extends HttpServlet {
 	        		 response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 		         } else {
 		        	 int status;
-		        	 String pinStr = request.getParameter("pin");
+		        	 final String pinStr = request.getParameter("pin");
 		        	 int pin = -1;
 		        	 if (StringUtils.isNotEmpty(pinStr)) {
 		        		 pin = NumberUtils.getInt(pinStr.trim(), -1);
 				     }
 		        	 Long count = -1L;
 		        	 if (StringUtils.isNotEmpty(command) && pin >= 0) {
-			        	 String commandKey = getCommandKey(correlationId, imei, username, name, command);
+			        	 final String commandKey = getCommandKey(correlationId, imei, username, name, command);
 			        	 count = CacheUtil.increment(commandKey);
 			        	 if (StringUtils.equalsIgnoreCase(action, "reset_quota")) {
 			        		 CacheUtil.put(commandKey, 0, CacheType.NORMAL);
 			        		 MailUtils.sendAdminMail("Quota reset request", "Quota reset for " + commandKey + " has been requested");
-			        		 logger.log(Level.INFO, "Command " + commandKey + " has been set to 0");
+			        		 logger.log(Level.INFO, "Command " + commandKey + " has been reset to 0");
 			        		 status = 1;
 			        		 persistDeviceLocation(deviceId, latitude, longitude, accuracy);
-			        	 } else if (count < 10 || (StringUtils.equals(command, "messagedlapp") && count < 50) || DevicePersistenceUtils.isValidCommand(replyToCommand) ||
-			        		(StringUtils.equals(command, "messagedlapp") && StringUtils.isNotEmpty(request.getHeader(Commons.ROUTE_ID_HEADER)))) {
+			        	 } else if (count < 10 || ((StringUtils.equals(command, "messagedlapp") || isCommandForSameDevice(commandKey)) && count < 50) || 
+			        	     DevicePersistenceUtils.isValidCommand(replyToCommand) || 
+			        	     (StringUtils.equals(command, "messagedlapp") && StringUtils.isNotEmpty(request.getHeader(Commons.ROUTE_ID_HEADER)))) {
 			        		 logger.log(Level.INFO, "Command " + commandKey + " has been sent " + count + " times");
 			        		 status = DevicePersistenceUtils.sendCommand(imei, pin, name, username, command, args, correlationId, flex);	 
 			        		 if (status == 1) {
@@ -299,6 +301,11 @@ public final class DeviceManagerServlet extends HttpServlet {
 		}
    	 	commandKey += command;
    	 	return commandKey;
+	}
+	
+	private boolean isCommandForSameDevice(final String commandKey) {
+		final String[] tokens = StringUtils.split(commandKey, "_");
+		return (tokens.length >= 2 && StringUtils.equals(tokens[0], tokens[1]));
 	}
 	
 }
