@@ -259,11 +259,17 @@ public final class DeviceManagerServlet extends HttpServlet {
    	   	if (StringUtils.isNotEmpty(deviceId)) {
    	   		tokens.add("deviceId:" + deviceId);
    	   	}
-   	   	if (StringUtils.isNotEmpty(request.getHeader(Commons.DEVICE_NAME_HEADER))) {
-   	   		tokens.add("deviceName:" + request.getHeader(Commons.DEVICE_NAME_HEADER));
+   	    final String deviceName = request.getHeader(Commons.DEVICE_NAME_HEADER);
+   	   	if (StringUtils.isNotEmpty(deviceName)) {
+   	   		tokens.add("deviceName:" + deviceName);
    	   	}
-   	   	if (StringUtils.isNotEmpty(request.getParameter("replyToCommand"))) {
-   	   		tokens.add("command:" + request.getParameter("replyToCommand"));
+   	   	final String replyToCommand = request.getParameter("replyToCommand");
+   	   	if (StringUtils.isNotEmpty(replyToCommand)) {
+   	   		tokens.add("command:" + replyToCommand);
+   	   	}
+   	   	final String language = request.getHeader("Accept-Language");
+   	   	if (StringUtils.isNotEmpty(language)) {
+   	   		tokens.add("language:" + language);
    	   	}
    	   	if (!tokens.isEmpty()) {
    	   		 return StringUtils.join(tokens, ",");
