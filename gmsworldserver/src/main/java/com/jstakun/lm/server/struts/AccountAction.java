@@ -15,6 +15,8 @@ import com.jstakun.lm.server.persistence.Notification;
 import com.jstakun.lm.server.persistence.User;
 import com.jstakun.lm.server.utils.MailUtils;
 import com.jstakun.lm.server.utils.UserAgentUtils;
+import com.jstakun.lm.server.utils.memcache.CacheUtil;
+import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 import com.jstakun.lm.server.utils.persistence.NotificationPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.UserPersistenceUtils;
 
@@ -77,12 +79,18 @@ public class AccountAction extends Action {
             }
         } else if (!HttpUtils.isEmptyAny(request, "sc","s")) {
         	//register to DL notifications
-        	String secret = request.getParameter("sc");
+        	final String secret = request.getParameter("sc");
         	Notification n = NotificationPersistenceUtils.verifyWithSecret(secret);
         	if (n != null) {
-        		if (MailUtils.isValidEmailAddress(n.getId())) {
-        			MailUtils.sendDeviceLocatorRegistrationNotification(n.getId(), n.getId(), secret, getServlet().getServletContext(), null);
-        			request.setAttribute("email", n.getId());
+        		final String email = n.getId(); 
+        		if (MailUtils.isValidEmailAddress(email)) {
+        			if (!CacheUtil.containsKey("mailto:"+email+":verified")) {
+    					final String status = MailUtils.sendDeviceLocatorRegistrationNotification(email, email, secret, getServlet().getServletContext(), null);
+    					if (StringUtils.equalsIgnoreCase(status, MailUtils.STATUS_OK)) {
+							CacheUtil.put("mailto:"+email+":verified", secret, CacheType.FAST);
+						}
+    				}
+        			request.setAttribute("email", email);
         		} 
         		if (api) {
     				output = "{\"status\":\"ok\"}";
@@ -94,12 +102,14 @@ public class AccountAction extends Action {
         	String secret = request.getParameter("sc");
         	Notification n = NotificationPersistenceUtils.findBySecret(secret);
         	if (n != null && n.getId() != null) {
-        		if (NotificationPersistenceUtils.remove(n.getId())) {
-        			if (MailUtils.isValidEmailAddress(n.getId())) {
-        				MailUtils.sendUnregisterNotification(n.getId(), "", getServlet().getServletContext());
-            			request.setAttribute("email", n.getId());
+        		final String email = n.getId();
+        		if (NotificationPersistenceUtils.remove(email)) {
+        			CacheUtil.remove("mailto:"+email+":verified");
+        			if (MailUtils.isValidEmailAddress(email)) {
+        				MailUtils.sendUnregisterNotification(email, "", getServlet().getServletContext());
+            			request.setAttribute("email", email);
         			} else {
-        				MailUtils.sendAdminMail("Notifications Service unregistration", n.getId() + " has unregistered from Notifications service.");
+        				MailUtils.sendAdminMail("Notifications Service unregistration", email + " has unregistered from Notifications service.");
         			}
         			if (api) {
         				output = "{\"status\":\"ok\"}";
