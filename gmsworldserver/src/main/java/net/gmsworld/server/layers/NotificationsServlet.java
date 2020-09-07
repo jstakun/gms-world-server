@@ -417,8 +417,17 @@ public class NotificationsServlet extends HttpServlet {
 			reply = new JSONObject().put("status", "blacklisted").put("code", HttpServletResponse.SC_BAD_REQUEST);
 		} else if (StringUtils.isNotEmpty(email)) {
 			if (NotificationPersistenceUtils.isVerified(email)) {
-				Notification n = NotificationPersistenceUtils.setVerified(email, true);
-				MailUtils.sendDeviceLocatorRegistrationNotification(email, email, n.getSecret(), this.getServletContext(), deviceName);
+				if (CacheUtil.containsKey("mailto:"+email+":verified")) {
+					logger.log(Level.INFO, "Skipping sending registration notification...");
+				} else {
+					final Notification n = NotificationPersistenceUtils.setVerified(email, true);
+					if (n != null) {
+						final String status = MailUtils.sendDeviceLocatorRegistrationNotification(email, email, n.getSecret(), this.getServletContext(), deviceName);
+						if (StringUtils.equalsIgnoreCase(status, MailUtils.STATUS_OK)) {
+							CacheUtil.put("mailto:"+email+":verified", n.getSecret(), CacheType.FAST);
+						}
+					}
+				}
 				reply = new JSONObject().put("status", "registered");
 			} else if (appVersion >= 30) {
 				if (CacheUtil.containsKey("mailto:"+email+":sent")) {
