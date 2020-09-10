@@ -20,6 +20,7 @@ import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 import com.jstakun.lm.server.utils.persistence.NotificationPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.UserPersistenceUtils;
 
+import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.utils.HttpUtils;
 
 /**
@@ -51,13 +52,18 @@ public class AccountAction extends Action {
     @Override
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
+        final boolean isMobile = UserAgentUtils.isMobile(request.getHeader("User-Agent"));
+        String deviceName = request.getHeader(Commons.DEVICE_NAME_HEADER);
+        if (StringUtils.isEmpty(deviceName)) {
+        	deviceName = request.getParameter("dn");
+        }
+
         Boolean confirm = Boolean.FALSE;
         if (StringUtils.equals(request.getParameter("s"), "1")) {
             confirm = Boolean.TRUE;
         }
         boolean result = false;
-        boolean isMobile = UserAgentUtils.isMobile(request.getHeader("User-Agent"));
-        
+
         boolean api = false;
         String output = null;
         if (StringUtils.startsWith(request.getHeader("User-Agent"), "Device Locator")) {
@@ -85,7 +91,7 @@ public class AccountAction extends Action {
         		final String email = n.getId(); 
         		if (MailUtils.isValidEmailAddress(email)) {
         			if (!CacheUtil.containsKey("mailto:"+email+":verified")) {
-    					final String status = MailUtils.sendDeviceLocatorRegistrationNotification(email, email, secret, getServlet().getServletContext(), null);
+    					final String status = MailUtils.sendDeviceLocatorRegistrationNotification(email, email, secret, getServlet().getServletContext(), deviceName);
     					if (StringUtils.equalsIgnoreCase(status, MailUtils.STATUS_OK)) {
 							CacheUtil.put("mailto:"+email+":verified", secret, CacheType.FAST);
 						}

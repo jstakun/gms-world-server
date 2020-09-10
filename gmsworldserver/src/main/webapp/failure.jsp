@@ -59,8 +59,8 @@
  <%
     } else {
  %>
-                    <h3>Unregister error</h3>
-                     <p>Please try again or contact <a href="mailto:support@gms-world.net?subject=Unregister failed">System Administrator</a></p>
+                    <h3>Action error</h3>
+                     <p>Please try again or contact <a href="mailto:support@gms-world.net?subject=Action failed">System Administrator</a></p>
  <%
     }
  %>
