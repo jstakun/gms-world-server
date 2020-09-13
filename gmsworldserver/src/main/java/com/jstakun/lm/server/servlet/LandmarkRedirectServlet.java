@@ -2,6 +2,8 @@ package com.jstakun.lm.server.servlet;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,6 +28,14 @@ public class LandmarkRedirectServlet extends HttpServlet {
     
 	private static final String[] remote = new String[]{Commons.LOCAL_LAYER, Commons.MY_POSITION_LAYER,
             Commons.MC_ATM_LAYER, Commons.OSM_ATM_LAYER, Commons.OSM_PARKING_LAYER};
+	
+	private static final Map<String, String> LAYER_HOSTNAME = new HashMap<String, String>();
+	
+	static {
+		LAYER_HOSTNAME.put(Commons.FOURSQUARE_MERCHANT_LAYER, "foursquare.com");
+		LAYER_HOSTNAME.put(Commons.HOTELS_LAYER, "www.booking.com");
+		LAYER_HOSTNAME.put("4d4b7105d754a06375d81259", "bit.ly");
+	}
     
     /**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -56,9 +66,13 @@ public class LandmarkRedirectServlet extends HttpServlet {
             		url = String.format("%sshowLocation/%s/%s", ConfigurationManager.SERVER_URL, lat, lng);
             	} else {
             		try {
-            			URL redirectURL = new URL(url);
-            			if (!StringUtils.containsIgnoreCase(redirectURL.getHost(), layer)) {
-            				logger.log(Level.SEVERE, "Suspicious url " + redirectURL.getHost() + " for layer " + layer);
+            			final URL redirectURL = new URL(url);
+            			final String hostname = redirectURL.getHost();
+            	
+            			if (StringUtils.containsIgnoreCase(hostname, layer) || (LAYER_HOSTNAME.containsKey(layer) && StringUtils.equals(LAYER_HOSTNAME.get(layer), hostname))) {
+            				logger.log(Level.INFO, "Hostname " + hostname + " matched for layer " + layer);
+            			} else {
+            				logger.log(Level.SEVERE, "Suspicious url " + hostname + " for layer " + layer);
             			}
             		} catch (Exception e) {
             			logger.log(Level.SEVERE, "Invalid url " + url);
