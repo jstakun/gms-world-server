@@ -92,6 +92,7 @@
     <url-pattern>/services/browserLandmark</url-pattern>
     <url-pattern>/otp</url-pattern>
     <url-pattern>/image</url-pattern>
+    <url-pattern>/geoJsonProvider</url-pattern>
   </filter-mapping>
   <filter-mapping>
     <filter-name>BlockerFilter</filter-name>
@@ -146,6 +147,7 @@
     <url-pattern>/routeProvider</url-pattern>
     <url-pattern>/otp</url-pattern>
     <url-pattern>/image</url-pattern>
+    <url-pattern>/geoJsonProvider</url-pattern>
   </filter-mapping>
   <filter-mapping>
     <filter-name>ServicesAuthorizationFilter</filter-name>
