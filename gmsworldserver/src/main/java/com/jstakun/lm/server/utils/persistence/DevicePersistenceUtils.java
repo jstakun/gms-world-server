@@ -183,6 +183,17 @@ public class DevicePersistenceUtils {
 	   }
 	}
 	
+	public static int getUserDevicesCount(String username) {
+		try {
+			String jsonArray = getUserDevices(username);
+			JSONArray devicesArray = new JSONArray(jsonArray);
+			return devicesArray.length();
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage(), e);
+			return 1;
+		}
+	}
+	
 	public static int deleteDevice(String imei) throws Exception {
 		if (imei != null) {
 		    final String deviceUrl = ConfigurationManager.getBackendUrl() + "/deleteDevice?imei=" +  imei + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);

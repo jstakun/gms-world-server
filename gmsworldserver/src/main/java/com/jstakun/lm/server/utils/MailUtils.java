@@ -18,6 +18,7 @@ import org.apache.commons.validator.routines.EmailValidator;
 import org.json.JSONObject;
 
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
+import com.jstakun.lm.server.utils.persistence.DevicePersistenceUtils;
 
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
@@ -340,8 +341,15 @@ public class MailUtils {
         	String link = ConfigurationManager.SSL_SERVER_URL + "unregister/" + secret;
         	if (context != null) {
         		if (StringUtils.isNotEmpty(deviceName)) {
+        			String countString;
+        			int count = DevicePersistenceUtils.getUserDevicesCount(toA);
+        			if (count == 1) {
+        				countString = "1 device";
+        			} else {
+        				countString = count + " devices";
+        			}
         			is = context.getResourceAsStream("/WEB-INF/emails/notification-dl-v2.html");
-        			message =String.format(IOUtils.toString(is, "UTF-8"), link, deviceName);		
+        			message =String.format(IOUtils.toString(is, "UTF-8"), link, deviceName, countString);		
         		} else {
         			is = context.getResourceAsStream("/WEB-INF/emails/notification-dl.html");
         			message =String.format(IOUtils.toString(is, "UTF-8"), link);
