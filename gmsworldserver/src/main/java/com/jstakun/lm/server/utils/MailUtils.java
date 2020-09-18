@@ -343,7 +343,7 @@ public class MailUtils {
         		if (StringUtils.isNotEmpty(deviceName)) {
         			int count = DevicePersistenceUtils.getUserDevicesCount(toA);
         			String countString = count + " device";
-        			if (count > 1) {
+        			if (count == 0 || count > 1) {
         				countString += "s";
         			}
         			is = context.getResourceAsStream("/WEB-INF/emails/notification-dl-v2.html");
