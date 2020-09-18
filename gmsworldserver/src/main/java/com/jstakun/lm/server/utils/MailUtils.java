@@ -341,12 +341,10 @@ public class MailUtils {
         	String link = ConfigurationManager.SSL_SERVER_URL + "unregister/" + secret;
         	if (context != null) {
         		if (StringUtils.isNotEmpty(deviceName)) {
-        			String countString;
         			int count = DevicePersistenceUtils.getUserDevicesCount(toA);
-        			if (count == 1) {
-        				countString = "1 device";
-        			} else {
-        				countString = count + " devices";
+        			String countString = count + " device";
+        			if (count > 1) {
+        				countString += "s";
         			}
         			is = context.getResourceAsStream("/WEB-INF/emails/notification-dl-v2.html");
         			message =String.format(IOUtils.toString(is, "UTF-8"), link, deviceName, countString);		

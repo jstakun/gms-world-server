@@ -25,8 +25,6 @@ public class PersistenceUtilsTest {
 	
 	private static final String email = "test@example.com";
 	
-	private static final String device = "test";
-	
 	//@Test
 	public void checkInPersistenceUtils() {
 		//done
@@ -43,7 +41,7 @@ public class PersistenceUtilsTest {
 		System.out.println(CommentPersistenceUtils.selectCommentsByLandmark(landmarkId).size());
 	}
 	
-	//@Test
+	@Test
 	public void devicePersistenceUtils() throws Exception {
 		final String imei = "abcd1234";
 		int status = DevicePersistenceUtils.setupDevice(imei, "test", null, "test", null);
@@ -53,7 +51,8 @@ public class PersistenceUtilsTest {
 			//DevicePersistenceUtils.sendCommand(imei, pin, name, username, command, args, correlationId, flex)
 			assertEquals(1, DevicePersistenceUtils.deleteDevice(imei));
 		}
-		System.out.println(DevicePersistenceUtils.getUserDevices(device));
+		assertEquals(6, DevicePersistenceUtils.getUserDevicesCount(email));
+		//System.out.println(DevicePersistenceUtils.getUserDevices(email));
 	}
 
 	//@Test
@@ -62,7 +61,7 @@ public class PersistenceUtilsTest {
 		//LayerPersistenceUtils.persist(name, desc, enabled, manageable, checkinable, formatted);
 	}	
 	
-	@Test
+	//@Test
 	public void notificationPersistenceUtils() throws Exception {
 		//done
 		Notification n = NotificationPersistenceUtils.setVerified(email, false);
