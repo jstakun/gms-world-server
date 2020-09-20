@@ -344,11 +344,11 @@ public class MailUtils {
         			int count = DevicePersistenceUtils.getUserDevicesCount(toA, deviceName);
         			String countString;
         			if (count == 0) {
-        				countString = "first";
+        				countString = "1st";
         			} else if (count == 1) {
-        				countString = "second";
+        				countString = "2nd";
         			} else if (count == 2) {
-        				countString = "third";
+        				countString = "3rd";
         			} else {
         				countString = count +"th";
         			}
