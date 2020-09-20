@@ -343,11 +343,11 @@ public class MailUtils {
         		if (StringUtils.isNotEmpty(deviceName)) {
         			int count = DevicePersistenceUtils.getUserDevicesCount(toA, deviceName);
         			String countString;
-        			if (count == 0) {
+        			if (count == 0 || count == 1) {
         				countString = "1st";
-        			} else if (count == 1) {
-        				countString = "2nd";
         			} else if (count == 2) {
+        				countString = "2nd";
+        			} else if (count == 3) {
         				countString = "3rd";
         			} else {
         				countString = count +"th";
