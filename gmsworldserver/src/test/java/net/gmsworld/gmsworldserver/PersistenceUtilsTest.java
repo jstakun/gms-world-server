@@ -51,8 +51,8 @@ public class PersistenceUtilsTest {
 			//DevicePersistenceUtils.sendCommand(imei, pin, name, username, command, args, correlationId, flex)
 			assertEquals(1, DevicePersistenceUtils.deleteDevice(imei));
 		}
-		assertEquals(6, DevicePersistenceUtils.getUserDevicesCount(email));
-		//System.out.println(DevicePersistenceUtils.getUserDevices(email));
+		assertEquals(6, DevicePersistenceUtils.getUserDevicesCount(email, "test"));
+		System.out.println(DevicePersistenceUtils.getUserDevices(email));
 	}
 
 	//@Test
