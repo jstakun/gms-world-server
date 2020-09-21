@@ -69,6 +69,9 @@
             <forward name="fullScreen" path="/fullScreenCollectionMap.jsp"/>
             <forward name="blogeo" path="/blogeo/blog.jsp"/>
         </action>
+        <action path="/showDevice" type="com.jstakun.lm.server.struts.ShowDeviceAction">
+            <forward name="success" path="/fullScreenLandmarkMap.jsp"/>
+        </action>    
         <action input="/admin/createLandmark.jsp"
                 name="landmarkForm"
                 path="/admin/createLandmark"

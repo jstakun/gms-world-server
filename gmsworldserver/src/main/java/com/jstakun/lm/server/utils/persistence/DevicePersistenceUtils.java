@@ -294,4 +294,20 @@ public class DevicePersistenceUtils {
 		}
 		return reply;
 	}
+	
+	public static String getDevice(String imei) throws Exception {
+		if (imei != null) {
+		    final String deviceUrl = ConfigurationManager.getBackendUrl() + "/getDevice?imei=" +  imei + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);
+		    final String deviceJson = HttpUtils.processFileRequest(new URL(deviceUrl));		
+		    if (StringUtils.startsWith(deviceJson, "{")) {
+		    	return deviceJson;
+		    } else {
+		 	   logger.log(Level.SEVERE, "Received server response {0}", deviceJson);
+			   return "{}";	
+		    }
+		} else {
+			   logger.log(Level.SEVERE, "Imei can't be null!");
+			   return "{}";				
+		}
+	}
 }

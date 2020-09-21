@@ -75,7 +75,7 @@
         <% if (landmark != null) {%>
         <div id="map_canvas" style="width:100%; height:100%"></div>
         <% } else {%>
-        No landmark selected
+        No item found
         <% }%>
     </body>
 </html>

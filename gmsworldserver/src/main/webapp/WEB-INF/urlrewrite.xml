@@ -129,12 +129,12 @@
     
     <rule>
             <from>^/showDevice/([a-zA-Z0-9-_]+)/(fullScreen)$</from>
-            <to>/showUser.do?user=$1&amp;fullScreenCollectionMap=1</to>
+            <to>/showDevice.do?imei=$1</to>
     </rule>
 
     <rule>
             <from>^/showDevice/([a-zA-Z0-9-_]+)$</from>
-            <to>/showUser.do?user=$1</to>
+            <to>/showDevice.do?imei=$1</to>
     </rule>
     
     <!-- showImage rules -->

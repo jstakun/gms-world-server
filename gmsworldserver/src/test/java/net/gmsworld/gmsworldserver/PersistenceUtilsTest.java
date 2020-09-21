@@ -25,6 +25,8 @@ public class PersistenceUtilsTest {
 	
 	private static final String email = "test@example.com";
 	
+	private static final String DEVICE = "359044063054658";
+	
 	//@Test
 	public void checkInPersistenceUtils() {
 		//done
@@ -43,16 +45,17 @@ public class PersistenceUtilsTest {
 	
 	@Test
 	public void devicePersistenceUtils() throws Exception {
-		final String imei = "abcd1234";
+		/*final String imei = "abcd1234";
 		int status = DevicePersistenceUtils.setupDevice(imei, "test", null, "test", null);
 		if (status == 1) {
 			assertEquals(1, DevicePersistenceUtils.isDeviceRegistered(imei));
 			//DevicePersistenceUtils.sendCommand(commandString, socialId, socialNetwork)
 			//DevicePersistenceUtils.sendCommand(imei, pin, name, username, command, args, correlationId, flex)
 			assertEquals(1, DevicePersistenceUtils.deleteDevice(imei));
-		}
-		assertEquals(6, DevicePersistenceUtils.getUserDevicesCount(email, "test"));
+		}*/
+		assertEquals(7, DevicePersistenceUtils.getUserDevicesCount(email, DEVICE));
 		System.out.println(DevicePersistenceUtils.getUserDevices(email));
+		System.out.println(DevicePersistenceUtils.getDevice(DEVICE));
 	}
 
 	//@Test
