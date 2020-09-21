@@ -22,6 +22,10 @@
                 if (request.getAttribute("landmark") != null) {
                     landmark = (Landmark) request.getAttribute("landmark");
                 }
+                String image = "flagblue.png";
+                if (request.getAttribute("image") != null) {
+                	image = (String) request.getAttribute("image");
+                }
     %>
     <head>
         <%@ include file="/WEB-INF/jspf/head_small.jspf" %>
@@ -46,7 +50,7 @@
                     scaleControl: true
                 };
 
-                var image = '/images/flagblue.png';
+                var image = '/images/<%= image %>';
                 var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 
                 var contentString = <%= HtmlUtils.buildLandmarkDescV2(landmark, request.getAttribute("address"), request.getLocale(), false) %>;

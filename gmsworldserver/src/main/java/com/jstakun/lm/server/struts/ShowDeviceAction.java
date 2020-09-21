@@ -56,6 +56,7 @@ public class ShowDeviceAction extends Action {
 						 }
 						 landmark.setDescription("<a href=\"https://maps.google.com/maps?q=" + landmark.getLatitude() + "," + landmark.getLongitude() + "\">Open in Google Maps</a>");
 						 request.setAttribute("landmark", landmark);
+						 request.setAttribute("image", "dl_32.png");
 					 }
 				}
 			} catch (Exception e) {
