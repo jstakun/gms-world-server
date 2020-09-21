@@ -156,11 +156,12 @@ public class HtmlUtils {
 	           desc += "'Description: " + StringEscapeUtils.escapeJavaScript(landmarkDesc) + ",<br/>'+\n";
 	    }       
 	    if (address != null && StringUtils.isNotEmpty(address.toString())) {
-	           desc += "'Geocode address: " + StringEscapeUtils.escapeJavaScript(address.toString()) + ",<br/>'+\n"; 
+	           desc += "'Address: " + StringEscapeUtils.escapeJavaScript(address.toString()) + ",<br/>'+\n"; 
+	    } else {
+	    	   desc += "'Latitude: " + StringUtil.formatCoordE6(landmark.getLatitude()) + ", Longitude: " + StringUtil.formatCoordE6(landmark.getLongitude()) + ",<br/>'+\n";
 	    }
-	    desc += "'Latitude: " + StringUtil.formatCoordE6(landmark.getLatitude()) + ", Longitude: " + StringUtil.formatCoordE6(landmark.getLongitude()) + ",<br/>'+\n" +
-	            "'Posted on " + DateUtils.getFormattedDateTime(locale, landmark.getCreationDate()) + " by " + UrlUtils.createUsernameMask(landmark.getUsername()) + ",<br/>'+\n" +
-	            "'Created in layer " + LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer()) + ".</span>'";
+	    desc += "'Posted on " + DateUtils.getFormattedDateTime(locale, landmark.getCreationDate()) + " by " + UrlUtils.createUsernameMask(landmark.getUsername()) + ",<br/>'+\n" +
+	            "'Created in " + LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer()) + ".</span>'";
 	    return desc;
 	}
 	

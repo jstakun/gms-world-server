@@ -18,6 +18,7 @@ import org.json.JSONObject;
 
 import com.jstakun.lm.server.utils.persistence.DevicePersistenceUtils;
 
+import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.persistence.Landmark;
 
 public class ShowDeviceAction extends Action {
@@ -54,6 +55,8 @@ public class ShowDeviceAction extends Action {
 							 landmark.setAltitude(Double.parseDouble(tokens[2]));
 							 landmark.setCreationDate(new Date(Long.parseLong(tokens[3])));
 						 }
+						 String description = "<a href=\"https://maps.google.com/maps?q=" + landmark.getLatitude() + "," + landmark.getLongitude() + "\">Open in Google Maps</a>";
+						 landmark.setDescription(description);
 						 request.setAttribute("landmark", landmark);
 					 }
 				}
