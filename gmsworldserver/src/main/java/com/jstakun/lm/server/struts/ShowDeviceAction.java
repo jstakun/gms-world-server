@@ -48,14 +48,13 @@ public class ShowDeviceAction extends Action {
 						 } else {
 							 landmark.setLayer("Devices");
 						 }
-						 if (tokens.length == 3) {
+						 if (tokens.length == 3 && StringUtils.isNumeric(tokens[2])) {
 							 landmark.setCreationDate(new Date(Long.parseLong(tokens[2])));
-						 } else if (tokens.length > 3) {
+						 } else if (tokens.length > 3 && StringUtils.isNumeric(tokens[3])) {
 							 landmark.setAltitude(Double.parseDouble(tokens[2]));
 							 landmark.setCreationDate(new Date(Long.parseLong(tokens[3])));
 						 }
-						 String description = "<a href=\"https://maps.google.com/maps?q=" + landmark.getLatitude() + "," + landmark.getLongitude() + "\">Open in Google Maps</a>";
-						 landmark.setDescription(description);
+						 landmark.setDescription("<a href=\"https://maps.google.com/maps?q=" + landmark.getLatitude() + "," + landmark.getLongitude() + "\">Open in Google Maps</a>");
 						 request.setAttribute("landmark", landmark);
 					 }
 				}
