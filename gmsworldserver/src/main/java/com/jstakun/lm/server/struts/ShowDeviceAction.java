@@ -18,7 +18,6 @@ import org.json.JSONObject;
 
 import com.jstakun.lm.server.utils.persistence.DevicePersistenceUtils;
 
-import net.gmsworld.server.utils.DateUtils;
 import net.gmsworld.server.utils.persistence.Landmark;
 
 public class ShowDeviceAction extends Action {
