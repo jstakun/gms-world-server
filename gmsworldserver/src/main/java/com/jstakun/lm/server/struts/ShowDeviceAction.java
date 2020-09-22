@@ -34,27 +34,29 @@ public class ShowDeviceAction extends Action {
 				JSONObject root = new JSONObject(deviceJsonString);
 				if (root.has("output")) {
 					 JSONObject deviceJson = root.getJSONObject("output");
-					 String geo = deviceJson.getString("geo");
-					 String[] tokens = StringUtils.split(geo, " ");
-					 if (tokens.length > 1) {
-						 Landmark landmark = new Landmark();
-						 landmark.setLatitude(Double.parseDouble(tokens[0]));
-						 landmark.setLongitude(Double.parseDouble(tokens[1]));
-						 landmark.setName("Device " + deviceJson.getString("name"));
-						 final String username = deviceJson.getString("username") ;
-						 if (StringUtils.isNotEmpty(username)) {
-							 landmark.setLayer(username + " devices");
-						 } else {
-							 landmark.setLayer("Devices");
+					 final String geo = deviceJson.optString("geo");
+					 if (StringUtils.isNotEmpty(geo)) {
+						 String[] tokens = StringUtils.split(geo, " ");
+						 if (tokens.length > 1) {
+							 Landmark landmark = new Landmark();
+							 landmark.setLatitude(Double.parseDouble(tokens[0]));
+							 landmark.setLongitude(Double.parseDouble(tokens[1]));
+							 landmark.setName("Device " + deviceJson.getString("name"));
+							 final String username = deviceJson.getString("username") ;
+							 if (StringUtils.isNotEmpty(username)) {
+								 landmark.setLayer(username + " devices");
+							 } else {
+								 landmark.setLayer("Devices");
+							 }
+							 if (tokens.length == 3 && StringUtils.isNumeric(tokens[2])) {
+								 landmark.setCreationDate(new Date(Long.parseLong(tokens[2])));
+							 } else if (tokens.length > 3 && StringUtils.isNumeric(tokens[3])) {
+								 landmark.setAltitude(Double.parseDouble(tokens[2]));
+								 landmark.setCreationDate(new Date(Long.parseLong(tokens[3])));
+							 }
+							 landmark.setDescription("<a href=\"https://maps.google.com/maps?q=" + landmark.getLatitude() + "," + landmark.getLongitude() + "\">Open in Google Maps</a>");
+							 request.setAttribute("landmark", landmark);					 
 						 }
-						 if (tokens.length == 3 && StringUtils.isNumeric(tokens[2])) {
-							 landmark.setCreationDate(new Date(Long.parseLong(tokens[2])));
-						 } else if (tokens.length > 3 && StringUtils.isNumeric(tokens[3])) {
-							 landmark.setAltitude(Double.parseDouble(tokens[2]));
-							 landmark.setCreationDate(new Date(Long.parseLong(tokens[3])));
-						 }
-						 landmark.setDescription("<a href=\"https://maps.google.com/maps?q=" + landmark.getLatitude() + "," + landmark.getLongitude() + "\">Open in Google Maps</a>");
-						 request.setAttribute("landmark", landmark);					 
 					 }
 				}
 				request.setAttribute("type", "device");
