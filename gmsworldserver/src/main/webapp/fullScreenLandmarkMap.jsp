@@ -4,6 +4,7 @@
     Author     : jstakun
 --%>
 
+<%@page import="org.apache.commons.lang.StringUtils"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="net.gmsworld.server.utils.persistence.Landmark,
 				com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils,
@@ -23,8 +24,8 @@
                     landmark = (Landmark) request.getAttribute("landmark");
                 }
                 String image = "flagblue.png";
-                if (request.getAttribute("image") != null) {
-                	image = (String) request.getAttribute("image");
+                if (StringUtils.equalsIgnoreCase((String)request.getAttribute("type"),"device")) {
+                	image = "dl_32.png";
                 }
     %>
     <head>
@@ -78,8 +79,12 @@
     <body onLoad="initialize()">
         <% if (landmark != null) {%>
         <div id="map_canvas" style="width:100%; height:100%"></div>
+        <% } else if (landmark != null && StringUtils.equalsIgnoreCase((String)request.getAttribute("type"),"device")) {%>
+        <%= landmark.getName() %> location unknown.
+        <% } else if (StringUtils.equalsIgnoreCase((String)request.getAttribute("type"),"device")) {%>
+        Device location unknown.
         <% } else {%>
-        Item not found
-        <% }%>
+        Item not found.
+        <% } %>
     </body>
 </html>

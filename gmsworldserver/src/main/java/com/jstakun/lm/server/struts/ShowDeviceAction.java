@@ -31,7 +31,6 @@ public class ShowDeviceAction extends Action {
 		if (StringUtils.isNotEmpty(imei)) {
 			try {
 				final String deviceJsonString = DevicePersistenceUtils.getDevice(imei);
-				//{"output":{"creationDate":"2020-08-19T08:14:39","geo":"52.268144 20.952876 15.063 1597817679363","imei":"359044061052655","name":"Tablet-Natalii","token":"tokenString","username":"jaroslaw.stakun@gmail.com"}}
 				JSONObject root = new JSONObject(deviceJsonString);
 				if (root.has("output")) {
 					 JSONObject deviceJson = root.getJSONObject("output");
@@ -55,10 +54,10 @@ public class ShowDeviceAction extends Action {
 							 landmark.setCreationDate(new Date(Long.parseLong(tokens[3])));
 						 }
 						 landmark.setDescription("<a href=\"https://maps.google.com/maps?q=" + landmark.getLatitude() + "," + landmark.getLongitude() + "\">Open in Google Maps</a>");
-						 request.setAttribute("landmark", landmark);
-						 request.setAttribute("image", "dl_32.png");
+						 request.setAttribute("landmark", landmark);					 
 					 }
 				}
+				request.setAttribute("type", "device");
 			} catch (Exception e) {
 				 logger.log(Level.SEVERE, e.getMessage(), e);
 			}
