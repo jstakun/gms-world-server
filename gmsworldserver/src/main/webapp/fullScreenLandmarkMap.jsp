@@ -4,7 +4,6 @@
     Author     : jstakun
 --%>
 
-<%@page import="org.apache.commons.lang.StringUtils"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="net.gmsworld.server.utils.persistence.Landmark,
 				com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils,
@@ -13,7 +12,8 @@
                 net.gmsworld.server.utils.StringUtil,
                 com.jstakun.lm.server.utils.HtmlUtils,
                 org.apache.commons.lang.StringEscapeUtils,
-                net.gmsworld.server.config.Commons" %>
+                net.gmsworld.server.config.Commons,
+                org.apache.commons.lang.StringUtils" %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
 
