@@ -57,8 +57,12 @@ public class ShowDeviceAction extends Action {
 							 landmark.setDescription("<a href=\"https://maps.google.com/maps?q=" + landmark.getLatitude() + "," + landmark.getLongitude() + "\">Open in Google Maps</a>");
 							 request.setAttribute("landmark", landmark);					 
 						 }
+					 } else {
+						 logger.log(Level.WARNING, "Device location not found");
 					 }
-				}
+				} else {
+					logger.log(Level.WARNING, "Device not found");
+				}	
 				request.setAttribute("type", "device");
 			} catch (Exception e) {
 				 logger.log(Level.SEVERE, e.getMessage(), e);
