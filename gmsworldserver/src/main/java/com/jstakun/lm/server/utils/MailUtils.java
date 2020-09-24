@@ -342,6 +342,7 @@ public class MailUtils {
         	if (context != null) {
         		if (StringUtils.isNotEmpty(deviceName)) {
         			int count = DevicePersistenceUtils.getUserDevicesCount(toA, deviceName);
+        			logger.log(Level.INFO, "Found " + count + " " + toA + " devices");
         			String countString;
         			if (count == 0 || count == 1) {
         				countString = "1st";

@@ -185,12 +185,13 @@ public class DevicePersistenceUtils {
 	
 	public static int getUserDevicesCount(String username, String deviceName) {
 		try {
-			String jsonArray = getUserDevices(username);
+			final String jsonArray = getUserDevices(username);
 			JSONArray devicesArray = new JSONArray(jsonArray);
-			int length = devicesArray.length();
+			final int length = devicesArray.length();
 			if (StringUtils.isEmpty(deviceName) || (length == 0)) {
 				return length;
 			} else {
+				logger.log(Level.INFO, "Searching " + deviceName + " in " + jsonArray);
 				for (int i=0;i<length;i++) {
 					JSONObject device = devicesArray.getJSONObject(i);
 					if (StringUtils.equalsIgnoreCase(device.getString("name"), deviceName)) {
