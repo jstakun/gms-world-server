@@ -96,6 +96,12 @@
            <li><a id="notify"><b>Nofity</b></a> - set or change who should be notified by location tracking service.<br/>
            SMS Example (assuming your security pin is 1234, phone number is  123456789, email address is name@domain.com and Telegram chat id is 987654321): <b>Notifydl 1234 p:123456789 m:name@domain.com t:987654321</b><br/>
            Telegram Messenger Example (assuming your security pin is 1234, phone number is  123456789, email address is name@domain.com and Telegram chat id is 987654321 and device id is 1234567890123456): <b>Notify 1234 1234567890123456 -p p:123456789 m:name@domain.com t:987654321</b></li>  
+           <li><a id="screen"><b>Screen</b></a> - start tracking device screen wake up and sleep events.<br/>
+    	   SMS Example (assuming your security pin is 1234): <b>Screendl 1234</b><br/>  
+           Telegram Messenger Example (assuming your security pin is 1234 and device id is 1234567890123456): <b>Screen 1234 1234567890123456</b></li>  
+    	   <li><a id="screenoff"><b>Screenoff</b></a> - stop tracking device screen wake up and sleep events.<br/>
+    	   SMS Example (assuming your security pin is 1234): <b>Screenoffdl 1234</b><br/>  
+           Telegram Messenger Example (assuming your security pin is 1234 and device id is 1234567890123456): <b>Screenoff 1234 1234567890123456</b></li>  
            <li><a id="about"><b>About</b></a> - send Device Locator version information.<br/>
            SMS Example (assuming your security pin is 1234): <b>Aboutdl 1234</b><br/>
            Telegram Messenger Example (assuming your security pin is 1234 and device id is 1234567890123456): <b>About 1234 1234567890123456</b></li>    
