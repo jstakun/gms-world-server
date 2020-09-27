@@ -191,10 +191,11 @@ public class DevicePersistenceUtils {
 			if (StringUtils.isEmpty(deviceName) || (length == 0)) {
 				return length;
 			} else {
-				logger.log(Level.INFO, "Searching " + deviceName + " in " + jsonArray);
 				for (int i=0;i<length;i++) {
 					JSONObject device = devicesArray.getJSONObject(i);
-					if (StringUtils.equalsIgnoreCase(device.getString("name"), deviceName)) {
+					final String name  = device.getString("name");
+					logger.log(Level.INFO, "Comparing " + deviceName + " with " + name);
+					if (StringUtils.equalsIgnoreCase(name, deviceName)) {
 						return length;
 					} 
 				}
