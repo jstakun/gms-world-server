@@ -333,7 +333,7 @@ public class MailUtils {
         return result;
     }
     
-    public static String sendDeviceLocatorRegistrationNotification(String toA, String nick, String secret, ServletContext context, String deviceName) {
+    public static String sendDeviceLocatorRegistrationNotification(String toA, String nick, String secret, ServletContext context, String deviceName, String deviceId) {
         InputStream is = null;
         String status = null;
         try {
@@ -353,8 +353,13 @@ public class MailUtils {
         			} else {
         				countString = count +"th";
         			}
+        			String deviceLink = deviceName;
+        			if (StringUtils.isNotEmpty(deviceId)) {
+        				final String deviceUrl = ConfigurationManager.SSL_SERVER_URL + "showDevice/" + deviceId;
+        				deviceLink = "<a href=\"" + deviceUrl + "\">" + deviceName + "</a>";
+        			}
         			is = context.getResourceAsStream("/WEB-INF/emails/notification-dl-v2.html");
-        			message =String.format(IOUtils.toString(is, "UTF-8"), link, deviceName, countString);		
+        			message =String.format(IOUtils.toString(is, "UTF-8"), link, deviceLink, countString);		
         		} else {
         			is = context.getResourceAsStream("/WEB-INF/emails/notification-dl.html");
         			message =String.format(IOUtils.toString(is, "UTF-8"), link);

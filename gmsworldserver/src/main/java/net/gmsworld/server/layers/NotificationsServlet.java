@@ -289,7 +289,7 @@ public class NotificationsServlet extends HttpServlet {
 									//logger.log(Level.WARNING, "Message won't be delivered to device " + deviceId + ":\n" + message);
 									//reply = new JSONObject().put("status", "unverified");
 									logger.log(Level.WARNING, "Sending email registration request");
-									reply = registerEmail(emailTo, false, appVersion, deviceName);
+									reply = registerEmail(emailTo, false, appVersion, deviceName, deviceId);
 								}
 							}
 						} else {
@@ -310,7 +310,7 @@ public class NotificationsServlet extends HttpServlet {
 				} else if (StringUtils.equals(type, "register_m")) {
 					//register for email notifications
 					if (appId == Commons.DL_ID && StringUtils.startsWith(request.getRequestURI(), "/s/")) {
-						reply = registerEmail(request.getParameter("email"), StringUtils.equalsIgnoreCase(request.getParameter("validate"), "false"), appVersion, deviceName);
+						reply = registerEmail(request.getParameter("email"), StringUtils.equalsIgnoreCase(request.getParameter("validate"), "false"), appVersion, deviceName, deviceId);
 					} else {
 						logger.log(Level.SEVERE, "Wrong application id " + appId);
 					}
@@ -411,7 +411,7 @@ public class NotificationsServlet extends HttpServlet {
 		return "Notifications servlet";
 	}
 
-	private JSONObject registerEmail(String email, boolean skipVerify, int appVersion, String deviceName) throws IOException {
+	private JSONObject registerEmail(String email, boolean skipVerify, int appVersion, String deviceName, String deviceId) throws IOException {
 		JSONObject reply = null;
 		if (StringUtils.endsWithIgnoreCase(email, "@cloudtestlabaccounts.com")) {
 			reply = new JSONObject().put("status", "blacklisted").put("code", HttpServletResponse.SC_BAD_REQUEST);
@@ -422,7 +422,7 @@ public class NotificationsServlet extends HttpServlet {
 				} else {
 					final Notification n = NotificationPersistenceUtils.setVerified(email, true);
 					if (n != null) {
-						final String status = MailUtils.sendDeviceLocatorRegistrationNotification(email, email, n.getSecret(), this.getServletContext(), deviceName);
+						final String status = MailUtils.sendDeviceLocatorRegistrationNotification(email, email, n.getSecret(), this.getServletContext(), deviceName, deviceId);
 						if (StringUtils.equalsIgnoreCase(status, MailUtils.STATUS_OK)) {
 							CacheUtil.put("mailto:"+email+":verified", n.getSecret(), CacheType.FAST);
 						}

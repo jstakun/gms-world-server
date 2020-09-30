@@ -80,11 +80,11 @@
         <% if (landmark != null) {%>
         <div id="map_canvas" style="width:100%; height:100%"></div>
         <% } else if (landmark != null && StringUtils.equalsIgnoreCase((String)request.getAttribute("type"),"device")) {%>
-        <%= landmark.getName() %> location unknown.
+        <h3><%= landmark.getName() %> location is currently unknown. Please try again later!</h3>
         <% } else if (StringUtils.equalsIgnoreCase((String)request.getAttribute("type"),"device")) {%>
-        Device location unknown.
+        <h3>Device location is currently unknown. Please try again later!</h3>
         <% } else {%>
-        Item not found.
+        <h3>Item not found.</h3>
         <% } %>
     </body>
 </html>

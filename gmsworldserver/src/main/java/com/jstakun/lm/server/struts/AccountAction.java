@@ -57,6 +57,7 @@ public class AccountAction extends Action {
         if (StringUtils.isEmpty(deviceName)) {
         	deviceName = request.getParameter("dn");
         }
+        final String deviceId = request.getHeader(Commons.DEVICE_ID_HEADER);
 
         Boolean confirm = Boolean.FALSE;
         if (StringUtils.equals(request.getParameter("s"), "1")) {
@@ -91,7 +92,7 @@ public class AccountAction extends Action {
         		final String email = n.getId(); 
         		if (MailUtils.isValidEmailAddress(email)) {
         			if (!CacheUtil.containsKey("mailto:"+email+":verified")) {
-    					final String status = MailUtils.sendDeviceLocatorRegistrationNotification(email, email, secret, getServlet().getServletContext(), deviceName);
+    					final String status = MailUtils.sendDeviceLocatorRegistrationNotification(email, email, secret, getServlet().getServletContext(), deviceName, deviceId);
     					if (StringUtils.equalsIgnoreCase(status, MailUtils.STATUS_OK)) {
 							CacheUtil.put("mailto:"+email+":verified", secret, CacheType.FAST);
 						}
