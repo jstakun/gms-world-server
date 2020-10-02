@@ -57,8 +57,11 @@ public class AccountAction extends Action {
         if (StringUtils.isEmpty(deviceName)) {
         	deviceName = request.getParameter("dn");
         }
-        final String deviceId = request.getHeader(Commons.DEVICE_ID_HEADER);
-
+        String deviceId = request.getHeader(Commons.DEVICE_ID_HEADER);
+        if (StringUtils.isEmpty(deviceId)) {
+        	deviceId = request.getParameter("di");
+        }
+        
         Boolean confirm = Boolean.FALSE;
         if (StringUtils.equals(request.getParameter("s"), "1")) {
             confirm = Boolean.TRUE;

@@ -445,12 +445,12 @@ public class NotificationsServlet extends HttpServlet {
 						String status = null;
 						if (appVersion >= 69) {
 							if (StringUtils.isNotEmpty(deviceName)) {
-								status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), this.getServletContext(), 4, deviceName);
+								status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), this.getServletContext(), 4, deviceName, deviceId);
 							} else {
-								status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), this.getServletContext(), 3, null);
+								status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), this.getServletContext(), 3, null, null);
 							}
 						} else {
-							status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), this.getServletContext(), 2, null);
+							status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), this.getServletContext(), 2, null, null);
 						}
 						if (StringUtils.equals(status, "ok")) {
 							reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
@@ -476,7 +476,7 @@ public class NotificationsServlet extends HttpServlet {
 				}
 			} else {
 				Notification n = NotificationPersistenceUtils.setVerified(email, false);
-				String status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), this.getServletContext(), 0, null);
+				String status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), this.getServletContext(), 0, null, null);
 				if (StringUtils.equals(status, "ok")) {
 					reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
 					CacheUtil.put("mailto:"+email+":sent", n.getSecret(), CacheType.FAST);

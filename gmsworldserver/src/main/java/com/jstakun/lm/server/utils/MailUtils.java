@@ -216,7 +216,7 @@ public class MailUtils {
         }
     }
     
-    public static String sendDeviceLocatorVerificationRequest(String toA, String nick, String secret, ServletContext context, int version, String deviceName) {
+    public static String sendDeviceLocatorVerificationRequest(String toA, String nick, String secret, ServletContext context, int version, String deviceName, String deviceId) {
         InputStream is = null;
         String result = null; 
         try {
@@ -245,7 +245,13 @@ public class MailUtils {
                 } else if (version == 4) {
                 	is = context.getResourceAsStream("/WEB-INF/emails/verification-dl-v4.html");
             		link = ConfigurationManager.SSL_SERVER_URL + "verify/" + secret;
-            	 	message = String.format(IOUtils.toString(is, "UTF-8"), link  + "?dn=" + deviceName, link, deviceName);
+            		String suffix;
+            		if (StringUtils.isNotEmpty(deviceId)) {
+            			 suffix = "/" + deviceName + "/" + deviceId;
+            		} else {
+            			suffix = "?dn=" + deviceName;
+            		}
+            	 	message = String.format(IOUtils.toString(is, "UTF-8"), link + suffix, link, deviceName);
                 } else {
                 	throw new Exception("Invalid version: " + version);
                 }
