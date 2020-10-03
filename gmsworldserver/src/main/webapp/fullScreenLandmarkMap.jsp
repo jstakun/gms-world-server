@@ -16,21 +16,27 @@
                 org.apache.commons.lang.StringUtils" %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
-
 <html>
     <%
                 Landmark landmark = null;
                 if (request.getAttribute("landmark") != null) {
                     landmark = (Landmark) request.getAttribute("landmark");
                 }
+                final boolean isDevice = StringUtils.equalsIgnoreCase((String)request.getAttribute("type"),"device");
                 String image = "flagblue.png";
-                if (StringUtils.equalsIgnoreCase((String)request.getAttribute("type"),"device")) {
+                String title = "GMS World landmarks on the map";
+                if (isDevice) {
                 	image = "dl_32.png";
+                	title = "Device";
+                	if (landmark != null) {
+                		title = landmark.getName();
+                	}
+                	title += " location on the map";
                 }
     %>
     <head>
         <%@ include file="/WEB-INF/jspf/head_small.jspf" %>
-        <title>GMS World landmarks on the map</title>
+        <title><%= title %></title>
         <% if (landmark != null) {%>
         <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
         <style type="text/css">
@@ -79,10 +85,10 @@
     <body onLoad="initialize()">
         <% if (landmark != null) {%>
         <div id="map_canvas" style="width:100%; height:100%"></div>
-        <% } else if (landmark != null && StringUtils.equalsIgnoreCase((String)request.getAttribute("type"),"device")) {%>
+        <% } else if (landmark != null && isDevice) {%>
         <h3><%= landmark.getName() %> location is currently unknown. Please try again later!</h3>
-        <% } else if (StringUtils.equalsIgnoreCase((String)request.getAttribute("type"),"device")) {%>
-        <h3>Device location is currently unknown. Please try again later!</h3>
+        <% } else if (isDevice) {%>
+        <h3>This device location is currently unknown. Please try again later!</h3>
         <% } else {%>
         <h3>Item not found.</h3>
         <% } %>
