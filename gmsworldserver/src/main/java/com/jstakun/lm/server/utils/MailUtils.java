@@ -245,13 +245,11 @@ public class MailUtils {
                 } else if (version == 4) {
                 	is = context.getResourceAsStream("/WEB-INF/emails/verification-dl-v4.html");
             		link = ConfigurationManager.SSL_SERVER_URL + "verify/" + secret;
-            		String suffix;
+            		String suffix = "?dn=" + deviceName;
             		if (StringUtils.isNotEmpty(deviceId)) {
-            			 suffix = "/" + deviceName + "/" + deviceId;
-            		} else {
-            			suffix = "?dn=" + deviceName;
+            			 suffix += "&di=" + deviceId;
             		}
-            	 	message = String.format(IOUtils.toString(is, "UTF-8"), link + suffix, link, deviceName);
+            		message = String.format(IOUtils.toString(is, "UTF-8"), link + suffix, link, deviceName);
                 } else {
                 	throw new Exception("Invalid version: " + version);
                 }

@@ -407,7 +407,7 @@
             <to>/verify.do?sc=$1&amp;s=1</to>
     </rule>
     <rule>
-            <from>^/verify/([a-zA-Z0-9.-]+)$/(.+)$/(.+)$</from>
+            <from>^/verify/([a-zA-Z0-9.-]+)$?dn=(.+)$&amp;di=(a-zA-Z0-9+)$</from>
             <to>/verify.do?sc=$1&amp;s=1&amp;dn=$2&amp;di=$3</to>
     </rule>
     <rule>

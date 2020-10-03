@@ -29,7 +29,6 @@ import net.gmsworld.server.utils.HttpUtils;
  */
 public class AccountAction extends Action {
 
-    /* forward name="success" path="" */
     private static final String SUCCESS_REG = "success_reg";
     private static final String SUCCESS_UNREG = "success_unreg";
     private static final String FAILURE_REG = "failure_reg";
