@@ -92,7 +92,6 @@ public final class DeviceManagerServlet extends HttpServlet {
 				 final String imei = request.getParameter("imei").trim();
 				 final String token = request.getParameter("token");
 				 final String username = request.getParameter("username");
-				 final String name = request.getParameter("name");
 				 final String command = request.getParameter("command");
 				 final String args = request.getParameter("args");
 				 final String correlationId = request.getParameter("correlationId");
@@ -100,6 +99,10 @@ public final class DeviceManagerServlet extends HttpServlet {
 				 final String replyToCommand = request.getParameter("replyToCommand"); 
 				 String flex = request.getParameter("flex"); 
 				 
+				 String name = request.getParameter("name");
+				 if (StringUtils.isEmpty(name)) {
+					 name = request.getHeader(Commons.DEVICE_NAME_HEADER);
+				 }
 				 final String deviceId = request.getHeader(Commons.DEVICE_ID_HEADER);
 				 final String accuracy = request.getHeader(Commons.ACC_HEADER);
 				 
@@ -165,8 +168,11 @@ public final class DeviceManagerServlet extends HttpServlet {
 					     }        		 
 		        	 } else if (StringUtils.equalsIgnoreCase(action, "delete")) {
 		        		 status = DevicePersistenceUtils.deleteDevice(imei);
+		        		 logger.log(Level.INFO, "Deleted device " + imei + " with status " + status);
 		        	 } else { 
+		        		 logger.log(Level.INFO, "Deleting device " + imei + "...");
 		        		 status = DevicePersistenceUtils.setupDevice(imei, name, username, token, flex);
+		        		 logger.log(Level.INFO, "Saved device " + imei + " configuration with status " + status + "\nNew configuration - name:" + name + ", username: " + username + ", flex: " + flex);
 		        		 if (status == 1) {
 		        			 CacheUtil.cacheDeviceLocation(deviceId, latitude, longitude, accuracy);
 		        		 }

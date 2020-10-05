@@ -41,8 +41,12 @@ public class ShowDeviceAction extends Action {
 							 Landmark landmark = new Landmark();
 							 landmark.setLatitude(Double.parseDouble(tokens[0]));
 							 landmark.setLongitude(Double.parseDouble(tokens[1]));
-							 landmark.setName("Device " + deviceJson.getString("name"));
-							 final String username = deviceJson.getString("username") ;
+							 String deviceName = deviceJson.optString("name");
+							 if (StringUtils.isEmpty(deviceName)) {
+								 deviceName = "Unknown";
+							 }
+							 landmark.setName("Device " + deviceName);
+							 final String username = deviceJson.optString("username") ;
 							 if (StringUtils.isNotEmpty(username)) {
 								 landmark.setLayer(username + " devices");
 							 } else {
