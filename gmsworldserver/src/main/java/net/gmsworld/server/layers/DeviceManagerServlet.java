@@ -170,7 +170,6 @@ public final class DeviceManagerServlet extends HttpServlet {
 		        		 status = DevicePersistenceUtils.deleteDevice(imei);
 		        		 logger.log(Level.INFO, "Deleted device " + imei + " with status " + status);
 		        	 } else { 
-		        		 logger.log(Level.INFO, "Deleting device " + imei + "...");
 		        		 status = DevicePersistenceUtils.setupDevice(imei, name, username, token, flex);
 		        		 logger.log(Level.INFO, "Saved device " + imei + " configuration with status " + status + "\nNew configuration - name:" + name + ", username: " + username + ", flex: " + flex);
 		        		 if (status == 1) {
