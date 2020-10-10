@@ -85,6 +85,10 @@ public class NotificationsServlet extends HttpServlet {
 				final int appVersion = NumberUtils.getInt(request.getHeader(Commons.APP_VERSION_HEADER), -1);
 				final String deviceId = request.getHeader(Commons.DEVICE_ID_HEADER);
 				final String deviceName = request.getHeader(Commons.DEVICE_NAME_HEADER);
+				String username = null;
+				if (appId == Commons.DL_ID && appVersion >= 78) {
+					username = request.getParameter("username");
+				}
 
 				Double latitude = null;
 	            if (request.getParameter("lat") != null) {
@@ -158,14 +162,17 @@ public class NotificationsServlet extends HttpServlet {
 						final String acc =  request.getHeader(Commons.ACC_HEADER);
 			   	   		Double[] coords = CacheUtil.getDeviceLocation(deviceId);
 			   	   		if (coords == null || (coords != null && NumberUtils.distanceInKilometer(latitude, longitude, coords[0], coords[1]) >= DeviceManagerServlet.CACHE_DEVICE_DISTANCE)) {
-			   	   			logger.log(Level.INFO, "Saving device " + deviceId + " location...");
 			   	   			String geo = "geo:" + latitude + " " + longitude;
 			   	   			if (StringUtils.isNotEmpty(acc)) {
 			   	   				geo += " " + acc;
 			   	   			}
-			   	   			if (DevicePersistenceUtils.setupDevice(deviceId, null, null, null, geo) == 1) {
+			   	   			final int status = DevicePersistenceUtils.setupDevice(deviceId, deviceName, username, null, geo);
+			   	   			logger.log(Level.INFO, "Saved device " + deviceId + " configuration with status " + status + "\nNew configuration - name:" + deviceName + ", username: " + username + ", geo: " + geo);						
+			   	   			if (status == 1) {
 			   	   				CacheUtil.cacheDeviceLocation(deviceId, latitude, longitude, acc);
 			   	   			}
+			   	   		} else {
+			   	   		logger.log(Level.INFO, "Device " + deviceId + " location is already saved");
 			   	   		}
 					}
 	            } else if (latitude != null || longitude != null) {

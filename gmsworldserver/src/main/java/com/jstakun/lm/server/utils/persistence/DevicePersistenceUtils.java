@@ -52,15 +52,15 @@ public class DevicePersistenceUtils {
 	   }
 	}
 	
-	public static int setupDevice(String imei, String name, String username, String token, String flex) throws Exception {
+	public static int setupDevice(String imei, String deviceName, String username, String token, String flex) throws Exception {
 		if (imei != null) {
 		    final String deviceUrl = ConfigurationManager.getBackendUrl() + "/setupDevice";
 		    String params = "imei="+  imei + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);
 		    if (StringUtils.isNotEmpty(username)) {
 		    	params += "&username=" + username;
 		    }
-		    if (StringUtils.isNotEmpty(name)) {
-		    	params += "&name=" + name;
+		    if (StringUtils.isNotEmpty(deviceName)) {
+		    	params += "&name=" + deviceName;
 		    }
 		    if (StringUtils.isNotEmpty(token)) {
 		    	params += "&token=" + token;

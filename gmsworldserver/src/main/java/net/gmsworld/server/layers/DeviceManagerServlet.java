@@ -99,9 +99,9 @@ public final class DeviceManagerServlet extends HttpServlet {
 				 final String replyToCommand = request.getParameter("replyToCommand"); 
 				 String flex = request.getParameter("flex"); 
 				 
-				 String name = request.getParameter("name");
-				 if (StringUtils.isEmpty(name)) {
-					 name = request.getHeader(Commons.DEVICE_NAME_HEADER);
+				 String deviceName = request.getParameter("name");
+				 if (StringUtils.isEmpty(deviceName)) {
+					 deviceName = request.getHeader(Commons.DEVICE_NAME_HEADER);
 				 }
 				 final String deviceId = request.getHeader(Commons.DEVICE_ID_HEADER);
 				 final String accuracy = request.getHeader(Commons.ACC_HEADER);
@@ -145,33 +145,33 @@ public final class DeviceManagerServlet extends HttpServlet {
 				     }
 		        	 Long count = -1L;
 		        	 if (StringUtils.isNotEmpty(command) && pin >= 0) {
-			        	 final String commandKey = getCommandKey(correlationId, imei, username, name, command);
+			        	 final String commandKey = getCommandKey(correlationId, imei, username, deviceName, command);
 			        	 count = CacheUtil.increment(commandKey);
 			        	 if (StringUtils.equalsIgnoreCase(action, "reset_quota")) {
 			        		 CacheUtil.put(commandKey, 0, CacheType.NORMAL);
 			        		 MailUtils.sendAdminMail("Quota reset request", "Quota reset for " + commandKey + " has been requested");
 			        		 logger.log(Level.INFO, "Command " + commandKey + " has been reset to 0");
 			        		 status = 1;
-			        		 persistDeviceLocation(deviceId, latitude, longitude, accuracy);
+			        		 persistDeviceLocation(deviceId, deviceName, username, latitude, longitude, accuracy);
 			        	 } else if (count < 10 || ((StringUtils.equals(command, "messagedlapp") || isCommandForSameDevice(commandKey)) && count < 50) || 
 			        	     DevicePersistenceUtils.isValidCommand(replyToCommand) || 
 			        	     (StringUtils.equals(command, "messagedlapp") && StringUtils.isNotEmpty(request.getHeader(Commons.ROUTE_ID_HEADER)))) {
 			        		 logger.log(Level.INFO, "Command " + commandKey + " has been sent " + count + " times");
-			        		 status = DevicePersistenceUtils.sendCommand(imei, pin, name, username, command, args, correlationId, flex);	 
+			        		 status = DevicePersistenceUtils.sendCommand(imei, pin, deviceName, username, command, args, correlationId, flex);	 
 			        		 if (status == 1) {
 			        			 CacheUtil.cacheDeviceLocation(deviceId, latitude, longitude, accuracy);
 			        		 }
 			        	 } else {
 			        		 logger.log(Level.SEVERE, "Command " + commandKey + " has been rejected after " + count + " attempts");
 			        		 status = -3;
-			        		 persistDeviceLocation(deviceId, latitude, longitude, accuracy); 
+			        		 persistDeviceLocation(deviceId, deviceName, username, latitude, longitude, accuracy); 
 					     }        		 
 		        	 } else if (StringUtils.equalsIgnoreCase(action, "delete")) {
 		        		 status = DevicePersistenceUtils.deleteDevice(imei);
 		        		 logger.log(Level.INFO, "Deleted device " + imei + " with status " + status);
 		        	 } else { 
-		        		 status = DevicePersistenceUtils.setupDevice(imei, name, username, token, flex);
-		        		 logger.log(Level.INFO, "Saved device " + imei + " configuration with status " + status + "\nNew configuration - name:" + name + ", username: " + username + ", flex: " + flex);
+		        		 status = DevicePersistenceUtils.setupDevice(imei, deviceName, username, token, flex);
+		        		 logger.log(Level.INFO, "Saved device " + imei + " configuration with status " + status + "\nNew configuration - name:" + deviceName + ", username: " + username + ", flex: " + flex);
 		        		 if (status == 1) {
 		        			 CacheUtil.cacheDeviceLocation(deviceId, latitude, longitude, accuracy);
 		        		 }
@@ -283,7 +283,7 @@ public final class DeviceManagerServlet extends HttpServlet {
    	   	}
 	}
 	
-	private void persistDeviceLocation(String deviceId, Double latitude, Double longitude, String accuracy) throws Exception {
+	private void persistDeviceLocation(String deviceId, String username, String deviceName, Double latitude, Double longitude, String accuracy) throws Exception {
 		if (StringUtils.isNotEmpty(deviceId) && latitude != null && longitude != null) {
 			Double[] coords = CacheUtil.getDeviceLocation(deviceId);
 			if (coords == null || (coords != null && NumberUtils.distanceInKilometer(latitude, longitude, coords[0], coords[1]) >= CACHE_DEVICE_DISTANCE)) {
@@ -291,7 +291,9 @@ public final class DeviceManagerServlet extends HttpServlet {
 				if (StringUtils.isNotEmpty(accuracy)) {
 					geo += " " + accuracy;
 				}
-				if (DevicePersistenceUtils.setupDevice(deviceId, null, null, null, geo) == 1) {
+				final int status = DevicePersistenceUtils.setupDevice(deviceId, deviceName, username, null, geo);
+				logger.log(Level.INFO, "Saved device " + deviceId + " configuration with status " + status + "\nNew configuration - name:" + deviceName + ", username: " + username + ", geo: " + geo);
+				if (status == 1) {
 					CacheUtil.cacheDeviceLocation(deviceId, latitude, longitude, accuracy);
 				}
 			}
