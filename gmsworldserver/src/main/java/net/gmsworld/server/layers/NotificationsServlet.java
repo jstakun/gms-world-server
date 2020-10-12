@@ -167,7 +167,7 @@ public class NotificationsServlet extends HttpServlet {
 			   	   				geo += " " + acc;
 			   	   			}
 			   	   			final int status = DevicePersistenceUtils.setupDevice(deviceId, deviceName, username, null, geo);
-			   	   			logger.log(Level.INFO, "Saved device " + deviceId + " configuration with status " + status + "\nNew configuration - name:" + deviceName + ", username: " + username + ", geo: " + geo);						
+			   	   			logger.log(Level.INFO, "Saved device " + deviceId + " configuration with status " + status + "\nNew configuration - name:" + deviceName + ", username:" + username + ", " + geo);						
 			   	   			if (status == 1) {
 			   	   				CacheUtil.cacheDeviceLocation(deviceId, latitude, longitude, acc);
 			   	   			}
@@ -220,8 +220,8 @@ public class NotificationsServlet extends HttpServlet {
 				} else if (StringUtils.equals(type, "t_dl")) {
 					//telegram notification
 					if (appId == Commons.DL_ID && StringUtils.startsWith(request.getRequestURI(), "/s/")) {
-						String message = request.getParameter("message");
-						String telegramId = request.getParameter("chatId");
+						final String message = request.getParameter("message");
+						final String telegramId = request.getParameter("chatId");
 						if (StringUtils.equals(telegramId, "@dlcorrelationId")) {
 			            	//message is correlationId
 			            	String val = CacheUtil.getString(message); //telegramId _+_ deviceid  _+_ command
@@ -249,11 +249,28 @@ public class NotificationsServlet extends HttpServlet {
 							} else {
 								// check if chat id is on white list
 								if (NotificationPersistenceUtils.isVerified(telegramId)) {
-									TelegramUtils.sendTelegram(telegramId, message);
-									if (GeocodeUtils.isValidLatitude(latitude) && GeocodeUtils.isValidLongitude(longitude)) {
-										TelegramUtils.sendLocationTelegram(telegramId, latitude, longitude);
+									if (!CacheUtil.containsKey(telegramId + ":blocked")) {
+										int status = TelegramUtils.sendTelegram(telegramId, message);
+										boolean blocked = false;
+										if (status == 403) {
+											logger.log(Level.SEVERE, "Our bot has been blocked by user " + telegramId);
+											blocked = true;
+											CacheUtil.put(telegramId + ":blocked", "1", CacheType.NORMAL);
+											reply = new JSONObject().put("status", "failed");
+										}
+										if (!blocked && GeocodeUtils.isValidLatitude(latitude) && GeocodeUtils.isValidLongitude(longitude)) {
+											status = TelegramUtils.sendLocationTelegram(telegramId, latitude, longitude);
+											if (status == 403) {
+												logger.log(Level.SEVERE, "Our bot has been blocked by user " + telegramId);
+												blocked = true;
+												CacheUtil.put(telegramId + ":blocked", "1", CacheType.NORMAL);
+												reply = new JSONObject().put("status", "failed");
+											}
+										}
+										if (!blocked) {
+											reply = new JSONObject().put("status", "sent");
+										}
 									}
-									reply = new JSONObject().put("status", "sent");
 								}  else {
 									logger.log(Level.SEVERE, "Telegram chat or channel Id " + telegramId + " is not on the whitelist!");
 									logger.log(Level.WARNING, "Message won't be delivered to device " + deviceId + ":\n" + message);

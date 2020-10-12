@@ -171,7 +171,7 @@ public final class DeviceManagerServlet extends HttpServlet {
 		        		 logger.log(Level.INFO, "Deleted device " + imei + " with status " + status);
 		        	 } else { 
 		        		 status = DevicePersistenceUtils.setupDevice(imei, deviceName, username, token, flex);
-		        		 logger.log(Level.INFO, "Saved device " + imei + " configuration with status " + status + "\nNew configuration - name:" + deviceName + ", username: " + username + ", flex: " + flex);
+		        		 logger.log(Level.INFO, "Saved device " + imei + " configuration with status " + status + "\nNew configuration - name:" + deviceName + ", username:" + username + ", " + flex);
 		        		 if (status == 1) {
 		        			 CacheUtil.cacheDeviceLocation(deviceId, latitude, longitude, accuracy);
 		        		 }
@@ -292,7 +292,7 @@ public final class DeviceManagerServlet extends HttpServlet {
 					geo += " " + accuracy;
 				}
 				final int status = DevicePersistenceUtils.setupDevice(deviceId, deviceName, username, null, geo);
-				logger.log(Level.INFO, "Saved device " + deviceId + " configuration with status " + status + "\nNew configuration - name:" + deviceName + ", username: " + username + ", geo: " + geo);
+				logger.log(Level.INFO, "Saved device " + deviceId + " configuration with status " + status + "\nNew configuration - name:" + deviceName + ", username:" + username + ", " + geo);
 				if (status == 1) {
 					CacheUtil.cacheDeviceLocation(deviceId, latitude, longitude, accuracy);
 				}
