@@ -68,7 +68,7 @@ public final class DeviceManagerServlet extends HttpServlet {
 		        	  out.print("{\"status\":\"unverified\"}");
 		         }
 			} else if (!HttpUtils.isEmptyAny(request, "username"))  {
-				String devices = DevicePersistenceUtils.getUserDevices(request.getParameter("username"));
+				final String devices = DevicePersistenceUtils.getUserDevices(request.getParameter("username"));
 				out.print("{\"devices\":" + devices + "}");
 			} else {
 				response.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -200,7 +200,7 @@ public final class DeviceManagerServlet extends HttpServlet {
 		         }
 			} else if (!HttpUtils.isEmptyAny(request, "username", "action"))  {
 				if (StringUtils.equalsIgnoreCase(request.getParameter("action"), "list")) {
-					String devices = DevicePersistenceUtils.getUserDevices(request.getParameter("username"));
+					final String devices = DevicePersistenceUtils.getUserDevices(request.getParameter("username"));
 					out.print("{\"devices\":" + devices + "}");
 				} else {
 					response.sendError(HttpServletResponse.SC_BAD_REQUEST);

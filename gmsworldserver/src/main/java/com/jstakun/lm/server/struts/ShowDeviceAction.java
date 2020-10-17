@@ -16,6 +16,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.json.JSONObject;
 
+import com.jstakun.lm.server.servlet.LandmarkRedirectServlet;
 import com.jstakun.lm.server.utils.persistence.DevicePersistenceUtils;
 
 import net.gmsworld.server.utils.persistence.Landmark;
@@ -41,6 +42,9 @@ public class ShowDeviceAction extends Action {
 							 Landmark landmark = new Landmark();
 							 landmark.setLatitude(Double.parseDouble(tokens[0]));
 							 landmark.setLongitude(Double.parseDouble(tokens[1]));
+							 if (tokens.length > 3) { //this is accuracy!
+								 landmark.setAltitude(Double.parseDouble(tokens[2]));
+							 } 
 							 String deviceName = deviceJson.optString("name");
 							 if (StringUtils.isEmpty(deviceName)) {
 								 deviceName = "Unknown";

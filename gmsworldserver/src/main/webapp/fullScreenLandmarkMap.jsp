@@ -57,7 +57,6 @@
                     scaleControl: true
                 };
 
-                var image = '/images/<%= image %>';
                 var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 
                 var contentString = <%= HtmlUtils.buildLandmarkDescV2(landmark, request.getAttribute("address"), request.getLocale(), false) %>;
@@ -67,13 +66,31 @@
                     content: contentString
                 });
                 
-                var marker = new google.maps.Marker(
-                {
+                var marker = new google.maps.Marker({
                     position: latlng,
                     title:"<%= StringEscapeUtils.escapeJavaScript(landmark.getName()) %>",
                     map: map,
-                    icon: image
+                    icon: {
+                        url: '/images/<%= image %>',
+                        scaledSize: new google.maps.Size(32, 32),
+                        anchor: new google.maps.Point(16, 16),
+                    },
                 });
+
+<% if (landmark.getAltitude() > 0d) { %>
+
+				var accuracyOptions = {
+        				strokeColor: '#87CEFA',
+        				strokeOpacity: 0.7,
+        				strokeWeight: 2,
+        				fillColor: '#87CEFA',
+        				fillOpacity: 0.35,
+        				map: map,
+        				center: latlng,
+        				radius: <%= landmark.getAltitude() %>
+    			};
+    			circle = new google.maps.Circle(accuracyOptions);
+<% } %>
 
                 google.maps.event.addListener(marker, 'click', function() {
                     infowindow.open(map,marker);

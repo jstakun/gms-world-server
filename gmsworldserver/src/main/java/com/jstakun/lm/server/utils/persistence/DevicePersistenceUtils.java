@@ -166,9 +166,15 @@ public class DevicePersistenceUtils {
 		    final String deviceJson = HttpUtils.processFileRequest(new URL(deviceUrl));		
 		    if (StringUtils.startsWith(deviceJson, "{")) {
 			   JSONObject root = new JSONObject(deviceJson);
-			   JSONArray output = root.optJSONArray("output");
-			   if (output != null) {
-				   return output.toString();   
+			   JSONArray devices = root.optJSONArray("output");
+			   if (devices != null) {
+				   for (int i =0;i<devices.length();i++) {
+					   JSONObject device = devices.getJSONObject(i);
+					   if (!device.has("token")) {
+						   device.put("token", "");
+					   }
+				   }
+				   return devices.toString();   
 			   } else {
 				   logger.log(Level.SEVERE, "Received server response {0}", deviceJson);
 				   return "[]";
@@ -194,7 +200,7 @@ public class DevicePersistenceUtils {
 				for (int i=0;i<length;i++) {
 					JSONObject device = devicesArray.getJSONObject(i);
 					final String name  = device.getString("name");
-					logger.log(Level.INFO, "Comparing " + deviceName + " with " + name);
+					//logger.log(Level.INFO, "Comparing " + deviceName + " with " + name);
 					if (StringUtils.equalsIgnoreCase(name, deviceName)) {
 						return length;
 					} 
