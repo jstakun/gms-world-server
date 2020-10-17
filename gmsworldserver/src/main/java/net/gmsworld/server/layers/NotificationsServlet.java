@@ -117,22 +117,25 @@ public class NotificationsServlet extends HttpServlet {
 							l.setLongitude(longitude);
 							l.setName(Commons.MY_POSITION_LAYER);
 						
-							String u = StringUtil.getUsername(request.getAttribute("username"), request.getParameter("username"));
+							String userStr = null;
+							if (appId == Commons.DL_ID && StringUtils.isNotEmpty(deviceId)) {
+								userStr = deviceId;
+							} else {
+								userStr = StringUtil.getUsername(request.getAttribute("username"), request.getParameter("username"));
+							}
 							//in LM from v1086, DA from v86 username is Base64 encoded string
 							if (((appId == Commons.LM_ID && appVersion >= 1086) || (appId == Commons.DA_ID && appVersion >= 86)) 
-									&& StringUtils.isNotEmpty(u) && !StringUtils.equalsIgnoreCase(u, "mypos") && Base64.isArrayByteBase64(u.getBytes())) {
+									&& StringUtils.isNotEmpty(userStr) && !StringUtils.equalsIgnoreCase(userStr, "mypos") && Base64.isArrayByteBase64(userStr.getBytes())) {
 								try {
-									//u = new String(com.google.gdata.util.common.util.Base64.decode(u));
-									u = new String(Base64.decodeBase64(u));
+									userStr = new String(Base64.decodeBase64(userStr));
 								} catch (Exception e) {
-									logger.log(Level.SEVERE, " Username " + u + " failed Base64 decoding appId: " + appId + ", version: " + appVersion + ", error: " + e.getMessage());
+									logger.log(Level.SEVERE, " Username " + userStr + " failed Base64 decoding appId: " + appId + ", version: " + appVersion + ", error: " + e.getMessage());
 								}
 							}
-							if (StringUtils.isEmpty(u)) {
+							if (StringUtils.isEmpty(userStr)) {
 								throw new Exception("Username can't be null!");
 							} 
-							
-							l.setUsername(u);
+							l.setUsername(userStr);
 						
 							if (!LandmarkPersistenceWebUtils.isSimilarToNewest(l)) {
 								String socialIds = request.getParameter("socialIds");
