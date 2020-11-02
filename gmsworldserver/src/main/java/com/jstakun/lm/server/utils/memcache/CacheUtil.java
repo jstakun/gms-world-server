@@ -168,7 +168,7 @@ public class CacheUtil {
 			if (CacheUtil.containsKey(key)) {
 				Double[] coords = new Double[2];
 				String[] coordsStr = StringUtils.split(CacheUtil.getString(key), "_");
-				if (coordsStr.length >= 2) {
+				if (coordsStr != null && coordsStr.length >= 2) {
 					coords[0] = Double.valueOf(coordsStr[0]);
 					coords[1] = Double.valueOf(coordsStr[1]);
 					return coords;
