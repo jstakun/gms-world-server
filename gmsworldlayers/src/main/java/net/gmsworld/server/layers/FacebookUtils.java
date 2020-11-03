@@ -436,7 +436,7 @@ public class FacebookUtils extends LayerHelper {
 	}
     
     public static FacebookClient getFacebookClient(String token) {
-    	return new DefaultFacebookClient(token, Version.VERSION_3_2);
+    	return new DefaultFacebookClient(token, Version.VERSION_8_0);
     }
     
     public String getLayerName() {
@@ -703,5 +703,9 @@ public class FacebookUtils extends LayerHelper {
                 logger.log(Level.SEVERE, "FacebookUtils.readFacebookPlacesDetails() exception", e);
             } 
         }
+    }
+    
+    public boolean isEnabled() {
+    	return false;
     }
 }

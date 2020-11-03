@@ -80,7 +80,7 @@ public class LayersTest {
 		
 	   List<Object[]> data = new ArrayList<Object[]>();	
 	  
-	   data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.WEBCAM_LAYER)});
+	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.WEBCAM_LAYER)});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.MEETUP_LAYER)});
 	   
@@ -99,7 +99,7 @@ public class LayersTest {
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.YOUTUBE_LAYER)});
 	   
-	   //data.add(new Object[]{LayerHelperFactory.getInsttance().getByName(Commons.FACEBOOK_LAYER)});
+	   data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.FACEBOOK_LAYER)});
 	   
 	   //data.add(new Object[]{LayerHelperFactory.getInstance().getByName(Commons.FOURSQUARE_LAYER)});
 	   
