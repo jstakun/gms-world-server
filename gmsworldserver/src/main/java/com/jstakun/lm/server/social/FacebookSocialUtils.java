@@ -49,14 +49,14 @@ public class FacebookSocialUtils {
         	
         	if (!verifyPermission || hasPermission) {
         		FacebookType publishMessageResponse = (FacebookType) facebookClient.publish(connection, FacebookType.class, params);
-        		String id = publishMessageResponse.getId();
+        		final String id = publishMessageResponse.getId();
         		logger.log(Level.INFO, "Published Facebook message ID: {0}", id);
         		return id;
         	} else {
         		return null;
         	}
         } catch (FacebookException ex) {
-        	logger.log(Level.SEVERE, "FacebookUtils.sendMessage() exception", ex);
+        	logger.log(Level.WARNING, "FacebookUtils.sendMessage() exception", ex);
             return null;
         }
     }

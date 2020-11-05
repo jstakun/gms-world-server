@@ -67,10 +67,10 @@ public class UrlUtils {
                 } else if (user.endsWith("@gw")) {
                     url = "http://gowalla.com/users/" + id;
                 } else {
-                	logger.log(Level.SEVERE, "Invalid user "  + user);
+                	logger.log(Level.WARNING, "Invalid user "  + user);
                 }
             } else {
-            	logger.log(Level.SEVERE, "Invalid user "  + user);
+            	logger.log(Level.WARNING, "Invalid user "  + user);
             }
         } catch (Exception ex) {
             logger.log(Level.SEVERE, ex.getMessage(), ex);

@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -126,15 +125,11 @@ public class GeoJsonProviderServlet extends HttpServlet {
 							if (StringUtils.equals(layer, Commons.HOTELS_LAYER)) {
 								if (hotelsInRangeCount > 0) {
 									json = ((HotelsBookingUtils)layerHelper).extendFeatureCollection(lat, lng, radius, limit, flexString2, locale);
-									JSONObject layerJson = new JSONObject(json);
-									layerSize = layerJson.getJSONArray("features").length();
+									if (StringUtils.startsWith(json, "{")) {
+										JSONObject layerJson = new JSONObject(json);
+										layerSize = layerJson.getJSONArray("features").length();
+									}
 								}
-							//} else if (StringUtils.equals(layer, Commons.GROUPON_LAYER) || StringUtils.equals(layer, Commons.COUPONS_LAYER)) {
-								//if (GeocodeUtils.isNorthAmericaLocation(lat, lng)) {
-									//List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(lat, lng, null, radius, version, limit, StringUtil.getStringLengthLimit("l"), null, null, locale, true);
-					    			//layerSize = landmarks.size();
-									//newkey = layerHelper.cacheGeoJson(landmarks, lat, lng, layer, locale, flexString2);                       
-								//}
 							} else {
 								List<ExtendedLandmark> landmarks = layerHelper.processBinaryRequest(lat, lng, null, radius, version, limit, StringUtil.getStringLengthLimit("l"), flexString, flexString2, locale, true);
 								layerSize = landmarks.size();
