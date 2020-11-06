@@ -121,7 +121,7 @@ public class PersistLandmarkServlet extends HttpServlet {
                 	}
 
                 	//check if this landmark has the same name and location as newest (last saved) landmark
-                	boolean isSimilarToNewest = LandmarkPersistenceWebUtils.isSimilarToNewest(l);
+                	boolean isSimilarToNewest = LandmarkPersistenceWebUtils.isSimilarToNewest(l, 1);
             		if (!isSimilarToNewest) {
             			LandmarkPersistenceWebUtils.setFlex(l, request);          		
             			JSONObject flexJSon = LandmarkPersistenceUtils.persistLandmark(l, GoogleCacheProvider.getInstance());

@@ -252,13 +252,14 @@ public final class DeviceManagerServlet extends HttpServlet {
 				l.setName(Commons.MY_POSITION_LAYER);
 				l.setLayer(Commons.MY_POSITION_LAYER);
 				l.setUsername(deviceId);
-				LandmarkPersistenceWebUtils.setFlex(l, request);
-				LandmarkPersistenceUtils.persistLandmark(l, GoogleCacheProvider.getInstance());
-    			if (l.getId() > 0) {
-    				logger.log(Level.INFO, "Saved device " + l.getUsername() + " location with id " + l.getId());
-    				final int appId = NumberUtils.getInt(request.getHeader(Commons.APP_HEADER), -1);
-    				LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), null, null, null, appId);
-    			}
+				if (!LandmarkPersistenceWebUtils.isSimilarToNewest(l, 5)) {
+					LandmarkPersistenceWebUtils.setFlex(l, request);
+					LandmarkPersistenceUtils.persistLandmark(l, GoogleCacheProvider.getInstance());
+					if (l.getId() > 0) {
+						final int appId = NumberUtils.getInt(request.getHeader(Commons.APP_HEADER), -1);
+						LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), null, null, null, appId);
+					}
+				}
    	   		}
    	   	}	
    	   	if (StringUtils.isNotEmpty(deviceId)) {

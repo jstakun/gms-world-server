@@ -41,7 +41,7 @@ public class LandmarkPersistenceWebUtils {
 
     private static final Logger logger = Logger.getLogger(LandmarkPersistenceWebUtils.class.getName());
    
-    public static boolean isSimilarToNewest(Landmark l) {
+    public static boolean isSimilarToNewest(Landmark l, int n) {
     	boolean isSimilarToNewest = false;
     	final String key =  l.getName() + "_" + StringUtil.formatCoordE2(l.getLatitude()) + "_" + StringUtil.formatCoordE2(l.getLongitude()) + "_" + l.getUsername();
         if (CacheUtil.containsKey(key)) {
@@ -55,14 +55,20 @@ public class LandmarkPersistenceWebUtils {
         	});     	
         	List<Landmark> landmarkList = newestLandmarksAction.getListFromCache(Landmark.class, "NewestLandmarks", CacheType.FAST);
         	if (!landmarkList.isEmpty()) {
-        		Landmark newestLandmark = landmarkList.get(0);
-        		logger.log(Level.INFO, "Newest landmark: " + newestLandmark.getName() + ", " + newestLandmark.getLatitude() + ", " + newestLandmark.getLongitude());
-        		if (l.compare(newestLandmark)) {
-        			logger.log(Level.WARNING, "This landmark is similar to newest: " + key);
-        			isSimilarToNewest = true;
-        		} else {
-        			logger.log(Level.INFO, "This landmark is not similar to newest: " + key);
+        		for (int i=0;i<n;i++) {
+        			if (i < landmarkList.size()) {
+        				Landmark newestLandmark = landmarkList.get(i);
+	        			if (l.compare(newestLandmark)) {
+	        				isSimilarToNewest = true;
+	        				break;
+	        			}
+        			}
         		}
+        	}
+        	if (isSimilarToNewest) {
+        		logger.log(Level.WARNING, "This landmark is similar to newest: " + key);
+        	} else {
+        		logger.log(Level.INFO, "This landmark is not similar to newest: " + key);
         	}
         }
         

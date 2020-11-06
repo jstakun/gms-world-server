@@ -137,14 +137,11 @@ public class NotificationsServlet extends HttpServlet {
 							} 
 							l.setUsername(userStr);
 						
-							if (!LandmarkPersistenceWebUtils.isSimilarToNewest(l)) {
+							if (!LandmarkPersistenceWebUtils.isSimilarToNewest(l, 5)) {
 								String socialIds = request.getParameter("socialIds");
-							
 								LandmarkPersistenceWebUtils.setFlex(l, request);
 								l.setLayer(Commons.MY_POS_CODE);
-
 								LandmarkPersistenceUtils.persistLandmark(l, GoogleCacheProvider.getInstance());
-
 								if (l.getId() > 0) {
 									LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), socialIds, null, null, appId);
 								}
