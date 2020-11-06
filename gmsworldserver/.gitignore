@@ -21,3 +21,4 @@ test-output
 /datanucleus.log
 /.tern-project
 /.factorypath
+/cron.yaml

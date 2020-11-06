@@ -137,7 +137,7 @@ public class NotificationsServlet extends HttpServlet {
 							} 
 							l.setUsername(userStr);
 						
-							if (!LandmarkPersistenceWebUtils.isSimilarToNewest(l, 5)) {
+							if (!LandmarkPersistenceWebUtils.isSimilarToNewest(l, 10)) {
 								String socialIds = request.getParameter("socialIds");
 								LandmarkPersistenceWebUtils.setFlex(l, request);
 								l.setLayer(Commons.MY_POS_CODE);

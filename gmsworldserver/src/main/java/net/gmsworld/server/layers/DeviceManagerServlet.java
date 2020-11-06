@@ -252,7 +252,7 @@ public final class DeviceManagerServlet extends HttpServlet {
 				l.setName(Commons.MY_POSITION_LAYER);
 				l.setLayer(Commons.MY_POSITION_LAYER);
 				l.setUsername(deviceId);
-				if (!LandmarkPersistenceWebUtils.isSimilarToNewest(l, 5)) {
+				if (!LandmarkPersistenceWebUtils.isSimilarToNewest(l, 10)) {
 					LandmarkPersistenceWebUtils.setFlex(l, request);
 					LandmarkPersistenceUtils.persistLandmark(l, GoogleCacheProvider.getInstance());
 					if (l.getId() > 0) {

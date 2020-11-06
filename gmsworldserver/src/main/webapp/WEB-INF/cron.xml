@@ -2,18 +2,13 @@
   <cron>
     <url>/_ah/sessioncleanup?clear</url>
     <description>Clean up sessions</description>
-    <schedule>every 12 hours</schedule>
+    <schedule>every 60 minutes</schedule>
   </cron>
   <cron>
     <url>/heatMap?inBackground=true</url>
     <description>Heat map</description>
     <schedule>every 60 minutes</schedule>
   </cron>
-  <!--cron>
-    <url>/cron/taskExecute?action=purge&amp;entity=log</url>
-    <description>Clean up usage log older than 60 days</description>
-    <schedule>every day 04:00</schedule>
-  </cron-->
   <cron>
     <url>/cron/taskExecute?action=purge&amp;entity=screenshot</url>
     <description>Clean up screenshots older than 60 days</description>
@@ -30,6 +25,3 @@
     <schedule>every 4 hours</schedule>
   </cron>
 </cronentries>
-
-
-

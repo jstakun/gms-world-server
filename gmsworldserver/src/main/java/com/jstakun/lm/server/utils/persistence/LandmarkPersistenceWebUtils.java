@@ -62,6 +62,8 @@ public class LandmarkPersistenceWebUtils {
 	        				isSimilarToNewest = true;
 	        				break;
 	        			}
+        			} else {
+        				break;
         			}
         		}
         	}
