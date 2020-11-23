@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.net.URLDecoder;
 import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -80,6 +81,7 @@ public class NotificationsServlet extends HttpServlet {
 			} else {
 				JSONObject reply = new JSONObject();
 				final String type = request.getParameter("type");
+				final Locale locale = request.getLocale();
 				final int appId = NumberUtils.getInt(request.getHeader(Commons.APP_HEADER), -1);
 				final String routeId = request.getHeader(Commons.ROUTE_ID_HEADER);
 				final int appVersion = NumberUtils.getInt(request.getHeader(Commons.APP_VERSION_HEADER), -1);
@@ -105,7 +107,10 @@ public class NotificationsServlet extends HttpServlet {
 	            }
 	            
 	            boolean routePointAdded = false;
-	            logger.log(Level.INFO, "Received request " + type);
+	            logger.log(Level.INFO, "Request type " + type);
+	            if (locale != null) {
+	            	logger.log(Level.INFO, "Request language " + locale.getLanguage());
+	            }
 	            
 	            if (GeocodeUtils.isValidLatitude(latitude) && GeocodeUtils.isValidLongitude(longitude) && appId >= 0) {
 					if (StringUtils.isEmpty(routeId)) {

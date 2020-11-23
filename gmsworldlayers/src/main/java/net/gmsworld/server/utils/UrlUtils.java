@@ -100,7 +100,7 @@ public class UrlUtils {
                     username = "Gowalla User";
                 }
             } catch (Exception ex) {
-                Logger.getLogger(UrlUtils.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+                logger.log(Level.SEVERE, ex.getMessage(), ex);
             }
         }
         return username;
