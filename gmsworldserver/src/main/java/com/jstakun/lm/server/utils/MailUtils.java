@@ -216,7 +216,7 @@ public class MailUtils {
         }
     }
     
-    public static String sendDeviceLocatorVerificationRequest(String toA, String nick, String secret, ServletContext context, int version, String deviceName, String deviceId) {
+    public static String sendDeviceLocatorVerificationRequest(String toA, String nick, String secret, ServletContext context, int version, String deviceName, String deviceId, String language) {
         InputStream is = null;
         String result = null; 
         try {
@@ -239,11 +239,15 @@ public class MailUtils {
             		}
             	 	message = String.format(IOUtils.toString(is, "UTF-8"), link, link);
                 } else if (version == 3) {
-            		is = context.getResourceAsStream("/WEB-INF/emails/verification-dl-v3.html");
+                	is = context.getResourceAsStream("/WEB-INF/emails/verification-dl-v3.html");
             		link = ConfigurationManager.SSL_SERVER_URL + "verify/" + secret;
             	 	message = String.format(IOUtils.toString(is, "UTF-8"), link, link);
                 } else if (version == 4) {
-                	is = context.getResourceAsStream("/WEB-INF/emails/verification-dl-v4.html");
+                	if (StringUtils.indexOfAny(language, new String[]{"es", "pl"})>=0) {
+                		is = context.getResourceAsStream("/WEB-INF/emails/verification-dl-v4_" + language + ".html");
+                	} else {
+                		is = context.getResourceAsStream("/WEB-INF/emails/verification-dl-v4.html");
+                	}
             		link = ConfigurationManager.SSL_SERVER_URL + "verify/" + secret + "?dn=" + deviceName;
             		if (StringUtils.isNotEmpty(deviceId)) {
             			 link += "&di=" + deviceId;
