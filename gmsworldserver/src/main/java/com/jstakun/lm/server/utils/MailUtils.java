@@ -243,7 +243,7 @@ public class MailUtils {
             		link = ConfigurationManager.SSL_SERVER_URL + "verify/" + secret;
             	 	message = String.format(IOUtils.toString(is, "UTF-8"), link, link);
                 } else if (version == 4) {
-                	if (StringUtils.indexOfAny(language, new String[]{"es", "pl"})>=0) {
+                	if (StringUtils.indexOfAny(language, new String[]{"es", "pl", "pt", "vi"})>=0) {
                 		is = context.getResourceAsStream("/WEB-INF/emails/verification-dl-v4_" + language + ".html");
                 	} else {
                 		is = context.getResourceAsStream("/WEB-INF/emails/verification-dl-v4.html");
