@@ -2,7 +2,7 @@
   <cron>
     <url>/_ah/sessioncleanup?clear</url>
     <description>Clean up sessions</description>
-    <schedule>every 4 hours</schedule>
+    <schedule>every 8 hours</schedule>
   </cron>
   <cron>
     <url>/heatMap?inBackground=true</url>
