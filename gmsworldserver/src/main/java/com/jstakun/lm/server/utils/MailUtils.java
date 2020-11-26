@@ -35,6 +35,8 @@ public class MailUtils {
     
     public static final String STATUS_OK = "ok";
     public static final String STATUS_FAILED = "failed";
+    
+    private static final String[] LANGUAGES = new String[]{"es", "pl", "pt", "vi"}; //en is default
 	 
 	// ---------------------------------------------------------------------------------------------------------------------------
     
@@ -243,7 +245,7 @@ public class MailUtils {
             		link = ConfigurationManager.SSL_SERVER_URL + "verify/" + secret;
             	 	message = String.format(IOUtils.toString(is, "UTF-8"), link, link);
                 } else if (version == 4) {
-                	if (StringUtils.indexOfAny(language, new String[]{"es", "pl", "pt", "vi"})>=0) {
+                	if (StringUtils.indexOfAny(language, LANGUAGES)>=0) {
                 		is = context.getResourceAsStream("/WEB-INF/emails/verification-dl-v4_" + language + ".html");
                 	} else {
                 		is = context.getResourceAsStream("/WEB-INF/emails/verification-dl-v4.html");
@@ -340,7 +342,7 @@ public class MailUtils {
         return result;
     }
     
-    public static String sendDeviceLocatorRegistrationNotification(String toA, String nick, String secret, ServletContext context, String deviceName, String deviceId) {
+    public static String sendDeviceLocatorRegistrationNotification(String toA, String nick, String secret, ServletContext context, String deviceName, String deviceId, String language) {
         InputStream is = null;
         String status = null;
         try {
@@ -365,7 +367,11 @@ public class MailUtils {
         				final String deviceUrl = ConfigurationManager.SSL_SERVER_URL + "showDevice/" + deviceId;
         				deviceLink = "<a href=\"" + deviceUrl + "\">" + deviceName + "</a>";
         			}
-        			is = context.getResourceAsStream("/WEB-INF/emails/notification-dl-v2.html");
+        			if (StringUtils.indexOfAny(language, LANGUAGES)>=0) {
+                		is = context.getResourceAsStream("/WEB-INF/emails/notification-dl-v2_" + language + ".html");
+                	} else {
+                		is = context.getResourceAsStream("/WEB-INF/emails/notification-dl-v2.html");
+                	}
         			message =String.format(IOUtils.toString(is, "UTF-8"), link, deviceLink, countString);		
         		} else {
         			is = context.getResourceAsStream("/WEB-INF/emails/notification-dl.html");

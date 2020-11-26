@@ -1,6 +1,7 @@
 package com.jstakun.lm.server.struts;
 
 import java.net.URLDecoder;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -65,6 +66,13 @@ public class AccountAction extends Action {
         if (StringUtils.equals(request.getParameter("s"), "1")) {
             confirm = Boolean.TRUE;
         }
+
+        final Locale locale = request.getLocale();
+		String language  = "en";
+		if (locale != null) {
+			language = locale.getLanguage();
+		}
+        
         boolean result = false;
 
         boolean api = false;
@@ -94,7 +102,7 @@ public class AccountAction extends Action {
         		final String email = n.getId(); 
         		if (MailUtils.isValidEmailAddress(email)) {
         			if (!CacheUtil.containsKey("mailto:"+email+":verified")) {
-    					final String status = MailUtils.sendDeviceLocatorRegistrationNotification(email, email, secret, getServlet().getServletContext(), deviceName, deviceId);
+    					final String status = MailUtils.sendDeviceLocatorRegistrationNotification(email, email, secret, getServlet().getServletContext(), deviceName, deviceId, language);
     					if (StringUtils.equalsIgnoreCase(status, MailUtils.STATUS_OK)) {
 							CacheUtil.put("mailto:"+email+":verified", secret, CacheType.FAST);
 						}

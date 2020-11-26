@@ -456,7 +456,7 @@ public class NotificationsServlet extends HttpServlet {
 				} else {
 					final Notification n = NotificationPersistenceUtils.setVerified(email, true);
 					if (n != null) {
-						final String status = MailUtils.sendDeviceLocatorRegistrationNotification(email, email, n.getSecret(), this.getServletContext(), deviceName, deviceId);
+						final String status = MailUtils.sendDeviceLocatorRegistrationNotification(email, email, n.getSecret(), this.getServletContext(), deviceName, deviceId, language);
 						if (StringUtils.equalsIgnoreCase(status, MailUtils.STATUS_OK)) {
 							CacheUtil.put("mailto:"+email+":verified", n.getSecret(), CacheType.FAST);
 						}
