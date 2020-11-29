@@ -48,7 +48,7 @@ public class GeocodeHelperFactory {
     	cacheProvider = cp;
     }
 	
-	public AddressInfo processReverseGeocodeBackend(double latitude, double longitude) {
+	private AddressInfo processReverseGeocodeBackend(double latitude, double longitude) {
 		 AddressInfo addressInfo = null;
 		 try {
 			 addressInfo = getGoogleGeocodeUtils().processReverseGeocode(latitude, longitude);
@@ -65,8 +65,7 @@ public class GeocodeHelperFactory {
 	}
 	
 	public String processReverseGeocode(double latitude, double longitude) {
-		final GeocodeCache gc = GeocodeCachePersistenceUtils.selectGeocodeCacheByCoords(latitude, longitude);
-		
+		final GeocodeCache gc = GeocodeCachePersistenceUtils.selectGeocodeCacheByCoords(latitude, longitude);		
 		if (gc != null && gc.getLocation() != null) {
 			return gc.getLocation();
 		} else {
@@ -74,7 +73,7 @@ public class GeocodeHelperFactory {
 		}
 	}
 	
-	public String processGeocode(String address, String email, int appId) {
+	protected String processGeocode(String address, String email, int appId) {
     	JSONObject resp = getGoogleGeocodeUtils().processGeocode(address, email, appId, true);
         try {
             if (resp.getString("status").equals("Error")) {

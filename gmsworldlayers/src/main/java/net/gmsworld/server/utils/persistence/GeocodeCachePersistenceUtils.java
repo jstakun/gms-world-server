@@ -34,11 +34,24 @@ public class GeocodeCachePersistenceUtils {
     private static final Logger logger = Logger.getLogger(GeocodeCachePersistenceUtils.class.getName());
     private static final String BACKEND_SERVER_URL = "https://landmarks-api.b9ad.pro-us-east-1.openshiftapps.com/api/v1"; 
     
-    public static void persistGeocode(final String location, final double latitude, final double longitude, CacheProvider cacheProvider) {
+    public static void persistGeocode(final String location, final double latitude, final double longitude, final String cc, final String city, CacheProvider cacheProvider) {
         if (StringUtils.isNotEmpty(location)) {
         	try {
-        		final String gUrl = BACKEND_SERVER_URL + "/addItem?type=geocode&latitude=" + StringUtil.formatCoordE6(latitude) + "&longitude=" + StringUtil.formatCoordE6(longitude) + 
+        		String gUrl = BACKEND_SERVER_URL + "/addItem?type=geocode&latitude=" + StringUtil.formatCoordE6(latitude) + "&longitude=" + StringUtil.formatCoordE6(longitude) + 
         			"&address=" + URLEncoder.encode(location, "UTF-8") + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);			 
+        		String flex = ""; 
+        		if (StringUtils.isNotEmpty(cc)) {
+        			flex = "cc:" + cc;
+        		}
+        		if (StringUtils.isNotEmpty(city)) {
+        			if (StringUtils.isNotEmpty(flex)) {
+        				flex += ",";
+        			}
+        			flex += "city:" + city;
+        		}
+        		if (StringUtils.isNotEmpty(flex)) {
+        			gUrl += "&flex=" + flex;
+        		}
         		final String gJson = HttpUtils.processFileRequest(new URL(gUrl));
         		logger.log(Level.INFO, "Received response: " + gJson);
         		if (cacheProvider != null) {

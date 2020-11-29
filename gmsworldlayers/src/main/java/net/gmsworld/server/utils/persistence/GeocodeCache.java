@@ -21,6 +21,8 @@ public class GeocodeCache implements Serializable {
 
   private String location;
   
+  private String flex;
+  
   public GeocodeCache(String location, int id, double latitude, double longitude)
   {
 	  this();
@@ -77,5 +79,13 @@ public class GeocodeCache implements Serializable {
   public void setLatitude(double latitude) {
 	this.latitude = latitude;
   }
+
+public String getFlex() {
+	return flex;
+}
+
+public void setFlex(String flex) {
+	this.flex = flex;
+}
 
 }

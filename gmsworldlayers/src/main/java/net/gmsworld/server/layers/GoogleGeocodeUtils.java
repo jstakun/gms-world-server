@@ -60,26 +60,25 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
                         	jsonResponse.put("type", "g");
 
                         	try {
-                        		GeocodeCachePersistenceUtils.persistGeocode(addressIn, lat, lng, cacheProvider);
-
-                        		if (persistAsLandmark) {
-                        			//if (ConfigurationManager.getParam(ConfigurationManager.SAVE_GEOCODE_AS_LANDMARK, ConfigurationManager.OFF).equals(ConfigurationManager.ON)) {
-                        			JSONArray address_components = item.getJSONArray("address_components");
-                        			String cc = null, city = null;
-                        			for (int i = 0;i < address_components.length(); i++) {
-                        				JSONObject address_component = address_components.getJSONObject(i);
-                        				JSONArray types = address_component.getJSONArray("types");
-                        				for (int j=0;j<types.length();j++) {
-                        					String type = types.getString(j);
-                        					if (StringUtils.equals(type, "country")) {
-                               					cc = address_component.getString("short_name");
-                        					} else if (StringUtils.equals(type, "locality")) {
-                               				city = address_component.getString("long_name");
-                        					} 
-                        				}
+                        		JSONArray address_components = item.getJSONArray("address_components");
+                        		String cc = null, city = null;
+                        		for (int i = 0;i < address_components.length(); i++) {
+                        			JSONObject address_component = address_components.getJSONObject(i);
+                        			JSONArray types = address_component.getJSONArray("types");
+                        			for (int j=0;j<types.length();j++) {
+                        				String type = types.getString(j);
+                        				if (StringUtils.equals(type, "country")) {
+                               				cc = address_component.getString("short_name");
+                        				} else if (StringUtils.equals(type, "locality")) {
+                        					city = address_component.getString("long_name");
+                        				} 
                         			}
+                        		}
+                        		
+                        		GeocodeCachePersistenceUtils.persistGeocode(addressIn, lat, lng, cc, city, cacheProvider);
                         	   
-                        			JSONObject flex = new JSONObject();
+                        		if (persistAsLandmark) {
+                                	JSONObject flex = new JSONObject();
                         			if (StringUtils.isNotEmpty(cc) && StringUtils.isNotEmpty(city)) {
                         				flex.put("cc", cc);
                         				flex.put("city", city);
@@ -149,7 +148,7 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
             if (addressInfo != null && StringUtils.isNotEmpty(addressInfo.getField(AddressInfo.EXTENSION))) {
             	cacheProvider.put(key, addressInfo);
             	//persist geocode
-            	GeocodeCachePersistenceUtils.persistGeocode(addressInfo.getField(AddressInfo.EXTENSION), lat, lng, cacheProvider);
+            	GeocodeCachePersistenceUtils.persistGeocode(addressInfo.getField(AddressInfo.EXTENSION), lat, lng, addressInfo.getField(AddressInfo.COUNTRY_CODE), addressInfo.getField(AddressInfo.CITY), cacheProvider);
             }
         } else {
             logger.log(Level.INFO, "Reading Google geocode from cache with key {0}", addressInfo.getField(AddressInfo.EXTENSION));

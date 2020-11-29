@@ -64,7 +64,7 @@ public class MapQuestUtils extends GeocodeHelper {
                 			String cc = locationJson.optString("adminArea1");
                 		
         					try {
-        						GeocodeCachePersistenceUtils.persistGeocode(location, lat, lng, cacheProvider);
+        						GeocodeCachePersistenceUtils.persistGeocode(location, lat, lng, cc, city, cacheProvider);
         						if (persistAsLandmark) {
         							String name = WordUtils.capitalize(location, delim);
         							JSONObject flex = new JSONObject();
@@ -187,7 +187,7 @@ public class MapQuestUtils extends GeocodeHelper {
                 		
                 		addressInfo.setField(AddressInfo.EXTENSION, JSONUtils.formatAddress(addressInfo));
                 		//persist geocode
-                		GeocodeCachePersistenceUtils.persistGeocode(addressInfo.getField(AddressInfo.EXTENSION), lat, lng, cacheProvider);
+                		GeocodeCachePersistenceUtils.persistGeocode(addressInfo.getField(AddressInfo.EXTENSION), lat, lng, addressInfo.getField(AddressInfo.COUNTRY_CODE), addressInfo.getField(AddressInfo.CITY), cacheProvider);
                 		
                 		if (location.has("geocodeQuality")) {
                 			logger.log(Level.INFO, "Found reverse geocode with quality {0}", location.getString("geocodeQuality"));
