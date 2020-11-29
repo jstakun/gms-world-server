@@ -45,7 +45,7 @@ public class GeocodeCachePersistenceUtils {
         			flex.put("city",city);
         		}
         		final String gUrl = BACKEND_SERVER_URL + "/addItem?type=geocode&latitude=" + StringUtil.formatCoordE6(latitude) + "&longitude=" + StringUtil.formatCoordE6(longitude) + 
-        			"&address=" + URLEncoder.encode(location, "UTF-8") + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY) + "&flex=" + flex.toString();
+        			"&address=" + URLEncoder.encode(location, "UTF-8") + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY) + "&flex=" + URLEncoder.encode(flex.toString(), "UTF-8");
         		final String gJson = HttpUtils.processFileRequest(new URL(gUrl));
         		logger.log(Level.INFO, "Received response: " + gJson);
         		if (cacheProvider != null) {

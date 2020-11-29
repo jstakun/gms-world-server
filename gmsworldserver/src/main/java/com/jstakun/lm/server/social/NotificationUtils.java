@@ -289,19 +289,19 @@ public class NotificationUtils {
     	} else if (StringUtils.equals(service, Commons.TWITTER)) {
     		if (StringUtils.equals(type, "Hotels")) {
     			if (latitude != null && longitude != null) {
-        			if (StringUtils.isNotEmpty(city)) {
-                    	name = city + ", ";
-                    } else {
-                    	name = "somewhere in ";
-                    }
-                    if (StringUtils.isNotEmpty(cc)) {
+    				String country = null;
+    				if (StringUtils.isNotEmpty(cc)) {
                     	Locale l = new Locale("", cc);
-                    	String country = l.getDisplayCountry();
-                    	if (StringUtils.isNotEmpty(country)) {
-                    		name += country;
-                    	} else {
-                    		name += "...";
-                    	}
+                    	country = l.getDisplayCountry();
+    				}
+    				if (StringUtils.isNotEmpty(city) && StringUtils.isNotEmpty(country)) {
+                    	name = city + ", " + country;
+                    } else if (StringUtils.isNotEmpty(city)) {
+                    	name = city;
+                    } else if (StringUtils.isNotEmpty(country)) {
+                    	name = country;
+                    } else {
+                    	name = "";
                     } 
                     if (cheapestPrice != null) {
         				if (StringUtils.isNotEmpty(name)) {
