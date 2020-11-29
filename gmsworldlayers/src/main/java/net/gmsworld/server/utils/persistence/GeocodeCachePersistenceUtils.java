@@ -37,21 +37,15 @@ public class GeocodeCachePersistenceUtils {
     public static void persistGeocode(final String location, final double latitude, final double longitude, final String cc, final String city, CacheProvider cacheProvider) {
         if (StringUtils.isNotEmpty(location)) {
         	try {
-        		String gUrl = BACKEND_SERVER_URL + "/addItem?type=geocode&latitude=" + StringUtil.formatCoordE6(latitude) + "&longitude=" + StringUtil.formatCoordE6(longitude) + 
-        			"&address=" + URLEncoder.encode(location, "UTF-8") + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);			 
-        		String flex = ""; 
+        		JSONObject flex = new JSONObject();
         		if (StringUtils.isNotEmpty(cc)) {
-        			flex = "cc:" + cc;
+        			flex.put("cc",cc);
         		}
         		if (StringUtils.isNotEmpty(city)) {
-        			if (StringUtils.isNotEmpty(flex)) {
-        				flex += ",";
-        			}
-        			flex += "city:" + city;
+        			flex.put("city",city);
         		}
-        		if (StringUtils.isNotEmpty(flex)) {
-        			gUrl += "&flex=" + flex;
-        		}
+        		final String gUrl = BACKEND_SERVER_URL + "/addItem?type=geocode&latitude=" + StringUtil.formatCoordE6(latitude) + "&longitude=" + StringUtil.formatCoordE6(longitude) + 
+        			"&address=" + URLEncoder.encode(location, "UTF-8") + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY) + "&flex=" + flex.toString();
         		final String gJson = HttpUtils.processFileRequest(new URL(gUrl));
         		logger.log(Level.INFO, "Received response: " + gJson);
         		if (cacheProvider != null) {

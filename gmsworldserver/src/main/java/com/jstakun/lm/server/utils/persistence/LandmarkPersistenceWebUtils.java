@@ -11,12 +11,13 @@ import javax.servlet.http.HttpServletRequest;
 
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.ConfigurationManager;
-import net.gmsworld.server.layers.GeocodeHelperFactory;
 import net.gmsworld.server.layers.HotelsBookingUtils;
 import net.gmsworld.server.layers.LayerHelperFactory;
 import net.gmsworld.server.utils.NumberUtils;
 import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.UrlUtils;
+import net.gmsworld.server.utils.persistence.GeocodeCache;
+import net.gmsworld.server.utils.persistence.GeocodeCachePersistenceUtils;
 import net.gmsworld.server.utils.persistence.Landmark;
 import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;
 
@@ -31,7 +32,6 @@ import com.jstakun.lm.server.utils.HtmlUtils;
 import com.jstakun.lm.server.utils.memcache.CacheAction;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
-import com.openlapi.AddressInfo;
 
 /**
  *
@@ -138,12 +138,33 @@ public class LandmarkPersistenceWebUtils {
     	String cc = ccIn;
     	String city = cityIn;
     	
-    	if (StringUtils.isEmpty(cc)) {
-    		AddressInfo addressInfo = GeocodeHelperFactory.getInstance().processReverseGeocodeBackend(l.getLatitude(), l.getLongitude()); 
-    		cc = addressInfo.getField(AddressInfo.COUNTRY_CODE);
-    		city = addressInfo.getField(AddressInfo.CITY);
+    	if (StringUtils.isEmpty(cc) || StringUtils.isEmpty(city)) {
+    		if (StringUtils.startsWith(l.getFlex(), "{")) {
+    			JSONObject flex = new JSONObject(l.getFlex());
+    			if (StringUtils.isEmpty(cc) && flex.has("cc")) {
+    				 cc = flex.getString("cc");
+    			}
+    			if (StringUtils.isEmpty(city) && flex.has("city")) {
+   				 	city = flex.getString("city");
+    			}
+    		}
     	}
     	
+    	if (StringUtils.isEmpty(cc) || StringUtils.isEmpty(city)) {
+    	    final GeocodeCache gc = GeocodeCachePersistenceUtils.selectGeocodeCacheByCoords(l.getLatitude(), l.getLongitude());		
+    		if (gc != null)
+    		{
+    			if (StringUtils.startsWith(gc.getFlex(), "{")) {
+    				JSONObject flex = new JSONObject(gc.getFlex());
+    				if (StringUtils.isEmpty(cc) && flex.has("cc")) {
+    					cc = flex.getString("cc");
+    				}
+    				if (StringUtils.isEmpty(city) && flex.has("city")) {
+   				 		city = flex.getString("city");
+    				}
+    			}
+    		}
+    	}
     	
     	Map<String, String> params = new ImmutableMap.Builder<String, String>().
                 put("key", Integer.toString(l.getId())).
