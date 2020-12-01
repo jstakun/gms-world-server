@@ -252,6 +252,10 @@ public final class DeviceManagerServlet extends HttpServlet {
 				l.setName(Commons.MY_POSITION_LAYER);
 				l.setLayer(Commons.MY_POSITION_LAYER);
 				l.setUsername(deviceId);
+				final String address = GeocodeHelperFactory.getInstance().processReverseGeocode(latitude, longitude);
+        		if (StringUtils.isNotEmpty(address)) {
+        			l.setDescription(address);
+        		}
 				if (!LandmarkPersistenceWebUtils.isSimilarToNewest(l, 10)) {
 					LandmarkPersistenceWebUtils.setFlex(l, request);
 					LandmarkPersistenceUtils.persistLandmark(l, GoogleCacheProvider.getInstance());
