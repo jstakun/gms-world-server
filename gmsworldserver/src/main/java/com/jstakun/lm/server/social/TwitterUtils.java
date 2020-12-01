@@ -14,7 +14,6 @@ import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.config.ConfigurationManager;
 import net.gmsworld.server.utils.ImageUtils;
-import net.gmsworld.server.utils.StringUtil;
 import net.gmsworld.server.utils.UrlUtils;
 import twitter4j.GeoLocation;
 import twitter4j.Status;
@@ -84,8 +83,8 @@ public class TwitterUtils {
                         if (imageUrl != null) {
                         	try {
                         		if (StringUtils.contains(imageUrl, "/image")) {
-                        			final String image = "landmark_" + StringUtil.formatCoordE6(latitude) + "_" + StringUtil.formatCoordE6(longitude) + ".jpg";
-                					imageUrl = FileUtils.getImageUrlV2(null, image, false, false);
+                        			final String imageName = FileUtils.getLocationImageName(latitude, longitude);
+                					imageUrl = FileUtils.getImageUrlV2(null, imageName, false, false);
                 					if (imageUrl == null) {					
                 						imageUrl = ImageUtils.getImageUrl(latitude, longitude, "170x170", 9, false, ConfigurationManager.MAP_PROVIDER.OSM_MAPS, false);
                 					}

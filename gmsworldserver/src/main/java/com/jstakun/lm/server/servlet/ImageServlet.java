@@ -67,8 +67,8 @@ public class ImageServlet extends HttpServlet {
 				final Double lat = GeocodeUtils.getLatitude(request.getParameter("lat"));
 				final Double lng = GeocodeUtils.getLongitude(request.getParameter("lng"));
 				if (lat != null && lng != null) {
-					final String image = "landmark_" + StringUtil.formatCoordE6(lat) + "_" + StringUtil.formatCoordE6(lng) + ".jpg";
-					imageUrl = FileUtils.getImageUrlV2(null, image, thumbnail, request.isSecure());
+					final String imageName = FileUtils.getLocationImageName(lat, lng);
+					imageUrl = FileUtils.getImageUrlV2(null, imageName, thumbnail, request.isSecure());
 					if (imageUrl == null) {					
 						imageUrl = ImageUtils.getImageUrl(lat, lng, "170x170", 9, thumbnail, ConfigurationManager.MAP_PROVIDER.OSM_MAPS, request.isSecure());
 					}

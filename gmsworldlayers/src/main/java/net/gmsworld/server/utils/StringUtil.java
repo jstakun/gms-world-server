@@ -20,6 +20,7 @@ public class StringUtil {
     public static final int XLARGE = 1024;
     private static final DecimalFormat coordsFormatE6 = new DecimalFormat("##.######");
     private static final DecimalFormat coordsFormatE2 = new DecimalFormat("##.##");
+    private static final DecimalFormat coordsFormatE4 = new DecimalFormat("##.####");
     
     public static String getLanguage(String value, String defaultValue, int length) {
         String language = defaultValue;
@@ -73,10 +74,14 @@ public class StringUtil {
         return coordsFormatE6.format(coord);
     }
 
+    public static String formatCoordE4(double coord) {
+        return coordsFormatE4.format(coord);
+    }
+    
     public static String formatCoordE2(double coord) {
         return coordsFormatE2.format(coord);
     }
-    
+        
     public static String formatCoordE0(double coord) {
         return Integer.toString(Double.valueOf(coord).intValue());
     }

@@ -24,6 +24,8 @@ import com.jstakun.lm.server.utils.memcache.CacheAction;
 import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 import com.jstakun.lm.server.utils.persistence.ScreenshotPersistenceUtils;
 
+import net.gmsworld.server.utils.StringUtil;
+
 public class FileUtils {
 
 	private static final Logger logger = Logger.getLogger(FileUtils.class.getName());
@@ -127,5 +129,9 @@ public class FileUtils {
             }	
     	} 	
     	return s;
+	}
+	
+	public static String getLocationImageName(double latitude, double longitude) {
+		return "landmark_" + StringUtil.formatCoordE4(latitude) + "_" + StringUtil.formatCoordE4(longitude) + ".jpg";
 	}
 }
