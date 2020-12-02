@@ -146,11 +146,15 @@ public class NotificationsServlet extends HttpServlet {
 								throw new Exception("Username can't be null!");
 							} 
 							l.setUsername(userStr);
-						
+							l.setLayer(Commons.MY_POS_CODE);
+							
 							if (!LandmarkPersistenceWebUtils.isSimilarToNewest(l, 10)) {
-								String socialIds = request.getParameter("socialIds");
+								final String address = GeocodeHelperFactory.getInstance().processReverseGeocode(latitude, longitude);
+				        		if (StringUtils.isNotEmpty(address)) {
+				        			l.setDescription(address);
+				        		}
+				        		String socialIds = request.getParameter("socialIds");
 								LandmarkPersistenceWebUtils.setFlex(l, request);
-								l.setLayer(Commons.MY_POS_CODE);
 								LandmarkPersistenceUtils.persistLandmark(l, GoogleCacheProvider.getInstance());
 								if (l.getId() > 0) {
 									LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), socialIds, null, null, appId);

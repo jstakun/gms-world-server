@@ -152,7 +152,7 @@ public class TwitterUtils {
             		//update.setMedia("img_" + System.currentTimeMillis() + ".jpg", is);
             	    media = getTwitter(null, null).uploadMedia("img_" + System.currentTimeMillis() + ".jpg", is); 
             		if (media != null) {
-            			logger.info("Uploaded media " + media.getImageType() + ": " + media.getMediaId());
+            			logger.info("Uploaded media " + media.toString());
             			update.setMediaIds(media.getMediaId());
             		}
             	}

@@ -235,10 +235,6 @@
     <servlet-class>com.jstakun.lm.server.servlet.ServiceLogAnalyticsServlet</servlet-class>
   </servlet>
   <servlet>
-    <servlet-name>PanoramioProviderServlet</servlet-name>
-    <servlet-class>net.gmsworld.server.layers.PanoramioProviderServlet</servlet-class>
-  </servlet>
-  <servlet>
     <servlet-name>AddCommentServlet</servlet-name>
     <servlet-class>com.jstakun.lm.server.social.AddCommentServlet</servlet-class>
   </servlet>
@@ -410,10 +406,6 @@
     <url-pattern>/admin/serviceLogAnalytics</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-    <servlet-name>PanoramioProviderServlet</servlet-name>
-    <url-pattern>/panoramioProvider</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
     <servlet-name>AddCommentServlet</servlet-name>
     <url-pattern>/services/addComment,/s/addComment</url-pattern>
   </servlet-mapping>
@@ -459,7 +451,7 @@
     <url-pattern>/lastfmProvider,/services/lastfmProvider,/s/lastfmProvider</url-pattern>
     <url-pattern>/webcamProvider,/services/webcamProvider,/s/webcamProvider</url-pattern>
     <url-pattern>/hotwireProvider,/services/hotwireProvider</url-pattern>
-    <url-pattern>/panoramio2Provider,/services/panoramio2Provider,/s/panoramio2Provider</url-pattern>
+    <url-pattern>/panoramioProvider,/panoramio2Provider,/services/panoramio2Provider,/s/panoramio2Provider</url-pattern>
     <url-pattern>/services/foursquareMerchant,/foursquareMerchant,/s/foursquareMerchant</url-pattern>
     <url-pattern>/expediaProvider,/services/expediaProvider,/s/expediaProvider</url-pattern>
     <url-pattern>/hotelsProvider,/services/hotelsProvider,/s/hotelsProvider</url-pattern>

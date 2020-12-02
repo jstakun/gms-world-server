@@ -540,7 +540,7 @@ public class LayersProviderServlet extends HttpServlet {
                     }
             	}
             } else if (StringUtils.endsWithAny(uri, new String[]{"qypeProvider", "upcomingProvider", "gowallaProvider", 
-            		"picasaProvider", "freebaseProvider", "lastfmProvider", "instagramProvider", "panoramio2Provider", "hotwireProvider"})) {
+            		"picasaProvider", "freebaseProvider", "lastfmProvider", "instagramProvider", "panoramioProvider", "panoramio2Provider", "hotwireProvider"})) {
             	logger.log(Level.WARNING, "Closed api request uri: {0}", uri);
             } else {
             	logger.log(Level.SEVERE, "Unexpected uri: {0}", uri);

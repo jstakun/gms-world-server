@@ -222,9 +222,9 @@ public class HttpUtils {
                     total += count;
                 }
                 logger.log(Level.INFO, "Received " + conn.getContentType() + " image having " + total + " bytes");
-            } else if (responseCode >= 400 ){
+            } else if (responseCode >= 400 && responseCode != HttpServletResponse.SC_FORBIDDEN){
                 logger.log(Level.SEVERE, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString().split("\\?")[0]});   
-            } else if (responseCode >= 300 && responseCode < 400) {
+            } else if (responseCode >= 300) {
             	logger.log(Level.WARNING, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString().split("\\?")[0]});   
             } else if (responseCode > 200) {
             	logger.log(Level.INFO, "Received http status code {0} for url {1}", new Object[]{responseCode, fileUrl.toString().split("\\?")[0]});
