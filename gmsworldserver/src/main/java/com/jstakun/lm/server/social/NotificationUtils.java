@@ -17,6 +17,7 @@ import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
 import com.jstakun.lm.server.utils.MailUtils;
+import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 
 import net.gmsworld.server.config.Commons;
@@ -46,7 +47,7 @@ public class NotificationUtils {
 		Map<String, String> newParams = new HashMap<String, String>(params);
 		
 		//FacebookUtils
-		if (StringUtils.equalsIgnoreCase("true", com.jstakun.lm.server.config.ConfigurationManager.getParam(com.jstakun.lm.server.config.ConfigurationManager.FB_SEND_NOTIFICATION, "false"))) {
+		if (!CacheUtil.containsKey(FacebookSocialUtils.USAGE_LIMIT_MARKER) && StringUtils.equalsIgnoreCase("true", com.jstakun.lm.server.config.ConfigurationManager.getParam(com.jstakun.lm.server.config.ConfigurationManager.FB_SEND_NOTIFICATION, "false"))) {
 			newParams.put("service", Commons.FACEBOOK);
 			createNotificationTask(newParams);
 		}
@@ -56,8 +57,10 @@ public class NotificationUtils {
         createNotificationTask(newParams);
 		
         //GoogleBloggerUtils
-        newParams.put("service", Commons.GOOGLE);
-        createNotificationTask(newParams);
+        if (!CacheUtil.containsKey(GoogleBloggerUtils.USAGE_LIMIT_MARKER)) {
+        	newParams.put("service", Commons.GOOGLE);
+        	createNotificationTask(newParams);
+        }
 	}
 	
 	public static void createLadmarkCreationNotificationTask(Map<String, String> params) {
@@ -65,7 +68,7 @@ public class NotificationUtils {
 		Map<String, String> newParams = new HashMap<String, String>(params);
 		
 		//FacebookUtils
-		if (StringUtils.equalsIgnoreCase("true", com.jstakun.lm.server.config.ConfigurationManager.getParam(com.jstakun.lm.server.config.ConfigurationManager.FB_SEND_NOTIFICATION, "false"))) {
+		if (!CacheUtil.containsKey(FacebookSocialUtils.USAGE_LIMIT_MARKER) &&  StringUtils.equalsIgnoreCase("true", com.jstakun.lm.server.config.ConfigurationManager.getParam(com.jstakun.lm.server.config.ConfigurationManager.FB_SEND_NOTIFICATION, "false"))) {
 			newParams.put("service", Commons.FACEBOOK);
 			createNotificationTask(newParams);
 		}
@@ -75,17 +78,21 @@ public class NotificationUtils {
         createNotificationTask(newParams);
 		
         //GoogleBloggerUtils
-        newParams.put("service", Commons.GOOGLE);
-        createNotificationTask(newParams);
+        if (!CacheUtil.containsKey(GoogleBloggerUtils.USAGE_LIMIT_MARKER)) {
+            newParams.put("service", Commons.GOOGLE);
+            createNotificationTask(newParams);
+        }
 		
         //email
-        newParams.put("service", Commons.MAIL);
-        createNotificationTask(newParams);
+        if (StringUtils.equalsIgnoreCase("true", com.jstakun.lm.server.config.ConfigurationManager.getParam(com.jstakun.lm.server.config.ConfigurationManager.EMAIL_SEND_NOTIFICATION, "false"))) {
+        	newParams.put("service", Commons.MAIL);
+        	createNotificationTask(newParams);
+        }
         
         //Hotels notification
         newParams.put("type", "Hotels");
         
-        if (StringUtils.equalsIgnoreCase("true", com.jstakun.lm.server.config.ConfigurationManager.getParam(com.jstakun.lm.server.config.ConfigurationManager.FB_SEND_NOTIFICATION, "false"))) {
+        if (!CacheUtil.containsKey(FacebookSocialUtils.USAGE_LIMIT_MARKER) && StringUtils.equalsIgnoreCase("true", com.jstakun.lm.server.config.ConfigurationManager.getParam(com.jstakun.lm.server.config.ConfigurationManager.FB_SEND_NOTIFICATION, "false"))) {
     		newParams.put("service", Commons.FACEBOOK);
     		createNotificationTask(newParams);
         }
@@ -93,14 +100,16 @@ public class NotificationUtils {
 		newParams.put("service", Commons.TWITTER);
         createNotificationTask(newParams);
         
-        newParams.put("service", Commons.GOOGLE);
-        createNotificationTask(newParams);
+        if (!CacheUtil.containsKey(GoogleBloggerUtils.USAGE_LIMIT_MARKER)) {
+        	newParams.put("service", Commons.GOOGLE);
+        	createNotificationTask(newParams);
+        }
 	}
 	
 	public static void createRouteCreationNotificationTask(Map<String, String> params) {
 		Map<String, String> newParams = new HashMap<String, String>(params);
 		//FacebookUtils
-		if (StringUtils.equalsIgnoreCase("true", com.jstakun.lm.server.config.ConfigurationManager.getParam(com.jstakun.lm.server.config.ConfigurationManager.FB_SEND_NOTIFICATION, "false"))) {
+		if (!CacheUtil.containsKey(FacebookSocialUtils.USAGE_LIMIT_MARKER) && StringUtils.equalsIgnoreCase("true", com.jstakun.lm.server.config.ConfigurationManager.getParam(com.jstakun.lm.server.config.ConfigurationManager.FB_SEND_NOTIFICATION, "false"))) {
 			newParams.put("service", Commons.FACEBOOK);
 			createNotificationTask(newParams);
 		}
@@ -110,8 +119,10 @@ public class NotificationUtils {
         createNotificationTask(newParams);
 		
         //GoogleBloggerUtils
-        newParams.put("service", Commons.GOOGLE);
-        createNotificationTask(newParams);	
+        if (!CacheUtil.containsKey(GoogleBloggerUtils.USAGE_LIMIT_MARKER)) {
+            newParams.put("service", Commons.GOOGLE);
+            createNotificationTask(newParams);
+        }
   }
 	
 	public static void createImageCreationNotificationTask(Map<String, String> params) {
@@ -119,7 +130,7 @@ public class NotificationUtils {
 		Map<String, String> newParams = new HashMap<String, String>(params);
 		
 		//FacebookUtils
-		if (StringUtils.equalsIgnoreCase("true", com.jstakun.lm.server.config.ConfigurationManager.getParam(com.jstakun.lm.server.config.ConfigurationManager.FB_SEND_NOTIFICATION, "false"))) {
+		if (!CacheUtil.containsKey(FacebookSocialUtils.USAGE_LIMIT_MARKER) &&  StringUtils.equalsIgnoreCase("true", com.jstakun.lm.server.config.ConfigurationManager.getParam(com.jstakun.lm.server.config.ConfigurationManager.FB_SEND_NOTIFICATION, "false"))) {
 			newParams.put("service", Commons.FACEBOOK);
 			createNotificationTask(newParams);
 		}

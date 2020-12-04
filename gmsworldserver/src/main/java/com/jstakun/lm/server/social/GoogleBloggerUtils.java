@@ -32,7 +32,7 @@ import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 public class GoogleBloggerUtils {
 
     private static final Logger logger = Logger.getLogger(GoogleBloggerUtils.class.getName());
-    private static final String USAGE_LIMIT_MARKER = "BloggerUsageLimitsMarker";
+    protected static final String USAGE_LIMIT_MARKER = "BloggerUsageLimitsMarker";
     
     protected static String sendMessage(String url, String token, String secret, String username, String name, String imageUrl, String layer, Double lat, Double lng, String desc, int type) {
         if (type == Commons.SERVER) {

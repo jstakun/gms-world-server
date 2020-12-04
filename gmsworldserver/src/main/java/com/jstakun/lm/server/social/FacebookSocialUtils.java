@@ -6,9 +6,12 @@ import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.jstakun.lm.server.utils.memcache.CacheUtil;
+import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 import com.restfb.FacebookClient;
 import com.restfb.Parameter;
 import com.restfb.exception.FacebookException;
+import com.restfb.exception.FacebookOAuthException;
 import com.restfb.json.JsonArray;
 import com.restfb.json.JsonObject;
 import com.restfb.types.FacebookType;
@@ -21,8 +24,8 @@ import net.gmsworld.server.utils.UrlUtils;
 
 public class FacebookSocialUtils {
 	
-	//private static final Random random = new Random();
 	private static final Logger logger = Logger.getLogger(FacebookSocialUtils.class.getName());
+	protected static final String USAGE_LIMIT_MARKER = "FacebookUsageLimitsMarker";
 	
 	private static String sendMessage(FacebookClient facebookClient, String connection, Parameter[] params, boolean verifyPermission) {
         try {          
@@ -55,6 +58,10 @@ public class FacebookSocialUtils {
         	} else {
         		return null;
         	}
+        } catch (FacebookOAuthException ex) {
+        	logger.log(Level.WARNING, "FacebookUtils.sendMessage() exception", ex);
+        	CacheUtil.put(USAGE_LIMIT_MARKER, "1", CacheType.NORMAL);
+        	return null;
         } catch (FacebookException ex) {
         	logger.log(Level.WARNING, "FacebookUtils.sendMessage() exception", ex);
             return null;

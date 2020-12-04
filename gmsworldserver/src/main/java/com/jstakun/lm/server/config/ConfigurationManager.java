@@ -38,6 +38,7 @@ public final class ConfigurationManager {
     public static final String GMS_WORLD_ACCESS_TOKEN = "gmsWorldAccessToken";
     
     public static final String FB_SEND_NOTIFICATION = "fbSendNotification";
+    public static final String EMAIL_SEND_NOTIFICATION = "emailSendNotification";
 
     public static final String BOOKING_URL = "http://www.booking.com/city/%s/%s.html?aid=864525";
     public static final String HOTELS_URL = "https://hotels.gms-world.net";
