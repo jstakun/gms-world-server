@@ -26,7 +26,7 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
 	protected JSONObject processGeocode(String addressIn, String email, int appId, boolean persistAsLandmark) {
 		JSONObject jsonResponse = new JSONObject();
         try {
-            logger.log(Level.INFO, "Calling Google geocode: {0}", addressIn);
+            //logger.log(Level.INFO, "Calling Google geocode: {0}", addressIn);
             URL geocodeUrl = new URL("https://maps.googleapis.com/maps/api/geocode/json?address=" + URLEncoder.encode(addressIn, "UTF-8") + "&key=" + Commons.getProperty(Property.GOOGLE_API_KEY));
             String geocodeResponse = HttpUtils.processFileRequest(geocodeUrl);
             if (geocodeResponse != null) {
@@ -165,7 +165,7 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
 	private AddressInfo getAddressInfo(URL geocodeUrl) throws IOException {
 		AddressInfo addressInfo = null;
 		String geocodeResponse = HttpUtils.processFileRequest(geocodeUrl);
-        if (geocodeResponse != null) {
+		if (geocodeResponse != null) {
             JSONObject json = new JSONObject(geocodeResponse);
             String status = json.getString("status");
             if (status.equals("OK")) {

@@ -9,10 +9,10 @@ import net.gmsworld.server.utils.memcache.MockCacheProvider;
 import net.gmsworld.server.utils.persistence.Landmark;
 import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;
 
-class LandmarkPersistenceUtilsTest {
+public class LandmarkPersistenceUtilsTest {
 
 	@Test
-	void test() {
+	public void test() {
 		final double latitude = 52.25;
 		final double longitude = 20.95;
 		final int radius = 10000;
@@ -24,6 +24,7 @@ class LandmarkPersistenceUtilsTest {
 		l.setLayer(Commons.MY_POSITION_LAYER);
 		l.setUsername("abcd");
 		l.setFlex("{\"cc\":\"BR\",\"appId\":2,\"useCount\":1,\"deviceId\":\"abcd\"}");
+		l.setDescription("2a Lô A Cư Xá Phú Thọ Hòa, Phường 5, Quận 11, Thành phố Hồ Chí Minh, Vietnam");
 		LandmarkPersistenceUtils.persistLandmark(l, new MockCacheProvider());
 		
 		System.out.println(LandmarkPersistenceUtils.countLandmarksByCoords(latitude, longitude, 10000));

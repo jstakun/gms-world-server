@@ -153,11 +153,10 @@ public class NotificationsServlet extends HttpServlet {
 				        		if (StringUtils.isNotEmpty(address)) {
 				        			l.setDescription(address);
 				        		}
-				        		String socialIds = request.getParameter("socialIds");
-								LandmarkPersistenceWebUtils.setFlex(l, request);
+				        		LandmarkPersistenceWebUtils.setFlex(l, request);
 								LandmarkPersistenceUtils.persistLandmark(l, GoogleCacheProvider.getInstance());
 								if (l.getId() > 0) {
-									LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), socialIds, null, null, appId);
+									LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), request.getParameter("socialIds"), null, null, appId);
 								}
 							}
 						} catch (Exception e) {

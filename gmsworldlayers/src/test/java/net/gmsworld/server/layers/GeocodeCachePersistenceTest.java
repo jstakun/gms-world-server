@@ -53,7 +53,7 @@ public class GeocodeCachePersistenceTest {
         
         System.out.println("GeocodeUtils.isValidLongitude(106.614632)" + GeocodeUtils.isValidLongitude(106.614632));
         
-        String addressString = GeocodeHelperFactory.getInstance().processReverseGeocode(54.352025, 18.646638);
+        String addressString = GeocodeHelperFactory.getInstance().processReverseGeocode(10.76819, 106.644512);//54.352025, 18.646638);
         System.out.println("processReverseGeocode 10: " + addressString);
         
         //GeocodeHelperFactory.getInstance().getRoute(lat_start, lng_start, lat_end, lng_end, type, username)

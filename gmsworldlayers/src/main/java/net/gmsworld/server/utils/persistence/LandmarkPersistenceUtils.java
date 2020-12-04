@@ -55,7 +55,7 @@ public class LandmarkPersistenceUtils {
         	if (StringUtils.isNotEmpty(flex)) {
         		params += "&flex=" + URLEncoder.encode(flex, "UTF-8");
         	}
-        	final String landmarksJson = HttpUtils.processFileRequest(new URL(landmarksUrl + "?" + params));
+        	final String landmarksJson = HttpUtils.processFileRequest(new URL(landmarksUrl), "POST", null, params);
         	if (StringUtils.startsWith(StringUtils.trim(landmarksJson), "{")) {
         		JSONObject resp = new JSONObject(landmarksJson);
         		logger.log(Level.INFO, "Landmark created: " + landmarksJson);

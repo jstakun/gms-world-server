@@ -75,7 +75,7 @@ public class MailUtils {
         	    } else {
     				//logger.log(Level.SEVERE, "Failed to send email message with SES! Trying with James...");
     				//return sendJamesMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
-        	    	logger.log(Level.SEVERE, "Failed to send email message with SES! Trying one more time ...");
+        	    	logger.log(Level.WARNING, "Failed to send email message with SES! Trying one more time ...");
     				return sendSesMail(fromA, fromP, toA, toP, subject, content, contentType, ccA, ccP);
     			}
     		} else {
