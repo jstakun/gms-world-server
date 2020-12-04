@@ -24,6 +24,8 @@ public final class ConfigurationManager {
     
     private static Map<String, String> configuration;
     
+    private static Logger logger = Logger.getLogger(ConfigurationManager.class.getName());
+    
     private static final String LM_GOOGLE_PLAY_URL = "https://play.google.com/store/apps/details?id=com.jstakun.gms.android.ui";
     private static final String DL_GOOGLE_PLAY_URL = "https://play.google.com/store/apps/details?id=net.gmsworld.devicelocator";
     private static final String BROWSER_URL = "https://landmarks.gms-world.net";
@@ -34,6 +36,8 @@ public final class ConfigurationManager {
 
     public static final String GMS_WORLD_PAGE_TOKEN = "gmsWorldPageToken";
     public static final String GMS_WORLD_ACCESS_TOKEN = "gmsWorldAccessToken";
+    
+    public static final String FB_SEND_NOTIFICATION = "fbSendNotification";
 
     public static final String BOOKING_URL = "http://www.booking.com/city/%s/%s.html?aid=864525";
     public static final String HOTELS_URL = "https://hotels.gms-world.net";
@@ -44,7 +48,7 @@ public final class ConfigurationManager {
          configuration = new HashMap<String, String>();
          for (Config param : params) {
              configuration.put(param.getKey(), param.getValue());
-             Logger.getLogger("com.jstakun.lm.server.config.ConfigurationManager").log(Level.INFO, "Setting {0}: {1}", new Object[]{param.getKey(), param.getValue()});
+             logger.log(Level.INFO, "Setting {0}: {1}", new Object[]{param.getKey(), param.getValue()});
          }
          CacheUtil.put(CONFIG, configuration, CacheType.NORMAL);
     }
@@ -53,7 +57,7 @@ public final class ConfigurationManager {
     {
     	configuration = (Map<String, String>)CacheUtil.getObject(CONFIG);
         if (configuration == null) {
-        	Logger.getLogger("com.jstakun.lm.server.config.ConfigurationManager").log(Level.WARNING, "Loading configuration from datastore...");
+        	logger.log(Level.WARNING, "Loading configuration from datastore...");
         	populateConfig();
         }
     }
@@ -63,14 +67,14 @@ public final class ConfigurationManager {
     	try {
     		refreshConfig();
     		if (configuration.containsKey(key)) {
-    			return (String)configuration.get(key);
+    			return configuration.get(key);
     		} else {
     			return defaultValue;
     		}
     	} catch (Exception e) {
     		return defaultValue;
     	}
-    }    
+    }   
     
     public static String[] getArray(String key) {
     	String listStr = getParam(key, "");

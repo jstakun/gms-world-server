@@ -41,6 +41,97 @@ public class NotificationUtils {
 		//logger.log(Level.INFO, "Creating new notification task {0}...", options.toString());
 		queue.add(options);   		
 	}
+	
+	public static void createSocialCheckinNotificationTask(Map<String, String> params) {
+		Map<String, String> newParams = new HashMap<String, String>(params);
+		
+		//FacebookUtils
+		if (StringUtils.equalsIgnoreCase("true", com.jstakun.lm.server.config.ConfigurationManager.getParam(com.jstakun.lm.server.config.ConfigurationManager.FB_SEND_NOTIFICATION, "false"))) {
+			newParams.put("service", Commons.FACEBOOK);
+			createNotificationTask(newParams);
+		}
+		
+		//TwitterUtils
+		newParams.put("service", Commons.TWITTER);
+        createNotificationTask(newParams);
+		
+        //GoogleBloggerUtils
+        newParams.put("service", Commons.GOOGLE);
+        createNotificationTask(newParams);
+	}
+	
+	public static void createLadmarkCreationNotificationTask(Map<String, String> params) {
+		
+		Map<String, String> newParams = new HashMap<String, String>(params);
+		
+		//FacebookUtils
+		if (StringUtils.equalsIgnoreCase("true", com.jstakun.lm.server.config.ConfigurationManager.getParam(com.jstakun.lm.server.config.ConfigurationManager.FB_SEND_NOTIFICATION, "false"))) {
+			newParams.put("service", Commons.FACEBOOK);
+			createNotificationTask(newParams);
+		}
+		
+		//TwitterUtils
+		newParams.put("service", Commons.TWITTER);
+        createNotificationTask(newParams);
+		
+        //GoogleBloggerUtils
+        newParams.put("service", Commons.GOOGLE);
+        createNotificationTask(newParams);
+		
+        //email
+        newParams.put("service", Commons.MAIL);
+        createNotificationTask(newParams);
+        
+        //Hotels notification
+        newParams.put("type", "Hotels");
+        
+        if (StringUtils.equalsIgnoreCase("true", com.jstakun.lm.server.config.ConfigurationManager.getParam(com.jstakun.lm.server.config.ConfigurationManager.FB_SEND_NOTIFICATION, "false"))) {
+    		newParams.put("service", Commons.FACEBOOK);
+    		createNotificationTask(newParams);
+        }
+        
+		newParams.put("service", Commons.TWITTER);
+        createNotificationTask(newParams);
+        
+        newParams.put("service", Commons.GOOGLE);
+        createNotificationTask(newParams);
+	}
+	
+	public static void createRouteCreationNotificationTask(Map<String, String> params) {
+		Map<String, String> newParams = new HashMap<String, String>(params);
+		//FacebookUtils
+		if (StringUtils.equalsIgnoreCase("true", com.jstakun.lm.server.config.ConfigurationManager.getParam(com.jstakun.lm.server.config.ConfigurationManager.FB_SEND_NOTIFICATION, "false"))) {
+			newParams.put("service", Commons.FACEBOOK);
+			createNotificationTask(newParams);
+		}
+		
+		//TwitterUtils
+		newParams.put("service", Commons.TWITTER);
+        createNotificationTask(newParams);
+		
+        //GoogleBloggerUtils
+        newParams.put("service", Commons.GOOGLE);
+        createNotificationTask(newParams);	
+  }
+	
+	public static void createImageCreationNotificationTask(Map<String, String> params) {
+		
+		Map<String, String> newParams = new HashMap<String, String>(params);
+		
+		//FacebookUtils
+		if (StringUtils.equalsIgnoreCase("true", com.jstakun.lm.server.config.ConfigurationManager.getParam(com.jstakun.lm.server.config.ConfigurationManager.FB_SEND_NOTIFICATION, "false"))) {
+			newParams.put("service", Commons.FACEBOOK);
+			createNotificationTask(newParams);
+		}
+		
+		//TwitterUtils
+		newParams.put("service", Commons.TWITTER);
+        createNotificationTask(newParams);
+		
+        //GoogleBloggerUtils
+        newParams.put("service", Commons.GOOGLE);
+        createNotificationTask(newParams);
+	}
 
 	protected static Map<String, String> getNotificationParams(String key) {
 		Map<String, String> params = new HashMap<String, String>();
@@ -68,87 +159,6 @@ public class NotificationUtils {
 		}
 		
 		return params;
-	}
-	
-	public static void createSocialCheckinNotificationTask(Map<String, String> params) {
-		Map<String, String> newParams = new HashMap<String, String>(params);
-		
-		//FacebookUtils
-		newParams.put("service", Commons.FACEBOOK);
-		createNotificationTask(newParams);
-		
-		//TwitterUtils
-		newParams.put("service", Commons.TWITTER);
-        createNotificationTask(newParams);
-		
-        //GoogleBloggerUtils
-        newParams.put("service", Commons.GOOGLE);
-        createNotificationTask(newParams);
-	}
-	
-	public static void createLadmarkCreationNotificationTask(Map<String, String> params) {
-		
-		Map<String, String> newParams = new HashMap<String, String>(params);
-		
-		//FacebookUtils
-		newParams.put("service", Commons.FACEBOOK);
-		createNotificationTask(newParams);
-		
-		//TwitterUtils
-		newParams.put("service", Commons.TWITTER);
-        createNotificationTask(newParams);
-		
-        //GoogleBloggerUtils
-        newParams.put("service", Commons.GOOGLE);
-        createNotificationTask(newParams);
-		
-        //email
-        newParams.put("service", Commons.MAIL);
-        createNotificationTask(newParams);
-        
-        //Hotels notification
-        newParams.put("type", "Hotels");
-        
-        newParams.put("service", Commons.FACEBOOK);
-		createNotificationTask(newParams);
-		
-		newParams.put("service", Commons.TWITTER);
-        createNotificationTask(newParams);
-        
-        newParams.put("service", Commons.GOOGLE);
-        createNotificationTask(newParams);
-	}
-	
-	public static void createRouteCreationNotificationTask(Map<String, String> params) {
-		Map<String, String> newParams = new HashMap<String, String>(params);
-		//FacebookUtils
-		newParams.put("service", Commons.FACEBOOK);
-		createNotificationTask(newParams);
-		
-		//TwitterUtils
-		newParams.put("service", Commons.TWITTER);
-        createNotificationTask(newParams);
-		
-        //GoogleBloggerUtils
-        newParams.put("service", Commons.GOOGLE);
-        createNotificationTask(newParams);	
-  }
-	
-	public static void createImageCreationNotificationTask(Map<String, String> params) {
-		
-		Map<String, String> newParams = new HashMap<String, String>(params);
-		
-		//FacebookUtils
-		newParams.put("service", Commons.FACEBOOK);
-		createNotificationTask(newParams);
-		
-		//TwitterUtils
-		newParams.put("service", Commons.TWITTER);
-        createNotificationTask(newParams);
-		
-        //GoogleBloggerUtils
-        newParams.put("service", Commons.GOOGLE);
-        createNotificationTask(newParams);
 	}
 	
 	public static String sendImageCreationNotification(Map<String, String[]> params) {

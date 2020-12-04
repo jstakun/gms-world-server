@@ -10,7 +10,7 @@
 
     <properties>
         <appengine.app.version>1</appengine.app.version>
-        <appengine.target.version>1.9.42</appengine.target.version>
+        <appengine.target.version>1.9.78</appengine.target.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.target>1.7</maven.compiler.target>
         <maven.compiler.source>1.7</maven.compiler.source>
@@ -85,9 +85,17 @@
             </plugin>
 
             <plugin>
-                <groupId>com.google.appengine</groupId>
+                <groupId>com.google.cloud.tools</groupId>
                 <artifactId>appengine-maven-plugin</artifactId>
-                <version>${appengine.target.version}</version>
+                <version>1.3.2</version>
+                <configuration>
+                    <port>8080</port>
+                    <host>work</host>
+                    <address>0.0.0.0</address>
+                    <deploy.version>1</deploy.version>
+                    <deploy.project>gms-blogeo</deploy.project>
+                    <deploy.stopPreviousVersion>true</deploy.stopPreviousVersion>
+                </configuration>
             </plugin>
         </plugins>
     </build>
