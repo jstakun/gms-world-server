@@ -356,23 +356,18 @@ public class NotificationUtils {
     			if (StringUtils.isNotEmpty(city)) {
                 	desc += "in " + city + ", ";
                 } else {
-                	desc += "somewhere in ";
+                	desc += "around ";
                 }
                 if (StringUtils.isNotEmpty(cc)) {
                 	Locale l = new Locale("", cc);
                 	String country = l.getDisplayCountry();
                 	if (StringUtils.isNotEmpty(country)) {
-                		desc+= country;
+                		desc+= country + " ";
                 	} else {
-                		desc += "...";
+                		desc += "... ";
                 	}
-                } else {
-                	desc += "...";
-                }
+                } 
                 if (cheapestPrice != null) {
-    				if (StringUtils.isNotEmpty(name)) {
-    					desc += " ";
-    				}
     				desc += "from " + cheapestPrice + " per night";
     			}
                 name = desc;

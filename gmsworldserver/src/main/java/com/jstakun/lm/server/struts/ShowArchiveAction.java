@@ -64,17 +64,16 @@ public class ShowArchiveAction extends org.apache.struts.action.Action {
         request.setAttribute("month", m);
         
         final String monthStr = month;
-        CacheAction landmarkCountCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
-			public Object executeAction() {
-				if (UserAgentUtils.isBot(request.getHeader("User-Agent"))) {
-	            	return 0;
-	            } else {
-	            	return LandmarkPersistenceUtils.countLandmarksByMonth(monthStr);
-	            }
-			}
-        });
-        int count = (Integer) landmarkCountCacheAction.getObjectFromCache(month + "-count", CacheType.NORMAL);
-
+        int count = 0;
+        if (!UserAgentUtils.isBot(request.getHeader("User-Agent"))) {
+        	CacheAction landmarkCountCacheAction = new CacheAction(new CacheAction.CacheActionExecutor() {			
+        		public Object executeAction() {
+        			return LandmarkPersistenceUtils.countLandmarksByMonth(monthStr);
+        		}
+        	});
+            count = (Integer) landmarkCountCacheAction.getObjectFromCache(month + "-count", CacheType.NORMAL);
+        }
+        
         if (count > 0) {
             if (count - first - INTERVAL > 0) {
             	next = first + INTERVAL;
