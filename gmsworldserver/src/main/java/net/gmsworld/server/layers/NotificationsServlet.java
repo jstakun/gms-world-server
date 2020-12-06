@@ -263,9 +263,9 @@ public class NotificationsServlet extends HttpServlet {
 								// check if chat id is on white list
 								if (NotificationPersistenceUtils.isVerified(telegramId)) {
 									if (!CacheUtil.containsKey(telegramId + ":blocked")) {
-										int status = TelegramUtils.sendTelegram(telegramId, message);
+										Integer status = TelegramUtils.sendTelegram(telegramId, message);
 										boolean blocked = false;
-										if (status == 403) {
+										if (status != null && status == 403) {
 											logger.log(Level.SEVERE, "Our bot has been blocked by user " + telegramId);
 											blocked = true;
 											CacheUtil.put(telegramId + ":blocked", "1", CacheType.NORMAL);
@@ -273,7 +273,7 @@ public class NotificationsServlet extends HttpServlet {
 										}
 										if (!blocked && GeocodeUtils.isValidLatitude(latitude) && GeocodeUtils.isValidLongitude(longitude)) {
 											status = TelegramUtils.sendLocationTelegram(telegramId, latitude, longitude);
-											if (status == 403) {
+											if (status != null && status == 403) {
 												logger.log(Level.SEVERE, "Our bot has been blocked by user " + telegramId);
 												blocked = true;
 												CacheUtil.put(telegramId + ":blocked", "1", CacheType.NORMAL);
@@ -472,7 +472,7 @@ public class NotificationsServlet extends HttpServlet {
 					logger.log(Level.INFO, "Skipping sending registration request...");
 				} else if (!CacheUtil.containsKey("mailto:"+email+":invalid")) {
 					int verificationStatus;
-					if (skipVerify) {
+					if (skipVerify || StringUtils.endsWith(email, "@icloud.com")) {
 						verificationStatus = 200;
 					} else {
 						verificationStatus = MailUtils.emailAccountExists(email);
