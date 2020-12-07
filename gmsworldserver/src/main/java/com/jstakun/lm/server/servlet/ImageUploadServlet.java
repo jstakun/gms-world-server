@@ -67,7 +67,8 @@ public class ImageUploadServlet extends HttpServlet {
 			final boolean silent = StringUtils.equals(request.getHeader(Commons.SILENT_HEADER), "true");
 			final String bucketName =  request.getHeader(Commons.BUCKET_NAME_HEADER);
 			final String deviceName =  request.getHeader(Commons.DEVICE_NAME_HEADER);
-
+			final String deviceId =  request.getHeader(Commons.DEVICE_ID_HEADER);
+			
 			if (CacheUtil.containsKey(cacheKey)) {
 				logger.log(Level.WARNING, "This screenshot is similar to newest: " + cacheKey);
 			} else if (((!Double.isNaN(lat) && !Double.isNaN(lng)) || (StringUtils.isNotEmpty(bucketName) && silent)) && isMultipart) {
@@ -91,10 +92,18 @@ public class ImageUploadServlet extends HttpServlet {
 							} else {
                                 //save image
 								FileUtils.saveFileV2(bucketName, itemName, screenshot, lat, lng);
+								//save image info
+								String username = "";
+								if (StringUtils.isNotEmpty(deviceId)) {
+									username = deviceId;
+								} else if (StringUtils.isNotEmpty(deviceName)) {
+									username = deviceName;
+								} else {
+									username = StringUtil.getUsername(request.getAttribute("username"), request.getHeader("username"));	
+								}
+								final String key = ScreenshotPersistenceUtils.persist(username, lat, lng, itemName);
                                 //send social notification
 								if (!silent) {
-									String username = StringUtil.getUsername(request.getAttribute("username"), request.getHeader("username"));
-									String key = ScreenshotPersistenceUtils.persist(username, lat, lng, itemName);
 									if (key != null) {
 										String imageUrl = ConfigurationManager.SERVER_URL + "image/" + key;
 										String showImageUrl = ConfigurationManager.SERVER_URL + "showImage/" + key;
@@ -141,8 +150,9 @@ public class ImageUploadServlet extends HttpServlet {
 									if (StringUtils.isNotEmpty(output)) {
 										String message  = "New image saved at: " + output;
 										if (!Double.isNaN(lat) && !Double.isNaN(lng)) {
-											message += "\nTaken at: https://maps.google.com/maps?q=" + StringUtil.formatCoordE6(lat) + "," + StringUtil.formatCoordE6(lng);  
+											message += "\nTaken at: https://maps.google.com/maps?q=" + StringUtil.formatCoordE6(lat) + "," + StringUtil.formatCoordE6(lng);
 										}
+										message +=  "\nKey: " + key;
 										String title = "New image";
 										if (StringUtils.isNotEmpty(deviceName)) {
 											title += " from device " + deviceName;

@@ -43,7 +43,7 @@ public class ScreenshotPersistenceUtils {
         	if (username != null) {
         		params += "&username=" + URLEncoder.encode(username, "UTF-8");
         	}
-        	final String landmarksJson = HttpUtils.processFileRequest(new URL(landmarksUrl + "?" + params));
+        	final String landmarksJson = HttpUtils.processFileRequest(new URL(landmarksUrl), "POST", null, params);
         	if (StringUtils.startsWith(StringUtils.trim(landmarksJson), "{")) {
         		JSONObject resp = new JSONObject(landmarksJson);
         		key = resp.optString("id");
