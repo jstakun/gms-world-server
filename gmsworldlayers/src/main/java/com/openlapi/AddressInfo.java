@@ -355,4 +355,17 @@ public class AddressInfo implements Externalizable {
 	public void setFields(String[] fields) {
 		this.fields = fields;
 	}
+	
+	public String toString() {
+		String response = "";
+		for (int i=1;i<= NUM_FIELDS;i++) {
+			if (getField(i) != null) {
+				if (response.length() > 0) {
+					response += ", ";
+				}
+				 response += i + ": " + getField(i); 
+			}
+		}
+		return response;
+	}
 }

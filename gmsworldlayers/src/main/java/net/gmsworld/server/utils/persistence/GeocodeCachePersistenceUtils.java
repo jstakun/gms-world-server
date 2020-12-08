@@ -18,6 +18,8 @@ import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.openlapi.AddressInfo;
+
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
 import net.gmsworld.server.utils.DateUtils;
@@ -34,19 +36,26 @@ public class GeocodeCachePersistenceUtils {
     private static final Logger logger = Logger.getLogger(GeocodeCachePersistenceUtils.class.getName());
     private static final String BACKEND_SERVER_URL = "https://landmarks-api.b9ad.pro-us-east-1.openshiftapps.com/api/v1"; 
     
-    public static void persistGeocode(final String location, final double latitude, final double longitude, final String cc, final String city, CacheProvider cacheProvider) {
-        if (StringUtils.isNotEmpty(location)) {
+    public static void persistGeocode(final AddressInfo addressInfo, final double latitude, final double longitude, CacheProvider cacheProvider) {
+        if (addressInfo != null && StringUtils.isNotEmpty(addressInfo.getField(AddressInfo.EXTENSION))) {
         	try {
         		JSONObject flex = new JSONObject();
-        		if (StringUtils.isNotEmpty(cc)) {
-        			flex.put("cc",cc);
+        		if (StringUtils.isNotEmpty(addressInfo.getField(AddressInfo.COUNTRY_CODE))) {
+        			flex.put("cc", addressInfo.getField(AddressInfo.COUNTRY_CODE));
         		}
-        		if (StringUtils.isNotEmpty(city)) {
-        			flex.put("city",city);
+        		if (StringUtils.isNotEmpty(addressInfo.getField(AddressInfo.CITY))) {
+        			flex.put("city", addressInfo.getField(AddressInfo.CITY));
         		}
+        		if (StringUtils.isNotEmpty(addressInfo.getField(AddressInfo.STATE))) {
+        			flex.put("state", addressInfo.getField(AddressInfo.STATE));
+        		}
+        		if (StringUtils.isNotEmpty(addressInfo.getField(AddressInfo.COUNTY))) {
+        			flex.put("county", addressInfo.getField(AddressInfo.COUNTY));
+        		}
+        		
         		final String gUrl = BACKEND_SERVER_URL + "/addItem";
         		final String content = "type=geocode&latitude=" + StringUtil.formatCoordE6(latitude) + "&longitude=" + StringUtil.formatCoordE6(longitude) + 
-        			"&address=" + URLEncoder.encode(location, "UTF-8") + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY) + "&flex=" + URLEncoder.encode(flex.toString(), "UTF-8");
+        			"&address=" + URLEncoder.encode(addressInfo.getField(AddressInfo.EXTENSION), "UTF-8") + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY) + "&flex=" + URLEncoder.encode(flex.toString(), "UTF-8");
         		final String gJson = HttpUtils.processFileRequest(new URL(gUrl), "POST", null, content);
         		logger.log(Level.INFO, "Received response: " + gJson);
         		if (cacheProvider != null) {

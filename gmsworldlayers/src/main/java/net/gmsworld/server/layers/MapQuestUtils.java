@@ -54,37 +54,30 @@ public class MapQuestUtils extends GeocodeHelper {
                             jsonResponse.put("message", "No matching place found");
                             logger.log(Level.WARNING, "Selected location is too inaccurate");
                         } else {
-                        	String text = locationJson.optString("adminArea5");
-        					String city = null;
-        					if (text != null) {
-        						String decomposed = Normalizer.normalize(text, Normalizer.Form.NFD);
-        						city = decomposed.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");       		    
-        					}
-        				
-                			String cc = locationJson.optString("adminArea1");
-                		
-        					try {
-        						GeocodeCachePersistenceUtils.persistGeocode(location, lat, lng, cc, city, cacheProvider);
-        						if (persistAsLandmark) {
-        							String name = WordUtils.capitalize(location, delim);
-        							JSONObject flex = new JSONObject();
-                         	   		if (StringUtils.isNotEmpty(cc) && StringUtils.isNotEmpty(city)) {
-                         	   			flex.put("cc", cc);
-                         	   			flex.put("city", city);
-                         	   		}
-                         	   		if (appId >= 0) {
-                         	   			flex.put("appId", appId);
-                         	   		}
-                         	   		Landmark l = new Landmark();
-                         	   		l.setName(name);
-                         	   		l.setLatitude(lat);
-                         	   		l.setLongitude(lng);
-                         	   		l.setUsername("geocode");
-                         	   		l.setLayer(Commons.GEOCODES_LAYER);
-                         	   		l.setEmail(email);
-                         	   		l.setFlex(flex.toString());
-                         	   		LandmarkPersistenceUtils.persistLandmark(l, cacheProvider);
+                        	try {
+                        		AddressInfo addressInfo = getAddressInfo(locationJson);
+            					if (addressInfo != null) {
+            						GeocodeCachePersistenceUtils.persistGeocode(addressInfo, lat, lng, cacheProvider);
+            						if (persistAsLandmark) {
+            							JSONObject flex = new JSONObject();
+                         	   			if (StringUtils.isNotEmpty(addressInfo.getField(AddressInfo.COUNTRY_CODE)) && StringUtils.isNotEmpty(addressInfo.getField(AddressInfo.CITY))) {
+                         	   				flex.put("cc", addressInfo.getField(AddressInfo.COUNTRY_CODE));
+                         	   				flex.put("city", addressInfo.getField(AddressInfo.CITY));
+                         	   			}
+                         	   			if (appId >= 0) {
+                         	   				flex.put("appId", appId);
+                         	   			}
+                         	   			Landmark l = new Landmark();
+                         	   			l.setName(WordUtils.capitalize(location, delim));
+                         	   			l.setLatitude(lat);
+                         	   			l.setLongitude(lng);
+                         	   			l.setUsername("geocode");
+                         	   			l.setLayer(Commons.GEOCODES_LAYER);
+                         	   			l.setEmail(email);
+                         	   			l.setFlex(flex.toString());
+                         	   			LandmarkPersistenceUtils.persistLandmark(l, cacheProvider);
         						}
+            					}
         					} catch (Exception ex) {
         						logger.log(Level.SEVERE, ex.getMessage(), ex);
         					}
@@ -137,61 +130,15 @@ public class MapQuestUtils extends GeocodeHelper {
                 	JSONArray locations = first.getJSONArray("locations");
                 	if (locations.length() > 0) {
                 		JSONObject location = locations.getJSONObject(0);
+                		addressInfo = getAddressInfo(location);
                 		
-                		//street 	Street address 	
-                		//adminArea5 	City name 	
-                		//adminArea4 	County name 	
-                		//adminArea3 	State name 	
-                		//adminArea1 	Country name 	
-                		//postalCode 	Postal code
-                		addressInfo = new AddressInfo();
-                		
-                		String temp = location.optString("street");
-                		if (StringUtils.isNotEmpty(temp)) {
-                			addressInfo.setField(AddressInfo.STREET, temp);
-                		}
-                		temp = location.optString("adminArea5");
-                		if (StringUtils.isNotEmpty(temp)) {
-                			String decomposed = Normalizer.normalize(temp, Normalizer.Form.NFD);
-            				String city = decomposed.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");       		    
-            				addressInfo.setField(AddressInfo.CITY, city);
-                		}
-                		temp = location.optString("adminArea4");
-                		if (StringUtils.isNotEmpty(temp)) {
-                			addressInfo.setField(AddressInfo.COUNTY, temp);
-                		}
-                		temp = location.optString("adminArea3");
-                		if (StringUtils.isNotEmpty(temp)) {
-                			addressInfo.setField(AddressInfo.STATE, temp);
-                		}
-                		temp = location.optString("adminArea1");
-                		if (StringUtils.isNotEmpty(temp)) {
-                			addressInfo.setField(AddressInfo.COUNTRY_CODE, temp); 
-                			/*for (Locale l : Locale.getAvailableLocales()) {
-                				if (StringUtils.equalsIgnoreCase(l.getCountry(), temp)) {
-                					addressInfo.setField(AddressInfo.COUNTRY,l.getDisplayCountry());
-                					break;
-                				}
-                			}*/
-                			Locale l = new Locale("", temp);
-                			String country = l.getDisplayCountry();
-                			if (country == null) {
-                				country = temp;
-                			}
-                			addressInfo.setField(AddressInfo.COUNTRY, country);
-                		}
-                		temp = location.optString("postalCode");
-                		if (StringUtils.isNotEmpty(temp)) {
-                			addressInfo.setField(AddressInfo.POSTAL_CODE, temp);
-                		}
-                		
-                		addressInfo.setField(AddressInfo.EXTENSION, JSONUtils.formatAddress(addressInfo));
                 		//persist geocode
-                		GeocodeCachePersistenceUtils.persistGeocode(addressInfo.getField(AddressInfo.EXTENSION), lat, lng, addressInfo.getField(AddressInfo.COUNTRY_CODE), addressInfo.getField(AddressInfo.CITY), cacheProvider);
+            			if (addressInfo != null) {
+            				cacheProvider.put(key, addressInfo);
+            				GeocodeCachePersistenceUtils.persistGeocode(addressInfo, lat, lng, cacheProvider);
+                		}
                 		
-                		if (location.has("geocodeQuality")) {
-                			logger.log(Level.INFO, "Found reverse geocode with quality {0}", location.getString("geocodeQuality"));
-                		}	
+                		
                 	}
                 }
             } else {
@@ -270,5 +217,61 @@ public class MapQuestUtils extends GeocodeHelper {
 		
 		return response;
 	}
-   
+	
+	private static AddressInfo getAddressInfo(JSONObject location) {
+		//street 	Street address 	
+		//adminArea5 	City name 	
+		//adminArea4 	County name 	
+		//adminArea3 	State name 	
+		//adminArea1 	Country name 	
+		//postalCode 	Postal code
+		AddressInfo addressInfo = new AddressInfo();
+		
+		String temp = location.optString("street");
+		if (StringUtils.isNotEmpty(temp)) {
+			addressInfo.setField(AddressInfo.STREET, temp);
+		}
+		temp = location.optString("adminArea5");
+		if (StringUtils.isNotEmpty(temp)) {
+			String decomposed = Normalizer.normalize(temp, Normalizer.Form.NFD);
+			String city = decomposed.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");       		    
+			addressInfo.setField(AddressInfo.CITY, city);
+		}
+		temp = location.optString("adminArea4");
+		if (StringUtils.isNotEmpty(temp)) {
+			addressInfo.setField(AddressInfo.COUNTY, temp);
+		}
+		temp = location.optString("adminArea3");
+		if (StringUtils.isNotEmpty(temp)) {
+			addressInfo.setField(AddressInfo.STATE, temp);
+		}
+		temp = location.optString("adminArea1");
+		if (StringUtils.isNotEmpty(temp)) {
+			addressInfo.setField(AddressInfo.COUNTRY_CODE, temp); 
+			/*for (Locale l : Locale.getAvailableLocales()) {
+				if (StringUtils.equalsIgnoreCase(l.getCountry(), temp)) {
+					addressInfo.setField(AddressInfo.COUNTRY,l.getDisplayCountry());
+					break;
+				}
+			}*/
+			Locale l = new Locale("", temp);
+			String country = l.getDisplayCountry();
+			if (country == null) {
+				country = temp;
+			}
+			addressInfo.setField(AddressInfo.COUNTRY, country);
+		}
+		temp = location.optString("postalCode");
+		if (StringUtils.isNotEmpty(temp)) {
+			addressInfo.setField(AddressInfo.POSTAL_CODE, temp);
+		}
+		
+		addressInfo.setField(AddressInfo.EXTENSION, JSONUtils.formatAddress(addressInfo));
+		
+		if (location.has("geocodeQuality")) {
+			logger.log(Level.INFO, "Found reverse geocode with quality {0}", location.getString("geocodeQuality"));
+		}	
+		
+		return addressInfo;
+	}
 }

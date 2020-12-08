@@ -15,6 +15,7 @@ import net.gmsworld.server.utils.persistence.Landmark;
 import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -22,6 +23,8 @@ import com.openlapi.AddressInfo;
 
 public class GoogleGeocodeUtils extends GeocodeHelper {
 
+	private static final char[] delim = new char[]{',',' '};
+	
 	@Override
 	protected JSONObject processGeocode(String addressIn, String email, int appId, boolean persistAsLandmark) {
 		JSONObject jsonResponse = new JSONObject();
@@ -36,12 +39,11 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
                     JSONArray results = json.getJSONArray("results");
                     if (results.length() > 0) {
                         JSONObject item = results.getJSONObject(0);
-                        String address = item.getString("formatted_address");
+                        
                         JSONObject geometry = item.getJSONObject("geometry");
                         JSONObject location = geometry.getJSONObject("location");
-                        
                         String location_type = geometry.getString("location_type");
-                        
+                     
                         logger.log(Level.INFO, "Geocode precision is " + location_type);
                         
                         double lat = location.getDouble("lat");
@@ -60,41 +62,30 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
                         	jsonResponse.put("type", "g");
 
                         	try {
-                        		JSONArray address_components = item.getJSONArray("address_components");
-                        		String cc = null, city = null;
-                        		for (int i = 0;i < address_components.length(); i++) {
-                        			JSONObject address_component = address_components.getJSONObject(i);
-                        			JSONArray types = address_component.getJSONArray("types");
-                        			for (int j=0;j<types.length();j++) {
-                        				String type = types.getString(j);
-                        				if (StringUtils.equals(type, "country")) {
-                               				cc = address_component.getString("short_name");
-                        				} else if (StringUtils.equals(type, "locality")) {
-                        					city = address_component.getString("long_name");
-                        				} 
-                        			}
-                        		}
+                        		AddressInfo addressInfo = getAddressInfo(geocodeResponse);
                         		
-                        		GeocodeCachePersistenceUtils.persistGeocode(addressIn, lat, lng, cc, city, cacheProvider);
+                        		if (addressInfo != null) {
+                        			GeocodeCachePersistenceUtils.persistGeocode(addressInfo, lat, lng, cacheProvider);
                         	   
-                        		if (persistAsLandmark) {
-                                	JSONObject flex = new JSONObject();
-                        			if (StringUtils.isNotEmpty(cc) && StringUtils.isNotEmpty(city)) {
-                        				flex.put("cc", cc);
-                        				flex.put("city", city);
+                        			if (persistAsLandmark) {
+                        				JSONObject flex = new JSONObject();
+                        				if (StringUtils.isNotEmpty(addressInfo.getField(AddressInfo.COUNTRY_CODE)) && StringUtils.isNotEmpty(addressInfo.getField(AddressInfo.CITY))) {
+                         	   				flex.put("cc", addressInfo.getField(AddressInfo.COUNTRY_CODE));
+                         	   				flex.put("city", addressInfo.getField(AddressInfo.CITY));
+                         	   			}
+                        				if (appId >= 0) {
+                        					flex.put("appId", appId);
+                        				}
+                        				Landmark l = new Landmark();
+                        				l.setName(WordUtils.capitalize(addressIn, delim));
+                        				l.setLatitude(lat);
+                        				l.setLongitude(lng);
+                        				l.setUsername("geocode");
+                        				l.setLayer(Commons.GEOCODES_LAYER);
+                        				l.setEmail(email);
+                        				l.setFlex(flex.toString());
+                        				LandmarkPersistenceUtils.persistLandmark(l, cacheProvider);
                         			}
-                        			if (appId >= 0) {
-                        				flex.put("appId", appId);
-                        			}
-                        			Landmark l = new Landmark();
-                        			l.setName(address);
-                        			l.setLatitude(lat);
-                        			l.setLongitude(lng);
-                        			l.setUsername("geocode");
-                        			l.setLayer(Commons.GEOCODES_LAYER);
-                        			l.setEmail(email);
-                        			l.setFlex(flex.toString());
-                        			LandmarkPersistenceUtils.persistLandmark(l, cacheProvider);
                         		}
                         	} catch (Exception ex) {
                                 logger.log(Level.SEVERE, ex.getMessage(), ex);
@@ -140,7 +131,8 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
         if (addressInfo == null) {      
         	try {
                 URL geocodeUrl = new URL("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + coords + "&language=en&key=" + Commons.getProperty(Property.GOOGLE_API_KEY));
-                addressInfo = getAddressInfo(geocodeUrl);
+                String geocodeResponse = HttpUtils.processFileRequest(geocodeUrl);
+                addressInfo = getAddressInfo(geocodeResponse);
             } catch (Exception ex) {
                 logger.log(Level.SEVERE, ex.getMessage(), ex);
             }
@@ -148,7 +140,7 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
             if (addressInfo != null && StringUtils.isNotEmpty(addressInfo.getField(AddressInfo.EXTENSION))) {
             	cacheProvider.put(key, addressInfo);
             	//persist geocode
-            	GeocodeCachePersistenceUtils.persistGeocode(addressInfo.getField(AddressInfo.EXTENSION), lat, lng, addressInfo.getField(AddressInfo.COUNTRY_CODE), addressInfo.getField(AddressInfo.CITY), cacheProvider);
+            	GeocodeCachePersistenceUtils.persistGeocode(addressInfo, lat, lng, cacheProvider);
             }
         } else {
             logger.log(Level.INFO, "Reading Google geocode from cache with key {0}", addressInfo.getField(AddressInfo.EXTENSION));
@@ -162,9 +154,8 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
 		throw new Exception("Service not implemented");
 	}
 	
-	private AddressInfo getAddressInfo(URL geocodeUrl) throws IOException {
+	private AddressInfo getAddressInfo(String geocodeResponse) throws IOException {
 		AddressInfo addressInfo = null;
-		String geocodeResponse = HttpUtils.processFileRequest(geocodeUrl);
 		if (geocodeResponse != null) {
             JSONObject json = new JSONObject(geocodeResponse);
             String status = json.getString("status");
@@ -191,8 +182,11 @@ public class GoogleGeocodeUtils extends GeocodeHelper {
                     		    addressInfo.setField(AddressInfo.CITY, removed);
                     		} else if (StringUtils.equals(type, "route")) {
                     			addressInfo.setField(AddressInfo.STREET, address_component.getString("long_name"));
-                    		} //else if (StringUtils.equals(type, "street_address")) {
-                    		//} 
+                    		} else if (StringUtils.equals(type,  "administrative_area_level_1")) {
+                    			addressInfo.setField(AddressInfo.STATE, address_component.getString("long_name"));
+                    		} else if (StringUtils.equals(type,  "administrative_area_level_2")) {
+                    			addressInfo.setField(AddressInfo.COUNTY, address_component.getString("long_name"));
+                    		} 
                     	}
                     }
                 }

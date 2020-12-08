@@ -85,12 +85,16 @@ public class ImageUploadServlet extends HttpServlet {
 					if (StringUtils.startsWith(itemName, "screenshot")) {
 						byte[] screenshot = IOUtils.toByteArray(item.openStream());
 						if (screenshot != null && screenshot.length > 3) {
-							itemName = System.currentTimeMillis() + "_" + itemName;
 							if (ImageUtils.isBlackImage(screenshot)) {
 								logger.log(Level.SEVERE, "This image is black and won't be saved.");
 								output = "Image is black.";
 							} else {
-                                //save image
+								if (StringUtils.isNotEmpty(deviceName)) {
+									itemName = System.currentTimeMillis() + "_" + deviceName + "_" + itemName;
+								} else {
+									itemName = System.currentTimeMillis() + "_" + itemName;
+								}
+								//save image
 								FileUtils.saveFileV2(bucketName, itemName, screenshot, lat, lng);
 								//save image info
 								String username = "";
