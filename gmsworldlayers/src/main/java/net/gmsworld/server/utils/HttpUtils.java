@@ -165,6 +165,7 @@ public class HttpUtils {
             	logger.log(Level.WARNING, "Received http status code {0} for url {1}", new Object[]{responseCode, urlSafe});   
             } else if (responseCode > 200) {
             	logger.log(Level.INFO, "Received http status code {0} for url {1}", new Object[]{responseCode, urlSafe});
+                is = conn.getInputStream(); 
             }
             
             if (responseCode != HttpServletResponse.SC_NO_CONTENT && is != null) {

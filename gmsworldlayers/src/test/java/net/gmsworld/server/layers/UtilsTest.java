@@ -17,7 +17,7 @@ public class UtilsTest {
 
 	@Test
 	public void test() {
-		String longUrl = ConfigurationManager.SSL_SERVER_URL;
+		String longUrl = ConfigurationManager.SSL_SERVER_URL + "/showLandmark/1982";
 		String shortUrl1 = UrlUtils.getShortUrl(longUrl);
 		System.out.println("Short url #1: " + shortUrl1);
 		assertNotEquals("Shortening url 1 failed!", longUrl, shortUrl1);
@@ -29,7 +29,7 @@ public class UtilsTest {
 		String shortImgUrl = UrlUtils.getImageShortUrl(imgUrl);
 		System.out.println("Img url: " + shortImgUrl);
 			
-		System.out.println(UrlUtils.findWhois("google.com"));
+		//System.out.println(UrlUtils.findWhois("google.com"));
 	}
 	
 	public void geocodeTest() {
