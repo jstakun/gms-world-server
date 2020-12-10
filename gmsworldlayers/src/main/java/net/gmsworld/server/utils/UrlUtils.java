@@ -22,7 +22,7 @@ import net.gmsworld.server.utils.persistence.Landmark;
  */
 public class UrlUtils {
 
-	public final static String BITLY_URL = "http://bit.ly/";
+	public final static String BITLY_URL = "https://bit.ly/";
     
 	private static final Logger logger = Logger.getLogger(UrlUtils.class.getName());
     private static final long DB_MIGRATION_DATE = 1373846399000L; //14-07-13 23:59:59
@@ -226,7 +226,7 @@ public class UrlUtils {
     		shortUrl = shortenUrlWithBitly(longUrl);
     	}
     	if (StringUtils.startsWith(shortUrl, BITLY_URL)) {
-    		return shortUrl.substring(14);
+    		return shortUrl.substring(15);
     	} else {
     		return null;
     	}
