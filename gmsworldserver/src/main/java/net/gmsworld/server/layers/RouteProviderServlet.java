@@ -83,7 +83,7 @@ public class RouteProviderServlet extends HttpServlet {
                 		RoutesUtils.saveImage(pathKey, route, request.isSecure(), lat_start, lng_start) ;	
                 			
                 		//send route creation social notification
-                		String imageUrl = ConfigurationManager.SERVER_URL + "image?lat_start=" + lat_startStr + "&lng_start=" + lng_startStr + "&lat_end=" + lat_endStr + "&lng_end=" + lng_endStr;
+                		String imageUrl = UrlUtils.getShortUrl(ConfigurationManager.SERVER_URL + "image?lat_start=" + lat_startStr + "&lng_start=" + lng_startStr + "&lat_end=" + lat_endStr + "&lng_end=" + lng_endStr);
                 		String showRouteUrl = UrlUtils.getShortUrl(ConfigurationManager.SERVER_URL + "showRoute/" + lat_startStr + "/" + lng_startStr + "/" + lat_endStr + "/" + lng_endStr);
                 			
                 		String routeType = StringUtils.split(type,"/")[0];

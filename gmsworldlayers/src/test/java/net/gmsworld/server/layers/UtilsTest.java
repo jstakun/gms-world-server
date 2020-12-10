@@ -25,6 +25,10 @@ public class UtilsTest {
 		System.out.println("Short url #2: " + shortUrl2);
 		//assertNotEquals("Shortening url 2 failed!", longUrl, shortUrl2);
 		
+		String imgUrl = "https://storage.cloud.google.com/my-bucket/1607568518570_Samsung-SM-A505GT_screenshot_device_locator.jpg";
+		String shortImgUrl = UrlUtils.getShortUrl(imgUrl);
+		System.out.println("Img url: " + shortImgUrl);
+			
 		System.out.println(UrlUtils.findWhois("google.com"));
 	}
 	

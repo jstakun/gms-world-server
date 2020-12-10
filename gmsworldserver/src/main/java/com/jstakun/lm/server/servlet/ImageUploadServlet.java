@@ -118,7 +118,7 @@ public class ImageUploadServlet extends HttpServlet {
 										} else {
 											logger.log(Level.INFO, "This screenshot is not linked with any landmark");
 										}
-										showImageUrl = UrlUtils.getShortUrl(showImageUrl);
+										showImageUrl = UrlUtils.getImageShortUrl(showImageUrl);
 										CacheUtil.put(cacheKey, "1", CacheType.FAST);
 										//load image from imageUrl and check if it is black
 										byte[] uploadedImage = null;
@@ -150,7 +150,7 @@ public class ImageUploadServlet extends HttpServlet {
 									}
 								} else {
 									//don't send social notification
-									output = UrlUtils.getShortUrl(FileUtils.getImageUrlV2(bucketName, itemName, false, true));
+									output = UrlUtils.getImageShortUrl(FileUtils.getImageUrlV2(bucketName, itemName, false, true));
 									if (StringUtils.isNotEmpty(output)) {
 										String message  = "New image saved at: " + output;
 										if (!Double.isNaN(lat) && !Double.isNaN(lng)) {
