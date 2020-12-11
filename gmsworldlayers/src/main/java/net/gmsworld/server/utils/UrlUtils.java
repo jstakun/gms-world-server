@@ -141,14 +141,6 @@ public class UrlUtils {
         }
         return respUrl;
     }
-    
-    public static String getImageShortUrl(final String longUrl) {
-    	String respUrl = longUrl;
-        if (longUrl != null && !StringUtils.startsWith(longUrl, BITLY_URL)) {
-           respUrl = getGoogleShortUrl(longUrl);
-        }
-        return respUrl;
-    }
 
     public static String getLandmarkUrl(Landmark landmark) {
         String hash = landmark.getHash();

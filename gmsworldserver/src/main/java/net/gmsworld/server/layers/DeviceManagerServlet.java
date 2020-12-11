@@ -149,7 +149,7 @@ public final class DeviceManagerServlet extends HttpServlet {
 			        	 count = CacheUtil.increment(commandKey);
 			        	 if (StringUtils.equalsIgnoreCase(action, "reset_quota")) {
 			        		 CacheUtil.put(commandKey, 0, CacheType.NORMAL);
-			        		 MailUtils.sendAdminMail("Quota reset request", "Quota reset for " + commandKey + " has been requested");
+			        		 MailUtils.sendQuotaResetMail(StringUtils.split(commandKey, "_")[0], imei, command);
 			        		 logger.log(Level.INFO, "Command " + commandKey + " has been reset to 0");
 			        		 status = 1;
 			        		 persistDeviceLocation(deviceId, deviceName, username, latitude, longitude, accuracy);

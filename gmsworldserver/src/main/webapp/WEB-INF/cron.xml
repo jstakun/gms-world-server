@@ -11,7 +11,7 @@
   </cron>
   <cron>
     <url>/cron/taskExecute?action=purge&amp;entity=screenshot</url>
-    <description>Clean up screenshots older than 60 days</description>
+    <description>Clean up screenshots older than 180 days</description>
     <schedule>every day 04:30</schedule>
   </cron>
   <cron>

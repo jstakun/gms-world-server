@@ -168,6 +168,12 @@ public class MailUtils {
     public static void sendAdminMail(String title, String message) {
     	sendSesMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, title, message, "text/plain", null, null);
     }
+    
+    public static void sendQuotaResetMail(String fromDevice, String toDevice, String command) {
+    	String message = "Quota reset for sending command " + command + " from device " + ConfigurationManager.SSL_SERVER_URL + "showDevice/" + fromDevice 
+    			                   + " to device " +   ConfigurationManager.SSL_SERVER_URL + "showDevice/" + toDevice; 
+    	sendSesMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, "Quota reset request", message, "text/plain", null, null);
+    }
 
     public static String sendLandmarkCreationNotification(String title, String body) {
         return sendSesMail(ConfigurationManager.SUPPORT_MAIL, ConfigurationManager.ADMIN_NICK, "jstakun.appspot@gmail.com", ConfigurationManager.ADMIN_NICK, title, body, "text/plain", null, null);
