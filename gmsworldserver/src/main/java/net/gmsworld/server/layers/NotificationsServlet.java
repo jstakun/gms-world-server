@@ -51,7 +51,13 @@ public class NotificationsServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(NotificationsServlet.class.getName());
 	private static final long ONE_DAY = 1000 * 60 * 60 * 24;
-
+	
+	private static final String MAIL_KEY_PREFIX = "mailto:";
+	private static final String MAIL_KEY_SUFFIX_VERIFIED = ":verified";
+	private static final String MAIL_KEY_SUFFIX_SENT = ":sent";
+	private static final String MAIL_KEY_SUFFIX_INVALID = ":invalid";
+	private static final String MAIL_KEY_SUFFIX_FAILED = ":failed";
+	
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
@@ -454,23 +460,23 @@ public class NotificationsServlet extends HttpServlet {
 			reply = new JSONObject().put("status", "blacklisted").put("code", HttpServletResponse.SC_BAD_REQUEST);
 		} else if (StringUtils.isNotEmpty(email)) {
 			if (NotificationPersistenceUtils.isVerified(email)) {
-				if (CacheUtil.containsKey("mailto:"+email+":verified")) {
+				if (CacheUtil.containsKey(MAIL_KEY_PREFIX+email+MAIL_KEY_SUFFIX_VERIFIED)) {
 					logger.log(Level.INFO, "Skipping sending registration notification...");
 				} else {
 					final Notification n = NotificationPersistenceUtils.setVerified(email, true);
 					if (n != null) {
 						final String status = MailUtils.sendDeviceLocatorRegistrationNotification(email, email, n.getSecret(), this.getServletContext(), deviceName, deviceId, language);
 						if (StringUtils.equalsIgnoreCase(status, MailUtils.STATUS_OK)) {
-							CacheUtil.put("mailto:"+email+":verified", n.getSecret(), CacheType.FAST);
+							CacheUtil.put(MAIL_KEY_PREFIX+email+MAIL_KEY_SUFFIX_VERIFIED, n.getSecret(), CacheType.FAST);
 						}
 					}
 				}
 				reply = new JSONObject().put("status", "registered");
 			} else if (appVersion >= 30) {
-				if (CacheUtil.containsKey("mailto:"+email+":sent")) {
-					reply = new JSONObject().put("status", "unverified").put("secret", CacheUtil.getObject("mailto:"+email+":sent"));
+				if (CacheUtil.containsKey(MAIL_KEY_PREFIX+email+MAIL_KEY_SUFFIX_SENT)) {
+					reply = new JSONObject().put("status", "unverified").put("secret", CacheUtil.getObject(MAIL_KEY_PREFIX+email+MAIL_KEY_SUFFIX_SENT));
 					logger.log(Level.INFO, "Skipping sending registration request...");
-				} else if (!CacheUtil.containsKey("mailto:"+email+":invalid")) {
+				} else if (!CacheUtil.containsKey(MAIL_KEY_PREFIX+email+MAIL_KEY_SUFFIX_INVALID)) {
 					int verificationStatus;
 					if (skipVerify || StringUtils.endsWith(email, "@icloud.com")) {
 						verificationStatus = 200;
@@ -478,6 +484,7 @@ public class NotificationsServlet extends HttpServlet {
 						verificationStatus = MailUtils.emailAccountExists(email);
 					}
 					if (verificationStatus == 200) {
+						//verification successful or skipVerify=true
 						Notification n = NotificationPersistenceUtils.setVerified(email, false);
 						String status = null;
 						if (appVersion >= 69) {
@@ -491,23 +498,37 @@ public class NotificationsServlet extends HttpServlet {
 						}
 						if (StringUtils.equals(status, "ok")) {
 							reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
-							CacheUtil.put("mailto:"+email+":sent", n.getSecret(), CacheType.FAST);
+							CacheUtil.put(MAIL_KEY_PREFIX+email+MAIL_KEY_SUFFIX_SENT, n.getSecret(), CacheType.FAST);
 						} else {
 							reply = new JSONObject().put("status", status);
 						}
-					} else if (verificationStatus >= 500) {
+					} else if (verificationStatus == 500) {
+						//verification failed 500
+						logger.log(Level.SEVERE, email + " verification failed with code " + verificationStatus);
+						if (!CacheUtil.containsKey(MAIL_KEY_PREFIX+email+MAIL_KEY_SUFFIX_FAILED)) {
+							CacheUtil.put(MAIL_KEY_PREFIX+email+MAIL_KEY_SUFFIX_FAILED, "1", CacheType.FAST);
+							//retry verification
+							reply = registerEmail(email, skipVerify, appVersion, deviceName, deviceId, language);
+						} else {
+							//can't verify email, set skipVerify=true
+							reply = registerEmail(email, true, appVersion, deviceName, deviceId, language);
+						}
+					} else if (verificationStatus > 500) {
+						//verification failed > 500
 						logger.log(Level.SEVERE, email + " verification failed with code " + verificationStatus);
 						reply = new JSONObject().put("status", "failed").put("code", verificationStatus); 
 					} else if (verificationStatus >= 400) {
+						//verification failed < 500 && >= 400
 						logger.log(Level.SEVERE, email + " verification failed with code " + verificationStatus);
 						reply = new JSONObject().put("status", "failed").put("code", verificationStatus);
-						CacheUtil.put("mailto:"+email+":invalid", verificationStatus, CacheType.NORMAL);
+						CacheUtil.put(MAIL_KEY_PREFIX+email+MAIL_KEY_SUFFIX_INVALID, verificationStatus, CacheType.NORMAL);
 					} else {
+						//verification failed for other reason
 						logger.log(Level.SEVERE, email + " verification failed with code " + verificationStatus);
 						reply = new JSONObject().put("status", "failed").put("code", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 					}
 				} else {
-					final Integer code = (Integer) CacheUtil.getObject("mailto:"+email+":invalid");
+					final Integer code = (Integer) CacheUtil.getObject(MAIL_KEY_PREFIX+email+":invalid");
 					logger.log(Level.SEVERE, email + " verification failed with code " + code + ". Check older logs for root cause.");
 					reply = new JSONObject().put("status", "failed").put("code", code);
 				}
@@ -516,7 +537,7 @@ public class NotificationsServlet extends HttpServlet {
 				String status = MailUtils.sendDeviceLocatorVerificationRequest(email, email, n.getSecret(), this.getServletContext(), 0, null, null, language);
 				if (StringUtils.equals(status, "ok")) {
 					reply = new JSONObject().put("status", "unverified").put("secret", n.getSecret());
-					CacheUtil.put("mailto:"+email+":sent", n.getSecret(), CacheType.FAST);
+					CacheUtil.put(MAIL_KEY_PREFIX+email+MAIL_KEY_SUFFIX_SENT, n.getSecret(), CacheType.FAST);
 				} else {
 					reply = new JSONObject().put("status", status);
 				}
