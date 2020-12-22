@@ -109,7 +109,7 @@ public class UserForm extends DynaValidatorForm {
     }
 
     private static boolean regexPasswordValidate(String password) {
-        String regex = "^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9_-]{6,24}$";
+        String regex = "^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9_-]{6,32}$";
 
         return (password.matches(regex));
     }

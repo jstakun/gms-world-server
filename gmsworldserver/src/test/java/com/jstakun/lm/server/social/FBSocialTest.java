@@ -1,12 +1,10 @@
 package com.jstakun.lm.server.social;
 
-import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.config.ConfigurationManager;
-import net.gmsworld.server.config.Commons.Property;
-
 import org.junit.Test;
 
-import com.fasterxml.jackson.databind.jsontype.impl.AsExistingPropertyTypeSerializer;
+import net.gmsworld.server.config.Commons;
+import net.gmsworld.server.config.Commons.Property;
+import net.gmsworld.server.config.ConfigurationManager;
 
 public class FBSocialTest {
 

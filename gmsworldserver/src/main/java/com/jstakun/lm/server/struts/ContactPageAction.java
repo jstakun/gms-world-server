@@ -15,7 +15,7 @@ public class ContactPageAction extends Action {
 	@Override
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
-		saveToken(request);
+		//saveToken(request); //requires session
 		
 		if (UserAgentUtils.isMobile(request.getHeader("User-Agent"))) {
 			return mapping.findForward("mobile");

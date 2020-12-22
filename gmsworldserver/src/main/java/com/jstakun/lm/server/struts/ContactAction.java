@@ -33,7 +33,7 @@ public class ContactAction extends org.apache.struts.action.Action {
      */
     @Override
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
-        if (isTokenValid(request)) {
+        //if (isTokenValid(request)) { //requires session
         	DynaActionForm contactForm = (DynaActionForm) form;
 
         	final String subject = (String) contactForm.get("subject");
@@ -49,9 +49,9 @@ public class ContactAction extends org.apache.struts.action.Action {
         		logger.log(Level.SEVERE, ex.getMessage(), ex);
         		request.setAttribute("status","failed");
         	}
-        } else {
-        	request.setAttribute("status","failed");
-        }
+        //} else {
+        //	request.setAttribute("status","failed");
+        //}
         return mapping.findForward("success");
     }
 }

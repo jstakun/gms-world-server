@@ -25,9 +25,9 @@ public class RegisterAction extends Action {
 
     @Override
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-    	String status = "failure";
-    	if (isTokenValid(request)) {
-    		status = "success";	
+    	//String status = "failure";
+    	//if (isTokenValid(request)) { //requires session
+    	String status = "success";	
     		UserForm userForm = (UserForm)form;
         
     		final String login = StringUtils.trimToEmpty((String) userForm.get("login"));
@@ -52,7 +52,7 @@ public class RegisterAction extends Action {
     			logger.log(Level.SEVERE, e.getMessage(), e);
     			status = "failure";
     		}
-        }
+        //}
         return mapping.findForward(status);
     }
 
