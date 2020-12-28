@@ -68,6 +68,7 @@ public class GeoJsonProviderServlet extends HttpServlet {
 	
 	private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String json = null, layer = null;
+		final long start = System.currentTimeMillis();
 		int layerSize = 0;
 		try {
 			if (HttpUtils.isEmptyAny(request, "lat", "lng", "layer")) {
@@ -76,11 +77,11 @@ public class GeoJsonProviderServlet extends HttpServlet {
 				layer = request.getParameter("layer"); 
         		if (! UserAgentUtils.isUnknown(request.getHeader("User-Agent"))) {
 	        		response.setContentType("text/javascript;charset=UTF-8");
-	        		Double lat = GeocodeUtils.getLatitude(request.getParameter("lat"));
-	        		Double lng =  GeocodeUtils.getLongitude(request.getParameter("lng"));
-	        		Locale locale = request.getLocale();
+	        		final Double lat = GeocodeUtils.getLatitude(request.getParameter("lat"));
+	        		final Double lng =  GeocodeUtils.getLongitude(request.getParameter("lng"));
+	        		final Locale locale = request.getLocale();
 	        		String flexString = StringUtil.getLanguage(locale.getLanguage(), "en", 2);
-	        		String flexString2 = request.getParameter("sortType");
+	        		final String flexString2 = request.getParameter("sortType");
 	        		int hotelsInRangeCount = -1;
 	        		
 	        		//Searching geojson document in local in-memory cache
@@ -158,16 +159,17 @@ public class GeoJsonProviderServlet extends HttpServlet {
         	//{"type":"FeatureCollection","properties":{"layer":"Layer"},"features":[]});
         	if (!StringUtils.startsWith(json, "{")) {      		
         		JSONObject resp = new JSONObject().
-        				put("properties", new JSONObject().put("layer", layer)).
+        				put("properties", new JSONObject().
+        				put("layer", layer)).
         				put("features", new JSONArray());
 				json = resp.toString();			
 			} 
-			logger.log(Level.INFO, "Sending " + layerSize + " landmarks from layer " + layer);
-        	final String callBackJavaScripMethodName = request.getParameter("callback");
+			final String callBackJavaScripMethodName = request.getParameter("callback");
         	if (StringUtils.isAlphanumeric(callBackJavaScripMethodName)) {
         		json = callBackJavaScripMethodName + "("+ json + ");";
         	} 
         	response.getWriter().write(json);
+        	logger.log(Level.INFO, "Sending " + layerSize + " landmarks from layer " + layer + " processed in " + (System.currentTimeMillis() - start) + " millis.");
         	response.getWriter().close();
         }
 	}

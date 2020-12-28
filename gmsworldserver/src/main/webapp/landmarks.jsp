@@ -214,6 +214,7 @@
    	    	  	    data['limit'] = 100;
    	    	  	    
    	    	  	  if (xhr != null) {
+   	    	  		console.log("API request aborted.");  
    	   				xhr.abort();
     	   	      }
    	    	      $.ajaxSetup({
@@ -405,9 +406,11 @@
     	  			 	  }
           			 }	   
            		} 
+      	   } else if (results != null) {
+          	   console.log('Wrong response format: results=' + results);   
       	   } else {
-          	   console.log('Wrong response format: results.properties=' + results.properties);   
-      	   }	   
+      		   console.log('Empty response: results=null');
+           }	   
            layer_counter++;
 		   //console.log("Loaded markers from (" + layer_counter + "/" + layers.length + ") layers!");
 		   if ((layer_counter + excluded_layers) == layers.length) {
