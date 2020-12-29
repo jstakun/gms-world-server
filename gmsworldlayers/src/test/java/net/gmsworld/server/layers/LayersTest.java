@@ -209,9 +209,9 @@ public class LayersTest {
 		hotelsBookingUtils.loadHotelsAsync(lat, lng, radius, limit, "nearby", true);  
 		try {
 			ExchangeRatesApiUtils.loadAllCurrencies(cacheProvider);
-			String hotels = hotelsBookingUtils.extendFeatureCollection(lat, lng, radius, limit, "stars", locale);
+			String hotels = hotelsBookingUtils.extendFeatureCollection(lat, lng, radius, limit, "stars", locale, null);
 			System.out.println(hotels);
-			System.out.println(hotelsBookingUtils.extendFeatureCollection(14.6937, -17.44406, radius, 10, "stars", locale));
+			System.out.println(hotelsBookingUtils.extendFeatureCollection(14.6937, -17.44406, radius, 10, "stars", locale, null));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

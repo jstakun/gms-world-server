@@ -21,6 +21,7 @@ import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.utils.GoogleThreadProvider;
 import com.jstakun.lm.server.utils.UserAgentUtils;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
+import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 import com.jstakun.lm.server.utils.memcache.GoogleCacheProvider;
 
 import net.gmsworld.server.config.Commons;
@@ -125,7 +126,10 @@ public class GeoJsonProviderServlet extends HttpServlet {
 							
 							if (StringUtils.equals(layer, Commons.HOTELS_LAYER)) {
 								if (hotelsInRangeCount > 0) {
-									json = ((HotelsBookingUtils)layerHelper).extendFeatureCollection(lat, lng, radius, limit, flexString2, locale);
+									final String searchKey = HotelsBookingUtils.SEARCH_KEY_PREFIX + request.getRemoteAddr();
+									final String searchValue = StringUtil.formatCoordE2(lat) + "_" + StringUtil.formatCoordE2(lng);
+									CacheUtil.put(searchKey, searchValue, CacheType.FAST);
+									json = ((HotelsBookingUtils)layerHelper).extendFeatureCollection(lat, lng, radius, limit, flexString2, locale, searchKey);
 									if (StringUtils.startsWith(json, "{")) {
 										JSONObject layerJson = new JSONObject(json);
 										layerSize = layerJson.getJSONArray("features").length();

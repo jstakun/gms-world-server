@@ -39,6 +39,8 @@ import net.gmsworld.server.utils.ThreadManager;
 
 public class HotelsBookingUtils extends LayerHelper {
 
+	public static final String SEARCH_KEY_PREFIX = HotelsBookingUtils.class.getName() + "_Search_"; 
+	
 	public static final String HOTELS_API_URL =  "https://hotels-api.b9ad.pro-us-east-1.openshiftapps.com"; 
    
 	private static final String HOTELS_PROVIDER_URL = HOTELS_API_URL + "/camel/v1/cache/hotels/nearby/"; 
@@ -124,13 +126,15 @@ public class HotelsBookingUtils extends LayerHelper {
 		return landmarks;
 	}
 	
-	public String extendFeatureCollection(double lat, double lng, int r, int limit, String sortType, Locale locale) throws Exception {
+	public String extendFeatureCollection(double lat, double lng, int r, int limit, String sortType, Locale locale, final String searchKey) throws Exception {
 		int normalizedRadius = r;
 		if (r < 1000) {
 			normalizedRadius = r * 1000;
 		}
-		final String lngStr = StringUtil.formatCoordE2(lng);
 		final String latStr = StringUtil.formatCoordE2(lat);	
+		final String lngStr = StringUtil.formatCoordE2(lng);
+		
+		int size = 0;
 		
 		FeatureCollection hotels = getHotelsFromRemoteCache(latStr, lngStr, normalizedRadius, limit, sortType);;
 		
@@ -143,7 +147,6 @@ public class HotelsBookingUtils extends LayerHelper {
 			}
 		
 			final String hotelsUrl = hotelsUrlPrefix + latStr + "/" + lngStr + "/" + normalizedRadius + "/" + limit + "?user_key=" + Commons.getProperty(Property.RH_HOTELS_API_KEY);			
-			//logger.log(Level.INFO, "Calling: " + hotelsUrl);
 			String json = HttpUtils.processFileRequestWithBasicAuthn(new URL(hotelsUrl), null, true);
 			if (StringUtils.startsWith(json, "[")) {
 				try {
@@ -158,103 +161,107 @@ public class HotelsBookingUtils extends LayerHelper {
 			json = null;
 		}
 		
-		long start = System.currentTimeMillis();
-		logger.log(Level.INFO, "Processing hotels list with Jackson...");
+		if (StringUtils.isEmpty(searchKey) || (cacheProvider.containsKey(searchKey) && StringUtils.equals(cacheProvider.getString(searchKey), latStr + "_" + lngStr))) {
+			long start = System.currentTimeMillis();
+			logger.log(Level.INFO, "Processing hotels list with Jackson...");
 		
-		int size = 0;
-		if (hotels != null) {
-			size = hotels.getFeatures().size();
-		}
-		
-		if (size > 0) {	
-		    final Map<String, Double> exchangeRates = new HashMap<String, Double>();
-		    exchangeRates.put("EUR", 1d);
-		    final Map<Integer, Integer> starsMap = new HashMap<Integer, Integer>();
-		    final Map<Integer, Integer> pricesMap = new HashMap<Integer, Integer>();
-			
-			hotels.setProperty("layer", Commons.HOTELS_LAYER);
-			hotels.setProperty("creationDate", new Date());
-			hotels.setProperty("language", locale.getLanguage());
-			
-			final String language = locale.getLanguage();
-        	String country = locale.getCountry();
-        	String tocc = null;
-        	
-        	try {
-        		if (StringUtils.isEmpty(country) && StringUtils.isNotEmpty(language)) {
-            		if (StringUtils.equals(language, "en")) {
-            			country = "US";
-            		}  else {
-            			country = StringUtils.upperCase(language, locale);
-            		}
-    			}
-        		tocc = Currency.getInstance(new Locale(language, country)).getCurrencyCode();
-        		if (tocc != null) {
-            		hotels.setProperty("currencycode", tocc);
-            	}
-        	} catch (Exception e) {
-        		logger.log(Level.WARNING, "Error getting currency for: " + country + "," + language + "\n" + e.getMessage());
-        	}
-        	
-        	final ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource", locale);
-			
-            if (size <= 100) {
-            	final Calendar cal = Calendar.getInstance();
-            	final PrettyTime prettyTime = new PrettyTime(locale); 
-            	for (int i=0; i<size; i++) {
-            		extendFeature(hotels.getFeatures().get(i), starsMap, pricesMap, exchangeRates, tocc, cal, rb, prettyTime, locale);			
-            	}
-            } else {
-            	final int chunkSize = 50;
-            	int first = 0, last = chunkSize;
-            	ThreadManager threadManager = new ThreadManager(threadProvider);          
-            	while (first < size) {
-            		if (last > size) {
-            			last = size;
-            		}
-
-            		final Calendar cal = Calendar.getInstance();
-            		final PrettyTime prettyTime = new PrettyTime(locale); 
-                    threadManager.put(new HotelsProcessor(hotels.getFeatures().subList(first, last), starsMap, pricesMap, exchangeRates, tocc, cal, rb, prettyTime, locale));
-
-            		first = last;
-            		last += chunkSize;
-            	}
-            	threadManager.waitForThreads();
-            }
-			
-			//stats and exchange rate for hotels			    
-			hotels.setProperty("stats_price", pricesMap);
-			hotels.setProperty("stats_stars", starsMap);
-			hotels.setProperty("eurexchangerates", exchangeRates);
-			if (StringUtils.isNotEmpty(sortType)) {
-				hotels.setProperty("sortType", sortType);
+			if (hotels != null) {
+				size = hotels.getFeatures().size();
 			}
-		}
 		
-		logger.log(Level.INFO, "Processed " + size + " hotels in " + (System.currentTimeMillis()-start) + " millis.");
-				
-		if (size > 0) {
-			String hotelsJson = null;
-			try {
-				final byte[] hotelsJsonBytes = objectMapper.writeValueAsBytes(hotels);
-				hotelsJson = new String(hotelsJsonBytes);
-				
-    			if (StringUtils.isNotEmpty(hotelsJson) && cacheProvider != null) {
-    				String cKey = "geojson_" + latStr + "_" + lngStr + "_" + Commons.HOTELS_LAYER + "_" + locale.getLanguage();
-    				if (StringUtils.isNotEmpty(sortType)) {
-    					cKey += "_" + sortType;
-    				}
-    				logger.log(Level.INFO, "Saved geojson list to local in-memory cache with key: " + cKey);
-    				cacheProvider.put(cKey, hotelsJson, 1);
-    			}
-			} catch (Throwable e) {
-    			logger.log(Level.SEVERE, e.getMessage(), e);
-			} finally {
-				hotels = null;
+			if (size > 0) {	
+				final Map<String, Double> exchangeRates = new HashMap<String, Double>();
+				exchangeRates.put("EUR", 1d);
+				final Map<Integer, Integer> starsMap = new HashMap<Integer, Integer>();
+				final Map<Integer, Integer> pricesMap = new HashMap<Integer, Integer>();
+			
+				hotels.setProperty("layer", Commons.HOTELS_LAYER);
+				hotels.setProperty("creationDate", new Date());
+				hotels.setProperty("language", locale.getLanguage());
+			
+				final String language = locale.getLanguage();
+				String country = locale.getCountry();
+				String tocc = null;
+        	
+				try {
+					if (StringUtils.isEmpty(country) && StringUtils.isNotEmpty(language)) {
+						if (StringUtils.equals(language, "en")) {
+							country = "US";
+						}  else {
+							country = StringUtils.upperCase(language, locale);
+						}
+					}
+					tocc = Currency.getInstance(new Locale(language, country)).getCurrencyCode();
+					if (tocc != null) {
+						hotels.setProperty("currencycode", tocc);
+					}
+				} catch (Exception e) {
+					logger.log(Level.WARNING, "Error getting currency for: " + country + "," + language + "\n" + e.getMessage());
+				}
+        	
+				final ResourceBundle rb = ResourceBundle.getBundle("com.jstakun.lm.server.struts.ApplicationResource", locale);
+			
+				if (size <= 100) {
+					final Calendar cal = Calendar.getInstance();
+					final PrettyTime prettyTime = new PrettyTime(locale); 
+					for (int i=0; i<size; i++) {
+						extendFeature(hotels.getFeatures().get(i), starsMap, pricesMap, exchangeRates, tocc, cal, rb, prettyTime, locale);			
+					}
+				} else {
+					final int chunkSize = 50;
+					int first = 0, last = chunkSize;
+					ThreadManager threadManager = new ThreadManager(threadProvider);          
+					while (first < size) {
+						if (last > size) {
+							last = size;
+						}
+
+						final Calendar cal = Calendar.getInstance();
+						final PrettyTime prettyTime = new PrettyTime(locale); 
+						threadManager.put(new HotelsProcessor(hotels.getFeatures().subList(first, last), starsMap, pricesMap, exchangeRates, tocc, cal, rb, prettyTime, locale));
+
+						first = last;
+						last += chunkSize;
+					}
+					threadManager.waitForThreads();
+				}
+			
+				//stats and exchange rate for hotels			    
+				hotels.setProperty("stats_price", pricesMap);
+				hotels.setProperty("stats_stars", starsMap);
+				hotels.setProperty("eurexchangerates", exchangeRates);
+				if (StringUtils.isNotEmpty(sortType)) {
+					hotels.setProperty("sortType", sortType);
+				}
 			}
-			return hotelsJson;
+		
+			logger.log(Level.INFO, "Processed " + size + " hotels in " + (System.currentTimeMillis()-start) + " millis.");
+				
+			if (size > 0) {
+				String hotelsJson = null;
+				try {
+					final byte[] hotelsJsonBytes = objectMapper.writeValueAsBytes(hotels);
+					hotelsJson = new String(hotelsJsonBytes);
+				
+					if (StringUtils.isNotEmpty(hotelsJson) && cacheProvider != null) {
+						String cKey = "geojson_" + latStr + "_" + lngStr + "_" + Commons.HOTELS_LAYER + "_" + locale.getLanguage();
+						if (StringUtils.isNotEmpty(sortType)) {
+							cKey += "_" + sortType;
+						}
+						logger.log(Level.INFO, "Saved geojson list to local in-memory cache with key: " + cKey);
+						cacheProvider.put(cKey, hotelsJson, 1);
+					}
+				} catch (Throwable e) {
+					logger.log(Level.SEVERE, e.getMessage(), e);
+				} finally {
+					hotels = null;
+				}
+				return hotelsJson;
+			} else {
+				return null;
+			}
 		} else {
+			logger.log(Level.INFO, "Skipping hotels processing for search key " + searchKey);
 			return null;
 		}
 	}
