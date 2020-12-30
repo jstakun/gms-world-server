@@ -358,15 +358,12 @@ public class MailUtils {
         		if (StringUtils.isNotEmpty(deviceName)) {
         			int count = DevicePersistenceUtils.getUserDevicesCount(toA, deviceName);
         			logger.log(Level.INFO, "Found " + count + " " + toA + " devices");
-        			String countString;
-        			if (count == 0 || count == 1) {
-        				countString = "1st";
-        			} else if (count == 2) {
-        				countString = "2nd";
-        			} else if (count == 3) {
-        				countString = "3rd";
-        			} else {
-        				countString = count +"th";
+        			if (count < 1) {
+        				count = 1;
+        			}
+        			String countString = count + "";
+        			if (StringUtils.equals("en", language)) {
+        				countString = ordinal(count);
         			}
         			String deviceLink = deviceName;
         			if (StringUtils.isNotEmpty(deviceId)) {
@@ -557,5 +554,18 @@ public class MailUtils {
    	 			return 500;
    	 		}
     	}
+    }
+    
+    private static String ordinal(int i) {
+        final String[] sufixes = new String[] { "th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th" };
+        switch (i % 100) {
+        case 11:
+        case 12:
+        case 13:
+            return i + "th";
+        default:
+            return i + sufixes[i % 10];
+
+        }
     }
 }

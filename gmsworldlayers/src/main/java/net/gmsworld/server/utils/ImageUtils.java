@@ -72,6 +72,7 @@ public class ImageUtils {
 		return isBlack;
 	}
 	
+	//https://developers.google.com/maps/documentation/maps-static/start
 	private static String getGoogleMapsImageUrl(double latitude, double longitude, String size, int zoom, boolean anonymous, boolean isSecure) {
 		String lat = StringUtil.formatCoordE6(latitude);
 		String lng = StringUtil.formatCoordE6(longitude);
@@ -86,14 +87,15 @@ public class ImageUtils {
 		return mapsUrl;
 	}
 	
+	//https://developer.mapquest.com/documentation/static-map-api/v5/map/
 	private static String getOpenStreetMapsImageUrl(double latitude, double longitude, String size, int zoom, boolean isSecure) {
 		String coords = latitude+","+longitude;
 		String prefix = "http";
 		if (isSecure) {
 			prefix = "https";
 		}
-		//return "http://staticmap.openstreetmap.de/staticmap.php?center="+coords+"&zoom="+zoom+"&size="+size+"&maptype=mapnik&markers="+coords+",red-pushpin";
-	    return prefix + "://www.mapquestapi.com/staticmap/v5/map?locations="+coords+"&zoom="+zoom+"&size="+size.replace('x', ',')+"&defaultMarker=marker-sm-3B5998-22407F&key="+Commons.getProperty(Property.MAPQUEST_APPKEY);
+		//return prefix + "://www.mapquestapi.com/staticmap/v5/map?locations="+coords+"&zoom="+zoom+"&size="+size.replace('x', ',')+"&defaultMarker=marker-sm-3B5998-22407F&key="+Commons.getProperty(Property.MAPQUEST_APPKEY);
+		return prefix + "://www.mapquestapi.com/staticmap/v5/map?center="+coords+"&locations="+coords+"&zoom="+zoom+"&size="+size.replace('x', ',')+"&defaultMarker=http://www.gms-world.net/images/flagblue.png&key="+Commons.getProperty(Property.MAPQUEST_APPKEY);
 	}
 	
 	public static String getImageUrl(double latitude, double longitude, String size, int zoom, boolean anonymous, ConfigurationManager.MAP_PROVIDER mapProvider, boolean isSecure) {
