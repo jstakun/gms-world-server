@@ -363,7 +363,7 @@ public class MailUtils {
         			}
         			String countString = count + "";
         			if (StringUtils.equals("en", language)) {
-        				countString = ordinal(count);
+        				countString = ordinalEn(count);
         			}
         			String deviceLink = deviceName;
         			if (StringUtils.isNotEmpty(deviceId)) {
@@ -556,16 +556,15 @@ public class MailUtils {
     	}
     }
     
-    private static String ordinal(int i) {
+    private static String ordinalEn(int i) {
         final String[] sufixes = new String[] { "th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th" };
         switch (i % 100) {
-        case 11:
-        case 12:
-        case 13:
-            return i + "th";
-        default:
-            return i + sufixes[i % 10];
-
+        	case 11:
+        	case 12:
+        	case 13:
+        		return i + "th";
+        	default:
+        		return i + sufixes[i % 10];
         }
     }
 }

@@ -7,18 +7,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 
-import com.jstakun.lm.server.utils.memcache.CacheUtil;
-import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
+import com.jstakun.lm.server.utils.OtpUtils;
 
 /**
  * Servlet implementation class OtpServlet
  */
 public final class OtpServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static final String PREFIX = "otp:";
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -36,13 +33,12 @@ public final class OtpServlet extends HttpServlet {
 		if (uri.startsWith("/admin")) {
 			final String key = request.getParameter("key");
 			if (StringUtils.isNotEmpty(key)) {
-				int count = 8;
+				int count = OtpUtils.DEFAULT_TOKEN_LENGTH;
 				final String countStr = request.getParameter("count");
 				if (StringUtils.isNumeric(countStr)) {
 					count = Integer.parseInt(countStr);
 				}
-				final String token = RandomStringUtils.random(count, false, true);
-				CacheUtil.put(PREFIX + key, token, CacheType.FAST);
+				final String token = OtpUtils.generateOtpToken(key, count);
 				response.getWriter().append(token);
 			} else {
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -61,15 +57,10 @@ public final class OtpServlet extends HttpServlet {
 		final String key = request.getParameter("key");
 		final String value = request.getParameter("value");
 		if (StringUtils.isNotEmpty(key) && StringUtils.isNotEmpty(value)) {
-			final Object token = CacheUtil.remove(PREFIX + key);
-			if (token != null) {
-				if (StringUtils.equals(token.toString(), value)) {
-					response.getWriter().append("ok");
-				} else {
-					response.sendError(HttpServletResponse.SC_FORBIDDEN);
-				}
+			if (StringUtils.equals(OtpUtils.getToken(key), value)) {
+				response.getWriter().append("ok");
 			} else {
-				response.sendError(HttpServletResponse.SC_NOT_FOUND);
+				response.sendError(HttpServletResponse.SC_FORBIDDEN);
 			}
 		} else {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

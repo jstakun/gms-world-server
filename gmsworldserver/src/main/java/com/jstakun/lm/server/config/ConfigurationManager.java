@@ -43,6 +43,8 @@ public final class ConfigurationManager {
     public static final String BOOKING_URL = "http://www.booking.com/city/%s/%s.html?aid=864525";
     public static final String HOTELS_URL = "https://hotels.gms-world.net";
     
+    public static final String TELEGRAM_BOT_ID = "-1001218249610";
+    
     public static void populateConfig()
     {
          List<Config> params = ConfigPersistenceUtils.selectAllConfigParams();

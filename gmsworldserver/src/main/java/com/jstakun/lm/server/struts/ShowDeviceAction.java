@@ -16,8 +16,11 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.json.JSONObject;
 
+import com.jstakun.lm.server.config.ConfigurationManager;
+import com.jstakun.lm.server.utils.OtpUtils;
 import com.jstakun.lm.server.utils.persistence.DevicePersistenceUtils;
 
+import net.gmsworld.server.layers.TelegramUtils;
 import net.gmsworld.server.utils.persistence.Landmark;
 
 public class ShowDeviceAction extends Action {
@@ -49,32 +52,48 @@ public class ShowDeviceAction extends Action {
 								 deviceName = "Unknown";
 							 }
 							 landmark.setName("Device " + deviceName);
-							 final String username = deviceJson.optString("username") ;
-							 if (StringUtils.isNotEmpty(username)) {
-								 landmark.setLayer(username + " devices");
-							 } else {
-								 landmark.setLayer("Devices");
-							 }
+							 //final String username = deviceJson.optString("username"); don't use it
+							 landmark.setUsername(imei);
+							 landmark.setLayer("Device Locator devices");
 							 if (tokens.length == 3 && StringUtils.isNumeric(tokens[2])) {
-								 landmark.setCreationDate(new Date(Long.parseLong(tokens[2])));
+								 long creationTimestamp = Long.parseLong(tokens[2]);
+								 landmark.setCreationDate(new Date(creationTimestamp));
+								 if (System.currentTimeMillis() - creationTimestamp > (1000 * 60 * 60 * 24)) {
+									 sendLocationCommand(imei);
+								 }
 							 } else if (tokens.length > 3 && StringUtils.isNumeric(tokens[3])) {
 								 landmark.setAltitude(Double.parseDouble(tokens[2]));
-								 landmark.setCreationDate(new Date(Long.parseLong(tokens[3])));
+								 long creationTimestamp = Long.parseLong(tokens[3]);
+								 landmark.setCreationDate(new Date(creationTimestamp));
+								 if (System.currentTimeMillis() - creationTimestamp > (1000 * 60 * 60 * 24)) {
+									 sendLocationCommand(imei);
+								 }
 							 }
 							 landmark.setDescription("<a href=\"https://maps.google.com/maps?q=" + landmark.getLatitude() + "," + landmark.getLongitude() + "\">Open in Google Maps</a>");
 							 request.setAttribute("landmark", landmark);					 
 						 }
 					 } else {
+						 sendLocationCommand(imei);
 						 logger.log(Level.WARNING, "Device location not found");
 					 }
 				} else {
 					logger.log(Level.WARNING, "Device not found");
 				}	
+				request.setAttribute("imei", imei);
 				request.setAttribute("type", "device");
 			} catch (Exception e) {
 				 logger.log(Level.SEVERE, e.getMessage(), e);
 			}
 		}
 		return mapping.findForward("success");
+	}
+	
+	private void sendLocationCommand(final String imei) {
+		try {
+			final String token = OtpUtils.generateOtpToken(imei, null);
+			TelegramUtils.sendTelegram(ConfigurationManager.TELEGRAM_BOT_ID, "locateadmindlt " + token + " " + imei);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage(), e);
+		}
 	}
 }

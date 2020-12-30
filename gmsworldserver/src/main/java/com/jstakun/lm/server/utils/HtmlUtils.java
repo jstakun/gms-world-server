@@ -160,8 +160,8 @@ public class HtmlUtils {
 	    } else {
 	    	   desc += "'Latitude: " + StringUtil.formatCoordE6(landmark.getLatitude()) + ", Longitude: " + StringUtil.formatCoordE6(landmark.getLongitude()) + ",<br/>'+\n";
 	    }
-	    desc += "'Posted on " + DateUtils.getFormattedDateTime(locale, landmark.getCreationDate()) + " by " + UrlUtils.createUsernameMask(landmark.getUsername()) + ",<br/>'+\n" +
-	            "'Created in " + LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer()) + ".</span>'";
+	    desc += "'Posted on " + DateUtils.getFormattedDateTime(locale, landmark.getCreationDate()) + " by <a href=\"/showUser/" + landmark.getUsername() + "\">" + UrlUtils.createUsernameMask(landmark.getUsername()) + "</a>,<br/>'+\n" +
+	                   "'Created in " + LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer()) + ".</span>'";
 	    return desc;
 	}
 	
