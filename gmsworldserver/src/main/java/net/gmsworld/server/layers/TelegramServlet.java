@@ -64,7 +64,7 @@ public class TelegramServlet extends HttpServlet {
 				String type = request.getParameter("type");		
 				//device_locator_bot
 				if (StringUtils.equals(type, Commons.getProperty(Property.TELEGRAM_TOKEN))) {
-					String content = IOUtils.toString(request.getReader());
+					final String content = IOUtils.toString(request.getReader());
 					JSONObject jsonObject = new JSONObject(content);
 					JSONObject messageJson = null;
 					if (jsonObject.has("message")) {
@@ -73,6 +73,8 @@ public class TelegramServlet extends HttpServlet {
 						messageJson = jsonObject.optJSONObject("edited_message");
 					} else if (jsonObject.has("channel_post")) {
 						messageJson = jsonObject.optJSONObject("channel_post");
+					} else if (jsonObject.has("edited_channel_post")) {
+						messageJson = jsonObject.optJSONObject("edited_channel_post");
 					} 
 					if (messageJson != null && messageJson.has("text") && messageJson.has("chat")) {
 						String message = messageJson.getString("text");

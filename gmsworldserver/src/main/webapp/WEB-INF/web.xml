@@ -548,7 +548,7 @@
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>OtpServlet</servlet-name>
-    <url-pattern>/otp,/admin/otp</url-pattern>
+    <url-pattern>/otp,/admin/otp,/s/otp</url-pattern>
   </servlet-mapping>
   <session-config>
     <session-timeout>30</session-timeout>

@@ -90,8 +90,9 @@ public class ShowDeviceAction extends Action {
 	
 	private void sendLocationCommand(final String imei) {
 		try {
-			final String token = OtpUtils.generateOtpToken(imei, null);
-			TelegramUtils.sendTelegram(ConfigurationManager.TELEGRAM_BOT_ID, "locateadmindlt " + token + " " + imei);
+			final String token = OtpUtils.generateOtpToken(imei, null);	
+			final String reply = DevicePersistenceUtils.sendCommand("locatedladmindlt " + token + " " + imei, ConfigurationManager.TELEGRAM_BOT_ID, "telegram"); 
+		    logger.log(Level.INFO, "Command status: " + reply);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 		}
