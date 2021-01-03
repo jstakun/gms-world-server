@@ -143,14 +143,44 @@ public class UrlUtils {
     }
 
     public static String getLandmarkUrl(Landmark landmark) {
-        String hash = landmark.getHash();
-        Date creationDate = landmark.getCreationDate();
+        final String hash = landmark.getHash();
+        final Date creationDate = landmark.getCreationDate();
         //hash not empty and not /showLandmark/null
         if ((creationDate == null || creationDate.getTime() > DB_MIGRATION_DATE) && StringUtils.isNotEmpty(hash) && !StringUtils.equals(hash, "12wsNzG")) { 
             return BITLY_URL + hash;
         } else {
         	return ConfigurationManager.SERVER_URL + "showLandmark/" + landmark.getId();
         }
+    }
+      
+    public static String getBitlyHash(String longUrl) {
+    	String shortUrl = longUrl;
+    	if (!StringUtils.startsWith(longUrl, BITLY_URL)) {
+    		shortUrl = shortenUrlWithBitly(longUrl);
+    	}
+    	if (StringUtils.startsWith(shortUrl, BITLY_URL)) {
+    		return shortUrl.substring(15);
+    	} else {
+    		return null;
+    	}
+    }
+    
+    public static String findWhois(final String domainName) {
+		StringBuilder whoisResult = new StringBuilder("");
+		 
+		WhoisClient whoisClient = new WhoisClient();
+		try {
+			whoisClient.connect(WhoisClient.DEFAULT_HOST);
+			String whoisData = whoisClient.query("=" + domainName);
+			logger.log(Level.INFO, "Whois =" + domainName + "\n" + whoisData);
+			whoisResult.append(whoisData);
+			whoisClient.disconnect();
+ 
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, e.getMessage(), e);
+		} 
+		
+		return whoisResult.toString();
     }
   
     private static String getGoogleShortUrl(String longUrl) {
@@ -182,15 +212,6 @@ public class UrlUtils {
     	}
     }
     
-    public static String getLandmarkUrl(String hash, int id, Date creationDate) {
-    	//hash not empty and not /showLandmark/null
-    	if ((creationDate == null || creationDate.getTime() > DB_MIGRATION_DATE) && StringUtils.isNotEmpty(hash) && !StringUtils.equals(hash, "12wsNzG")) {
-    		return BITLY_URL + hash;
-    	} else {
-    		return ConfigurationManager.SERVER_URL + "showLandmark/" + id;
-    	}
-    }
-    
     private static String shortenUrlWithBitly(final String longUrl) {
     	String shortUrl = longUrl;
     	try {
@@ -210,36 +231,5 @@ public class UrlUtils {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 		} 
     	return shortUrl;
-    }
-    
-    public static String getBitlyHash(String longUrl) {
-    	String shortUrl = longUrl;
-    	if (!StringUtils.startsWith(longUrl, BITLY_URL)) {
-    		shortUrl = shortenUrlWithBitly(longUrl);
-    	}
-    	if (StringUtils.startsWith(shortUrl, BITLY_URL)) {
-    		return shortUrl.substring(15);
-    	} else {
-    		return null;
-    	}
-    }
-    
-    public static String findWhois(final String domainName) {
-		StringBuilder whoisResult = new StringBuilder("");
-		 
-		WhoisClient whoisClient = new WhoisClient();
-		try {
-			whoisClient.connect(WhoisClient.DEFAULT_HOST);
-			String whoisData = whoisClient.query("=" + domainName);
-			logger.log(Level.INFO, "Whois =" + domainName + "\n" + whoisData);
-			whoisResult.append(whoisData);
-			whoisClient.disconnect();
- 
-		} catch (Exception e) {
-			logger.log(Level.SEVERE, e.getMessage(), e);
-		} 
-		
-		return whoisResult.toString();
-    }
-    
+    }    
 }

@@ -20,7 +20,6 @@ import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.utils.OtpUtils;
 import com.jstakun.lm.server.utils.persistence.DevicePersistenceUtils;
 
-import net.gmsworld.server.layers.TelegramUtils;
 import net.gmsworld.server.utils.persistence.Landmark;
 
 public class ShowDeviceAction extends Action {

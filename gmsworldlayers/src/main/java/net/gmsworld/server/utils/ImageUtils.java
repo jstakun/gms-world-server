@@ -71,33 +71,7 @@ public class ImageUtils {
 		logger.log(Level.INFO, "Image has reached " + String.format("%1.4f", ((double)blackPixelsCount/(totalPixels))) + " black factor.");	    
 		return isBlack;
 	}
-	
-	//https://developers.google.com/maps/documentation/maps-static/start
-	private static String getGoogleMapsImageUrl(double latitude, double longitude, String size, int zoom, boolean anonymous, boolean isSecure) {
-		String lat = StringUtil.formatCoordE6(latitude);
-		String lng = StringUtil.formatCoordE6(longitude);
-		String prefix = "http";
-		if (isSecure) {
-			prefix = "https";
-		}
-		String mapsUrl = prefix + "://maps.google.com/maps/api/staticmap?center=" + lat + "," + lng + "&zoom=" + zoom + "&size=" + size + "&markers=icon:http://www.gms-world.net/images/flagblue.png|" + lat + "," + lng; 
-		if (!anonymous) {
-			mapsUrl += "&key=" + Commons.getProperty(Commons.Property.GOOGLE_API_KEY);
-		}
-		return mapsUrl;
-	}
-	
-	//https://developer.mapquest.com/documentation/static-map-api/v5/map/
-	private static String getOpenStreetMapsImageUrl(double latitude, double longitude, String size, int zoom, boolean isSecure) {
-		String coords = latitude+","+longitude;
-		String prefix = "http";
-		if (isSecure) {
-			prefix = "https";
-		}
-		//return prefix + "://www.mapquestapi.com/staticmap/v5/map?locations="+coords+"&zoom="+zoom+"&size="+size.replace('x', ',')+"&defaultMarker=marker-sm-3B5998-22407F&key="+Commons.getProperty(Property.MAPQUEST_APPKEY);
-		return prefix + "://www.mapquestapi.com/staticmap/v5/map?center="+coords+"&locations="+coords+"&zoom="+zoom+"&size="+size.replace('x', ',')+"&defaultMarker=http://www.gms-world.net/images/flagblue.png&key="+Commons.getProperty(Property.MAPQUEST_APPKEY);
-	}
-	
+		
 	public static String getImageUrl(double latitude, double longitude, String size, int zoom, boolean anonymous, ConfigurationManager.MAP_PROVIDER mapProvider, boolean isSecure) {
 		if (mapProvider == ConfigurationManager.MAP_PROVIDER.GOOGLE_MAPS) {
 			return getGoogleMapsImageUrl(latitude, longitude, size, zoom, anonymous, isSecure);
@@ -139,5 +113,31 @@ public class ImageUtils {
 	
 	public static byte[] loadPath(List<Double[]> path, String size, boolean isSecure) throws IOException {
 		return loadImage(getRouteUrl(path, size, false, isSecure));
+	}
+	
+	//https://developers.google.com/maps/documentation/maps-static/start
+	private static String getGoogleMapsImageUrl(double latitude, double longitude, String size, int zoom, boolean anonymous, boolean isSecure) {
+		String lat = StringUtil.formatCoordE6(latitude);
+		String lng = StringUtil.formatCoordE6(longitude);
+		String prefix = "http";
+		if (isSecure) {
+			prefix = "https";
+		}
+		String mapsUrl = prefix + "://maps.google.com/maps/api/staticmap?center=" + lat + "," + lng + "&zoom=" + zoom + "&size=" + size + "&markers=icon:http://www.gms-world.net/images/flagblue.png|" + lat + "," + lng; 
+		if (!anonymous) {
+			mapsUrl += "&key=" + Commons.getProperty(Commons.Property.GOOGLE_API_KEY);
+		}
+		return mapsUrl;
+	}
+	
+	//https://developer.mapquest.com/documentation/static-map-api/v5/map/
+	private static String getOpenStreetMapsImageUrl(double latitude, double longitude, String size, int zoom, boolean isSecure) {
+		String coords = latitude+","+longitude;
+		String prefix = "http";
+		if (isSecure) {
+			prefix = "https";
+		}
+		//return prefix + "://www.mapquestapi.com/staticmap/v5/map?locations="+coords+"|http://www.gms-world.net/images/flagblue.png&zoom="+zoom+"&size="+size.replace('x', ',')+"&defaultMarker=marker-sm-3B5998&key="+Commons.getProperty(Property.MAPQUEST_APPKEY);
+		return prefix + "://www.mapquestapi.com/staticmap/v5/map?center="+coords+"&locations="+coords+"&zoom="+zoom+"&size="+size.replace('x', ',')+"&defaultMarker=marker-sm-3B5998&key="+Commons.getProperty(Property.MAPQUEST_APPKEY);
 	}
 }

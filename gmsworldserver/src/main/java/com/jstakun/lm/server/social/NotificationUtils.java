@@ -151,7 +151,7 @@ public class NotificationUtils {
 			params.put("key", key);
 			Landmark landmark = LandmarkPersistenceUtils.selectLandmarkById(key, GoogleCacheProvider.getInstance());
 			if (landmark != null) {
-				params.put("url", UrlUtils.getShortUrl(UrlUtils.getLandmarkUrl(landmark.getHash(), landmark.getId(), landmark.getCreationDate())));
+				params.put("url", UrlUtils.getShortUrl(UrlUtils.getLandmarkUrl(landmark)));
 				if (landmark.isSocial()) {
 					params.put("type", Integer.toString(Commons.BLOGEO));
 					params.put("title", landmark.getName());
