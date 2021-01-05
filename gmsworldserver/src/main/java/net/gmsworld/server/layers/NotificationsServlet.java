@@ -191,7 +191,7 @@ public class NotificationsServlet extends HttpServlet {
 			   	   				CacheUtil.cacheDeviceLocation(deviceId, latitude, longitude, acc);
 			   	   			}
 			   	   		} else {
-			   	   		logger.log(Level.INFO, "Device " + deviceId + " location is already saved");
+			   	   			logger.log(Level.INFO, "Device " + deviceId + " location is already saved");
 			   	   		}
 					}
 	            } else if (latitude != null || longitude != null) {

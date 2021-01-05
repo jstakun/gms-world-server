@@ -151,14 +151,16 @@ public class CacheUtil {
 	}
 	
 	public static void cacheDeviceLocation(String deviceId, Double latitude, Double longitude, String accuracy) {
+		final String key = deviceId + "_location";
 		if (StringUtils.isNotEmpty(deviceId) && latitude != null && longitude != null) {
-			final String key = deviceId + "_location";
 			String value = StringUtil.formatCoordE6(latitude) + "_" + StringUtil.formatCoordE6(longitude) + "_";
 			if (StringUtils.isNotEmpty(accuracy)) {
 				value += accuracy + "_";
 			}
 			value += Long.toString(System.currentTimeMillis());
 			CacheUtil.put(key, value, CacheType.LONG);
+		} else if (StringUtils.isNotEmpty(deviceId) && latitude == null && longitude == null) {
+			CacheUtil.remove(key);
 		}
 	}
 	

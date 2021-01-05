@@ -218,6 +218,7 @@ public class DevicePersistenceUtils {
 		    final String deviceUrl = ConfigurationManager.getBackendUrl() + "/deleteDevice?imei=" +  imei + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);
 		    final String deviceJson = HttpUtils.processFileRequest(new URL(deviceUrl));		
 		    if (StringUtils.startsWith(StringUtils.trim(deviceJson), "{")) {
+		    	CacheUtil.cacheDeviceLocation(imei, null, null,null);
 			   return 1;
 		   } else {
 			   Integer responseCode = HttpUtils.getResponseCode(deviceUrl);
