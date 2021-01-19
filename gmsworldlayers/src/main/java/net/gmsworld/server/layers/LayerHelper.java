@@ -110,12 +110,15 @@ public abstract class LayerHelper {
     			if (!landmarks.isEmpty()) {
     				for (ExtendedLandmark landmark : landmarks) {
     					if (landmark != null) {
-    						landmark.writeExternal(outObj);
+    						try {
+    							landmark.writeExternal(outObj);
+    						} catch (Exception e) {
+    							logger.log(Level.SEVERE, "Failed to serialize landmark " + landmark.getName(), e);
+    						}
     					}
     				}
     			}
     			outObj.flush();
-    			
     		} else {
     			//Serialize
     			outObj.writeObject(landmarks);

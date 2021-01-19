@@ -328,7 +328,8 @@
     </rule>
     
     <!--  reset rule -->
-     <rule>
+    
+    <rule>
             <from>^/reset/([a-zA-Z]+)$</from>
             <to>/m/reset.jsp?secret=$1</to>
     </rule>
@@ -340,9 +341,14 @@
             <to>/m/urls.jsp</to>
     </rule>
     
-     <rule>
+    <rule>
             <from>^/dl$</from>
             <to>/m/dl.jsp</to>
+    </rule>
+    
+    <rule>
+            <from>^/dl-privacy$</from>
+            <to>/dl-privacy.do</to>
     </rule>
     
     <!-- download rules -->

@@ -189,6 +189,10 @@
             <forward name="success" path="/contact.jsp"/>
             <forward name="mobile" path="/contact.jsp"/>
         </action>
+        <action path="/dl-privacy" type="com.jstakun.lm.server.struts.PrivacyAction">
+            <forward name="success" path="/dl-privacy.jsp"/>
+            <forward name="mobile" path="/m/dl-privacy.jsp"/>
+        </action>
     </action-mappings>
     <controller locale="false"/>
     <message-resources parameter="com.jstakun.lm.server.struts.ApplicationResource"/>

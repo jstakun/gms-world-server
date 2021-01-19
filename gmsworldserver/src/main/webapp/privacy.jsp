@@ -40,8 +40,8 @@
                             <b>Personal identification information</b><br/><br/>
                             We may collect personal identification information from Users in a variety of ways,
                             including, but not limited to, when Users visit our site, register on the site,
-                            fill out a form, and in connection with other activities, services, features or
-                            resources we make available on our Site. Users may be asked for, as appropriate,
+                            fill out a form, and in connection with other mobile applications, services, features or
+                            resources we make available on our Site or 3rd party Sites. Users may be asked for, as appropriate,
                             name, email address. Users may, however, visit our Site anonymously.
                             We will collect personal identification information from Users only if they
                             voluntarily submit such information to us. Users can always refuse to supply
@@ -49,7 +49,7 @@
                             engaging in certain Site related activities.<br/><br/>
                             <b>Non-personal identification information</b><br/><br/>
                             We may collect non-personal identification information about Users
-                            whenever they interact with our Site. Non-personal identification
+                            whenever they interact with our Site or our mobile applications. Non-personal identification
                             information may include the browser name, the type of computer and
                             technical information about Users means of connection to our Site, such
                             as the operating system and the Internet service providers utilized and
@@ -79,11 +79,13 @@
                             disclosure or destruction of your personal information, username, password, transaction
                             information and data stored on our Site.<br/><br/>Sensitive and private data exchange between
                             the Site and its Users happens over a SSL secured communication channel and is encrypted and
-                            protected with digital signatures.<br/><br/><b>Sharing your personal information</b><br/><br/>
+                            protected with digital signatures.<br/><br/>
+                            <b>Sharing your personal information</b><br/><br/>
                             We do not sell, trade, or rent Users personal identification information to others. We may
                             share generic aggregated demographic information not linked to any personal identification
                             information regarding visitors and users with our business partners, trusted affiliates and
-                            advertisers for the purposes outlined above.<br/><br/><b>Third party websites</b><br/><br/>
+                            advertisers for the purposes outlined above.<br/><br/>
+                            <b>Third party websites</b><br/><br/>
                             Users may find advertising or other content on our Site that link to the sites and services
                             of our partners, suppliers, advertisers, sponsors, licensors and other third parties. We
                             do not control the content or links that appear on these sites and are not responsible for
@@ -91,7 +93,8 @@
                             services, including their content and links, may be constantly changing. These sites and
                             services may have their own privacy policies and customer service policies. Browsing and
                             interaction on any other website, including websites which have a link to our Site, is
-                            subject to that website's own terms and policies.<br/><br/><b>Advertising</b><br/><br/>
+                            subject to that website's own terms and policies.<br/><br/>
+                            <b>Advertising</b><br/><br/>
                             Ads appearing on our site may be delivered to Users by advertising partners, who may
                             set cookies. These cookies allow the ad server to recognize your computer each time
                             they send you an online advertisement to compile non personal identification information

@@ -193,7 +193,7 @@ public class CacheUtil {
 				putToNormalCache(key, value);
 			}
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, e.getMessage(), e);
+			logger.log(Level.SEVERE, "Failed to save object " + key + " to memcache", e);
 		}
 	}
 	
