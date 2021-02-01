@@ -950,11 +950,11 @@ public class FoursquareUtils extends LayerHelper {
                                                     	if (user.has("firstName")) {
                                                     		photoUser = user.getString("firstName");
                                                     	}
-                                                    	if (StringUtils.isNotEmpty("photoUser")) {
-                                                    		photoUser += " ";		
-                                                    	}
                                                     	if (user.has("lastName")) {
-                                                    		photoUser += user.getString("lastName");
+                                                    		if (StringUtils.isNotEmpty("photoUser")) {
+                                                        		photoUser += " ";		
+                                                        	}
+                                                        	photoUser += user.getString("lastName");
                                                     	}
                                                     	if (StringUtils.isNotEmpty("photoUser")) {
                                                     		venueAttrs.put("photoUser", photoUser);
