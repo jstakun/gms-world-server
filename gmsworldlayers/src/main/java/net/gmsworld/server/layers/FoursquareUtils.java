@@ -944,7 +944,7 @@ public class FoursquareUtils extends LayerHelper {
                                                 	JSONObject newest = items.getJSONObject(0);
 
                                                 	//photoUser
-                                                	JSONObject user = newest.getJSONObject("user");
+                                                	JSONObject user = newest.optJSONObject("user");
                                                     if (user != null) {
                                                     	String photoUser = "";
                                                     	if (user.has("firstName")) {
