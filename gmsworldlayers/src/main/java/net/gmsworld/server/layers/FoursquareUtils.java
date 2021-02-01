@@ -945,15 +945,20 @@ public class FoursquareUtils extends LayerHelper {
 
                                                 	//photoUser
                                                 	JSONObject user = newest.getJSONObject("user");
-                                                    String photoUser = "";
-                                                    if (user.has("firstName")) {
-                                                        photoUser = user.getString("firstName");
-                                                    }
-                                                    if (user.has("lastName")) {
-                                                        photoUser += " " + user.getString("lastName");
-                                                    }
-                                                    if (StringUtils.isNotEmpty("photoUser")) {
-                                                        venueAttrs.put("photoUser", photoUser);
+                                                    if (user != null) {
+                                                    	String photoUser = "";
+                                                    	if (user.has("firstName")) {
+                                                    		photoUser = user.getString("firstName");
+                                                    	}
+                                                    	if (StringUtils.isNotEmpty("photoUser")) {
+                                                    		photoUser += " ";		
+                                                    	}
+                                                    	if (user.has("lastName")) {
+                                                    		photoUser += user.getString("lastName");
+                                                    	}
+                                                    	if (StringUtils.isNotEmpty("photoUser")) {
+                                                    		venueAttrs.put("photoUser", photoUser);
+                                                    	}
                                                     }
 
                                                     //photo url
