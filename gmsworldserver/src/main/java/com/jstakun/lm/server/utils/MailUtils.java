@@ -18,7 +18,6 @@ import org.apache.commons.validator.routines.EmailValidator;
 import org.json.JSONObject;
 
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
-import com.jstakun.lm.server.utils.persistence.DevicePersistenceUtils;
 
 import net.gmsworld.server.config.Commons;
 import net.gmsworld.server.config.Commons.Property;
@@ -353,32 +352,33 @@ public class MailUtils {
         String status = null;
         try {
         	String message = "";
-        	String link = ConfigurationManager.SSL_SERVER_URL + "unregister/" + secret;
+        	final String unregisterLink = ConfigurationManager.SSL_SERVER_URL + "unregister/" + secret;
+        	final String userDevicesLink = ConfigurationManager.SSL_SERVER_URL + "showUserDevices/" + secret;
         	if (context != null) {
         		if (StringUtils.isNotEmpty(deviceName)) {
-        			int count = DevicePersistenceUtils.getUserDevicesCount(toA, deviceName);
-        			logger.log(Level.INFO, "Found " + count + " " + toA + " devices");
-        			if (count < 1) {
-        				count = 1;
-        			}
-        			String countString = count + "";
-        			if (StringUtils.equals("en", language)) {
-        				countString = ordinalEn(count);
-        			}
-        			String deviceLink = deviceName;
+        			//int count = DevicePersistenceUtils.getUserDevicesCount(toA, deviceName);
+        			//logger.log(Level.INFO, "Found " + count + " " + toA + " devices");
+        			//if (count < 1) {
+        			//	count = 1;
+        			//}
+        			//String countString = count + "";
+        			//if (StringUtils.equals("en", language)) {
+        			//	countString = ordinalEn(count);
+        			//}
+        			String userDeviceLink = deviceName;
         			if (StringUtils.isNotEmpty(deviceId)) {
         				final String deviceUrl = ConfigurationManager.SSL_SERVER_URL + "showDevice/" + deviceId;
-        				deviceLink = "<a href=\"" + deviceUrl + "\">" + deviceName + "</a>";
+        				userDeviceLink = "<a href=\"" + deviceUrl + "\">" + deviceName + "</a>";
         			}
         			if (StringUtils.indexOfAny(language, LANGUAGES)>=0) {
-                		is = context.getResourceAsStream("/WEB-INF/emails/notification-dl-v2_" + language + ".html");
+                		is = context.getResourceAsStream("/WEB-INF/emails/notification-dl-v3_" + language + ".html");
                 	} else {
-                		is = context.getResourceAsStream("/WEB-INF/emails/notification-dl-v2.html");
+                		is = context.getResourceAsStream("/WEB-INF/emails/notification-dl-v3.html");
                 	}
-        			message =String.format(IOUtils.toString(is, "UTF-8"), link, deviceLink, countString);		
+        			message =String.format(IOUtils.toString(is, "UTF-8"), unregisterLink, userDeviceLink, userDevicesLink);		
         		} else {
         			is = context.getResourceAsStream("/WEB-INF/emails/notification-dl.html");
-        			message =String.format(IOUtils.toString(is, "UTF-8"), link);
+        			message =String.format(IOUtils.toString(is, "UTF-8"), unregisterLink);
         		}
         	}
             status = sendRemoteMail(ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK, toA, nick, "Device Locator Registration", message, "text/html",  ConfigurationManager.DL_MAIL, ConfigurationManager.DL_NICK);	
