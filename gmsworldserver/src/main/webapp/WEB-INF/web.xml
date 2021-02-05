@@ -89,6 +89,8 @@
     <url-pattern>/showLayer/*</url-pattern>
     <url-pattern>/showImage/*</url-pattern>
     <url-pattern>/showUser/*</url-pattern>
+    <url-pattern>/showDevice/*</url-pattern>
+    <url-pattern>/showUserDevices/*</url-pattern>
     <url-pattern>/services/browserLandmark</url-pattern>
     <url-pattern>/otp</url-pattern>
     <url-pattern>/image</url-pattern>
@@ -143,6 +145,8 @@
     <url-pattern>/showLayer/*</url-pattern>
     <url-pattern>/showImage/*</url-pattern>
     <url-pattern>/showUser/*</url-pattern>
+    <url-pattern>/showDevice/*</url-pattern>
+    <url-pattern>/showUserDevices/*</url-pattern>
     <url-pattern>/services/browserLandmark</url-pattern>
     <url-pattern>/routeProvider</url-pattern>
     <url-pattern>/otp</url-pattern>
