@@ -159,11 +159,16 @@ public class DevicePersistenceUtils {
 		return false;
 	}
 	
-	public static String getUserDevices(String username) throws Exception {
+	public static String getUserDevices(String username) {
 		if (username != null) {
-		    final String deviceUrl = ConfigurationManager.getBackendUrl() + "/getUserDevices?username="+  URLEncoder.encode(username, "UTF-8")
+			String deviceJson = null;
+			try {
+				final String deviceUrl = ConfigurationManager.getBackendUrl() + "/getUserDevices?username="+  URLEncoder.encode(username, "UTF-8")
 		    									+ "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);	
-		    final String deviceJson = HttpUtils.processFileRequest(new URL(deviceUrl));		
+				deviceJson = HttpUtils.processFileRequest(new URL(deviceUrl));		
+			} catch (Exception e) {
+				logger.log(Level.SEVERE, e.getMessage(), e);
+			}
 		    if (StringUtils.startsWith(deviceJson, "{")) {
 			   JSONObject root = new JSONObject(deviceJson);
 			   JSONArray devices = root.optJSONArray("output");

@@ -17,7 +17,9 @@
     <div class="content">
     	<article>
     	
-    	<h3>Device Locator  commands</h3>
+    	<h2>Device Locator commands</h2>
+    	
+    	<p></p>
     	
     	In order to get some commands to work on your device you'll need to grant number of permissions in the application.
     	Starting from Device Locator 0.4 in addition to SMS commands you can send cloud commands directly from Device Locator to other device with Device Locator installed using our cloud messaging system.  
@@ -106,8 +108,7 @@
            SMS Example (assuming your security pin is 1234): <b>Aboutdl 1234</b><br/>
            Telegram Messenger Example (assuming your security pin is 1234 and device id is 1234567890123456): <b>About 1234 1234567890123456</b></li>    
     	</ul> 
-       
-    	</article>
+        </article>
     	
     	<%@ include file="/WEB-INF/jspf/ad_small_baner.jspf" %>
     </div>

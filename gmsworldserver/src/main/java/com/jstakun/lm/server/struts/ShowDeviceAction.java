@@ -28,7 +28,7 @@ public class ShowDeviceAction extends Action {
 	
 	@Override
     public ActionForward execute(ActionMapping mapping, ActionForm form,  final HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		final String imei =  (String) request.getParameter("imei");
+		final String imei =  request.getParameter("imei");
 		
 		if (StringUtils.isNotEmpty(imei)) {
 			try {
@@ -36,45 +36,10 @@ public class ShowDeviceAction extends Action {
 				JSONObject root = new JSONObject(deviceJsonString);
 				if (root.has("output")) {
 					 JSONObject deviceJson = root.getJSONObject("output");
-					 final String geo = deviceJson.optString("geo");
-					 if (StringUtils.isNotEmpty(geo)) {
-						 String[] tokens = StringUtils.split(geo, " ");
-						 if (tokens.length > 1) {
-							 Landmark landmark = new Landmark();
-							 landmark.setLatitude(Double.parseDouble(tokens[0]));
-							 landmark.setLongitude(Double.parseDouble(tokens[1]));
-							 if (tokens.length > 3) { //this is accuracy!
-								 landmark.setAltitude(Double.parseDouble(tokens[2]));
-							 } 
-							 String deviceName = deviceJson.optString("name");
-							 if (StringUtils.isEmpty(deviceName)) {
-								 deviceName = "Unknown";
-							 }
-							 landmark.setName("Device " + deviceName);
-							 //final String username = deviceJson.optString("username"); don't use it
-							 landmark.setUsername(imei);
-							 landmark.setLayer("Device Locator devices");
-							 if (tokens.length == 3 && StringUtils.isNumeric(tokens[2])) {
-								 long creationTimestamp = Long.parseLong(tokens[2]);
-								 landmark.setCreationDate(new Date(creationTimestamp));
-								 if (System.currentTimeMillis() - creationTimestamp > (1000 * 60 * 60 * 24)) {
-									 sendLocationCommand(imei);
-								 }
-							 } else if (tokens.length > 3 && StringUtils.isNumeric(tokens[3])) {
-								 landmark.setAltitude(Double.parseDouble(tokens[2]));
-								 long creationTimestamp = Long.parseLong(tokens[3]);
-								 landmark.setCreationDate(new Date(creationTimestamp));
-								 if (System.currentTimeMillis() - creationTimestamp > (1000 * 60 * 60 * 24)) {
-									 sendLocationCommand(imei);
-								 }
-							 }
-							 landmark.setDescription("<a href=\"https://maps.google.com/maps?q=" + landmark.getLatitude() + "," + landmark.getLongitude() + "\">Open in Google Maps</a>");
-							 request.setAttribute("landmark", landmark);					 
-						 }
-					 } else {
-						 sendLocationCommand(imei);
-						 logger.log(Level.WARNING, "Device location not found");
-					 }
+				     Landmark landmark = ShowUserDevicesAction.jsonToLandmark(deviceJson);
+				     if (landmark != null) {
+				    	 request.setAttribute("landmark", landmark);
+				     }
 				} else {
 					logger.log(Level.WARNING, "Device not found");
 				}	

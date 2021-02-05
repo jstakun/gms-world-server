@@ -136,6 +136,19 @@
             <from>^/showDevice/([a-zA-Z0-9-_]+)$</from>
             <to>/showDevice.do?imei=$1</to>
     </rule>
+
+    <!-- showUserDevices rules -->
+    
+    <rule>
+            <from>^/showUserDevices/([a-zA-Z0-9.]+)/(fullScreen)$</from>
+            <to>/showUserDevices.do?secret=$1</to>
+    </rule>
+
+    <rule>
+            <from>^/showUserDevices/([a-zA-Z0-9.]+)$</from>
+            <to>/showUserDevices.do?secret=$1</to>
+    </rule>
+
     
     <!-- showImage rules -->
     

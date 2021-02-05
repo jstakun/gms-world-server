@@ -18,8 +18,8 @@
     	<article>
     	
     	<!-- Put content here -->
-    	<h3>Device Locator Privacy Policy</h3>
-        
+    	<h2>Device Locator Privacy Policy</h2>
+                <br/><br/>
                 <p>
                   GMS World built the Device Locator app as
                   a Free app. This SERVICE is provided by
@@ -106,12 +106,11 @@
                   this page.
                 </p> <p>This policy is effective as of 2021-01-01</p> <p><strong>Contact Us</strong></p> <p>
                   If you have any questions or suggestions about my
-                  Privacy Policy, do not hesitate to contact me at support@gms-world.net.
+                  Privacy Policy, do not hesitate to contact me at <a href="mailto:support@gms-world.net">support@gms-world.net</a>.
                 </p> 
         
     	</article>
     	
-    	<%@ include file="/WEB-INF/jspf/ad_small_baner.jspf" %>
     </div>
     <%@ include file="/WEB-INF/jspf/footer_mobile.jspf" %>
   </div>

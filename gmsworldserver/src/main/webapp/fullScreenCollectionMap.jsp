@@ -14,32 +14,42 @@
         net.gmsworld.server.utils.StringUtil,
         net.gmsworld.server.utils.UrlUtils,
         org.apache.commons.lang.StringEscapeUtils,
-        net.gmsworld.server.config.Commons" %>
+        net.gmsworld.server.config.Commons,
+        org.apache.commons.lang.StringUtils" %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
 
 <html>
     <%
     	List<Landmark> landmarkList = null;
-                        Double centerLat = 0.0;
-                        Double centerLon = 0.0;
-                        String collectionAttributeName = "userLandmarks";
-                        if (request.getAttribute("collectionAttributeName") != null) {
-                           collectionAttributeName = (String) request.getAttribute("collectionAttributeName");
-                        }
-                        if (request.getAttribute(collectionAttributeName) != null) {
-                            landmarkList = HtmlUtils.getList(Landmark.class, request, collectionAttributeName);
-                        }
-                        if (request.getAttribute("centerLat") != null) {
-                            centerLat = (Double) request.getAttribute("centerLat");
-                        }
-                        if (request.getAttribute("centerLon") != null) {
-                            centerLon = (Double) request.getAttribute("centerLon");
-                        }
+        Double centerLat = 0.0;
+        Double centerLon = 0.0;
+        String collectionAttributeName = "userLandmarks";
+        if (request.getAttribute("collectionAttributeName") != null) {
+              collectionAttributeName = (String) request.getAttribute("collectionAttributeName");
+        }
+        if (request.getAttribute(collectionAttributeName) != null) {
+              landmarkList = HtmlUtils.getList(Landmark.class, request, collectionAttributeName);
+        }
+        if (request.getAttribute("centerLat") != null) {
+               centerLat = (Double) request.getAttribute("centerLat");
+        }
+        if (request.getAttribute("centerLon") != null) {
+               centerLon = (Double) request.getAttribute("centerLon");
+        }
+        final boolean isDevice = StringUtils.equalsIgnoreCase((String)request.getAttribute("type"),"device");
+        String image = "flagblue.png";
+        String image0 = "flagred.png";
+        String title = "GMS World landmarks on the map";
+        if (isDevice) {
+        	image = image0 = "dl_32.png";
+        	title = "Your devices on the map";
+        }
+        final String secret = (String) request.getAttribute("secret");
     %>
     <head>
         <%@ include file="/WEB-INF/jspf/head_small.jspf" %>
-        <title>GMS World landmarks on the map</title>
+        <title><%= title %></title>
         <%
         	if (landmarkList != null) {
         %>
@@ -62,7 +72,6 @@
                     scaleControl: true,
                 };
 
-                //var image = '/images/flagblue.png';
                 var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 
                 var bounds  = new google.maps.LatLngBounds();
@@ -70,9 +79,9 @@
                 for (index in landmarks) {
                     var landmark = landmarks[index];
                     if (index == 0) {
-                    	setMarker(map, landmark, '/images/flagred.png', bounds); 
+                    	setMarker(map, landmark, '/images/<%= image0 %>', bounds); 
                     } else {  
-                    	setMarker(map, landmark,  '/images/flagblue.png', bounds);
+                    	setMarker(map, landmark,  '/images/<%= image %>', bounds);
                     }
                 }
                 
@@ -85,13 +94,7 @@
             <%for (int i = 0; i < landmarkList.size(); i++) {
                      Landmark landmark = landmarkList.get(i);%>
                     ['<%=StringEscapeUtils.escapeJavaScript(landmark.getName())%>', <%=landmark.getLatitude()%>, <%=landmark.getLongitude()%>,
-                        '<span style="font-family:Cursive;font-size:14px;font-style:normal;font-weight:normal;text-decoration:none;text-transform:none;color:000000;background-color:ffffff;">' +
-                            '<img src="/images/flag<% if (i == 0)  out.print("red"); else out.print("blue"); %>.png"/><br/>' +
-                            'Name: <%=StringEscapeUtils.escapeJavaScript(landmark.getName())%>,<br/>' +
-                            'Description: <%=StringEscapeUtils.escapeJavaScript(landmark.getDescription())%>,<br/>' +
-                            'Latitude: <%=StringUtil.formatCoordE6(landmark.getLatitude())%>, Longitude: <%=StringUtil.formatCoordE6(landmark.getLongitude())%>,<br/>' +
-                            'Posted on <%=DateUtils.getFormattedDateTime(request.getLocale(), landmark.getCreationDate())%> by <%=UrlUtils.createUsernameMask(landmark.getUsername())%>,<br/>' +
-                            'Created in layer <%= LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer()) %>.</span>']
+                      <%= HtmlUtils.buildLandmarkDescV2(landmark, request.getAttribute("address"), request.getLocale(), false) %>]
             <%
                      if (i < landmarkList.size() - 1) {
                          out.println(",");
@@ -128,24 +131,12 @@
     <body onLoad="initialize()">
         <% if (landmarkList != null) {%>
         <div id="map_canvas" style="width:100%; height:100%"></div>
-        <script type="text/javascript">
-            //<![CDATA[
-
-            var map;
-            if (GBrowserIsCompatible()) {
-
-                // Monitor the window resize event and let the map know when it occurs
-                if (window.attachEvent) {
-                    window.attachEvent("onresize", function() {this.map.onResize()} );
-                } else {
-                    window.addEventListener("resize", function() {this.map.onResize()} , false);
-                }
-            }
-
-            //]]>
-        </script>
+        <% } else if (secret != null && isDevice) {%>
+        <h3>Your devices location is currently unknown. Please <a href="/showUserDevices/<%= secret %>">try again</a> later!</h3>
+        <% } else if (isDevice) {%>
+        <h3>Your devices location is currently unknown. Please try again later!</h3>
         <% } else {%>
-        No landmark list selected
-        <% }%>
+        <h3>Landmarks not found</h3>
+        <% } %>
     </body>
 </html>
