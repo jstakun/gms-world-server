@@ -375,7 +375,7 @@ public class MailUtils {
                 	} else {
                 		is = context.getResourceAsStream("/WEB-INF/emails/notification-dl-v3.html");
                 	}
-        			message =String.format(IOUtils.toString(is, "UTF-8"), unregisterLink, userDeviceLink, userDevicesLink);		
+        			message =String.format(IOUtils.toString(is, "UTF-8"), userDeviceLink, userDevicesLink, unregisterLink);		
         		} else {
         			is = context.getResourceAsStream("/WEB-INF/emails/notification-dl.html");
         			message =String.format(IOUtils.toString(is, "UTF-8"), unregisterLink);
