@@ -56,6 +56,36 @@
  %>
                 <h3>Email address <%= request.getAttribute("email") %> unregistered</h3>
                 <p>Your email address has been successfully unregistered from Device Locator notifications service.</p>
+<%
+    } else if (step.equals("5") && request.getAttribute("secret")  != null  && request.getAttribute("login")  != null) {
+ %>
+                <h3>Account unregistration confirmation</h3>
+                <form action="/verify.do">
+                    <p>
+  						<label for="login">Enter your account login:</label><br/>
+  						<input type="text" id="login" name="k"/>
+  						<input type="hidden" name="se" value="<%= request.getAttribute("secret") %>"/>
+  						<input type="hidden" name="u" value="1"/>
+  					</p>
+  					<p>
+  						<input type="submit" value="Submit"/>
+  					</p>
+				</form> 
+<%
+    } else if (step.equals("5") && request.getAttribute("secret") != null  && request.getAttribute("email")  != null) {
+ %>
+                <h3>Email unregistration confirmation</h3>
+                <form action="/verify.do">
+                    <p>
+  						<label for="email">Enter your email address:</label><br/>
+  						<input type="text" id="email" name="k"/>
+  						<input type="hidden" name="sc" value="<%= request.getAttribute("secret") %>"/>
+  						<input type="hidden" name="u" value="1"/>
+  					</p>
+  					<p>
+  						<input type="submit" value="Submit"/>
+  					</p>
+				</form> 
  <%
     } else {
  %>

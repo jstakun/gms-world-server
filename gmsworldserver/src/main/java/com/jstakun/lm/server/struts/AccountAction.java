@@ -2,6 +2,8 @@ package com.jstakun.lm.server.struts;
 
 import java.net.URLDecoder;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -40,6 +42,11 @@ public class AccountAction extends Action {
     private static final String FAILURE_REG_MOBILE = "failure_reg_mobile";
     private static final String FAILURE_UNREG_MOBILE = "failure_unreg_mobile";
     
+    private static final String CONFIRM_UNREG_MOBILE = "confirm_unreg_mobile";
+    private static final String CONFIRM_UNREG = "confirm_unreg";
+    
+    private static final Logger logger = Logger.getLogger(AccountAction.class.getName());
+    
     /**
      * This is the action called from the Struts framework.
      * @param mapping The ActionMapping used to select this instance.
@@ -52,7 +59,7 @@ public class AccountAction extends Action {
     @Override
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        final boolean isMobile = UserAgentUtils.isMobile(request.getHeader("User-Agent"));
+    	final boolean isMobile = UserAgentUtils.isMobile(request.getHeader("User-Agent"));
         String deviceName = request.getHeader(Commons.DEVICE_NAME_HEADER);
         if (StringUtils.isEmpty(deviceName)) {
         	deviceName = request.getParameter("dn");
@@ -66,6 +73,8 @@ public class AccountAction extends Action {
         if (StringUtils.equals(request.getParameter("s"), "1")) {
             confirm = Boolean.TRUE;
         }
+        
+        Boolean confirmUnreg = Boolean.FALSE;
 
         final Locale locale = request.getLocale();
 		String language  = "en";
@@ -84,7 +93,7 @@ public class AccountAction extends Action {
         
         if (!HttpUtils.isEmptyAny(request, "k", "s")) {
         	//register user to GMS World
-            String login = URLDecoder.decode(request.getParameter("k"),"UTF-8");
+            final String login = URLDecoder.decode(request.getParameter("k"),"UTF-8");
             result = UserPersistenceUtils.confirmUserRegistration(login);
             if (result) {
                User user = UserPersistenceUtils.selectUserByLogin(login, null);
@@ -92,9 +101,13 @@ public class AccountAction extends Action {
                     MailUtils.sendRegistrationNotification(user.getEmail(), user.getLogin(), user.getSecret(), getServlet().getServletContext());
                     request.setAttribute("login", user.getLogin());
                     request.setAttribute("email", user.getEmail());
+               } else {
+               		logger.log(Level.SEVERE, "Account with login " + login + " not found!");
                }
+            } else {
+           		logger.log(Level.SEVERE, "Failed to confirm " + login + " registration!");
             }
-        } else if (!HttpUtils.isEmptyAny(request, "sc","s")) {
+        } else if (!HttpUtils.isEmptyAny(request, "sc", "s")) {
         	//register to DL notifications
         	final String secret = request.getParameter("sc");
         	Notification n = NotificationPersistenceUtils.verifyWithSecret(secret);
@@ -113,61 +126,80 @@ public class AccountAction extends Action {
     				output = "{\"status\":\"ok\"}";
     			}
         		result = true;
-        	} 
-        } else if (!HttpUtils.isEmptyAny(request, "sc","u")) {
-        	//unregister from DL notifications
-        	String secret = request.getParameter("sc");
-        	Notification n = NotificationPersistenceUtils.findBySecret(secret);
-        	if (n != null && n.getId() != null) {
-        		final String email = n.getId();
+        	} else {
+            	logger.log(Level.SEVERE, "Notification with secret " + secret + " not found!");
+            } 
+        } else if (!HttpUtils.isEmptyAny(request, "k", "sc", "u")) {
+        	//unregister from DL notifications using email
+        	final String secret = request.getParameter("sc");
+        	final String email = URLDecoder.decode(request.getParameter("k"),"UTF-8");
+        	request.setAttribute("email", email);
+			Notification n = NotificationPersistenceUtils.findBySecret(secret);
+        	if (n != null && StringUtils.equals(n.getId(), email)) {
         		if (NotificationPersistenceUtils.remove(email)) {
         			CacheUtil.remove("mailto:"+email+":verified");
         			if (MailUtils.isValidEmailAddress(email)) {
         				MailUtils.sendUnregisterNotification(email, "", getServlet().getServletContext());
-            			request.setAttribute("email", email);
-        			} else {
+            		} else {
         				MailUtils.sendAdminMail("Notifications Service unregistration", email + " has unregistered from Notifications service.");
         			}
         			if (api) {
         				output = "{\"status\":\"ok\"}";
         			}
-        			result = true;
         		}
         	} else if (n != null && n.getId() == null) {
         		request.setAttribute("email", "has been");
                 result = true;
-        	}
-        } else if (!HttpUtils.isEmptyAny(request, "k", "u")) {
-        	//unregister user from GMS World
-            String login = URLDecoder.decode(request.getParameter("k"),"UTF-8");
-            User user = UserPersistenceUtils.selectUserByLogin(login, null);
-            if (user != null) {
+        	} else {
+            	logger.log(Level.SEVERE, "Notification " + email + " with secret " + secret + " not found!");
+            }
+        } else if (!HttpUtils.isEmptyAny(request, "u", "sc")) {
+        	//unregister from DL notifications using secret
+        	final String secret = request.getParameter("sc");
+        	Notification n = NotificationPersistenceUtils.findBySecret(secret);
+        	if (n != null && n.getId() != null) {
+            	request.setAttribute("secret", secret);
+            	request.setAttribute("email", n.getId());
+            	confirmUnreg = true;
+            } else {
+            	logger.log(Level.SEVERE, "Notification with secret " + secret + " not found!");
+            }
+        } else if (!HttpUtils.isEmptyAny(request, "k", "u", "se")) {
+        	//unregister user from GMS World using login
+            final String login = URLDecoder.decode(request.getParameter("k"),"UTF-8");
+            final String secret = request.getParameter("se");
+            final User user = UserPersistenceUtils.selectUserByLogin(login, null);
+            request.setAttribute("login", login);
+            if (user != null && StringUtils.equals(secret, user.getSecret())) {
             	UserPersistenceUtils.removeUser(user.getSecret());
-            	MailUtils.sendAdminMail("GMS World User Unregistration", user.getLogin() + " has unregistered from GMS World.");
-            	request.setAttribute("login", user.getLogin());
-            	request.setAttribute("email", user.getEmail());
+                MailUtils.sendAdminMail("GMS World User Unregistration", user.getLogin() + " has unregistered from GMS World.");
+                request.setAttribute("email", user.getEmail());
                 result = true;
+            } else {
+            	logger.log(Level.SEVERE, "Failed to remove account " + login + " with secret " + secret);
             }
         } else if (!HttpUtils.isEmptyAny(request, "se", "u")) {
-        	//unregister user from GMS World
-            String secret = request.getParameter("se");
-            User user = UserPersistenceUtils.selectUserByLogin(null, secret);
+        	//unregister user from GMS World using secret
+            final String secret = request.getParameter("se");
+            final User user = UserPersistenceUtils.selectUserByLogin(null, secret);
             if (user != null) {
-            	UserPersistenceUtils.removeUser(secret);
-            	MailUtils.sendAdminMail("GMS World User Unregistration", user.getLogin() + " has unregistered from GMS World.");
-    			request.setAttribute("login", user.getLogin());
-            	request.setAttribute("email", user.getEmail());
-                result = true;
+            	request.setAttribute("secret", secret);
+            	request.setAttribute("login", user.getLogin());
+            	confirmUnreg = true;
+            } else {
+            	logger.log(Level.SEVERE, "Account with secret " + secret + " not found!");
             }
         } else if (!HttpUtils.isEmptyAny(request, "se", "s")) {
         	//register user to GMS World
-            String secret = request.getParameter("se");
-            User user = UserPersistenceUtils.selectUserByLogin(null, secret);
+            final String secret = request.getParameter("se");
+            final User user = UserPersistenceUtils.selectUserByLogin(null, secret);
             if (user != null) {
             	result = UserPersistenceUtils.confirmUserRegistration(user.getLogin());
                 MailUtils.sendRegistrationNotification(user.getEmail(), user.getLogin(), secret, getServlet().getServletContext());
                 request.setAttribute("login", user.getLogin());
                 request.setAttribute("email", user.getEmail());
+            } else {
+            	logger.log(Level.SEVERE, "Account with secret " + secret + " not found!");
             }
         } 
 
@@ -175,7 +207,9 @@ public class AccountAction extends Action {
         	request.setAttribute("output", output);
         	return mapping.findForward("api");   
         } else if (isMobile) {
-        	if (result) {
+        	if (confirmUnreg) {
+        		return mapping.findForward(CONFIRM_UNREG_MOBILE);
+            } else if (result) {
         		if (confirm) {
         			return mapping.findForward(SUCCESS_REG_MOBILE);
         		} else {
@@ -189,7 +223,9 @@ public class AccountAction extends Action {
         		}
         	}
         } else {
-        	if (result) {
+        	if (confirmUnreg) {
+        		return mapping.findForward(CONFIRM_UNREG);
+            } else if (result) {
         		if (confirm) {
         			return mapping.findForward(SUCCESS_REG);
         		} else {

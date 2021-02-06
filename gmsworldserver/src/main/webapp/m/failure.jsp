@@ -39,12 +39,12 @@
  <%
     } else if (step.equals("3") && request.getAttribute("login") != null) {
  %>
-                    <h3>Account <%= request.getAttribute("login") %> unregister failed</h3>
+                    <h3>Account <%= request.getAttribute("login") %> unregistration failed</h3>
                     <p>Please try again or contact <a href="mailto:support@gms-world.net?subject=Account unregister failed">System Administrator</a></p>
  <%
     } else if (step.equals("3") && request.getAttribute("login") == null && request.getAttribute("email") != null) {
  %>
-                    <h3>Email <%= request.getAttribute("email") %> unregister failed</h3>
+                    <h3>Email <%= request.getAttribute("email") %> unregistration failed</h3>
                     <p>Please try again or contact <a href="mailto:support@gms-world.net?subject=Account unregister failed">System Administrator</a></p>
  <%
     } else if (step.equals("4") && request.getAttribute("login") != null) {
@@ -56,8 +56,8 @@
  <%
     } else {
  %>
-                    <h3>Internal error</h3>
-                    <p>Oops! Something went wrong. Please try again.</p>
+                    <h3>Action failed</h3>
+                    <p>Please try again or contact <a href="mailto:support@gms-world.net?subject=Action failed">System Administrator</a></p>
  <%
     }
  %>
