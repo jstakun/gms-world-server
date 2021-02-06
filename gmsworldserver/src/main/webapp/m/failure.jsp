@@ -30,27 +30,27 @@
     } else if (step.equals("2") && request.getAttribute("login") != null) {
  %>
                     <h3>Account <%= request.getAttribute("login") %> verification failed</h3>
-                    <p>Please try again or contact <a href="mailto:support@gms-world.net?subject=Account verification failed">System Administrator</a></p>
+                    <p>Please try again or contact <a href="mailto:support@gms-world.net?subject=Account <%= request.getAttribute("login") %> verification failed">System Administrator</a></p>
  <%
     } else if (step.equals("2") && request.getAttribute("login") == null && request.getAttribute("email") != null) {
  %>
                     <h3>Email <%= request.getAttribute("email") %> verification failed</h3>
-                    <p>Please try again or contact <a href="mailto:support@gms-world.net?subject=Email verification failed">System Administrator</a></p>
+                    <p>Please try again or contact <a href="mailto:support@gms-world.net?subject=Email <%= request.getAttribute("email") %> verification failed">System Administrator</a></p>
  <%
     } else if (step.equals("3") && request.getAttribute("login") != null) {
  %>
                     <h3>Account <%= request.getAttribute("login") %> unregistration failed</h3>
-                    <p>Please try again or contact <a href="mailto:support@gms-world.net?subject=Account unregister failed">System Administrator</a></p>
+                    <p>Please try again or contact <a href="mailto:support@gms-world.net?subject=Account <%= request.getAttribute("login") %> unregister failed">System Administrator</a></p>
  <%
     } else if (step.equals("3") && request.getAttribute("login") == null && request.getAttribute("email") != null) {
  %>
                     <h3>Email <%= request.getAttribute("email") %> unregistration failed</h3>
-                    <p>Please try again or contact <a href="mailto:support@gms-world.net?subject=Account unregister failed">System Administrator</a></p>
+                    <p>Please try again or contact <a href="mailto:support@gms-world.net?subject=Email <%= request.getAttribute("email") %> unregister failed">System Administrator</a></p>
  <%
     } else if (step.equals("4") && request.getAttribute("login") != null) {
  %>
                     <h3>User <%= request.getAttribute("login") %> password reset failed</h3>
-                    <p>Please try again or contact <a href="mailto:support@gms-world.net?subject=Password reset failed">System Administrator</a></p>
+                    <p>Please try again or contact <a href="mailto:support@gms-world.net?subject=Account <%= request.getAttribute("login") %> password reset failed">System Administrator</a></p>
  
  
  <%
