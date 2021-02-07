@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.net.URLDecoder;
 import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -128,43 +129,62 @@ public class NotificationsServlet extends HttpServlet {
 						//create new landmark but skip dl route points
 						logger.log(Level.INFO, "Creating landmark...");
 						try {
-							Landmark l = new Landmark();
-							l.setLatitude(latitude);
-							l.setLongitude(longitude);
-							l.setName(Commons.MY_POSITION_LAYER);
+							List<Landmark> landmarks = null;
+							if (StringUtils.isNotEmpty(deviceId)) {
+								landmarks = LandmarkPersistenceUtils.selectLandmarksByUserAndLayer(deviceId, Commons.MY_POS_CODE, 0, 1);
+							}
+							if (landmarks != null && !landmarks.isEmpty()) {
+			   	   				Landmark landmark = landmarks.get(0);
+			   	   				landmark.setLatitude(latitude);
+				   				landmark.setLongitude(longitude);
+				   				final String address = GeocodeHelperFactory.getInstance().processReverseGeocode(latitude, longitude);
+				   				if (StringUtils.isNotEmpty(address)) {
+				   					landmark.setDescription(address);
+				   				}
+				   				LandmarkPersistenceWebUtils.setFlex(landmark, request);
+				   				LandmarkPersistenceUtils.updateLandmark(landmark, GoogleCacheProvider.getInstance());
+				   				if (landmark.getId() > 0) {
+				   					LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(landmark, request.getHeader("User-Agent"), null, null, null, appId);
+				   				}
+				   			} else {
+				   				Landmark landmark = new Landmark();
+				   				landmark.setLatitude(latitude);
+				   				landmark.setLongitude(longitude);
+				   				landmark.setName(Commons.MY_POSITION_LAYER);
 						
-							String userStr = null;
-							if (appId == Commons.DL_ID && StringUtils.isNotEmpty(deviceId)) {
-								userStr = deviceId;
-							} else {
-								userStr = StringUtil.getUsername(request.getAttribute("username"), request.getParameter("username"));
-							}
-							//in LM from v1086, DA from v86 username is Base64 encoded string
-							if (((appId == Commons.LM_ID && appVersion >= 1086) || (appId == Commons.DA_ID && appVersion >= 86)) 
+				   				String userStr = null;
+				   				if (appId == Commons.DL_ID && StringUtils.isNotEmpty(deviceId)) {
+				   					userStr = deviceId;
+				   				} else {
+				   					userStr = StringUtil.getUsername(request.getAttribute("username"), request.getParameter("username"));
+				   				}
+				   				//in LM from v1086, DA from v86 username is Base64 encoded string
+				   				if (((appId == Commons.LM_ID && appVersion >= 1086) || (appId == Commons.DA_ID && appVersion >= 86)) 
 									&& StringUtils.isNotEmpty(userStr) && !StringUtils.equalsIgnoreCase(userStr, "mypos") && Base64.isArrayByteBase64(userStr.getBytes())) {
-								try {
-									userStr = new String(Base64.decodeBase64(userStr));
-								} catch (Exception e) {
-									logger.log(Level.SEVERE, " Username " + userStr + " failed Base64 decoding appId: " + appId + ", version: " + appVersion + ", error: " + e.getMessage());
-								}
-							}
-							if (StringUtils.isEmpty(userStr)) {
-								throw new Exception("Username can't be null!");
-							} 
-							l.setUsername(userStr);
-							l.setLayer(Commons.MY_POS_CODE);
+				   					try {
+				   						userStr = new String(Base64.decodeBase64(userStr));
+				   					} catch (Exception e) {
+				   						logger.log(Level.SEVERE, " Username " + userStr + " failed Base64 decoding appId: " + appId + ", version: " + appVersion + ", error: " + e.getMessage());
+				   					}
+				   				}
+				   				if (StringUtils.isEmpty(userStr)) {
+				   					throw new Exception("Username can't be null!");
+				   				} 
+				   				landmark.setUsername(userStr);
+				   				landmark.setLayer(Commons.MY_POS_CODE);
 							
-							if (!LandmarkPersistenceWebUtils.isSimilarToNewest(l, 10)) {
-								final String address = GeocodeHelperFactory.getInstance().processReverseGeocode(latitude, longitude);
-				        		if (StringUtils.isNotEmpty(address)) {
-				        			l.setDescription(address);
-				        		}
-				        		LandmarkPersistenceWebUtils.setFlex(l, request);
-								LandmarkPersistenceUtils.persistLandmark(l, GoogleCacheProvider.getInstance());
-								if (l.getId() > 0) {
-									LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), request.getParameter("socialIds"), null, null, appId);
-								}
-							}
+				   				if (!LandmarkPersistenceWebUtils.isSimilarToNewest(landmark, 10)) {
+				   					final String address = GeocodeHelperFactory.getInstance().processReverseGeocode(latitude, longitude);
+				   					if (StringUtils.isNotEmpty(address)) {
+				   						landmark.setDescription(address);
+				   					}
+				   					LandmarkPersistenceWebUtils.setFlex(landmark, request);
+									LandmarkPersistenceUtils.persistLandmark(landmark, GoogleCacheProvider.getInstance());
+									if (landmark.getId() > 0) {
+										LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(landmark, request.getHeader("User-Agent"), request.getParameter("socialIds"), null, null, appId);
+									}
+				   				}
+				   			}
 						} catch (Exception e) {
 							logger.log(Level.SEVERE, e.getMessage(), e);
 						}

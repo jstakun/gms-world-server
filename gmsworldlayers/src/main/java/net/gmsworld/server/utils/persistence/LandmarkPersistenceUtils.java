@@ -533,8 +533,4 @@ public class LandmarkPersistenceUtils {
         	logger.log(Level.SEVERE, e.getMessage(), e);
         }
     }
-    
-    public static void updateLandmark(String key, Map<String, Object> update) {
-    	//TODO not yet implemented
-    }
 }

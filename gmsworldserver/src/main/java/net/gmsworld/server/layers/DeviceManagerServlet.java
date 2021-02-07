@@ -249,34 +249,34 @@ public final class DeviceManagerServlet extends HttpServlet {
    	   		} else if (StringUtils.isNotEmpty(deviceId)) {
    	   			List<Landmark> landmarks = LandmarkPersistenceUtils.selectLandmarksByUserAndLayer(deviceId, Commons.MY_POS_CODE, 0, 1);
    	   			if (!landmarks.isEmpty()) {
-   	   				Landmark l = landmarks.get(0);
-   	   				l.setLatitude(latitude);
-	   				l.setLongitude(longitude);
+   	   				Landmark landmark = landmarks.get(0);
+   	   				landmark.setLatitude(latitude);
+	   				landmark.setLongitude(longitude);
 	   				final String address = GeocodeHelperFactory.getInstance().processReverseGeocode(latitude, longitude);
 	   				if (StringUtils.isNotEmpty(address)) {
-	   					l.setDescription(address);
+	   					landmark.setDescription(address);
 	   				}
-	   				LandmarkPersistenceWebUtils.setFlex(l, request);
-	   				LandmarkPersistenceUtils.updateLandmark(l, GoogleCacheProvider.getInstance());
-	   				if (l.getId() > 0) {
-	   					LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), null, null, null, appId);
+	   				LandmarkPersistenceWebUtils.setFlex(landmark, request);
+	   				LandmarkPersistenceUtils.updateLandmark(landmark, GoogleCacheProvider.getInstance());
+	   				if (landmark.getId() > 0) {
+	   					LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(landmark, request.getHeader("User-Agent"), null, null, null, appId);
 	   				}
 	   			} else {
-	   				Landmark l = new Landmark();
-   	   				l.setLatitude(latitude);
-   	   				l.setLongitude(longitude);
-   	   				l.setName(Commons.MY_POSITION_LAYER);
-   	   				l.setLayer(Commons.MY_POS_CODE);
-   	   				l.setUsername(deviceId);
-   	   				if (!LandmarkPersistenceWebUtils.isSimilarToNewest(l, 10)) {
+	   				Landmark landmark = new Landmark();
+   	   				landmark.setLatitude(latitude);
+   	   				landmark.setLongitude(longitude);
+   	   				landmark.setName(Commons.MY_POSITION_LAYER);
+   	   				landmark.setLayer(Commons.MY_POS_CODE);
+   	   				landmark.setUsername(deviceId);
+   	   				if (!LandmarkPersistenceWebUtils.isSimilarToNewest(landmark, 10)) {
    	   					final String address = GeocodeHelperFactory.getInstance().processReverseGeocode(latitude, longitude);
    	   					if (StringUtils.isNotEmpty(address)) {
-   	   						l.setDescription(address);
+   	   						landmark.setDescription(address);
    	   					}
-   	   					LandmarkPersistenceWebUtils.setFlex(l, request);
-   	   					LandmarkPersistenceUtils.persistLandmark(l, GoogleCacheProvider.getInstance());
-   	   					if (l.getId() > 0) {
-   	   						LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), null, null, null, appId);
+   	   					LandmarkPersistenceWebUtils.setFlex(landmark, request);
+   	   					LandmarkPersistenceUtils.persistLandmark(landmark, GoogleCacheProvider.getInstance());
+   	   					if (landmark.getId() > 0) {
+   	   						LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(landmark, request.getHeader("User-Agent"), null, null, null, appId);
    	   					}
    	   				}
    	   			}

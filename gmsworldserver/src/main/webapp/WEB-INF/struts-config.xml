@@ -2,8 +2,7 @@
 <!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN" "http://struts.apache.org/dtds/struts-config_1_2.dtd">
 <struts-config>
     <form-beans>
-        <form-bean name="landmarkForm"
-                   type="com.jstakun.lm.server.struts.LandmarkForm">
+        <form-bean name="landmarkForm" type="com.jstakun.lm.server.struts.LandmarkForm">
             <form-property name="name" type="java.lang.String"/>
             <form-property name="description" type="java.lang.String"/>
             <form-property name="latitude" type="double" initial="0"/>
