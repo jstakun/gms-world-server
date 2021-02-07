@@ -57,10 +57,14 @@ public class ShowArchiveAction extends org.apache.struts.action.Action {
         	}
             m = DateUtils.getLongMonthYearString(DateUtils.parseDate(df, month));
         } catch (Exception ex) {
-            Date now = new Date();
+        }
+        
+        if (m  == null) {
+        	Date now = new Date();
             month = DateUtils.formatDate(df, now);
             m = DateUtils.getLongMonthYearString(now);
         }
+        
         request.setAttribute("month", m);
         
         final String monthStr = month;
