@@ -113,14 +113,15 @@ public final class DeviceManagerServlet extends HttpServlet {
 			   	 if (request.getHeader(Commons.LNG_HEADER) != null) {
 			   	    longitude = GeocodeUtils.getLongitude(request.getHeader(Commons.LNG_HEADER));
 			   	 }
-				 
+			   	 
 		         try {
 		        	 final int version = NumberUtils.getInt(request.getHeader(Commons.APP_VERSION_HEADER), -1);
-		        	 if (version >= 28) {
+		        	 final int appId = NumberUtils.getInt(request.getHeader(Commons.APP_HEADER), -1);
+					 if (version >= 28) {
 		        		 if (flex == null) {
-		        			 flex = processHeadersV2(request, deviceId, latitude, longitude, accuracy, version);
+		        			 flex = processHeadersV2(request, deviceId, latitude, longitude, accuracy, version, appId);
 		        		 } else {
-		        			 flex += "," + processHeadersV2(request, deviceId, latitude, longitude, accuracy, version);
+		        			 flex += "," + processHeadersV2(request, deviceId, latitude, longitude, accuracy, version, appId);
 		        		 }
 		        	 } else {
 		        		 if (flex == null) {
@@ -230,7 +231,7 @@ public final class DeviceManagerServlet extends HttpServlet {
    	   	return flex;
 	}
 	
-	private String processHeadersV2(HttpServletRequest request, String deviceId, Double latitude, Double longitude, String accuracy, int version) {
+	private String processHeadersV2(HttpServletRequest request, String deviceId, Double latitude, Double longitude, String accuracy, int version, int appId) {
 		List<String> tokens = new ArrayList<>();
 		final String speed = request.getHeader("X-GMS-Speed");
 		
@@ -246,24 +247,39 @@ public final class DeviceManagerServlet extends HttpServlet {
    	   		if (StringUtils.isNotEmpty(request.getHeader(Commons.ROUTE_ID_HEADER))) {
    	   			tokens.add("routeId:" + request.getHeader(Commons.ROUTE_ID_HEADER));
    	   		} else if (StringUtils.isNotEmpty(deviceId)) {
-				Landmark l = new Landmark();
-				l.setLatitude(latitude);
-				l.setLongitude(longitude);
-				l.setName(Commons.MY_POSITION_LAYER);
-				l.setLayer(Commons.MY_POS_CODE);
-				l.setUsername(deviceId);
-				if (!LandmarkPersistenceWebUtils.isSimilarToNewest(l, 10)) {
-					final String address = GeocodeHelperFactory.getInstance().processReverseGeocode(latitude, longitude);
-	        		if (StringUtils.isNotEmpty(address)) {
-	        			l.setDescription(address);
-	        		}
-	        		LandmarkPersistenceWebUtils.setFlex(l, request);
-					LandmarkPersistenceUtils.persistLandmark(l, GoogleCacheProvider.getInstance());
-					if (l.getId() > 0) {
-						final int appId = NumberUtils.getInt(request.getHeader(Commons.APP_HEADER), -1);
-						LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), null, null, null, appId);
-					}
-				}
+   	   			List<Landmark> landmarks = LandmarkPersistenceUtils.selectLandmarksByUserAndLayer(deviceId, Commons.MY_POS_CODE, 0, 1);
+   	   			if (!landmarks.isEmpty()) {
+   	   				Landmark l = landmarks.get(0);
+   	   				l.setLatitude(latitude);
+	   				l.setLongitude(longitude);
+	   				final String address = GeocodeHelperFactory.getInstance().processReverseGeocode(latitude, longitude);
+	   				if (StringUtils.isNotEmpty(address)) {
+	   					l.setDescription(address);
+	   				}
+	   				LandmarkPersistenceWebUtils.setFlex(l, request);
+	   				LandmarkPersistenceUtils.updateLandmark(l, GoogleCacheProvider.getInstance());
+	   				if (l.getId() > 0) {
+	   					LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), null, null, null, appId);
+	   				}
+	   			} else {
+	   				Landmark l = new Landmark();
+   	   				l.setLatitude(latitude);
+   	   				l.setLongitude(longitude);
+   	   				l.setName(Commons.MY_POSITION_LAYER);
+   	   				l.setLayer(Commons.MY_POS_CODE);
+   	   				l.setUsername(deviceId);
+   	   				if (!LandmarkPersistenceWebUtils.isSimilarToNewest(l, 10)) {
+   	   					final String address = GeocodeHelperFactory.getInstance().processReverseGeocode(latitude, longitude);
+   	   					if (StringUtils.isNotEmpty(address)) {
+   	   						l.setDescription(address);
+   	   					}
+   	   					LandmarkPersistenceWebUtils.setFlex(l, request);
+   	   					LandmarkPersistenceUtils.persistLandmark(l, GoogleCacheProvider.getInstance());
+   	   					if (l.getId() > 0) {
+   	   						LandmarkPersistenceWebUtils.notifyOnLandmarkCreation(l, request.getHeader("User-Agent"), null, null, null, appId);
+   	   					}
+   	   				}
+   	   			}
    	   		}
    	   	}	
    	   	if (StringUtils.isNotEmpty(deviceId)) {

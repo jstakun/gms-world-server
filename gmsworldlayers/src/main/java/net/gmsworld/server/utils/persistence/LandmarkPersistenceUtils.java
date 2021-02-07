@@ -36,9 +36,7 @@ public class LandmarkPersistenceUtils {
     private static final String BACKEND_SERVER_URL = "https://landmarks-api.b9ad.pro-us-east-1.openshiftapps.com/api/v1"; 
     
     private static Map<String, String> persistLandmark(String name, String description, double latitude, double longitude, double altitude, String username, Date validityDate, String layer, String email, String flex) {
-
-        Map<String, String> response = new HashMap<String, String>();
-    	
+        Map<String, String> response = new HashMap<String, String>();    	
         try {
         	final String landmarksUrl = BACKEND_SERVER_URL + "/addItem";
         	String params = "type=landmark&latitude=" + StringUtil.formatCoordE6(latitude) + "&longitude=" + StringUtil.formatCoordE6(longitude) + "&name=" + URLEncoder.encode(name, "UTF-8") + 
@@ -70,7 +68,6 @@ public class LandmarkPersistenceUtils {
         } catch (Exception e) {
         	logger.log(Level.SEVERE, e.getMessage(), e);
         }
-
         return response;
     }
     
@@ -99,6 +96,65 @@ public class LandmarkPersistenceUtils {
     	return flexJSon;
     }
 
+    private static Map<String, String> updateLandmark(int id, String description, double latitude, double longitude, double altitude, Date validityDate, String email, String flex) {
+        Map<String, String> response = new HashMap<String, String>();    	
+        try {
+        	final String landmarksUrl = BACKEND_SERVER_URL + "/landmarksProvider";
+        	String params = "id=" + id + "&action=update&latitude=" + StringUtil.formatCoordE6(latitude) + "&longitude=" + StringUtil.formatCoordE6(longitude) +  
+        			"&altitude=" + altitude + "&user_key=" + Commons.getProperty(Property.RH_LANDMARKS_API_KEY);						 
+        	if (validityDate != null) {
+        		params +=	"&validityDate=" + validityDate.getTime();
+        	}	
+        	if (StringUtils.isNotEmpty(description)) {
+        		params += "&description=" + URLEncoder.encode(description, "UTF-8"); 
+        	}
+        	if (StringUtils.isNotEmpty(email)) {
+        		params += "&email=" + URLEncoder.encode(email, "UTF-8");
+        	}
+        	if (StringUtils.isNotEmpty(flex)) {
+        		params += "&flex=" + URLEncoder.encode(flex, "UTF-8");
+        	}
+        	final String landmarksJson = HttpUtils.processFileRequest(new URL(landmarksUrl + "?" + params));
+        	if (StringUtils.startsWith(StringUtils.trim(landmarksJson), "{")) {
+        		JSONObject resp = new JSONObject(landmarksJson);
+        		logger.log(Level.INFO, "Landmark created: " + landmarksJson);
+        		for (Iterator<String> iter = resp.keys(); iter.hasNext();) {
+        			String key = iter.next();
+        			String value = resp.get(key).toString();
+        			response.put(key, value);
+        		}
+        	} else {
+        		logger.log(Level.SEVERE, "Received following response from server: " + landmarksJson);
+        	}
+        } catch (Exception e) {
+        	logger.log(Level.SEVERE, e.getMessage(), e);
+        }
+        return response;
+    }
+    
+    public static JSONObject updateLandmark(Landmark landmark, CacheProvider cacheProvider) {
+    	Map<String, String> persistResponse = updateLandmark(landmark.getId(), landmark.getDescription(), landmark.getLatitude(), landmark.getLongitude(), landmark.getAltitude(), landmark.getValidityDate(), landmark.getEmail(), landmark.getFlex());
+    	JSONObject flexJSon;
+    	if (landmark.getFlex() != null) {
+    		flexJSon = new JSONObject(landmark.getFlex()); 
+    	} else {
+    		flexJSon = new JSONObject();
+    	}
+		if (persistResponse.containsKey("cc")) {
+    		flexJSon.put("cc", persistResponse.get("cc"));
+    	}
+		if (persistResponse.containsKey("city")) {
+    		flexJSon.put("city", persistResponse.get("city"));
+    	}
+		landmark.setFlex(flexJSon.toString());
+    	if (landmark.getId() > 0 && cacheProvider != null) {
+    		cacheProvider.put(Integer.toString(landmark.getId()), landmark);
+    		logger.log(Level.INFO, "Saved landmark to local in-memory cache with key: " + landmark.getId());
+    		cacheProvider.remove("NewestLandmarks");
+    	}
+    	return flexJSon;
+    }
+    
     public static Landmark selectLandmarkByHash(String hash, CacheProvider cacheProvider) {
     	String key = "landmark_" + hash;
     	Landmark landmark = null;
