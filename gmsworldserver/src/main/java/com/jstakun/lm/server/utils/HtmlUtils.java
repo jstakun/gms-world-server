@@ -144,7 +144,8 @@ public class HtmlUtils {
 	}
 
 	public static String buildLandmarkDescV2(Landmark landmark, Object address, Locale locale, boolean isMobile) {
-	    int fontSize = 16;
+		PrettyTime prettyTime = new PrettyTime(locale);
+		int fontSize = 16;
 	    if (isMobile) {
 	    	fontSize = 24;
 	    }
@@ -160,13 +161,14 @@ public class HtmlUtils {
 	    } else {
 	    	   desc += "'Latitude: " + StringUtil.formatCoordE6(landmark.getLatitude()) + ", Longitude: " + StringUtil.formatCoordE6(landmark.getLongitude()) + ",<br/>'+\n";
 	    }
-	    desc += "'Posted on " + DateUtils.getFormattedDateTime(locale, landmark.getCreationDate()) + " by <a href=\"/showUser/" + landmark.getUsername() + "\">" + UrlUtils.createUsernameMask(landmark.getUsername()) + "</a>,<br/>'+\n" +
+	    desc += "'Posted " + prettyTime.format(landmark.getCreationDate()) + " by <a href=\"/showUser/" + landmark.getUsername() + "\">" + UrlUtils.createUsernameMask(landmark.getUsername()) + "</a>,<br/>'+\n" +
 	                   "'Created in " + LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer()) + ".</span>'";
 	    return desc;
 	}
 	
 	public static String buildGeocodeDescV2(GeocodeCache gc, Object address, Locale locale, boolean isMobile) {
-	    int fontSize = 16;
+		PrettyTime prettyTime = new PrettyTime(locale);
+		int fontSize = 16;
 	    if (isMobile) {
 	    	fontSize = 24;
 	    }
@@ -177,7 +179,7 @@ public class HtmlUtils {
 	           desc += "'Geocode address: " + StringEscapeUtils.escapeJavaScript(address.toString()) + ",<br/>'+\n"; 
 	    }        
 		desc += "'Latitude: " + StringUtil.formatCoordE6(gc.getLatitude()) + ", Longitude: " + StringUtil.formatCoordE6(gc.getLongitude()) + "<br/>'+\n" +
-                "'Posted on " + DateUtils.getFormattedDateTime(locale, gc.getCreationDate()) + ".</span>'";
+                "'Posted " + prettyTime.format(gc.getCreationDate()) + ".</span>'";
 		return desc;
 	}
 	
@@ -239,11 +241,17 @@ public class HtmlUtils {
 		if (StringUtils.isNotEmpty(description)) {
 			desc = description + "<br/>";
 		}	
-		desc += "Posted " + prettyTime.format(landmark.getCreationDate()) + " on " + DateUtils.getFormattedDateTime(locale, landmark.getCreationDate()) + " by <a href=\"" + userUrl + "\">" + UrlUtils.createUsernameMask(landmark.getUsername()) + "</a>&nbsp;" + 
-        "| Created in layer <a href=\"" + layerUrl + "\">" + LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer()) + "</a> using <a href=\"" + ConfigurationManager.getAppUrl(landmark.getAppId()) + "\" target=\"_blank\">" +  ConfigurationManager.getAppName(landmark.getAppId()) + "</a>" +
+		//desc += "Posted " + prettyTime.format(landmark.getCreationDate()) + " on " + DateUtils.getFormattedDateTime(locale, landmark.getCreationDate()) + " by <a href=\"" + userUrl + "\">" + UrlUtils.createUsernameMask(landmark.getUsername()) + "</a>&nbsp;" + 
+		desc += "Posted " + prettyTime.format(landmark.getCreationDate()) + " by <a href=\"" + userUrl + "\">" + UrlUtils.createUsernameMask(landmark.getUsername()) + "</a>&nbsp;" + 
+		"| Created in layer <a href=\"" + layerUrl + "\">" + LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer()) + "</a> using <a href=\"" + ConfigurationManager.getAppUrl(landmark.getAppId()) + "\" target=\"_blank\">" +  ConfigurationManager.getAppName(landmark.getAppId()) + "</a>" +
 		"<br/><b><a href=\"" + bookingUrl + "\" target=\"_blank\">" + hotelsText + "</a></b>" + HtmlUtils.getStatusImage(landmark.getUseCount());
 		
 		return desc;
+	}
+	
+	public static String getGeocodeDesc(GeocodeCache geocodeCache, Locale locale) {
+		PrettyTime prettyTime = new PrettyTime(locale);
+		return "<a href=\"/showGeocode/" + geocodeCache.getId() + "\">" +  geocodeCache.getLocation() + "</a><br/><span>Posted " + prettyTime.format(geocodeCache.getCreationDate()) + "</span>";
 	}
 	
 	public static String getLandmarkDescShort(Landmark landmark, Locale locale) throws UnsupportedEncodingException {
@@ -256,7 +264,7 @@ public class HtmlUtils {
 			userUrl = URLEncoder.encode("/showUser/" + landmark.getUsername(), "UTF-8");
 		}
 		String desc = "Created in layer <a href=\"" + layerUrl + "\">" + LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer()) + "</a>" +
-        "<div class=\"date\"><span>Posted " + prettyTime.format(landmark.getCreationDate()) + " on " + DateUtils.getFormattedDateTime(locale, landmark.getCreationDate()) + " by <a href=\"" + userUrl + "\">" + UrlUtils.createUsernameMask(landmark.getUsername()) + "</a></span></div>";
+        "<div class=\"date\"><span>Posted " + prettyTime.format(landmark.getCreationDate()) + " by <a href=\"" + userUrl + "\">" + UrlUtils.createUsernameMask(landmark.getUsername()) + "</a></span></div>";
 		
 		return desc;
 	}

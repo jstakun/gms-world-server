@@ -11,7 +11,8 @@
                  net.gmsworld.server.utils.StringUtil,
                  net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils,
          		 net.gmsworld.server.utils.persistence.Landmark,
-                 net.gmsworld.server.utils.DateUtils,java.util.List"%>
+                 org.ocpsoft.prettytime.PrettyTime,
+                 java.util.List"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <!-- content-outer -->
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -63,7 +64,7 @@
           Longitude
         </th>
         <th>
-          Creation Date
+          Created
         </th>
         <th>
           User
@@ -92,6 +93,7 @@
         }
         else
         {
+        	PrettyTime prettyTime = new PrettyTime(request.getLocale());  
             for (Landmark landmark : landmarkList)
             {
 %>
@@ -99,7 +101,7 @@
         <td width="32%"><a href="<%= response.encodeURL("/showLandmark/" + landmark.getId()) %>"><%= landmark.getName() %></a></td>
         <td width="17%"><%= StringUtil.formatCoordE6(landmark.getLatitude()) %></td>
         <td width="17%"><%= StringUtil.formatCoordE6(landmark.getLongitude()) %></td>
-        <td width="17%"><%= DateUtils.getFormattedDateTime(request.getLocale(), landmark.getCreationDate()) %></td>
+        <td width="17%"><%= prettyTime.format(landmark.getCreationDate())%></td>
         <td width="17%"><a href="<%=landmark.isSocial() ? response.encodeURL("/blogeo/" + landmark.getUsername()) : response.encodeURL("/showUser/" + landmark.getUsername())%>"><%=UrlUtils.createUsernameMask(landmark.getUsername())%></a></td>
       </tr>
 <%

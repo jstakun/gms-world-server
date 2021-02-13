@@ -69,7 +69,7 @@ public class FBTest {
 		if (landmarks != null) {
 			System.out.println("Found " + landmarks.size() + " " + name);    
 			for (ExtendedLandmark l : landmarks) {
-				System.out.println(DateUtils.getFormattedDateTime(Locale.US, new Date(l.getCreationDate())) + " " + l.getName() + ": " + l.getLatitudeE6() + "," + l.getLongitudeE6() + "\n\nDescription: " + l.getDescription() + "\nThumbnail: " + l.getThumbnail() + "\nUrl: " + l.getUrl() + "\n");
+				System.out.println(DateUtils.getFormattedGMTDateTime(Locale.US, new Date(l.getCreationDate())) + " " + l.getName() + ": " + l.getLatitudeE6() + "," + l.getLongitudeE6() + "\n\nDescription: " + l.getDescription() + "\nThumbnail: " + l.getThumbnail() + "\nUrl: " + l.getUrl() + "\n");
 			}
 		}
 	}

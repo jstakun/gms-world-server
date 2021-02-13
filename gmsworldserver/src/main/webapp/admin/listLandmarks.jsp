@@ -79,9 +79,9 @@
         <td width="10%"><%= landmark.getDescription() %></td>
         <td width="10%"><%= StringUtil.formatCoordE6(landmark.getLatitude()) %></td>
         <td width="10%"><%= StringUtil.formatCoordE6(landmark.getLongitude()) %></td>
-        <td width="10%"><%= DateUtils.getFormattedDateTime(request.getLocale(), landmark.getCreationDate()) %></td>
-        <td width="10%"><%= landmark.getUsername() %></td>
-        <td width="10%"><%= DateUtils.getFormattedDateTime(request.getLocale(), landmark.getValidityDate()) %></td>
+        <td width="10%"><%=DateUtils.getFormattedGMTDateTime(request.getLocale(), landmark.getCreationDate())%></td>
+        <td width="10%"><%=landmark.getUsername()%></td>
+        <td width="10%"><%=DateUtils.getFormattedGMTDateTime(request.getLocale(), landmark.getValidityDate())%></td>
         <td width="10%"><%= landmark.getLayer() %></td>
         <td width="10%">
             <a href="updateLandmark.jsp?key=<%= landmark.getId() %>">Update</a>,&nbsp;

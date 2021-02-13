@@ -10,7 +10,7 @@
                  com.jstakun.lm.server.utils.HtmlUtils,
                  net.gmsworld.server.utils.StringUtil,
                  net.gmsworld.server.utils.persistence.Landmark,
-                 net.gmsworld.server.utils.DateUtils,
+                 org.ocpsoft.prettytime.PrettyTime,
                  java.util.List"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <!-- content-outer -->
@@ -78,7 +78,7 @@
           Longitude
         </th>
         <th>
-          Creation Date
+          Created
         </th>
         <th>
           Layer
@@ -107,6 +107,7 @@
         }
         else
         {
+        	PrettyTime prettyTime = new PrettyTime(request.getLocale());
             for (Landmark landmark : landmarkList)
             {
 %>
@@ -114,7 +115,7 @@
         <td width="32%"><a href="<%= response.encodeURL("/showLandmark/" + landmark.getId()) %>"><%= landmark.getName() %></a></td>
         <td width="17%"><%= StringUtil.formatCoordE6(landmark.getLatitude()) %></td>
         <td width="17%"><%= StringUtil.formatCoordE6(landmark.getLongitude()) %></td>
-        <td width="17%"><%= DateUtils.getFormattedDateTime(request.getLocale(), landmark.getCreationDate()) %></td>
+        <td width="17%"><%= prettyTime.format(landmark.getCreationDate()) %></td>
         <td width="17%"><a href="/showLayer/<%=landmark.getLayer()%>"><%=LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer())%></a></td>
       </tr>
 <%

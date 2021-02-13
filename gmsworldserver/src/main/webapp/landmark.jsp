@@ -13,7 +13,7 @@
         net.gmsworld.server.utils.ImageUtils,
         net.gmsworld.server.utils.StringUtil,
         net.gmsworld.server.config.ConfigurationManager,
-        net.gmsworld.server.utils.DateUtils" %>
+        org.ocpsoft.prettytime.PrettyTime" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <!-- content-outer -->
 <html>
@@ -125,7 +125,7 @@
                              }
 %>
                                             Says: <br/>
-                                            <span class="comment-data"><%= DateUtils.getFormattedDateTime(request.getLocale(), comment.getCreationDate()) %></span>
+                                            <span class="comment-data"><%= new PrettyTime(request.getLocale()).format(comment.getCreationDate()) %></span>
                                         </cite>
                                     </div>
                                     <div class="comment-text">

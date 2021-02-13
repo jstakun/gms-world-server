@@ -1,7 +1,7 @@
 <%@page contentType="text/html" pageEncoding="utf-8"%>
 <%@page import="com.jstakun.lm.server.persistence.Screenshot,
                 net.gmsworld.server.utils.UrlUtils,
-                net.gmsworld.server.utils.DateUtils,
+                org.ocpsoft.prettytime.PrettyTime,
                 net.gmsworld.server.utils.StringUtil" %>
 <!DOCTYPE html>
 <html>
@@ -46,7 +46,7 @@
                      <%=address != null ? "Geocode address: " + address + "<br/>" : ""%>
                      Latitude: <%=StringUtil.formatCoordE6(screenshot.getLatitude())%>, Longitude: <%=StringUtil.formatCoordE6(screenshot.getLongitude())%><br/>
                      <div class="date">
-                     	<span>Posted on <%=DateUtils.getFormattedDateTime(request.getLocale(), screenshot.getCreationDate())%> | by 
+                     	<span>Posted <%= new PrettyTime(request.getLocale()).format(screenshot.getCreationDate()) %> by 
     				 <%
                      	if (screenshot.getUsername() != null) {
                      %>

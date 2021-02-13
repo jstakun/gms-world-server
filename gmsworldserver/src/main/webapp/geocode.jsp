@@ -9,7 +9,7 @@
                 com.jstakun.lm.server.utils.HtmlUtils,
 				net.gmsworld.server.utils.StringUtil,
 				net.gmsworld.server.utils.ImageUtils,
-				net.gmsworld.server.utils.DateUtils,
+				org.ocpsoft.prettytime.PrettyTime,
 				net.gmsworld.server.config.ConfigurationManager" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <!-- content-outer -->
@@ -55,7 +55,7 @@
                         <p class="post-details">
                           <a href="/showGeocode/<%= key %>/fullScreen">See full screen map</a><br/>
                           Latitude: <%= StringUtil.formatCoordE6(gc.getLatitude()) %>, Longitude: <%= StringUtil.formatCoordE6(gc.getLongitude()) %><br/>
-                          Posted on <%= DateUtils.getFormattedDateTime(request.getLocale(), gc.getCreationDate()) %><br/>
+                          Posted <%= new PrettyTime(request.getLocale()).format(gc.getCreationDate()) %><br/>
                           <b><a href="<%= HtmlUtils.getHotelLandmarkUrl(gc.getLatitude(), gc.getLongitude()) %>" target="_blank">Discover hotels around!</a></b>
                         </p>
 

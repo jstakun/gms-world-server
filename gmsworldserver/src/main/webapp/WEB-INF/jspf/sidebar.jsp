@@ -2,8 +2,7 @@
 <%@ page pageEncoding="utf-8" %>
 <%@ page import="net.gmsworld.server.utils.persistence.GeocodeCache,
                  com.jstakun.lm.server.utils.HtmlUtils,
-                 java.util.List,
-                 net.gmsworld.server.utils.DateUtils" %>
+                 java.util.List" %>
 <div id="sidebar">
 
     <div class="about-me">
@@ -74,7 +73,7 @@
     	for (GeocodeCache geocodeCache : geocodeCacheList)
     	{
 %>
-            <li><a href="/showGeocode/<%= geocodeCache.getId() %>"><%= geocodeCache.getLocation() %></a><br/><span>Posted on <%= DateUtils.getFormattedDateTime(request.getLocale(), geocodeCache.getCreationDate()) %></span></li>
+            <li><%= HtmlUtils.getGeocodeDesc(geocodeCache, request.getLocale()) %></li>
 <%
     	}
     }

@@ -38,7 +38,7 @@
         </article>
         
         <article class="underline">
-    		Discover interesting places anywhere with <a href="/download.jsp"><b>Landmark Manager</b></a>.
+    		Discover interesting places anywhere with our <a href="/download.jsp"><b>Mobile Applications</b></a>.
     	</article>
     		
     	<article class="underline">

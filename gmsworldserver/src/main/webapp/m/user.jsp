@@ -5,7 +5,7 @@
                  net.gmsworld.server.utils.StringUtil,
                  net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils,
          		 net.gmsworld.server.utils.persistence.Landmark,
-         		 net.gmsworld.server.utils.DateUtils,
+         		 org.ocpsoft.prettytime.PrettyTime,
                  java.util.List"%>
 <!DOCTYPE html>
 <html>
@@ -57,6 +57,7 @@
     	    		}
     	    	    	    	           else
     	    	    	    	           {
+    	    	    	    	        	    PrettyTime prettyTime = new PrettyTime(request.getLocale());
     	    	    	    	                for (Landmark landmark : landmarkList)
     	    	    	    	                {
     	    	%>
@@ -68,7 +69,7 @@
             <p>
                 Latitude: <%=StringUtil.formatCoordE6(landmark.getLatitude())%>, Longitude: <%=StringUtil.formatCoordE6(landmark.getLongitude())%> |
                 Created in layer <a href="/showLayer/<%=landmark.getLayer()%>"><%=LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer())%></a>
-                 <div class="date"><span>Posted on <%=DateUtils.getFormattedDateTime(request.getLocale(), landmark.getCreationDate())%> | by <a href="/showUser/<%=landmark.getUsername()%>"><%=UrlUtils.createUsernameMask(landmark.getUsername())%></a></span></div>
+                 <div class="date"><span>Posted <%= prettyTime.format(landmark.getCreationDate()) %> | by <a href="/showUser/<%=landmark.getUsername()%>"><%=UrlUtils.createUsernameMask(landmark.getUsername())%></a></span></div>
             </p>
         
         </article>

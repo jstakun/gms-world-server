@@ -78,8 +78,8 @@ public class UtilsTest {
 	public void dateTest() {
 		long l = 1454963549623L; //21:32 PL
 		Date date = new Date(l);
-		System.out.println(DateUtils.getFormattedDateTime(new Locale("us"), date));		
-		System.out.println(DateUtils.getFormattedDateTime(new Locale("pl"), date));		
+		System.out.println(DateUtils.getFormattedGMTDateTime(new Locale("us"), date));		
+		System.out.println(DateUtils.getFormattedGMTDateTime(new Locale("pl"), date));		
 	}
 	
 	public void calendarTest() {

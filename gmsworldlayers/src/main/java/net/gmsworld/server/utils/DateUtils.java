@@ -172,7 +172,7 @@ public class DateUtils {
         return calendar.getTime();
     }
 
-    public static String getFormattedDateTime(Locale currentLocale, Date date) {
+    public static String getFormattedGMTDateTime(Locale currentLocale, Date date) {
         DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, currentLocale);
         //formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
         if (formatter != null && date != null) {

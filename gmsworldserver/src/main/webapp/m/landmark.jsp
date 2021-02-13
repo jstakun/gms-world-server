@@ -3,7 +3,7 @@
         com.jstakun.lm.server.utils.persistence.LayerPersistenceUtils,
         com.jstakun.lm.server.persistence.Comment,
         net.gmsworld.server.utils.UrlUtils,
-        net.gmsworld.server.utils.DateUtils,
+        org.ocpsoft.prettytime.PrettyTime,
         net.gmsworld.server.utils.StringUtil,
         java.util.List,
         java.util.Date,
@@ -41,6 +41,7 @@
             <h3>This landmark has been archived and is currently unavailable.</h3>
                 <%
         	        } else {
+        	        	   PrettyTime prettyTime = new PrettyTime(request.getLocale());		
                 %>        
             <h3><%=landmark.getName()%></h3>
             <h4><%=landmark.getDescription()%></h4>
@@ -74,25 +75,25 @@
                     {
                            String lastCheckinUsername = (String)request.getAttribute("lastCheckinUsername");
                 %>
-                     <div class="date"><span>Last check-in <%=DateUtils.getFormattedDateTime(request.getLocale(), (Date)request.getAttribute("lastCheckinDate"))%> | by <a href="<%=response.encodeURL("/showUser/" + lastCheckinUsername)%>"><%=UrlUtils.createUsernameMask(lastCheckinUsername)%></a></span></div>
+                     <div class="date"><span>Last check-in <%= prettyTime.format((Date) request.getAttribute("lastCheckinDate")) %> | by <a href="<%=response.encodeURL("/showUser/" + lastCheckinUsername)%>"><%=UrlUtils.createUsernameMask(lastCheckinUsername)%></a></span></div>
                 <%
                 	}
-                    List<Comment> commentList = HtmlUtils.getList(Comment.class, request, "comments");
-                                                               
-                    if (commentList != null)
-                    {
+                                    List<Comment> commentList = HtmlUtils.getList(Comment.class, request, "comments");
+                                                                               
+                                    if (commentList != null)
+                                    {
                 %>
             </p>
             <h4><%=commentList.size()%> comment<%=commentList.size()!=1?"s":""%></h4>
               <div>
                 <ul class="vertical comments">
 				<%
-						    for (Comment comment : commentList)
-						    {
+					for (Comment comment : commentList)
+								    {
 				%>
                    <li>
                      <p><%=comment.getMessage()%></p>                       
-                     <div class="date"><span><%=DateUtils.getFormattedDateTime(request.getLocale(), comment.getCreationDate())%> | by <a href="<%=response.encodeURL("/showUser/" + comment.getUsername())%>"><%=UrlUtils.createUsernameMask(comment.getUsername())%></a></span></div>
+                     <div class="date"><span><%=prettyTime.format(comment.getCreationDate())%> | by <a href="<%=response.encodeURL("/showUser/" + comment.getUsername())%>"><%=UrlUtils.createUsernameMask(comment.getUsername())%></a></span></div>
                    </li>
                 <%
                   		     }
