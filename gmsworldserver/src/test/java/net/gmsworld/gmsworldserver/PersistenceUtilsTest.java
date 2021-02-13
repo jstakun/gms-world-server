@@ -1,11 +1,10 @@
 package net.gmsworld.gmsworldserver;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.junit.Test;
 
 import com.jstakun.lm.server.persistence.Checkin;
 import com.jstakun.lm.server.persistence.Notification;
@@ -18,11 +17,6 @@ import com.jstakun.lm.server.utils.persistence.NotificationPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.ScreenshotPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.TokenPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.UserPersistenceUtils;
-
-import net.gmsworld.server.config.Commons;
-import net.gmsworld.server.utils.memcache.MockCacheProvider;
-import net.gmsworld.server.utils.persistence.Landmark;
-import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;
 
 public class PersistenceUtilsTest {
 
@@ -115,21 +109,6 @@ public class PersistenceUtilsTest {
 			}
 			UserPersistenceUtils.removeUser(secret);
 			//
-		}
-	}
-	
-	@Test
-	public void landmarkPersistenceUtils() {
-		final String user = DEVICE;
-		int count = LandmarkPersistenceUtils.countLandmarksByUserAndLayer(user, Commons.MY_POS_CODE);
-		System.out.println(user + " landmarks count " + count);
-		List<Landmark> landmarks = LandmarkPersistenceUtils.selectLandmarksByUserAndLayer(user, Commons.MY_POS_CODE, 0, 1);
-		if (!landmarks.isEmpty()) {
-			Landmark landmark = landmarks.get(0);
-			//landmark.setLatitude(landmark.getLatitude() + 0.0001d);
-			//landmark.setLongitude(landmark.getLongitude() + 0.0001d);
-			//LandmarkPersistenceUtils.updateLandmark(landmark, new MockCacheProvider());
-			System.out.println(landmark.getName() + ": " + landmark.getCreationDate() + " " + landmark.getLatitude() + " " + landmark.getLongitude());
 		}
 	}
 }

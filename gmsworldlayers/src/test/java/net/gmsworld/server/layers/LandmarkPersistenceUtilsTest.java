@@ -2,6 +2,8 @@ package net.gmsworld.server.layers;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+
 import org.junit.Test;
 
 import net.gmsworld.server.config.Commons;
@@ -11,7 +13,7 @@ import net.gmsworld.server.utils.persistence.LandmarkPersistenceUtils;
 
 public class LandmarkPersistenceUtilsTest {
 
-	@Test
+	//@Test
 	public void test() {
 		final double latitude = 52.25;
 		final double longitude = 20.95;
@@ -46,5 +48,19 @@ public class LandmarkPersistenceUtilsTest {
 			LandmarkPersistenceUtils.removeLandmark(l.getId());
 		}
 	}
-
+	
+	@Test
+	public void testUpdate() {
+		final String user = "abcd";
+		int count = LandmarkPersistenceUtils.countLandmarksByUserAndLayer(user, Commons.MY_POS_CODE);
+		System.out.println(user + " landmarks count " + count);
+		List<Landmark> landmarks = LandmarkPersistenceUtils.selectLandmarksByUserAndLayer(user, Commons.MY_POS_CODE, 0, 1);
+		if (!landmarks.isEmpty()) {
+			Landmark landmark = landmarks.get(0);
+			landmark.setLatitude(landmark.getLatitude() + 0.0001d);
+			landmark.setLongitude(landmark.getLongitude() + 0.0001d);
+			LandmarkPersistenceUtils.updateLandmark(landmark, new MockCacheProvider());
+			System.out.println(landmark.getName() + ": " + landmark.getCreationDate() + " " + landmark.getLatitude() + " " + landmark.getLongitude());
+		}
+	}
 }
