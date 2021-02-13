@@ -68,7 +68,9 @@
   <link rel="stylesheet" href="/css/jquery-ui.min.css" />
   <script src="/js/jquery.min.js"></script>
   <script src="/js/jquery-ui.min.js"></script>
-  <script src="/js/datepicker-<%= request.getLocale().getLanguage() %>.js"></script>
+<% if (StringUtils.indexOfAny(request.getLocale().getLanguage(), new String[]{"de","es", "fr","it","pl", "pt", "vi",})>=0)  { %>  	
+  	<script src="/js/datepicker-<%= request.getLocale().getLanguage() %>.js"></script>
+<% } %>  	
   <script type="text/javascript">
     jQuery.fn.center = function () {
         this.css("position","absolute");

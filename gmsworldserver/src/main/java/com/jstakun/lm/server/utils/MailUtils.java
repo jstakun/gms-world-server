@@ -556,7 +556,7 @@ public class MailUtils {
     	}
     }
     
-    private static String ordinalEn(int i) {
+    /*private static String ordinalEn(int i) {
         final String[] sufixes = new String[] { "th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th" };
         switch (i % 100) {
         	case 11:
@@ -566,5 +566,5 @@ public class MailUtils {
         	default:
         		return i + sufixes[i % 10];
         }
-    }
+    }*/
 }
