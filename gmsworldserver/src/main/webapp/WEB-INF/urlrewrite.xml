@@ -465,7 +465,7 @@
     	<condition type="scheme" operator="notequal">https</condition>
         <condition name="host" operator="equal">www.gms-world.net</condition>
         <from>^/m/register.jsp</from>
-    	<to type="permanent-redirect" last="true">https://www.gms-world.net/m/registerPage</to>
+    	<to type="permanent-redirect" last="true">https://www.gms-world.net/registerPage</to>
 	</rule>
     
     <rule>
