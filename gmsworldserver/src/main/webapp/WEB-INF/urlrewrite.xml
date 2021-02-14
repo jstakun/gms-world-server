@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE urlrewrite PUBLIC "-//tuckey.org//DTD UrlRewrite 3.2//EN"
-        "http://tuckey.org/res/dtds/urlrewrite3.2.dtd">
-
-<!--
-
-    Configuration file for UrlRewriteFilter
-    http://tuckey.org/urlrewrite/
-
--->
+<!DOCTYPE urlrewrite PUBLIC "-//tuckey.org//DTD UrlRewrite 3.2//EN" "http://tuckey.org/res/dtds/urlrewrite3.2.dtd">
 <urlrewrite>
 
     <!--  set headers -->
@@ -39,14 +31,7 @@
         <set type="status">404</set>
         <to>null</to>
     </rule>
-    <!--  Let's Encrypt -->
     
-    <rule>
-    	<condition name="user-agent">.*Let's Encrypt.*https://www.letsencrypt.org.*</condition>
-    	<from>^/</from>
-    	<to>/.well-known/acme-challenge/naked-domain</to>
-    </rule>
-
     <!-- main page -->
     
     <rule>
@@ -93,7 +78,7 @@
             <to>/showLandmark.do?key=$1</to>
     </rule>
 
-     <rule>
+    <rule>
             <from>^/showLandmark/([a-zA-Z0-9_-]+)/([m-y]+)/([m-y]+);jsessionid=(.*)$</from>
             <to>/showLandmark.do?key=$1</to>
     </rule>
@@ -149,7 +134,6 @@
             <to>/showUserDevices.do?secret=$1</to>
     </rule>
 
-    
     <!-- showImage rules -->
     
     <rule>
@@ -176,10 +160,10 @@
     
     <!-- freebaseView rules -->
     
-    <rule>
+    <!--rule>
             <from>^/freebaseView/([a-zA-Z0-9_-]+)$</from>
             <to>/freebaseView.do?mid=$1</to>
-    </rule>
+    </rule-->
     
     <!-- showGeocode rules -->
     
@@ -365,6 +349,11 @@
     </rule>
     
     <rule>
+            <from>^/dl/$</from>
+            <to>/m/dl.jsp</to>
+    </rule>
+    
+    <rule>
             <from>^/dl-privacy$</from>
             <to>/dl-privacy.do</to>
     </rule>
@@ -411,6 +400,7 @@
     </rule>
     
     <!-- booking.com -->
+    
     <rule>
        		<from>^/booking$</from>
        		<to type="redirect">http://www.booking.com?aid=864525</to>
@@ -427,48 +417,57 @@
     </rule>
     
     <!-- verify notification rule -->
+    
     <rule>
             <from>^/verify/([a-zA-Z0-9.-]+)/(.+)$</from>
             <to>/verify.do?sc=$1&amp;m=$2&amp;s=1</to>
     </rule>
+    
     <rule>
             <from>^/verify/([a-zA-Z0-9.-]+)$</from>
             <to>/verify.do?sc=$1&amp;s=1</to>
     </rule>
+    
     <rule>
             <from>^/verify/([a-zA-Z0-9.-]+)$?dn=(.+)$&amp;di=(a-zA-Z0-9+)$</from>
             <to>/verify.do?sc=$1&amp;s=1&amp;dn=$2&amp;di=$3</to>
     </rule>
+    
     <rule>
             <from>^/verify/([a-zA-Z0-9.-]+)$?dn=(.+)$</from>
             <to>/verify.do?sc=$1&amp;s=1&amp;dn=$2</to>
     </rule>
     
     <!-- unregister notification rule -->
+    
     <rule>
             <from>^/unregister/([a-zA-Z0-9.-]+)$</from>
             <to>/verify.do?sc=$1&amp;u=1</to>
     </rule>
     
     <!-- verifyUser -->
+    
     <rule>
             <from>^/verifyUser/([a-zA-Z0-9.-]+)$</from>
             <to>/verify.do?se=$1&amp;s=1</to>
     </rule>
     
-     <!-- unregisterUser -->
+    <!-- unregisterUser -->
+    
     <rule>
             <from>^/unregisterUser/([a-zA-Z0-9.-]+)$</from>
             <to>/verify.do?se=$1&amp;u=1</to>
     </rule>
     
     <!-- register.jsp http to https -->
+    
     <rule>
     	<condition type="scheme" operator="notequal">https</condition>
         <condition name="host" operator="equal">www.gms-world.net</condition>
         <from>^/m/register.jsp</from>
     	<to type="permanent-redirect" last="true">https://www.gms-world.net/m/registerPage</to>
 	</rule>
+    
     <rule>
     	<condition type="scheme" operator="notequal">https</condition>
         <condition name="host" operator="equal">www.gms-world.net</condition>
@@ -477,6 +476,7 @@
 	</rule>
     
     <!-- reset.jsp https -->
+    
     <rule>
     	<condition type="scheme" operator="notequal">https</condition>
         <condition name="host" operator="equal">www.gms-world.net</condition>
@@ -485,17 +485,18 @@
 	</rule>
     
     <!-- contact form -->
+    
     <rule>
             <from>^/contactPage</from>
             <to>/contactPage.do</to>
     </rule>
     
     <!-- register form -->
+    
     <rule>
             <from>^/registerPage</from>
             <to>/registerPage.do</to>
     </rule>
-    
     
 </urlrewrite>
 
