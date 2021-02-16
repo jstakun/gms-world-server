@@ -132,7 +132,7 @@ public class AccountAction extends Action {
         } else if (!HttpUtils.isEmptyAny(request, "k", "sc", "u")) {
         	//unregister from DL notifications using email
         	final String secret = request.getParameter("sc");
-        	final String email = URLDecoder.decode(request.getParameter("k"),"UTF-8");
+        	final String email = URLDecoder.decode(request.getParameter("k"),"UTF-8").trim();
         	request.setAttribute("email", email);
 			Notification n = NotificationPersistenceUtils.findBySecret(secret);
         	if (n != null && StringUtils.equals(n.getId(), email)) {
@@ -151,7 +151,7 @@ public class AccountAction extends Action {
         		request.setAttribute("email", "has been");
                 result = true;
         	} else {
-            	logger.log(Level.SEVERE, "Notification " + email + " with secret " + secret + " not found!");
+            	logger.log(Level.SEVERE, "Notification -" + email + "- with secret -" + secret + "- not found!");
             }
         } else if (!HttpUtils.isEmptyAny(request, "u", "sc")) {
         	//unregister from DL notifications using secret
