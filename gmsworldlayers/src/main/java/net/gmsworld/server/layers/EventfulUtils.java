@@ -298,4 +298,8 @@ public class EventfulUtils extends LayerHelper {
     public String getIcon() {
     	return "event.png";
     }
+    
+    public boolean isEnabled() {
+    	return false;
+    }
 }
