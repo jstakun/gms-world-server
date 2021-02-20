@@ -169,7 +169,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
         <dependency>
             <groupId>net.gms-world</groupId>
             <artifactId>gmsworldlayers</artifactId>
-            <version>0.0.4.29</version>
+            <version>0.0.4.30-Private</version>
         </dependency>
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>

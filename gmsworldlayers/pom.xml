@@ -2,7 +2,8 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.gms-world</groupId>
   <artifactId>gmsworldlayers</artifactId>
-  <version>0.0.4.29</version>
+  <version>0.0.4.30-Private</version>
+  <!--version>0.0.4.30-Public</version-->
   
   <properties>
       <google.http.client.version>1.22.0</google.http.client.version>
@@ -146,7 +147,24 @@
        <url>http://192.168.122.1:8081/repository/maven-snapshots/</url>
     </snapshotRepository>
   </distributionManagement> 
-      <profiles>
+      
+  <!-- Uncomment for Public version -->    
+  <!--build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.2.0</version>
+        <configuration>
+          <excludes>
+          	<exclude>application.properties</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build-->    
+      
+  <profiles>
         <profile>
             <id>security</id>
             <build>
@@ -179,5 +197,5 @@
                 </plugins>
             </build>
         </profile>
-    </profiles>
+  </profiles>
 </project>
