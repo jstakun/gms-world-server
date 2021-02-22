@@ -23,7 +23,9 @@
                     landmark = (Landmark) request.getAttribute("landmark");
                 }
                 final boolean isDevice = StringUtils.equalsIgnoreCase((String)request.getAttribute("type"),"device");
-                final String imei = (String)request.getAttribute("imei");
+                final String imei = (String) request.getAttribute("imei");
+                final String deviceName = (String) request.getAttribute("deviceName");
+                final String status = (String)request.getAttribute("status");
                 String image = "flagblue.png";
                 String title = "GMS World landmarks on the map";
                 if (isDevice) {
@@ -104,9 +106,12 @@
         <% if (landmark != null) {%>
         <div id="map_canvas" style="width:100%; height:100%"></div>
         <% } else if (imei != null && isDevice) {%>
-        <h3>This device location is currently unknown. Please <a href="/showDevice/<%= imei %>">try again</a> later!</h3>
+        <h3><%= deviceName != null ? "Device " + deviceName : "This device"  %> location is currently unknown. Please click <a href="/showDevice/<%= imei %>">here</a> to discover it now!</h3>
+             <% if (StringUtils.isNotEmpty(status)) { %>
+             	  Last discovery status: <%= status %>
+             <% } %>
         <% } else if (isDevice) {%>
-        <h3>This device location is currently unknown. Please try again later!</h3>
+        <h3>This device location is currently unknown. Please open this page again later!</h3>
         <% } else {%>
         <h3>Item not found.</h3>
         <% } %>

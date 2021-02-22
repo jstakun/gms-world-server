@@ -24,6 +24,7 @@ import com.jstakun.lm.server.persistence.Notification;
 import com.jstakun.lm.server.persistence.User;
 import com.jstakun.lm.server.utils.OtpUtils;
 import com.jstakun.lm.server.utils.memcache.CacheUtil;
+import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 import com.jstakun.lm.server.utils.persistence.DevicePersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.NotificationPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.UserPersistenceUtils;
@@ -60,7 +61,7 @@ private static final Logger logger = Logger.getLogger(ShowUserDevicesAction.clas
 				if (StringUtils.startsWith(userDevicesJsonString, "[")) {
 					JSONArray userDevicesJson = new JSONArray(userDevicesJsonString);
 					for (int i=0;i<userDevicesJson.length();i++) {
-						 Landmark device = jsonToLandmark(userDevicesJson.getJSONObject(i));
+						 Landmark device = jsonToLandmark(userDevicesJson.getJSONObject(i), request);
 						 if (device != null) {
 							 devices.add(device);
 							 centerLat += device.getLatitude();
@@ -79,15 +80,14 @@ private static final Logger logger = Logger.getLogger(ShowUserDevicesAction.clas
 		            request.setAttribute("collectionAttributeName", "devices");
 		            request.setAttribute("devices", devices);
 				}
-			}
-				 
+			}			 
 			request.setAttribute("type", "device");	
 		}
 		
 		return mapping.findForward("success");
 	}
 	
-	protected static Landmark jsonToLandmark(JSONObject deviceJson) {
+	protected static Landmark jsonToLandmark(JSONObject deviceJson, HttpServletRequest request) {
 		 Landmark landmark = null;
 		 final String imei = deviceJson.getString("imei");
 		 final String geo = deviceJson.optString("geo");
@@ -125,6 +125,10 @@ private static final Logger logger = Logger.getLogger(ShowUserDevicesAction.clas
 				 landmark.setDescription("<a href=\"https://maps.google.com/maps?q=" + landmark.getLatitude() + "," + landmark.getLongitude() + "\">Open in Google Maps</a>");					 
 			 }
 		 } else {
+			 final String deviceName = deviceJson.optString("name");
+			 if (StringUtils.isNotEmpty(deviceName)) {
+				 request.setAttribute("deviceName", deviceName);
+			 }
 			 sendLocationCommand(imei);
 			 logger.log(Level.WARNING, "Device location not found");
 		 }
@@ -137,6 +141,7 @@ private static final Logger logger = Logger.getLogger(ShowUserDevicesAction.clas
 				final String token = OtpUtils.generateOtpToken(imei, null);	
 				final String reply = DevicePersistenceUtils.sendCommand("locatedladmindlt " + token + " " + imei, ConfigurationManager.TELEGRAM_BOT_ID, "telegram"); 
 				logger.log(Level.INFO, "Command status: " + reply);
+				CacheUtil.put("locatedladmindlt:" + imei + ":status", reply, CacheType.NORMAL);
 			} else {
 				logger.log(Level.INFO, "Locate admin command sent");
 			}

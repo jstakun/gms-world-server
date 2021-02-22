@@ -132,9 +132,9 @@
         <% if (landmarkList != null) {%>
         <div id="map_canvas" style="width:100%; height:100%"></div>
         <% } else if (secret != null && isDevice) {%>
-        <h3>Your devices location is currently unknown. Please <a href="/showUserDevices/<%= secret %>">try again</a> later!</h3>
+        <h3>Your devices location is currently unknown. Please click <a href="/showUserDevices/<%= secret %>">here</a> to discover them now!</h3>
         <% } else if (isDevice) {%>
-        <h3>Your devices location is currently unknown. Please try again later!</h3>
+        <h3>Your devices location is currently unknown. Please open this page again later!</h3>
         <% } else {%>
         <h3>Landmarks not found</h3>
         <% } %>
