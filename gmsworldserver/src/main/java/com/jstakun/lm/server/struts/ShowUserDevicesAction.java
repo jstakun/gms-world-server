@@ -23,6 +23,7 @@ import com.jstakun.lm.server.config.ConfigurationManager;
 import com.jstakun.lm.server.persistence.Notification;
 import com.jstakun.lm.server.persistence.User;
 import com.jstakun.lm.server.utils.OtpUtils;
+import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.persistence.DevicePersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.NotificationPersistenceUtils;
 import com.jstakun.lm.server.utils.persistence.UserPersistenceUtils;
@@ -132,9 +133,13 @@ private static final Logger logger = Logger.getLogger(ShowUserDevicesAction.clas
 	
 	private static void sendLocationCommand(final String imei) {
 		try {
-			final String token = OtpUtils.generateOtpToken(imei, null);	
-			final String reply = DevicePersistenceUtils.sendCommand("locatedladmindlt " + token + " " + imei, ConfigurationManager.TELEGRAM_BOT_ID, "telegram"); 
-		    logger.log(Level.INFO, "Command status: " + reply);
+			if (! CacheUtil.containsKey(OtpUtils.PREFIX + imei)) {
+				final String token = OtpUtils.generateOtpToken(imei, null);	
+				final String reply = DevicePersistenceUtils.sendCommand("locatedladmindlt " + token + " " + imei, ConfigurationManager.TELEGRAM_BOT_ID, "telegram"); 
+				logger.log(Level.INFO, "Command status: " + reply);
+			} else {
+				logger.log(Level.INFO, "Locate admin command sent");
+			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);
 		}

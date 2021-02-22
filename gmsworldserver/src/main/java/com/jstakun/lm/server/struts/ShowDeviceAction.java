@@ -1,7 +1,6 @@
 package com.jstakun.lm.server.struts;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,8 +15,6 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.json.JSONObject;
 
-import com.jstakun.lm.server.config.ConfigurationManager;
-import com.jstakun.lm.server.utils.OtpUtils;
 import com.jstakun.lm.server.utils.persistence.DevicePersistenceUtils;
 
 import net.gmsworld.server.utils.persistence.Landmark;
@@ -50,15 +47,5 @@ public class ShowDeviceAction extends Action {
 			}
 		}
 		return mapping.findForward("success");
-	}
-	
-	private void sendLocationCommand(final String imei) {
-		try {
-			final String token = OtpUtils.generateOtpToken(imei, null);	
-			final String reply = DevicePersistenceUtils.sendCommand("locatedladmindlt " + token + " " + imei, ConfigurationManager.TELEGRAM_BOT_ID, "telegram"); 
-		    logger.log(Level.INFO, "Command status: " + reply);
-		} catch (Exception e) {
-			logger.log(Level.SEVERE, e.getMessage(), e);
-		}
 	}
 }

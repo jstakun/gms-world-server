@@ -6,7 +6,7 @@ import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.memcache.CacheUtil.CacheType;
 
 public class OtpUtils {
-	private static final String PREFIX = "otp:";
+	public static final String PREFIX = "otp:";
     public static final int DEFAULT_TOKEN_LENGTH = 8;
     
     public static String generateOtpToken(final String deviceId, final Integer length) {
