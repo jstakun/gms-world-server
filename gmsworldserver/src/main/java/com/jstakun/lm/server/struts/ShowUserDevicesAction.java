@@ -112,14 +112,14 @@ private static final Logger logger = Logger.getLogger(ShowUserDevicesAction.clas
 					 long creationTimestamp = Long.parseLong(tokens[2]);
 					 landmark.setCreationDate(new Date(creationTimestamp));
 					 if (System.currentTimeMillis() - creationTimestamp > (1000 * 60 * 60 * 24)) {
-						 sendLocationCommand(imei);
+						 sendLocationCommand(imei, request);
 					 }
 				 } else if (tokens.length > 3 && StringUtils.isNumeric(tokens[3])) {
 					 landmark.setAltitude(Double.parseDouble(tokens[2]));
 					 long creationTimestamp = Long.parseLong(tokens[3]);
 					 landmark.setCreationDate(new Date(creationTimestamp));
 					 if (System.currentTimeMillis() - creationTimestamp > (1000 * 60 * 60 * 24)) {
-						 sendLocationCommand(imei);
+						 sendLocationCommand(imei, request);
 					 }
 				 }
 				 landmark.setDescription("<a href=\"https://maps.google.com/maps?q=" + landmark.getLatitude() + "," + landmark.getLongitude() + "\">Open in Google Maps</a>");					 
@@ -129,21 +129,26 @@ private static final Logger logger = Logger.getLogger(ShowUserDevicesAction.clas
 			 if (StringUtils.isNotEmpty(deviceName)) {
 				 request.setAttribute("deviceName", deviceName);
 			 }
-			 sendLocationCommand(imei);
-			 logger.log(Level.WARNING, "Device location not found");
+			 sendLocationCommand(imei, request);
+			 logger.log(Level.WARNING, "Device location not found is backend database");
 		 }
 		 return landmark;
 	}
 	
-	private static void sendLocationCommand(final String imei) {
+	private static void sendLocationCommand(final String imei, HttpServletRequest request) {
 		try {
 			if (! CacheUtil.containsKey(OtpUtils.PREFIX + imei)) {
 				final String token = OtpUtils.generateOtpToken(imei, null);	
 				final String reply = DevicePersistenceUtils.sendCommand("locatedladmindlt " + token + " " + imei, ConfigurationManager.TELEGRAM_BOT_ID, "telegram"); 
 				logger.log(Level.INFO, "Command status: " + reply);
-				CacheUtil.put("locatedladmindlt:" + imei + ":status", reply, CacheType.NORMAL);
+				final String status = StringUtils.replaceEach(reply, new String[] {imei, "locatedladmin"}, new String[] {"", ""});
+				CacheUtil.put("locatedladmindlt:"+imei+":status", status, CacheType.FAST);
+				request.setAttribute("status", status);
 			} else {
-				logger.log(Level.INFO, "Locate admin command sent");
+				if (CacheUtil.containsKey("locatedladmindlt:"+imei+":status")) {
+					request.setAttribute("status",  CacheUtil.getObject("locatedladmindlt:"+imei+":status"));
+				}
+				logger.log(Level.INFO, "Skipping sending admin locate command");
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage(), e);

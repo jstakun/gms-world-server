@@ -15,7 +15,6 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.json.JSONObject;
 
-import com.jstakun.lm.server.utils.memcache.CacheUtil;
 import com.jstakun.lm.server.utils.persistence.DevicePersistenceUtils;
 
 import net.gmsworld.server.utils.persistence.Landmark;
@@ -37,15 +36,12 @@ public class ShowDeviceAction extends Action {
 				     Landmark landmark = ShowUserDevicesAction.jsonToLandmark(deviceJson, request);
 				     if (landmark != null) {
 				    	 request.setAttribute("landmark", landmark);
+				     } else {
+				    	 request.setAttribute("landmarkFound", "1");
 				     }
 				} else {
-					logger.log(Level.WARNING, "Device not found");
+					 logger.log(Level.WARNING, "Device not found in backend database");
 				}	
-				String status = (String)CacheUtil.remove("locatedladmindlt:" + imei + ":status");
-				if (StringUtils.isNotEmpty(status)) {
-					status = StringUtils.replaceEach(status, new String[] {imei, "locatedladmin"}, new String[] {"", ""});
-					request.setAttribute("status", status);
-				}
 				request.setAttribute("imei", imei);
 				request.setAttribute("type", "device");
 			} catch (Exception e) {

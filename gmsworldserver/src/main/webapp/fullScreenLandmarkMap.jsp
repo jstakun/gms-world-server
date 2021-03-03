@@ -105,11 +105,13 @@
     <body onLoad="initialize()">
         <% if (landmark != null) {%>
         <div id="map_canvas" style="width:100%; height:100%"></div>
-        <% } else if (imei != null && isDevice) {%>
+        <% } else if (imei != null && isDevice && request.getAttribute("landmarkFound") != null) {%>
         <h3><%= deviceName != null ? "Device " + deviceName : "This device"  %> location is currently unknown. Please click <a href="/showDevice/<%= imei %>">here</a> to discover it now!</h3>
              <% if (StringUtils.isNotEmpty(status)) { %>
              	  Last discovery status: <%= status %>
              <% } %>
+        <% } else if (imei != null && isDevice) {%>
+        <h3><%= deviceName != null ? "Device " + deviceName : "This device"  %> location is currently unknown. Please open Device Locator mobile application on this device and finish device registration and later click again <a href="/showDevice/<%= imei %>">here</a>!</h3>
         <% } else if (isDevice) {%>
         <h3>This device location is currently unknown. Please open this page again later!</h3>
         <% } else {%>
