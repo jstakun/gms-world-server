@@ -141,7 +141,7 @@ private static final Logger logger = Logger.getLogger(ShowUserDevicesAction.clas
 				final String token = OtpUtils.generateOtpToken(imei, null);	
 				final String reply = DevicePersistenceUtils.sendCommand("locatedladmindlt " + token + " " + imei, ConfigurationManager.TELEGRAM_BOT_ID, "telegram"); 
 				logger.log(Level.INFO, "Command status: " + reply);
-				final String status = StringUtils.replaceEach(reply, new String[] {imei, "locatedladmin"}, new String[] {"", ""});
+				final String status = StringUtils.replaceEach(reply, new String[] {" " + imei, "locatedladmindlt", "locatedladmin"}, new String[] {"", "locate", "locate"});
 				CacheUtil.put("locatedladmindlt:"+imei+":status", status, CacheType.FAST);
 				request.setAttribute("status", status);
 			} else {
