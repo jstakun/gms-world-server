@@ -96,7 +96,7 @@
  %>
                     <!-- main -->
                 </div>
-                <%@ include file="/WEB-INF/jspf/sidebar.jsp" %>
+                <%@ include file="/WEB-INF/jspf/sidebar.jsp" %>  
                 <!-- content -->
             </div>
             <!-- /content-out -->
