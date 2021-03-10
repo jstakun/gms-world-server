@@ -66,7 +66,6 @@
         <h3 id="rgc">Recent Geocodes</h3>
         <ul>
 <%
-	
 	List<GeocodeCache> geocodeCacheList = HtmlUtils.getNewestGeocodes();
 	
     if (geocodeCacheList != null) {
