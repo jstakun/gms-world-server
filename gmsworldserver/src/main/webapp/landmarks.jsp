@@ -555,9 +555,9 @@
           controlDiv.style.borderRadius = '3px';
           controlDiv.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
           controlDiv.style.cursor = 'pointer';
-          controlDiv.style.marginTop = '10px';
+          controlDiv.style.marginTop = '16px';
           controlDiv.style.marginLeft = '10px';
-          controlDiv.style.marginBottom = '10px';
+          controlDiv.style.marginBottom = '16px';
           controlDiv.style.marginRight = '10px';
           controlDiv.style.textAlign = align; 
           controlDiv.title = title;

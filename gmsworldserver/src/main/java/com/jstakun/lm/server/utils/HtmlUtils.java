@@ -158,9 +158,9 @@ public class HtmlUtils {
 	    }       
 	    if (address != null && StringUtils.isNotEmpty(address.toString())) {
 	           desc += "'Address: " + StringEscapeUtils.escapeJavaScript(address.toString()) + ",<br/>'+\n"; 
-	    } else {
-	    	   desc += "'Latitude: " + StringUtil.formatCoordE6(landmark.getLatitude()) + ", Longitude: " + StringUtil.formatCoordE6(landmark.getLongitude()) + ",<br/>'+\n";
-	    }
+	    } //else {
+	    //	   desc += "'Latitude: " + StringUtil.formatCoordE6(landmark.getLatitude()) + ", Longitude: " + StringUtil.formatCoordE6(landmark.getLongitude()) + ",<br/>'+\n";
+	    //}
 	    desc += "'Posted " + prettyTime.format(landmark.getCreationDate()) + " by <a href=\"/showUser/" + landmark.getUsername() + "\">" + UrlUtils.createUsernameMask(landmark.getUsername()) + "</a>,<br/>'+\n" +
 	                   "'Created in " + LayerPersistenceUtils.getLayerFormattedName(landmark.getLayer()) + ".</span>'";
 	    return desc;
@@ -178,8 +178,8 @@ public class HtmlUtils {
 		if (address != null && StringUtils.isNotEmpty(address.toString())) {
 	           desc += "'Geocode address: " + StringEscapeUtils.escapeJavaScript(address.toString()) + ",<br/>'+\n"; 
 	    }        
-		desc += "'Latitude: " + StringUtil.formatCoordE6(gc.getLatitude()) + ", Longitude: " + StringUtil.formatCoordE6(gc.getLongitude()) + "<br/>'+\n" +
-                "'Posted " + prettyTime.format(gc.getCreationDate()) + ".</span>'";
+		//desc += "'Latitude: " + StringUtil.formatCoordE6(gc.getLatitude()) + ", Longitude: " + StringUtil.formatCoordE6(gc.getLongitude()) + "<br/>'+\n" +
+		desc +=  "'Posted " + prettyTime.format(gc.getCreationDate()) + ".</span>'";
 		return desc;
 	}
 	
@@ -194,8 +194,8 @@ public class HtmlUtils {
 		if (address != null && StringUtils.isNotEmpty(address.toString())) {
 	           desc += "'" + StringEscapeUtils.escapeJavaScript(address.toString()) + ",<br/>'+\n"; 
 	    }        
-		desc += "'Latitude: " + StringUtil.formatCoordE6(lat) + ", Longitude: " + StringUtil.formatCoordE6(lng) + "<br/>'+\n" +
-                "'</span>'";
+		//desc += "'Latitude: " + StringUtil.formatCoordE6(lat) + ", Longitude: " + StringUtil.formatCoordE6(lng) + "<br/>'+\n" +
+		desc += "'</span>'";
 		return desc;
 	}
 	

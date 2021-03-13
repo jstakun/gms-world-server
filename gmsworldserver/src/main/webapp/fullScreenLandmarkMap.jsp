@@ -98,13 +98,50 @@
                 google.maps.event.addListener(marker, 'click', function() {
                     infowindow.open(map,marker);
                 });
-            }
+                           
+                <% if (isDevice) { %>
+                var centerControlDiv = document.getElementById('centerMap');
+		        centerControlDiv.index = 1;
+	            CenterControl2(centerControlDiv, 'center', 'Locate now');
+	            map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(centerControlDiv);
+	            google.maps.event.addDomListener(centerControlDiv, 'click', function() {
+	    	   	    window.location.reload();
+	    	    });
+            }    
+
+            function CenterControl2(controlDiv, align, title) {
+
+                    // Set CSS for the control border
+                    controlDiv.style.display = "block";
+                    controlDiv.style.backgroundColor = '#fff';
+                    controlDiv.style.border = '2px solid #fff';
+                    controlDiv.style.borderRadius = '3px';
+                    controlDiv.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+                    controlDiv.style.cursor = 'pointer';
+                    controlDiv.style.marginTop = '10px';
+                    controlDiv.style.marginLeft = '10px';
+                    controlDiv.style.marginBottom = '16px';
+                    controlDiv.style.marginRight = '10px';
+                    controlDiv.style.textAlign = align; 
+                    controlDiv.title = title;
+                    
+                    // Set CSS for the control interior
+                    controlDiv.style.color = 'rgb(25,25,25)';
+                    controlDiv.style.fontFamily = 'Roboto,Arial,sans-serif';
+                    controlDiv.style.fontSize = '16px';
+                    controlDiv.style.lineHeight = '32px'; //scale
+                    controlDiv.style.paddingLeft = '4px';
+                    controlDiv.style.paddingRight = '4px';
+             }    
+         
+         <% } %>        
         </script>
     <% }%>
     </head>
     <body onLoad="initialize()">
         <% if (landmark != null) {%>
         <div id="map_canvas" style="width:100%; height:100%"></div>
+        <div id="centerMap" style="display:none;">Locate now</div>
         <% } else if (imei != null && isDevice && request.getAttribute("landmarkFound") != null) {%>
         <h3><%= deviceName != null ? "Device " + deviceName : "This device"  %> location is currently unknown. Please click <a href="/showDevice/<%= imei %>">here</a> to discover it now!</h3>
              <% if (StringUtils.isNotEmpty(status)) { %>
